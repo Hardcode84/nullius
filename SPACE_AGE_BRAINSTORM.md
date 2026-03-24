@@ -194,6 +194,37 @@ Lightning storms provide **massive but extremely spiky** power. Nullius's surge/
 
 **Needs engine verification**: Can a single entity be both an ElectricPole and a LightningAttractor? If not, Option C (invisible attractor overlay) is the fallback.
 
+#### Dynamic Storm Cycles (Engine-Confirmed)
+
+Lightning intensity can be **changed at runtime** with zero UPS cost for the lightning simulation itself.
+
+**Mechanism**: `LightningProperties.multiplier_surface_property` ties lightning frequency to a custom surface property. `LuaSurface.set_property()` changes that property at runtime. The engine scales lightning frequency automatically.
+
+**Setup:**
+1. Define `SurfacePropertyPrototype`: `nullius-storm-intensity` (default_value = 1.0)
+2. Set on Fulgora planet: `lightning_properties.multiplier_surface_property = "nullius-storm-intensity"`
+3. Script modulates the property over time:
+
+```lua
+-- Storm cycle: calm periods, building intensity, peak, dying off
+on_nth_tick(300, function()  -- every 5 seconds
+    local tick = game.tick
+    local cycle = math.sin(tick * 0.0001745)  -- ~1 hour full cycle
+    local intensity = math.max(0.05, (cycle + 1) / 2)  -- 0.05 to 1.0
+    fulgora_surface.set_property("nullius-storm-intensity", intensity)
+end)
+```
+
+**Design possibilities:**
+- **Sinusoidal calm/storm cycles**: Predictable rhythm the player can learn and plan around. Build during calm, brace during storms.
+- **Random storm spikes**: Occasional extreme intensity events ("superstorms") that test the player's overload protection.
+- **Escalating intensity**: Storms get worse over game time, forcing continuous infrastructure upgrades.
+- **Multi-layered cycles**: Short-period local fluctuations + long-period "seasons." Sometimes a calm period coincides with a season peak and you get moderate storms; sometimes a storm peak hits during peak season and everything goes white.
+
+**Built-in day/night modifier**: `lightning_multiplier_at_day = 0` and `lightning_multiplier_at_night = 1` already exist on LightningProperties. Storms can be night-only or night-heavier, giving the player predictable safe windows.
+
+**Cost**: One `set_property()` call every few seconds. The engine handles all lightning spawning, targeting, and energy delivery natively. Essentially free.
+
 #### The Overload Problem
 
 Lightning dumps massive energy spikes into the grid. The core challenge is not capture but **survival**:
