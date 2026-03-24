@@ -93,7 +93,7 @@ Each planet needs enough local resources to get started without imports. The bro
 |---|---|---|---|---|
 | **Vulcanus** | Compressed gas from lava (self-fueling). 1 Stirling for electronics. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
 | **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Organic chemistry only (cracking, polymerization). No combustion (no O2). | Bulk metals, oxygen, water, combustion-based anything |
-| **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: iron bacteria, sulfur bacteria, silica diatoms. Net negative without breeding. | Exotic biochemistry from bred strains. No CO2, no O2. | Water (low), conventional ores, predictability, metals, stable power |
+| **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
 **Key design constraint**: Each planet must be playable (if painful) with zero imports. The fun comes from solving "how do I make X with only what's here?" Then later, cargo rockets remove the pain and enable specialization.
@@ -408,7 +408,13 @@ IMPORTS:   Metals (from Vulcanus), water, nuclear devices (for geoengineering)
 
 #### Core Constraints
 - **Low water** -- continuing the cross-planet theme. Enough for bacterial life to exist, not enough for industrial use.
-- **Exotic atmosphere** -- no carbon dioxide, no free oxygen. Cannot use CO2 for carbon sequestration or standard atmospheric chemistry. Forces reliance on biological carbon fixation via exotic metabolic pathways.
+- **N2 + H2S atmosphere** -- nitrogen + hydrogen sulfide. No carbon, no oxygen.
+  - H2S supports sulfur-metabolizing bacteria (real extremophile chemistry)
+  - H2S is lethal to complex life (a few ppm kills aerobic organisms)
+  - **No atmospheric carbon** -- bacteria must scavenge carbon from mineral carbonates in rock. This is slow and limited, naturally explaining why bacterial loops are net-negative (mineral carbon depletion).
+  - **No oxygen** -- only anaerobic metabolism possible. Complex organisms need O2 for efficient energy.
+  - **Sulfur is abundant** (from H2S processing), **carbon is the scarce resource** (must extract from rocks or import). Inverted from Nauvis where carbon (CO2) is atmospheric and sulfur is a processed product.
+  - **Terraform catch-22**: Growing complex organisms requires removing H2S and adding O2. But removing H2S kills the sulfur-metabolizing bacteria that produce your resources. You must maintain the toxic atmosphere to keep your bacterial economy running, which prevents the complex organisms you're trying to breed from surviving outside containment.
 - **No conventional mining** -- initial resources come from bacterial processing loops (similar to base SA Gleba nutrient cycling).
 - **Probabilistic outcomes** -- breeding new strains and organisms has random results. Not every experiment succeeds. Some fail spectacularly.
 
@@ -537,12 +543,14 @@ All power on Gleba is biologically derived. No wind, no geothermal, minimal sola
 #### Gleba Summary
 
 ```
-POWER:     Biological (galvanic cells --> microbial fuel cells --> thermogenic + Stirling)
-MATERIALS: Bacterial resource loops (iron bacteria, sulfur bacteria, silica diatoms)
-MISSING:   Water (low), CO2, oxygen, conventional ores, predictability
-UNIQUE:    Probabilistic breeding, continuous maintenance, escaped organism management
-EXPORTS:   Exotic biochemicals, organism progenitors, advanced biology packs
-IMPORTS:   Metals, electronics, containment materials, mutagens?
+ATMOSPHERE: N2 + H2S (nitrogen + hydrogen sulfide)
+POWER:      Biological (galvanic cells --> microbial fuel cells --> thermogenic + Stirling)
+MATERIALS:  Sulfur-metabolizing bacterial loops. Sulfur abundant, carbon scarce (mineral rock only).
+MISSING:    Water (low), carbon (!), oxygen, conventional ores, predictability
+UNIQUE:     Probabilistic breeding, continuous maintenance, escaped organism management,
+            terraform catch-22 (remove H2S = kill bacteria = lose resources)
+EXPORTS:    Exotic biochemicals, organism progenitors, advanced biology packs, sulfur compounds
+IMPORTS:    Metals, electronics, containment materials, carbon (from Vulcanus CO2 atmosphere?)
 ```
 
 ### 3.4 Aquilo (Cryogenic/Fusion -- DESIGN INCOMPLETE)
