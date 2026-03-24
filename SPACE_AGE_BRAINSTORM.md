@@ -91,7 +91,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Local Power | Local Materials | Local Chemistry | Missing (import later) |
 |---|---|---|---|---|
-| **Vulcanus** | Geothermal (abundant, constant) | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | Inorganic only: sulfur, volcanic gas, HCl. Silicon insulation. No organics. | Water (critical!), organics, plastic, rubber, biology |
+| **Vulcanus** | Compressed gas from lava (self-fueling). 1 Stirling for electronics. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
 | **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Organic chemistry only (cracking, polymerization). No combustion (no O2). | Bulk metals, oxygen, water, combustion-based anything |
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: iron bacteria, sulfur bacteria, silica diatoms. Net negative without breeding. | Exotic biochemistry from bred strains. No CO2, no O2. | Water (low), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
@@ -102,7 +102,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Surviving Equipment | Why It Survived |
 |---|---|---|
-| **Vulcanus** | Furnaces, heat pipes, geothermal plant, basic miners, lava extractor | Heat-resistant components survived. Electronics melted -- no circuits, no robots. |
+| **Vulcanus** | Furnaces, heat pipes, lava pump, gas-powered inserters, pre-filled gas tank, 1 Stirling engine, gas pipes | Heat-resistant components survived. Electronics melted. See PLANET_VULCANUS.md section 7. |
 | **Fulgora** | Capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. |
 | **Gleba** | Basic lab, containment walls, bacterial harvester, water recycler | Probe landed in bacterial mat zone. Sterile equipment survived; biological seal held. Minimal power. |
 | **Aquilo** | Everything, but frozen -- must thaw | Cryogenic preservation kept equipment intact but inert |
@@ -111,77 +111,36 @@ Each planet needs enough local resources to get started without imports. The bro
 
 ## 3. Planet-by-Planet Design Ideas
 
-### 3.1 Vulcanus (Volcanic/Industrial)
+### 3.1 Vulcanus (Pneumatic Hell)
 
-**Natural fit with Nullius**: Geothermal power is already a Nullius mechanic. Volcanic gas is already a resource.
+> **Detailed design**: See [PLANET_VULCANUS.md](PLANET_VULCANUS.md) for full production chains, recipes, component analysis, and numbers.
 
-#### Core Constraints
-- **No water** -- the defining scarcity. Cannot cool, cannot do water chemistry, cannot electrolyze.
-- **No organic chemistry** -- too hot for organics. No plastics, no rubber, no methanol. Purely inorganic.
-- **Silicon-based insulation** instead of organic insulation (rubber/plastic). Silica is abundant from volcanic rock.
-- **Abundant metals from lava** -- iron, aluminum, calcite extracted cheaply from lava processing. The planet is rich in bulk metals.
+**Tagline**: Gas-powered steampunk industry where lava processing IS the power source, and dual pipe routing (gas + heat) defines factory layout.
 
-#### Titanium vs Tungsten: Pick One
-
-Both exist in current Nullius. For Vulcanus, pick the one with the more painful real-world production chain:
-
-| Metal | IRL Process | Nullius Fit |
-|---|---|---|
-| **Titanium** | Kroll process: TiO2 + Cl2 + C --> TiCl4, then reduce with Mg/Na. Multi-step, chlorine-heavy. | Ties into chlorine economy. TiCl4 intermediate is a nice chemistry step. Chlorine abundant from volcanic HCl? |
-| **Tungsten** | WO3 reduction with H2 or C at ~1000C+. Simpler but extreme temperature. | Pure high-temp metallurgy fits Vulcanus theme. Less chemistry, more "just heat it harder." |
-
-**Recommendation**: Titanium via chloride process. More steps, more interesting production chain, and the chlorine involvement creates cross-planet resource tension (Vulcanus has volcanic HCl but no way to dispose of excess Cl2 without water-based sinks -- must export or find volcanic calcium sinks).
-
-#### Lava Metals + Spoilage-as-Cooldown
-
-**Key mechanic**: Metals extracted from lava come out as **molten intermediates** that use the **spoilage timer as a cooldown mechanic**. The item "spoils" (cools) into the usable solid form.
+**Core identity:**
+- **CO2 atmosphere**, no wind/solar (corrosive + too hot)
+- **All machines run on compressed volcanic gas** (`FluidEnergySource`), not electricity
+- **Lava processing produces both metals AND compressed gas** (self-fueling loop)
+- **Molten metals need cooldown time** (spoilage mechanic) before they're usable
+- **HCl geysers** (fixed map features) provide hydrogen and chlorine for chemistry
+- **Dual pipe routing**: gas pipes (fuel) + heat pipes (waste heat) to every machine
+- **Overheated radiators crack HCl** -- waste heat does useful chemistry (TFMG-thermal approach)
+- **Deacon/Cracking radiator toggle** (shift-click, like Nullius surge/priority pattern)
+- **2-tile underground gas ducts** (hilariously short, cheap, needed constantly)
+- **Titanium** via Kroll process (deep deposits, requires synthetic demolishers)
+- **Demolishers**: Late-game synthetic organisms (requires Gleba bio-research), player-spawned via territory API
+- **Ceramic/glass/silica alt recipes** replace all plastic/rubber-dependent components
 
 ```
-Lava Processing --> "Molten Iron Bloom" (hot, spoilable item)
-                        |
-                   [Passive cooldown: spoilage timer ticks down]
-                        |
-                   --> Iron Ingot (usable)
-
-With water (LATER TECH):
-  "Molten Iron Bloom" + Water --> Iron Ingot (instant quench)
-  But water must be imported -- expensive!
-```
-
-**Design implications:**
-- Early Vulcanus: Metals are cheap to extract but you need buffer storage and patience for cooldown. Production throughput is time-gated by cooling.
-- Mid Vulcanus: Import small amounts of water for critical quenching (cargo rocket bottleneck makes bulk water impractical).
-- Late Vulcanus: Bulk water imports or condensation tech enable fast quenching and high-throughput metal production.
-- **Inventory management challenge**: Molten items spoiling in chests/belts creates logistics puzzles. Cannot stockpile molten metal -- must process or lose it.
-
-#### Demolishers: Late-Game Synthetic Organisms
-
-Demolishers are NOT native fauna. They are **synthetic organisms designed by the android** to solve a specific problem: bulk extraction of rare metals from deep underground deposits that conventional mining cannot reach.
-
-**Progression:**
-1. **Early Vulcanus**: Surface lava processing for common metals (iron, aluminum, calcite). No demolishers.
-2. **Mid Vulcanus**: Discover deeper rare metal deposits (titanium ore / tungsten ore) that are inaccessible to miners.
-3. **Late Vulcanus**: Research synthetic biology (requires Gleba bio-research data!) to design demolishers.
-4. **Demolisher deployment**: Release demolishers to burrow and expose deep deposits. They break through rock, bringing rare ores to the surface.
-
-**Territory management:**
-- Demolishers are powerful but not fully controllable -- they roam and dig according to biological drives
-- Player must manage demolisher territory to direct them toward desired deposits
-- Demolishers need feeding (synthetic nutrients produced from... what? No organics on Vulcanus -- must import bio-feed from Gleba/Nauvis?)
-- Creates a cross-planet dependency: Gleba bio-research --> demolisher design, Gleba/Nauvis bio-production --> demolisher feed
-- Overpopulation risk: too many demolishers destabilize terrain, destroy infrastructure
-
-**Narrative**: The android creates life not for terraforming but for industrial extraction. Ethical mirror to Nauvis's "seed life for its own sake" goal.
-
-#### Vulcanus Summary
-
-```
-POWER:     Geothermal (abundant, constant -- no intermittency!)
-MATERIALS: Bulk metals from lava (cheap but need cooldown time)
-MISSING:   Water, organics, biology, electronics (silicon insulation only)
-UNIQUE:    Spoilage-as-cooldown, demolishers for rare metal extraction
-EXPORTS:   Titanium/tungsten, bulk metals, calcite, volcanic compounds
-IMPORTS:   Water (for quenching), bio-feed (for demolishers), electronics
+POWER:     Compressed volcanic gas from lava processing (self-fueling)
+           Electricity: one Stirling engine for niche electronics only
+MATERIALS: Bulk metals from lava (cheap but time-gated by cooldown)
+           HCl from dedicated geysers (chemistry bottleneck)
+           CO2 atmosphere --> graphite, O2, trace water
+MISSING:   Organics (plastic, rubber), bulk water, biology
+UNIQUE:    Dual pipe networks, thermal cracking, spoilage cooldown
+EXPORTS:   Titanium, bulk metals, calcite, artillery shells
+IMPORTS:   Water, organics (Fulgora), bio-feed for demolishers (Gleba)
 ```
 
 ### 3.2 Fulgora (Hydrocarbon/Lightning)
