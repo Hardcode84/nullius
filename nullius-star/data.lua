@@ -3,6 +3,8 @@ require("legacyValves")
 pipe_extents = {64, 144, 320, 672}
 
 -- TODO: Planet definitions will go in prototypes/planet/*.lua
+-- NOTE: SA engine features (planets, lightning, segmented units) work without SA mod.
+-- NOTE: SA graphics (__space-age__/graphics/*) are accessible without SA mod enabled.
 
 require("prototypes.reskin")
 require("prototypes.category")
