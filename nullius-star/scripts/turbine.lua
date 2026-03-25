@@ -336,6 +336,41 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
   conf_valve_check_one_way(control_behavior.circuit_condition, entity.unit_number)
 end
 
+-- Pneumatic toggle: swap between electric and pneumatic variants on Vulcanus.
+local pneumatic_pairs = nil
+
+local function get_pneumatic_pairs()
+  if pneumatic_pairs == nil then
+    local mod_data = prototypes["mod-data"]["nullius-pneumatic-pairs"]
+    if mod_data then
+      pneumatic_pairs = mod_data.data
+    else
+      pneumatic_pairs = {}
+    end
+  end
+  return pneumatic_pairs
+end
+
+local function toggle_pneumatic(entity, entityname, force)
+  local pairs_table = get_pneumatic_pairs()
+  local newname = pairs_table[entityname]
+  if newname == nil then return false end
+
+  -- Only allow pneumatic toggle on Vulcanus surface.
+  local surface = entity.surface
+  if not surface or not surface.planet or surface.planet.name ~= "nullius-vulcanus" then
+    return false
+  end
+
+  -- Check that pneumatic technology is researched.
+  if not force.technologies["nullius-pneumatic-technology"].researched then
+    return false
+  end
+
+  replace_fluid_entity(entity, newname, force, nil)
+  return true
+end
+
 local function priority_event(event)
   local player = game.players[event.player_index]
   if ((player == nil) or (not player.valid)) then return end
@@ -354,6 +389,8 @@ local function priority_event(event)
   --   toggle_pump(target, name, force)
   -- elseif (is_conf_valve_entity(name)) then
   --   toggle_conf_valve(target, name, force)
+  elseif (toggle_pneumatic(target, name, force)) then
+    -- Handled by pneumatic toggle.
   end
 end
 

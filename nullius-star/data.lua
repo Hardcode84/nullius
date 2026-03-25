@@ -65,6 +65,9 @@ valves["nullius-togglable-pump-3"] = { name = "nullius-togglable-pump-3", gauge_
 valves["nullius-togglable-small-pump-1"] = { name = "nullius-togglable-small-pump-1" }
 valves["nullius-togglable-small-pump-2"] = { name = "nullius-togglable-small-pump-2" }
 
+-- Pneumatic machine variants (gas-powered alternates for Vulcanus).
+require("prototypes.pneumatic")
+
 -- Prevent quality mod from generating recycling recipes for nullius items.
 -- Quality data-updates.lua runs after all data.lua, so this takes effect
 -- before recycling generation. Avoids broken icon errors on nullius items.

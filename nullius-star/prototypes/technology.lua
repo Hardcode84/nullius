@@ -2627,6 +2627,23 @@ data:extend({
     },
     prerequisites = {"nullius-interplanetary-signal-acquisition", "nullius-metallurgy-2"}
   },
+  {
+    type = "technology",
+    name = "nullius-pneumatic-technology",
+    order = "nullius-df",
+    icon = "__base__/graphics/technology/fluid-handling.png",
+    icon_size = 256,
+    effects = {},
+    unit = {
+      count = 20,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1}
+      },
+      time = 15
+    },
+    prerequisites = {"nullius-probe-vulcanus"}
+  },
 
   {
     type = "technology",
