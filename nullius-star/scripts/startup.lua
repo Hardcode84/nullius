@@ -315,6 +315,10 @@ script.on_event(defines.events.on_research_finished,
     end
     update_checkpoint_list(techname)
     artillery_remote.reset_remote_gui()
+    -- Nullius* probe reactivation.
+    if string.sub(techname, 1, 14) == "nullius-probe-" then
+      probe.on_probe_researched(techname, event.research.force)
+    end
   end
 )
 
