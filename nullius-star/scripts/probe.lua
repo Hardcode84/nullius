@@ -74,12 +74,44 @@ function probe.on_probe_researched(tech_name, force)
       end
       storage.nullius_probe_androids["nullius-vulcanus"] = android
 
-      -- Associate the android with the first player so body switching works.
+      -- Associate android with all players and add to body queue.
       for _, player in pairs(force.players) do
         player.associate_character(android)
+
+        -- Initialize the body cycle queue so Ctrl+U / Shift+U work.
+        local current = player.character
+        if current and current.valid then
+          if storage.nullius_body_queue == nil then
+            storage.nullius_body_queue = {}
+          end
+          local queue = storage.nullius_body_queue[player.index]
+          if queue == nil then
+            queue = { nodes = {} }
+            storage.nullius_body_queue[player.index] = queue
+          end
+
+          -- Add current body to queue if not there.
+          local node1 = queue.nodes[current.unit_number]
+          if node1 == nil then
+            node1 = { body = current, unit = current.unit_number }
+            node1.next = node1
+            node1.prev = node1
+            queue.nodes[current.unit_number] = node1
+          end
+
+          -- Add android to queue, linked after current body.
+          local node2 = { body = android, unit = android.unit_number }
+          queue.nodes[android.unit_number] = node2
+          local nn = node1.next
+          node2.next = nn
+          node2.prev = node1
+          nn.prev = node2
+          node1.next = node2
+          queue.last_index = current.unit_number
+        end
+
         -- Tag the android on the map.
         add_chart_tag(player, android)
-        break
       end
 
       -- Notify all players.
