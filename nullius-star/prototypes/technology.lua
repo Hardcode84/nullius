@@ -2594,6 +2594,42 @@ data:extend({
 
   {
     type = "technology",
+    name = "nullius-interplanetary-signal-acquisition",
+    order = "nullius-df",
+    icon = "__space-age__/graphics/technology/rocket-turret.png",
+    icon_size = 256,
+    essential = true,
+    effects = {},
+    unit = {
+      count = 50,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1}
+      },
+      time = 25
+    },
+    prerequisites = {"nullius-sensors-1", "nullius-signal-processing", "nullius-computation"}
+  },
+  {
+    type = "technology",
+    name = "nullius-probe-vulcanus",
+    order = "nullius-df",
+    icon = "__space-age__/graphics/icons/vulcanus.png",
+    icon_size = 64,
+    effects = {},
+    unit = {
+      count = 30,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1}
+      },
+      time = 20
+    },
+    prerequisites = {"nullius-interplanetary-signal-acquisition", "nullius-metallurgy-2"}
+  },
+
+  {
+    type = "technology",
     name = "nullius-aesthetics-1",
     order = "nullius-df",
 	  icons = data.raw["selection-tool"]["nullius-rock-picker"].icons,
