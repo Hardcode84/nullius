@@ -65,3 +65,22 @@ valves["nullius-togglable-pump-3"] = { name = "nullius-togglable-pump-3", gauge_
 
 valves["nullius-togglable-small-pump-1"] = { name = "nullius-togglable-small-pump-1" }
 valves["nullius-togglable-small-pump-2"] = { name = "nullius-togglable-small-pump-2" }
+
+-- Prevent quality mod from generating recycling recipes for nullius items.
+-- Quality data-updates.lua runs after all data.lua, so this takes effect
+-- before recycling generation. Avoids broken icon errors on nullius items.
+-- Only target nullius-prefixed items to avoid breaking other mods.
+for type_name in pairs(defines.prototypes.item) do
+  if data.raw[type_name] then
+    for name, item in pairs(data.raw[type_name]) do
+      if string.sub(name, 1, 8) == "nullius-" then
+        item.auto_recycle = false
+      end
+    end
+  end
+end
+for name, recipe in pairs(data.raw.recipe) do
+  if string.sub(name, 1, 8) == "nullius-" then
+    recipe.auto_recycle = false
+  end
+end
