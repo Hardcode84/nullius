@@ -380,13 +380,23 @@ This is unproducible on Vulcanus without imports. The probe's surviving Stirling
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
-Vulcanus industry runs on **compressed volcanic gas**, not electricity. All production buildings and inserters use `FluidEnergySource` with `burns_fluid = true`, consuming compressed volcanic gas from pipes.
+Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via hotkey (shift-click, same pattern as surge/priority electrolyzers).
+
+**Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks the ability to toggle any placed machine to pneumatic mode on Vulcanus (surface_conditions restrict the toggle to Vulcanus).
+
+**Same entities, two modes:**
+- Electric mode: standard Nullius behavior, consumes electricity from grid.
+- Pneumatic mode: consumes compressed volcanic gas from pipes. `FluidEnergySource` with `burns_fluid = true`.
+- Toggle via shift-click on placed entity (Vulcanus surface only).
+- Entities in inventory are mode-neutral. Mode is set after placement.
+- The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
 - `scale_fluid_usage = true` makes consumption proportional to actual work done (idle machines don't waste gas)
 - Existing Nullius compressed gases already have `fuel_value` (compressed nitrogen: 14-18 kJ, compressed hydrogen: 4 kJ, pressure steam: 20 kJ)
 - Vulcanus-specific compressed volcanic gas can have a custom fuel value
+- `fast_replaceable_group` allows hotkey swap between electric/pneumatic variants (identical to existing Nullius turbine toggle)
 
 **The gas economy**:
 
@@ -680,34 +690,155 @@ Even without shipping materials, Vulcanus research unlocks:
 
 ---
 
-## 7. Broken Probe Equipment (Starting Conditions)
+## 7. Starting Conditions and Bootstrap Sequence
 
-On reactivation, the Vulcanus probe provides:
+### 7.1 Context: What the Player Has Researched
 
-| Equipment | Count | Condition | Rationale |
+By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical engineering, sensors, metallurgy-2, pumping, volcanism-1 (extractors), and basic chemistry. They know how to build everything -- they just have none of it on Vulcanus.
+
+### 7.2 Probe Wreck Contents
+
+| Item | Count | Notes |
+|---|---|---|
+| Stirling engine (tier 1) | 1 | Produces ~500kW from ambient volcanic heat. **Only electricity source.** Used exclusively for the initial lava pump bootstrap. |
+| Small electric pole | 4 | Connect Stirling to the pump. |
+| Pump | 1 | Electric pump. Place on lava shore. This is the ONLY electric machine in the long-term plan. |
+| Pipe | 20 | Lava fluid piping. |
+| Iron chest | 2 | Storage. |
+
+This is deliberately minimal. The Stirling + pump exist for ONE purpose: get lava flowing into the first processor. After that, everything runs on gas.
+
+### 7.3 Bootstrap Sequence
+
+**Phase A: Electrical Bootstrap -- Get Lava Flowing (minutes 0-5)**
+
+The only time electricity is used on Vulcanus.
+
+```
+1. Mine probe wreck --> collect starting items.
+2. Place Stirling engine (produces ~500kW from ambient heat, no heat pipe needed).
+3. Place electric poles to connect Stirling to lava shore.
+4. Place pump on lava lake shore --> lava fluid flows.
+5. Pipe lava to where the first gas-powered processor will go.
+```
+
+Electricity's job is done. The pump keeps running on the Stirling indefinitely. Everything from here on is gas-powered.
+
+**Phase B: First Gas Loop -- Self-Sustaining Factory (minutes 5-15)**
+
+The player has already researched "Pneumatic Technology" on Nauvis (unlocked right after probe reactivation). This allows toggling any machine to pneumatic mode on Vulcanus via shift-click.
+
+```
+6. Place a furnace (from wreck or hand-crafted) in ELECTRIC mode.
+   - Powered by the Stirling. Set recipe to lava iron separation.
+   - Lava flows in from pump. Produces molten iron blooms + compressed volcanic gas.
+   - This is the BRIDGE: one electric furnace produces the first gas.
+7. Pipe the compressed gas output to a storage tank or directly to the next machine.
+8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.
+9. Build a second furnace. Toggle it to PNEUMATIC mode (shift-click).
+   - Connects to gas pipe from step 7. Now running on gas, not electricity.
+10. Build more machines, all in pneumatic mode.
+    - Assemblers, inserters, labs -- all shift-clicked to pneumatic.
+    - Each connects to the gas pipe network.
+11. GAS-POWERED FACTORY IS LIVE.
+    - The electric bridge furnace can now be toggled to pneumatic too.
+    - Only the Stirling + pump remain electrical.
+```
+
+**Phase C: Metal Production (minutes 15-30)**
+
+All machines from here are gas-powered, fed by gas from lava processing.
+
+```
+10. Build gas-powered lava processors for each metal type:
+    - Lava iron separation --> molten iron blooms --> (30s cooldown) --> iron ingots
+    - Lava aluminum separation --> molten aluminum blooms --> (40s cooldown) --> aluminum ingots
+    - Lava silica extraction --> silica + sulfur
+    - Lava calcite separation --> calcite
+11. Set up cooling belts: long belt runs where blooms cool during transit.
+    - Belt length determines throughput (blooms must cool before next processing step).
+12. Gas-powered furnaces for further smelting (iron ingot --> plate, rod, gear, etc.).
+13. Gas-powered assemblers for crafting components.
+```
+
+**Phase D: Silicon Electronics (minutes 30-60)**
+
+Rebuilding electronics from scratch without organic materials.
+
+```
+14. Silica --> silicon insulation (Vulcanus alt recipe, replaces rubber).
+15. Aluminum wire + silicon insulation --> insulated wire (Vulcanus alt recipe).
+16. Capacitors using Vulcanus alt recipe (glass/silica dielectric).
+17. Logic circuits using Vulcanus alt recipe (ceramic substrate PCB).
+18. Gas-powered lab built --> begin Vulcanus research.
+    - First research: Volcanic Metallurgy 1 (formalizes lava recipes, improves yields).
+```
+
+**Phase E: HCl Chemistry (minutes 60-120)**
+
+Once extractors are built (volcanism-1 tech, already researched on Nauvis):
+
+```
+19. Place extractor on HCl geyser --> HCl gas flows.
+20. HCl thermal cracking (via hot radiator, later) or HCl electrolysis (Stirling-powered, slow).
+    - Bootstrap: use Stirling electricity for slow HCl electrolysis.
+    - Later: switch to thermal cracking via radiators (no electricity needed).
+21. H2 + Cl2 available:
+    - H2 --> CO2 reduction --> graphite (essential for smelting recipes).
+    - H2 --> water synthesis (tiny amounts, precious).
+    - Cl2 --> calcium chloride, future titanium chemistry.
+22. Atmosphere processing: CO2 capture --> CO2 + N2 + SO2.
+    - Feeds into graphite production chain with H2 from geysers.
+```
+
+**Phase F: Dual Pipe Network Emerges (hours 2+)**
+
+The factory now has both gas pipes and heat pipes:
+
+```
+23. Heat management becomes necessary as factory grows.
+    - Machines produce waste heat (TFMG-thermal approach).
+    - Heat pipes route waste heat to radiators.
+    - Radiators crack HCl (dual-purpose: cooling + chemistry).
+24. Dual pipe routing: gas pipes (fuel) + heat pipes (waste heat) to every machine.
+    - 2-tile underground gas ducts for crossing heat pipe runs.
+    - Factory layout becomes a routing puzzle.
+25. Expand lava processing lines (each line generates gas surplus).
+26. Begin Vulcanus-specific research chain (metallurgic science packs).
+```
+
+### 7.4 The Two Power Phases
+
+| Phase | Duration | Power Source | What Runs On It |
 |---|---|---|---|
-| Small furnace | 3 | Broken (must craft nullius-broken-furnace) | Heat-resistant, survived |
-| Heat pipe | 6 | Working | Passive component, survived |
-| Lava pump | 1 | Working | Purpose-built for the environment |
-| Lava processor | 1 | Broken | Core component, partially melted |
-| Compressed gas tank | 1 | Working, **pre-filled** | Bootstrap fuel supply. Enough for ~20-30 machine-minutes of gas. |
-| Gas-powered inserter | 4 | Working | Mechanical + gas, no electronics needed |
-| Storage chest | 2 | Working | Metal box, obviously fine |
-| Stirling engine (tier 1) | 1 | Working | For the tiny amount of electronics work |
-| Gas pipe segments | 12 | Working | Connect gas supply to machines |
+| **Electrical bootstrap** | Minutes 0-10 | Stirling (~500kW) | 1 pump + 1 bridge furnace to produce first gas |
+| **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via shift-click. |
 
-**No electronics survived** (melted). The player must rebuild all circuit-based infrastructure from scratch using local materials + silicon insulation. The single Stirling engine covers this niche need.
+The Stirling engine and pump persist indefinitely as the sole electrical infrastructure. They exist only to feed lava into the system. Every other machine is shift-clicked to pneumatic mode and runs on gas pipes.
 
-**Bootstrap sequence**:
-1. Connect gas tank to lava pump via gas pipe --> pump starts
-2. Fix lava processor --> connect gas pipe --> first lava processing
-3. Lava processing produces compressed gas --> **self-sustaining loop established**
-4. Fix furnaces --> process cooled ingots
-5. Build silicon insulation line (silica from lava)
-6. Build basic electronics from silicon-insulated wire (Stirling powers this)
-7. Build lab (gas-powered) --> begin Vulcanus research
+**The player does NOT build an electrical grid on Vulcanus.** No power poles beyond the initial 4. Machines are placed in electric mode (default) then immediately toggled to pneumatic. The entire factory runs on gas pipes.
 
-**Critical bootstrap moment**: Step 3 is the pivot. Before it, you're burning through the probe's finite gas supply. After it, the factory fuels itself. A player who wastes gas on unnecessary machines before establishing the loop will run dry. The starting tank is generous enough that this should only happen through carelessness, not bad luck.
+**Pneumatic Technology** is researched on Nauvis (cheap, unlocked right after probe reactivation) before or immediately after first visiting Vulcanus. Without it, machines can't be toggled and the player is stuck on Stirling electricity only.
+
+### 7.5 What the Player Cannot Do (Until Later)
+
+| Blocked Activity | Blocker | Unblocked By |
+|---|---|---|
+| Organic chemistry | No organics on Vulcanus | Cargo imports from Fulgora/Nauvis |
+| Bulk water | Almost none locally | HCl chain produces trickle; cargo for bulk |
+| Titanium | Deep deposits inaccessible | Demolishers (requires Gleba bio-research) |
+| Copper/advanced electronics | No copper | Cargo imports |
+| Additional Stirling engines | Recipe needs lubricant (organic) | Anhydrous variant research or import |
+
+### 7.6 Key Design Notes
+
+**Electricity is a temporary crutch, not a power system.** The Stirling exists to prime the lava loop. Once gas flows, electricity is irrelevant. The player who tries to build an electrical grid on Vulcanus is doing it wrong.
+
+**Gas is abundant but must be piped.** Every machine needs a gas pipe connection. The factory layout is driven by gas pipe routing + heat pipe routing, not by belt throughput or power pole coverage.
+
+**The bootstrap should take 15-30 minutes for an experienced player** from "empty surface" to "functioning gas-powered mini-factory with cooling belts." The first lava separation (Phase B) is the critical moment -- before it, the player has nothing. After it, metals and gas flow.
+
+**Switching back to Nauvis is always available.** Ctrl+U returns to Nauvis. Vulcanus is a challenge, not a prison.
 
 ---
 
