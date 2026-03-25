@@ -40,6 +40,123 @@ for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
   end
 end
 
+-- Strip autoplace from ALL SA tiles, decoratives, and entities that are NOT
+-- in our explicit whitelist. This prevents non-Vulcanus content from bleeding
+-- into our planet terrain generation.
+--
+-- Whitelist approach: we know exactly which tiles we want on Nauvis (alien-biomes
+-- handles that) and nullius-vulcanus. Everything else from SA gets stripped.
+
+-- Tiles used by nullius-vulcanus (from prototypes/planet/vulcanus.lua).
+local keep_tiles = {
+  ["volcanic-soil-dark"] = true, ["volcanic-soil-light"] = true,
+  ["volcanic-ash-soil"] = true, ["volcanic-ash-flats"] = true,
+  ["volcanic-ash-light"] = true, ["volcanic-ash-dark"] = true,
+  ["volcanic-cracks"] = true, ["volcanic-cracks-warm"] = true,
+  ["volcanic-folds"] = true, ["volcanic-folds-flat"] = true,
+  ["lava"] = true, ["lava-hot"] = true,
+  ["volcanic-folds-warm"] = true, ["volcanic-pumice-stones"] = true,
+  ["volcanic-cracks-hot"] = true, ["volcanic-jagged-ground"] = true,
+  ["volcanic-smooth-stone"] = true, ["volcanic-smooth-stone-warm"] = true,
+  ["volcanic-ash-cracks"] = true,
+  -- Infrastructure tiles to keep.
+  ["space"] = true, ["empty-space"] = true,
+  ["space-platform-foundation"] = true, ["foundation"] = true,
+}
+
+-- Explicit list of non-Vulcanus SA planet tiles to strip autoplace from.
+local strip_tiles = {
+  -- Fulgora.
+  "fulgoran-dust", "fulgoran-dunes", "fulgoran-sand", "fulgoran-rock",
+  "fulgoran-paving", "fulgoran-walls", "fulgoran-conduit", "fulgoran-machinery",
+  "oil-ocean-shallow", "oil-ocean-deep", "oil-deep",
+  -- Gleba.
+  "artificial-yumako-soil", "overgrowth-yumako-soil",
+  "artificial-jellynut-soil", "overgrowth-jellynut-soil",
+  "natural-yumako-soil", "natural-jellynut-soil",
+  "lowland-olive-blubber", "lowland-olive-blubber-2", "lowland-olive-blubber-3",
+  "lowland-brown-blubber", "lowland-pale-green",
+  "lowland-cream-cauliflower", "lowland-cream-cauliflower-2",
+  "lowland-dead-skin", "lowland-dead-skin-2",
+  "lowland-cream-red", "lowland-red-vein", "lowland-red-vein-2",
+  "lowland-red-vein-3", "lowland-red-vein-4", "lowland-red-vein-dead",
+  "lowland-red-infection",
+  "midland-cracked-lichen", "midland-cracked-lichen-dull", "midland-cracked-lichen-dark",
+  "midland-turquoise-bark", "midland-turquoise-bark-2",
+  "midland-yellow-crust", "midland-yellow-crust-2", "midland-yellow-crust-3", "midland-yellow-crust-4",
+  "highland-dark-rock", "highland-dark-rock-2", "highland-yellow-rock",
+  "pit-rock",
+  "wetland-yumako", "wetland-jellynut", "wetland-dead-skin", "wetland-light-dead-skin",
+  "wetland-green-slime", "wetland-light-green-slime", "wetland-red-tentacle",
+  "wetland-pink-tentacle", "wetland-blue-slime", "gleba-deep-lake",
+  "wetland-grey", "wetland-green", "wetland-pink", "wetland-purple",
+  "wetland-green-puddle", "wetland-pink-puddle", "wetland-grey-puddle",
+  -- Aquilo.
+  "ammoniacal-ocean", "ammoniacal-ocean-2",
+  "snow-flat", "dust-flat", "snow-crests", "dust-crests",
+  "snow-lumpy", "dust-lumpy", "snow-patchy", "dust-patchy",
+  "ice-rough", "ice-smooth", "ice-platform", "brash-ice", "brash-ice-2",
+}
+
+for _, tname in pairs(strip_tiles) do
+  if data.raw.tile[tname] and data.raw.tile[tname].autoplace then
+    data.raw.tile[tname].autoplace = nil
+  end
+end
+
+-- Strip autoplace from ALL non-Vulcanus SA decoratives and entities.
+-- Vulcanus decoratives start with "vulcanus-", "calcite-", "sulfur-",
+-- "crater-", "pumice-", "small-volcanic", "medium-volcanic", "tiny-volcanic",
+-- "tiny-rock", "waves-".
+local keep_deco_prefixes = {
+  "vulcanus", "calcite", "sulfur", "crater", "pumice",
+  "small-volcanic", "medium-volcanic", "tiny-volcanic",
+  "tiny-rock", "waves-decal",
+}
+
+local sa_deco_prefixes = {
+  "fulgoran", "lithium", "floating-iceberg", "aqulio", "snow-drift",
+  "yellow-lettuce", "green-lettuce", "pale-lettuce",
+  "honeycomb", "split-gill", "veins", "mycelium", "coral",
+  "black-sceptre", "pink-phalanges", "pink-lichen", "red-lichen",
+  "green-cup", "brown-cup", "blood-grape", "brambles", "polycephalum",
+  "fuchsia-pita", "wispy-lichen", "barnacles", "solo-barnacle",
+  "curly-roots", "knobbly-roots", "matches-small", "white-carpet",
+  "green-carpet", "green-hairy", "nerve-roots", "yellow-coral",
+  "grey-cracked", "red-desert-bush", "white-desert-bush",
+}
+
+for name, deco in pairs(data.raw["optimized-decorative"] or {}) do
+  if deco.autoplace then
+    for _, prefix in pairs(sa_deco_prefixes) do
+      if string.sub(name, 1, #prefix) == prefix then
+        deco.autoplace = nil
+        break
+      end
+    end
+  end
+end
+
+-- Strip autoplace from non-Vulcanus SA entities.
+local strip_entity_names = {
+  "scrap", "fulgurite", "big-fulgora-rock",
+  "fulgoran-ruin-vault", "fulgoran-ruin-attractor",
+  "fulgoran-ruin-colossal", "fulgoran-ruin-huge", "fulgoran-ruin-big",
+  "fulgoran-ruin-stonehenge", "fulgoran-ruin-medium", "fulgoran-ruin-small",
+  "iron-stromatolite", "copper-stromatolite",
+  "lithium-brine", "fluorine-vent",
+  "lithium-iceberg-huge", "lithium-iceberg-big",
+  "tungsten-ore", "coal",
+  "ashland-lichen-tree", "ashland-lichen-tree-flaming",
+}
+for _, ename in pairs(strip_entity_names) do
+  for _, type_table in pairs(data.raw) do
+    if type_table[ename] and type_table[ename].autoplace then
+      type_table[ename].autoplace = nil
+    end
+  end
+end
+
 -- Neuter quality and recycling. SA forces quality mod to load, but
 -- Nullius* does not use quality. Disable at prototype level.
 

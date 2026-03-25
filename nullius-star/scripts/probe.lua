@@ -53,11 +53,14 @@ end
 -- Called when probe reactivation tech is completed.
 function probe.on_probe_researched(tech_name, force)
   if tech_name == "nullius-probe-vulcanus" then
-    -- Create Vulcanus surface if it doesn't exist.
-    local surface = game.surfaces["nullius-vulcanus"]
-    if surface == nil then
-      surface = game.create_surface("nullius-vulcanus", {})
+    -- Create Vulcanus surface through the planet system.
+    -- This properly links the surface to the planet prototype and uses
+    -- its map_gen_settings, surface_properties, etc.
+    local planet = game.planets["nullius-vulcanus"]
+    if planet.surface == nil then
+      planet.create_surface()
     end
+    local surface = planet.surface
 
     -- Find a good landing position.
     local pos = {x = 0, y = 0}
@@ -65,8 +68,9 @@ function probe.on_probe_researched(tech_name, force)
     -- Spawn probe wreckage with supplies.
     vulcanus_landing_site(surface, pos, force)
 
-    -- Spawn a dormant android body.
-    local android = spawn_android(surface, pos, force)
+    -- Spawn android offset from wreck so player isn't stuck inside it.
+    local android_pos = {x = pos.x + 5, y = pos.y + 5}
+    local android = spawn_android(surface, android_pos, force)
     if android and android.valid then
       -- Store reference so players can switch to it.
       if storage.nullius_probe_androids == nil then
@@ -113,6 +117,12 @@ function probe.on_probe_researched(tech_name, force)
         -- Tag the android on the map.
         add_chart_tag(player, android)
       end
+
+      -- Unlock the planet for this force so it shows in the planets list.
+      force.unlock_space_location("nullius-vulcanus")
+
+      -- Chart the area around the landing site.
+      force.chart(surface, {{pos.x - 64, pos.y - 64}, {pos.x + 64, pos.y + 64}})
 
       -- Notify all players.
       for _, player in pairs(force.players) do

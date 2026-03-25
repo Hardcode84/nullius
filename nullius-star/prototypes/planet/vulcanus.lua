@@ -36,6 +36,10 @@ local function nullius_vulcanus_map_gen()
       cliff_elevation_0 = 70
     },
     -- No territory_settings (no demolishers).
+    no_enemies_mode = true,
+    -- Only use autoplace controls we explicitly list. Without this,
+    -- water, trees, and other Nauvis content bleeds into the planet.
+    default_enable_all_autoplace_controls = false,
     autoplace_controls =
     {
       ["calcite"] = {},
@@ -46,6 +50,7 @@ local function nullius_vulcanus_map_gen()
     {
       ["tile"] =
       {
+        treat_missing_as_default = false,
         settings =
         {
           ["volcanic-soil-dark"] = {},
@@ -71,6 +76,7 @@ local function nullius_vulcanus_map_gen()
       },
       ["decorative"] =
       {
+        treat_missing_as_default = false,
         settings =
         {
           -- Nauvis decoratives removed (no autoplace on Vulcanus).
@@ -101,6 +107,7 @@ local function nullius_vulcanus_map_gen()
       },
       ["entity"] =
       {
+        treat_missing_as_default = false,
         settings =
         {
           -- No coal, no tungsten-ore.
@@ -123,12 +130,6 @@ end
 
 data:extend({
   {
-    type = "item-subgroup",
-    name = "nullius-planets",
-    group = "other",
-    order = "z",
-  },
-  {
     type = "planet",
     name = "nullius-vulcanus",
     icon = "__space-age__/graphics/icons/vulcanus.png",
@@ -139,7 +140,7 @@ data:extend({
     orientation = 0.1,
     magnitude = 1.5,
     order = "b[nullius-vulcanus]",
-    subgroup = "nullius-planets",
+    subgroup = "planets",
     map_gen_settings = nullius_vulcanus_map_gen(),
     pollutant_type = nil,
     solar_power_in_space = 600,
