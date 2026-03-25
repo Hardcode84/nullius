@@ -1,5 +1,5 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
 
 local sounds = require("__base__/prototypes/entity/sounds")

@@ -1,6 +1,6 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTICONPATH = "__nullius__/graphics/icons/entity/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local TURBINEP = ENTITYPATH .. "windturbine/"
 
 -- Nullius wind turbine system is originally based on the windturbines mod by OwnlyMe

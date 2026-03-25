@@ -162,7 +162,7 @@ data:extend({
         north = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               frame_count = 1,
               width = 142,
@@ -185,7 +185,7 @@ data:extend({
         east = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -210,7 +210,7 @@ data:extend({
         south = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -235,7 +235,7 @@ data:extend({
         west = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -441,7 +441,7 @@ data:extend({
           north_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-chimney.png",
                 priority = "extra-high",
                 frame_count = 1,
                 width = 142,
@@ -454,7 +454,7 @@ data:extend({
           east_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,
@@ -468,7 +468,7 @@ data:extend({
           south_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,
@@ -482,7 +482,7 @@ data:extend({
           west_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,
@@ -501,7 +501,7 @@ data:extend({
         north = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               frame_count = 1,
               width = 142,
@@ -524,7 +524,7 @@ data:extend({
         east = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -549,7 +549,7 @@ data:extend({
         south = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -574,7 +574,7 @@ data:extend({
         west = {
           layers = {
             {
-              filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped.png",
+              filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped.png",
               priority = "extra-high",
               width = 142,
               height = 429,
@@ -621,7 +621,7 @@ data:extend({
           north_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
                 priority = "extra-high",
                 frame_count = 1,
                 width = 142,
@@ -634,7 +634,7 @@ data:extend({
           east_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,
@@ -648,7 +648,7 @@ data:extend({
           south_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,
@@ -662,7 +662,7 @@ data:extend({
           west_animation = {
             layers = {
               {
-                filename = "__nullius__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
+                filename = "__nullius-star__/graphics/entity/chimney/flare-stack-flipped-chimney.png",
                 priority = "extra-high",
                 width = 142,
                 height = 429,

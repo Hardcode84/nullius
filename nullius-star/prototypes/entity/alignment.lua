@@ -67,7 +67,7 @@ data:extend({
     },
     light = {intensity = 0.4, size = 3},
     animation = {
-	  filename = "__nullius__/graphics/icons/card1.png",
+	  filename = "__nullius-star__/graphics/icons/card1.png",
       width = 128,
 	  height = 128,
 	  scale = 0.4,
@@ -99,7 +99,7 @@ data:extend({
     },
     light = {intensity = 0.4, size = 3},
     animation = {
-	  filename = "__nullius__/graphics/icons/card2.png",
+	  filename = "__nullius-star__/graphics/icons/card2.png",
       width = 128,
 	  height = 128,
 	  scale = 0.4,
@@ -161,13 +161,13 @@ data:extend({
     variants = {
       main = {
 	    {
-          picture = "__nullius__/graphics/entity/landfill/space.png",
+          picture = "__nullius-star__/graphics/entity/landfill/space.png",
           count = 1,
           size = 16,
 		  scale = 0.5
         },
         {
-          picture = "__nullius__/graphics/entity/landfill/space.png",
+          picture = "__nullius-star__/graphics/entity/landfill/space.png",
           count = 1,
           size = 1,
 		  scale = 0.5

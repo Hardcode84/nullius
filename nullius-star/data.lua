@@ -2,6 +2,8 @@ require("legacyAngels")
 require("legacyValves")
 pipe_extents = {64, 144, 320, 672}
 
+-- TODO: Planet definitions will go in prototypes/planet/*.lua
+
 require("prototypes.reskin")
 require("prototypes.category")
 require("prototypes.item.fluid")

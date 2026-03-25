@@ -7,7 +7,6 @@
   "description": "Space Age expansion for Nullius. Alpha version. Work in progress.",
   "dependencies": [
     "base >= 2.0.73",
-    "space-age >= 2.0.73",
     "elevated-rails >= 2.0",
     "alien-biomes >= 0.7.4",
     "angelsrefininggraphics >= 2.0.0",
@@ -53,6 +52,7 @@
 	"(?) stack-inserters >= 1.0.1",
 
 	"! nullius",
+	"! space-age",
     "! aai-industry",
 	"! angelsbioprocessing",
 	"! angelsinfiniteores",

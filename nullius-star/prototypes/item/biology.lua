@@ -1,6 +1,6 @@
-local ICONPATH = "__nullius__/graphics/icons/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
 local FLUIDPATH = ICONPATH .. "fluid/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 data:extend({
   {
@@ -3415,7 +3415,7 @@ data:extend({
     localised_name = {"recipe-name.nullius-particle-board"},
     icons = {
       {
-        icon = "__nullius__/graphics/icons/wood-panel.png",
+        icon = "__nullius-star__/graphics/icons/wood-panel.png",
         icon_size = 128
       },
       {
@@ -3458,7 +3458,7 @@ data:extend({
         icon_size = 64
       },
       {
-        icon = "__nullius__/graphics/icons/wood-panel.png",
+        icon = "__nullius-star__/graphics/icons/wood-panel.png",
         icon_size = 128,
 		    scale = 0.23
       },
@@ -5227,7 +5227,7 @@ data:extend({
     localised_name = {"recipe-name.nullius-wood-paneling"},
     icons = {
       {
-        icon = "__nullius__/graphics/icons/wood-panel.png",
+        icon = "__nullius-star__/graphics/icons/wood-panel.png",
         icon_size = 128
       }
     },
@@ -5260,7 +5260,7 @@ data:extend({
         icon_size = 64
       },
       {
-        icon = "__nullius__/graphics/icons/wood-panel.png",
+        icon = "__nullius-star__/graphics/icons/wood-panel.png",
         icon_size = 128,
 		scale = 0.225
       }

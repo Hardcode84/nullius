@@ -1,6 +1,6 @@
 local BASEENTITY = "__base__/graphics/entity/"
-local ICONPATH = "__nullius__/graphics/icons/"
-local EQUIPPATH = "__nullius__/graphics/equipment/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local EQUIPPATH = "__nullius-star__/graphics/equipment/"
 
 data:extend({
   {

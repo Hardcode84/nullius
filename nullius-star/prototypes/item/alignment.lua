@@ -7,7 +7,7 @@ data:extend({
     type = "capsule",
     name = "nullius-align-identification-card",
     icons = {{
-      icon = "__nullius__/graphics/icons/card1.png",
+      icon = "__nullius-star__/graphics/icons/card1.png",
       icon_size = 128
     }},
     subgroup = "alignment",
@@ -54,7 +54,7 @@ data:extend({
     type = "capsule",
     name = "nullius-align-invitation-card",
     icons = {{
-      icon = "__nullius__/graphics/icons/card2.png",
+      icon = "__nullius-star__/graphics/icons/card2.png",
       icon_size = 128
     }},
     subgroup = "alignment",
@@ -213,7 +213,7 @@ data:extend({
     type = "item",
     name = "nullius-align-concordance-transmitter",
     icons = {{
-      icon = "__nullius__/graphics/icons/transmitter.png",
+      icon = "__nullius-star__/graphics/icons/transmitter.png",
       icon_size = 64
     }},
     subgroup = "alignment",
@@ -225,7 +225,7 @@ data:extend({
     type = "item",
     name = "nullius-align-concordance-satellite",
     icons = {{
-      icon = "__nullius__/graphics/icons/satellite.png",
+      icon = "__nullius-star__/graphics/icons/satellite.png",
       icon_size = 64
     }},
     subgroup = "alignment",
@@ -248,7 +248,7 @@ data:extend({
         icon_size = 64,
       },
       {
-        icon = "__nullius__/graphics/icons/broken.png",
+        icon = "__nullius-star__/graphics/icons/broken.png",
         icon_size = 64
       }
     },

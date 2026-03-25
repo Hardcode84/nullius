@@ -1,4 +1,4 @@
-local ICONPATH = "__nullius__/graphics/icons/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
 
 data:extend{
   {

@@ -1,4 +1,4 @@
-local ICONPATH = "__nullius__/graphics/icons/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
 local BASEICON = "__base__/graphics/icons/"
 
 local function checkmark(scale)
@@ -293,7 +293,7 @@ data:extend({
         
       },
 	  {
-	    icon = "__nullius__/graphics/technology/tech_windturbine1.png",
+	    icon = "__nullius-star__/graphics/technology/tech_windturbine1.png",
 	    icon_size = 254,
 		scale = 0.5
       }
@@ -1057,7 +1057,7 @@ data:extend({
         
   --     },
 	--   {
-  --       icon = "__nullius__/graphics/technology/chiral.png",
+  --       icon = "__nullius-star__/graphics/technology/chiral.png",
 	--     icon_size = 254,
 	-- 	scale = 0.25
   --     }
@@ -1757,7 +1757,7 @@ data:extend({
         
       },
       {
-        icon = "__nullius__/graphics/technology/logistics-4.png",
+        icon = "__nullius-star__/graphics/technology/logistics-4.png",
 	    icon_size = 254,
 		scale = 0.5
       }
@@ -1940,7 +1940,7 @@ data:extend({
     order = "nullius-yf",
     icons = {
 	  {
-        icon = "__nullius__/graphics/icons/entity/thermaltank3.png",
+        icon = "__nullius-star__/graphics/icons/entity/thermaltank3.png",
 	    icon_size = 64
 	  },
           checkmark(2)

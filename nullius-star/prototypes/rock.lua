@@ -1,5 +1,5 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 -- stolen from https://stackoverflow.com/questions/1426954/split-string-in-lua
 local function split(inputstr, sep)
@@ -79,12 +79,20 @@ for _,rock in pairs(data.raw["simple-entity"]) do
         local amount = 0
         local total = 0
         for _,minres in pairs(rock.minable.results) do
-          minres.amount_min = minres.amount_min * 0.25
-          minres.amount_max = minres.amount_max * 0.25
-          total = total + minres.amount_max + minres.amount_min
+          if minres.amount_min then
+            minres.amount_min = minres.amount_min * 0.25
+          end
+          if minres.amount_max then
+            minres.amount_max = minres.amount_max * 0.25
+          end
+          if minres.amount and not minres.amount_min then
+            -- SA uses amount instead of amount_min/amount_max.
+            minres.amount = math.ceil(minres.amount * 0.25)
+          end
+          total = total + (minres.amount_max or minres.amount or 0) + (minres.amount_min or 0)
           if minres.name == "stone" then
             minres.name = primary
-            amount = minres.amount_min
+            amount = minres.amount_min or minres.amount or 0
           elseif minres.name == "coal" then
             minres.name = secondary
             foundcoal = true
@@ -95,8 +103,9 @@ for _,rock in pairs(data.raw["simple-entity"]) do
         end
         rock.loot = {}
         for _,minres in pairs(rock.minable.results) do
-          table.insert(rock.loot, {item=minres.name, count_min=minres.amount_min*0.5,
-          count_max=(minres.amount_max*0.8)+0.2})
+          local loot_min = (minres.amount_min or minres.amount or 0) * 0.5
+          local loot_max = ((minres.amount_max or minres.amount or 0) * 0.8) + 0.2
+          table.insert(rock.loot, {item=minres.name, count_min=loot_min, count_max=loot_max})
         end
         if (total > 4) then
           table.insert(rock.loot, {item=tertiary, count_min=0, count_max=(total / 5)})

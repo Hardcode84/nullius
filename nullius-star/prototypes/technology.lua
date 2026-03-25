@@ -1,8 +1,8 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTICONPATH = "__nullius__/graphics/icons/entity/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
-local TECHPATH = "__nullius__/graphics/technology/"
-local EQUIPPATH = "__nullius__/graphics/equipment/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
+local TECHPATH = "__nullius-star__/graphics/technology/"
+local EQUIPPATH = "__nullius-star__/graphics/equipment/"
 
 data:extend({
   {
@@ -3564,7 +3564,7 @@ data:extend({
     type = "technology",
     name = "nullius-thermal-storage-1",
     order = "nullius-dl",
-    icon = "__nullius__/graphics/icons/entity/thermaltank1.png",
+    icon = "__nullius-star__/graphics/icons/entity/thermaltank1.png",
 	icon_size = 64,
     effects = {
       {
@@ -7548,7 +7548,7 @@ data:extend({
     type = "technology",
     name = "nullius-thermal-storage-2",
     order = "nullius-en",
-    icon = "__nullius__/graphics/icons/entity/thermaltank2.png",
+    icon = "__nullius-star__/graphics/icons/entity/thermaltank2.png",
 	icon_size = 64,
     effects = {
       {
@@ -11121,7 +11121,7 @@ data:extend({
     type = "technology",
     name = "nullius-thermal-storage-3",
     order = "nullius-fl",
-    icon = "__nullius__/graphics/icons/entity/thermaltank3.png",
+    icon = "__nullius-star__/graphics/icons/entity/thermaltank3.png",
 	icon_size = 64,
     effects = {
       {
@@ -12178,7 +12178,7 @@ data:extend({
     type = "technology",
     name = "nullius-nuclear-power-2",
     order = "nullius-fs",
-    icon = "__nullius__/graphics/icons/aneutronic-cell.png",
+    icon = "__nullius-star__/graphics/icons/aneutronic-cell.png",
     icon_size = 64,
     effects = {
       {
@@ -13529,7 +13529,7 @@ data:extend({
     type = "technology",
     name = "nullius-personal-storage-3",
     order = "nullius-gi",
-	icon = "__nullius__/graphics/equipment/large-pod-3.png",
+	icon = "__nullius-star__/graphics/equipment/large-pod-3.png",
     icon_size = 256,
     effects = {
       {

@@ -1,6 +1,6 @@
-local ICONPATH = "__nullius__/graphics/icons/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
 local FLUIDPATH = ICONPATH .. "fluid/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 element_tint = {
   ["carbon"] = { 32, 32, 32 },

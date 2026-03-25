@@ -1,4 +1,4 @@
-local ACHIEVEMENTPATH = "__nullius__/graphics/achievement/"
+local ACHIEVEMENTPATH = "__nullius-star__/graphics/achievement/"
 
 data:extend({
   {

@@ -1,5 +1,5 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 if mods["reskins-bobs"] then
 data.raw["pump"]["nullius-togglable-pump-3"].icons = data.raw["pump"]["pump"].icons

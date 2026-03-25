@@ -1,5 +1,5 @@
 local invisible = {
-  filename = "__nullius__/graphics/icons/blank.png",
+  filename = "__nullius-star__/graphics/icons/blank.png",
   width = 32,
   height = 32,
   --frame_count = 1,
@@ -67,7 +67,7 @@ local turbine_graphics = {
 
 local function turbine_frame(vertical, overlay, tint)
   local ret = util.table.deepcopy(turbine_graphics[vertical])
-  ret.layers[2].filename = "__nullius__/graphics/entity/turbine/" ..
+  ret.layers[2].filename = "__nullius-star__/graphics/entity/turbine/" ..
       overlay .. "-turbine-" .. ((vertical and "v") or "h") .. ".png"
   ret.layers[1].tint = tint
   ret.layers[2].tint = tint
@@ -131,7 +131,7 @@ local function finish_furnace(furnace, generator, overlay,
 
   tint[4] = 1
   furnace.icons = {{
-    icon = "__nullius__/graphics/icons/entity/turbine-" .. overlay .. ".png",
+    icon = "__nullius-star__/graphics/icons/entity/turbine-" .. overlay .. ".png",
     icon_size = 64, tint = tint
   }}
   generator.icons = furnace.icons

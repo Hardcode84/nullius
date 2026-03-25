@@ -1,5 +1,5 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 local tiercolors = {
   ["grey"] = "707070",
@@ -43,7 +43,7 @@ function add_recipe_gear_icon(icons)
   icons = table.deepcopy(icons)
   table.insert(icons,{
       --icon = "__base__/graphics/icons/iron-gear-wheel.png",
-      icon = "__nullius__/graphics/icons/factorio-logo-gear.png",
+      icon = "__nullius-star__/graphics/icons/factorio-logo-gear.png",
       icon_size = 64,
       scale = 0.25,
       shift = {-10, 10}

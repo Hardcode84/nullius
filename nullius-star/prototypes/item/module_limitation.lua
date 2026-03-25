@@ -1,5 +1,5 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 nullius_non_productivity_categories = {
   ["nullius-electrolysis"] = true,

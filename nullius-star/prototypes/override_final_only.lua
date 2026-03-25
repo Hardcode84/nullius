@@ -1,4 +1,4 @@
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
 
 

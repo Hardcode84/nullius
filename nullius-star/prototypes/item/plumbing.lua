@@ -1,6 +1,6 @@
-local ICONPATH = "__nullius__/graphics/icons/"
-local ENTICONPATH = "__nullius__/graphics/icons/entity/"
-local ENTITYPATH = "__nullius__/graphics/entity/"
+local ICONPATH = "__nullius-star__/graphics/icons/"
+local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 data:extend({
   {
@@ -2665,7 +2665,7 @@ data:extend({
 	localised_name = {"recipe-name.nullius-copper",
 	    {"entity-name.nullius-heat-pipe-2"}},
     icons = {{
-      icon = "__nullius__/graphics/icons/copper-heat-pipe.png",
+      icon = "__nullius-star__/graphics/icons/copper-heat-pipe.png",
 	  icon_size = 64
     }},
 	order = "nullius-bcc",
@@ -2692,11 +2692,11 @@ data:extend({
 	    {"item-name.nullius-box", {"entity-name.nullius-heat-pipe-2"}}},
     icons = {
       {
-	    icon = "__nullius__/graphics/icons/crate.png",
+	    icon = "__nullius-star__/graphics/icons/crate.png",
         icon_size = 64
 	  },
       {
-		icon = "__nullius__/graphics/icons/copper-heat-pipe.png",
+		icon = "__nullius-star__/graphics/icons/copper-heat-pipe.png",
 		icon_size = 64,
 		scale = 0.45
       }
