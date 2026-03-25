@@ -112,12 +112,6 @@ for _, entry in pairs(pneumatic_machines) do
   end
 end
 
--- Store the mapping globally so scripts can access it.
--- We use a mod data prototype to pass data-stage info to control-stage.
-data:extend({
-  {
-    type = "mod-data",
-    name = "nullius-pneumatic-pairs",
-    data = pneumatic_pairs,
-  }
-})
+-- NOTE: The pneumatic_pairs mapping is duplicated in scripts/turbine.lua
+-- because mod-data prototypes are not accessible at runtime.
+-- Keep both lists in sync when adding new pneumatic machines.

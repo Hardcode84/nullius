@@ -337,22 +337,27 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
 end
 
 -- Pneumatic toggle: swap between electric and pneumatic variants on Vulcanus.
-local pneumatic_pairs = nil
-
-local function get_pneumatic_pairs()
-  if pneumatic_pairs == nil then
-    local mod_data = prototypes["mod-data"]["nullius-pneumatic-pairs"]
-    if mod_data then
-      pneumatic_pairs = mod_data.data
-    else
-      pneumatic_pairs = {}
-    end
-  end
-  return pneumatic_pairs
+-- Bidirectional mapping: original <-> pneumatic name.
+local pneumatic_pairs = {}
+local function init_pneumatic_pair(original, pneumatic)
+  pneumatic_pairs[original] = pneumatic
+  pneumatic_pairs[pneumatic] = original
 end
 
+-- Must match the entities generated in prototypes/pneumatic.lua.
+init_pneumatic_pair("nullius-small-furnace-1", "nullius-small-furnace-1-pneumatic")
+init_pneumatic_pair("nullius-small-furnace-2", "nullius-small-furnace-2-pneumatic")
+init_pneumatic_pair("nullius-small-furnace-3", "nullius-small-furnace-3-pneumatic")
+init_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-pneumatic")
+init_pneumatic_pair("nullius-small-assembler-2", "nullius-small-assembler-2-pneumatic")
+init_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pneumatic")
+init_pneumatic_pair("nullius-medium-assembler-2", "nullius-medium-assembler-2-pneumatic")
+init_pneumatic_pair("inserter", "inserter-pneumatic")
+init_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
+init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
+
 local function toggle_pneumatic(entity, entityname, force)
-  local pairs_table = get_pneumatic_pairs()
+  local pairs_table = pneumatic_pairs
   local newname = pairs_table[entityname]
   if newname == nil then return false end
 
