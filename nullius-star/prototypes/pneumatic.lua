@@ -70,17 +70,29 @@ for _, entry in pairs(pneumatic_machines) do
     end
 
     -- Replace electric energy source with fluid energy source.
-    local energy_usage_watts = pneumatic.energy_usage or "75kW"
+    -- Two pass-through connections so gas can flow through the machine.
+    -- Pipe positions must be inside the collision box.
+    -- For pass-through, place connections on opposite edges.
+    local cb = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
+    -- Use floor to stay inside the box (e.g., 0.7 -> 0, 1.2 -> 1).
+    local half_h = math.floor(math.abs(cb[1][2]))
+    local half_w = math.floor(math.abs(cb[1][1]))
+
+    -- East/west pass-through for all machines. Avoids collision with
+    -- recipe fluid pipes (which typically use north/south).
+    local pipe_connections = {
+      { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, 0} },
+      { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, 0} },
+    }
+
     pneumatic.energy_source = {
       type = "fluid",
       burns_fluid = true,
       scale_fluid_usage = true,
       fluid_usage_per_tick = 1,
       fluid_box = {
-        volume = 100,
-        pipe_connections = {
-          { flow_direction = "input-output", direction = defines.direction.north, position = {0, 0} },
-        },
+        volume = 200,
+        pipe_connections = pipe_connections,
       },
       smoke = {{
         name = "smoke",
