@@ -23,6 +23,14 @@ end
 function update_engine(e, threshold, ratio, limit, speed)
   local storage = e.electric.electric_buffer_size - e.electric.energy
   local temp = e.heat.temperature
+
+  -- On Vulcanus, Stirling engines produce power from ambient volcanic heat
+  -- without needing a connected heat source (geothermal plant).
+  local surface = e.electric.surface
+  if surface and surface.planet and surface.planet.name == "nullius-vulcanus" then
+    temp = math.max(temp, threshold + 20)
+  end
+
   local thermal = (temp - threshold) / 2
   if ((thermal > 0) and (thermal < 8)) then
     if (thermal < 1) then
