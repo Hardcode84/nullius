@@ -53,8 +53,9 @@ local function vulcanus_landing_site(surface, pos, force)
     -- Phase E: Science.
     wreck.insert({name = "nullius-lab-1", count = 1})
 
-    -- Misc: belts for cooling conveyors.
+    -- Misc: belts and splitters for cooling conveyors.
     wreck.insert({name = "transport-belt", count = 50})
+    wreck.insert({name = "splitter", count = 4})
   end
 end
 
