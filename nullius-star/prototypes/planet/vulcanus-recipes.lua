@@ -54,7 +54,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-molten-iron-bloom", amount = 4},
       {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 30},
-      {type = "item", name = "nullius-mineral-dust", amount = 10},
+      {type = "item", name = "stone", amount = 10},
     },
     main_product = "nullius-molten-iron-bloom",
     allow_productivity = true,
@@ -79,7 +79,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-molten-aluminum-bloom", amount = 3},
       {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 25},
-      {type = "item", name = "nullius-mineral-dust", amount = 8},
+      {type = "item", name = "stone", amount = 8},
     },
     main_product = "nullius-molten-aluminum-bloom",
     allow_productivity = true,
@@ -128,7 +128,7 @@ data:extend({
     },
     results = {
       {type = "item", name = "nullius-silica", amount = 8},
-      {type = "item", name = "nullius-mineral-dust", amount = 5},
+      {type = "item", name = "stone", amount = 5},
       {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 15},
       {type = "fluid", name = "nullius-sulfur-dioxide", amount = 10},
     },
