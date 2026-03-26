@@ -43,7 +43,8 @@ function entity_added(entity, handbuilt)
   elseif (string.sub(suffix, 1, 16) == "seawater-intake-") then
     local surface = entity.surface
     if surface and surface.planet and surface.planet.name == "nullius-vulcanus" then
-      replace_fluid_entity(entity, "nullius-lava-intake-1", entity.force, nil)
+      local tier = string.sub(suffix, 17)
+      replace_fluid_entity(entity, "nullius-lava-intake-" .. tier, entity.force, nil)
     end
   elseif (entity.type == "beacon") then
     build_beacon(entity)
