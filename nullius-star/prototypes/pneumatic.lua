@@ -47,6 +47,15 @@ register_pneumatic("assembling-machine", "nullius-medium-assembler-2")
 register_pneumatic("inserter", "inserter")
 register_pneumatic("inserter", "bob-turbo-inserter")
 
+-- Register chemistry buildings.
+for i = 1, 3 do
+  register_pneumatic("assembling-machine", "nullius-hydro-plant-" .. i)
+  register_pneumatic("assembling-machine", "nullius-distillery-" .. i)
+  register_pneumatic("assembling-machine", "nullius-chemical-plant-" .. i)
+  register_pneumatic("assembling-machine", "nullius-surge-electrolyzer-" .. i)
+  register_pneumatic("assembling-machine", "nullius-priority-electrolyzer-" .. i)
+end
+
 -- Register labs.
 register_pneumatic("lab", "nullius-lab-1")
 
@@ -78,12 +87,35 @@ for _, entry in pairs(pneumatic_machines) do
     local half_h = math.floor(math.abs(cb[1][2]))
     local half_w = math.floor(math.abs(cb[1][1]))
 
-    -- East/west pass-through for all machines. Avoids collision with
-    -- recipe fluid pipes (which typically use north/south).
-    local pipe_connections = {
-      { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, 0} },
-      { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, 0} },
-    }
+    -- Check if entity has existing east/west fluid connections.
+    local has_ew_fluid = false
+    for _, fb in pairs(pneumatic.fluid_boxes or {}) do
+      if type(fb) == "table" and fb.pipe_connections then
+        for _, pc in pairs(fb.pipe_connections) do
+          local dir = pc.direction
+          if dir == defines.direction.east or dir == defines.direction.west then
+            has_ew_fluid = true
+            break
+          end
+        end
+      end
+      if has_ew_fluid then break end
+    end
+
+    local pipe_connections
+    if has_ew_fluid then
+      -- Entity uses east/west for recipe fluids, use north/south for energy.
+      pipe_connections = {
+        { flow_direction = "input-output", direction = defines.direction.north, position = {0, -half_h} },
+        { flow_direction = "input-output", direction = defines.direction.south, position = {0, half_h} },
+      }
+    else
+      -- Default: east/west pass-through.
+      pipe_connections = {
+        { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, 0} },
+        { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, 0} },
+      }
+    end
 
     pneumatic.energy_source = {
       type = "fluid",

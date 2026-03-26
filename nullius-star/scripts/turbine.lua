@@ -354,6 +354,13 @@ init_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pn
 init_pneumatic_pair("nullius-medium-assembler-2", "nullius-medium-assembler-2-pneumatic")
 init_pneumatic_pair("inserter", "inserter-pneumatic")
 init_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
+for i = 1, 3 do
+  init_pneumatic_pair("nullius-hydro-plant-" .. i, "nullius-hydro-plant-" .. i .. "-pneumatic")
+  init_pneumatic_pair("nullius-distillery-" .. i, "nullius-distillery-" .. i .. "-pneumatic")
+  init_pneumatic_pair("nullius-chemical-plant-" .. i, "nullius-chemical-plant-" .. i .. "-pneumatic")
+  init_pneumatic_pair("nullius-surge-electrolyzer-" .. i, "nullius-surge-electrolyzer-" .. i .. "-pneumatic")
+  init_pneumatic_pair("nullius-priority-electrolyzer-" .. i, "nullius-priority-electrolyzer-" .. i .. "-pneumatic")
+end
 init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
 
 local function toggle_pneumatic(entity, entityname, force)
