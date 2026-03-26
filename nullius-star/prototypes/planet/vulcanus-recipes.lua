@@ -137,3 +137,112 @@ data:extend({
     surface_conditions = {{property = "gravity", min = 39}},
   },
 })
+
+-- Vulcanus alternative recipes: replace organic materials (plastic, rubber)
+-- with silicon/silica-based substitutes.
+
+data:extend({
+  -- Silicon insulation item (replaces rubber for insulated wire).
+  {
+    type = "item",
+    name = "nullius-silicon-insulation",
+    localised_name = {"item-name.nullius-silicon-insulation"},
+    icons = {{
+      icon = "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-2.png",
+      icon_size = 64,
+      tint = {200, 200, 220},
+    }},
+    subgroup = "silicon-product",
+    order = "nullius-vc",
+    stack_size = 100,
+  },
+
+  -- Silicon insulation recipe: silica + aluminum sheet.
+  {
+    type = "recipe",
+    name = "nullius-silicon-insulation",
+    localised_name = {"recipe-name.nullius-silicon-insulation"},
+    enabled = true,
+    category = "dry-smelting",
+    subgroup = "silicon-product",
+    order = "nullius-vc",
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-silica", amount = 3},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Insulated wire alt: aluminum wire + silicon insulation (replaces rubber).
+  {
+    type = "recipe",
+    name = "nullius-insulated-wire-vulcanus",
+    localised_name = {"recipe-name.nullius-insulated-wire-vulcanus"},
+    enabled = true,
+    category = "small-crafting",
+    order = "nullius-vb",
+    always_show_made_in = true,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-aluminum-wire", amount = 3},
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    },
+    results = {
+      {type = "item", name = "copper-cable", amount = 4},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Motor alt: iron wire + plate + silica + rod (replaces plastic).
+  {
+    type = "recipe",
+    name = "nullius-motor-1-vulcanus",
+    localised_name = {"recipe-name.nullius-motor-vulcanus"},
+    enabled = true,
+    category = "medium-crafting",
+    subgroup = "mechanical-intermediate",
+    order = "nullius-vb",
+    always_show_made_in = true,
+    energy_required = 8,
+    ingredients = {
+      {type = "item", name = "nullius-iron-wire", amount = 2},
+      {type = "item", name = "nullius-iron-plate", amount = 1},
+      {type = "item", name = "nullius-silica", amount = 2},
+      {type = "item", name = "nullius-iron-rod", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-motor-1", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Capacitor alt: aluminum sheet + silica + alumina + graphite (replaces plastic).
+  {
+    type = "recipe",
+    name = "nullius-capacitor-vulcanus",
+    localised_name = {"recipe-name.nullius-capacitor-vulcanus"},
+    enabled = true,
+    category = "machine-casting",
+    subgroup = "battery",
+    order = "nullius-vc",
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+      {type = "item", name = "nullius-silica", amount = 4},
+      {type = "item", name = "nullius-alumina", amount = 1},
+      {type = "item", name = "nullius-graphite", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-capacitor", amount = 2},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
