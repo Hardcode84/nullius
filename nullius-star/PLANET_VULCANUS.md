@@ -702,7 +702,7 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 |---|---|---|---|
 | Stirling engine (tier 1) | 1 | A | ~500kW from ambient heat. Only electricity source. |
 | Small electric pole | 4 | A | Connect Stirling to pump. |
-| Pump | 1 | A | Electric. Place on lava shore. |
+| Seawater intake | 2 | A | Auto-swaps to lava intake on Vulcanus. Place on lava shore. |
 | Small furnace | 2 | B | One as electric bridge, then toggle to pneumatic. |
 | Pipe | 20 | B | Lava and gas piping. |
 | Small assembler | 1 | C | For crafting components. Toggle to pneumatic. |
@@ -723,7 +723,7 @@ The only time electricity is used on Vulcanus.
 1. Mine probe wreck --> collect starting items.
 2. Place Stirling engine (produces ~500kW from ambient heat, no heat pipe needed).
 3. Place electric poles to connect Stirling to lava shore.
-4. Place pump on lava lake shore --> lava fluid flows.
+4. Place seawater intake on lava lake shore --> auto-swaps to lava intake, lava flows.
 5. Pipe lava to where the first gas-powered processor will go.
 ```
 

@@ -33,7 +33,7 @@ local function vulcanus_landing_site(surface, pos, force)
     -- Phase A: Electrical bootstrap (get lava flowing).
     wreck.insert({name = "nullius-stirling-engine-1", count = 1})
     wreck.insert({name = "small-electric-pole", count = 4})
-    wreck.insert({name = "nullius-pump-1", count = 1})
+    wreck.insert({name = "nullius-seawater-intake-1", count = 2})
 
     -- Phase B: First gas loop (bridge furnace + piping).
     wreck.insert({name = "nullius-small-furnace-1", count = 2})

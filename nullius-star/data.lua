@@ -4,6 +4,7 @@ pipe_extents = {64, 144, 320, 672}
 
 -- Planet definitions.
 require("prototypes.planet.vulcanus")
+-- vulcanus-entities loaded after plumbing (needs seawater-intake-1 as template).
 
 require("prototypes.reskin")
 require("prototypes.category")
@@ -28,6 +29,7 @@ require("prototypes.entity.furnace")
 require("prototypes.entity.assembler")
 require("prototypes.entity.miner")
 require("prototypes.entity.plumbing")
+require("prototypes.planet.vulcanus-entities")
 require("prototypes.entity.chemistry")
 require("prototypes.entity.vent")
 require("prototypes.entity.energy")

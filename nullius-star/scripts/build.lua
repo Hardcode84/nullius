@@ -40,6 +40,11 @@ function entity_added(entity, handbuilt)
     build_thermal_tank(entity, (string.byte(entity.name, 28) - 48))
   elseif (suffix == "align-concordance-transmitte") then
     build_transmitter(entity)
+  elseif (string.sub(suffix, 1, 16) == "seawater-intake-") then
+    local surface = entity.surface
+    if surface and surface.planet and surface.planet.name == "nullius-vulcanus" then
+      replace_fluid_entity(entity, "nullius-lava-intake-1", entity.force, nil)
+    end
   elseif (entity.type == "beacon") then
     build_beacon(entity)
   else
