@@ -138,6 +138,53 @@ data:extend({
   },
 })
 
+-- Vulcanus logistics alt recipes: replace unavailable materials.
+data:extend({
+  -- Splitter alt: underground belt + silicon insulation (replaces plastic).
+  {
+    type = "recipe",
+    name = "nullius-splitter-1-vulcanus",
+    localised_name = {"recipe-name.nullius-splitter-vulcanus"},
+    enabled = true,
+    category = "small-crafting",
+    subgroup = "belt",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "underground-belt", amount = 2},
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    },
+    results = {
+      {type = "item", name = "splitter", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Underground pipe alt: pipe + silica (replaces sand, which needs sandstone).
+  {
+    type = "recipe",
+    name = "nullius-underground-pipe-1-vulcanus",
+    localised_name = {"recipe-name.nullius-underground-pipe-vulcanus"},
+    enabled = true,
+    category = "small-crafting",
+    subgroup = "pipes",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    always_show_products = true,
+    show_amount_in_title = false,
+    energy_required = 8,
+    ingredients = {
+      {type = "item", name = "pipe", amount = 5},
+      {type = "item", name = "nullius-silica", amount = 3},
+    },
+    results = {
+      {type = "item", name = "pipe-to-ground", amount = 2},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
 -- Vulcanus alternative recipes: replace organic materials (plastic, rubber)
 -- with silicon/silica-based substitutes.
 
