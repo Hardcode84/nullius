@@ -180,6 +180,7 @@ script.on_init(
   function()
     init_wind()
     init_geothermal()
+    vulcanus_heat.init()
 	  reset_config()
     if (remote.interfaces["freeplay"] ~= nil) then
       remote.call("freeplay", "set_skip_intro", true)
@@ -202,6 +203,9 @@ script.on_configuration_changed(
   function(event)
     migrate_version(event)
     reset_config()
+    if not storage.nullius_heat_buckets then
+      vulcanus_heat.init()
+    end
 	  init_alignment()
     init_techs()
     init_mission_global()

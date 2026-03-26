@@ -122,6 +122,9 @@ function update_tick()
   update_geothermal()
   update_solar()
 
+  -- Update Vulcanus pneumatic heat interfaces (bucketed, one bucket per tick).
+  vulcanus_heat.update()
+
   local tickmod1 = (game.tick % 13)
   if (tickmod1 == 2) then
     update_mechas()

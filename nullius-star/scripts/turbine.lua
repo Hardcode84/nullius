@@ -371,6 +371,10 @@ init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
 -- Radiator mode toggle (Deacon <-> Cracking).
 init_pneumatic_pair("nullius-vulcanus-radiator-deacon", "nullius-vulcanus-radiator-cracking")
 
+local function is_pneumatic(name)
+  return string.sub(name, -10) == "-pneumatic"
+end
+
 local function toggle_pneumatic(entity, entityname, force)
   local pairs_table = pneumatic_pairs
   local newname = pairs_table[entityname]
@@ -387,7 +391,18 @@ local function toggle_pneumatic(entity, entityname, force)
     return false
   end
 
-  replace_fluid_entity(entity, newname, force, nil)
+  -- Remove old heat interface if switching FROM pneumatic.
+  if is_pneumatic(entityname) then
+    vulcanus_heat.remove_heat_interface(entity.unit_number)
+  end
+
+  local new_entity = replace_fluid_entity(entity, newname, force, nil)
+
+  -- Add heat interface if switching TO pneumatic.
+  if new_entity and new_entity.valid and is_pneumatic(newname) then
+    vulcanus_heat.add_heat_interface(new_entity)
+  end
+
   return true
 end
 

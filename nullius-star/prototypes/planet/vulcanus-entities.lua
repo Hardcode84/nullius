@@ -205,6 +205,62 @@ data:extend({
 cracking.minable = {mining_time = 1, result = "nullius-vulcanus-radiator"}
 cracking.placeable_by = {item = "nullius-vulcanus-radiator", count = 1}
 
+-- Hidden heat interfaces for pneumatic machines.
+-- Spawned alongside pneumatic machines to generate waste heat.
+-- Temperature increased by script based on machine activity.
+local heat_interface_sizes = {
+  -- {name suffix, collision_box half-size, heat connection positions}
+  {"small", 0.5, {
+    {position = {0, 0}, direction = defines.direction.north},
+    {position = {0, 0}, direction = defines.direction.south},
+  }},
+  {"medium", 1.0, {
+    {position = {1, 0}, direction = defines.direction.east},
+    {position = {-1, 0}, direction = defines.direction.west},
+  }},
+  {"large", 1.5, {
+    {position = {1, 0}, direction = defines.direction.east},
+    {position = {-1, 0}, direction = defines.direction.west},
+  }},
+}
+
+for _, size_def in pairs(heat_interface_sizes) do
+  local suffix, half, connections = size_def[1], size_def[2], size_def[3]
+  data:extend({
+    {
+      type = "heat-interface",
+      name = "nullius-pneumatic-heat-" .. suffix,
+      localised_name = {"entity-name.nullius-pneumatic-heat"},
+      flags = {"placeable-neutral", "not-blueprintable", "not-deconstructable",
+               "not-on-map", "hide-alt-info", "not-upgradable"},
+      icon = "__base__/graphics/icons/heat-interface.png",
+      icon_size = 64,
+      hidden = true,
+      hidden_in_factoriopedia = true,
+      max_health = 1,
+      collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
+      collision_mask = {layers = {}},
+      selection_box = {{-half, -half}, {half, half}},
+      selectable_in_game = false,
+      gui_mode = "none",
+      picture = {
+        filename = "__base__/graphics/icons/heat-interface.png",
+        width = 64,
+        height = 64,
+        scale = 0.01,
+      },
+      heat_buffer = {
+        max_temperature = 1000,
+        specific_heat = "200kJ",
+        max_transfer = "2MW",
+        default_temperature = 15,
+        minimum_glow_temperature = 0,
+        connections = connections,
+      },
+    },
+  })
+end
+
 for i = 1, 2 do
   local si = data.raw["assembling-machine"]["nullius-seawater-intake-" .. i]
   if si then
