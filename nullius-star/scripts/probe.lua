@@ -26,13 +26,32 @@ local function vulcanus_landing_site(surface, pos, force)
     force = force,
   }
   if wreck and wreck.valid then
-    -- Vulcanus probe supplies: heat-resistant components survived.
-    -- No electronics (melted). Gas-powered bootstrap.
-    wreck.insert({name = "nullius-small-furnace-1", count = 3})
-    wreck.insert({name = "nullius-heat-pipe-1", count = 6})
-    wreck.insert({name = "pipe", count = 12})
-    wreck.insert({name = "inserter", count = 4})
+    -- Vulcanus probe supplies.
+    -- Bootstrap sequence: Stirling + pump get lava flowing (electric),
+    -- then everything switches to pneumatic (compressed gas).
+
+    -- Phase A: Electrical bootstrap (get lava flowing).
+    wreck.insert({name = "nullius-stirling-engine-1", count = 1})
+    wreck.insert({name = "small-electric-pole", count = 4})
+    wreck.insert({name = "nullius-pump-1", count = 1})
+
+    -- Phase B: First gas loop (bridge furnace + piping).
+    wreck.insert({name = "nullius-small-furnace-1", count = 2})
+    wreck.insert({name = "pipe", count = 20})
+
+    -- Phase C: Basic manufacturing.
+    wreck.insert({name = "nullius-small-assembler-1", count = 1})
+    wreck.insert({name = "inserter", count = 6})
     wreck.insert({name = "iron-chest", count = 2})
+
+    -- Phase D: Electronics rebuild requires silicon insulation.
+    -- No electronics in wreck (melted). Player must craft from scratch.
+
+    -- Phase E: Science.
+    wreck.insert({name = "nullius-lab-1", count = 1})
+
+    -- Misc: belts for cooling conveyors.
+    wreck.insert({name = "transport-belt", count = 50})
   end
 end
 

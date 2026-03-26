@@ -698,15 +698,20 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 
 ### 7.2 Probe Wreck Contents
 
-| Item | Count | Notes |
-|---|---|---|
-| Stirling engine (tier 1) | 1 | Produces ~500kW from ambient volcanic heat. **Only electricity source.** Used exclusively for the initial lava pump bootstrap. |
-| Small electric pole | 4 | Connect Stirling to the pump. |
-| Pump | 1 | Electric pump. Place on lava shore. This is the ONLY electric machine in the long-term plan. |
-| Pipe | 20 | Lava fluid piping. |
-| Iron chest | 2 | Storage. |
+| Item | Count | Phase | Notes |
+|---|---|---|---|
+| Stirling engine (tier 1) | 1 | A | ~500kW from ambient heat. Only electricity source. |
+| Small electric pole | 4 | A | Connect Stirling to pump. |
+| Pump | 1 | A | Electric. Place on lava shore. |
+| Small furnace | 2 | B | One as electric bridge, then toggle to pneumatic. |
+| Pipe | 20 | B | Lava and gas piping. |
+| Small assembler | 1 | C | For crafting components. Toggle to pneumatic. |
+| Inserter | 6 | C | Toggle to pneumatic. |
+| Iron chest | 2 | C | Storage. |
+| Lab | 1 | E | For Vulcanus research. Toggle to pneumatic. |
+| Transport belt | 50 | C | Cooling conveyors for molten blooms. |
 
-This is deliberately minimal. The Stirling + pump exist for ONE purpose: get lava flowing into the first processor. After that, everything runs on gas.
+No electronics in wreck (melted in volcanic heat). Player must rebuild circuits from silicon insulation + local materials. The Stirling + pump exist for ONE purpose: get lava flowing. After that, everything toggles to pneumatic.
 
 ### 7.3 Bootstrap Sequence
 
