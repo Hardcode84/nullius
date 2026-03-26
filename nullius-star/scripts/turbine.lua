@@ -363,6 +363,9 @@ for i = 1, 3 do
   init_pneumatic_pair("nullius-priority-electrolyzer-" .. i, "nullius-priority-electrolyzer-" .. i .. "-pneumatic")
 end
 init_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
+for i = 1, 3 do
+  init_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
+end
 init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
 
 -- Radiator mode toggle (Deacon <-> Cracking).

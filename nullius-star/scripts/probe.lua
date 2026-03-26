@@ -42,6 +42,8 @@ local function vulcanus_landing_site(surface, pos, force)
     wreck.insert({name = "pipe-to-ground", count = 10})
 
     -- Phase C: Basic manufacturing.
+    wreck.insert({name = "nullius-extractor-1", count = 2})
+    wreck.insert({name = "nullius-air-filter-1", count = 2})
     wreck.insert({name = "nullius-foundry-1", count = 4})
     wreck.insert({name = "nullius-small-assembler-1", count = 4})
     wreck.insert({name = "inserter", count = 12})

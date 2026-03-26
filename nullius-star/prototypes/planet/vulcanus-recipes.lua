@@ -269,6 +269,79 @@ data:extend({
     surface_conditions = {{property = "gravity", min = 39}},
   },
 
+  -- Filter-1 alt: silica + graphite + iron sheet + CO2 (replaces plastic).
+  {
+    type = "recipe",
+    name = "nullius-filter-1-vulcanus",
+    localised_name = {"recipe-name.nullius-filter-vulcanus"},
+    enabled = true,
+    category = "basic-chemistry",
+    order = "nullius-vc",
+    show_amount_in_title = false,
+    always_show_products = true,
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
+      secondary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
+    },
+    energy_required = 8,
+    ingredients = {
+      {type = "item", name = "nullius-silica", amount = 2},
+      {type = "item", name = "nullius-graphite", amount = 1},
+      {type = "item", name = "nullius-iron-sheet", amount = 1},
+      {type = "fluid", name = "nullius-carbon-dioxide", amount = 10, fluidbox_index = 3},
+    },
+    results = {
+      {type = "item", name = "nullius-filter-1", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Motor-2 alt: insulated wire + steel plate + steel gear + steel rod + silica (replaces lubricant).
+  {
+    type = "recipe",
+    name = "nullius-motor-2-vulcanus",
+    localised_name = {"recipe-name.nullius-motor-2-vulcanus"},
+    enabled = true,
+    category = "medium-crafting",
+    subgroup = "mechanical-intermediate",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    energy_required = 10,
+    ingredients = {
+      {type = "item", name = "copper-cable", amount = 2},
+      {type = "item", name = "nullius-steel-plate", amount = 1},
+      {type = "item", name = "nullius-steel-gear", amount = 1},
+      {type = "item", name = "nullius-steel-rod", amount = 1},
+      {type = "item", name = "nullius-silica", amount = 3},
+    },
+    results = {
+      {type = "item", name = "nullius-motor-2", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Pump-2 alt: pump-1 + motor-2 + pipe-2 + silicon insulation (replaces rubber).
+  {
+    type = "recipe",
+    name = "nullius-pump-2-vulcanus",
+    localised_name = {"recipe-name.nullius-pump-2-vulcanus"},
+    enabled = true,
+    category = "medium-crafting",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    energy_required = 8,
+    ingredients = {
+      {type = "item", name = "nullius-pump-1", amount = 1},
+      {type = "item", name = "nullius-motor-2", amount = 1},
+      {type = "item", name = "nullius-pipe-2", amount = 2},
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    },
+    results = {
+      {type = "item", name = "nullius-pump-2", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
   -- Capacitor alt: aluminum sheet + silica + alumina + graphite (replaces plastic).
   {
     type = "recipe",
