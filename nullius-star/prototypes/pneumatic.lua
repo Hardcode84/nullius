@@ -48,6 +48,9 @@ register_pneumatic("assembling-machine", "nullius-medium-assembler-2")
 register_pneumatic("inserter", "inserter")
 register_pneumatic("inserter", "bob-turbo-inserter")
 
+-- Register extractors (mining-drill type, for geysers).
+register_pneumatic("mining-drill", "nullius-extractor-1")
+
 -- Register chemistry buildings.
 for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-hydro-plant-" .. i)
