@@ -35,14 +35,16 @@ local function vulcanus_landing_site(surface, pos, force)
     wreck.insert({name = "small-electric-pole", count = 4})
     wreck.insert({name = "nullius-seawater-intake-1", count = 2})
 
-    -- Phase B: First gas loop (bridge furnace + piping).
-    wreck.insert({name = "nullius-small-furnace-1", count = 2})
-    wreck.insert({name = "pipe", count = 20})
+    -- Phase B: First gas loop (hydro-plant processes lava + piping).
+    wreck.insert({name = "nullius-hydro-plant-1", count = 4})
+    wreck.insert({name = "nullius-small-furnace-1", count = 4})
+    wreck.insert({name = "pipe", count = 50})
 
     -- Phase C: Basic manufacturing.
-    wreck.insert({name = "nullius-small-assembler-1", count = 1})
-    wreck.insert({name = "inserter", count = 6})
-    wreck.insert({name = "iron-chest", count = 2})
+    wreck.insert({name = "nullius-foundry-1", count = 4})
+    wreck.insert({name = "nullius-small-assembler-1", count = 4})
+    wreck.insert({name = "inserter", count = 12})
+    wreck.insert({name = "iron-chest", count = 4})
 
     -- Phase D: Electronics rebuild requires silicon insulation.
     -- No electronics in wreck (melted). Player must craft from scratch.

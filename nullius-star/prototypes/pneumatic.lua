@@ -32,9 +32,10 @@ local function register_pneumatic(entity_type, entity_name)
   table.insert(pneumatic_machines, { name = entity_name, type = entity_type })
 end
 
--- Register all furnace tiers.
+-- Register furnace and foundry tiers.
 for i = 1, 3 do
   register_pneumatic("furnace", "nullius-small-furnace-" .. i)
+  register_pneumatic("assembling-machine", "nullius-foundry-" .. i)
 end
 
 -- Register assembler tiers.

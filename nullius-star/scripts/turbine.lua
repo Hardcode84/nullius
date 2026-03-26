@@ -345,9 +345,10 @@ local function init_pneumatic_pair(original, pneumatic)
 end
 
 -- Must match the entities generated in prototypes/pneumatic.lua.
-init_pneumatic_pair("nullius-small-furnace-1", "nullius-small-furnace-1-pneumatic")
-init_pneumatic_pair("nullius-small-furnace-2", "nullius-small-furnace-2-pneumatic")
-init_pneumatic_pair("nullius-small-furnace-3", "nullius-small-furnace-3-pneumatic")
+for i = 1, 3 do
+  init_pneumatic_pair("nullius-small-furnace-" .. i, "nullius-small-furnace-" .. i .. "-pneumatic")
+  init_pneumatic_pair("nullius-foundry-" .. i, "nullius-foundry-" .. i .. "-pneumatic")
+end
 init_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-pneumatic")
 init_pneumatic_pair("nullius-small-assembler-2", "nullius-small-assembler-2-pneumatic")
 init_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pneumatic")
