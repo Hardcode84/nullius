@@ -185,6 +185,30 @@ data:extend({
   },
 })
 
+-- Heat pipe alt: no water needed (Vulcanus has almost no water).
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-heat-pipe-1-vulcanus",
+    localised_name = {"recipe-name.nullius-heat-pipe-vulcanus"},
+    enabled = true,
+    category = "small-crafting",
+    order = "nullius-vc",
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-pipe-2", amount = 1},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+      {type = "item", name = "nullius-silica", amount = 2},
+    },
+    results = {
+      {type = "item", name = "nullius-heat-pipe-1", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
 -- Vulcanus alternative recipes: replace organic materials (plastic, rubber)
 -- with silicon/silica-based substitutes.
 
