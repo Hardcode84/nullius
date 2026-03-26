@@ -22,6 +22,189 @@ data:extend({
   },
 })
 
+-- Vulcanus radiator: heat-powered chemistry building.
+-- Absorbs heat from heat pipe network, processes HCl into useful products.
+-- Two modes (toggle via Ctrl+R): Deacon (400C) and Cracking (650C).
+
+local ENTITYPATH = "__nullius-star__/graphics/entity/"
+
+local radiator_base = {
+  type = "assembling-machine",
+  flags = {"placeable-neutral", "player-creation"},
+  max_health = 300,
+  corpse = "solar-panel-remnants",
+  collision_box = {{-2.25, -1.6}, {2.25, 1.6}},
+  selection_box = {{-2.5, -2}, {2.5, 2}},
+  crafting_speed = 1,
+  module_slots = 0,
+  graphics_set = {
+    animation = {
+      layers = {
+        {
+          filename = ENTITYPATH .. "collector/collector1.png",
+          width = 220,
+          height = 140,
+          scale = 0.9,
+          shift = {0, -0.25},
+        },
+        {
+          filename = ENTITYPATH .. "collector/collectorpipe.png",
+          width = 320,
+          height = 32,
+          scale = 0.5,
+          shift = {0, 0.5},
+        },
+      },
+    },
+  },
+  energy_usage = "1MW",
+  resistances = {
+    {type = "fire", decrease = 100, percent = 90},
+    {type = "impact", decrease = 50, percent = 80},
+  },
+  surface_conditions = {{property = "gravity", min = 39}},
+}
+
+-- Deacon mode radiator (400C): HCl + O2 --> Cl2 + H2O.
+local deacon = table.deepcopy(radiator_base)
+deacon.name = "nullius-vulcanus-radiator-deacon"
+deacon.localised_name = {"entity-name.nullius-vulcanus-radiator-deacon"}
+deacon.icons = {{
+  icon = "__base__/graphics/icons/heat-boiler.png",
+  icon_size = 64,
+}}
+deacon.minable = {mining_time = 1, result = "nullius-vulcanus-radiator"}
+deacon.fast_replaceable_group = "vulcanus-radiator"
+deacon.crafting_categories = {"nullius-vulcanus-deacon"}
+deacon.fixed_recipe = "nullius-vulcanus-deacon"
+deacon.energy_source = {
+  type = "heat",
+  max_temperature = 1000,
+  specific_heat = "500kJ",
+  max_transfer = "5MW",
+  min_working_temperature = 400,
+  default_temperature = 15,
+  connections = {
+    {position = {2, 0.5}, direction = defines.direction.east},
+    {position = {-2, 0.5}, direction = defines.direction.west},
+  },
+  pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
+  heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
+}
+deacon.fluid_boxes = {
+  {
+    production_type = "input",
+    volume = 200,
+    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {0, -1}}},
+  },
+  {
+    production_type = "input",
+    volume = 200,
+    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {1, -1}}},
+  },
+  {
+    production_type = "output",
+    volume = 200,
+    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {0, 1}}},
+  },
+  {
+    production_type = "output",
+    volume = 200,
+    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {1, 1}}},
+  },
+}
+
+-- Cracking mode radiator (650C): HCl --> H2 + Cl2.
+local cracking = table.deepcopy(deacon)
+cracking.name = "nullius-vulcanus-radiator-cracking"
+cracking.localised_name = {"entity-name.nullius-vulcanus-radiator-cracking"}
+cracking.crafting_categories = {"nullius-vulcanus-cracking"}
+cracking.fixed_recipe = "nullius-vulcanus-cracking"
+cracking.hidden = true
+cracking.energy_source.min_working_temperature = 650
+
+data:extend({
+  deacon,
+  cracking,
+  -- Radiator item (shared between both modes).
+  {
+    type = "item",
+    name = "nullius-vulcanus-radiator",
+    localised_name = {"item-name.nullius-vulcanus-radiator"},
+    icons = deacon.icons,
+    subgroup = "other",
+    order = "nullius-vr",
+    place_result = "nullius-vulcanus-radiator-deacon",
+    stack_size = 10,
+  },
+  -- Recipe categories.
+  {type = "recipe-category", name = "nullius-vulcanus-deacon"},
+  {type = "recipe-category", name = "nullius-vulcanus-cracking"},
+  -- Deacon recipe: 60 HCl + 15 O2 --> 30 Cl2 + 30 H2O.
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-deacon",
+    localised_name = {"recipe-name.nullius-vulcanus-deacon"},
+    icon = "__base__/graphics/icons/fluid/water.png",
+    icon_size = 64,
+    enabled = true,
+    hide_from_player_crafting = true,
+    category = "nullius-vulcanus-deacon",
+    energy_required = 2,
+    ingredients = {
+      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
+      {type = "fluid", name = "nullius-oxygen", amount = 15},
+    },
+    results = {
+      {type = "fluid", name = "nullius-chlorine", amount = 30},
+      {type = "fluid", name = "nullius-water", amount = 30},
+    },
+    main_product = "nullius-water",
+  },
+  -- Cracking recipe: 60 HCl --> 30 H2 + 30 Cl2.
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-cracking",
+    localised_name = {"recipe-name.nullius-vulcanus-cracking"},
+    icon = "__base__/graphics/icons/fluid/steam.png",
+    icon_size = 64,
+    enabled = true,
+    hide_from_player_crafting = true,
+    category = "nullius-vulcanus-cracking",
+    energy_required = 2,
+    ingredients = {
+      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
+    },
+    results = {
+      {type = "fluid", name = "nullius-hydrogen", amount = 30},
+      {type = "fluid", name = "nullius-chlorine", amount = 30},
+    },
+    main_product = "nullius-hydrogen",
+  },
+  -- Radiator crafting recipe.
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-radiator",
+    localised_name = {"item-name.nullius-vulcanus-radiator"},
+    enabled = true,
+    category = "medium-crafting",
+    energy_required = 10,
+    ingredients = {
+      {type = "item", name = "nullius-iron-plate", amount = 8},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 4},
+      {type = "item", name = "nullius-heat-pipe-1", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-vulcanus-radiator", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
+-- Cracking radiator also drops the same item.
+cracking.minable = {mining_time = 1, result = "nullius-vulcanus-radiator"}
+cracking.placeable_by = {item = "nullius-vulcanus-radiator", count = 1}
+
 for i = 1, 2 do
   local si = data.raw["assembling-machine"]["nullius-seawater-intake-" .. i]
   if si then

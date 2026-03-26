@@ -364,6 +364,9 @@ for i = 1, 3 do
 end
 init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
 
+-- Radiator mode toggle (Deacon <-> Cracking).
+init_pneumatic_pair("nullius-vulcanus-radiator-deacon", "nullius-vulcanus-radiator-cracking")
+
 local function toggle_pneumatic(entity, entityname, force)
   local pairs_table = pneumatic_pairs
   local newname = pairs_table[entityname]
