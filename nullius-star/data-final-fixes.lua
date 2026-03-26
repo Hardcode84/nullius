@@ -173,6 +173,16 @@ if data.raw["simple-entity"]["big-volcanic-rock"] then
   }
 end
 
+-- Override sulfuric acid geyser to produce HCl on Vulcanus.
+-- The geyser entity is shared across surfaces, so we change it globally.
+-- On Nauvis there are no sulfuric acid geysers, so this only affects Vulcanus.
+if data.raw.resource["sulfuric-acid-geyser"] then
+  data.raw.resource["sulfuric-acid-geyser"].minable.results = {
+    {type = "fluid", name = "nullius-hydrogen-chloride", amount_min = 10, amount_max = 10, probability = 1},
+  }
+  data.raw.resource["sulfuric-acid-geyser"].localised_name = {"entity-name.nullius-hcl-geyser"}
+end
+
 -- Neuter quality and recycling. SA forces quality mod to load, but
 -- Nullius* does not use quality. Disable at prototype level.
 
