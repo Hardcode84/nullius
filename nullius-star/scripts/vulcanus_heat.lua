@@ -5,8 +5,8 @@
 local vulcanus_heat = {}
 
 local NUM_BUCKETS = 443  -- Same as Stirling engines. One bucket per tick.
-local HEAT_AMBIENT = 200  -- Vulcanus ambient temperature floor.
-local HEAT_PER_UPDATE = 2  -- Degrees added per update when active (scaled by bucket count).
+local HEAT_PER_UPDATE = 2  -- Degrees added per update when active.
+local MAX_HEAT = 500  -- Match heat pipe tier 2 max temperature.
 
 function vulcanus_heat.init()
   storage.nullius_heat_buckets = {}
@@ -42,9 +42,6 @@ function vulcanus_heat.add_heat_interface(entity)
   if heat and heat.valid then
     heat.destructible = false
     heat.minable = false
-    -- Set heat mode to actively maintain ambient volcanic temperature.
-    heat.set_heat_setting{mode = "at-least", temperature = HEAT_AMBIENT}
-
 
     if not storage.nullius_pneumatic_heat then
       storage.nullius_pneumatic_heat = {}
@@ -98,30 +95,22 @@ function vulcanus_heat.update()
         storage.nullius_pneumatic_heat[unit_number] = nil
       end
     elseif not entry.machine.valid then
-      -- Machine was removed but we missed the event. Clean up.
       entry.heat.destroy()
       bucket[unit_number] = nil
       if storage.nullius_pneumatic_heat then
         storage.nullius_pneumatic_heat[unit_number] = nil
       end
     else
-      local temp = entry.heat.temperature
-
-      -- Floor at ambient volcanic temperature.
-      if temp < HEAT_AMBIENT then
-        entry.heat.temperature = HEAT_AMBIENT
-      else
-        -- Add heat if machine is active (status == working or low power).
-        local status = entry.machine.status
-        if status == defines.entity_status.working
-            or status == defines.entity_status.low_power then
-          entry.heat.temperature = math.min(1000, temp + HEAT_PER_UPDATE)
-        end
-        -- If idle, heat dissipates naturally through heat network.
+      -- Add heat if machine is active (status == working or low power).
+      local status = entry.machine.status
+      if status == defines.entity_status.working
+          or status == defines.entity_status.low_power then
+        local temp = entry.heat.temperature
+        entry.heat.temperature = math.min(MAX_HEAT, temp + HEAT_PER_UPDATE)
       end
+      -- If idle, heat dissipates naturally through heat network.
     end
   end
 end
-
 
 return vulcanus_heat

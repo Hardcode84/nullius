@@ -79,10 +79,10 @@ deacon.crafting_categories = {"nullius-vulcanus-deacon"}
 deacon.fixed_recipe = "nullius-vulcanus-deacon"
 deacon.energy_source = {
   type = "heat",
-  max_temperature = 1000,
+  max_temperature = 250,
   specific_heat = "500kJ",
   max_transfer = "5MW",
-  min_working_temperature = 400,
+  min_working_temperature = 200,
   default_temperature = 15,
   connections = {
     {position = {2, 0.5}, direction = defines.direction.east},
@@ -121,7 +121,8 @@ cracking.localised_name = {"entity-name.nullius-vulcanus-radiator-cracking"}
 cracking.crafting_categories = {"nullius-vulcanus-cracking"}
 cracking.fixed_recipe = "nullius-vulcanus-cracking"
 cracking.hidden = true
-cracking.energy_source.min_working_temperature = 650
+cracking.energy_source.min_working_temperature = 450
+cracking.energy_source.max_temperature = 500
 
 data:extend({
   deacon,
@@ -267,7 +268,7 @@ for _, size_def in pairs(heat_interface_sizes) do
       selectable_in_game = false,
       gui_mode = "none",
       heat_buffer = {
-        max_temperature = 1000,
+        max_temperature = 500,
         specific_heat = "200kJ",
         max_transfer = "2MW",
         default_temperature = 15,
