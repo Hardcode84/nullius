@@ -93,8 +93,12 @@ for _, entry in pairs(pneumatic_machines) do
     -- For pass-through, place connections on opposite edges.
     local cb = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
     -- Use floor to stay inside the box (e.g., 0.7 -> 0, 1.2 -> 1).
-    local half_h = math.floor(math.abs(cb[1][2]))
-    local half_w = math.floor(math.abs(cb[1][1]))
+    -- local half_h = math.floor(math.abs(cb[1][2]))
+    -- local half_w = math.floor(math.abs(cb[1][1]))
+    local half_h = math.abs(cb[1][2]) - 0.1
+    local half_w = math.abs(cb[1][1]) - 0.1
+    local off_h = 0
+    local off_w = 0
 
     -- Check if entity has existing east/west fluid connections.
     local has_ew_fluid = false
@@ -115,14 +119,14 @@ for _, entry in pairs(pneumatic_machines) do
     if has_ew_fluid then
       -- Entity uses east/west for recipe fluids, use north/south for energy.
       pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.north, position = {0, -half_h} },
-        { flow_direction = "input-output", direction = defines.direction.south, position = {0, half_h} },
+        { flow_direction = "input-output", direction = defines.direction.north, position = {off_w, -half_h} },
+        { flow_direction = "input-output", direction = defines.direction.south, position = {-off_w, half_h} },
       }
     else
       -- Default: east/west pass-through.
       pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, 0} },
-        { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, 0} },
+        { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, off_h} },
+        { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, -off_h} },
       }
     end
 

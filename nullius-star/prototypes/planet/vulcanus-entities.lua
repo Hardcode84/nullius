@@ -216,25 +216,28 @@ local function make_heat_connections(half)
   local c = {}
   -- North edge.
   table.insert(c, {position = {-half, -half}, direction = defines.direction.north})
-  if half > 1 then
+  if half > 1.5 then
     table.insert(c, {position = {0, -half}, direction = defines.direction.north})
   end
   table.insert(c, {position = {half, -half}, direction = defines.direction.north})
+
   -- East edge.
   table.insert(c, {position = {half, -half}, direction = defines.direction.east})
-  if half > 1 then
+  if half > 1.5 then
     table.insert(c, {position = {half, 0}, direction = defines.direction.east})
   end
   table.insert(c, {position = {half, half}, direction = defines.direction.east})
+
   -- South edge.
   table.insert(c, {position = {half, half}, direction = defines.direction.south})
-  if half > 1 then
+  if half > 1.5 then
     table.insert(c, {position = {0, half}, direction = defines.direction.south})
   end
   table.insert(c, {position = {-half, half}, direction = defines.direction.south})
+
   -- West edge.
   table.insert(c, {position = {-half, half}, direction = defines.direction.west})
-  if half > 1 then
+  if half > 1.5 then
     table.insert(c, {position = {-half, 0}, direction = defines.direction.west})
   end
   table.insert(c, {position = {-half, -half}, direction = defines.direction.west})
@@ -242,9 +245,9 @@ local function make_heat_connections(half)
 end
 
 local heat_interface_sizes = {
-  {"small", 0.5, make_heat_connections(1)},
-  {"medium", 1.0, make_heat_connections(1)},
-  {"large", 1.5, make_heat_connections(2)},
+  {"small", 1.0, make_heat_connections(0.8)},
+  {"medium", 1.5, make_heat_connections(1.4)},
+  {"large", 2.5, make_heat_connections(2.4)},
 }
 
 for _, size_def in pairs(heat_interface_sizes) do

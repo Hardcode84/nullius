@@ -46,8 +46,6 @@ function entity_added(entity, handbuilt)
       local tier = string.sub(suffix, 17)
       replace_fluid_entity(entity, "nullius-lava-intake-" .. tier, entity.force, nil)
     end
-  elseif (entity.type == "heat-pipe") then
-    vulcanus_heat.on_heat_pipe_built(entity)
   elseif (entity.type == "beacon") then
     build_beacon(entity)
   else
