@@ -22,6 +22,7 @@ local function get_heat_size(entity)
   local half = math.max(math.abs(cb.left_top.x), math.abs(cb.left_top.y))
   if half <= 0.8 then return "small"
   elseif half <= 1.4 then return "medium"
+  elseif half <= 1.9 then return "medium2"
   else return "large"
   end
 end

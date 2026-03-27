@@ -50,6 +50,7 @@ register_pneumatic("inserter", "bob-turbo-inserter")
 
 -- Register extractors (mining-drill type, for geysers).
 register_pneumatic("mining-drill", "nullius-extractor-1")
+register_pneumatic("mining-drill", "nullius-extractor-2")
 
 -- Register air filters.
 for i = 1, 3 do
@@ -99,9 +100,13 @@ for _, entry in pairs(pneumatic_machines) do
     local off_w = 0
     if half_h < 1 then
       off_h = half_h
+    elseif half_h > 1.5 and half_h < 2.0 then
+      off_h = 0.4
     end
     if half_w < 1 then
       off_w = half_w
+    elseif half_w > 1.5 and half_w < 2.0 then
+      off_w = 0.4
     end
 
     -- Check if entity has existing east/west fluid connections.
@@ -123,8 +128,8 @@ for _, entry in pairs(pneumatic_machines) do
     if has_ew_fluid then
       -- Entity uses east/west for recipe fluids, use north/south for energy.
       pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.north, position = {off_w, half_h} },
-        { flow_direction = "input-output", direction = defines.direction.south, position = {-off_w, half_h} },
+        { flow_direction = "input-output", direction = defines.direction.north, position = {off_w, -half_h} },
+        { flow_direction = "input-output", direction = defines.direction.south, position = {off_w, half_h} },
       }
     else
       -- Default: east/west pass-through.

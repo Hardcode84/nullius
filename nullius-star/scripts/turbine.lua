@@ -260,7 +260,7 @@ local function toggle_pump(entity, name, force, circuit_condition)
   local position = entity.position
   local direction = entity.direction
   local names = {["nullius-pump-1"]  = "nullius-togglable-pump-1", ["nullius-pump-2"] = "nullius-togglable-pump-2", ["pump"] = "nullius-togglable-pump-3", ["nullius-small-pump-1"] = "nullius-togglable-small-pump-1", ["nullius-small-pump-2"] = "nullius-togglable-small-pump-2"}
-  
+
   --local fluid_contents = save_fluid_contents(entity)
   storage.nullius_valves[entity.unit_number] = nil
   local conf_valve = nil
@@ -285,13 +285,12 @@ local function toggle_pump(entity, name, force, circuit_condition)
         raise_built = true,
     })
   end
-  
   if circuit_condition ~= nil then
     local control_behavior = conf_valve.get_or_create_control_behavior()
     control_behavior.circuit_condition = table.deepcopy(circuit_condition)
     conf_valve_check_one_way(control_behavior.circuit_condition, conf_valve.unit_number)
   end
-  
+
   --restore_fluid_contents(conf_valve, fluid_contents)
 end
 
@@ -304,7 +303,7 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
     local position = entity.position
     local direction = entity.direction
     local names = {["nullius-togglable-pump-1"]  = "nullius-pump-1", ["nullius-togglable-pump-2"] = "nullius-pump-2", ["nullius-togglable-pump-3"] = "pump", ["nullius-togglable-small-pump-1"] = "nullius-small-pump-1", ["nullius-togglable-small-pump-2"] = "nullius-small-pump-2"}
-    
+
     --local fluid_contents = save_fluid_contents(entity) -- todo: use the fluidbox api to get the linked entity(internal gauge) and save fluid contents this way
     local pump = nil
     if (entity.type == "entity-ghost") then
@@ -328,7 +327,7 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
             raise_built = true,
       })
     end
-    
+
     --restore_fluid_contents(pump, fluid_contents)
     return
   end
@@ -363,6 +362,7 @@ for i = 1, 3 do
   init_pneumatic_pair("nullius-priority-electrolyzer-" .. i, "nullius-priority-electrolyzer-" .. i .. "-pneumatic")
 end
 init_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
+init_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
 for i = 1, 3 do
   init_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
 end
@@ -452,7 +452,7 @@ end)
 local function handle_togglable_pump_paste(target, tname, sname, source, force)
   local t_is_pump = is_pump_entity(tname)
   local s_is_pump = is_pump_entity(sname)
-  
+
   if storage.nullius_valves == nil then
     storage.nullius_valves = { }
   end
@@ -542,7 +542,7 @@ function convert_all_turbines()
 		local force = turbine.force
 		local surface = turbine.surface
 	    turbine.destroy()
-		
+
         local newturbine = surface.create_entity{
             name = name, force = force, direction = dir, position = pos,
 		    spill = false, create_build_effect_smoke = false}

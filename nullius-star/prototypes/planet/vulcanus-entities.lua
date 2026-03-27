@@ -215,30 +215,31 @@ cracking.placeable_by = {item = "nullius-vulcanus-radiator", count = 1}
 local function make_heat_connections(half)
   -- half = distance from center to edge (in tiles).
   local c = {}
+  local large = half > 2.0
   -- North edge.
   table.insert(c, {position = {-half, -half}, direction = defines.direction.north})
-  if half > 1.5 then
+  if large then
     table.insert(c, {position = {0, -half}, direction = defines.direction.north})
   end
   table.insert(c, {position = {half, -half}, direction = defines.direction.north})
 
   -- East edge.
   table.insert(c, {position = {half, -half}, direction = defines.direction.east})
-  if half > 1.5 then
+  if large then
     table.insert(c, {position = {half, 0}, direction = defines.direction.east})
   end
   table.insert(c, {position = {half, half}, direction = defines.direction.east})
 
   -- South edge.
   table.insert(c, {position = {half, half}, direction = defines.direction.south})
-  if half > 1.5 then
+  if large then
     table.insert(c, {position = {0, half}, direction = defines.direction.south})
   end
   table.insert(c, {position = {-half, half}, direction = defines.direction.south})
 
   -- West edge.
   table.insert(c, {position = {-half, half}, direction = defines.direction.west})
-  if half > 1.5 then
+  if large then
     table.insert(c, {position = {-half, 0}, direction = defines.direction.west})
   end
   table.insert(c, {position = {-half, -half}, direction = defines.direction.west})
@@ -248,6 +249,7 @@ end
 local heat_interface_sizes = {
   {"small", 1.0, make_heat_connections(0.8)},
   {"medium", 1.5, make_heat_connections(1.4)},
+  {"medium2", 1.9, make_heat_connections(1.8)},
   {"large", 2.5, make_heat_connections(2.4)},
 }
 
