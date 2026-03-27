@@ -29,6 +29,7 @@ end
 -- Spawn heat interface for a pneumatic machine.
 function vulcanus_heat.add_heat_interface(entity)
   if not entity or not entity.valid then return end
+  if entity.type == "inserter" then return end
   local surface = entity.surface
   if not surface.planet or surface.planet.name ~= "nullius-vulcanus" then return end
 
