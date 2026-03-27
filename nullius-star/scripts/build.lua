@@ -54,6 +54,10 @@ function entity_added(entity, handbuilt)
 end
 
 function entity_removed(entity, died)
+  -- Clean up heat interface for any pneumatic machine (before prefix check).
+  if string.sub(entity.name, -10) == "-pneumatic" then
+    vulcanus_heat.remove_heat_interface(entity.unit_number)
+  end
   if (string.sub(entity.name, 1, 8) ~= "nullius-") then
     if (entity.type == "constant-combinator" and
         string.sub(entity.name, 1, 12) == "cargo-drone-") then
