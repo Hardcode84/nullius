@@ -208,20 +208,43 @@ cracking.placeable_by = {item = "nullius-vulcanus-radiator", count = 1}
 -- Hidden heat interfaces for pneumatic machines.
 -- Spawned alongside pneumatic machines to generate waste heat.
 -- Temperature increased by script based on machine activity.
+-- Heat connections along all edges of the machine, following the nuclear
+-- reactor pattern: positions on each edge, direction facing outward.
+-- Connections at corners serve two edges (duplicated with both directions).
+local function make_heat_connections(half)
+  -- half = distance from center to edge (in tiles).
+  local c = {}
+  -- North edge.
+  table.insert(c, {position = {-half, -half}, direction = defines.direction.north})
+  if half > 1 then
+    table.insert(c, {position = {0, -half}, direction = defines.direction.north})
+  end
+  table.insert(c, {position = {half, -half}, direction = defines.direction.north})
+  -- East edge.
+  table.insert(c, {position = {half, -half}, direction = defines.direction.east})
+  if half > 1 then
+    table.insert(c, {position = {half, 0}, direction = defines.direction.east})
+  end
+  table.insert(c, {position = {half, half}, direction = defines.direction.east})
+  -- South edge.
+  table.insert(c, {position = {half, half}, direction = defines.direction.south})
+  if half > 1 then
+    table.insert(c, {position = {0, half}, direction = defines.direction.south})
+  end
+  table.insert(c, {position = {-half, half}, direction = defines.direction.south})
+  -- West edge.
+  table.insert(c, {position = {-half, half}, direction = defines.direction.west})
+  if half > 1 then
+    table.insert(c, {position = {-half, 0}, direction = defines.direction.west})
+  end
+  table.insert(c, {position = {-half, -half}, direction = defines.direction.west})
+  return c
+end
+
 local heat_interface_sizes = {
-  -- {name suffix, collision_box half-size, heat connection positions}
-  {"small", 0.5, {
-    {position = {0, 0}, direction = defines.direction.north},
-    {position = {0, 0}, direction = defines.direction.south},
-  }},
-  {"medium", 1.0, {
-    {position = {1, 0}, direction = defines.direction.east},
-    {position = {-1, 0}, direction = defines.direction.west},
-  }},
-  {"large", 1.5, {
-    {position = {1, 0}, direction = defines.direction.east},
-    {position = {-1, 0}, direction = defines.direction.west},
-  }},
+  {"small", 0.5, make_heat_connections(1)},
+  {"medium", 1.0, make_heat_connections(1)},
+  {"large", 1.5, make_heat_connections(2)},
 }
 
 for _, size_def in pairs(heat_interface_sizes) do
@@ -231,24 +254,15 @@ for _, size_def in pairs(heat_interface_sizes) do
       type = "heat-interface",
       name = "nullius-pneumatic-heat-" .. suffix,
       localised_name = {"entity-name.nullius-pneumatic-heat"},
-      flags = {"placeable-neutral", "not-blueprintable", "not-deconstructable",
-               "not-on-map", "hide-alt-info", "not-upgradable"},
+      flags = {"placeable-neutral", "player-creation", "not-blueprintable"},
       icon = "__base__/graphics/icons/heat-interface.png",
       icon_size = 64,
-      hidden = true,
       hidden_in_factoriopedia = true,
       max_health = 1,
-      collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
+      collision_box = {{-half, -half}, {half, half}},
       collision_mask = {layers = {}},
-      selection_box = {{-half, -half}, {half, half}},
       selectable_in_game = false,
       gui_mode = "none",
-      picture = {
-        filename = "__base__/graphics/icons/heat-interface.png",
-        width = 64,
-        height = 64,
-        scale = 0.01,
-      },
       heat_buffer = {
         max_temperature = 1000,
         specific_heat = "200kJ",
@@ -256,6 +270,8 @@ for _, size_def in pairs(heat_interface_sizes) do
         default_temperature = 15,
         minimum_glow_temperature = 0,
         connections = connections,
+        pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
+        heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
       },
     },
   })
