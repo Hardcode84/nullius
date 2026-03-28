@@ -5,7 +5,7 @@
 local vulcanus_heat = {}
 
 local NUM_BUCKETS = 443  -- Same as Stirling engines. One bucket per tick.
-local HEAT_PER_UPDATE = 2  -- Degrees added per update when active.
+local HEAT_PER_UPDATE = 15  -- Degrees added per update (~2C/sec with 443 buckets).
 local MAX_HEAT = 500  -- Match heat pipe tier 2 max temperature.
 
 function vulcanus_heat.init()
