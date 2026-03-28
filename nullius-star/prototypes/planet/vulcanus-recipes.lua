@@ -211,6 +211,35 @@ data:extend({
   },
 })
 
+-- Vulcanus atmosphere separation: CO2-dominated with trace N2 and SO2.
+-- Uses same input (nullius-air from air filter) but different output ratios.
+-- Replaces Nauvis air-separation recipes on Vulcanus.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-atmosphere-separation",
+    localised_name = {"recipe-name.nullius-vulcanus-atmosphere-separation"},
+    icon = "__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png",
+    icon_size = 72,
+    enabled = true,
+    allow_decomposition = false,
+    category = "distillation",
+    subgroup = "air-filtration-recipe",
+    order = "nullius-va",
+    energy_required = 1,
+    ingredients = {
+      {type = "fluid", name = "nullius-air", amount = 150},
+    },
+    results = {
+      {type = "fluid", name = "nullius-carbon-dioxide", amount = 120},
+      {type = "fluid", name = "nullius-nitrogen", amount = 15},
+      {type = "fluid", name = "nullius-sulfur-dioxide", amount = 10},
+    },
+    main_product = "nullius-carbon-dioxide",
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
 -- SO2 catalytic decomposition: the only way to get oxygen on Vulcanus.
 -- 2 SO2 --> 2 S + 2 O2 (catalyzed by rutile/TiO2 at volcanic temperatures).
 -- SO2 comes from lava silica extraction and atmosphere separation.

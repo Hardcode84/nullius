@@ -31,6 +31,23 @@ end
 
 data.raw["utility-constants"]["default"].main_menu_simulations = require("menu-simulations.menu-simulations")
 
+-- Restrict Nauvis air separation and oxygen separation recipes to non-Vulcanus.
+-- Vulcanus has its own atmosphere separation recipe with different ratios.
+local nauvis_air_recipes = {
+  "nullius-air-separation-1", "nullius-air-separation-2", "nullius-air-separation-3",
+  "nullius-pressure-air-separation",
+  "nullius-oxygen-separation", "nullius-pressure-oxygen-separation",
+}
+for _, rname in pairs(nauvis_air_recipes) do
+  local recipe = data.raw.recipe[rname]
+  if recipe then
+    if not recipe.surface_conditions then
+      recipe.surface_conditions = {}
+    end
+    table.insert(recipe.surface_conditions, {property = "gravity", max = 38})
+  end
+end
+
 -- Gut SA's vanilla planet definitions. Cannot delete (refs break), so
 -- strip their map gen to prevent decorative errors and hide them.
 for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
