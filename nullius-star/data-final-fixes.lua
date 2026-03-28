@@ -48,6 +48,13 @@ for _, rname in pairs(nauvis_air_recipes) do
   end
 end
 
+-- Reassign SA's Vulcanus music to our planet.
+for _, sound in pairs(data.raw["ambient-sound"]) do
+  if sound.planet == "vulcanus" then
+    sound.planet = "nullius-vulcanus"
+  end
+end
+
 -- Gut SA's vanilla planet definitions. Cannot delete (refs break), so
 -- strip their map gen to prevent decorative errors and hide them.
 for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
