@@ -1,6 +1,6 @@
 # Nullius SA: Vulcanus -- Planet Design Document
 
-> **Status**: Draft
+> **Status**: Partially implemented (updated 2026-03-28)
 > **Role**: Heavy industry. Abundant metals from lava. No water, no organics.
 > **Unlock**: Volcanic Probe Signal Recovery (Tier 3, after signal acquisition + metallurgy-2)
 > **Theme**: Time-gated production (spoilage-as-cooldown), silicon-only insulation, late-game synthetic demolishers.
@@ -11,8 +11,8 @@
 
 | Constraint | Details |
 |---|---|
-| **CO2 atmosphere** | Dense carbon dioxide atmosphere. Can be captured for carbon and oxygen. |
-| **Almost no water** | No oceans, no rain. Tiny amounts synthesizable from atmospheric O2 + volcanic H2 (from HCl). |
+| **CO2 atmosphere** | Dense carbon dioxide atmosphere. Separation yields CO2 + trace N2 + SO2. Oxygen obtained via SO2 catalytic decomposition (rutile catalyst). |
+| **Almost no water** | No oceans, no rain. Tiny amounts from Deacon process (HCl + O2 --> Cl2 + H2O). |
 | **No organic chemistry** | Too hot for organics. No plastic, rubber, methanol, ethylene. |
 | **No biology** | No organisms can survive. Purely inorganic world. |
 | **Silicon insulation only** | Abundant silica from volcanic rock replaces organic insulation. |
@@ -32,12 +32,13 @@ Lava is Vulcanus's equivalent of Nauvis's ores. Extracted by lava pumps from lav
 
 | Recipe | Input | Output | Time | Category |
 |---|---|---|---|---|
-| Lava iron separation | 100 lava | 4 molten-iron-bloom + 30 compressed-volcanic-gas + 10 mineral dust | 5s | lava-processing |
-| Lava aluminum separation | 100 lava | 3 molten-aluminum-bloom + 25 compressed-volcanic-gas + 8 mineral dust | 5s | lava-processing |
-| Lava calcite separation | 80 lava | 6 calcite + 20 compressed-volcanic-gas | 4s | lava-processing |
-| Lava silica extraction | 60 lava | 8 silica + 5 sulfur + 15 compressed-volcanic-gas | 3s | lava-processing |
+| Lava iron separation | 100 lava | 4 molten-iron-bloom + 30 compressed-volcanic-gas + 10 stone | 5s | water-treatment (hydro-plant) |
+| Lava aluminum separation | 100 lava | 3 molten-aluminum-bloom + 25 compressed-volcanic-gas + 8 stone | 5s | water-treatment (hydro-plant) |
+| Lava calcite separation | 80 lava | 6 crushed-limestone + 20 compressed-volcanic-gas | 4s | water-treatment (hydro-plant) |
+| Lava silica extraction | 60 lava | 8 silica + 5 stone + 15 compressed-volcanic-gas + 10 SO2 | 3s | water-treatment (hydro-plant) |
+| **Lava gas extraction** | 50 lava | 60 compressed-volcanic-gas + 3 stone | 2s | water-treatment (hydro-plant) |
 
-All lava recipes produce **compressed volcanic gas** as a byproduct -- the underground pressure pre-compresses it. This gas fuels the gas-powered machines that run the factory. Each processing recipe is net-positive on gas (produces more than the machine consumes to process it).
+Metal separation recipes are **net-negative on gas** (consume more than they produce). The dedicated gas extraction recipe is the primary gas source. Player must balance hydro-plants between metal production and gas production.
 
 ### 2.2 Molten Metals (Spoilage Cooldown)
 
@@ -45,9 +46,9 @@ Molten blooms are the key mechanic. They are items with `spoil_ticks` that "cool
 
 | Item | spoil_ticks | spoil_result | Approx Time | Notes |
 |---|---|---|---|---|
-| Molten Iron Bloom | 1800 (30s) | nullius-iron-ingot | 30 seconds | Relatively fast cooldown. |
-| Molten Aluminum Bloom | 2400 (40s) | nullius-aluminum-ingot | 40 seconds | Slower -- aluminum holds heat longer. |
-| Molten Titanium Bloom | 3600 (60s) | nullius-titanium-ingot | 60 seconds | Slowest. Only from deep deposits (demolishers). |
+| Molten Iron Bloom | 1800 (30s) | nullius-iron-ingot | 30 seconds | Cools directly into usable ingot. |
+| Molten Aluminum Bloom | 2400 (40s) | **nullius-alumina** | 40 seconds | Oxidizes on cooling. Must reduce alumina to ingot via dry-smelting (9 alumina + 5 graphite --> 3 ingot). Extra step makes aluminum harder than iron. |
+| Molten Titanium Bloom | 3600 (60s) | nullius-titanium-ingot | 60 seconds | **NOT YET IMPLEMENTED.** Only from deep deposits (demolishers). |
 
 **Water quenching** (requires imported water, late tech):
 
@@ -124,10 +125,10 @@ The "overheating problem" from section 4.5 becomes a **resource**. A factory tha
 
 Engine constraint: `min_working_temperature` is per-machine entity, not per-recipe. So we define two entity variants of the same radiator, toggled via hotkey (shift-click). Same building, same sprite, different internal entity with different fixed recipe and temperature threshold.
 
-| Mode | min_working_temp | Fixed Recipe | Input | Output |
-|---|---|---|---|---|
-| **Deacon mode** | 400C | Deacon process | 60 HCl + 15 O2 | 30 Cl2 + 30 water |
-| **Cracking mode** | 650C | Catalytic cracking | 60 HCl | 30 H2 + 30 Cl2 |
+| Mode | min_working_temp | Heat Pipe Required | Fixed Recipe | Input | Output |
+|---|---|---|---|---|---|
+| **Deacon mode** | 200C | Tier 1 (max 250C) | Deacon process | 60 HCl + 15 O2 | 30 Cl2 + 30 water |
+| **Cracking mode** | 450C | Tier 2 (max 500C) | Catalytic cracking | 60 HCl | 30 H2 + 30 Cl2 |
 
 Player shift-clicks to toggle. Same building footprint, same heat pipe connections, same gas pipe connections. Just different chemistry.
 
@@ -159,9 +160,20 @@ Player shift-clicks to toggle. Same building footprint, same heat pipe connectio
 - Higher density further from starting area (incentivizes expansion)
 - Each geyser needs a gas-powered pump + gas pipe connection to base
 
-### 2.5 Deep Deposits (Demolisher-Gated, Late Game)
+### 2.5 Volcanic Rocks (IMPLEMENTED)
 
-Surface lava provides iron, aluminum, calcite, silica. **Titanium ore (rutile)** is only found in deep deposits beneath the volcanic crust, inaccessible to normal mining.
+Mining volcanic rocks provides early-game materials without lava processing:
+
+| Rock | Stone | Graphite | Rutile |
+|---|---|---|---|
+| **Huge volcanic rock** | 10-25 | 3-8 | 1-3 |
+| **Big volcanic rock** | 5-15 | 2-5 | 0-2 (50% chance) |
+
+Graphite from rocks gives early carbon before atmospheric processing is set up. Rutile from rocks is the only pre-demolisher titanium source -- scarce, finite, used as catalyst in SO2 decomposition.
+
+### 2.6 Deep Deposits (Demolisher-Gated, Late Game -- NOT YET IMPLEMENTED)
+
+Surface lava provides iron, aluminum, calcite, silica. **Titanium ore (rutile)** bulk deposits are only found deep beneath the volcanic crust, inaccessible to normal mining.
 
 Requires synthetic demolishers (Phase 1.7 in implementation plan) to expose.
 
@@ -281,11 +293,14 @@ CO --> Graphite:  28 CO + 36 H2 --> 1 graphite + 4 water  (2s, basic-chemistry)
 
 Both steps consume H2 (from HCl geyser electrolysis) and produce tiny amounts of water as byproduct.
 
-**Step 4: O2 from CO2** (existing recipe)
+**Step 4: O2 from SO2** (Vulcanus-specific, implemented)
 ```
-O2 Separation:  400 vulcanus-atmosphere --> 100 O2 + residual gas
-  (Or direct CO2 splitting via thermal route if we add one)
+SO2 Catalytic Decomposition:  40 SO2 + 1 rutile (catalyst) --> 40 O2 + 1 rutile
+  (Rutile is not consumed. Productivity disabled to prevent catalyst duplication.)
+  (SO2 comes from lava silica extraction and atmosphere separation.)
 ```
+
+Nauvis air separation recipes (which extract O2 from air directly) are **disabled on Vulcanus** via surface conditions. The SO2 catalytic route is the only oxygen source.
 
 ### The Complete Chemistry Web
 
@@ -384,10 +399,12 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
 
 **Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks the ability to toggle any placed machine to pneumatic mode on Vulcanus (surface_conditions restrict the toggle to Vulcanus).
 
-**Same entities, two modes:**
-- Electric mode: standard Nullius behavior, consumes electricity from grid.
-- Pneumatic mode: consumes compressed volcanic gas from pipes. `FluidEnergySource` with `burns_fluid = true`.
-- Toggle via shift-click on placed entity (Vulcanus surface only).
+**Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
+- Electric mode: standard Nullius behavior, consumes electricity.
+- Vulcanus mode: depends on machine type:
+  - **Assemblers, labs, chemistry, extractors, air filters**: Pneumatic (compressed volcanic gas via `FluidEnergySource`). Gas pipe connections east/west.
+  - **Furnaces**: Thermal (heat via `HeatEnergySource`). Heat pipe connections on all edges. Consumes waste heat from other machines.
+  - **Inserters**: Pneumatic (gas). No heat interface spawned (too small).
 - Entities in inventory are mode-neutral. Mode is set after placement.
 - The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
 
@@ -541,7 +558,21 @@ The 2-tile range is intentionally terrible. On Nauvis, underground pipes go 7-15
 
 The cheapness compensates for the quantity -- each duct is trivial to craft (local iron + silica, both from lava) but you need SO MANY of them.
 
-### 4.5 Ongoing Tension: Heat Dissipation (DESIGN IN PROGRESS)
+### 4.5 Heat Generation System (IMPLEMENTED)
+
+**Current implementation**: Hidden heat-interface entities spawn alongside pneumatic machines. Working machines increase their heat-interface temperature proportional to energy consumption. Heat flows through heat pipes to thermal furnaces and radiators.
+
+- **Amortized bucket system**: 443 buckets, one per tick (same as Stirling engines). Each machine updated every ~7.4 seconds.
+- **Heat scales with machine energy**: `base_energy * (1 + consumption_bonus) / 100000 * HEAT_PER_UPDATE`. Speed modules = more heat. Efficiency modules = less heat.
+- **HEAT_PER_UPDATE**: 15 degrees per update.
+- **MAX_HEAT**: 500C (matches heat pipe tier 2 max).
+- **Furnaces** (thermal mode): consume heat from network, no hidden interface.
+- **Inserters**: no heat interface (too small).
+- **Cleanup**: heat interface destroyed immediately when machine mined.
+
+**NOT YET IMPLEMENTED**: Overheating penalty (machines stopping/taking damage at high temperature).
+
+### 4.5b Ongoing Tension: Heat Dissipation (FUTURE DESIGN)
 
 The self-fueling lava loop is too comfortable once established. Needs an ongoing management challenge. Candidates:
 
@@ -957,21 +988,32 @@ Almost every electronic/mechanical component needs plastic:
 
 **Vulcanus alt recipe options:**
 
-| Component | Nauvis Recipe | Vulcanus Alt Recipe (proposed) | Notes |
+| Component | Nauvis Recipe | Vulcanus Alt Recipe (IMPLEMENTED) | Notes |
 |---|---|---|---|
 | **Motor 1** | iron wire + plate + **plastic** + rod | iron wire + plate + **silica-ceramic** + rod | Ceramic bushing replaces plastic bearing |
 | **Capacitor** | aluminum sheet + **plastic** + alumina + graphite | aluminum sheet + **silica glass** + alumina + graphite | Glass dielectric replaces plastic |
 | **Logic circuit** | **plastic** + aluminum wire + poly-silicon + graphite | **ceramic substrate** + aluminum wire + poly-silicon + graphite | Ceramic PCB replaces plastic PCB |
 | **Insulated wire** | aluminum wire + **rubber** | aluminum wire + **silicon insulation** | Already defined in section 3.3 |
 
-These are intentionally **worse** than Nauvis recipes (ceramic/glass is heavier, more brittle, harder to work with) but functional. The alt recipes use only Vulcanus-local materials (silica, alumina, graphite -- all from lava).
+**Additional implemented alt recipes** (not just plastic/rubber replacements):
+
+| Component | Nauvis Blocker | Vulcanus Alt | Notes |
+|---|---|---|---|
+| **Filter-1** | plastic | silica + graphite + iron sheet + CO2 | For extractors, wells |
+| **Motor-2** | lubricant | insulated wire + steel + silica | For pumps, advanced machines |
+| **Pump-2** | rubber | pump-1 + motor-2 + pipe + silicon insulation | For fluid infrastructure |
+| **Splitter** | plastic | underground belt + silicon insulation | For belt logistics |
+| **Underground pipe** | sand (from sandstone) | pipe + silica | Sandstone not on Vulcanus |
+| **Heat pipe** | water (100 per pipe!) | pipe-2 + 2 aluminum sheet + 2 silica | Water is precious |
+
+All alt recipes surface-conditioned to Vulcanus (gravity >= 39). Uses only locally available materials.
 
 ### 10.4 Complete Bootstrap Chain (Vulcanus-Local Only)
 
 ```
 Lava
   |--> Iron bloom --> (cool) --> Iron ingot --> plate, rod, wire, gear
-  |--> Aluminum bloom --> (cool) --> Aluminum ingot --> sheet, wire, rod
+  |--> Aluminum bloom --> (cool) --> Alumina --> [dry smelt + graphite] --> Aluminum ingot --> sheet, wire, rod
   |--> Calcite --> lime, calcium
   |--> Silica --> glass, silicon ingot, ceramic substrate
   |--> Sulfur
