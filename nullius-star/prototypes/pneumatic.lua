@@ -28,13 +28,17 @@ data:extend({
 -- The pneumatic variant will be named "entity-name-pneumatic".
 local pneumatic_machines = {}
 
-local function register_pneumatic(entity_type, entity_name)
-  table.insert(pneumatic_machines, { name = entity_name, type = entity_type })
+local function register_pneumatic(entity_type, entity_name, thermal)
+  table.insert(pneumatic_machines, { name = entity_name, type = entity_type, thermal = thermal })
 end
 
--- Register furnace and foundry tiers.
+-- Register furnace tiers (thermal: heat-powered, not gas-powered).
 for i = 1, 3 do
-  register_pneumatic("furnace", "nullius-small-furnace-" .. i)
+  register_pneumatic("assembling-machine", "nullius-small-furnace-" .. i, true)
+end
+
+-- Register foundry tiers (gas-powered, not thermal).
+for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-foundry-" .. i)
 end
 
@@ -139,11 +143,12 @@ for _, entry in pairs(pneumatic_machines) do
       }
     end
 
-    if entry.type == "furnace" then
+    if entry.thermal then
       -- Furnaces use heat energy source (thermal smelting from waste heat).
-      -- Connects to heat pipe network instead of gas pipes.
-      local heat_half = math.floor(math.max(half_h, half_w))
-      if heat_half < 1 then heat_half = 1 end
+      local vulcanus_util = require("prototypes.planet.vulcanus-util")
+      local cb_raw = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
+      local heat_half = math.abs(cb_raw[1][1]) - 0.1
+      if heat_half < 0.5 then heat_half = 0.8 end
       pneumatic.energy_source = {
         type = "heat",
         max_temperature = 500,
@@ -151,10 +156,7 @@ for _, entry in pairs(pneumatic_machines) do
         max_transfer = "2MW",
         min_working_temperature = 100,
         default_temperature = 15,
-        connections = {
-          {position = {0, -heat_half}, direction = defines.direction.north},
-          {position = {0, heat_half}, direction = defines.direction.south},
-        },
+        connections = vulcanus_util.make_heat_connections(heat_half),
         pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
         heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
       }
