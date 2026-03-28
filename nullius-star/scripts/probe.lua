@@ -75,6 +75,45 @@ local function spawn_android(surface, pos, force)
     position = spawn_pos,
     force = force,
   }
+
+  -- Equip android with starting armor and equipment (same as Nauvis android).
+  if android and android.valid then
+    local armor_inv = android.get_inventory(defines.inventory.character_armor)
+    if armor_inv then
+      armor_inv.insert({name = "nullius-chassis-1", count = 1})
+      local body = armor_inv.find_item_stack("nullius-chassis-1")
+      if body and body.grid then
+        if script.active_mods["Companion_Drones"] then
+          body.grid.put({name = "nullius-solar-panel-1"})
+          body.grid.put({name = "nullius-battery-1"})
+          body.grid.put({name = "nullius-battery-1"})
+          body.grid.put({name = "nullius-battery-1"})
+        else
+          body.grid.put({name = "nullius-charger-1"})
+          body.grid.put({name = "nullius-hangar-1"})
+          body.grid.put({name = "nullius-solar-panel-1"})
+          body.grid.put({name = "nullius-battery-1", position = {2, 4}})
+          body.grid.put({name = "nullius-battery-1", position = {3, 4}})
+          body.grid.put({name = "nullius-solar-panel-1"})
+          body.grid.put({name = "nullius-battery-1"})
+          body.grid.put({name = "nullius-battery-1"})
+        end
+        for _, eq in pairs(body.grid.equipment) do
+          if eq.max_energy > eq.energy then
+            eq.energy = eq.max_energy
+          end
+        end
+      end
+    end
+    -- Starting inventory items.
+    local main_inv = android.get_inventory(defines.inventory.character_main)
+    if main_inv then
+      if not script.active_mods["Companion_Drones"] then
+        main_inv.insert({name = "nullius-construction-bot-1", count = 6})
+      end
+    end
+  end
+
   return android
 end
 
