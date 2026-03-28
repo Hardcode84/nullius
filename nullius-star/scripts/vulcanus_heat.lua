@@ -109,8 +109,13 @@ function vulcanus_heat.update()
       local status = entry.machine.status
       if status == defines.entity_status.working
           or status == defines.entity_status.low_power then
+        -- Scale heat by machine energy consumption (base + module bonuses).
+        local base_energy = entry.machine.prototype.get_max_energy_usage()
+        local consumption_mult = 1 + entry.machine.consumption_bonus
+        local heat_delta = HEAT_PER_UPDATE * base_energy * consumption_mult / 100000
+        if heat_delta < 1 then heat_delta = 1 end
         local temp = entry.heat.temperature
-        entry.heat.temperature = math.min(MAX_HEAT, temp + HEAT_PER_UPDATE)
+        entry.heat.temperature = math.min(MAX_HEAT, temp + heat_delta)
       end
       -- If idle, heat dissipates naturally through heat network.
     end
