@@ -28,7 +28,7 @@ data:extend({
     order = "nullius-a",
     stack_size = 50,
     spoil_ticks = 2400,
-    spoil_result = "nullius-aluminum-ingot",
+    spoil_result = "nullius-alumina",
   },
 })
 
