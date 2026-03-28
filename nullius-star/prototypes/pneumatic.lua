@@ -9,8 +9,9 @@ data:extend({
   {
     type = "fluid",
     name = "nullius-compressed-volcanic-gas",
-    icon = "__space-age__/graphics/icons/fluid/lava.png",
-    icon_size = 64,
+    icons = angelsLegacy.functions.create_gas_fluid_icon(nil,
+      {element_tint["volcanic"], element_tint["air"], element_tint["volcanic"]}
+    ),
     subgroup = "compressed-air",
     order = "nullius-z",
     default_temperature = 400,
