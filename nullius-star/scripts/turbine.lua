@@ -52,11 +52,11 @@ function build_turbine(entity)
   storage.nullius_turbines[entity.unit_number] = entry
 
   local pos = entity.position
-  entry.connector = entity.surface.create_entity{
+  entry.connector = surface.create_entity{
       name = "nullius-turbine-connector",
 	  force = entity.force, direction = dir,
 	  position = {x = (pos.x + offs.x), y = (pos.y + offs.y)}}
-  entry.generator = entity.surface.create_entity{
+  entry.generator = surface.create_entity{
       name = "nullius-turbine-generator-" .. typestr ..
 	      "-" .. priority .. "-" .. tier,
 	  force = entity.force, direction = dir, position = pos}
@@ -65,7 +65,7 @@ function build_turbine(entity)
   if (priority == "exhaust") then
     local revdir = rotate_right[rotate_right[dir]]
 	  local roffs = connector_offset[revdir]
-    entry.vent = entity.surface.create_entity{
+    entry.vent = surface.create_entity{
       name = "nullius-turbine-vent" .. "-" .. tier,
 	    force = entity.force, direction = revdir,
 	    position = {x = (pos.x + roffs.x), y = (pos.y + roffs.y)}}
@@ -103,7 +103,7 @@ local function replace_turbine(entity, force, newname)
 
   if (newname ~= nil) then
     update_build_statistics(entity, force, true)
-    entity = entity.surface.create_entity{
+    entity = surface.create_entity{
         name = newname, force = force, direction = entity.direction,
 	    position = entity.position, spill = false, raise_built = true,
 	    fast_replace = true, create_build_effect_smoke = false}
@@ -259,6 +259,7 @@ local function toggle_pump(entity, name, force, circuit_condition)
   end
   local position = entity.position
   local direction = entity.direction
+  local surface = entity.surface
   local names = {["nullius-pump-1"]  = "nullius-togglable-pump-1", ["nullius-pump-2"] = "nullius-togglable-pump-2", ["pump"] = "nullius-togglable-pump-3", ["nullius-small-pump-1"] = "nullius-togglable-small-pump-1", ["nullius-small-pump-2"] = "nullius-togglable-small-pump-2"}
 
   --local fluid_contents = save_fluid_contents(entity)
@@ -266,7 +267,7 @@ local function toggle_pump(entity, name, force, circuit_condition)
   local conf_valve = nil
   if (entity.type == "entity-ghost") then
     destroy_if_valid(entity, true)
-    conf_valve = game.surfaces["nauvis"].create_entity({
+    conf_valve = surface.create_entity({
         name = "entity-ghost",
         inner_name = names[name],
         position = position,
@@ -277,7 +278,7 @@ local function toggle_pump(entity, name, force, circuit_condition)
     })
   else
     destroy_if_valid(entity, true)
-    conf_valve = game.surfaces["nauvis"].create_entity({
+    conf_valve = surface.create_entity({
         name = names[name],
         position = position,
         force = force,
@@ -302,13 +303,14 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
     storage.nullius_valves[entity.unit_number] = nil
     local position = entity.position
     local direction = entity.direction
+    local surface = entity.surface
     local names = {["nullius-togglable-pump-1"]  = "nullius-pump-1", ["nullius-togglable-pump-2"] = "nullius-pump-2", ["nullius-togglable-pump-3"] = "pump", ["nullius-togglable-small-pump-1"] = "nullius-small-pump-1", ["nullius-togglable-small-pump-2"] = "nullius-small-pump-2"}
 
     --local fluid_contents = save_fluid_contents(entity) -- todo: use the fluidbox api to get the linked entity(internal gauge) and save fluid contents this way
     local pump = nil
     if (entity.type == "entity-ghost") then
       destroy_if_valid(entity, true)
-      pump = game.surfaces["nauvis"].create_entity({
+      pump = surface.create_entity({
             name = "entity-ghost",
             inner_name = names[name],
             position = position,
@@ -319,7 +321,7 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
       })
     else
       destroy_if_valid(entity, true)
-      pump = game.surfaces["nauvis"].create_entity({
+      pump = surface.create_entity({
             name = names[name],
             position = position,
             force = force,
