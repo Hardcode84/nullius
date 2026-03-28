@@ -183,6 +183,32 @@ data:extend({
     },
     surface_conditions = {{property = "gravity", min = 39}},
   },
+  -- Dedicated gas extraction recipe: high gas yield, stone byproduct.
+  {
+    type = "recipe",
+    name = "nullius-lava-gas-extraction",
+    localised_name = {"recipe-name.nullius-lava-gas-extraction"},
+    icons = {{
+      icon = "__space-age__/graphics/icons/fluid/lava.png",
+      icon_size = 64,
+      tint = {1, 0.8, 0.5},
+    }},
+    enabled = true,
+    category = "nullius-water-treatment",
+    subgroup = "compressed-air",
+    order = "nullius-vb",
+    energy_required = 2,
+    ingredients = {
+      {type = "fluid", name = "lava", amount = 50},
+    },
+    results = {
+      {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 60},
+      {type = "item", name = "stone", amount = 3},
+    },
+    main_product = "nullius-compressed-volcanic-gas",
+    allow_productivity = true,
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
 })
 
 -- Heat pipe alt: no water needed (Vulcanus has almost no water).
