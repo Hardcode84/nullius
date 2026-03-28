@@ -211,6 +211,36 @@ data:extend({
   },
 })
 
+-- SO2 catalytic decomposition: the only way to get oxygen on Vulcanus.
+-- 2 SO2 --> 2 S + 2 O2 (catalyzed by rutile/TiO2 at volcanic temperatures).
+-- SO2 comes from lava silica extraction and atmosphere separation.
+-- Rutile catalyst: 1 in, 1 out (not consumed). Productivity disabled.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-so2-catalytic-decomposition",
+    localised_name = {"recipe-name.nullius-so2-decomposition"},
+    icon = "__angelspetrochemgraphics__/graphics/icons/molecules/oxygen.png",
+    icon_size = 72,
+    enabled = true,
+    category = "basic-chemistry",
+    subgroup = "air-filtration-recipe",
+    order = "nullius-vc",
+    allow_productivity = false,
+    energy_required = 4,
+    ingredients = {
+      {type = "fluid", name = "nullius-sulfur-dioxide", amount = 40},
+      {type = "item", name = "nullius-rutile", amount = 1},
+    },
+    results = {
+      {type = "fluid", name = "nullius-oxygen", amount = 40},
+      {type = "item", name = "nullius-rutile", amount = 1},
+    },
+    main_product = "nullius-oxygen",
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
 -- Heat pipe alt: no water needed (Vulcanus has almost no water).
 data:extend({
   {
