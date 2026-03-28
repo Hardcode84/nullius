@@ -1,7 +1,7 @@
 -- Nullius* Vulcanus planet definition.
 -- Uses SA terrain generation and graphics but with modified resources:
 -- no tungsten, no coal, no demolishers, no burning trees.
--- Resources: calcite, sulfuric-acid-geyser (will become HCl geyser), lava.
+-- Resources: sulfuric-acid-geyser (becomes HCl geyser via data-final-fixes), lava.
 
 local effects = require("__core__.lualib.surface-render-parameter-effects")
 
@@ -22,10 +22,8 @@ local function nullius_vulcanus_map_gen()
       aux = "vulcanus_aux",
       cliffiness = "cliffiness_basic",
       cliff_elevation = "cliff_elevation_from_elevation",
-      -- Resources: calcite and sulfuric acid geyser only.
-      -- No tungsten, no coal.
-      ["entity:calcite:probability"] = "vulcanus_calcite_probability",
-      ["entity:calcite:richness"] = "vulcanus_calcite_richness",
+      -- Resources: sulfuric acid geyser only (remapped to HCl).
+      -- No tungsten, no coal, no calcite deposits.
       ["entity:sulfuric-acid-geyser:probability"] = "vulcanus_sulfuric_acid_geyser_probability",
       ["entity:sulfuric-acid-geyser:richness"] = "vulcanus_sulfuric_acid_geyser_richness",
     },
@@ -42,7 +40,6 @@ local function nullius_vulcanus_map_gen()
     default_enable_all_autoplace_controls = false,
     autoplace_controls =
     {
-      ["calcite"] = {},
       ["sulfuric_acid_geyser"] = {},
       ["vulcanus_volcanism"] = {},
     },
@@ -86,8 +83,6 @@ local function nullius_vulcanus_map_gen()
           ["vulcanus-dune-decal"] = {},
           ["vulcanus-sand-decal"] = {},
           ["vulcanus-lava-fire"] = {},
-          ["calcite-stain"] = {},
-          ["calcite-stain-small"] = {},
           ["sulfur-stain"] = {},
           ["sulfur-stain-small"] = {},
           ["sulfuric-acid-puddle"] = {},
@@ -111,7 +106,6 @@ local function nullius_vulcanus_map_gen()
         settings =
         {
           -- No coal, no tungsten-ore.
-          ["calcite"] = {},
           ["sulfuric-acid-geyser"] = {},
           ["huge-volcanic-rock"] = {},
           ["big-volcanic-rock"] = {},
