@@ -5,8 +5,8 @@
 local vulcanus_heat = {}
 
 local NUM_BUCKETS = 443  -- Same as Stirling engines. One bucket per tick.
-local HEAT_PER_UPDATE = 15  -- Degrees added per update (~2C/sec with 443 buckets).
 local MAX_HEAT = 500  -- Match heat pipe tier 2 max temperature.
+local HEAT_DIVISOR = 200  -- Scales energy (J/tick) to degrees per update.
 
 function vulcanus_heat.init()
   storage.nullius_heat_buckets = {}
@@ -110,10 +110,12 @@ function vulcanus_heat.update()
       if status == defines.entity_status.working
           or status == defines.entity_status.low_power then
         -- Scale heat by machine energy consumption (base + module bonuses).
+        -- get_max_energy_usage() returns joules per tick (watts / 60).
+        -- A 240kW machine = 4000 J/tick. We want ~10-50 degrees per update.
         local base_energy = entry.machine.prototype.get_max_energy_usage()
         local consumption_mult = 1 + entry.machine.consumption_bonus
-        local heat_delta = HEAT_PER_UPDATE * base_energy * consumption_mult / 100000
-        if heat_delta < 1 then heat_delta = 1 end
+        local heat_delta = base_energy * consumption_mult / HEAT_DIVISOR
+        if heat_delta < 2 then heat_delta = 2 end
         local temp = entry.heat.temperature
         entry.heat.temperature = math.min(MAX_HEAT, temp + heat_delta)
       end

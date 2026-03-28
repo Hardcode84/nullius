@@ -563,8 +563,11 @@ The cheapness compensates for the quantity -- each duct is trivial to craft (loc
 **Current implementation**: Hidden heat-interface entities spawn alongside pneumatic machines. Working machines increase their heat-interface temperature proportional to energy consumption. Heat flows through heat pipes to thermal furnaces and radiators.
 
 - **Amortized bucket system**: 443 buckets, one per tick (same as Stirling engines). Each machine updated every ~7.4 seconds.
-- **Heat scales with machine energy**: `base_energy * (1 + consumption_bonus) / 100000 * HEAT_PER_UPDATE`. Speed modules = more heat. Efficiency modules = less heat.
-- **HEAT_PER_UPDATE**: 15 degrees per update.
+- **Heat scales with machine energy**: `get_max_energy_usage() * (1 + consumption_bonus) / 200`. Speed modules = more heat. Efficiency modules = less heat.
+- **Example rates** (degrees per update, every ~7.4 seconds):
+  - Small assembler (59kW): ~5 deg/update (~0.7C/sec)
+  - Chemical plant (240kW): ~20 deg/update (~2.7C/sec)
+  - Multiple machines on same heat network heat up faster.
 - **MAX_HEAT**: 500C (matches heat pipe tier 2 max).
 - **Furnaces** (thermal mode): consume heat from network, no hidden interface.
 - **Inserters**: no heat interface (too small).
