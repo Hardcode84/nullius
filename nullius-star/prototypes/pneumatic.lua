@@ -139,22 +139,44 @@ for _, entry in pairs(pneumatic_machines) do
       }
     end
 
-    pneumatic.energy_source = {
-      type = "fluid",
-      burns_fluid = true,
-      scale_fluid_usage = true,
-      fluid_usage_per_tick = 1,
-      fluid_box = {
-        volume = 200,
-        pipe_connections = pipe_connections,
-      },
-      smoke = {{
-        name = "smoke",
-        frequency = 10,
-        position = {0, -0.7},
-        starting_vertical_speed = 0.08,
-      }},
-    }
+    if entry.type == "furnace" then
+      -- Furnaces use heat energy source (thermal smelting from waste heat).
+      -- Connects to heat pipe network instead of gas pipes.
+      local heat_half = math.floor(math.max(half_h, half_w))
+      if heat_half < 1 then heat_half = 1 end
+      pneumatic.energy_source = {
+        type = "heat",
+        max_temperature = 500,
+        specific_heat = "200kJ",
+        max_transfer = "2MW",
+        min_working_temperature = 100,
+        default_temperature = 15,
+        connections = {
+          {position = {0, -heat_half}, direction = defines.direction.north},
+          {position = {0, heat_half}, direction = defines.direction.south},
+        },
+        pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
+        heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
+      }
+    else
+      -- All other machines use gas (fluid energy source).
+      pneumatic.energy_source = {
+        type = "fluid",
+        burns_fluid = true,
+        scale_fluid_usage = true,
+        fluid_usage_per_tick = 1,
+        fluid_box = {
+          volume = 200,
+          pipe_connections = pipe_connections,
+        },
+        smoke = {{
+          name = "smoke",
+          frequency = 10,
+          position = {0, -0.7},
+          starting_vertical_speed = 0.08,
+        }},
+      }
+    end
 
     -- Same fast_replaceable_group so toggle works.
     pneumatic.fast_replaceable_group = original.fast_replaceable_group or entry.name

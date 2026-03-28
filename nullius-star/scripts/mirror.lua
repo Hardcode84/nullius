@@ -22,8 +22,10 @@ function save_fluid_contents(entity)
 end
 
 function restore_fluid_contents(entity, contents)
-  if ((entity ~= nil) and entity.valid and (contents ~= nil)) then
-    for i = 1, #contents do
+  if ((entity ~= nil) and entity.valid and (contents ~= nil)
+      and (entity.fluidbox ~= nil)) then
+    local count = math.min(#contents, #entity.fluidbox)
+    for i = 1, count do
       entity.fluidbox[i] = contents[i]
     end
   end
