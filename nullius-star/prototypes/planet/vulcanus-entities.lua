@@ -95,22 +95,22 @@ deacon.fluid_boxes = {
   {
     production_type = "input",
     volume = 200,
-    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {0, -1}}},
+    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {-1, -1.3}}},
   },
   {
     production_type = "input",
     volume = 200,
-    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {1, -1}}},
+    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {1, -1.3}}},
   },
   {
     production_type = "output",
     volume = 200,
-    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {0, 1}}},
+    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {-1, 1.3}}},
   },
   {
     production_type = "output",
     volume = 200,
-    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {1, 1}}},
+    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {1, 1.3}}},
   },
 }
 
