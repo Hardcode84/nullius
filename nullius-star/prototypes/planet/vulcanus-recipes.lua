@@ -30,6 +30,19 @@ data:extend({
     spoil_ticks = 2400,
     spoil_result = "nullius-alumina",
   },
+  {
+    type = "item",
+    name = "nullius-aluminum-chloride",
+    localised_name = {"item-name.nullius-aluminum-chloride"},
+    icons = {{
+      icon = "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-3.png",
+      icon_size = 64,
+      tint = {220, 220, 180},
+    }},
+    subgroup = "aluminum-ingot",
+    order = "nullius-vc",
+    stack_size = 100,
+  },
 })
 
 -- Lava processing recipes. Category: nullius-water-treatment (hydro-plant).
@@ -526,6 +539,31 @@ data:extend({
     },
     results = {
       {type = "item", name = "decider-combinator", amount = 3},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+
+  -- Carbochlorination: Al2O3 + 3Cl2 + 3C -> 2AlCl3 + 3CO.
+  -- Chlorine sink: dump AlCl3 into lava.
+  {
+    type = "recipe",
+    name = "nullius-carbochlorination",
+    localised_name = {"recipe-name.nullius-carbochlorination"},
+    enabled = true,
+    category = "basic-chemistry",
+    main_product = "nullius-aluminum-chloride",
+    subgroup = "aluminum-ingot",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-alumina", amount = 2},
+      {type = "fluid", name = "nullius-chlorine", amount = 30},
+      {type = "item", name = "nullius-graphite", amount = 3},
+    },
+    results = {
+      {type = "item", name = "nullius-aluminum-chloride", amount = 4},
+      {type = "fluid", name = "nullius-carbon-monoxide", amount = 30},
     },
     surface_conditions = {{property = "gravity", min = 39}},
   },
