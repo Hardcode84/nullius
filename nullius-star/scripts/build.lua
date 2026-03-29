@@ -3,6 +3,10 @@ function entity_added(entity, handbuilt)
 	  mecha_added(entity)
     return
   end
+  -- Spawn heat interface for bot-placed pneumatic machines.
+  if string.sub(entity.name, -10) == "-pneumatic" then
+    vulcanus_heat.add_heat_interface(entity)
+  end
   if (string.sub(entity.name, 1, 8) ~= "nullius-") then
     if (entity.name == "entity-ghost") then
       local result = check_pipette(handbuilt)
