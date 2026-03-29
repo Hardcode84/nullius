@@ -1,6 +1,6 @@
 # Nullius SA: Vulcanus -- Planet Design Document
 
-> **Status**: Partially implemented (updated 2026-03-28)
+> **Status**: Partially implemented (updated 2026-03-29)
 > **Role**: Heavy industry. Abundant metals from lava. No water, no organics.
 > **Unlock**: Volcanic Probe Signal Recovery (Tier 3, after signal acquisition + metallurgy-2)
 > **Theme**: Time-gated production (spoilage-as-cooldown), silicon-only insulation, late-game synthetic demolishers.
@@ -214,16 +214,49 @@ Lava --> [Lava Aluminum Separation] --> Molten Aluminum Bloom
                             +--- Silicon-Insulated Wire (Vulcanus variant)
 ```
 
-### 3.3 Silicon Insulation (Replaces Organic on Vulcanus)
+### 3.3 Alternative Recipes (IMPLEMENTED)
 
-On Nauvis, insulated wire uses aluminum wire + rubber. Vulcanus has no rubber (no organics). Instead:
+Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These alt recipes replace organic/wet ingredients with locally available materials. All are Vulcanus-only (`surface_conditions: gravity >= 39`).
 
-| Recipe | Input | Output | Time | Notes |
-|---|---|---|---|---|
-| Silica insulation | 3 silica + 1 aluminum sheet | 2 silicon-insulation | 4s | Vulcanus-only recipe (surface_conditions) |
-| Silicon-insulated wire | 3 aluminum-wire + 2 silicon-insulation | 4 insulated-wire | 3s | Same output as Nauvis recipe, different inputs |
+**Base materials:**
 
-This is a **worse recipe** than Nauvis rubber insulation (more steps, more ingredients) but it works without organics. The player builds an ugly insulation line from volcanic silica and moves on.
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Silicon insulation | 3 silica + 1 aluminum-sheet | 2 silicon-insulation | 4s | dry-smelting | New intermediate (replaces rubber/plastic role) |
+| Heat pipe (dry) | 1 pipe-2 + 2 aluminum-sheet + 2 silica | 1 heat-pipe-1 | 4s | small-crafting | Normal recipe needs water |
+
+**Wire and circuits:**
+
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Insulated wire (silicon) | 3 aluminum-wire + 2 silicon-insulation | 4 insulated-wire | 6s | small-crafting | Rubber in normal recipe |
+| Logic circuit (silicon) | 3 silicon-insulation + 4 aluminum-wire + 2 polycrystalline-silicon + 1 graphite | 3 logic-circuit | 5s | tiny-assembly | Plastic in normal recipe |
+| Capacitor (silica) | 2 aluminum-sheet + 4 silica + 1 alumina + 1 graphite | 2 capacitor | 6s | machine-casting | Plastic in normal recipe |
+
+**Mechanical:**
+
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Motor (ceramic) | 2 iron-wire + 1 iron-plate + 2 silica + 1 iron-rod | 1 motor-1 | 8s | medium-crafting | Plastic in normal recipe |
+| Motor 2 (silica) | 2 insulated-wire + 1 steel-plate + 1 steel-gear + 1 steel-rod + 3 silica | 1 motor-2 | 10s | medium-crafting | Lubricant in normal recipe |
+| Filter (silica) | 2 silica + 1 graphite + 1 iron-sheet + 10 CO2 | 1 filter-1 | 8s | basic-chemistry | Plastic in normal recipe |
+| Pump 2 (silicon) | 1 pump-1 + 1 motor-2 + 2 pipe-2 + 2 silicon-insulation | 1 pump-2 | 8s | medium-crafting | Rubber in normal recipe |
+
+**Logistics:**
+
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Splitter (silicon) | 2 underground-belt + 2 silicon-insulation | 1 splitter | 4s | small-crafting | Plastic in normal recipe |
+| Underground pipe (silica) | 5 pipe + 3 silica | 2 pipe-to-ground | 8s | small-crafting | Sand (needs sandstone) in normal recipe |
+
+**Chemistry:**
+
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
+| Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | basic-chemistry | Chlorine sink (dump AlCl3 into lava) |
+
+These recipes are generally **worse** than Nauvis equivalents (more steps, more ingredients) but they work without organics. The player builds ugly inorganic production lines and moves on.
 
 ### 3.4 Titanium (Full Kroll Process -- Vulcanus Native)
 
@@ -375,6 +408,18 @@ Chlorine is a **useful input** on Vulcanus, not a waste product. And hydrogen is
 - Water synthesis (H2 + O2 --> H2O, precious drops)
 
 You never have enough H2 for all three. Must prioritize.
+
+**Making thermal cracking H2-positive (chlorine sink):**
+
+Thermal cracking produces equal H2 and Cl2. If all you want is hydrogen, the chlorine is a byproduct. **Carbochlorination** (IMPLEMENTED) is the chlorine sink:
+
+```
+Al2O3 + 3 Cl2 + 3 C --> 2 AlCl3 + 3 CO
+```
+
+Alumina and graphite are cheap from lava. AlCl3 is a solid that can be dumped into lava. CO is a useful intermediate (feeds graphite production). Net effect: trade alumina + graphite to extract hydrogen from HCl with no chlorine waste.
+
+**Future**: AlCl3 is the real-world Friedel-Crafts catalyst. Plan to use it as non-consumed catalyst in Vulcanus organic chemistry alt recipes, giving it value beyond a void sink.
 
 ---
 
