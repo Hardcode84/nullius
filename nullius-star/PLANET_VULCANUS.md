@@ -331,6 +331,8 @@ Both steps consume H2 (from HCl geyser electrolysis) and produce tiny amounts of
 SO2 Catalytic Decomposition:  40 SO2 + 1 rutile (catalyst) --> 40 O2 + 1 rutile
   (Rutile is not consumed. Productivity disabled to prevent catalyst duplication.)
   (SO2 comes from lava silica extraction and atmosphere separation.)
+  TODO: Add solid sulfur (SA base item) to output. Currently sulfur is "absorbed"
+        by the handwave. Needed once FeS shuttle is implemented as sulfur source.
 ```
 
 Nauvis air separation recipes (which extract O2 from air directly) are **disabled on Vulcanus** via surface conditions. The SO2 catalytic route is the only oxygen source.
@@ -420,6 +422,21 @@ Al2O3 + 3 Cl2 + 3 C --> 2 AlCl3 + 3 CO
 Alumina and graphite are cheap from lava. AlCl3 is a solid that can be dumped into lava. CO is a useful intermediate (feeds graphite production). Net effect: trade alumina + graphite to extract hydrogen from HCl with no chlorine waste.
 
 **Future**: AlCl3 is the real-world Friedel-Crafts catalyst. Plan to use it as non-consumed catalyst in Vulcanus organic chemistry alt recipes, giving it value beyond a void sink.
+
+**Alternative H2 extraction: Iron sulfide shuttle (NOT YET IMPLEMENTED):**
+
+A second pathway to extract hydrogen from HCl, using sulfur as a recycled catalyst:
+
+```
+Step 1: Fe + S --> FeS                (smelting)
+Step 2: FeS + 2 HCl --> FeCl2 + H2S  (acid-base chemistry)
+Step 3: H2S --> H2 + S               (thermal decomposition at ~1000C)
+Net:    Fe + 2 HCl --> FeCl2 + H2    (sulfur fully recycled)
+```
+
+Iron is cheap from lava. FeCl2 is a solid dumped into lava. Sulfur loops back to step 1. Different production chain from thermal cracking -- uses smelting + chemistry instead of radiators. Gives the player two independent H2 pathways to invest in.
+
+Note: FeCl2 from this route and FeCl3 from direct chlorination (2Fe + 3Cl2 --> 2FeCl3) can share a single "iron chloride" item in-game (handwave the oxidation state). This unifies two chlorine sinks into one waste product and opens the door for iron chloride as a useful intermediate (PCB etchant, water treatment catalyst, etc).
 
 ---
 
