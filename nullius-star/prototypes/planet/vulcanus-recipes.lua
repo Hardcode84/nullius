@@ -505,4 +505,28 @@ data:extend({
     },
     surface_conditions = {{property = "gravity", min = 39}},
   },
+
+  -- Logic circuit alt: silicon insulation replaces plastic.
+  {
+    type = "recipe",
+    name = "nullius-logic-circuit-vulcanus",
+    localised_name = {"recipe-name.nullius-logic-circuit-vulcanus"},
+    enabled = true,
+    category = "tiny-assembly",
+    subgroup = "electronic-intermediate",
+    order = "nullius-vc",
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 5,
+    ingredients = {
+      {type = "item", name = "nullius-silicon-insulation", amount = 3},
+      {type = "item", name = "nullius-aluminum-wire", amount = 4},
+      {type = "item", name = "nullius-polycrystalline-silicon", amount = 2},
+      {type = "item", name = "nullius-graphite", amount = 1},
+    },
+    results = {
+      {type = "item", name = "decider-combinator", amount = 3},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
 })
