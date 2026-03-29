@@ -337,76 +337,59 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
   conf_valve_check_one_way(control_behavior.circuit_condition, entity.unit_number)
 end
 
--- Pneumatic toggle: swap between electric and pneumatic variants on Vulcanus.
--- Bidirectional mapping: original <-> pneumatic name.
-local pneumatic_pairs = {}
-local function init_pneumatic_pair(original, pneumatic)
-  pneumatic_pairs[original] = pneumatic
-  pneumatic_pairs[pneumatic] = original
-end
+-- Transition table: declarative entity mode toggling via Ctrl+R.
+-- Each entry is a list of candidate transitions, tried in order.
+-- First whose condition() passes (or has none) is used.
+--   target:    replacement entity name.
+--   condition: fn(entity, force) -> bool. Nil means always.
+--   gate:      fn(entity) -> bool. If false, transition blocked (gate does side-effects).
+--   on_leave:  fn(entity). Called before destroying old entity.
+--   on_enter:  fn(new_entity). Called after creating new entity.
+--   replace_fn: fn(entity, target, force) -> new_entity. Overrides default replace_fluid_entity.
+local transitions = {}
 
--- Must match the entities generated in prototypes/pneumatic.lua.
-for i = 1, 3 do
-  init_pneumatic_pair("nullius-small-furnace-" .. i, "nullius-small-furnace-" .. i .. "-pneumatic")
-  init_pneumatic_pair("nullius-foundry-" .. i, "nullius-foundry-" .. i .. "-pneumatic")
-end
-init_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-pneumatic")
-init_pneumatic_pair("nullius-small-assembler-2", "nullius-small-assembler-2-pneumatic")
-init_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pneumatic")
-init_pneumatic_pair("nullius-medium-assembler-2", "nullius-medium-assembler-2-pneumatic")
-init_pneumatic_pair("inserter", "inserter-pneumatic")
-init_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
-for i = 1, 3 do
-  init_pneumatic_pair("nullius-hydro-plant-" .. i, "nullius-hydro-plant-" .. i .. "-pneumatic")
-  init_pneumatic_pair("nullius-distillery-" .. i, "nullius-distillery-" .. i .. "-pneumatic")
-  init_pneumatic_pair("nullius-chemical-plant-" .. i, "nullius-chemical-plant-" .. i .. "-pneumatic")
-  init_pneumatic_pair("nullius-surge-electrolyzer-" .. i, "nullius-surge-electrolyzer-" .. i .. "-pneumatic")
-  init_pneumatic_pair("nullius-priority-electrolyzer-" .. i, "nullius-priority-electrolyzer-" .. i .. "-pneumatic")
-end
-init_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
-init_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
-for i = 1, 3 do
-  init_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
-end
-init_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
-
--- Radiator mode toggle (Deacon <-> Cracking).
-init_pneumatic_pair("nullius-vulcanus-radiator-deacon", "nullius-vulcanus-radiator-cracking")
-
-local function is_pneumatic(name)
-  return string.sub(name, -10) == "-pneumatic"
-end
-
-local function toggle_pneumatic(entity, entityname, force)
-  local pairs_table = pneumatic_pairs
-  local newname = pairs_table[entityname]
-  if newname == nil then return false end
-
-  -- Only allow pneumatic toggle on Vulcanus surface.
-  local surface = entity.surface
-  if not surface or not surface.planet or surface.planet.name ~= "nullius-vulcanus" then
-    return false
+function register_transition(from, to, opts)
+  if not transitions[from] then
+    transitions[from] = {}
   end
-
-  -- Check that pneumatic technology is researched.
-  if not force.technologies["nullius-pneumatic-technology"].researched then
-    return false
-  end
-
-  -- Remove old heat interface if switching FROM pneumatic.
-  if is_pneumatic(entityname) then
-    vulcanus_heat.remove_heat_interface(entity.unit_number)
-  end
-
-  local new_entity = replace_fluid_entity(entity, newname, force, nil)
-
-  -- Add heat interface if switching TO pneumatic.
-  if new_entity and new_entity.valid and is_pneumatic(newname) then
-    vulcanus_heat.add_heat_interface(new_entity)
-  end
-
-  return true
+  table.insert(transitions[from], {
+    target = to,
+    condition = opts and opts.condition,
+    gate = opts and opts.gate,
+    on_leave = opts and opts.on_leave,
+    on_enter = opts and opts.on_enter,
+    replace_fn = opts and opts.replace_fn,
+  })
 end
+
+local function execute_transition(entity, name, force)
+  local chain = transitions[name]
+  if not chain then return false end
+
+  for _, tr in ipairs(chain) do
+    if not tr.condition or tr.condition(entity, force) then
+      if tr.gate and not tr.gate(entity) then
+        return true
+      end
+      if tr.on_leave then
+        tr.on_leave(entity)
+      end
+      local new_entity
+      if tr.replace_fn then
+        new_entity = tr.replace_fn(entity, tr.target, force)
+      else
+        new_entity = replace_fluid_entity(entity, tr.target, force, nil)
+      end
+      if tr.on_enter and new_entity and new_entity.valid then
+        tr.on_enter(new_entity)
+      end
+      return true
+    end
+  end
+  return false
+end
+
+-- Vulcanus-specific transitions are registered in scripts/vulcanus_transitions.lua.
 
 local function priority_event(event)
   local player = game.players[event.player_index]
@@ -426,8 +409,8 @@ local function priority_event(event)
   --   toggle_pump(target, name, force)
   -- elseif (is_conf_valve_entity(name)) then
   --   toggle_conf_valve(target, name, force)
-  elseif (toggle_pneumatic(target, name, force)) then
-    -- Handled by pneumatic toggle.
+  elseif execute_transition(target, name, force) then
+    -- Handled by transition table.
   end
 end
 
