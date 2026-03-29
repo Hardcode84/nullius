@@ -3990,6 +3990,14 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-improvised-explosive"
       },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-thermite-explosive"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-aluminum-powder"
+      },
 	  {
         type = "unlock-recipe",
         recipe = "nullius-chlorine-barrel"
@@ -3997,6 +4005,14 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "empty-nullius-chlorine-barrel"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-sulfur-dioxide-barrel"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "empty-nullius-sulfur-dioxide-barrel"
       },
       {
         type = "cliff-deconstruction-enabled",

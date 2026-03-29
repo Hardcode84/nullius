@@ -568,3 +568,45 @@ data:extend({
     surface_conditions = {{property = "gravity", min = 39}},
   },
 })
+
+-- Thermite explosive: aluminum-sulfur thermite in a chlorine barrel.
+-- Alt to improvised explosive that avoids methanol (organic).
+-- Hand-craftable like the original. No surface condition.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-thermite-explosive",
+    localised_name = {"recipe-name.nullius-thermite-explosive"},
+    icons = {
+      {
+        icon = "__base__/graphics/icons/explosives.png",
+        icon_size = 64,
+        scale = 0.5,
+      },
+      {
+        icon = "__angelssmeltinggraphics__/graphics/icons/powder-aluminium.png",
+        icon_size = 64,
+        scale = 0.3,
+        shift = {-7, -7},
+      },
+    },
+    order = "nullius-xb",
+    enabled = false,
+    always_show_made_in = true,
+    allow_decomposition = false,
+    allow_as_intermediate = false,
+    category = "hand-crafting",
+    energy_required = 30,
+    ingredients = {
+      {type = "item", name = "nullius-chlorine-barrel", amount = 1},
+      {type = "item", name = "nullius-sulfur-dioxide-barrel", amount = 1},
+      {type = "item", name = "nullius-aluminum-powder", amount = 4},
+      {type = "item", name = "nullius-red-wire", amount = 1},
+      {type = "item", name = "nullius-green-wire", amount = 1},
+      {type = "item", name = "nullius-small-miner-1", amount = 1},
+    },
+    results = {
+      {type = "item", name = "cliff-explosives", amount = 1},
+    },
+  },
+})
