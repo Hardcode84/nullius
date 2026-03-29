@@ -57,6 +57,11 @@ register_pneumatic("inserter", "bob-turbo-inserter")
 register_pneumatic("mining-drill", "nullius-extractor-1")
 register_pneumatic("mining-drill", "nullius-extractor-2")
 
+-- Register crushers.
+for i = 1, 3 do
+  register_pneumatic("assembling-machine", "nullius-crusher-" .. i)
+end
+
 -- Register air filters.
 for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-air-filter-" .. i)

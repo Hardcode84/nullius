@@ -51,6 +51,9 @@ end
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
 for i = 1, 3 do
+  register_pneumatic_pair("nullius-crusher-" .. i, "nullius-crusher-" .. i .. "-pneumatic")
+end
+for i = 1, 3 do
   register_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
 end
 register_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
