@@ -256,6 +256,15 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 | Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
 | Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | basic-chemistry | Chlorine sink (dump AlCl3 into lava) |
 
+**Explosives:**
+
+| Recipe | Input | Output | Time | Category | Replaces |
+|---|---|---|---|---|---|
+| Thermite explosive (IMPLEMENTED) | 1 chlorine-barrel + 1 SO2-barrel + 4 aluminum-powder + 1 red-wire + 1 green-wire + 1 small-miner | 1 explosive | 30s | hand-crafting | Methanol in improvised explosive |
+| ANFO explosive (NOT YET IMPLEMENTED) | 30 ammonia + 20 nitric-acid + 20 SO2 + 4 aluminum-powder + 2 iron-oxide + 1 red-wire | 1 explosive + 16 wastewater | ~4s | basic-chemistry | Glycerol/plastic in industrial explosive-1 |
+
+Thermite: field-expedient IED (aluminum-sulfur thermite in a pressurized barrel). ANFO: proper industrial production (ammonium nitrate + aluminum fuel + iron oxide casing, all inorganic).
+
 These recipes are generally **worse** than Nauvis equivalents (more steps, more ingredients) but they work without organics. The player builds ugly inorganic production lines and moves on.
 
 ### 3.4 Titanium (Full Kroll Process -- Vulcanus Native)
