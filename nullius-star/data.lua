@@ -68,6 +68,13 @@ valves["nullius-togglable-pump-3"] = { name = "nullius-togglable-pump-3", gauge_
 valves["nullius-togglable-small-pump-1"] = { name = "nullius-togglable-small-pump-1" }
 valves["nullius-togglable-small-pump-2"] = { name = "nullius-togglable-small-pump-2" }
 
+-- Pneumatic valve variants for Vulcanus.
+valves["nullius-togglable-pump-1-pneumatic"] = { name = "nullius-togglable-pump-1-pneumatic", gauge_name = "nullius-pump-gauge" }
+valves["nullius-togglable-pump-2-pneumatic"] = { name = "nullius-togglable-pump-2-pneumatic", gauge_name = "nullius-pump-gauge" }
+valves["nullius-togglable-pump-3-pneumatic"] = { name = "nullius-togglable-pump-3-pneumatic", gauge_name = "nullius-pump-gauge" }
+valves["nullius-togglable-small-pump-1-pneumatic"] = { name = "nullius-togglable-small-pump-1-pneumatic" }
+valves["nullius-togglable-small-pump-2-pneumatic"] = { name = "nullius-togglable-small-pump-2-pneumatic" }
+
 -- Pneumatic machine variants (gas-powered alternates for Vulcanus).
 require("prototypes.pneumatic")
 

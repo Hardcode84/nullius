@@ -389,6 +389,43 @@ local function execute_transition(entity, name, force)
   return false
 end
 
+-- Global helpers for pump/valve transitions (used by vulcanus_transitions.lua).
+-- Replaces entity by destroy+create (pumps and valves cannot fast_replace).
+function replace_pump_valve(entity, newname, force)
+  local position = entity.position
+  local direction = entity.direction
+  local surface = entity.surface
+  local is_ghost = (entity.type == "entity-ghost")
+  destroy_if_valid(entity, true)
+  if is_ghost then
+    return surface.create_entity{
+      name = "entity-ghost", inner_name = newname,
+      position = position, force = force, direction = direction,
+      raise_built = true, create_build_effect_smoke = false,
+    }
+  else
+    return surface.create_entity{
+      name = newname, position = position,
+      force = force, direction = direction, raise_built = true,
+    }
+  end
+end
+
+-- Gate for valve transitions: returns true when valve is done cycling modes.
+-- If not done, cycles mode as side-effect and blocks the transition.
+function valve_gate(entity)
+  if not storage.nullius_valves then
+    storage.nullius_valves = {}
+  end
+  if storage.nullius_valves[entity.unit_number] then
+    storage.nullius_valves[entity.unit_number] = nil
+    return true
+  end
+  local control_behavior = entity.get_or_create_control_behavior()
+  conf_valve_check_one_way(control_behavior.circuit_condition, entity.unit_number)
+  return false
+end
+
 -- Vulcanus-specific transitions are registered in scripts/vulcanus_transitions.lua.
 
 local function priority_event(event)
@@ -405,12 +442,12 @@ local function priority_event(event)
     toggle_surge(target, name, force)
   elseif (is_hangar_entity(name)) then
     toggle_hangar(target, name, force)
+  elseif execute_transition(target, name, force) then
+    -- Handled by transition table (pneumatic toggles, Vulcanus pump cycle).
   -- elseif (is_pump_entity(name)) then
   --   toggle_pump(target, name, force)
   -- elseif (is_conf_valve_entity(name)) then
   --   toggle_conf_valve(target, name, force)
-  elseif execute_transition(target, name, force) then
-    -- Handled by transition table.
   end
 end
 

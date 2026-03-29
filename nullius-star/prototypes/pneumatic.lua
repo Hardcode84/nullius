@@ -74,6 +74,20 @@ end
 -- Register labs.
 register_pneumatic("lab", "nullius-lab-1")
 
+-- Register pumps (gas-powered, no heat interface).
+register_pneumatic("pump", "nullius-pump-1")
+register_pneumatic("pump", "nullius-pump-2")
+register_pneumatic("pump", "pump")
+register_pneumatic("pump", "nullius-small-pump-1")
+register_pneumatic("pump", "nullius-small-pump-2")
+
+-- Register valves (togglable pumps, gas-powered).
+register_pneumatic("pump", "nullius-togglable-pump-1")
+register_pneumatic("pump", "nullius-togglable-pump-2")
+register_pneumatic("pump", "nullius-togglable-pump-3")
+register_pneumatic("pump", "nullius-togglable-small-pump-1")
+register_pneumatic("pump", "nullius-togglable-small-pump-2")
+
 -- Generate pneumatic variants.
 local pneumatic_pairs = {}  -- mapping: original name --> pneumatic name.
 

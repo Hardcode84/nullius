@@ -62,3 +62,36 @@ register_transition("nullius-vulcanus-radiator-deacon", "nullius-vulcanus-radiat
 register_transition("nullius-vulcanus-radiator-cracking", "nullius-vulcanus-radiator-deacon", {
   condition = is_vulcanus_pneumatic,
 })
+
+-- Pump/valve cycle on Vulcanus:
+-- electric-valve -> pneumatic-pump -> pneumatic-valve -> electric-pump.
+-- (electric-pump -> electric-valve is handled by the existing toggle_pump in turbine.lua.)
+local pump_valve_pairs = {
+  {"nullius-pump-1", "nullius-togglable-pump-1"},
+  {"nullius-pump-2", "nullius-togglable-pump-2"},
+  {"pump", "nullius-togglable-pump-3"},
+  {"nullius-small-pump-1", "nullius-togglable-small-pump-1"},
+  {"nullius-small-pump-2", "nullius-togglable-small-pump-2"},
+}
+
+for _, pair in ipairs(pump_valve_pairs) do
+  local pump, valve = pair[1], pair[2]
+  local pn_pump = pump .. "-pneumatic"
+  local pn_valve = valve .. "-pneumatic"
+
+  -- Electric valve -> pneumatic pump (Vulcanus only, after valve done cycling).
+  register_transition(valve, pn_pump, {
+    condition = is_vulcanus_pneumatic,
+    gate = valve_gate,
+    replace_fn = replace_pump_valve,
+  })
+  -- Pneumatic pump -> pneumatic valve.
+  register_transition(pn_pump, pn_valve, {
+    replace_fn = replace_pump_valve,
+  })
+  -- Pneumatic valve -> electric pump (after valve done cycling).
+  register_transition(pn_valve, pump, {
+    gate = valve_gate,
+    replace_fn = replace_pump_valve,
+  })
+end
