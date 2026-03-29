@@ -270,6 +270,37 @@ data:extend({
   },
 })
 
+-- Lubricant alt: graphite-based high-temperature lubricant.
+-- Replaces methanol (organic) with graphite (inorganic).
+-- Silicon-graphite colloidal suspension in HCl.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-lubricant-vulcanus",
+    localised_name = {"recipe-name.nullius-lubricant-vulcanus"},
+    enabled = true,
+    category = "basic-chemistry",
+    subgroup = "chlorine-chemistry",
+    order = "nullius-vc",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-hydrogen-chloride"].flow_color,
+      secondary = data.raw.fluid["nullius-hydrogen-chloride"].flow_color,
+    },
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-silicon-ingot", amount = 1},
+      {type = "item", name = "nullius-graphite", amount = 3},
+      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 50, fluidbox_index = 1},
+    },
+    results = {
+      {type = "fluid", name = "nullius-lubricant", amount = 8},
+      {type = "fluid", name = "nullius-acid-hydrochloric", amount = 10},
+    },
+    main_product = "nullius-lubricant",
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+})
+
 -- Heat pipe alt: no water needed (Vulcanus has almost no water).
 data:extend({
   {
