@@ -121,29 +121,49 @@ HCl Geyser (fixed map position, infinite, finite throughput)
 
 The "overheating problem" from section 4.5 becomes a **resource**. A factory that runs hot isn't just a management challenge -- it's a chemistry accelerator. Players who push their factories to the thermal limit get rewarded with faster HCl processing.
 
-**Single radiator with mode toggle** (same pattern as Nullius surge/priority electrolyzers):
+**Two-tier radiator system** (assembling-machines with HeatEnergySource and fluid boxes):
 
-Engine constraint: `min_working_temperature` is per-machine entity, not per-recipe. So we define two entity variants of the same radiator, toggled via hotkey (shift-click). Same building, same sprite, different internal entity with different fixed recipe and temperature threshold.
+Radiators are the heat-powered chemistry buildings. They consume waste heat from the heat pipe network to drive fluid-input thermal reactions. Two tiers with different temperature thresholds:
 
-| Mode | min_working_temp | Heat Pipe Required | Fixed Recipe | Input | Output |
-|---|---|---|---|---|---|
-| **Deacon mode** | 200C | Tier 1 (max 250C) | Deacon process | 60 HCl + 15 O2 | 30 Cl2 + 30 water |
-| **Cracking mode** | 450C | Tier 2 (max 500C) | Catalytic cracking | 60 HCl | 30 H2 + 30 Cl2 |
+| Tier | min_working_temp | Heat Pipe Required | Crafting Categories |
+|---|---|---|---|
+| **Low-temp radiator** | 200C | Tier 1 (max 250C) | `nullius-low-temp-radiator` |
+| **High-temp radiator** | 450C | Tier 2 (max 500C) | `nullius-low-temp-radiator` + `nullius-high-temp-radiator` |
 
-Player shift-clicks to toggle. Same building footprint, same heat pipe connections, same gas pipe connections. Just different chemistry.
+High-temp radiator can craft all low-temp recipes too (it's hotter).
 
-**The choice is contextual:**
-- Radiator near cool part of factory? Deacon mode (400C = 200C ambient + 200C threshold, easy) -- gives water + chlorine
-- Radiator near furnace cluster? Cracking mode (650C = 200C ambient + 450C threshold, serious heat investment) -- gives hydrogen + chlorine
-- Need water urgently? Toggle some cracking radiators to Deacon mode
-- Need hydrogen for graphite? Toggle Deacon radiators to cracking (if they're hot enough)
+**Low-temp recipes** (200C + 200C ambient = 400C effective, easy):
 
-**Progression is still natural:**
-- Early factory (small, low heat): All radiators in Deacon mode (400C reachable with minimal machines). Getting water + chlorine.
-- Growing factory (more heat): Toggle radiators near hot spots to cracking mode. Now getting hydrogen too.
-- Large factory (lots of heat): Most radiators in cracking mode. Deacon mode only where you specifically need water output.
+| Recipe | Input | Output | Notes |
+|---|---|---|---|
+| Deacon process | 60 HCl + 15 O2 | 30 Cl2 + 30 H2O | Water source (precious) |
+| SO2 catalytic decomposition | 40 SO2 + 1 rutile (catalyst) | 40 O2 + 1 rutile | Only O2 source on Vulcanus |
 
-**Implementation**: Two entity prototypes (`nullius-vulcanus-radiator-deacon` and `nullius-vulcanus-radiator-cracking`) with `fast_replaceable_group` set to the same group. Script on toggle hotkey swaps one for the other, preserving position and pipe connections. Identical to existing Nullius turbine toggle pattern in `scripts/turbine.lua`.
+**High-temp recipes** (200C + 450C ambient = 650C effective, serious heat investment):
+
+| Recipe | Input | Output | Notes |
+|---|---|---|---|
+| HCl thermal cracking | 60 HCl | 30 H2 + 30 Cl2 | Bulk H2 production |
+| Carbochlorination | 2 alumina + 30 Cl2 + 3 graphite | 4 AlCl3 + 30 CO | Chlorine sink |
+| H2S thermal cracking (FUTURE) | H2S | H2 + S | From FeS shuttle |
+
+**Design distinction**: Thermal furnaces (HeatEnergySource) handle solid-to-solid smelting. Radiators handle fluid-input thermal chemistry. Clean separation -- furnaces eat heat to smelt metal, radiators eat heat to crack molecules.
+
+Player picks the recipe in the radiator like any assembling machine. No Ctrl+R toggle needed.
+
+**Radiator crafting recipes:**
+
+| Building | Input | Notes |
+|---|---|---|
+| Low-temp radiator | 8 iron-plate + 4 silica + 4 pipe | Early game. Place adjacent to machines. |
+| High-temp radiator | 1 low-temp-radiator + 8 aluminum-sheet + 8 silica + 1 heat-pipe-1 + 4 pipe-2 | Standard tiered upgrade pattern. |
+
+**Progression:**
+- Early factory: Low-temp radiators for Deacon (water) and SO2 decomposition (oxygen). Place anywhere near machines.
+- Growing factory: Upgrade to high-temp radiators for HCl cracking (hydrogen) and carbochlorination. Must place adjacent to busy machines (heat interfaces cap at 500C, threshold is 450C -- tight without tier 2 heat pipes).
+- Large factory with tier 2 heat pipes: High-temp radiators can be placed remotely, heat piped from distant machine clusters. Layout freedom.
+
+**Implementation**: Two entity prototypes with `fast_replaceable_group` for upgrade path. Both are assembling-machines with HeatEnergySource and 2-3 fluid connections. No toggle script needed -- standard recipe selection UI.
 
 **Why this matters**: The entire Vulcanus chemistry chain now runs on waste heat from production. Electricity is only needed for the initial bootstrap (probe's Stirling engine) and niche electronics. Once the thermal factory is established, chemistry is powered by the factory's own thermal exhaust.
 
@@ -254,7 +274,7 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 | Recipe | Input | Output | Time | Category | Replaces |
 |---|---|---|---|---|---|
 | Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
-| Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | basic-chemistry | Chlorine sink (dump AlCl3 into lava) |
+| Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | basic-chemistry (TODO: move to high-temp-radiator) | Chlorine sink (dump AlCl3 into lava) |
 
 **Explosives:**
 
