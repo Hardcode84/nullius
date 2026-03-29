@@ -18,7 +18,7 @@
 | **Silicon insulation only** | Abundant silica from volcanic rock replaces organic insulation. |
 | **Abundant metals** | Iron, aluminum, calcite from lava. Cheap but need time to cool. |
 | **Abundant geothermal** | Constant heat from fumaroles. No intermittency problem. |
-| **No wind/solar** | Wind: dense corrosive atmosphere (CO2 + SO2 + HCl traces) destroys exposed mechanical parts. Solar: surface temperature exceeds panel operating range -- semiconductor junctions degrade rapidly above 200C, Vulcanus ambient is 400C+. |
+| **No wind/solar** | Wind: dense corrosive atmosphere (CO2 + SO2 + HCl traces) destroys exposed mechanical parts. Solar: surface temperature exceeds panel operating range -- semiconductor junctions degrade rapidly above 150C, Vulcanus ambient is 200C. |
 
 ---
 
@@ -133,13 +133,13 @@ Engine constraint: `min_working_temperature` is per-machine entity, not per-reci
 Player shift-clicks to toggle. Same building footprint, same heat pipe connections, same gas pipe connections. Just different chemistry.
 
 **The choice is contextual:**
-- Radiator near cool part of factory? Deacon mode (400C reachable) -- gives water + chlorine
-- Radiator near furnace cluster? Cracking mode (650C+ reachable) -- gives hydrogen + chlorine
+- Radiator near cool part of factory? Deacon mode (400C = 200C ambient + 200C threshold, easy) -- gives water + chlorine
+- Radiator near furnace cluster? Cracking mode (650C = 200C ambient + 450C threshold, serious heat investment) -- gives hydrogen + chlorine
 - Need water urgently? Toggle some cracking radiators to Deacon mode
 - Need hydrogen for graphite? Toggle Deacon radiators to cracking (if they're hot enough)
 
 **Progression is still natural:**
-- Early factory (small, low heat): All radiators in Deacon mode (400C is all you can reach). Getting water + chlorine.
+- Early factory (small, low heat): All radiators in Deacon mode (400C reachable with minimal machines). Getting water + chlorine.
 - Growing factory (more heat): Toggle radiators near hot spots to cracking mode. Now getting hydrogen too.
 - Large factory (lots of heat): Most radiators in cracking mode. Deacon mode only where you specifically need water output.
 
@@ -265,7 +265,7 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 
 Thermite: field-expedient IED (aluminum-sulfur thermite in a pressurized barrel). ANFO: proper industrial production (ammonium nitrate + aluminum fuel + iron oxide casing, all inorganic).
 
-**Explosive spoilage on Vulcanus (NOT YET IMPLEMENTED).** Ammonium nitrate decomposes at ~230C, Vulcanus ambient is 400C+. Vulcanus explosive recipes produce `nullius-unstable-explosive` instead of `cliff-explosives`. Same function, but with `spoil_ticks` (limited shelf life) and `spoil_to_trigger_result` (actual explosion on spoilage -- engine-native trigger, no scripts). Normal `cliff-explosives` from Nauvis recipes stays stable everywhere.
+**Explosive spoilage on Vulcanus (NOT YET IMPLEMENTED).** Ammonium nitrate decomposes at ~230C, Vulcanus ambient is 200C (right on the edge). Vulcanus explosive recipes produce `nullius-unstable-explosive` instead of `cliff-explosives`. Same function, but with `spoil_ticks` (limited shelf life) and `spoil_to_trigger_result` (actual explosion on spoilage -- engine-native trigger, no scripts). Normal `cliff-explosives` from Nauvis recipes stays stable everywhere.
 
 Implementation: purely prototype-level. Vulcanus recipes output the unstable item variant. `spoil_to_trigger_result` fires a `Trigger` (explosion, damage, particles) when spoilage timer expires. `items_per_trigger` controls how many items detonate per trigger tick. No inventory scanning scripts needed -- the item is inherently unstable from the moment it's crafted. Manufacture on demand, not in bulk.
 

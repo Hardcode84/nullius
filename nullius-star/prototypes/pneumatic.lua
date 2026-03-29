@@ -14,7 +14,7 @@ data:extend({
     ),
     subgroup = "compressed-air",
     order = "nullius-z",
-    default_temperature = 400,
+    default_temperature = 200,
     max_temperature = 800,
     heat_capacity = "0.1kJ",
     fuel_value = "20kJ",
