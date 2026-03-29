@@ -260,10 +260,14 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 
 | Recipe | Input | Output | Time | Category | Replaces |
 |---|---|---|---|---|---|
-| Thermite explosive (IMPLEMENTED) | 1 chlorine-barrel + 1 SO2-barrel + 4 aluminum-powder + 1 red-wire + 1 green-wire + 1 small-miner | 1 explosive | 30s | hand-crafting | Methanol in improvised explosive |
-| ANFO explosive (NOT YET IMPLEMENTED) | 30 ammonia + 20 nitric-acid + 20 SO2 + 4 aluminum-powder + 2 iron-oxide + 1 red-wire | 1 explosive + 16 wastewater | ~4s | basic-chemistry | Glycerol/plastic in industrial explosive-1 |
+| Thermite explosive (IMPLEMENTED) | 1 chlorine-barrel + 1 SO2-barrel + 4 aluminum-powder + 1 red-wire + 1 green-wire + 1 small-miner | 1 unstable-explosive | 30s | hand-crafting | Methanol in improvised explosive |
+| ANFO explosive (NOT YET IMPLEMENTED) | 30 ammonia + 20 nitric-acid + 20 SO2 + 4 aluminum-powder + 2 iron-oxide + 1 red-wire | 1 unstable-explosive + 16 wastewater | ~4s | basic-chemistry | Glycerol/plastic in industrial explosive-1 |
 
 Thermite: field-expedient IED (aluminum-sulfur thermite in a pressurized barrel). ANFO: proper industrial production (ammonium nitrate + aluminum fuel + iron oxide casing, all inorganic).
+
+**Explosive spoilage on Vulcanus (NOT YET IMPLEMENTED).** Ammonium nitrate decomposes at ~230C, Vulcanus ambient is 400C+. Vulcanus explosive recipes produce `nullius-unstable-explosive` instead of `cliff-explosives`. Same function, but with `spoil_ticks` (limited shelf life) and `spoil_to_trigger_result` (actual explosion on spoilage -- engine-native trigger, no scripts). Normal `cliff-explosives` from Nauvis recipes stays stable everywhere.
+
+Implementation: purely prototype-level. Vulcanus recipes output the unstable item variant. `spoil_to_trigger_result` fires a `Trigger` (explosion, damage, particles) when spoilage timer expires. `items_per_trigger` controls how many items detonate per trigger tick. No inventory scanning scripts needed -- the item is inherently unstable from the moment it's crafted. Manufacture on demand, not in bulk.
 
 These recipes are generally **worse** than Nauvis equivalents (more steps, more ingredients) but they work without organics. The player builds ugly inorganic production lines and moves on.
 
