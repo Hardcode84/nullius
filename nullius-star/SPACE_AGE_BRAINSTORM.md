@@ -153,6 +153,20 @@ IMPORTS:   Water, organics (Fulgora), bio-feed for demolishers (Gleba)
 - **Metal-poor** -- trace metals exist dissolved in hydrocarbons, but no ore deposits. Must filter from hydrocarbon soup.
 - **Organic-rich** -- abundant hydrocarbons enable advanced organic chemistry without the industrial bootstrap Nauvis requires. Direct access to ethylene, propene, benzene, etc. from cracking.
 
+#### Magnetosphere: Conductive Hydrocarbon Dynamo
+
+Fulgora's magnetic field and lightning are not weather -- they are planetary-scale electromagnetic phenomena driven by a **conductive subsurface hydrocarbon ocean**. The deep ocean is a mixture of polyaromatic hydrocarbons (heavy crude) saturated with dissolved metal salts (iron, copper, rare earths). Conjugated pi-electron systems in the hydrocarbons, doped by the dissolved metals, make the ocean electrically conductive (same principle as doped polyacetylene -- 2000 Nobel Prize chemistry).
+
+Convection currents in the hot, conductive ocean generate a magnetospheric dynamo -- same mechanism as Earth's liquid iron core, but organic instead of metallic. The intense magnetic field drives constant surface lightning as magnetospheric discharge.
+
+**This explains everything:**
+- **Constant powerful lightning** -- planetary dynamo, not weather patterns
+- **Dissolved metals in hydrocarbons** -- they are the dopants that make the ocean conductive. Filtering them out is both resource extraction AND (eventually) weakening the dynamo
+- **No surface metal deposits** -- metals are dissolved in the ocean, not deposited as ores
+- **Conductive polymer wire** (line 389) -- the player is literally synthesizing the same chemistry that powers the planet. Doped conjugated polymers from Fulgora hydrocarbons + Vulcanus FeCl3 as dopant = organic wiring
+
+**Future gameplay hook**: Large-scale metal extraction from the ocean gradually reduces its conductivity, weakening storms over very long timescales. The player's industrial activity literally tames the planet's magnetosphere. Late-game Fulgora has calmer storms because you drained the dopants.
+
 #### Hydrocarbon Fountains & Filtration
 
 The deep hydrocarbon ocean is unreachable initially. A few natural **fountains** (geological seeps/geysers) provide free hydrocarbon fluid at the surface.
