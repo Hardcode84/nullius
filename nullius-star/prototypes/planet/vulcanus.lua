@@ -142,7 +142,7 @@ data:extend({
     {
       ["day-night-cycle"] = 1.5 * minute,
       ["magnetic-field"] = 25,
-      ["solar-power"] = 0,
+      ["solar-power"] = 20,
       pressure = 4000,
       gravity = 40,
     },

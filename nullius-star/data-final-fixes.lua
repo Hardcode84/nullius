@@ -48,6 +48,30 @@ for _, rname in pairs(nauvis_air_recipes) do
   end
 end
 
+-- Block solar panels, wind turbines, and accumulators on Vulcanus.
+-- Solar: semiconductor junction failure at 200C ambient.
+-- Wind: corrosive atmosphere destroys exposed mechanical parts.
+-- Accumulators: thermal runaway at ambient temperature.
+local vulcanus_blocked = {}
+for i = 1, 4 do
+  table.insert(vulcanus_blocked, "nullius-solar-panel-" .. i)
+end
+for i = 1, 3 do
+  table.insert(vulcanus_blocked, "nullius-grid-battery-" .. i)
+  table.insert(vulcanus_blocked, "nullius-wind-build-" .. i)
+  table.insert(vulcanus_blocked, "nullius-wind-base-" .. i)
+end
+for _, ename in pairs(vulcanus_blocked) do
+  for _, type_table in pairs(data.raw) do
+    if type_table[ename] then
+      if not type_table[ename].surface_conditions then
+        type_table[ename].surface_conditions = {}
+      end
+      table.insert(type_table[ename].surface_conditions, {property = "gravity", max = 38})
+    end
+  end
+end
+
 -- Reassign SA's Vulcanus music to our planet.
 for _, sound in pairs(data.raw["ambient-sound"]) do
   if sound.planet == "vulcanus" then
