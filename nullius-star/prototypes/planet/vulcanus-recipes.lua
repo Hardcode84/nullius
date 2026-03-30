@@ -71,7 +71,7 @@ data:extend({
     },
     main_product = "nullius-molten-iron-bloom",
     allow_productivity = true,
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
   {
     type = "recipe",
@@ -96,7 +96,7 @@ data:extend({
     },
     main_product = "nullius-molten-aluminum-bloom",
     allow_productivity = true,
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
   {
     type = "recipe",
@@ -120,7 +120,7 @@ data:extend({
     },
     main_product = "nullius-crushed-limestone",
     allow_productivity = true,
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
   {
     type = "recipe",
@@ -147,7 +147,7 @@ data:extend({
     },
     main_product = "nullius-silica",
     allow_productivity = true,
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -171,7 +171,7 @@ data:extend({
     results = {
       {type = "item", name = "splitter", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Underground pipe alt: pipe + silica (replaces sand, which needs sandstone).
@@ -194,7 +194,7 @@ data:extend({
     results = {
       {type = "item", name = "pipe-to-ground", amount = 2},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
   -- Dedicated gas extraction recipe: high gas yield, stone byproduct.
   {
@@ -220,7 +220,7 @@ data:extend({
     },
     main_product = "nullius-compressed-volcanic-gas",
     allow_productivity = true,
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -249,7 +249,7 @@ data:extend({
       {type = "fluid", name = "nullius-sulfur-dioxide", amount = 10},
     },
     main_product = "nullius-carbon-dioxide",
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -279,7 +279,7 @@ data:extend({
       {type = "item", name = "nullius-rutile", amount = 1},
     },
     main_product = "nullius-oxygen",
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -310,7 +310,7 @@ data:extend({
       {type = "fluid", name = "nullius-acid-hydrochloric", amount = 10},
     },
     main_product = "nullius-lubricant",
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -334,7 +334,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-heat-pipe-1", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
@@ -374,7 +374,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-silicon-insulation", amount = 2},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Insulated wire alt: aluminum wire + silicon insulation (replaces rubber).
@@ -396,7 +396,7 @@ data:extend({
     results = {
       {type = "item", name = "copper-cable", amount = 4},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Motor alt: iron wire + plate + silica + rod (replaces plastic).
@@ -419,7 +419,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-motor-1", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Filter-1 alt: silica + graphite + iron sheet + CO2 (replaces plastic).
@@ -446,7 +446,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-filter-1", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Motor-2 alt: insulated wire + steel plate + steel gear + steel rod + silica (replaces lubricant).
@@ -470,7 +470,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-motor-2", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Pump-2 alt: pump-1 + motor-2 + pipe-2 + silicon insulation (replaces rubber).
@@ -492,7 +492,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-pump-2", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Capacitor alt: aluminum sheet + silica + alumina + graphite (replaces plastic).
@@ -516,7 +516,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-capacitor", amount = 2},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Logic circuit alt: silicon insulation replaces plastic.
@@ -540,7 +540,7 @@ data:extend({
     results = {
       {type = "item", name = "decider-combinator", amount = 3},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
   -- Carbochlorination: Al2O3 + 3Cl2 + 3C -> 2AlCl3 + 3CO.
@@ -565,7 +565,7 @@ data:extend({
       {type = "item", name = "nullius-aluminum-chloride", amount = 4},
       {type = "fluid", name = "nullius-carbon-monoxide", amount = 30},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 

@@ -7,6 +7,19 @@ local effects = require("__core__.lualib.surface-render-parameter-effects")
 
 local minute = 60 * 60
 
+-- Custom surface property: ambient temperature in Celsius.
+-- Default 25C (Nauvis). Vulcanus is 200C.
+-- Used in surface_conditions to restrict entities/recipes to specific thermal environments.
+data:extend({
+  {
+    type = "surface-property",
+    name = "nullius-ambient-temperature",
+    default_value = 25,
+    localised_name = {"surface-property-name.nullius-ambient-temperature"},
+    localised_unit_key = "surface-property-unit.nullius-ambient-temperature",
+  },
+})
+
 -- Reuse SA's Vulcanus map gen noise expressions.
 -- They are defined by space-age/prototypes/planet/planet-vulcanus-map-gen.lua
 -- which loads because space-age mod is a dependency.
@@ -145,6 +158,7 @@ data:extend({
       ["solar-power"] = 20,
       pressure = 4000,
       gravity = 40,
+      ["nullius-ambient-temperature"] = 200,
     },
     persistent_ambient_sounds =
     {

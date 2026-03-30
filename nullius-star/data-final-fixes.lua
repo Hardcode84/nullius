@@ -44,7 +44,7 @@ for _, rname in pairs(nauvis_air_recipes) do
     if not recipe.surface_conditions then
       recipe.surface_conditions = {}
     end
-    table.insert(recipe.surface_conditions, {property = "gravity", max = 38})
+    table.insert(recipe.surface_conditions, {property = "nullius-ambient-temperature", max = 50})
   end
 end
 
@@ -67,7 +67,7 @@ for _, ename in pairs(vulcanus_blocked) do
       if not type_table[ename].surface_conditions then
         type_table[ename].surface_conditions = {}
       end
-      table.insert(type_table[ename].surface_conditions, {property = "gravity", max = 38})
+      table.insert(type_table[ename].surface_conditions, {property = "nullius-ambient-temperature", max = 50})
     end
   end
 end

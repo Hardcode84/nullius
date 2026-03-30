@@ -62,7 +62,7 @@ local radiator_base = {
     {type = "fire", decrease = 100, percent = 90},
     {type = "impact", decrease = 50, percent = 80},
   },
-  surface_conditions = {{property = "gravity", min = 39}},
+  surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   fluid_boxes = {
     {
       production_type = "input",
@@ -212,7 +212,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-vulcanus-radiator-1", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
   -- High-temp radiator crafting recipe.
   {
@@ -232,7 +232,7 @@ data:extend({
     results = {
       {type = "item", name = "nullius-vulcanus-radiator-2", amount = 1},
     },
-    surface_conditions = {{property = "gravity", min = 39}},
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
