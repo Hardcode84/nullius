@@ -58,14 +58,6 @@ for i = 1, 3 do
 end
 register_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
 
--- Radiator mode toggle (Deacon <-> Cracking). No heat interface needed.
-register_transition("nullius-vulcanus-radiator-deacon", "nullius-vulcanus-radiator-cracking", {
-  condition = is_vulcanus_pneumatic,
-})
-register_transition("nullius-vulcanus-radiator-cracking", "nullius-vulcanus-radiator-deacon", {
-  condition = is_vulcanus_pneumatic,
-})
-
 -- Pump/valve cycle on Vulcanus:
 -- electric-valve -> pneumatic-pump -> pneumatic-valve -> electric-pump.
 -- (electric-pump -> electric-valve is handled by the existing toggle_pump in turbine.lua.)

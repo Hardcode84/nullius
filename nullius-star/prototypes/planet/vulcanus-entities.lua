@@ -22,9 +22,9 @@ data:extend({
   },
 })
 
--- Vulcanus radiator: heat-powered chemistry building.
--- Absorbs heat from heat pipe network, processes HCl into useful products.
--- Two modes (toggle via Ctrl+R): Deacon (400C) and Cracking (650C).
+-- Vulcanus radiators: heat-powered chemistry buildings.
+-- Absorb heat from heat pipe network to drive thermal fluid reactions.
+-- Two tiers: low-temp (200C) for basic chemistry, high-temp (450C) for cracking.
 
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -63,21 +63,42 @@ local radiator_base = {
     {type = "impact", decrease = 50, percent = 80},
   },
   surface_conditions = {{property = "gravity", min = 39}},
+  fluid_boxes = {
+    {
+      production_type = "input",
+      volume = 200,
+      pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {-1, -1.3}}},
+    },
+    {
+      production_type = "input",
+      volume = 200,
+      pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {1, -1.3}}},
+    },
+    {
+      production_type = "output",
+      volume = 200,
+      pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {-1, 1.3}}},
+    },
+    {
+      production_type = "output",
+      volume = 200,
+      pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {1, 1.3}}},
+    },
+  },
 }
 
--- Deacon mode radiator (400C): HCl + O2 --> Cl2 + H2O.
-local deacon = table.deepcopy(radiator_base)
-deacon.name = "nullius-vulcanus-radiator-deacon"
-deacon.localised_name = {"entity-name.nullius-vulcanus-radiator-deacon"}
-deacon.icons = {{
+-- Low-temp radiator (200C): Deacon process, SO2 decomposition.
+local low_temp = table.deepcopy(radiator_base)
+low_temp.name = "nullius-vulcanus-radiator-1"
+low_temp.localised_name = {"entity-name.nullius-vulcanus-radiator-1"}
+low_temp.icons = {{
   icon = "__base__/graphics/icons/heat-boiler.png",
   icon_size = 64,
 }}
-deacon.minable = {mining_time = 1, result = "nullius-vulcanus-radiator"}
-deacon.fast_replaceable_group = "vulcanus-radiator"
-deacon.crafting_categories = {"nullius-vulcanus-deacon"}
-deacon.fixed_recipe = "nullius-vulcanus-deacon"
-deacon.energy_source = {
+low_temp.minable = {mining_time = 1, result = "nullius-vulcanus-radiator-1"}
+low_temp.fast_replaceable_group = "vulcanus-radiator"
+low_temp.crafting_categories = {"nullius-low-temp-radiator"}
+low_temp.energy_source = {
   type = "heat",
   max_temperature = 250,
   specific_heat = "500kJ",
@@ -91,56 +112,49 @@ deacon.energy_source = {
   pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
   heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
 }
-deacon.fluid_boxes = {
-  {
-    production_type = "input",
-    volume = 200,
-    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {-1, -1.3}}},
-  },
-  {
-    production_type = "input",
-    volume = 200,
-    pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {1, -1.3}}},
-  },
-  {
-    production_type = "output",
-    volume = 200,
-    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {-1, 1.3}}},
-  },
-  {
-    production_type = "output",
-    volume = 200,
-    pipe_connections = {{flow_direction = "output", direction = defines.direction.south, position = {1, 1.3}}},
-  },
-}
 
--- Cracking mode radiator (650C): HCl --> H2 + Cl2.
-local cracking = table.deepcopy(deacon)
-cracking.name = "nullius-vulcanus-radiator-cracking"
-cracking.localised_name = {"entity-name.nullius-vulcanus-radiator-cracking"}
-cracking.crafting_categories = {"nullius-vulcanus-cracking"}
-cracking.fixed_recipe = "nullius-vulcanus-cracking"
-cracking.hidden = true
-cracking.energy_source.min_working_temperature = 450
-cracking.energy_source.max_temperature = 500
+-- High-temp radiator (450C): HCl cracking, carbochlorination. Can also do low-temp recipes.
+local high_temp = table.deepcopy(low_temp)
+high_temp.name = "nullius-vulcanus-radiator-2"
+high_temp.localised_name = {"entity-name.nullius-vulcanus-radiator-2"}
+high_temp.icons = {{
+  icon = "__base__/graphics/icons/heat-boiler.png",
+  icon_size = 64,
+  tint = {255, 180, 100},
+}}
+high_temp.minable = {mining_time = 1, result = "nullius-vulcanus-radiator-2"}
+high_temp.crafting_categories = {"nullius-low-temp-radiator", "nullius-high-temp-radiator"}
+high_temp.energy_source.min_working_temperature = 450
+high_temp.energy_source.max_temperature = 500
 
 data:extend({
-  deacon,
-  cracking,
-  -- Radiator item (shared between both modes).
+  low_temp,
+  high_temp,
+  -- Recipe categories.
+  {type = "recipe-category", name = "nullius-low-temp-radiator"},
+  {type = "recipe-category", name = "nullius-high-temp-radiator"},
+  -- Low-temp radiator item.
   {
     type = "item",
-    name = "nullius-vulcanus-radiator",
-    localised_name = {"item-name.nullius-vulcanus-radiator"},
-    icons = deacon.icons,
+    name = "nullius-vulcanus-radiator-1",
+    localised_name = {"item-name.nullius-vulcanus-radiator-1"},
+    icons = low_temp.icons,
     subgroup = "other",
-    order = "nullius-vr",
-    place_result = "nullius-vulcanus-radiator-deacon",
+    order = "nullius-vr1",
+    place_result = "nullius-vulcanus-radiator-1",
     stack_size = 10,
   },
-  -- Recipe categories.
-  {type = "recipe-category", name = "nullius-vulcanus-deacon"},
-  {type = "recipe-category", name = "nullius-vulcanus-cracking"},
+  -- High-temp radiator item.
+  {
+    type = "item",
+    name = "nullius-vulcanus-radiator-2",
+    localised_name = {"item-name.nullius-vulcanus-radiator-2"},
+    icons = high_temp.icons,
+    subgroup = "other",
+    order = "nullius-vr2",
+    place_result = "nullius-vulcanus-radiator-2",
+    stack_size = 10,
+  },
   -- Deacon recipe: 60 HCl + 15 O2 --> 30 Cl2 + 30 H2O.
   {
     type = "recipe",
@@ -150,7 +164,7 @@ data:extend({
     icon_size = 64,
     enabled = true,
     hide_from_player_crafting = true,
-    category = "nullius-vulcanus-deacon",
+    category = "nullius-low-temp-radiator",
     energy_required = 2,
     ingredients = {
       {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
@@ -171,7 +185,7 @@ data:extend({
     icon_size = 64,
     enabled = true,
     hide_from_player_crafting = true,
-    category = "nullius-vulcanus-cracking",
+    category = "nullius-high-temp-radiator",
     energy_required = 2,
     ingredients = {
       {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
@@ -182,29 +196,45 @@ data:extend({
     },
     main_product = "nullius-hydrogen",
   },
-  -- Radiator crafting recipe.
+  -- Low-temp radiator crafting recipe.
   {
     type = "recipe",
-    name = "nullius-vulcanus-radiator",
-    localised_name = {"item-name.nullius-vulcanus-radiator"},
+    name = "nullius-vulcanus-radiator-1",
+    localised_name = {"item-name.nullius-vulcanus-radiator-1"},
     enabled = true,
     category = "medium-crafting",
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-iron-plate", amount = 8},
-      {type = "item", name = "nullius-aluminum-sheet", amount = 4},
-      {type = "item", name = "nullius-heat-pipe-1", amount = 4},
+      {type = "item", name = "nullius-silica", amount = 4},
+      {type = "item", name = "pipe", amount = 4},
     },
     results = {
-      {type = "item", name = "nullius-vulcanus-radiator", amount = 1},
+      {type = "item", name = "nullius-vulcanus-radiator-1", amount = 1},
+    },
+    surface_conditions = {{property = "gravity", min = 39}},
+  },
+  -- High-temp radiator crafting recipe.
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-radiator-2",
+    localised_name = {"item-name.nullius-vulcanus-radiator-2"},
+    enabled = true,
+    category = "medium-crafting",
+    energy_required = 15,
+    ingredients = {
+      {type = "item", name = "nullius-vulcanus-radiator-1", amount = 1},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 8},
+      {type = "item", name = "nullius-silica", amount = 8},
+      {type = "item", name = "nullius-heat-pipe-1", amount = 1},
+      {type = "item", name = "nullius-pipe-2", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-vulcanus-radiator-2", amount = 1},
     },
     surface_conditions = {{property = "gravity", min = 39}},
   },
 })
-
--- Cracking radiator also drops the same item.
-cracking.minable = {mining_time = 1, result = "nullius-vulcanus-radiator"}
-cracking.placeable_by = {item = "nullius-vulcanus-radiator", count = 1}
 
 -- Hidden heat interfaces for pneumatic machines.
 local vulcanus_util = require("prototypes.planet.vulcanus-util")
