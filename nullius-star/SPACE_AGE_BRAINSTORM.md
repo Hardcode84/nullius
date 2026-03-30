@@ -165,7 +165,15 @@ Convection currents in the hot, conductive ocean generate a magnetospheric dynam
 - **No surface metal deposits** -- metals are dissolved in the ocean, not deposited as ores
 - **Conductive polymer wire** (line 389) -- the player is literally synthesizing the same chemistry that powers the planet. Doped conjugated polymers from Fulgora hydrocarbons + Vulcanus FeCl3 as dopant = organic wiring
 
-**Future gameplay hook**: Large-scale metal extraction from the ocean gradually reduces its conductivity, weakening storms over very long timescales. The player's industrial activity literally tames the planet's magnetosphere. Late-game Fulgora has calmer storms because you drained the dopants.
+**Industrial feedback loop**: Extracting hydrocarbons, processing them, and dumping waste heat and byproducts back into the ocean *increases* convection and introduces more conductive contaminants. Storms get **worse** the bigger your factory gets. The player's own success destabilizes the dynamo.
+
+This creates an ongoing tension:
+- Build too fast, extract too aggressively --> storms escalate beyond grid capacity --> overloads
+- Must scale surge protection proportionally (costs resources diverted from production)
+- Or throttle extraction rate (intentionally slow down to keep storms manageable)
+- Or research late-game storm mitigation tech (expensive, buys headroom)
+
+Mechanically: `nullius-storm-intensity` surface property scales with total industrial activity (extraction rate, machine count, or cumulative hydrocarbon processed). Same `set_property()` call, driven by factory metrics instead of a fixed sine wave. The sine cycle still exists for short-term variation, but the *baseline* ramps with industrialization.
 
 #### Hydrocarbon Fountains & Filtration
 
