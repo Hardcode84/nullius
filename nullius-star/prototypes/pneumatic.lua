@@ -36,6 +36,7 @@ end
 -- Register furnace tiers (thermal: heat-powered, not gas-powered).
 for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-small-furnace-" .. i, true)
+  register_pneumatic("assembling-machine", "nullius-medium-furnace-" .. i, true)
 end
 
 -- Register foundry tiers (gas-powered, not thermal).

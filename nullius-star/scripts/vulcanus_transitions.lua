@@ -33,6 +33,7 @@ end
 
 for i = 1, 3 do
   register_pneumatic_pair("nullius-small-furnace-" .. i, "nullius-small-furnace-" .. i .. "-pneumatic")
+  register_pneumatic_pair("nullius-medium-furnace-" .. i, "nullius-medium-furnace-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-foundry-" .. i, "nullius-foundry-" .. i .. "-pneumatic")
 end
 register_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-pneumatic")
