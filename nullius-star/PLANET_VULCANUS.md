@@ -97,11 +97,11 @@ HCl Geyser (fixed map position, infinite, finite throughput)
 **Bulk production (thermal cracking via overheated radiators):**
 - Once the factory is running and generating waste heat, radiators are already at high temperature
 - Instead of dumping heat to void, **route HCl through hot radiators** for thermal cracking
-- Catalytic HCl decomposition over rutile (TiO2) catalyst at 600-800C
+- Thermal HCl decomposition at 600-800C (no catalyst needed)
 
 | Recipe | Input | Output | Category | Notes |
 |---|---|---|---|---|
-| HCl thermal cracking | 60 HCl (through hot radiator) | 30 H2 + 30 Cl2 | heat-powered (radiator recipe) | Radiator must be above min working temperature. Rutile catalyst not consumed. |
+| HCl thermal cracking | 60 HCl (through hot radiator) | 30 H2 + 30 Cl2 | high-temp-radiator | Radiator must be above min working temperature (450C). |
 
 **The radiator dual-purpose trick**: Radiators already exist to prevent factory overheating (section 4.5). They absorb waste heat from machines via heat pipes. Now they have a SECOND function: if you pipe HCl through a hot radiator, it thermally cracks the HCl while simultaneously cooling the radiator. The waste heat does useful chemistry.
 
@@ -227,7 +227,11 @@ Lava --> [Lava Aluminum Separation] --> Molten Aluminum Bloom
                                             |
                         [Passive cooldown: 40s on belt/in chest]
                                             |
-                                        Aluminum Ingot
+                                        Alumina (oxidizes on cooling)
+                                            |
+                        [Dry Smelting: 9 alumina + 5 graphite --> 3 ingot]
+                                            |
+                                      Aluminum Ingot
                                             |
                             +--- Aluminum Wire
                             +--- Aluminum Sheet
@@ -236,7 +240,7 @@ Lava --> [Lava Aluminum Separation] --> Molten Aluminum Bloom
 
 ### 3.3 Alternative Recipes (IMPLEMENTED)
 
-Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These alt recipes replace organic/wet ingredients with locally available materials. All are Vulcanus-only (`surface_conditions: gravity >= 39`).
+Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These alt recipes replace organic/wet ingredients with locally available materials. All are Vulcanus-only (`surface_conditions: nullius-ambient-temperature >= 100`).
 
 **Base materials:**
 
@@ -274,7 +278,7 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 | Recipe | Input | Output | Time | Category | Replaces |
 |---|---|---|---|---|---|
 | Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
-| Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | basic-chemistry (TODO: move to high-temp-radiator) | Chlorine sink (dump AlCl3 into lava) |
+| Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | high-temp-radiator | Chlorine sink (dump AlCl3 into lava) |
 
 **Explosives:**
 
@@ -483,14 +487,14 @@ Stirling Engine 1 recipe (Nauvis mid-game):
   2 turbine-closed-2
   8 heat-pipe-1
   600 compressed nitrogen
-  30 lubricant              <-- organic! Cannot produce on Vulcanus.
+  30 lubricant              <-- available via Vulcanus alt recipe (section 3.3)
 ```
 
-This is unproducible on Vulcanus without imports. The probe's surviving Stirling engines are your **only** electricity source until cargo rockets bring lubricant or you research a Vulcanus-specific alternative.
+The lubricant alt recipe (section 3.3) makes lubricant locally producible, but compressed nitrogen and other ingredients may still require imports. The probe's surviving Stirling engine is your **only** electricity source initially.
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
-Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via hotkey (shift-click, same pattern as surge/priority electrolyzers).
+Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via Ctrl+R (same transition system as surge/priority electrolyzers and pump/valve toggles).
 
 **Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks the ability to toggle any placed machine to pneumatic mode on Vulcanus (surface_conditions restrict the toggle to Vulcanus).
 
@@ -559,13 +563,13 @@ The loop is self-sustaining but not infinitely scalable. Each lava processing st
 
 **Bootstrap**: The probe carries a small tank of compressed volcanic gas as starting fuel. Enough to prime the first lava pump, run the first processing cycle, and establish the self-sustaining loop. If the player wastes the starting gas, they're stuck (but this should be very hard to do accidentally).
 
-### 4.2 Bootstrap Power Budget
+### 4.3 Bootstrap Power Budget
 
 The probe starts with (tentative):
 
 | Equipment | Electrical Output | Notes |
 |---|---|---|
-| 1-2 Stirling engines (from probe) | ~500 kW - 1 MW total | Precious. Cannot be replaced without imports. |
+| 1 Stirling engine (from probe) | ~500 kW | Precious. Cannot be replaced without imports. |
 
 This is enough for:
 - A few inserters
@@ -575,7 +579,7 @@ This is enough for:
 
 NOT enough for: mass production, large assemblers, compression, or anything power-hungry.
 
-### 4.3 Power Progression
+### 4.4 Power Progression
 
 | Phase | Gas Source | Factory Scale | Unlocked By |
 |---|---|---|---|
@@ -585,9 +589,9 @@ NOT enough for: mass production, large assemblers, compression, or anything powe
 | **Late** | Optimized processing + higher-tier lava recipes | Large factory | Higher-tier lava separation (more gas per batch) |
 | **Endgame** | Mass lava processing arrays | Megabase | Full research tree |
 
-**Electricity role on Vulcanus**: Stirling engines still exist for the few things that specifically need electricity (circuit fabrication, signal processing, advanced electronics). But they're a niche tool, not the backbone. 1-2 probe Stirlings cover the tiny electrical needs indefinitely. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics, not a survival milestone.
+**Electricity role on Vulcanus**: Stirling engines still exist for the few things that specifically need electricity (circuit fabrication, signal processing, advanced electronics). But they're a niche tool, not the backbone. The probe's Stirling covers the tiny electrical needs indefinitely. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics, not a survival milestone.
 
-### 4.4 Why This Works
+### 4.5 Why This Works
 
 The Vulcanus power design creates a unique challenge: **the factory fuels itself through lava processing, but growth is gated by lava throughput.** More lava processing = more gas = more machines. The bottleneck is pump count and processing capacity, not a separate energy infrastructure.
 
@@ -653,7 +657,7 @@ The 2-tile range is intentionally terrible. On Nauvis, underground pipes go 7-15
 
 The cheapness compensates for the quantity -- each duct is trivial to craft (local iron + silica, both from lava) but you need SO MANY of them.
 
-### 4.5 Heat Generation System (IMPLEMENTED)
+### 4.7 Heat Generation System (IMPLEMENTED)
 
 **Current implementation**: Hidden heat-interface entities spawn alongside pneumatic machines. Working machines increase their heat-interface temperature proportional to energy consumption. Heat flows through heat pipes to thermal furnaces and radiators.
 
@@ -670,7 +674,7 @@ The cheapness compensates for the quantity -- each duct is trivial to craft (loc
 
 **NOT YET IMPLEMENTED**: Overheating penalty (machines stopping/taking damage at high temperature).
 
-### 4.5b Ongoing Tension: Heat Dissipation (FUTURE DESIGN)
+### 4.8 Ongoing Tension: Heat Dissipation (FUTURE DESIGN)
 
 The self-fueling lava loop is too comfortable once established. Needs an ongoing management challenge. Candidates:
 
@@ -832,7 +836,8 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 | Stirling engine (tier 1) | 1 | A | ~500kW from ambient heat. Only electricity source. |
 | Small electric pole | 4 | A | Connect Stirling to pump. |
 | Seawater intake | 2 | A | Auto-swaps to lava intake on Vulcanus. Place on lava shore. |
-| Small furnace | 2 | B | One as electric bridge, then toggle to pneumatic. |
+| Hydro plant | 1 | B | Lava separation (water-treatment category). Electric bridge, then toggle to pneumatic. |
+| Small furnace | 2 | B | Smelting (ingot --> plate/rod). Toggle to pneumatic/thermal. |
 | Pipe | 20 | B | Lava and gas piping. |
 | Small assembler | 1 | C | For crafting components. Toggle to pneumatic. |
 | Inserter | 6 | C | Toggle to pneumatic. |
@@ -860,19 +865,19 @@ Electricity's job is done. The pump keeps running on the Stirling indefinitely. 
 
 **Phase B: First Gas Loop -- Self-Sustaining Factory (minutes 5-15)**
 
-The player has already researched "Pneumatic Technology" on Nauvis (unlocked right after probe reactivation). This allows toggling any machine to pneumatic mode on Vulcanus via shift-click.
+The player has already researched "Pneumatic Technology" on Nauvis (unlocked right after probe reactivation). This allows toggling any machine to pneumatic mode on Vulcanus via Ctrl+R.
 
 ```
-6. Place a furnace (from wreck or hand-crafted) in ELECTRIC mode.
-   - Powered by the Stirling. Set recipe to lava iron separation.
+6. Place a hydro plant (from wreck) in ELECTRIC mode.
+   - Powered by the Stirling. Set recipe to lava iron separation (water-treatment category).
    - Lava flows in from pump. Produces molten iron blooms + compressed volcanic gas.
-   - This is the BRIDGE: one electric furnace produces the first gas.
+   - This is the BRIDGE: one electric hydro plant produces the first gas.
 7. Pipe the compressed gas output to a storage tank or directly to the next machine.
 8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.
-9. Build a second furnace. Toggle it to PNEUMATIC mode (shift-click).
+9. Build a second furnace. Toggle it to PNEUMATIC mode (Ctrl+R).
    - Connects to gas pipe from step 7. Now running on gas, not electricity.
 10. Build more machines, all in pneumatic mode.
-    - Assemblers, inserters, labs -- all shift-clicked to pneumatic.
+    - Assemblers, inserters, labs -- all toggled to pneumatic via Ctrl+R.
     - Each connects to the gas pipe network.
 11. GAS-POWERED FACTORY IS LIVE.
     - The electric bridge furnace can now be toggled to pneumatic too.
@@ -884,15 +889,15 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
 All machines from here are gas-powered, fed by gas from lava processing.
 
 ```
-10. Build gas-powered lava processors for each metal type:
+12. Build gas-powered lava processors for each metal type:
     - Lava iron separation --> molten iron blooms --> (30s cooldown) --> iron ingots
-    - Lava aluminum separation --> molten aluminum blooms --> (40s cooldown) --> aluminum ingots
-    - Lava silica extraction --> silica + sulfur
+    - Lava aluminum separation --> molten aluminum blooms --> (40s cooldown) --> alumina
+    - Lava silica extraction --> silica + SO2
     - Lava calcite separation --> calcite
-11. Set up cooling belts: long belt runs where blooms cool during transit.
+13. Set up cooling belts: long belt runs where blooms cool during transit.
     - Belt length determines throughput (blooms must cool before next processing step).
-12. Gas-powered furnaces for further smelting (iron ingot --> plate, rod, gear, etc.).
-13. Gas-powered assemblers for crafting components.
+14. Gas-powered furnaces for further smelting (iron ingot --> plate, rod, gear; alumina dry smelting --> aluminum ingot).
+15. Gas-powered assemblers for crafting components.
 ```
 
 **Phase D: Silicon Electronics (minutes 30-60)**
@@ -900,11 +905,11 @@ All machines from here are gas-powered, fed by gas from lava processing.
 Rebuilding electronics from scratch without organic materials.
 
 ```
-14. Silica --> silicon insulation (Vulcanus alt recipe, replaces rubber).
-15. Aluminum wire + silicon insulation --> insulated wire (Vulcanus alt recipe).
-16. Capacitors using Vulcanus alt recipe (glass/silica dielectric).
-17. Logic circuits using Vulcanus alt recipe (ceramic substrate PCB).
-18. Gas-powered lab built --> begin Vulcanus research.
+16. Silica --> silicon insulation (Vulcanus alt recipe, replaces rubber).
+17. Aluminum wire + silicon insulation --> insulated wire (Vulcanus alt recipe).
+18. Capacitors using Vulcanus alt recipe (glass/silica dielectric).
+19. Logic circuits using Vulcanus alt recipe (ceramic substrate PCB).
+20. Gas-powered lab built --> begin Vulcanus research.
     - First research: Volcanic Metallurgy 1 (formalizes lava recipes, improves yields).
 ```
 
@@ -913,15 +918,15 @@ Rebuilding electronics from scratch without organic materials.
 Once extractors are built (volcanism-1 tech, already researched on Nauvis):
 
 ```
-19. Place extractor on HCl geyser --> HCl gas flows.
-20. HCl thermal cracking (via hot radiator, later) or HCl electrolysis (Stirling-powered, slow).
+21. Place extractor on HCl geyser --> HCl gas flows.
+22. HCl thermal cracking (via hot radiator, later) or HCl electrolysis (Stirling-powered, slow).
     - Bootstrap: use Stirling electricity for slow HCl electrolysis.
     - Later: switch to thermal cracking via radiators (no electricity needed).
-21. H2 + Cl2 available:
+23. H2 + Cl2 available:
     - H2 --> CO2 reduction --> graphite (essential for smelting recipes).
     - H2 --> water synthesis (tiny amounts, precious).
     - Cl2 --> calcium chloride, future titanium chemistry.
-22. Atmosphere processing: CO2 capture --> CO2 + N2 + SO2.
+24. Atmosphere processing: CO2 capture --> CO2 + N2 + SO2.
     - Feeds into graphite production chain with H2 from geysers.
 ```
 
@@ -930,14 +935,14 @@ Once extractors are built (volcanism-1 tech, already researched on Nauvis):
 The factory now has both gas pipes and heat pipes:
 
 ```
-23. Heat management becomes necessary as factory grows.
+25. Heat management becomes necessary as factory grows.
     - Machines produce waste heat (TFMG-thermal approach).
     - Heat pipes route waste heat to radiators.
     - Radiators crack HCl (dual-purpose: cooling + chemistry).
-24. Dual pipe routing: gas pipes (fuel) + heat pipes (waste heat) to every machine.
+26. Dual pipe routing: gas pipes (fuel) + heat pipes (waste heat) to every machine.
     - 2-tile underground gas ducts for crossing heat pipe runs.
     - Factory layout becomes a routing puzzle.
-25. Expand lava processing lines (each line generates gas surplus).
+27. Expand lava processing lines (each line generates gas surplus).
 26. Begin Vulcanus-specific research chain (metallurgic science packs).
 ```
 
@@ -946,9 +951,9 @@ The factory now has both gas pipes and heat pipes:
 | Phase | Duration | Power Source | What Runs On It |
 |---|---|---|---|
 | **Electrical bootstrap** | Minutes 0-10 | Stirling (~500kW) | 1 pump + 1 bridge furnace to produce first gas |
-| **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via shift-click. |
+| **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via Ctrl+R. |
 
-The Stirling engine and pump persist indefinitely as the sole electrical infrastructure. They exist only to feed lava into the system. Every other machine is shift-clicked to pneumatic mode and runs on gas pipes.
+The Stirling engine and pump persist indefinitely as the sole electrical infrastructure. They exist only to feed lava into the system. Every other machine is toggled to pneumatic mode (Ctrl+R) and runs on gas pipes.
 
 **The player does NOT build an electrical grid on Vulcanus.** No power poles beyond the initial 4. Machines are placed in electric mode (default) then immediately toggled to pneumatic. The entire factory runs on gas pipes.
 
@@ -962,7 +967,7 @@ The Stirling engine and pump persist indefinitely as the sole electrical infrast
 | Bulk water | Almost none locally | HCl chain produces trickle; cargo for bulk |
 | Titanium | Deep deposits inaccessible | Demolishers (requires Gleba bio-research) |
 | Copper/advanced electronics | No copper | Cargo imports |
-| Additional Stirling engines | Recipe needs lubricant (organic) | Anhydrous variant research or import |
+| Additional Stirling engines | Recipe needs lubricant + compressed nitrogen | Local lubricant alt recipe exists; may still need import for other ingredients |
 
 ### 7.6 Key Design Notes
 
@@ -1047,13 +1052,13 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 | Silica/Sand | Sandstone --> crush | Lava silica extraction | **LOCAL** (abundant) |
 | Calcite/Lime | Limestone (non-starting) | Lava calcite separation | **LOCAL** (abundant) |
 | Silicon ingot | Silica + graphite --> smelting | Same recipe, local inputs | **LOCAL** |
-| Sulfur | Various chemistry | Lava silica extraction byproduct | **LOCAL** |
+| Sulfur (as SO2) | Various chemistry | Lava silica extraction byproduct (SO2 fluid, not solid sulfur yet -- see section 11) | **LOCAL** (fluid form) |
 | Water | Seawater intake | Synthesized: HCl electrolysis --> H2 + atmospheric O2 --> H2O | **TRACE LOCAL** (agonizingly slow, bulk still import) |
 | Graphite/Carbon | Mined on Nauvis | CO2 atmospheric capture --> carbon | **LOCAL** (from atmosphere) |
 | Oxygen | Air separation on Nauvis | CO2 splitting --> O2 | **LOCAL** (from atmosphere) |
 | Plastic | Ethylene + Cl2 (PVC) or propene (PP) | **NONE** (organic) | **IMPORT** (or alt recipe?) |
 | Rubber | Butadiene + styrene | **NONE** (organic) | **IMPORT** |
-| Lubricant | Organic chemistry | **NONE** (organic) | **IMPORT** |
+| Lubricant | Organic chemistry | Graphite-based alt recipe (silicon ingot + graphite + HCl) | **LOCAL** (via alt recipe) |
 
 ### 10.2 Key Intermediate Availability
 
@@ -1104,7 +1109,7 @@ Almost every electronic/mechanical component needs plastic:
 | **Underground pipe** | sand (from sandstone) | pipe + silica | Sandstone not on Vulcanus |
 | **Heat pipe** | water (100 per pipe!) | pipe-2 + 2 aluminum sheet + 2 silica | Water is precious |
 
-All alt recipes surface-conditioned to Vulcanus (gravity >= 39). Uses only locally available materials.
+All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >= 100`). Uses only locally available materials.
 
 ### 10.4 Complete Bootstrap Chain (Vulcanus-Local Only)
 
@@ -1179,23 +1184,20 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 |---|---|---|
 | Plastic/rubber | No organic chemistry on Vulcanus | Fulgora or Nauvis |
 | Water | No water sources | Nauvis |
-| Lubricant | Organic | Fulgora or Nauvis |
 | Advanced electronics (processor 2+) | May need copper or complex organics | Nauvis or Fulgora |
 | Bio-feed for demolishers | Biological organisms | Gleba |
-| Standard Stirling engines | Recipe needs lubricant | Nauvis (or Vulcanus dry variant) |
+| Standard Stirling engines | Recipe needs lubricant + compressed nitrogen | Lubricant available locally; may still need import for compressed nitrogen |
 
 ---
 
 ## 11. Open Questions
 
-- Does Vulcanus have atmospheric oxygen? If yes: volcanic gas combustion works. If no: geothermal only (still fine).
-- Should molten blooms be transportable by belt only, or also by inserter/chest? (Spoilage ticks in chests too, so storing molten blooms is wasteful but possible.)
-- Should water quenching produce steam as a useful byproduct, or just waste it?
 - Sodium source on Vulcanus: trace lava extraction? Or import from Nauvis?
 - Argon source on Vulcanus: volcanic gas separation? (Realistic -- volcanic gas contains trace noble gases.)
 - Should the metallurgic pack recipe require cooled ingots specifically, or accept molten blooms too? (Requiring cooled ingots means the cooldown bottleneck affects science production.)
 - How many deep deposits per map? How large? How fast do demolishers expose them?
 - Should demolisher bio-feed be a continuous stream or periodic batches?
+- Solid sulfur extraction: lava silica extraction currently produces SO2 (fluid), not solid sulfur. Add solid sulfur to output, or require a separate SO2 --> sulfur step?
 
 ---
 
