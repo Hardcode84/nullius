@@ -880,7 +880,7 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
     - Assemblers, inserters, labs -- all toggled to pneumatic via Ctrl+R.
     - Each connects to the gas pipe network.
 11. GAS-POWERED FACTORY IS LIVE.
-    - The electric bridge furnace can now be toggled to pneumatic too.
+    - The electric bridge hydro plant can now be toggled to pneumatic too.
     - Only the Stirling + pump remain electrical.
 ```
 
@@ -943,14 +943,14 @@ The factory now has both gas pipes and heat pipes:
     - 2-tile underground gas ducts for crossing heat pipe runs.
     - Factory layout becomes a routing puzzle.
 27. Expand lava processing lines (each line generates gas surplus).
-26. Begin Vulcanus-specific research chain (metallurgic science packs).
+28. Begin Vulcanus-specific research chain (metallurgic science packs).
 ```
 
 ### 7.4 The Two Power Phases
 
 | Phase | Duration | Power Source | What Runs On It |
 |---|---|---|---|
-| **Electrical bootstrap** | Minutes 0-10 | Stirling (~500kW) | 1 pump + 1 bridge furnace to produce first gas |
+| **Electrical bootstrap** | Minutes 0-10 | Stirling (~500kW) | 1 pump + 1 bridge hydro plant to produce first gas |
 | **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via Ctrl+R. |
 
 The Stirling engine and pump persist indefinitely as the sole electrical infrastructure. They exist only to feed lava into the system. Every other machine is toggled to pneumatic mode (Ctrl+R) and runs on gas pipes.
