@@ -52,6 +52,7 @@ function build_turbine(entity)
   storage.nullius_turbines[entity.unit_number] = entry
 
   local pos = entity.position
+  local surface = entity.surface
   entry.connector = surface.create_entity{
       name = "nullius-turbine-connector",
 	  force = entity.force, direction = dir,
@@ -91,6 +92,7 @@ end
 
 
 local function replace_turbine(entity, force, newname)
+  local surface = entity.surface
   local furnace_contents = save_fluid_contents(entity)
   local connector_contents = nil
   local generator_contents = nil
