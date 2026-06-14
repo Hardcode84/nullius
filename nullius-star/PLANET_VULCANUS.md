@@ -848,6 +848,7 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 | Iron chest | 2 | C | Storage. |
 | Lab | 1 | E | For Vulcanus research. Toggle to pneumatic. |
 | Transport belt | 50 | C | Cooling conveyors for molten blooms. |
+| Explosives | 30 | A | Clear Vulcanus cliffs near the landing site. |
 
 No electronics in wreck (melted in volcanic heat). Player must rebuild circuits from silicon insulation + local materials. No Stirling, no electrical grid: one intake pumps lava for free, one intake toggles to a free-gas vent to bootstrap the gas loop, then everything runs on pneumatic gas from lava processing.
 
