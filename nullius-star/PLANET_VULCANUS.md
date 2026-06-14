@@ -367,11 +367,10 @@ Both steps consume H2 (from HCl geyser electrolysis) and produce tiny amounts of
 
 **Step 4: O2 from SO2** (Vulcanus-specific, implemented)
 ```
-SO2 Catalytic Decomposition:  40 SO2 + 1 rutile (catalyst) --> 40 O2 + 1 rutile
+SO2 Catalytic Decomposition:  40 SO2 + 1 rutile (catalyst) --> 40 O2 + 1 sulfur + 1 rutile
   (Rutile is not consumed. Productivity disabled to prevent catalyst duplication.)
   (SO2 comes from lava silica extraction and atmosphere separation.)
-  TODO: Add solid sulfur (SA base item) to output. Currently sulfur is "absorbed"
-        by the handwave. Needed once FeS shuttle is implemented as sulfur source.
+  (Excess sulfur can be dumped directly into lava using Space Age lava disposal.)
 ```
 
 Nauvis air separation recipes (which extract O2 from air directly) are **disabled on Vulcanus** via surface conditions. The SO2 catalytic route is the only oxygen source.
@@ -408,7 +407,7 @@ Nauvis air separation recipes (which extract O2 from air directly) are **disable
 - Graphite (for smelting, silicon production, electrode fabrication)
 - O2 (for steel production via wet smelting, water synthesis)
 - N2 (trace -- useful for compressed nitrogen if a recipe needs it)
-- SO2 (sulfur source, useful for acid production)
+- SO2 and solid sulfur (sulfur source, useful for acid production and science)
 - Water (agonizingly small amounts from H2 allocation + reaction byproducts)
 
 **Water budget**: A large Vulcanus factory might produce enough water for:
@@ -1061,7 +1060,7 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 | Silica/Sand | Sandstone --> crush | Lava silica extraction | **LOCAL** (abundant) |
 | Calcite/Lime | Limestone (non-starting) | Lava calcite separation | **LOCAL** (abundant) |
 | Silicon ingot | Silica + graphite --> smelting | Same recipe, local inputs | **LOCAL** |
-| Sulfur (as SO2) | Various chemistry | Lava silica extraction byproduct (SO2 fluid, not solid sulfur yet -- see section 11) | **LOCAL** (fluid form) |
+| Sulfur | Various chemistry | SO2 from lava/atmosphere --> catalytic decomposition --> solid sulfur | **LOCAL** |
 | Water | Seawater intake | Synthesized: HCl electrolysis --> H2 + atmospheric O2 --> H2O | **TRACE LOCAL** (agonizingly slow, bulk still import) |
 | Graphite/Carbon | Mined on Nauvis | CO2 atmospheric capture --> carbon | **LOCAL** (from atmosphere) |
 | Oxygen | Air separation on Nauvis | CO2 splitting --> O2 | **LOCAL** (from atmosphere) |
@@ -1128,7 +1127,7 @@ Lava
   |--> Aluminum bloom --> (cool) --> Alumina --> [dry smelt + graphite] --> Aluminum ingot --> sheet, wire, rod
   |--> Calcite --> lime, calcium
   |--> Silica --> glass, silicon ingot, ceramic substrate
-  |--> Sulfur
+  |--> SO2 --> [rutile-catalyzed decomposition] --> Sulfur + O2
   |--> Compressed volcanic gas (fuel)
   +--> Mineral dust, graphite (byproducts)
 
@@ -1159,7 +1158,7 @@ Problem: Vulcanus has no ore patches -- metals come from lava as ingots, not raw
 
 | Vulcanus Alt Recipe | Input | Output | Time | Notes |
 |---|---|---|---|---|
-| Vulcanus geology pack | 2 mineral dust + 2 silica + 1 calcite + 1 sulfur | 1 geology pack | 40s | All from lava processing byproducts. Slower than Nauvis (40s vs 30s). Mineral analysis of volcanic deposits. |
+| Vulcanus geology pack (IMPLEMENTED) | 2 mineral dust + 2 silica + 1 calcium carbonate + 1 sulfur | 1 geology pack | 40s | All from lava processing byproducts. Slower than Nauvis (40s vs 30s). Mineral analysis of volcanic deposits. |
 
 **Climatology Pack (Nauvis: 5000 air + 4000 seawater OR 200 N2 + 100 wastewater + 5 volcanic gas)**
 
@@ -1167,7 +1166,7 @@ Problem: No seawater. Recipe 2 needs nitrogen (trace from atmosphere) + wastewat
 
 | Vulcanus Alt Recipe | Input | Output | Time | Notes |
 |---|---|---|---|---|
-| Vulcanus climatology pack | 400 CO2 + 30 N2 + 10 SO2 + 5 volcanic gas | 1 climatology pack | 50s | All from Vulcanus atmosphere separation. Heavy on CO2 (abundant), light on N2 (trace). Atmospheric composition analysis. |
+| Vulcanus climatology pack (IMPLEMENTED) | 400 CO2 + 30 N2 + 10 SO2 | 1 climatology pack | 50s | All from Vulcanus atmosphere separation. Heavy on CO2 (abundant), light on N2 (trace). Atmospheric composition analysis. Kept to 3 fluid inputs so it fits chemical plant fluid boxes. |
 
 **Mechanical Pack (Nauvis: 1 motor-1 + 3 iron gear)**
 
@@ -1185,7 +1184,7 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 |---|---|---|---|---|
 | (Same as Nauvis) | 1 logic-circuit (ceramic alt) + 1 lamp + 2 insulated-wire (silicon alt) + 1 capacitor (glass alt) | 1 electrical pack | 12s | Uses Vulcanus alt components. Pack recipe unchanged. |
 
-**Summary: 2 new alt recipes needed** (geology + climatology packs). Mechanical and electrical packs work with existing component-level alt recipes.
+**Summary: 2 alt recipes implemented** (geology + climatology packs). Mechanical and electrical packs work with existing component-level alt recipes.
 
 ### 10.6 What Still Requires Import (Post-Cargo)
 
@@ -1206,7 +1205,7 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 - Should the metallurgic pack recipe require cooled ingots specifically, or accept molten blooms too? (Requiring cooled ingots means the cooldown bottleneck affects science production.)
 - How many deep deposits per map? How large? How fast do demolishers expose them?
 - Should demolisher bio-feed be a continuous stream or periodic batches?
-- Solid sulfur extraction: lava silica extraction currently produces SO2 (fluid), not solid sulfur. Add solid sulfur to output, or require a separate SO2 --> sulfur step?
+- Sulfur output ratio: SO2 catalytic decomposition currently produces solid sulfur as a useful byproduct. Tune sulfur yield versus metallurgic science consumption and direct lava dumping load.
 
 ---
 

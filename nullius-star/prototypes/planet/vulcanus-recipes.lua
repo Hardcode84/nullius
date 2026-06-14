@@ -151,6 +151,89 @@ data:extend({
   },
 })
 
+-- Vulcanus generic science pack recipes. These provide the tiny local
+-- trickle needed for planet-local research without importing Nauvis ores or
+-- seawater. They are intentionally slower than the normal Nauvis recipes.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-geology-pack-vulcanus",
+    localised_name = {"recipe-name.nullius-geology-pack-vulcanus"},
+    icons = {
+      {
+        icon = "__base__/graphics/icons/utility-science-pack.png",
+        icon_size = 64,
+      },
+      {
+        icon = "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-2.png",
+        icon_size = 64,
+        scale = 0.27,
+        shift = {1, 7},
+        tint = {r = 0.9, g = 0.65, b = 0.35, a = 0.85},
+      },
+    },
+    show_amount_in_title = false,
+    always_show_products = true,
+    always_show_made_in = true,
+    hide_from_signal_gui = false,
+    enabled = true,
+    category = "small-crafting",
+    subgroup = "research-pack-2",
+    order = "nullius-vb",
+    energy_required = 40,
+    ingredients = {
+      {type = "item", name = "nullius-mineral-dust", amount = 2},
+      {type = "item", name = "nullius-silica", amount = 2},
+      {type = "item", name = "nullius-crushed-limestone", amount = 1},
+      {type = "item", name = "sulfur", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-geology-pack", amount = 1},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-climatology-pack-vulcanus",
+    localised_name = {"recipe-name.nullius-climatology-pack-vulcanus"},
+    icons = {
+      {
+        icon = "__base__/graphics/icons/chemical-science-pack.png",
+        icon_size = 64,
+      },
+      {
+        icon = "__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png",
+        icon_size = 72,
+        scale = 0.27,
+        shift = {1, 7},
+      },
+    },
+    show_amount_in_title = false,
+    always_show_products = true,
+    always_show_made_in = true,
+    hide_from_signal_gui = false,
+    enabled = true,
+    allow_decomposition = false,
+    category = "basic-chemistry",
+    subgroup = "research-pack-2",
+    order = "nullius-vc",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
+      secondary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color,
+    },
+    energy_required = 50,
+    ingredients = {
+      {type = "fluid", name = "nullius-carbon-dioxide", amount = 400},
+      {type = "fluid", name = "nullius-nitrogen", amount = 30},
+      {type = "fluid", name = "nullius-sulfur-dioxide", amount = 10},
+    },
+    results = {
+      {type = "item", name = "nullius-climatology-pack", amount = 1},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
 -- Vulcanus logistics alt recipes: replace unavailable materials.
 data:extend({
   -- Splitter alt: underground belt + silicon insulation (replaces plastic).
@@ -254,7 +337,7 @@ data:extend({
 })
 
 -- SO2 catalytic decomposition: the only way to get oxygen on Vulcanus.
--- 2 SO2 --> 2 S + 2 O2 (catalyzed by rutile/TiO2 at volcanic temperatures).
+-- 40 SO2 --> 40 O2 + 1 sulfur (catalyzed by rutile/TiO2 at volcanic temperatures).
 -- SO2 comes from lava silica extraction and atmosphere separation.
 -- Rutile catalyst: 1 in, 1 out (not consumed). Productivity disabled.
 data:extend({
@@ -269,6 +352,7 @@ data:extend({
     subgroup = "air-filtration-recipe",
     order = "nullius-vc",
     allow_productivity = false,
+    no_productivity = true,
     energy_required = 4,
     ingredients = {
       {type = "fluid", name = "nullius-sulfur-dioxide", amount = 40},
@@ -276,6 +360,7 @@ data:extend({
     },
     results = {
       {type = "fluid", name = "nullius-oxygen", amount = 40},
+      {type = "item", name = "sulfur", amount = 1},
       {type = "item", name = "nullius-rutile", amount = 1},
     },
     main_product = "nullius-oxygen",
