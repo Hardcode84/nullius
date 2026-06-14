@@ -70,6 +70,37 @@ local pump_valve_pairs = {
   {"nullius-small-pump-2", "nullius-togglable-small-pump-2"},
 }
 
+-- Lava intake cycle on Vulcanus:
+-- free lava intake -> free-gas vent -> free lava intake.
+-- The lava intake is void-powered: a shore intake can't practically take gas on
+-- its lava side (pipes cannot be placed on lava), and bootstrap has no
+-- electricity. The gas vent is a cosmetic assembling-machine shell. Registering
+-- it spawns the hidden drill + gas resource used for diminishing-returns
+-- throttling; leaving it tears both down. replace_pump_valve is used
+-- (destroy+create, no fluid carryover): the modes have differently-filtered
+-- fluid boxes (lava vs gas), so the default save/restore could mishandle them.
+for i = 1, 2 do
+  local lava = "nullius-lava-intake-" .. i
+  local pneumatic = lava .. "-pneumatic"  -- legacy/dev saves only.
+  local gasvent = lava .. "-gasvent"
+
+  register_transition(lava, gasvent, {
+    condition = is_vulcanus_pneumatic,
+    replace_fn = replace_pump_valve,
+    on_enter = function(entity) vulcanus_gasvent.register(entity) end,
+  })
+  register_transition(pneumatic, gasvent, {
+    -- Leaving legacy pneumatic mode: tear down its heat interface.
+    replace_fn = replace_pump_valve,
+    on_leave = on_leave_pneumatic,
+    on_enter = function(entity) vulcanus_gasvent.register(entity) end,
+  })
+  register_transition(gasvent, lava, {
+    replace_fn = replace_pump_valve,
+    on_leave = function(entity) vulcanus_gasvent.remove(entity.unit_number) end,
+  })
+end
+
 for _, pair in ipairs(pump_valve_pairs) do
   local pump, valve = pair[1], pair[2]
   local pn_pump = pump .. "-pneumatic"

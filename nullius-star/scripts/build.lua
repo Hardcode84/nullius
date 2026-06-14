@@ -7,6 +7,10 @@ function entity_added(entity, handbuilt)
   if string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.add_heat_interface(entity)
   end
+  -- A built gas-vent shell spawns its hidden drill + resource (the actual vent).
+  if string.sub(entity.name, -8) == "-gasvent" then
+    vulcanus_gasvent.register(entity)
+  end
   if (string.sub(entity.name, 1, 8) ~= "nullius-") then
     if (entity.name == "entity-ghost") then
       local result = check_pipette(handbuilt)
@@ -62,6 +66,9 @@ function entity_removed(entity, died)
   if string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.remove_heat_interface(entity.unit_number)
   end
+  if string.sub(entity.name, -8) == "-gasvent" then
+    vulcanus_gasvent.remove(entity.unit_number)
+  end
   if (string.sub(entity.name, 1, 8) ~= "nullius-") then
     if (entity.type == "constant-combinator" and
         string.sub(entity.name, 1, 12) == "cargo-drone-") then
@@ -106,12 +113,20 @@ end
 function entity_destroyed(event)
   if (script_kill or (event.type ~= defines.target_type.entity)) then return end
   local unit_number = event.useful_id
+  if (vulcanus_gasvent.destroyed(event)) then return end
   if (destroyed_stirling_engine(unit_number)) then return end
   if (destroyed_wind_turbine(unit_number)) then return end
   if (destroyed_wind_mod_entity(unit_number)) then return end
   if (remove_beacon(unit_number)) then return end
   if (remove_turbine(unit_number)) then return end
   if (remove_transmitter(unit_number)) then return end
+end
+
+function entity_rotated(event)
+  local entity = event.entity
+  if entity and entity.valid and string.sub(entity.name, -8) == "-gasvent" then
+    vulcanus_gasvent.rotated(entity)
+  end
 end
 
 
@@ -123,6 +138,7 @@ script.on_event(defines.events.on_player_mined_entity, entity_mined)
 script.on_event(defines.events.on_robot_mined_entity, entity_mined)
 script.on_event(defines.events.on_entity_died, entity_died)
 script.on_event(defines.events.on_object_destroyed, entity_destroyed)
+script.on_event(defines.events.on_player_rotated_entity, entity_rotated)
 
 
 function update_tick()

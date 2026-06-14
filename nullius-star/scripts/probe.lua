@@ -27,12 +27,14 @@ local function vulcanus_landing_site(surface, pos, force)
   }
   if wreck and wreck.valid then
     -- Vulcanus probe supplies.
-    -- Bootstrap sequence: Stirling + pump get lava flowing (electric),
-    -- then everything switches to pneumatic (compressed gas).
+    -- Bootstrap sequence: no electricity. One free/void lava intake provides
+    -- lava; another intake toggled to free-gas mode (Ctrl+R) vents compressed
+    -- gas for free (diminishing returns), powering the first pneumatic hydro
+    -- plant. Once lava processing runs, its net-positive gas surplus sustains
+    -- the factory.
 
-    -- Phase A: Electrical bootstrap (get lava flowing).
-    wreck.insert({name = "nullius-stirling-engine-1", count = 1})
-    wreck.insert({name = "small-electric-pole", count = 4})
+    -- Phase A: Pneumatic bootstrap (no Stirling, no electrical grid).
+    -- Two intakes: one free lava, one toggled to free-gas.
     wreck.insert({name = "nullius-seawater-intake-1", count = 2})
 
     -- Phase B: First gas loop (hydro-plant processes lava + piping).

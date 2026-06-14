@@ -20,6 +20,16 @@ data:extend({
     },
     main_product = "lava",
   },
+  {
+    -- Resource category mined only by the hidden gas vent drill (see below).
+    type = "resource-category",
+    name = "nullius-gas-vent",
+  },
+  {
+    -- Recipe category with no recipes: the gas-vent shell never crafts.
+    type = "recipe-category",
+    name = "nullius-gas-vent-shell",
+  },
 })
 
 -- Vulcanus radiators: heat-powered chemistry buildings.
@@ -285,6 +295,10 @@ for i = 1, 2 do
     lava_intake.localised_name = {"entity-name.nullius-lava-intake"}
     lava_intake.crafting_categories = {"nullius-lava-pumping"}
     lava_intake.fixed_recipe = "nullius-lava-pumping"
+    -- Free/void powered. A shore intake can't practically take gas on its lava
+    -- side (pipes cannot be placed on lava), and bootstrap has no electricity.
+    lava_intake.energy_source = {type = "void"}
+    lava_intake.energy_usage = "1W"
     lava_intake.fast_replaceable_group = si.fast_replaceable_group
     lava_intake.next_upgrade = (i < 2) and ("nullius-lava-intake-" .. (i + 1)) or nil
     lava_intake.hidden = true
@@ -301,5 +315,131 @@ for i = 1, 2 do
     lava_intake.placeable_by = {item = "nullius-seawater-intake-" .. i, count = 1}
 
     data:extend({lava_intake})
+
+    -- Pneumatic lava intake: gas-powered instead of electric. Keeps the lava
+    -- output (south); adds a compressed-gas input on the north edge.
+    local lava_pneumatic = table.deepcopy(lava_intake)
+    lava_pneumatic.name = "nullius-lava-intake-" .. i .. "-pneumatic"
+    lava_pneumatic.localised_name = {"entity-name.nullius-lava-intake"}
+    lava_pneumatic.next_upgrade = nil
+    lava_pneumatic.energy_source = {
+      type = "fluid",
+      burns_fluid = true,
+      scale_fluid_usage = true,
+      fluid_usage_per_tick = 1,
+      fluid_box = {
+        volume = 200,
+        pipe_connections = {{
+          flow_direction = "input",
+          direction = defines.direction.north,
+          position = {0, -1},
+        }},
+      },
+    }
+    data:extend({lava_pneumatic})
+
+    -- Free-gas vent SHELL: the intake's Ctrl+R alternate mode. This is a cosmetic
+    -- assembling machine (never crafts) that is just the intake re-skinned -- so
+    -- it places and blueprints/copy-pastes exactly like the intake (NOT a mining
+    -- drill, so blueprint ghosts don't need a resource under them first). When it
+    -- is built, vulcanus_gasvent.lua spawns a hidden mining-drill + invisible gas
+    -- resource under it; the drill does the actual venting and the engine meters
+    -- output at resource.amount/NORMAL (throttle = NORMAL/sqrt(N)). This mirrors
+    -- Space Exploration 0.5's core miner composite setup.
+    local lava_gasvent = table.deepcopy(lava_intake)
+    lava_gasvent.name = "nullius-lava-intake-" .. i .. "-gasvent"
+    lava_gasvent.localised_name = {"entity-name.nullius-lava-gasvent"}
+    lava_gasvent.placeable_by = {item = "nullius-seawater-intake-" .. i, count = 1}
+    lava_gasvent.next_upgrade = nil
+    lava_gasvent.energy_source = {type = "void"}
+    -- Never crafts: a recipe category with no recipes. The hidden drill vents gas.
+    lava_gasvent.crafting_categories = {"nullius-gas-vent-shell"}
+    lava_gasvent.fixed_recipe = nil
+    -- A real gas output on the shell makes the player-facing entity rotatable,
+    -- shows/blueprints the pipe connection, and gives pipes something visible to
+    -- connect to. The hidden drill overlaps this output and supplies the gas.
+    lava_gasvent.fluid_boxes_off_when_no_fluid_recipe = false
+    lava_gasvent.fluid_boxes = {{
+      production_type = "output",
+      volume = 500,
+      pipe_covers = pipecoverspictures(),
+      filter = "nullius-compressed-volcanic-gas",
+      pipe_connections = {{position = {0, 1}, flow_direction = "output", direction = defines.direction.south}},
+    }}
+    data:extend({lava_gasvent})
   end
 end
+
+-- Hidden gas-vent drill: void-energy fluid mining-drill spawned by the script
+-- under each gas-vent shell. Invisible and intangible (the shell is what the
+-- player sees/clicks/blueprints); it mines the gas seam and outputs gas to the
+-- south pipe, exactly where the shell's lava output used to be.
+local gas_vent_drill = table.deepcopy(data.raw["mining-drill"]["nullius-extractor-1"])
+gas_vent_drill.name = "nullius-gas-vent-drill"
+gas_vent_drill.localised_name = {"entity-name.nullius-lava-gasvent"}
+gas_vent_drill.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info"}
+gas_vent_drill.hidden = true
+gas_vent_drill.selectable_in_game = false
+gas_vent_drill.minable = nil
+gas_vent_drill.next_upgrade = nil
+gas_vent_drill.fast_replaceable_group = nil
+-- Box must contain the south pipe connection ({0,1}); collision_mask is empty so
+-- it blocks nothing and can overlap both the shell and shore/lava tiles.
+gas_vent_drill.collision_box = data.raw["assembling-machine"]["nullius-lava-intake-1"].collision_box
+gas_vent_drill.collision_mask = {layers = {}}
+gas_vent_drill.selection_box = nil
+gas_vent_drill.graphics_set = {}
+gas_vent_drill.base_picture = nil
+gas_vent_drill.radius_visualisation_picture = nil
+gas_vent_drill.circuit_connector = nil
+gas_vent_drill.monitor_visualization_tint = nil
+gas_vent_drill.energy_source = {type = "void"}
+gas_vent_drill.energy_usage = "100kW"
+gas_vent_drill.module_slots = 0
+gas_vent_drill.allowed_effects = {}
+gas_vent_drill.resource_categories = {"nullius-gas-vent"}
+gas_vent_drill.resource_searching_radius = 0.99
+gas_vent_drill.vector_to_place_result = {0, 0}
+gas_vent_drill.mining_speed = 1
+gas_vent_drill.output_fluid_box = {
+  volume = 1000,
+  pipe_covers = pipecoverspictures(),
+  filter = "nullius-compressed-volcanic-gas",
+  pipe_connections = {{
+    position = {0, 1},
+    flow_direction = "output",
+    direction = defines.direction.south,
+  }},
+}
+data:extend({gas_vent_drill})
+
+-- Invisible infinite gas resource mined by the hidden drill. No autoplace -- only
+-- script-spawned under a shell. infinite_depletion_amount = 0 means the engine
+-- never changes its amount; vulcanus_gasvent.lua owns it and throttles output by
+-- rewriting amount to NORMAL/sqrt(N). NORMAL here must match the runtime script.
+data:extend({
+  {
+    type = "resource",
+    name = "nullius-gas-vent-seam",
+    category = "nullius-gas-vent",
+    infinite = true,
+    minimum = 1,
+    normal = 1000000,
+    infinite_depletion_amount = 0,
+    minable = {
+      mining_time = 1,
+      results = {{type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 12}},
+    },
+    -- Collisionless so it can be created under a shore/lava intake. Mining drills
+    -- find resources by position/category, not by resource-layer collision.
+    collision_box = {{-1.3, -1.3}, {1.3, 1.3}},
+    collision_mask = {layers = {}},
+    selectable_in_game = false,
+    highlight = false,
+    map_grid = false,
+    flags = {"placeable-off-grid", "not-on-map"},
+    stage_counts = {0},
+    stages = {sheet = {filename = "__core__/graphics/empty.png", width = 1, height = 1, variation_count = 1}},
+  },
+})
+

@@ -1,6 +1,6 @@
 # Nullius SA: Vulcanus -- Planet Design Document
 
-> **Status**: Partially implemented (updated 2026-03-29)
+> **Status**: Partially implemented (updated 2026-06-14)
 > **Role**: Heavy industry. Abundant metals from lava. No water, no organics.
 > **Unlock**: Volcanic Probe Signal Recovery (Tier 3, after signal acquisition + metallurgy-2)
 > **Theme**: Time-gated production (spoilage-as-cooldown), silicon-only insulation, late-game synthetic demolishers.
@@ -26,7 +26,7 @@
 
 ### 2.1 Lava (Primary Resource)
 
-Lava is Vulcanus's equivalent of Nauvis's ores. Extracted by lava pumps from lava pools (infinite, like water on Nauvis).
+Lava is Vulcanus's equivalent of Nauvis's ores. Extracted by free lava intakes from lava pools (infinite, like water on Nauvis).
 
 **Lava composition** (fractional distillation/separation):
 
@@ -88,11 +88,13 @@ HCl Geyser (fixed map position, infinite, finite throughput)
 
 **Two-phase HCl processing:**
 
-**Bootstrap (electrolysis, electricity-bottlenecked):**
-- Standard Nullius HCl electrolysis recipe: 240 HCl --> 120 H2 + 120 Cl2
-- Uses the probe's Stirling engine (scarce electricity)
+**Bootstrap (thermal cracking, low-temp):**
+- With no electricity on Vulcanus, HCl electrolysis is not an early option.
+- First H2/Cl2 comes from low-temp HCl thermal cracking as soon as the factory
+  generates enough waste heat to drive a radiator (see 2.4).
 - Slow but functional -- enough to get first graphite, first drops of water
-- This is the painful early game before thermal infrastructure exists
+- (If the player later imports/builds Stirling engines for niche electronics,
+  electrolysis becomes available, but it is never the bootstrap path.)
 
 **Bulk production (thermal cracking via overheated radiators):**
 - Once the factory is running and generating waste heat, radiators are already at high temperature
@@ -490,7 +492,7 @@ Stirling Engine 1 recipe (Nauvis mid-game):
   30 lubricant              <-- available via Vulcanus alt recipe (section 3.3)
 ```
 
-The lubricant alt recipe (section 3.3) makes lubricant locally producible, but compressed nitrogen and other ingredients may still require imports. The probe's surviving Stirling engine is your **only** electricity source initially.
+The lubricant alt recipe (section 3.3) makes lubricant locally producible, but compressed nitrogen and other ingredients may still require imports. The probe carries no Stirling engine; electricity is optional later, not part of bootstrap.
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
@@ -550,46 +552,50 @@ Every lava processing recipe produces **both** metal blooms AND compressed gas a
 ### 4.2 The Lava Throughput Bottleneck
 
 ```
-Lava Pump (gas-powered) --> Lava Processing (gas-powered)
-     |                           |            |
-     |                     Molten Blooms   Compressed Gas
-     |                                        |
-     +----<------- gas feedback loop ---------+
+Lava Intake (free/void) --> Lava Processing (gas-powered)
+     |                            |            |
+     |                      Molten Blooms   Compressed Gas
+     |                                         |
+     +----<-------- gas feedback loop ---------+
 ```
 
-The loop is self-sustaining but not infinitely scalable. Each lava processing step produces slightly more gas than the pump + processor consume, creating a small surplus. That surplus powers additional machines (inserters, assemblers, labs). More lava processing = more surplus gas = more factory capacity.
+The loop is self-sustaining but not infinitely scalable. Each lava processing step produces more gas than the processor consumes, creating a small surplus. The lava intake itself is free/void-powered because its lava-side footprint cannot accept gas pipes. That surplus powers additional machines (inserters, assemblers, labs). More lava processing = more surplus gas = more factory capacity.
 
-**Scaling**: To grow the factory, build more lava pumps and processors. Each new processing line generates its own gas surplus. The growth is linear, not exponential -- you can't "bootstrap" infinite gas from one pump.
+**Scaling**: To grow the factory, build more lava intakes and processors. Each new processing line generates its own gas surplus. The growth is linear, not exponential -- you can't "bootstrap" infinite gas from one intake.
 
-**Bootstrap**: The probe carries a small tank of compressed volcanic gas as starting fuel. Enough to prime the first lava pump, run the first processing cycle, and establish the self-sustaining loop. If the player wastes the starting gas, they're stuck (but this should be very hard to do accidentally).
+**Bootstrap**: No electricity, no Stirling engine. The lava intake is free/void-powered and toggles (Ctrl+R, see 4.3) between **free lava intake** and **free-gas vent**. Lava is therefore available immediately; the vent supplies the first compressed gas needed to run a pneumatic hydro plant. Once lava processing runs, its net-positive gas surplus takes over and the vent becomes a negligible trickle.
 
-### 4.3 Bootstrap Power Budget
+### 4.3 Bootstrap Power Budget: The Free-Gas Vent (IMPLEMENTED)
 
-The probe starts with (tentative):
+There is no electrical power budget. The factory bootstraps on free gas instead, with **diminishing returns** so it can never replace the real lava economy.
 
-| Equipment | Electrical Output | Notes |
+Each free-gas vent on a surface delivers `BASE / sqrt(N)` gas, where N is the number of vents on that surface. Total output across all vents grows as `sqrt(N)` -- the same curve Space Exploration uses for core mining. Doubling vents only multiplies total free gas by ~1.41x.
+
+| N (vents) | per-vent rate | total free gas |
 |---|---|---|
-| 1 Stirling engine (from probe) | ~500 kW | Precious. Cannot be replaced without imports. |
+| 1 | BASE | BASE |
+| 4 | BASE/2 | 2 * BASE |
+| 100 | BASE/10 | 10 * BASE |
 
-This is enough for:
-- A few inserters
-- A pump or two
-- A lab
-- Basic circuit production
+`BASE` is tuned (currently 12 gas/s) so one vent roughly primes one pneumatic machine. Because free gas scales sub-linearly while lava processing scales linearly and is net-positive, the vent matters only at bootstrap; at any real factory scale it is a rounding error.
 
-NOT enough for: mass production, large assemblers, compression, or anything power-hungry.
+**Implementation** (Space Exploration 0.5 core-miner pattern, engine-metered): The free-gas mode is the intake's Ctrl+R alternate state. The player-facing entity is a cosmetic intake-shaped assembling-machine shell that blueprints normally; when built, `vulcanus_gasvent.lua` spawns a hidden void-energy fluid mining drill plus an invisible infinite gas resource underneath it. The resource has `infinite_depletion_amount = 0`, so the engine never changes its amount; the script owns it. Because the engine meters an infinite resource's output at `amount/normal`, throttling is just rewriting `resource.amount = normal/sqrt(N)` on build/remove. The engine does the metering smoothly -- no duty-cycling, no per-tick loop. N is recomputed only when a vent is toggled, built, or mined. See `scripts/vulcanus_gasvent.lua`.
+
+This is enough for: priming the first pneumatic hydro plant, a few starter machines.
+
+NOT enough for: mass production. The player is forced into the lava-processing loop almost immediately -- which is the point.
 
 ### 4.4 Power Progression
 
 | Phase | Gas Source | Factory Scale | Unlocked By |
 |---|---|---|---|
-| **Bootstrap** | Probe's starting gas tank (finite!) | First lava pump + first processor | Starting equipment |
+| **Bootstrap** | Free-gas vent (sqrt-capped) + free lava intake | First lava processor | Starting equipment |
 | **Early** | First self-sustaining lava loop | Small surplus -- a few machines | First lava processing recipe |
 | **Mid** | Multiple lava processing lines | Medium factory (each line generates surplus) | Vulcanus Metallurgy 2 (improved yields) |
 | **Late** | Optimized processing + higher-tier lava recipes | Large factory | Higher-tier lava separation (more gas per batch) |
 | **Endgame** | Mass lava processing arrays | Megabase | Full research tree |
 
-**Electricity role on Vulcanus**: Stirling engines still exist for the few things that specifically need electricity (circuit fabrication, signal processing, advanced electronics). But they're a niche tool, not the backbone. The probe's Stirling covers the tiny electrical needs indefinitely. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics, not a survival milestone.
+**Electricity role on Vulcanus**: none at bootstrap. The probe carries no Stirling; the factory starts and runs entirely on gas. Stirling engines can still be *crafted* later (lubricant alt recipe is local; compressed nitrogen may need import) for the few things that specifically want electricity (circuit fabrication, signal processing, advanced electronics), but they are a fully optional niche tool, never a survival requirement. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics.
 
 ### 4.5 Why This Works
 
@@ -598,7 +604,7 @@ The Vulcanus power design creates a unique challenge: **the factory fuels itself
 The factory FEELS different from every other planet:
 - **Pipes everywhere**: compressed gas lines run to every machine, not power poles
 - **No electrical grid**: almost zero power poles. Just gas pipes and heat pipes.
-- **Lava pumps are the "power plants"**: more pumps = more gas = more capacity
+- **Lava processors are the "power plants"**: more lava throughput = more gas = more capacity
 - **Self-fueling loops**: each processing line generates its own fuel surplus
 - **Belt design for cooldown**: long belts where molten blooms passively cool while traveling to the next station
 
@@ -833,10 +839,8 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 
 | Item | Count | Phase | Notes |
 |---|---|---|---|
-| Stirling engine (tier 1) | 1 | A | ~500kW from ambient heat. Only electricity source. |
-| Small electric pole | 4 | A | Connect Stirling to pump. |
-| Seawater intake | 2 | A | Auto-swaps to lava intake on Vulcanus. Place on lava shore. |
-| Hydro plant | 1 | B | Lava separation (water-treatment category). Electric bridge, then toggle to pneumatic. |
+| Seawater intake | 2 | A | Auto-swaps to free lava intake on Vulcanus. Toggle (Ctrl+R) between lava intake / free-gas vent. Place on lava shore. |
+| Hydro plant | 1 | B | Lava separation (water-treatment category). Toggle to pneumatic; runs on free-gas vent output at bootstrap. |
 | Small furnace | 2 | B | Smelting (ingot --> plate/rod). Toggle to pneumatic/thermal. |
 | Pipe | 20 | B | Lava and gas piping. |
 | Small assembler | 1 | C | For crafting components. Toggle to pneumatic. |
@@ -845,43 +849,47 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 | Lab | 1 | E | For Vulcanus research. Toggle to pneumatic. |
 | Transport belt | 50 | C | Cooling conveyors for molten blooms. |
 
-No electronics in wreck (melted in volcanic heat). Player must rebuild circuits from silicon insulation + local materials. The Stirling + pump exist for ONE purpose: get lava flowing. After that, everything toggles to pneumatic.
+No electronics in wreck (melted in volcanic heat). Player must rebuild circuits from silicon insulation + local materials. No Stirling, no electrical grid: one intake pumps lava for free, one intake toggles to a free-gas vent to bootstrap the gas loop, then everything runs on pneumatic gas from lava processing.
 
 ### 7.3 Bootstrap Sequence
 
-**Phase A: Electrical Bootstrap -- Get Lava Flowing (minutes 0-5)**
+**Phase A: Free-Gas Bootstrap -- Prime the Loop (minutes 0-5)**
 
-The only time electricity is used on Vulcanus.
+No electricity is used on Vulcanus at all.
 
 ```
 1. Mine probe wreck --> collect starting items.
-2. Place Stirling engine (produces ~500kW from ambient heat, no heat pipe needed).
-3. Place electric poles to connect Stirling to lava shore.
-4. Place seawater intake on lava lake shore --> auto-swaps to lava intake, lava flows.
-5. Pipe lava to where the first gas-powered processor will go.
+2. Place seawater intake #1 on lava lake shore --> auto-swaps to free lava intake.
+   Pipe lava to where the first hydro plant will go.
+3. Place seawater intake #2 on the shore and Ctrl+R to FREE-GAS VENT mode -->
+   it vents compressed gas for free (diminishing returns, see 4.3).
+4. Pipe that gas to your first pneumatic machines.
+5. Lava + bootstrap gas are both available.
 ```
 
-Electricity's job is done. The pump keeps running on the Stirling indefinitely. Everything from here on is gas-powered.
+The free lava intake + free-gas vent do the priming the Stirling used to. Everything from here on is gas-powered.
 
 **Phase B: First Gas Loop -- Self-Sustaining Factory (minutes 5-15)**
 
 The player has already researched "Pneumatic Technology" on Nauvis (unlocked right after probe reactivation). This allows toggling any machine to pneumatic mode on Vulcanus via Ctrl+R.
 
 ```
-6. Place a hydro plant (from wreck) in ELECTRIC mode.
-   - Powered by the Stirling. Set recipe to lava iron separation (water-treatment category).
-   - Lava flows in from pump. Produces molten iron blooms + compressed volcanic gas.
-   - This is the BRIDGE: one electric hydro plant produces the first gas.
-7. Pipe the compressed gas output to a storage tank or directly to the next machine.
+6. Place a hydro plant (from wreck), Ctrl+R to PNEUMATIC mode.
+   - Powered by the free-gas vent. Set recipe to lava iron separation.
+   - Lava flows in from intake #1. Produces molten iron blooms + compressed gas.
+   - This is net-positive on gas: processing makes more than the machines burn.
+7. Pipe the compressed gas output back into the machine gas network.
 8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.
 9. Build a second furnace. Toggle it to PNEUMATIC mode (Ctrl+R).
-   - Connects to gas pipe from step 7. Now running on gas, not electricity.
+   - Connects to the gas pipe network. Runs on processing surplus.
 10. Build more machines, all in pneumatic mode.
     - Assemblers, inserters, labs -- all toggled to pneumatic via Ctrl+R.
     - Each connects to the gas pipe network.
 11. GAS-POWERED FACTORY IS LIVE.
-    - The electric bridge hydro plant can now be toggled to pneumatic too.
-    - Only the Stirling + pump remain electrical.
+    - Lava-processing surplus now dwarfs the vent. The free-gas vent intake can
+      be toggled back to lava intake mode if more lava throughput is useful (or
+      left venting as a small buffer).
+    - Nothing is electrical.
 ```
 
 **Phase C: Metal Production (minutes 15-30)**
@@ -919,9 +927,9 @@ Once extractors are built (volcanism-1 tech, already researched on Nauvis):
 
 ```
 21. Place extractor on HCl geyser --> HCl gas flows.
-22. HCl thermal cracking (via hot radiator, later) or HCl electrolysis (Stirling-powered, slow).
-    - Bootstrap: use Stirling electricity for slow HCl electrolysis.
-    - Later: switch to thermal cracking via radiators (no electricity needed).
+22. HCl thermal cracking via radiators (heat-powered, no electricity).
+    - Early: low-temp cracking as soon as the factory makes enough waste heat.
+    - Later: high-temp radiators for bulk H2 + carbochlorination.
 23. H2 + Cl2 available:
     - H2 --> CO2 reduction --> graphite (essential for smelting recipes).
     - H2 --> water synthesis (tiny amounts, precious).
@@ -950,14 +958,14 @@ The factory now has both gas pipes and heat pipes:
 
 | Phase | Duration | Power Source | What Runs On It |
 |---|---|---|---|
-| **Electrical bootstrap** | Minutes 0-10 | Stirling (~500kW) | 1 pump + 1 bridge hydro plant to produce first gas |
+| **Free-gas bootstrap** | Minutes 0-10 | Free-gas vent (sqrt-capped) + free lava intake | First pneumatic hydro plant to start lava processing |
 | **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via Ctrl+R. |
 
-The Stirling engine and pump persist indefinitely as the sole electrical infrastructure. They exist only to feed lava into the system. Every other machine is toggled to pneumatic mode (Ctrl+R) and runs on gas pipes.
+There is no electrical infrastructure at all. The free-gas vent primes the loop; once lava processing runs, its net-positive surplus carries the factory and the vent (diminishing returns) fades to irrelevance.
 
-**The player does NOT build an electrical grid on Vulcanus.** No power poles beyond the initial 4. Machines are placed in electric mode (default) then immediately toggled to pneumatic. The entire factory runs on gas pipes.
+**The player does NOT build an electrical grid on Vulcanus.** No power poles. Machines are placed in electric mode (default) then immediately toggled to pneumatic. The entire factory runs on gas pipes.
 
-**Pneumatic Technology** is researched on Nauvis (cheap, unlocked right after probe reactivation) before or immediately after first visiting Vulcanus. Without it, machines can't be toggled and the player is stuck on Stirling electricity only.
+**Pneumatic Technology** is researched on Nauvis (cheap, unlocked right after probe reactivation) before or immediately after first visiting Vulcanus. Without it, machines can't be toggled to pneumatic mode and the intake can't be toggled to free-gas vent mode, so reach it before relying on free gas.
 
 ### 7.5 What the Player Cannot Do (Until Later)
 
@@ -971,7 +979,7 @@ The Stirling engine and pump persist indefinitely as the sole electrical infrast
 
 ### 7.6 Key Design Notes
 
-**Electricity is a temporary crutch, not a power system.** The Stirling exists to prime the lava loop. Once gas flows, electricity is irrelevant. The player who tries to build an electrical grid on Vulcanus is doing it wrong.
+**Free gas is a bootstrap, not a power system.** The free-gas vent exists to prime the lava loop. Its diminishing returns (sqrt cap) make it useless to scale -- the player who tries to power a factory off a field of vents is doing it wrong. Real power is the net-positive lava-processing loop.
 
 **Gas is abundant but must be piped.** Every machine needs a gas pipe connection. The factory layout is driven by gas pipe routing + heat pipe routing, not by belt throughput or power pole coverage.
 
