@@ -2884,10 +2884,10 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-construction-bot-1"
       },
-      -- {
-      --   type = "ghost-time-to-live",
-      --   modifier = 60 * 60 * 60 * 2
-      -- }
+      {
+        type = "create-ghost-on-entity-death",
+        modifier = true
+      },
     },
     unit = {
       count = 100,
@@ -6517,10 +6517,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-construction-bot-2"
       },
-      -- {
-      --   type = "ghost-time-to-live",
-      --   modifier = 60 * 60 * 60 * 10
-      -- }
     },
     unit = {
       count = 600,
@@ -7108,10 +7104,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-gate"
       },
-      -- {
-      --   type = "ghost-time-to-live",
-      --   modifier = 60 * 60 * 60 * 12
-      -- }
     },
     unit = {
       count = 700,
@@ -12048,10 +12040,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-unbox-construction-bot-3"
       },
-      -- {
-      --   type = "ghost-time-to-live",
-      --   modifier = 60 * 60 * 60 * 24 * 6
-      -- }
     },
     unit = {
       count = 3400,
