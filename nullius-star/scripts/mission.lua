@@ -94,8 +94,8 @@ function update_mission_panel(player)
 				  {"objective-description.nullius-suffix-"..suffix},
 				  "[/color]"},
 			  tooltip = {"objective-description.nullius-vented"}})
-		end
-	  end
+        end
+      end
     end
   end
 end
@@ -122,7 +122,9 @@ end
 
 local function update_mission_global()
   for _, player in pairs(game.players) do
-    update_mission_player(player)
+    if player.connected then
+      update_mission_player(player)
+    end
   end
 end
 
@@ -352,3 +354,7 @@ end
 
 script.on_event(defines.events.on_cargo_pod_finished_ascending, cargo_pod_finished)
 script.on_event(defines.events.on_gui_click, gui_clicked)
+
+if script.active_mods["factorio-test-support"] then
+  remote.add_interface("nullius-test-mission", {create=create_mission,set_goal=set_mission_goal})
+end
