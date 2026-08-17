@@ -2154,25 +2154,42 @@ data:extend({
   }
 })
 
+apply_heat_pipe_glow = function(layer)
+  local heat_glow_tint = {1, 1, 1, 1}
+  --layer.tint = heated_pipes_tint
 
-function make_heat_pipe_pictures(path, name_prefix, color, data)
+  local light_layer = util.copy(layer)
+  light_layer.draw_as_light = true
+  light_layer.tint = heat_glow_tint
+  return
+  {
+    layers =
+    {
+      layer,
+      light_layer
+    }
+  }
+end
+
+function make_heat_pipe_pictures(path, name_prefix, color, data, draw_as_glow)
   local all_pictures = {}
+  local func = draw_as_glow and apply_heat_pipe_glow or function(t) return t end
   for key, t in pairs(data) do
     if t.empty then
       all_pictures[key] = { priority = "extra-high", filename = "__core__/graphics/empty.png", width = 1, height = 1 }
     else
       local tile_pictures = {}
       for i = 1, (t.variations or 1) do
-        local sprite =
-          {
-            priority = "extra-high",
-            filename = path .. name_prefix .. "-" .. (t.name or string.gsub(key, "_", "-")) .. (t.ommit_number and ".png" or ("-" .. tostring(i) .. ".png")),
-            width = (t.width or 32) * 2,
-            height = (t.height or 32) * 2,
-            scale = 0.5,
-            shift = t.shift,
-            tint = color
-          }
+        local sprite = func
+        {
+          priority = "extra-high",
+          filename = path .. name_prefix .. "-" .. (t.name or string.gsub(key, "_", "-")) .. (t.ommit_number and ".png" or ("-" .. tostring(i) .. ".png")),
+          width = (t.width or 32) * 2,
+          height = (t.height or 32) * 2,
+          scale = 0.5,
+          shift = t.shift,
+          tint = color
+        }
         table.insert(tile_pictures, sprite)
       end
       all_pictures[key] = tile_pictures
@@ -2256,7 +2273,8 @@ data:extend({
         ending_down = {},
         ending_right = {},
         ending_left = {}
-      }
+      },
+      true
     )
   },
 
@@ -2316,7 +2334,7 @@ data:extend({
     ),
 
     heat_glow_sprites = make_heat_pipe_pictures(BASEENTITY .. "heat-pipe/",
-        "heated", {0.8, 0.8, 0.95},
+        "heated", {0.3, 0.45, 0.65, 0.3},
       {
         single = { empty = true },
         straight_vertical = { variations = 6 },
@@ -2334,7 +2352,7 @@ data:extend({
         ending_down = {},
         ending_right = {},
         ending_left = {}
-      }
+      }, true
     )
   },
 
