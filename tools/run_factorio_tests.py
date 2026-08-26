@@ -26,6 +26,10 @@ DEPENDENCY_MODS = (
     "boblogistics",
     "configurable-valves",
 )
+DEFAULT_UNTIL_TICKS = {
+    "vulcanus-gas-vent-smoke": 60,
+    "vulcanus-pneumatic-heat": 120,
+}
 
 
 class TestFailure(RuntimeError):
@@ -153,8 +157,11 @@ def execute(args: argparse.Namespace, run_directory: Path) -> dict[str, object]:
         raise TestFailure(f"scenario compilation did not create {save}")
 
     run_log = run_directory / "run.log"
+    until_tick = args.until_tick
+    if until_tick is None:
+        until_tick = DEFAULT_UNTIL_TICKS.get(args.case, 60)
     executed = run_factorio(
-        [*common, "--load-game", str(save), "--until-tick", str(args.until_tick)],
+        [*common, "--load-game", str(save), "--until-tick", str(until_tick)],
         run_log,
         args.timeout_seconds,
     )
@@ -189,7 +196,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
     )
-    parser.add_argument("--until-tick", type=int, default=60)
+    parser.add_argument("--until-tick", type=int)
     parser.add_argument("--timeout-seconds", type=int, default=300)
     parser.add_argument("--keep-run-directory", action="store_true")
     return parser.parse_args()

@@ -68,8 +68,10 @@ end
 
 -- Remove heat interface when machine is removed/toggled back.
 function vulcanus_heat.remove_heat_interface(unit_number)
+  local removed = false
   if storage.nullius_pneumatic_heat then
     local heat = storage.nullius_pneumatic_heat[unit_number]
+    removed = heat ~= nil
     if heat and heat.valid then
       heat.destroy()
     end
@@ -83,6 +85,7 @@ function vulcanus_heat.remove_heat_interface(unit_number)
       storage.nullius_heat_buckets[bucket_idx][unit_number] = nil
     end
   end
+  return removed
 end
 
 -- Called every tick from update_tick. Processes one bucket per tick.

@@ -33,6 +33,14 @@ Check that one correctly sized hidden heat interface is created, heat rises
 while the machine works, input stops when work stops, and removal destroys the
 owned interface without leaving duplicates or stale state.
 
+The runnable geometry slice covers small, medium, medium2, and large machines.
+It places heat pipes at tick 5, proves heat reaches every hidden interface, and
+checks removal cleanup:
+
+```bash
+python3 tools/run_factorio_tests.py vulcanus-pneumatic-heat
+```
+
 ## First campaign slice
 
 The initial two stage tests establish the fixture-and-goal pattern before
