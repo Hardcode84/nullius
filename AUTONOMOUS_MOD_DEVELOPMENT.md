@@ -134,7 +134,291 @@ The generic harness owns process isolation, schema parsing, solvers, action
 execution, reporting, and comparison. Each mod supplies a campaign contract and
 adapters only for mechanics that cannot be inferred from Factorio prototypes.
 
-## 5. Reproducible Inputs
+## 5. Concrete Scenario Test Harness
+
+The first implementation is a conventional deterministic test harness. It does
+not require a campaign solver. Each test starts from a declared game fixture,
+runs the real engine for a fixed number of ticks while performing scheduled
+actions, and asserts observable state at specific ticks and at the deadline.
+
+### 5.1 Test-only mod layout
+
+Tests live in a separate mod so production code does not acquire test branches,
+fallbacks, or mutable debug state:
+
+```text
+autodev-test/
+  info.json
+  lib/
+    case.lua                 test registration and assertion library
+    fixture.lua              surfaces, forces, entities, inventories
+    result.lua               stable JSON result writer
+  cases/
+    gasvent_lifecycle.lua
+    pneumatic_heat.lua
+    probe_multiplayer.lua
+  scenarios/
+    focused/
+      control.lua            loads selected short cases
+      description.json
+    gasvent-lifecycle/
+      control.lua            one isolated integration case
+      description.json
+```
+
+`autodev-test` has a required dependency on the mod under test. This makes the
+target mod initialize before the test harness. A scenario has its own runtime
+Lua state: it can observe and manipulate the game world, but it cannot inspect
+or mutate another mod's `storage` table. Assertions therefore prefer public
+world behavior. Instrument-only inspection is a separate diagnostic mode and
+does not define success.
+
+One scenario may contain several short cases if each case can use an independent
+surface and force. Cases that consume a unique planet association, require a
+specific save lifecycle, or intentionally terminate the game run in separate
+processes.
+
+### 5.2 Exact command flow
+
+For every test invocation, the external runner creates an isolated write-data
+directory and configuration, selects an exact mod directory, and executes:
+
+```bash
+factorio \
+  --config RUN/config.ini \
+  --mod-directory RUN/mods \
+  --disable-audio \
+  --check-unused-prototype-data \
+  --scenario2map autodev-test/gasvent-lifecycle
+
+factorio \
+  --config RUN/config.ini \
+  --mod-directory RUN/mods \
+  --disable-audio \
+  --load-game RUN/saves/autodev-test/gasvent-lifecycle.zip \
+  --until-tick 1200
+```
+
+On Factorio 2.0.76, `--scenario2map MOD/SCENARIO` creates
+`saves/MOD/SCENARIO.zip` without initializing graphics. `--load-game` combined
+with `--until-tick` loads that fixture, advances it to the absolute deadline,
+and exits. Correctness tests use this finite execution path; `--benchmark` is
+reserved for performance measurement.
+
+This exact flow was verified locally on Factorio 2.0.76 with a minimal test mod:
+the compiled scenario started at tick 0, ran headlessly without a connected
+player, wrote its required JSON result at tick 10, and exited at tick 20.
+
+The runner requires all of the following:
+
+- both Factorio processes exit successfully;
+- strict loader output contains no unapproved project-owned warnings;
+- `script-output/autodev/results/CASE.json` exists;
+- the result names the expected case, contract version, deadline, and hashes;
+- every scheduled action and assertion was executed exactly once; and
+- the result status is `pass`.
+
+A missing result is a failure even when Factorio exits zero. This catches a
+scenario that never initialized, a disabled test mod, a stalled state machine,
+or an early exit before final assertions.
+
+### 5.3 Tick-driven case lifecycle
+
+The scenario registers only ordinary lifecycle and tick handlers:
+
+1. `on_init` creates the fixture and stores serializable case state.
+2. `on_tick` executes actions scheduled for the current relative tick.
+3. Assertions run immediately after the action phase for that tick.
+4. A watchdog records progress counters and diagnoses an early stall.
+5. At the deadline, final assertions run and the result JSON is written.
+6. If any assertion failed, the scenario raises an error after writing the
+   result so Factorio also exits nonzero.
+
+Test definitions and assertion functions remain local code loaded by
+`control.lua`. Only data such as the start tick, executed action IDs, entity unit
+numbers, samples, and failures is stored in the scenario's `storage` table.
+This permits save/load without attempting to serialize functions.
+
+All schedules use ticks relative to the scenario start. The compiled scenario
+save begins at a controlled tick, while a resumed checkpoint records its own
+phase origin explicitly.
+
+### 5.4 Case definition
+
+The Lua test DSL is deliberately small:
+
+```lua
+case.define{
+  name = "gasvent-lifecycle",
+  deadline = 1200,
+
+  setup = function(ctx)
+    ctx.surface = fixture.nullius_vulcanus()
+    ctx.force = fixture.force{"nullius-test", researched = {
+      "nullius-pneumatic-technology",
+    }}
+  end,
+
+  actions = {
+    case.at(1, "build-shell", function(ctx)
+      ctx.shell = fixture.revive_entity{
+        surface = ctx.surface,
+        force = ctx.force,
+        name = "nullius-lava-intake-1-gasvent",
+        position = {0, 0},
+      }
+    end),
+    case.at(900, "remove-shell", function(ctx)
+      fixture.mine_or_destroy(ctx.shell)
+    end),
+  },
+
+  assertions = {
+    case.at(2, "composite-created", function(ctx, expect)
+      expect.entity_count(ctx.surface,
+        "nullius-lava-intake-1-gasvent", 1)
+      expect.entity_count(ctx.surface, "nullius-gas-vent-drill", 1)
+      expect.entity_count(ctx.surface, "nullius-gas-vent-seam", 1)
+    end),
+    case.at(899, "gas-produced", function(ctx, expect)
+      expect.fluid_at_least(ctx.output, "nullius-compressed-volcanic-gas", 1)
+    end),
+    case.at(901, "composite-removed", function(ctx, expect)
+      expect.entity_count(ctx.surface, "nullius-gas-vent-drill", 0)
+      expect.entity_count(ctx.surface, "nullius-gas-vent-seam", 0)
+    end),
+  },
+}
+```
+
+The example is illustrative; the real fixture must include a valid output
+connection and use the exact production event path under test.
+
+Each assertion records expected and actual values, tick, surface, force, and
+relevant unit numbers. Approximate quantities require an explicit tolerance.
+Unordered collections are normalized before comparison.
+
+### 5.5 Four test levels
+
+Every case declares one coverage level. A higher level does not retroactively
+make a lower-level fixture production-shaped.
+
+#### Level 1: Pure logic
+
+Pure Lua helpers with no engine ownership are tested with table inputs and exact
+outputs. Logic should be extracted here only when it is genuinely independent
+of Factorio objects and events.
+
+#### Level 2: Engine fixture
+
+The scenario creates entities, fluids, inventories, forces, technologies, and
+surfaces directly, advances real ticks, and validates engine behavior. This is
+appropriate for recipe throughput, fluid and heat networks, cleanup, and
+steady-state invariants.
+
+The result must list every injected prerequisite. It proves the tested
+mechanism, not that normal progression can obtain the fixture.
+
+#### Level 3: Production event path
+
+The harness performs the production-equivalent action and requires the normal
+event path. Separate cases cover player build, robot build, ghost revival,
+mining, death, rotation, fast replacement, copy/paste, custom input, and object
+destruction when the mod distinguishes them.
+
+Direct `surface.create_entity` is insufficient for a player-build contract.
+Where Factorio can raise the exact scripted event, the fixture requests it.
+Where the action requires a `LuaPlayer`, the runner connects a client or uses a
+connected player through the documented player API. Custom-input behavior is
+certified only by an actual input or replay path, not by calling the handler as
+a normal Lua function.
+
+#### Level 4: Campaign or network integration
+
+No undeclared assets are injected after the starting fixture. The test crosses
+technology, production, surface, save, or client boundaries and validates the
+user-visible result. These cases are fewer and slower; focused lower-level
+cases provide failure localization.
+
+### 5.6 Assertions and failure behavior
+
+Assertions are observations, not recovery paths. The harness never repairs the
+world to keep a test moving.
+
+Core assertions include:
+
+- entity count, identity, validity, ownership, position, direction, and status;
+- recipe, input, output, fuel, fluid, temperature, energy, and heat state;
+- technology enabled, available, researched, and progress state;
+- surface and planet association and generated resource quantities;
+- player controller, character, associated bodies, force, and surface;
+- event occurrence count and ordering visible to the harness;
+- sustained production rate over a specified sampling interval;
+- absence of hidden or registered-object debris after removal; and
+- deterministic normalized state before and after save/load.
+
+An action that cannot execute is an immediate failure with its preconditions.
+An assertion failure is recorded but may allow later independent assertions to
+run. At the deadline, any failure produces both structured JSON and a Factorio
+script error. The external runner treats process timeout, missing JSON, malformed
+JSON, wrong case identity, incomplete schedule, warnings outside policy, and
+nonzero exit as distinct failure classes.
+
+### 5.7 Save/load and migration cases
+
+Save/load is a multi-process test, not an in-memory assertion:
+
+1. Phase A starts from a compiled scenario and runs to a named checkpoint.
+2. The harness requests a server save after all checkpoint assertions pass.
+3. The runner stops the server cleanly and verifies the save artifact.
+4. Phase B loads that exact save and runs a second schedule and oracle.
+5. The normalized pre-save and post-load states are compared.
+
+Migration tests create the checkpoint with the accepted old Factorio and mod
+manifest, then load a copy with the candidate manifest. They verify migration
+and `on_configuration_changed` behavior before advancing normal ticks. Source
+saves are immutable test inputs; each run works on a copy.
+
+### 5.8 Player and multiplayer cases
+
+A dedicated headless server has no player until a client connects. Therefore a
+headless entity fixture cannot certify cursor consumption, controller transfer,
+custom inputs, player-specific ownership, or network synchronization.
+
+Player-semantic cases start a server from the compiled fixture, connect one or
+more clients with isolated write-data directories, wait for the required join
+events, and then schedule actions against those actual `LuaPlayer` objects.
+RCON may select the case, poll status, or request a server save; it does not
+replace the player action being tested.
+
+Network cases additionally verify server and client logs, disconnect and late
+join behavior, final checksums, and absence of desync reports. Instrument Mode
+is disabled for these cases.
+
+### 5.9 Initial Nullius* scenario suite
+
+The first useful suite is small and concrete:
+
+1. **strict-load:** current prototypes load with no Nullius-owned ignored data.
+2. **gasvent-lifecycle:** ghost revival creates exactly one shell/drill/seam
+   composite, gas is produced for fixed ticks, multiple vents obey the declared
+   diminishing rule, and every removal path cleans up.
+3. **pneumatic-heat-lifecycle:** building creates exactly one correct hidden heat
+   interface, active work produces bounded heat, removal cleans up, and a staged
+   save/load reconstructs ownership without duplicates.
+4. **probe-single-player:** research creates a valid planet surface, wreck,
+   inventory, android, association, charting, and transfer path.
+5. **probe-two-player:** two real players receive independent bodies; transfer,
+   death, late join, disconnect, reconnect, save, and reload preserve ownership.
+6. **vulcanus-bootstrap:** the declared wreck assets run a fixed reference
+   factory to the first local science output without undeclared grants.
+
+The first implementation milestone is `gasvent-lifecycle`. It exercises a
+script-owned composite entity, event registration, engine production, hidden
+ownership, tick progression, and cleanup while remaining small enough to
+diagnose precisely.
+
+## 6. Reproducible Inputs
 
 Every run resolves an immutable environment manifest containing:
 
@@ -159,7 +443,7 @@ Distribution compatibility and validation reproducibility are separate:
 - a supported range requires evidence at its lower and upper boundaries, not
   merely a syntactically permissive dependency string.
 
-## 6. Campaign Contract
+## 7. Campaign Contract
 
 The mod-specific contract describes milestones, constraints, and experience
 envelopes. It supplements prototypes; it must not repeat facts that can be
@@ -215,7 +499,7 @@ The numeric values above are examples, not adopted balance targets. Every
 envelope requires a named design decision or calibration dataset before it can
 gate releases.
 
-## 7. Effective-Prototype Extraction
+## 8. Effective-Prototype Extraction
 
 Factorio 2.0.76 provides the required raw mechanisms:
 
@@ -243,9 +527,9 @@ The extractor normalizes the final database into a stable intermediate model:
 Normalization removes irrelevant ordering and rendering detail while preserving
 all gameplay semantics. The original dump remains an artifact for diagnosis.
 
-## 8. Reachability and Production Solver
+## 9. Reachability and Production Solver
 
-### 8.1 Qualitative reachability
+### 9.1 Qualitative reachability
 
 Progression is modeled as a directed hypergraph. Starting from the declared
 assets and surfaces, the solver repeatedly derives:
@@ -262,7 +546,7 @@ Strongly connected components with no reachable external input are bootstrap
 cycles. An unreachable goal produces a minimum dependency cut rather than a
 generic failure.
 
-### 8.2 Quantitative feasibility
+### 9.2 Quantitative feasibility
 
 Reachability does not prove that quantities balance. Linear or mixed-integer
 models cover:
@@ -279,7 +563,7 @@ models cover:
 The solver emits a production plan and explains every assumed source, sink,
 buffer, and irreversible loss.
 
-### 8.3 Softlock invariants
+### 9.3 Softlock invariants
 
 At minimum, static analysis rejects:
 
@@ -292,7 +576,7 @@ At minimum, static analysis rejects:
 - planet-local recipes that depend on forbidden imports; and
 - required resources absent within the contract's bounded map search.
 
-## 9. Reference Factory and Semantic Executor
+## 10. Reference Factory and Semantic Executor
 
 The planner compiles production plans into conservative reference factories. A
 generic cell library covers common crafting and transport shapes:
@@ -321,7 +605,7 @@ Focused fixtures may inject prerequisites, but the fixture manifest names every
 injected object. Campaign mode permits no undeclared creation, inventory grant,
 free research, or direct success-state mutation.
 
-## 10. Independent Runtime Oracle
+## 11. Independent Runtime Oracle
 
 A test companion mod observes public world state and writes structured records
 to `script-output` using Factorio's JSON and file helpers. It does not replace
@@ -344,17 +628,17 @@ Deep single-player diagnostics may use Instrument Mode. Instrument Mode is not
 used for multiplayer certification because Factorio 2.0.76 disables multiplayer
 when it is active because injected instrumentation is not desync-safe.
 
-## 11. Pacing, Effort, and Repetition
+## 12. Pacing, Effort, and Repetition
 
 Simulation ticks and human effort are separate measurements.
 
-### 11.1 Simulation time
+### 12.1 Simulation time
 
 The engine supplies exact time for mining, crafting, machine operation,
 transport, spoilage, research, and scripted delays. Headless acceleration does
 not change the resulting tick counts.
 
-### 11.2 Semantic effort
+### 12.2 Semantic effort
 
 The executor charges policy-specific effort for meaningful actions:
 
@@ -376,7 +660,7 @@ The harness reports rather than hides uncertainty. A stage whose measured
 result depends primarily on an uncalibrated effort weight cannot pass a pacing
 gate until that weight is adopted by design decision or calibration.
 
-### 11.3 Repetition metrics
+### 12.3 Repetition metrics
 
 The contract can bound:
 
@@ -388,7 +672,7 @@ The contract can bound:
 - mandatory rebuild count; and
 - consecutive milestones that exercise no new mechanic.
 
-## 12. Alternative-Path Balance
+## 13. Alternative-Path Balance
 
 Each advertised route is measured as a cost vector rather than only completion
 time:
@@ -408,7 +692,7 @@ tier, and uncertain recipe outputs. A route must remain inside its intended
 region across the declared perturbation range rather than only at one tuned
 point.
 
-## 13. Adversarial and Property-Based Testing
+## 14. Adversarial and Property-Based Testing
 
 After a happy path passes, deterministic generators mutate actions and state:
 
@@ -442,9 +726,9 @@ removing an unlock, multiplying a cost, breaking a fluid connection, dropping a
 cleanup event, or making a starter finite must cause the appropriate gate to
 fail.
 
-## 14. Save, Migration, and Multiplayer Certification
+## 15. Save, Migration, and Multiplayer Certification
 
-### 14.1 Save lifecycle
+### 15.1 Save lifecycle
 
 Every milestone is exercised through fresh creation and save/load. Persistent
 state is checked before save and after load. Configuration changes and supported
@@ -460,7 +744,7 @@ at least one production-shaped save. Upgrade tests verify:
 - registered object ownership and cleanup; and
 - idempotence when the migrated save is loaded again.
 
-### 14.2 Real network multiplayer
+### 15.2 Real network multiplayer
 
 In-process multiple-player tests validate ownership logic but do not certify
 network determinism. Multiplayer certification launches:
@@ -475,7 +759,7 @@ The run fails on a desync report, checksum disagreement, invalid ownership, or a
 client-dependent result. Black-box multiplayer tests use only ordinary,
 desync-safe mod APIs.
 
-## 15. Performance Certification
+## 16. Performance Certification
 
 Performance is tested against representative saves, not an empty map alone.
 The corpus includes declared entity-count scales, active production, multiple
@@ -494,11 +778,11 @@ A change fails when it exceeds the contract budget or changes asymptotic scaling
 without an approved architecture decision. A faster empty map cannot offset a
 regression in the production witness.
 
-## 16. Factorio Version and Dependency Update System
+## 17. Factorio Version and Dependency Update System
 
 Platform updates are candidate migrations, not routine dependency bumps.
 
-### 16.1 Detection
+### 17.1 Detection
 
 A scheduled watcher resolves available Factorio releases and dependency mod
 versions without modifying the accepted environment. For every candidate it
@@ -530,7 +814,7 @@ Each difference is assigned a severity:
 
 Unclassified changes fail the update gate.
 
-### 16.2 Candidate pipeline
+### 17.2 Candidate pipeline
 
 The accepted and candidate versions run side by side through these gates:
 
@@ -553,7 +837,7 @@ The accepted and candidate versions run side by side through these gates:
 If a version jump spans multiple Factorio releases and the candidate fails, the
 runner tests intermediate versions to identify the first breaking release.
 
-### 16.3 Change ownership and adaptation
+### 17.3 Change ownership and adaptation
 
 The diff engine maps each affected API or prototype field to source consumers,
 campaign contracts, adapters, saves, and tests. It opens concrete tracker issues
@@ -572,7 +856,7 @@ Promotion atomically updates the environment manifest and archives the previous
 certificate. Publishing a mod release is a separate action and is not implied
 by successful platform certification.
 
-### 16.4 Dependency matrices
+### 17.4 Dependency matrices
 
 Required and optional mod updates use the same process. The matrix is reduced
 through pairwise coverage plus explicitly named high-risk combinations, while
@@ -586,7 +870,7 @@ For each dependency, the system records:
   and
 - the saves and contracts that exercise the integration.
 
-## 17. Result Artifacts and Failure Protocol
+## 18. Result Artifacts and Failure Protocol
 
 Each run emits:
 
@@ -608,7 +892,7 @@ The top-level process exits nonzero on errors, warnings owned by the mod,
 unclassified changes, timeouts, missing artifacts, or incomplete coverage. It
 does not convert a missing result into a skipped test.
 
-## 18. Execution Tiers
+## 19. Execution Tiers
 
 | Tier | Trigger | Required coverage |
 |---|---|---|
@@ -621,7 +905,7 @@ does not convert a missing result into a skipped test.
 Tests are selected by a source-to-contract impact map, but absence of a known
 impact does not exempt strict load and semantic prototype comparison.
 
-## 19. Autonomous Development Loop
+## 20. Autonomous Development Loop
 
 For each ready tracker issue, the development agent must:
 
@@ -638,7 +922,7 @@ For each ready tracker issue, the development agent must:
 Speculative balance or architecture work stops at an experiment unless the
 measured production witness justifies adoption.
 
-## 20. Initial Nullius* Certification Slice
+## 21. Initial Nullius* Certification Slice
 
 The first implementation targets the hardest currently implemented ownership
 boundary and user-visible output:
@@ -660,33 +944,37 @@ boundary and user-visible output:
 This slice passes only when both the static solver and real engine execution
 agree. It is the prerequisite for expanding horizontally to another planet.
 
-## 21. Implementation Phases and Gates
+## 22. Implementation Phases and Gates
 
-### Phase A: Hermetic runner and semantic snapshots
+### Phase A: Hermetic runner and scenario harness
 
 Deliver isolated Factorio execution, environment manifests, strict prototype
-loading, normalized dumps, semantic diffs, structured artifacts, and clean
+loading, normalized dumps, semantic diffs, the test-only scenario mod,
+tick-scheduled actions and assertions, required result artifacts, and clean
 failure propagation.
 
 **Gate:** the current Nullius* load is reproducible from a clean directory, and
 a deliberate ignored prototype field or recipe change produces a classified
-failure.
+failure. The `gasvent-lifecycle` scenario passes unmodified and fails on
+deliberately broken creation, production, timing, and cleanup behavior.
 
-### Phase B: Progression graph and quantitative solver
+### Phase B: Engine oracle and focused production cells
+
+Deliver semantic player actions, reusable fixture builders, conservative
+factory cells, event stream, resource and energy ledger, progress watchdog,
+save/load staging, and minimized failures.
+
+**Gate:** each Vulcanus machine family and scripted composite entity operates and
+cleans up under real engine ticks; injected event-path, lifecycle, and ownership
+mutations are detected.
+
+### Phase C: Progression graph and quantitative solver
 
 Deliver qualitative reachability, bootstrap-cycle diagnostics, material and
-energy balance, and a machine-readable plan.
+energy balance, and a machine-readable plan compiled from effective prototypes.
 
 **Gate:** deliberate removal of each Vulcanus prerequisite produces the correct
 minimum blocking witness; the unmodified slice produces a feasible plan.
-
-### Phase C: Engine oracle and focused production cells
-
-Deliver the companion test mod, semantic player actions, factory cells, event
-stream, ledger, watchdog, save/load, and minimized failures.
-
-**Gate:** each Vulcanus machine family and scripted composite entity operates and
-cleans up under real engine ticks; injected lifecycle mutations are detected.
 
 ### Phase D: Bounded campaign executor
 
@@ -714,7 +1002,7 @@ and atomic promotion/rollback.
 change, migration regression, and performance regression are each classified
 and block promotion for the correct reason.
 
-## 22. Decisions Required Before Pacing Becomes a Release Gate
+## 23. Decisions Required Before Pacing Becomes a Release Gate
 
 Functional development can begin immediately. Pacing and balance become binding
 only after these values are adopted:
@@ -732,7 +1020,7 @@ Until adopted, the harness reports these metrics and rejects claims that the mod
 is balanced; it may still certify functional reachability, determinism, and
 bounded completion.
 
-## 23. Reference Material
+## 24. Reference Material
 
 - Local Factorio 2.0.76 runtime schema:
   `~/factorio-mod-wiki/files/runtime-api.json`
