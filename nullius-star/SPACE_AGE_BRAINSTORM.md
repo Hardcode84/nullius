@@ -2,6 +2,7 @@
 
 > **Started**: 2026-03-22
 > **Status**: Early brainstorming
+> **Reconciled**: 2026-07-27 against the Vulcanus implementation (two-tier radiators, pneumatic-only power, no Stirling) and Factorio engine mechanics (monopole reactor conservation, spoil-timer stack merging, EMP targeting).
 > **Premise**: Adapt Nullius's android terraforming narrative and chemistry-driven production to work with Space Age's multi-planet expansion.
 
 ---
@@ -55,7 +56,7 @@ This reframes Space Age's planet travel as:
 - **Explains independent bootstrap**: Each probe landed with basic equipment that partially survived. The broken equipment mechanic already exists on Nauvis -- extend it per planet. Each planet starts with a set of damaged/salvageable buildings specific to that world's environment.
 - **Explains failure modes**: Each probe failed for planet-specific reasons that become the gameplay challenge:
   - **Vulcanus probe**: Overheated. Metallurgy survived but electronics melted. Must rebuild from heat-resistant components.
-  - **Fulgora probe**: Electromagnetic storms fried everything. Only scrap remains. Must salvage and recycle.
+  - **Fulgora probe**: Electromagnetic storms fried most equipment. Scrap plus a few non-metallic survivors (capacitor banks, polymer pipes, one distillation column). Must salvage and rebuild.
   - **Gleba probe**: Biological contamination. Organisms overran the probe. Must study and control native life.
   - **Aquilo probe**: Froze solid. Cryogenically preserved but needs heating infrastructure to thaw and restart.
 - **Defers bulk logistics**: Physical cargo rockets come much later (rocket science tier). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer is a late-game unlock that transforms the economy.
@@ -91,7 +92,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Local Power | Local Materials | Local Chemistry | Missing (import later) |
 |---|---|---|---|---|
-| **Vulcanus** | Compressed gas from lava (self-fueling). 1 Stirling for electronics. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
+| **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Fully pneumatic, no electrical grid. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
 | **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Organic chemistry only (cracking, polymerization). No combustion (no O2). | Bulk metals, oxygen, water, combustion-based anything |
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
@@ -102,7 +103,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Surviving Equipment | Why It Survived |
 |---|---|---|
-| **Vulcanus** | Furnaces, heat pipes, lava pump, gas-powered inserters, pre-filled gas tank, 1 Stirling engine, gas pipes | Heat-resistant components survived. Electronics melted. See PLANET_VULCANUS.md section 7. |
+| **Vulcanus** | Furnaces, heat pipes, lava intake (toggles to free-gas vent), gas-powered inserters, pre-filled gas tank, gas pipes | Heat-resistant components survived. Electronics melted. No Stirling, no circuits. See PLANET_VULCANUS.md section 7. |
 | **Fulgora** | Capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. |
 | **Gleba** | Basic lab, containment walls, bacterial harvester, water recycler | Probe landed in bacterial mat zone. Sterile equipment survived; biological seal held. Minimal power. |
 | **Aquilo** | Everything, but frozen -- must thaw | Cryogenic preservation kept equipment intact but inert |
@@ -125,7 +126,7 @@ Each planet needs enough local resources to get started without imports. The bro
 - **HCl geysers** (fixed map features) provide hydrogen and chlorine for chemistry
 - **Dual pipe routing**: gas pipes (fuel) + heat pipes (waste heat) to every machine
 - **Overheated radiators crack HCl** -- waste heat does useful chemistry (TFMG-thermal approach)
-- **Deacon/Cracking radiator toggle** (shift-click, like Nullius surge/priority pattern)
+- **Two-tier radiators** (low-temp 200C / high-temp 450C) with standard recipe selection. No toggle script -- Deacon, SO2 decomposition, and HCl cracking are recipes picked per radiator building.
 - **2-tile underground gas ducts** (hilariously short, cheap, needed constantly)
 - **Titanium** via Kroll process (deep deposits, requires synthetic demolishers)
 - **Demolishers**: Late-game synthetic organisms (requires Gleba bio-research), player-spawned via territory API
@@ -133,7 +134,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 ```
 POWER:     Compressed volcanic gas from lava processing (self-fueling)
-           Electricity: one Stirling engine for niche electronics only
+           Electricity: none. No Stirling, no grid -- all machines toggled to pneumatic (Ctrl+R)
 MATERIALS: Bulk metals from lava (cheap but time-gated by cooldown)
            HCl from dedicated geysers (chemistry bottleneck)
            CO2 atmosphere --> graphite, O2, trace water
@@ -163,7 +164,7 @@ Convection currents in the hot, conductive ocean generate a magnetospheric dynam
 - **Constant powerful lightning** -- planetary dynamo, not weather patterns
 - **Dissolved metals in hydrocarbons** -- they are the dopants that make the ocean conductive. Filtering them out is both resource extraction AND (eventually) weakening the dynamo
 - **No surface metal deposits** -- metals are dissolved in the ocean, not deposited as ores
-- **Conductive polymer wire** (line 389) -- the player is literally synthesizing the same chemistry that powers the planet. Doped conjugated polymers from Fulgora hydrocarbons + Vulcanus FeCl3 as dopant = organic wiring
+- **Conductive polymer wire** (see Organic-Rich Industry below) -- the player is literally synthesizing the same chemistry that powers the planet. Doped conjugated polymers from Fulgora hydrocarbons + Vulcanus FeCl3 as dopant = organic wiring
 
 **Industrial feedback loop**: Extracting hydrocarbons, processing them, and dumping waste heat and byproducts back into the ocean *increases* convection and introduces more conductive contaminants. Storms get **worse** the bigger your factory gets. The player's own success destabilizes the dynamo.
 
@@ -352,6 +353,7 @@ With the overload mechanic, softlock prevention is built-in:
 - Machines re-enable after N ticks (scripted timer)
 - Player's factory stops, but nothing is destroyed. They just need more sinks/accumulators.
 - **Cannot softlock**: even with zero sinks, the grid recovers after the disable timer. Production is interrupted, not destroyed.
+- **Cascade guard needed**: an overload drains accumulators AND disables machines, so the grid recovers with zero stored headroom -- perfectly set up to chain-overload on the very next strike. Needs a post-EMP grace window (storm intensity temporarily suppressed, or a minimum recovery interval before the next strike can trigger another EMP) and ideally a storm-forecast signal so the player can brace instead of being ambushed.
 
 #### Energy Storage Hierarchy (No Combustion)
 
@@ -525,6 +527,7 @@ BOTH MUST RUN SIMULTANEOUSLY:
 - Contamination events from the breeding loop can cascade into the production loops, disrupting established cultures. Containment infrastructure matters.
 - **Scaling is the challenge**: Every new production chain adds decay pressure. The breeding loop must grow proportionally. Unlike Nauvis where you "just build more miners," on Gleba expansion has a biological maintenance cost.
 - Unexpected variants from breeding are sometimes more valuable than the target -- encourages keeping the breeding loop oversized, which costs more nutrients but increases serendipity.
+- **RNG streak mitigation**: independent 60% rolls average out over many crafts, but early-game throughput is low, so an unlucky streak stalls bootstrap exactly when the player can least afford it. Mitigations: a deterministic fallback recipe (slower and nutrient-hungry, but guaranteed viable output) as the safety floor, and/or a scripted pity mechanic (guaranteed viable strain after N consecutive failures).
 
 **Exotic chemistry from specialized strains:**
 - Strains that produce chemicals impossible through conventional synthesis
@@ -606,7 +609,7 @@ EXPORTS:    Exotic biochemicals, organism progenitors, advanced biology packs, s
 IMPORTS:    Metals, electronics, containment materials, carbon (from Vulcanus CO2 atmosphere?)
 ```
 
-### 3.4 Aquilo (Cryogenic/Fusion -- DESIGN INCOMPLETE)
+### 3.4 Aquilo (Cryogenic/Fusion/Monopoles)
 
 **Natural fit with Nullius**: Fusion power, tritium, lithium, ammonia are all existing Nullius systems. Aquilo's frozen environment maps directly to Nullius's nuclear progression bottlenecks.
 
@@ -629,13 +632,13 @@ The existing Nullius nuclear chain has clear pain points that Aquilo could solve
 - **No combustion?** -- Atmosphere may lack oxygen (like Fulgora). Or maybe the cold is so extreme that combustion is inefficient. Power generation challenge TBD.
 - **No biology** -- too cold for any organisms. Purely physics/chemistry planet.
 
-#### What's Missing: The Core Mechanic
+#### The Core Mechanic
 
 Each planet has a defining production mechanic:
 - Vulcanus: **spoilage-as-cooldown** (molten metal must cool)
 - Fulgora: **random trace filtering** (hydrocarbons yield probabilistic resources)
 - Gleba: **probabilistic breeding** (net-negative loops + continuous maintenance)
-- Aquilo: **???**
+- Aquilo: **finite monopole allocation** (defined below)
 
 #### Core Mechanic: Magnetic Monopoles (Finite Catalyst from the Ocean)
 
@@ -667,12 +670,12 @@ Ammonia Ocean (extreme pressure + magnetic field) --> [Dredging] --> Magnetic Mo
      ^                                                          |
      |__________________ belt loop _____________________________|
 
-One monopole heats all three reactors as it circulates.
-More reactors on loop = more total heat from same monopole.
-Throughput limited by belt speed + reactor burn time.
+One monopole services all three reactors as it circulates.
 ```
 
-Multiple monopoles on the same loop increase throughput. The belt loop IS your heating grid -- reactor placement along the belt determines your heated zone layout.
+**Power is conserved, not multiplied**: a reactor burns a fuel cell completely at its fixed consumption rate before ejecting the burnt result. One circulating monopole is inside exactly one reactor at a time, so N reactors sharing the loop each get roughly a 1/N duty cycle. Total average heat output equals one reactor's worth (minus belt transit dead time), regardless of how many reactors are on the loop. More reactors on a loop = wider spatial distribution of the same heat. More total heat requires **more monopoles** in circulation.
+
+This is what makes monopole count the scarce resource: each monopole is one reactor-equivalent of relocatable power. The belt loop IS your heating grid -- reactor placement along the belt determines your heated zone layout, and loop length adds latency the player must budget for.
 
 **Polarity oscillation via spoilage**: Monopoles alternate between north and south magnetic charge:
 
@@ -696,7 +699,9 @@ Both are fuel cells with `burnt_result` = themselves. But:
 - Sorting infrastructure: filter inserters / splitters route north vs south to appropriate machines
 - Or: design belt loops where cycle time matches polarity flip time (synchronized circuits)
 
-**Design space**: The spoil_ticks duration is a tuning knob. Too fast and it's frustrating micromanagement. Too slow and polarity is irrelevant. Sweet spot: long enough that a well-designed belt loop delivers correct polarity reliably, but short enough that you can't just stockpile one polarity in a chest.
+**Design space**: The spoil_ticks duration is a tuning knob. Too fast and it's frustrating micromanagement. Too slow and polarity is irrelevant. Sweet spot: long enough that a well-designed belt loop delivers correct polarity reliably, but short enough that polarity routing actually engages.
+
+**Chests synchronize polarity, they don't scramble it**: Factorio averages spoil timers when stacks merge. Items on belts are singleton stacks and keep their individual phase, but monopoles dumped into a chest homogenize to one shared timer and then flip all at once. Storage is therefore a deliberate phase-sync tool (bulk-align a batch to north before loading a reactor loop), not an exploit -- but the puzzle design should treat chests as part of the mechanic, not outside it.
 
 #### Progression with Monopoles
 
@@ -786,7 +791,7 @@ Every planet has a different power challenge:
 - Vulcanus: geothermal (abundant, constant)
 - Fulgora: lightning (spiky, no combustion, capacitor storage)
 - Gleba: biological (decaying, needs breeding)
-- Aquilo: **???**
+- Aquilo: **monopole induction** (finite, relocatable) + fusion (abundant fuel, but most output is eaten by heating)
 
 The cold environment suggests power is consumed primarily for HEATING, not for production. Maybe:
 - **Nuclear power available early on Aquilo** (tritium/deuterium are local, no bottleneck here)
@@ -1024,7 +1029,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 - Each planet bootstraps from broken probe equipment + local resources
 - Players switch between planets like switching android bodies
 - Painful but possible -- forces creative problem-solving with limited resources
-- **Research is the cross-planet contribution** (see 4.3 below)
+- **Research is the cross-planet contribution** (see 4.2 below)
 
 **Phase 2: Integrated Supply Chain (late game)**
 - Cargo rockets unlock bulk material transfer
@@ -1032,7 +1037,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 - Boxing system becomes critical for efficient interplanetary shipping (compressed cargo)
 - Rocket cargo capacity creates natural throughput limits -- cannot just belt everything between planets
 
-### 4.3 Pre-Cargo Research: How Isolated Planets Contribute
+### 4.2 Pre-Cargo Research: How Isolated Planets Contribute
 
 Factorio research is **global per force**. Any lab on any surface contributes to the same tech tree. Science packs are physical items that stay on-planet. This means:
 
@@ -1150,16 +1155,16 @@ Each planet gets **alternative recipes** for generic packs using local materials
 
 **The motivation to visit each planet isn't just resources -- it's KNOWLEDGE.** Even without cargo, each planet contributes research that makes ALL planets easier. This gives the player a reason to bootstrap painful outposts: the research payoff is immediate and global, even if physical resources can't flow yet.
 
-### 4.2 What Flows Between Planets (Phase 2)
+### 4.3 What Flows Between Planets (Phase 2)
 
 ```
 NAUVIS (home, terraforming target):
-  Imports: Tungsten, copper, rare electronics, tritium, advanced bio-research
+  Imports: Copper (asteroid mining), rare electronics, tritium, advanced bio-research
   Exports: Basic chemicals, manufactured goods, construction kits
 
 VULCANUS (heavy industry):
   Imports: Water, chemicals, electronics
-  Exports: Tungsten, calcite, titanium, bulk metals, volcanic compounds
+  Exports: Titanium, calcite, bulk metals, volcanic compounds, artillery shells
 
 FULGORA (hydrocarbon/organics):
   Imports: Bulk metals (from Vulcanus), nuclear devices (for geoengineering), water
@@ -1180,7 +1185,7 @@ ROGUE (endgame antagonist --> shattered debris):
   Exports: Exotic alloys, advanced processors, Rogue-tech fragments
 ```
 
-### 4.2 Space Platforms
+### 4.4 Space Platforms
 
 Space platforms in Nullius context could be:
 - **Orbital assembly stations** for asteroid mining (replaces current abstract asteroid mechanic)
@@ -1221,8 +1226,8 @@ Rationale:
 
 | Potential Pack | Planet | Ingredients |
 |---|---|---|
-| Metallurgic | Vulcanus | Tungsten + calcite + volcanic alloys |
-| Electromagnetic | Fulgora | Holmium + salvaged circuits + lightning-charged cells |
+| Metallurgic | Vulcanus | Titanium intermediates + calcite + volcanic alloys |
+| Petrochemical | Fulgora | Hydrocarbon distillates + polymers + super-capacitor cells |
 | Cryogenic | Aquilo | Lithium + tritium + ammonia compounds |
 
 ---
@@ -1257,7 +1262,7 @@ This is a massive undertaking:
 - Should there be a "care package" mechanic -- small one-time data/blueprint transfer before cargo rockets?
 
 ### Resources & Production
-- Should copper remain asteroid-exclusive if Fulgora provides it through salvage?
+- Should copper remain asteroid-exclusive, or should Fulgora's trace filtration yield small amounts of copper dust as a rare byproduct?
 - Does the chlorine problem exist on other planets, or is it Nauvis-specific?
 - Should the hydrogen storage loop have planet-specific variants (lightning storage on Fulgora, geothermal baseload on Vulcanus)?
 - How do planet-exclusive resources interact with the checkpoint system? Can checkpoints require off-world items?
@@ -1465,11 +1470,13 @@ The API is surprisingly well-suited for this:
 ```
 1. Lightning strikes (damage=0, no destruction)
 2. strike_effect trigger fires script
-3. Script finds all electric poles in radius
-4. Sets entity.active = false on each pole
-5. Drains all accumulators: entity.energy = 0
-6. Registers on_nth_tick callback to re-enable after N ticks
-7. Poles reactivate, network resumes
+3. Script identifies the affected electric network(s)
+4. Drains all accumulators in the network: entity.energy = 0
+5. Sets entity.active = false on consumers (machines), NOT poles --
+   electric poles have no active state that gates power distribution,
+   so toggling them does nothing
+6. Registers on_nth_tick callback to re-enable machines after N ticks
+7. Machines reactivate; the network resumes with empty accumulators
 ```
 
 This is clean, reversible, and doesn't require destroying/recreating anything.
