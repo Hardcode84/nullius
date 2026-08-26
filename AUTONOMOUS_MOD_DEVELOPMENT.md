@@ -16,8 +16,7 @@ The production game does expose the pieces needed to reproduce that pattern:
 - `--scenario2map` for compiling a scenario;
 - `--load-game ... --until-tick ...` for a bounded run;
 - `--benchmark` for repeatedly running a fixed save quickly;
-- the runtime Lua API, events, saves, and `script-output`;
-- Instrument Mode for test code that must inspect a mod's private Lua state.
+- the runtime Lua API, events, saves, and `script-output`.
 
 ## Layer 1: feature tests
 
@@ -26,10 +25,11 @@ real engine only as far as required, and checks observable state. This is the
 mod equivalent of Wube's integration tests, even though we call the layer unit
 tests because each test owns one feature or contract.
 
-Use [FactorioTest](https://github.com/GlassBricks/FactorioTest) as the runner and
-assertion framework. It already runs tests inside Factorio, supports tests that
-span ticks, enforces timeouts, and exports structured results. Add only fixture
-and assertion helpers specific to the mod.
+Feature tests use the same protocol as campaign stages: a scenario performs Lua
+API checks and writes one final JSON result. The external runner requires a
+successful Factorio process and a passing result; a Lua error, timeout, missing
+result, or failed assertion fails the test. The runner uses no third-party test
+framework.
 
 A test definition contains:
 
@@ -129,7 +129,8 @@ explained.
 
 ## First implementation
 
-1. Pin and run FactorioTest with the harness pass/failure/timeout checks.
+1. Add the dependency-free scenario runner and prove pass, assertion-failure,
+   timeout, and missing-result behavior.
 2. Add the first mod-specific feature cases in the separate test plan.
 3. Add two independent campaign stages on fixed maps and run them in parallel.
    Each declares its starting assumptions and verifies its own research or
@@ -144,5 +145,3 @@ milestones be added.
 - [Wube integration tests](https://factorio.com/blog/post/fff-60)
 - [Factorio command-line parameters](https://wiki.factorio.com/Command_line_parameters)
 - [Factorio scenario system](https://wiki.factorio.com/Scenario_system)
-- [Factorio Instrument Mode](https://lua-api.factorio.com/2.0.76/auxiliary/instrument.html)
-- [FactorioTest](https://github.com/GlassBricks/FactorioTest)
