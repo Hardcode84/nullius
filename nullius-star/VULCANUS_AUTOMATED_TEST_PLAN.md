@@ -1,8 +1,8 @@
-# Nullius Star Automated Test Plan
+# Vulcanus Automated Test Plan
 
 The generic test architecture is defined in
 [`AUTONOMOUS_MOD_DEVELOPMENT.md`](../AUTONOMOUS_MOD_DEVELOPMENT.md). This file
-contains only the cases and progression milestones specific to Nullius Star.
+contains only the Nullius Star cases and progression milestones for Vulcanus.
 
 ## First feature tests
 
@@ -31,15 +31,15 @@ owned interface without leaving duplicates or stale state.
 The initial two stage tests establish the fixture-and-goal pattern before
 covering more of the technology tree. They are independent and run in parallel.
 
-1. On a fixed map, complete `nullius-geology-1` and produce the exact building
-   and material inventory expected at this boundary. The result records the
-   research, inventory, and elapsed ticks.
-2. On another fixed map, construct the stage-2 production layout through Lua.
-   Its fixture assumes the inventory expected from stage 1; it does not read or
-   validate stage 1's result. Infinity chests and pipes supply only resources
-   declared as inputs from outside this stage. Run the real machines and
-   logistics until the declared output quantity and next research milestone are
-   reached.
+1. On a fixed Vulcanus map, complete `nullius-geology-1` and produce the exact
+   building and material inventory expected at this boundary. The result
+   records the research, inventory, and elapsed ticks.
+2. On another fixed Vulcanus map, construct the stage-2 production layout
+   through Lua. Its fixture assumes the inventory expected from stage 1; it
+   does not read or validate stage 1's result. Infinity chests and pipes supply
+   only resources declared as inputs from outside this stage. Run the real
+   machines and logistics until the declared output quantity and next research
+   milestone are reached.
 
 Later stages follow the same pattern at research or production boundaries.
 Alternative routes receive the same starting fixture and compare completion
