@@ -43,19 +43,20 @@ python3 tools/run_factorio_tests.py vulcanus-pneumatic-heat
 
 ## First campaign slice
 
-The initial two stage tests establish the fixture-and-goal pattern before
-covering more of the technology tree. They are independent and run in parallel.
+The first campaign slice is defined in
+[`VULCANUS_PROGRESSION_PLAN.md`](VULCANUS_PROGRESSION_PLAN.md). It begins with
+probe activation and ends when the factory produces its first metallurgic pack.
 
-1. On a fixed Vulcanus map, complete `nullius-geology-1` and produce the exact
-   building and material inventory expected at this boundary. The result
-   records the research, inventory, and elapsed ticks.
-2. On another fixed Vulcanus map, construct the stage-2 production layout
-   through Lua. Its fixture assumes the inventory expected from stage 1; it
-   does not read or validate stage 1's result. Infinity chests and pipes supply
-   only resources declared as inputs from outside this stage. Run the real
-   machines and logistics until the declared output quantity and next research
-   milestone are reached.
+Its independent scenario stages are:
 
-Later stages follow the same pattern at research or production boundaries.
-Alternative routes receive the same starting fixture and compare completion
-ticks and remaining materials.
+1. activation plus Nauvis pneumatic research;
+2. free-vent priming followed by self-powered dedicated lava-to-gas production;
+3. iron, aluminum, limestone, and silica production with real bloom cooldown;
+4. machine-generated heat powering aluminum reduction and sulfur production;
+   and
+5. first metallurgic-pack production from those local materials.
+
+Each stage declares the preceding milestone as its fixture and validates its own
+production through real machines. No stage consumes another stage's result, so
+the suite runs in parallel. The full slice does not inject lava products,
+graphite, rutile, sulfur, ingots, or the finished pack.
