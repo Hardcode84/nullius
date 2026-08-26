@@ -28,18 +28,19 @@ owned interface without leaving duplicates or stale state.
 
 ## First campaign slice
 
-The initial two-stage test proves the JSON handoff before covering more of the
-technology tree.
+The initial two stage tests establish the fixture-and-goal pattern before
+covering more of the technology tree. They are independent and run in parallel.
 
 1. On a fixed map, complete `nullius-geology-1` and produce the exact building
-   and material budget required by stage 2. The result records the research,
-   inventory budget, and elapsed ticks.
+   and material inventory expected at this boundary. The result records the
+   research, inventory, and elapsed ticks.
 2. On another fixed map, construct the stage-2 production layout through Lua.
-   The setup fails if it needs more than stage 1 produced. Infinity chests and
-   pipes supply only resources declared as inputs from outside this stage. Run
-   the real machines and logistics until the declared output quantity and next
-   research milestone are reached.
+   Its fixture assumes the inventory expected from stage 1; it does not read or
+   validate stage 1's result. Infinity chests and pipes supply only resources
+   declared as inputs from outside this stage. Run the real machines and
+   logistics until the declared output quantity and next research milestone are
+   reached.
 
 Later stages follow the same pattern at research or production boundaries.
-Alternative routes receive the same input budget and compare completion ticks
-and remaining materials.
+Alternative routes receive the same starting fixture and compare completion
+ticks and remaining materials.

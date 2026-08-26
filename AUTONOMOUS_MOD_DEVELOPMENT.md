@@ -62,22 +62,24 @@ positions are predefined, so failures are about the mod rather than map
 generation or player pathing.
 
 A stage does not replay the preceding base. Its setup script constructs the
-layout needed for this part of progression. Construction is limited by the
-buildings and materials that the preceding stage proved were available. The
-script fails if the requested layout exceeds that budget.
+layout needed for this part of progression. The buildings, materials, and
+research supplied by the fixture are its assumed starting state. That assumption
+should be achievable at the preceding logical boundary, but the test runner does
+not enforce the relationship.
 
-The handoff between stages is therefore a JSON result, not a save:
+Stages describe consecutive parts of progression but execute independently:
 
 ```text
-stage 1: reach research A and produce the stage-2 building budget
-  -> stage 2: construct from that budget and produce 1,000 of item B
-     -> stage 3: construct from that budget and reach research C
+stage 1: reach research A and report available buildings and materials
+stage 2: assume that starting state and produce 1,000 of item B
+stage 3: assume the next starting state and reach research C
 ```
 
 Each result records the achieved research, available buildings and materials,
-items produced, and ticks spent. The next stage reads only the fields in its
-declared input contract. It does not depend on entity positions or other
-incidental state from the previous scenario.
+items produced, and ticks spent. No result is an input to another test, so all
+stages can run in parallel. If useful, a separate offline check may compare a
+stage's result with the next stage's assumptions; it is not part of the main
+test system.
 
 Scenario scripts may use editor entities such as infinity chests, infinity
 pipes, and electric-energy interfaces to represent supplies, sinks, or utilities
@@ -97,14 +99,14 @@ to the final JSON. Typical goals are:
 - a named technology is researched;
 - at least a specified amount of an item or fluid was produced;
 - a production line sustains a minimum output over a stated interval; or
-- the next stage's required building and material budget exists.
+- the expected buildings and materials exist at the stage boundary.
 
 Checks use engine events or coarse intervals, plus a hard game-tick and
 wall-clock deadline. There is no permanent per-tick campaign dispatcher. The
 reported completion ticks provide pacing evidence; broad accepted ranges can
 flag stages that became unexpectedly short or long.
 
-Alternative progression paths start from the same declared input budget, run as
+Alternative progression paths start from the same declared fixture, run as
 separate scenarios, and compare completion ticks and remaining materials.
 Multiplayer-sensitive behavior is exercised by running the relevant feature or
 stage scenario on a server with the required clients; it does not require
@@ -118,7 +120,7 @@ To evaluate a new Factorio version:
 
 1. diff the runtime API, prototype API, and effective prototype dump;
 2. run all feature tests on the candidate;
-3. run every campaign stage in order, passing each JSON result to the next; and
+3. run all campaign stages in parallel; and
 4. compare milestone success, resource ledgers, and tick ranges with the
    accepted version.
 
@@ -129,9 +131,9 @@ explained.
 
 1. Pin and run FactorioTest with the harness pass/failure/timeout checks.
 2. Add the first mod-specific feature cases in the separate test plan.
-3. Prove two campaign stages on fixed maps. Stage 1 must produce a research and
-   building budget; stage 2 must construct its scripted layout within that
-   budget and reach its item-production goal using full engine simulation.
+3. Add two independent campaign stages on fixed maps and run them in parallel.
+   Each declares its starting assumptions and verifies its own research or
+   production goal through full engine simulation.
 4. Run the same slice on the next Factorio version and compare its results.
 
 Only after this vertical slice works should more feature cases or campaign
