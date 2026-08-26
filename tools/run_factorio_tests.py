@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 import json
 import os
 from pathlib import Path
@@ -224,6 +225,14 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--timeout-seconds", type=int, default=300)
     parser.add_argument("--keep-run-directory", action="store_true")
     parser.add_argument(
+        "-n",
+        "--workers",
+        type=parse_worker_count,
+        default=1,
+        metavar="WORKERS",
+        help="run tests in parallel; use a positive integer or 'auto'",
+    )
+    parser.add_argument(
         "--json",
         dest="json_output",
         action="store_true",
@@ -232,8 +241,75 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def format_failure(error: BaseException) -> str:
-    return str(error).replace("\n", "\n    ")
+def format_failure(error: str) -> str:
+    return error.replace("\n", "\n    ")
+
+
+def parse_worker_count(value: str) -> int:
+    if value == "auto":
+        if hasattr(os, "sched_getaffinity"):
+            return len(os.sched_getaffinity(0))
+        return os.cpu_count() or 1
+    try:
+        workers = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(
+            "worker count must be a positive integer or 'auto'"
+        ) from error
+    if workers < 1:
+        raise argparse.ArgumentTypeError(
+            "worker count must be a positive integer or 'auto'"
+        )
+    return workers
+
+
+def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
+    safe_case = "".join(
+        character if character.isalnum() or character in "-_" else "-"
+        for character in case
+    )
+    run_directory = Path(
+        tempfile.mkdtemp(prefix=f"factorio-test-{safe_case or 'case'}-")
+    )
+    success = False
+    try:
+        result = execute(args, case, run_directory)
+        success = True
+        result_record = dict(result)
+        if args.keep_run_directory:
+            result_record["run_directory"] = str(run_directory)
+        return result_record
+    except (TestFailure, subprocess.TimeoutExpired, OSError) as error:
+        return {
+            "case": case,
+            "status": "fail",
+            "error": str(error),
+            "run_directory": str(run_directory),
+        }
+    finally:
+        if success and not args.keep_run_directory:
+            shutil.rmtree(run_directory)
+
+
+def print_case_result(
+    index: int, total: int, case: str, result: dict[str, object]
+) -> None:
+    prefix = f"[{index}/{total}]"
+    if result.get("status") == "pass":
+        assertions = result.get("assertions", "?")
+        tick = result.get("tick", "?")
+        version = result.get("factorio_version")
+        context = f"{assertions} assertions, completed tick {tick}"
+        if version is not None:
+            context += f", Factorio {version}"
+        print(f"{prefix} PASS {case} - {context}")
+        if "run_directory" in result:
+            print(f"      artifacts: {result['run_directory']}")
+        return
+
+    print(f"{prefix} FAIL {case}")
+    print(f"      {format_failure(str(result['error']))}")
+    print(f"      artifacts: {result['run_directory']}")
 
 
 def main() -> int:
@@ -256,68 +332,63 @@ def main() -> int:
         return 1
 
     total = len(cases)
-    results: list[dict[str, object]] = []
+    worker_count = min(args.workers, total)
+    results: list[dict[str, object] | None] = [None] * total
     if not args.json_output:
         noun = "test" if total == 1 else "tests"
-        print(f"Running {total} Factorio scenario {noun}\n")
+        workers = f" with {worker_count} workers" if worker_count > 1 else ""
+        print(f"Running {total} Factorio scenario {noun}{workers}\n")
 
-    for index, case in enumerate(cases, start=1):
-        prefix = f"[{index}/{total}]"
-        if not args.json_output:
-            print(
-                f"{prefix} RUN  {case} (deadline tick {deadline_for(args, case)})",
-                flush=True,
-            )
-
-        safe_case = "".join(
-            character if character.isalnum() or character in "-_" else "-"
-            for character in case
-        )
-        run_directory = Path(
-            tempfile.mkdtemp(prefix=f"factorio-test-{safe_case or 'case'}-")
-        )
-        success = False
-        try:
-            result = execute(args, case, run_directory)
-            success = True
-            result_record = dict(result)
-            if args.keep_run_directory:
-                result_record["run_directory"] = str(run_directory)
-            results.append(result_record)
+    pending_cases = iter(enumerate(cases))
+    futures: dict[Future[dict[str, object]], tuple[int, str]] = {}
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        while len(futures) < worker_count:
+            try:
+                index, case = next(pending_cases)
+            except StopIteration:
+                break
             if not args.json_output:
-                assertions = result.get("assertions", "?")
-                tick = result.get("tick", "?")
-                version = result.get("factorio_version")
-                context = f"{assertions} assertions, completed tick {tick}"
-                if version is not None:
-                    context += f", Factorio {version}"
-                print(f"{prefix} PASS {case} - {context}")
-                if args.keep_run_directory:
-                    print(f"      artifacts: {run_directory}")
-        except (TestFailure, subprocess.TimeoutExpired, OSError) as error:
-            results.append(
-                {
-                    "case": case,
-                    "status": "fail",
-                    "error": str(error),
-                    "run_directory": str(run_directory),
-                }
-            )
-            if not args.json_output:
-                print(f"{prefix} FAIL {case}")
-                print(f"      {format_failure(error)}")
-                print(f"      artifacts: {run_directory}")
-        finally:
-            if success and not args.keep_run_directory:
-                shutil.rmtree(run_directory)
+                print(
+                    f"[{index + 1}/{total}] RUN  {case} "
+                    f"(deadline tick {deadline_for(args, case)})",
+                    flush=True,
+                )
+            futures[executor.submit(run_case, args, case)] = (index, case)
 
-    passed = sum(result.get("status") == "pass" for result in results)
+        while futures:
+            completed, _ = wait(futures, return_when=FIRST_COMPLETED)
+            for future in completed:
+                index, case = futures.pop(future)
+                result = future.result()
+                results[index] = result
+                if not args.json_output:
+                    print_case_result(index + 1, total, case, result)
+
+                try:
+                    next_index, next_case = next(pending_cases)
+                except StopIteration:
+                    continue
+                if not args.json_output:
+                    print(
+                        f"[{next_index + 1}/{total}] RUN  {next_case} "
+                        f"(deadline tick {deadline_for(args, next_case)})",
+                        flush=True,
+                    )
+                futures[executor.submit(run_case, args, next_case)] = (
+                    next_index,
+                    next_case,
+                )
+
+    completed_results = [result for result in results if result is not None]
+    passed = sum(
+        result.get("status") == "pass" for result in completed_results
+    )
     failed = total - passed
     suite = {
         "status": "pass" if failed == 0 else "fail",
         "passed": passed,
         "failed": failed,
-        "results": results,
+        "results": completed_results,
     }
     if args.json_output:
         print(json.dumps(suite, indent=2, sort_keys=True))
