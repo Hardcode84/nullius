@@ -28,18 +28,18 @@ owned interface without leaving duplicates or stale state.
 
 ## First campaign slice
 
-The initial two-chunk test is intentionally small. It exists to prove the
-checkpoint contract before scripting longer progression.
+The initial two-stage test proves the JSON handoff before covering more of the
+technology tree.
 
-1. Start the real campaign, obtain a placeable early-game machine through the
-   normal progression path, place and configure it from player inventory, then
-   verify its ownership and save the checkpoint.
-2. Convert that checkpoint into the next scenario, reload it, run the machine,
-   collect its output through normal player interaction, and verify that the
-   player inventory, research, mod storage, entity configuration, and elapsed
-   ticks continued from chunk 1.
+1. On a fixed map, complete `nullius-geology-1` and produce the exact building
+   and material budget required by stage 2. The result records the research,
+   inventory budget, and elapsed ticks.
+2. On another fixed map, construct the stage-2 production layout through Lua.
+   The setup fails if it needs more than stage 1 produced. Infinity chests and
+   pipes supply only resources declared as inputs from outside this stage. Run
+   the real machines and logistics until the declared output quantity and next
+   research milestone are reached.
 
-After this passes, split the playable progression at research or location
-milestones. Every required route must reach each declared milestone through
-normal production; route comparisons use total ticks and resource ledgers from
-their common checkpoint.
+Later stages follow the same pattern at research or production boundaries.
+Alternative routes receive the same input budget and compare completion ticks
+and remaining materials.

@@ -13,16 +13,11 @@ framework is not exposed by the production executable or the mod API.
 The production game does expose the pieces needed to reproduce that pattern:
 
 - scenarios containing a map and `control.lua`;
-- `--scenario2map` and `--map2scenario` conversions;
+- `--scenario2map` for compiling a scenario;
 - `--load-game ... --until-tick ...` for a bounded run;
 - `--benchmark` for repeatedly running a fixed save quickly;
 - the runtime Lua API, events, saves, and `script-output`;
 - Instrument Mode for test code that must inspect a mod's private Lua state.
-
-`LuaSimulation.create_test_player` is not a general test-player API. It exists
-only in menu and documentation simulations, and those simulations cannot be
-saved. Native replays are also a poor maintained test format: they cannot be
-recorded headlessly and game or mod changes invalidate them.
 
 ## Layer 1: feature tests
 
@@ -58,97 +53,86 @@ The first vertical slice is one deliberately tiny passing test plus deliberate
 assertion, timeout, and missing-result failures. That proves the runner before
 feature coverage grows.
 
-## Layer 2: chunked campaign
+## Layer 2: campaign stages
 
-The campaign test plays progression through the real simulation: the player
-walks and mines, crafting consumes time and ingredients, buildings are placed
-from inventory with reach and collision checks, recipes and research are
-selected, and machines and logistics run for their actual game ticks.
+The campaign is split at logical progression boundaries, such as completing a
+technology or producing a required quantity of an item. Each stage is a small
+scenario on a fixed test map. Resource patches, water, cliffs, and starting
+positions are predefined, so failures are about the mod rather than map
+generation or player pathing.
 
-The campaign is divided at progression milestones. Each chunk is its own
-scenario:
+A stage does not replay the preceding base. Its setup script constructs the
+layout needed for this part of progression. Construction is limited by the
+buildings and materials that the preceding stage proved were available. The
+script fails if the requested layout exceeds that budget.
+
+The handoff between stages is therefore a JSON result, not a save:
 
 ```text
-seed scenario
-  -> play and verify chunk 1 -> checkpoint 1
-  -> play and verify chunk 2 -> checkpoint 2
-  -> play and verify chunk 3 -> checkpoint 3
+stage 1: reach research A and produce the stage-2 building budget
+  -> stage 2: construct from that budget and produce 1,000 of item B
+     -> stage 3: construct from that budget and reach research C
 ```
 
-After chunk N passes, its save is converted with `--map2scenario` to form the
-map state of chunk N+1. The next chunk supplies its own action script and exit
-assertions, is converted back with `--scenario2map`, and is run normally. The
-first implementation must prove that this round trip preserves mod state and
-the player before relying on it for longer progression.
+Each result records the achieved research, available buildings and materials,
+items produced, and ticks spent. The next stage reads only the fields in its
+declared input contract. It does not depend on entity positions or other
+incidental state from the previous scenario.
 
-Each chunk declares only:
+Scenario scripts may use editor entities such as infinity chests, infinity
+pipes, and electric-energy interfaces to represent supplies, sinks, or utilities
+outside the stage being tested. Every such boundary is declared in the result.
+Items supplied by an infinity entity are not counted as output achieved by the
+stage.
 
-- its predecessor checkpoint;
-- semantic player actions and their preconditions;
-- a maximum game tick and wall-clock duration;
-- its milestone and resource-ledger assertions; and
-- the successor checkpoint it produces.
+Inside those boundaries, Factorio performs the full simulation: recipes consume
+their real inputs and time, inserters and belts move items, pipes carry fluids,
+machines consume energy, and laboratories research normally. Buildings may be
+created and configured through Lua because player placement is not part of this
+test.
 
-Actions are goals, not a tick-perfect replay. Examples are `walk_to`,
-`mine_until`, `craft`, `place_from_inventory`, `configure_machine`, and
-`wait_until`. Every action has a precondition and deadline. Failure reports the
-blocked action and relevant state.
+A stage passes when its logical goal is observed through the Lua API and written
+to the final JSON. Typical goals are:
 
-Walking and mining are continuous player states: set them once and stop them
-when their completion event or condition occurs. Passive production and
-research run entirely in the engine and are observed through events or coarse
-polling. A temporary per-tick handler is acceptable only while an operation
-actually requires tick precision, and is removed as soon as that operation
-ends.
+- a named technology is researched;
+- at least a specified amount of an item or fluid was produced;
+- a production line sustains a minimum output over a stated interval; or
+- the next stage's required building and material budget exists.
 
-A checkpoint is accepted only after the chunk's assertions pass. Its manifest
-records the save hash, predecessor hash, Factorio version, complete mod set and
-settings, seed, campaign-script revision, tick counts, and resource ledger.
-Chunk N+1 refuses any checkpoint whose manifest does not match its declared
-input.
+Checks use engine events or coarse intervals, plus a hard game-tick and
+wall-clock deadline. There is no permanent per-tick campaign dispatcher. The
+reported completion ticks provide pacing evidence; broad accepted ranges can
+flag stages that became unexpectedly short or long.
 
-Cached checkpoints make local iteration fast. They are not independent proof:
-changing a chunk or any input invalidates it and every successor. A release run
-rebuilds the entire chain from the seed scenario. Alternative progression paths
-fork from a common certified checkpoint and later compare their milestone time
-and resource ledgers.
-
-TAS projects demonstrate that Lua can drive a complete Factorio campaign, but
-their monolithic exact-tick scripts are too brittle for regression testing. We
-reuse their player-action vocabulary while using state-dependent completion and
-short restartable chunks.
-
-Campaign chunks that claim player-input behavior run with a real connected
-player, not `LuaSimulation` or direct entity creation. Multiplayer cases use the
-same chunk format but declare a server and the required real clients; their exit
-contract includes join/leave behavior and a clean desync result.
+Alternative progression paths start from the same declared input budget, run as
+separate scenarios, and compare completion ticks and remaining materials.
+Multiplayer-sensitive behavior is exercised by running the relevant feature or
+stage scenario on a server with the required clients; it does not require
+simulating an entire multiplayer campaign.
 
 ## Factorio updates
 
-The Factorio version, executable hash, API JSON, built-in mods, test framework,
-and external mods are inputs to every result and checkpoint.
+Every result records the Factorio version and loaded mod versions.
 
 To evaluate a new Factorio version:
 
 1. diff the runtime API, prototype API, and effective prototype dump;
 2. run all feature tests on the candidate;
-3. rebuild the campaign chain from the seed scenario; and
+3. run every campaign stage in order, passing each JSON result to the next; and
 4. compare milestone success, resource ledgers, and tick ranges with the
    accepted version.
 
-No checkpoint produced by one Factorio or mod version is reused to certify
-another. The version is accepted only when both layers pass and every observed
-change is explained.
+The version is accepted only when both layers pass and every observed change is
+explained.
 
 ## First implementation
 
 1. Pin and run FactorioTest with the harness pass/failure/timeout checks.
 2. Add the first mod-specific feature cases in the separate test plan.
-3. Prove a two-chunk campaign: perform real player placement in chunk 1,
-   convert its verified save into chunk 2, continue simulation, and verify that
-   the player, mod state, and placed entity survived.
-4. Run that same slice with a deliberately changed Factorio input and prove
-   stale checkpoints are rejected and the chain is rebuilt.
+3. Prove two campaign stages on fixed maps. Stage 1 must produce a research and
+   building budget; stage 2 must construct its scripted layout within that
+   budget and reach its item-production goal using full engine simulation.
+4. Run the same slice on the next Factorio version and compare its results.
 
 Only after this vertical slice works should more feature cases or campaign
 milestones be added.
@@ -156,11 +140,7 @@ milestones be added.
 ## Sources
 
 - [Wube integration tests](https://factorio.com/blog/post/fff-60)
-- [Wube GUI/input test fixture](https://factorio.com/blog/post/fff-366)
 - [Factorio command-line parameters](https://wiki.factorio.com/Command_line_parameters)
 - [Factorio scenario system](https://wiki.factorio.com/Scenario_system)
 - [Factorio Instrument Mode](https://lua-api.factorio.com/2.0.76/auxiliary/instrument.html)
-- [Factorio LuaSimulation](https://lua-api.factorio.com/2.0.76/classes/LuaSimulation.html)
 - [FactorioTest](https://github.com/GlassBricks/FactorioTest)
-- [Factorio TAS Generator](https://github.com/MortenTobiasNielsen/Factorio-TAS-Generator)
-- [Factorio Any% TAS](https://github.com/gotyoke/Factorio-AnyPct-TAS)
