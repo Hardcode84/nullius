@@ -45,7 +45,8 @@ python3 tools/run_factorio_tests.py vulcanus-pneumatic-heat
 
 The first campaign slice is defined in
 [`VULCANUS_PROGRESSION_PLAN.md`](VULCANUS_PROGRESSION_PLAN.md). It begins with
-probe activation and ends when the factory produces its first metallurgic pack.
+probe activation and ends when a second, locally manufactured production cell
+sustains metallurgic-pack output.
 
 Its independent scenario stages are:
 
@@ -54,9 +55,20 @@ Its independent scenario stages are:
 3. iron, aluminum, limestone, and silica production with real bloom cooldown;
 4. machine-generated heat powering aluminum reduction and sulfur production;
    and
-5. first metallurgic-pack production from those local materials.
+5. local manufacture of every processing and logistics class required to
+   reproduce the line; and
+6. placement of a second cell from those manufactured items followed by 10
+   metallurgic packs.
 
 Each stage declares the preceding milestone as its fixture and validates its own
 production through real machines. No stage consumes another stage's result, so
 the suite runs in parallel. The full slice does not inject lava products,
-graphite, rutile, sulfur, ingots, or the finished pack.
+graphite, rutile, sulfur, ingots, construction intermediates, equipment, or the
+finished pack. Wreck machines are permitted bootstrap executors, but equipment
+placed in the second cell must be matched by post-activation production counts.
+
+Before the campaign scenarios are authored, the resolved prerequisite query
+must pass for the complete equipment target set. Its declared raw boundaries
+and wreck-machine executors are the same contract used by the scenarios; the
+query fails on unresolved products, inaccessible crafting categories, cyclic
+repair routes, or additional recipe research.

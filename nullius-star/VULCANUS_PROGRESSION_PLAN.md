@@ -1,12 +1,15 @@
-# Vulcanus Progression: Activation to First Metallurgic Pack
+# Vulcanus Progression: Activation to Scalable Metallurgic Packs
 
 This is the current playable campaign slice. It begins when
-`nullius-probe-vulcanus` completes and ends when the Vulcanus factory produces
-its first metallurgic science pack.
+`nullius-probe-vulcanus` completes and ends when the Vulcanus factory can
+expand and sustain metallurgic science production using locally manufactured
+equipment.
 
-The slice does not attempt to prove local construction autonomy, renewable
-graphite, Vulcanus-specific research, multiplayer behavior, map generation, or
-interplanetary logistics. Those are later slices.
+The wreck is bootstrap equipment, not the completion condition. Producing one
+pack with irreplaceable wreck machines does not pass this slice. The factory
+must manufacture the machines and logistics needed to build another production
+cell. Renewable graphite, Vulcanus-specific research, multiplayer behavior,
+map generation, and interplanetary logistics remain outside this slice.
 
 ## Starting contract
 
@@ -49,8 +52,10 @@ probe activation + Nauvis pneumatic research
        -> aluminum ingot
   -> low-temperature radiator decomposes sulfur dioxide
        + rock rutile catalyst -> sulfur + oxygen + returned rutile
-  -> small pneumatic assembler
-       -> metallurgic science pack
+  -> steel, motors, pumps, filters, and construction intermediates
+  -> locally manufactured processing machines and logistics
+  -> a second metallurgic-pack production cell built from those outputs
+  -> sustained metallurgic science packs
 ```
 
 The pack recipe for this slice is:
@@ -134,28 +139,76 @@ Boundary:
 - both thermal recipes were powered by machine-generated heat; and
 - no test heat interface or preheated pipe supplied the heat.
 
-### V4: First metallurgic pack
+### V4: Construction closure
 
-Craft the pack in a pneumatic small assembler from the materials produced by
-the preceding chains.
+Use local materials to manufacture the equipment needed to reproduce and scale
+the pack line. Wreck equipment may execute these recipes, but it does not count
+as a manufactured result.
+
+The closure includes every additional instance required by the test layout and
+at least one new item from each relevant class:
+
+- lava/seawater intake and hydro plant;
+- air filter, distillery, and chemical plant used by their intermediates;
+- small furnace, foundry, small assembler, and medium assembler;
+- radiator and heat pipe; and
+- belts, inserters, pipes, underground pipes, storage tanks, and chests.
 
 Boundary:
 
-- one `nullius-metallurgic-pack` exists in an output inventory;
+- production statistics prove that each declared equipment item was crafted
+  after activation;
+- all of their recursive recipe ingredients were produced or extracted from
+  the declared rock boundaries;
+- every crafting category has either the Vulcanus character or a present
+  machine capable of executing it;
+- no required recipe needs research beyond the pneumatic technology and its
+  prerequisite closure; and
+- the dedicated gas line remains operational throughout construction.
+
+### V5: Scaled metallurgic-pack production
+
+First craft a pack in the bootstrap factory. Then place a second operational
+pack cell using only equipment counted by V4 and feed it with the local
+production chains. Wreck machines may continue seeding upstream production,
+but no wreck item may be placed as part of the second cell.
+
+Boundary:
+
+- the second cell produces at least 10 `nullius-metallurgic-pack`;
 - its five ingredient types were consumed by the real recipe;
+- every newly placed machine and logistics entity in that cell is accounted
+  for by post-activation item-production statistics;
 - the dedicated gas line remains operational; and
 - the result records elapsed ticks, remaining gas, rock-derived graphite and
-  rutile consumption, and remaining wreck equipment.
+  rutile consumption, manufactured equipment, and remaining wreck equipment.
+
+## Prerequisite query
+
+`tools/analyze_factorio_prereqs.py` derives the recursive recipe, intermediate,
+technology, crafting-category, and machine closure from Factorio's resolved
+prototype dump. Raw resources and bootstrap machines are explicit inputs, so a
+recipe from another planet or a wreck-repair loop cannot silently satisfy the
+graph.
+
+For this slice, the query declares rock graphite, rutile, and limestone as raw;
+declares the relevant wreck machines with `--available-machine`; assumes
+`nullius-pneumatic-technology`; and targets the full V4 equipment list. The
+command exits nonzero for an unknown raw resource or any product that has no
+acyclic executable route. `--json` provides the same report for scenario or CI
+validation. This slice also passes `--require-no-additional-technologies` so a
+route outside the declared research closure fails rather than merely being
+reported.
 
 ## Implementation required
 
-Only the endpoint itself is absent from the current resolved prototypes:
+The pack endpoint is absent from the current resolved prototypes:
 
 1. add the `nullius-metallurgic-pack` tool prototype;
 2. add the recipe above, enabled for this slice and restricted to Vulcanus by
    the existing ambient-temperature surface condition; and
-3. allow the existing lab family to accept the pack when the later research
-   slice is implemented. Lab use is not required to pass this slice.
+3. allow the existing wreck lab to accept the pack. Defining the subsequent
+   Vulcanus research branch is a separate slice.
 
 The first end-to-end implementation target is V0 through V1. It validates the
 actual activation and power boundary before the longer material and thermal
