@@ -19,6 +19,13 @@ shell and hidden drill/resource components are created exactly once. Verify gas
 production, diminishing returns with a second vent, cleanup after every
 supported removal path, and successful rebuilding at the same position.
 
+The first runnable slice covers production-event creation, the single-vent seam
+amount, and scripted shell-destruction cleanup:
+
+```bash
+python3 tools/run_factorio_tests.py vulcanus-gas-vent-smoke
+```
+
 ### Pneumatic-heat lifecycle
 
 Build an eligible pneumatic machine through its production placement path.
