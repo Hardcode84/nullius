@@ -1,0 +1,4 @@
+interface:
+  display_name: "Factorio Prerequisites"
+  short_description: "Trace Factorio production and research closure"
+  default_prompt: "Analyze the resolved prerequisites for the requested Factorio item or production cell."
