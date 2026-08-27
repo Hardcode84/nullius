@@ -50,14 +50,14 @@ sustains metallurgic-pack output.
 
 Its independent scenario stages are:
 
-1. V01 activation;
-2. V02 free-vent priming and V03 self-powered gas;
-3. V04 lava separations and V05 real bloom cooldown;
-4. V06 aluminum, V07 sulfur, and V08 machine-generated heat;
-5. V09 one real pack recipe cycle;
-6. V10 manufacture of the replacement construction set;
-7. V11 the exact ten-pack material manifest; and
-8. V12 the complete activation-to-pack scenario.
+1. `activation`;
+2. `vent-prime` and `gas-self-power`;
+3. `lava-separation` and `bloom-cooldown`;
+4. `aluminum-reduction`, `sulfur-catalysis`, and `pneumatic-heat`;
+5. `metallurgic-pack-recipe`;
+6. `construction-closure`;
+7. `metallurgic-pack-10`; and
+8. `campaign-through-metallurgic-science`.
 
 Each stage declares the preceding milestone as its fixture and validates its own
 production through real machines. No stage consumes another stage's result, so

@@ -1,297 +1,415 @@
-# Vulcanus test specification: activation to metallurgic pack
+# Vulcanus progression tests
 
-Every case in this file is independently runnable. A case creates its own fixed
-surface and fixture; it never loads another case's save. Counts are exact unless
-an assertion explicitly uses `at least`. All production actions use normal
-recipes and entity simulation. Infinity pipes/chests may supply a component
-test's declared inputs or consume its declared outputs, but may not supply an
-undeclared intermediate or target.
+```yaml
+format:
+  scenario: [given, place, connect, act, run, expect]
+  quantity: {exact: "=", minimum: ">=", maximum: "<=", absent: 0}
+  place: {id: {prototype: string, count: integer, at: "[x,y] | auto", direction: direction}}
+  auto-placement: topology-constrained
+  connect: ["endpoint -> network", "network -> endpoint"]
+  run: {ticks: integer, until: predicate, timeout: integer, checkpoints: [integer]}
+  expect: {tick: {inventory: map, fluid: map, produced: map, consumed: map, entity: map}}
 
-`nullius-pneumatic-technology` and its prerequisites are researched before each
-Vulcanus production case. The fixed surface has
-`nullius-ambient-temperature=200`. Graphite, rutile, and limestone come from
-placed minable volcanic rocks, not direct item insertion, in V10 and V12.
+defaults:
+  surface:
+    planet: nullius-vulcanus
+    map: fixed
+    properties: {nullius-ambient-temperature: 200}
+  force:
+    researched: [nullius-pneumatic-technology]
+  mods: {Companion_Drones: false}
+  isolation: new-surface
+  intermediates: recipe-only
+  debug-inputs: declared-only
+  scheduling: parallel
 
-The static contracts are executable from the repository root:
+validators:
+  construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
+  metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
 
-```bash
-python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args
-python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args
+scenarios:
+  activation:
+    given:
+      surface: nauvis
+      force:
+        completed: [nullius-probe-vulcanus]
+        researched: [nullius-pneumatic-technology]
+    act:
+      - event: on_research_finished
+        technology: nullius-probe-vulcanus
+    expect:
+      terminal:
+        planet_surface: {nullius-vulcanus: "=1"}
+        character:
+          prototype: character
+          count: "=1"
+          associated_players: all
+          body_queue: present
+        force:
+          unlocked_space_locations: [nullius-vulcanus]
+          charted: [[-64, -64], [64, 64]]
+        entities:
+          nullius-landing-main: "=1"
+        wreck_inventory:
+          nullius-seawater-intake-1: "=2"
+          nullius-hydro-plant-1: "=4"
+          nullius-small-furnace-1: "=4"
+          pipe: "=50"
+          nullius-heat-pipe-1: "=30"
+          pipe-to-ground: "=10"
+          nullius-extractor-1: "=2"
+          nullius-air-filter-1: "=2"
+          nullius-distillery-1: "=2"
+          nullius-chemical-plant-1: "=2"
+          nullius-foundry-1: "=4"
+          nullius-small-assembler-1: "=4"
+          inserter: "=12"
+          iron-chest: "=4"
+          nullius-lab-1: "=1"
+          transport-belt: "=50"
+          splitter: "=4"
+          cliff-explosives: "=30"
+        android:
+          armor: {nullius-chassis-1: "=1"}
+          equipment:
+            nullius-charger-1: "=1"
+            nullius-hangar-1: "=1"
+            nullius-solar-panel-1: "=2"
+            nullius-battery-1: "=4"
+          inventory: {nullius-construction-bot-1: "=6"}
+
+  vent-prime:
+    given:
+      inventory: {nullius-seawater-intake-1: "=1"}
+      fluids: {nullius-compressed-volcanic-gas: 0}
+    place:
+      vent: {prototype: nullius-seawater-intake-1, at: [0, 0]}
+      gas-buffer: {prototype: storage-tank, at: auto}
+    connect:
+      - vent.output -> gas
+      - gas -> gas-buffer.input
+    act:
+      - build: vent
+      - rotate_mode: {entity: vent, mode: free-gas}
+    run: {ticks: 120}
+    expect:
+      120:
+        fluid: {gas: {nullius-compressed-volcanic-gas: ">=24"}}
+        owned_hidden_drill: {vent: "=1"}
+        owned_hidden_resource: {vent: "=1"}
+      after_destroy:
+        entity: {vent: 0}
+        owned_hidden_drill: {vent: 0}
+        owned_hidden_resource: {vent: 0}
+
+  gas-self-power:
+    given:
+      fluids:
+        lava: "=100"
+        nullius-compressed-volcanic-gas: "=24"
+    place:
+      hydro: {prototype: nullius-hydro-plant-1-pneumatic, at: [0, 0]}
+      gas-buffer: {prototype: storage-tank, at: auto}
+      stone-sink: {prototype: infinity-chest, at: auto}
+    connect:
+      - lava -> hydro.fluid_input
+      - gas-buffer <-> gas
+      - gas -> hydro.energy_input
+      - hydro.fluid_output -> gas
+      - hydro.item_output -> stone-sink
+    act:
+      - set_recipe: {entity: hydro, recipe: nullius-lava-gas-extraction}
+    run: {ticks: 240, checkpoints: [120, 240]}
+    expect:
+      120:
+        produced: {nullius-compressed-volcanic-gas: "=60", stone: "=3"}
+        consumed: {lava: "=50", nullius-compressed-volcanic-gas: "=24"}
+        fluid: {gas: {nullius-compressed-volcanic-gas: "=60"}}
+      240:
+        produced: {nullius-compressed-volcanic-gas: "=120", stone: "=6"}
+        consumed: {lava: "=100", nullius-compressed-volcanic-gas: "=48"}
+        fluid: {gas: {nullius-compressed-volcanic-gas: "=96"}}
+        connected_vent: 0
+
+  lava-separation:
+    matrix:
+      - id: iron
+        recipe: nullius-lava-iron-separation
+        ticks: 300
+        input: {lava: 100, nullius-compressed-volcanic-gas: 60}
+        output: {nullius-molten-iron-bloom: 4, nullius-compressed-volcanic-gas: 30, stone: 10}
+        gas_terminal: 30
+      - id: aluminum
+        recipe: nullius-lava-aluminum-separation
+        ticks: 300
+        input: {lava: 100, nullius-compressed-volcanic-gas: 60}
+        output: {nullius-molten-aluminum-bloom: 3, nullius-compressed-volcanic-gas: 25, stone: 8}
+        gas_terminal: 25
+      - id: calcite
+        recipe: nullius-lava-calcite-separation
+        ticks: 240
+        input: {lava: 80, nullius-compressed-volcanic-gas: 48}
+        output: {nullius-crushed-limestone: 6, nullius-compressed-volcanic-gas: 20}
+        gas_terminal: 20
+      - id: silica
+        recipe: nullius-lava-silica-extraction
+        ticks: 180
+        input: {lava: 60, nullius-compressed-volcanic-gas: 36}
+        output: {nullius-silica: 8, stone: 5, nullius-compressed-volcanic-gas: 15, nullius-sulfur-dioxide: 10}
+        gas_terminal: 15
+    place:
+      hydro: {prototype: nullius-hydro-plant-1-pneumatic, at: [0, 0]}
+      output: {prototype: infinity-chest, at: auto, mode: sink-disabled}
+    connect:
+      - matrix.input -> hydro
+      - hydro -> output
+    act:
+      - set_recipe: {entity: hydro, recipe: matrix.recipe}
+    run: {ticks: matrix.ticks}
+    expect:
+      terminal:
+        produced: "=matrix.output"
+        input_remaining: 0
+        gas: "=matrix.gas_terminal"
+      before_terminal:
+        produced: 0
+
+  bloom-cooldown:
+    matrix:
+      - {id: iron, input: {nullius-molten-iron-bloom: 4}, ticks: 1800, output: {nullius-iron-ingot: 4}}
+      - {id: aluminum, input: {nullius-molten-aluminum-bloom: 3}, ticks: 2400, output: {nullius-alumina: 3}}
+    given: {inventory: "=matrix.input"}
+    run: {ticks: matrix.ticks}
+    expect:
+      terminal: {inventory: "=matrix.output", input_remaining: 0}
+
+  aluminum-reduction:
+    given:
+      inventory: {nullius-alumina: 9, nullius-graphite: 5}
+      heat: {temperature: ">=100", available_energy_j: ">=2760000"}
+    place:
+      furnace: {prototype: nullius-small-furnace-1-pneumatic, at: [0, 0]}
+    connect: [heat -> furnace]
+    act:
+      - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
+    run: {ticks: 2400}
+    expect:
+      terminal:
+        produced: {nullius-aluminum-ingot: "=3", nullius-aluminum-carbide: "=4"}
+        consumed: {nullius-alumina: "=9", nullius-graphite: "=5"}
+
+  sulfur-catalysis:
+    given:
+      fluids: {nullius-sulfur-dioxide: 40}
+      inventory: {nullius-rutile: 1}
+      heat: {temperature: ">=200", available_energy_j: ">=4000000"}
+    place:
+      radiator: {prototype: nullius-vulcanus-radiator-1, at: [0, 0]}
+    connect: [heat -> radiator]
+    act:
+      - set_recipe: {entity: radiator, recipe: nullius-so2-catalytic-decomposition}
+    run: {ticks: 240}
+    expect:
+      terminal:
+        produced: {nullius-oxygen: "=40", sulfur: "=1", nullius-rutile: "=1"}
+        consumed: {nullius-sulfur-dioxide: "=40"}
+        inventory: {nullius-rutile: "=1"}
+
+  pneumatic-heat:
+    given:
+      fluids:
+        lava: infinite
+        nullius-compressed-volcanic-gas: 96
+      inventory:
+        nullius-alumina: 9
+        nullius-graphite: 5
+        nullius-sulfur-dioxide: 40
+        nullius-rutile: 1
+      heat: {temperature: engine-default, debug_source: 0}
+    place:
+      hydro: {prototype: nullius-hydro-plant-1-pneumatic, count: 4, at: auto}
+      heat-pipe: {prototype: nullius-heat-pipe-1, count: 30, at: auto}
+      furnace: {prototype: nullius-small-furnace-1-pneumatic, count: 1, at: auto}
+      radiator: {prototype: nullius-vulcanus-radiator-1, count: 1, at: auto}
+      stone-sink: {prototype: infinity-chest, count: 1, at: auto}
+    connect:
+      - lava -> hydro[*].fluid_input
+      - gas <-> hydro[*].energy_input
+      - hydro[*].fluid_output -> gas
+      - hydro[*].item_output -> stone-sink
+      - hydro[*].owned_heat_interface -> heat-pipe
+      - heat-pipe -> furnace
+      - heat-pipe -> radiator
+    act:
+      - set_recipe: {entity: "hydro[*]", recipe: nullius-lava-gas-extraction}
+      - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: radiator, recipe: nullius-so2-catalytic-decomposition}
+    run: {until: thermal_outputs_complete, timeout: 30000}
+    expect:
+      terminal:
+        temperature: {furnace: ">=100", radiator: ">=200"}
+        produced:
+          nullius-aluminum-ingot: "=3"
+          nullius-aluminum-carbide: "=4"
+          nullius-oxygen: "=40"
+          sulfur: "=1"
+          nullius-rutile: "=1"
+        heat_sources: {owned_pneumatic_interfaces: "=4", debug: 0, preheated: 0}
+      after_disconnect_and_cooldown:
+        additional_thermal_cycles: 0
+
+  metallurgic-pack-recipe:
+    validator: metallurgic-pack
+    given:
+      inventory:
+        nullius-iron-ingot: 3
+        nullius-aluminum-ingot: 2
+        nullius-crushed-limestone: 1
+        nullius-silica: 1
+        sulfur: 1
+      fluids: {nullius-compressed-volcanic-gas: 88.5}
+    place:
+      assembler: {prototype: nullius-small-assembler-1-pneumatic, at: [0, 0]}
+    connect: [gas -> assembler.energy_input]
+    act:
+      - set_recipe: {entity: assembler, recipe: nullius-metallurgic-pack}
+    run: {ticks: 1800}
+    expect:
+      terminal:
+        produced: {nullius-metallurgic-pack: "=1"}
+        input_remaining: 0
+        fluid: {gas: 0}
+
+  construction-closure:
+    validator: construction
+    given:
+      fixture: activation.wreck_inventory
+      stock: {nullius-compressed-volcanic-gas: 24}
+      mined_input: {nullius-graphite: 128, nullius-limestone: 100, nullius-rutile: 1}
+      lava: nullius-lava-pumping
+      injected_intermediates: 0
+    act:
+      - execute_manifest: construction
+    run: {until: targets_complete}
+    expect:
+      terminal:
+        produced:
+          nullius-seawater-intake-1: "=7"
+          nullius-hydro-plant-1: "=6"
+          nullius-air-filter-1: "=1"
+          nullius-chemical-plant-1: "=1"
+          nullius-distillery-1: "=4"
+          nullius-small-furnace-1: "=6"
+          nullius-foundry-1: "=1"
+          nullius-small-assembler-1: "=4"
+          nullius-medium-assembler-1: "=1"
+          nullius-vulcanus-radiator-1: "=1"
+          transport-belt: "=60"
+          inserter: "=20"
+          pipe: "=165"
+          pipe-to-ground: "=18"
+          storage-tank: "=7"
+          wooden-chest: "=8"
+          nullius-heat-pipe-1: "=30"
+        selected_steps: "=50"
+        additional_research: 0
+        fuel_consumed: {nullius-compressed-volcanic-gas: "=24233.4"}
+        surplus:
+          inserter: 2
+          lava: 100
+          nullius-aluminum-carbide: 88
+          nullius-aluminum-ingot: 2
+          nullius-carbon-dioxide: 70
+          nullius-compressed-volcanic-gas: 30.6
+          nullius-crushed-limestone: 25
+          nullius-gravel: 43
+          nullius-hydro-plant-1: 1
+          nullius-iron-gear: 1
+          nullius-iron-rod: 4
+          nullius-iron-sheet: 4
+          nullius-rutile: 1
+          nullius-silica: 308
+          nullius-steel-beam: 1
+          nullius-steel-ingot: 1
+          pipe: 3
+          pipe-to-ground: 1
+          stone: 2635
+          sulfur: 15
+          transport-belt: 6
+
+  metallurgic-pack-10:
+    validator: metallurgic-pack
+    given:
+      executors: activation.wreck_inventory
+      stock: {nullius-compressed-volcanic-gas: 24}
+      mined_input: {nullius-graphite: 35, nullius-rutile: 1}
+      lava: nullius-lava-pumping
+      injected_intermediates: 0
+    act:
+      - execute_manifest: metallurgic-pack
+    run: {until: targets_complete}
+    expect:
+      terminal:
+        produced: {nullius-metallurgic-pack: "=10"}
+        consumed:
+          nullius-iron-ingot: 30
+          nullius-aluminum-ingot: 20
+          nullius-crushed-limestone: 10
+          nullius-silica: 10
+          sulfur: 10
+          nullius-compressed-volcanic-gas: 5985
+        surplus:
+          lava: 115
+          nullius-aluminum-carbide: 28
+          nullius-aluminum-ingot: 1
+          nullius-compressed-volcanic-gas: 4
+          nullius-crushed-limestone: 2
+          nullius-molten-iron-bloom: 2
+          nullius-oxygen: 400
+          nullius-rutile: 1
+          nullius-silica: 310
+          stone: 676
+        cycles:
+          nullius-metallurgic-pack: 10
+          nullius-aluminum-ingot: 7
+          nullius-so2-catalytic-decomposition: 10
+          nullius-lava-iron-separation: 8
+          nullius-lava-aluminum-separation: 21
+          nullius-lava-calcite-separation: 2
+          nullius-lava-silica-extraction: 40
+          nullius-lava-gas-extraction: 76
+          nullius-lava-pumping: 75
+        spoil_ticks:
+          nullius-molten-iron-bloom: 1800
+          nullius-molten-aluminum-bloom: 2400
+
+  campaign-through-metallurgic-science:
+    given:
+      fixture: activation
+      map:
+        lava_shore: present
+        volcanic_rocks: {graphite: ">=163", limestone: ">=100", rutile: ">=2"}
+      post_activation_injection: 0
+    act:
+      - recover: activation.wreck_inventory
+      - switch_body: activation.android
+      - execute: vent-prime
+      - disconnect: vent
+      - execute: gas-self-power
+      - execute: construction-closure
+      - place_from_production: additional-production-cell
+      - execute: metallurgic-pack-10
+      - insert: {item: nullius-metallurgic-pack, count: 10, target: nullius-lab-1}
+    run: {until: lab_inventory_complete}
+    expect:
+      terminal:
+        produced: construction-closure.expect.terminal.produced
+        placed_from_post_activation_production: additional-production-cell
+        lab_inventory: {nullius-metallurgic-pack: "=10"}
+        imported_items: 0
+        imported_fluids: 0
+        debug_heat: 0
+        connected_vent: 0
+        gas_network: ">0"
+        next_gas_cycle: complete
 ```
-
-The pack command uses
-`progression/vulcanus-planned-prototypes.json` because the pack prototype is not
-implemented. The overlay refuses to replace a resolved prototype; once the
-prototype exists, the command fails until the overlay is removed and the real
-prototype satisfies the same contract.
-
-## V00 — pack prototype
-
-Input: the resolved mod prototypes plus the planned prototype overlay.
-
-Action: run the pack manifest command.
-
-Expected output:
-
-- item `nullius-metallurgic-pack`, stack size 200, durability 1;
-- enabled `small-crafting` recipe, 900 base ticks;
-- input: 3 `nullius-iron-ingot`, 2 `nullius-aluminum-ingot`, 1
-  `nullius-crushed-limestone`, 1 `nullius-silica`, 1 `sulfur`;
-- output: 1 `nullius-metallurgic-pack`;
-- surface condition: `nullius-ambient-temperature >= 100`;
-- no research beyond `nullius-pneumatic-technology` and its prerequisite
-  closure.
-
-## V01 — activation
-
-Input: a force on Nauvis with `nullius-probe-vulcanus` completed and
-`nullius-pneumatic-technology` researched.
-
-Action: deliver the probe-research completion event once.
-
-Expected output:
-
-- one surface attached to planet `nullius-vulcanus`;
-- one valid `character` at the landing site, associated with every player in
-  the force and registered for body switching;
-- the force has `nullius-vulcanus` unlocked and the square from `(-64,-64)` to
-  `(64,64)` charted;
-- one `nullius-landing-main` containing exactly:
-
-| Item | Count |
-|---|---:|
-| `nullius-seawater-intake-1` | 2 |
-| `nullius-hydro-plant-1` | 4 |
-| `nullius-small-furnace-1` | 4 |
-| `pipe` | 50 |
-| `nullius-heat-pipe-1` | 30 |
-| `pipe-to-ground` | 10 |
-| `nullius-extractor-1` | 2 |
-| `nullius-air-filter-1` | 2 |
-| `nullius-distillery-1` | 2 |
-| `nullius-chemical-plant-1` | 2 |
-| `nullius-foundry-1` | 4 |
-| `nullius-small-assembler-1` | 4 |
-| `inserter` | 12 |
-| `iron-chest` | 4 |
-| `nullius-lab-1` | 1 |
-| `transport-belt` | 50 |
-| `splitter` | 4 |
-| `cliff-explosives` | 30 |
-
-Without `Companion_Drones`, the android additionally has one
-`nullius-chassis-1`, its code-defined charger/hangar/solar/battery equipment,
-and 6 `nullius-construction-bot-1`.
-
-## V02 — free-vent prime
-
-Input: 1 `nullius-seawater-intake-1`, connected pipe with at least 24 units of
-free capacity, and no compressed volcanic gas.
-
-Action: place the intake through the production placement event, toggle it to
-gas-vent mode, and simulate 120 ticks.
-
-Expected output: at least 24 `nullius-compressed-volcanic-gas` in the connected
-network. Destroying the visible vent removes its hidden drill and resource.
-
-## V03 — self-powered gas
-
-Input: 1 pneumatic `nullius-hydro-plant-1`, 100 lava, 24
-`nullius-compressed-volcanic-gas`, output capacity for gas and stone, and no
-connected vent after tick 0.
-
-Action: select `nullius-lava-gas-extraction` and simulate 240 ticks.
-
-Expected output after the first 120 ticks: 60 gas and 3 stone produced, 24 gas
-consumed, and the gas inventory is 60. Expected output after 240 ticks: 120 gas
-and 6 stone produced, 48 gas consumed, and the gas inventory is 96. The second
-cycle therefore completes using only the first cycle's net output.
-
-## V04 — lava separations
-
-This is a parameterized case. Each row starts with one pneumatic
-`nullius-hydro-plant-1`, the listed lava and gas, empty output storage, and the
-named recipe.
-
-| Recipe | Ticks | Exact input | Exact recipe output | Gas remaining |
-|---|---:|---|---|---:|
-| `nullius-lava-iron-separation` | 300 | 100 lava, 60 gas | 4 `nullius-molten-iron-bloom`, 30 gas, 10 stone | 30 |
-| `nullius-lava-aluminum-separation` | 300 | 100 lava, 60 gas | 3 `nullius-molten-aluminum-bloom`, 25 gas, 8 stone | 25 |
-| `nullius-lava-calcite-separation` | 240 | 80 lava, 48 gas | 6 `nullius-crushed-limestone`, 20 gas | 20 |
-| `nullius-lava-silica-extraction` | 180 | 60 lava, 36 gas | 8 `nullius-silica`, 5 stone, 15 gas, 10 `nullius-sulfur-dioxide` | 15 |
-
-The assertion is made on production statistics and storage contents immediately
-after the listed tick count. No output may appear before a recipe completes.
-
-## V05 — bloom cooldown
-
-This is a two-row parameterized case using real item spoilage.
-
-| Input at tick 0 | Run | Expected output |
-|---|---:|---|
-| 4 `nullius-molten-iron-bloom` | 1,800 ticks | 4 `nullius-iron-ingot`, 0 iron bloom |
-| 3 `nullius-molten-aluminum-bloom` | 2,400 ticks | 3 `nullius-alumina`, 0 aluminum bloom |
-
-## V06 — aluminum reduction
-
-Input: 1 pneumatic `nullius-small-furnace-1` connected to a heat network at or
-above 100 C with at least 2.76 MJ available, 9 `nullius-alumina`, and 5
-`nullius-graphite`.
-
-Action: select `nullius-aluminum-ingot` and simulate 2,400 ticks.
-
-Expected output: 3 `nullius-aluminum-ingot`, 4
-`nullius-aluminum-carbide`, no alumina, and no graphite.
-
-## V07 — sulfur catalysis
-
-Input: 1 `nullius-vulcanus-radiator-1` connected to a heat network at or above
-200 C with at least 4 MJ available, 40 `nullius-sulfur-dioxide`, and 1
-`nullius-rutile`.
-
-Action: select `nullius-so2-catalytic-decomposition` and simulate 240 ticks.
-
-Expected output: 40 `nullius-oxygen`, 1 `sulfur`, and the same 1
-`nullius-rutile`. The initial catalyst must be present before the first cycle;
-the returned catalyst cannot satisfy that initial input.
-
-## V08 — endogenous heat
-
-Input: 4 pneumatic `nullius-hydro-plant-1` connected to infinity lava input and
-unbounded product sinks, 96 gas to prime one simultaneous extraction cycle, 30
-`nullius-heat-pipe-1`, 1 pneumatic `nullius-small-furnace-1` containing 9
-alumina and 5 graphite, and 1 radiator containing 40 sulfur dioxide and 1
-rutile. All heat entities start at their engine default temperature.
-
-Action: run `nullius-lava-gas-extraction` continuously in all four hydro plants;
-connect both heat consumers through the 30 heat pipes; simulate at most 30,000
-ticks.
-
-Expected output before the deadline:
-
-- the furnace reaches at least 100 C and produces 3 aluminum ingots plus 4
-  aluminum carbide;
-- the radiator reaches at least 200 C and produces 40 oxygen plus 1 sulfur,
-  returning 1 rutile;
-- every degree of heat comes from hidden interfaces owned by the four working
-  pneumatic plants; no preheated entity or debug heat source exists; and
-- disconnecting the pipes prevents another thermal cycle after residual heat
-  falls below the recipe threshold.
-
-## V09 — one pack
-
-Input: 1 pneumatic `nullius-small-assembler-1`, 3 iron ingots, 2 aluminum
-ingots, 1 crushed limestone, 1 silica, 1 sulfur, and 88.5 compressed volcanic
-gas.
-
-Action: select `nullius-metallurgic-pack` and simulate 1,800 ticks.
-
-Expected output: exactly 1 metallurgic pack, all five item inputs consumed, and
-no gas remaining.
-
-## V10 — replacement construction set
-
-Input:
-
-- the V01 wreck machines as recipe executors, without counting them as output;
-- 24 compressed volcanic gas as the finite V02 prime;
-- enough volcanic rocks to mine 128 graphite, 100 limestone, and 1 rutile; the
-  production fixture accepts exactly those counts and leaves additional mined
-  material outside the cell;
-- free lava through `nullius-lava-pumping`;
-- empty output storage and no injected intermediate.
-
-Action: execute every batch printed by
-`@nullius-star/progression/vulcanus-construction.args`. Recipes may run in
-parallel and may reuse byproducts. Continue until these target counts have been
-produced after activation:
-
-| Target | Count |
-|---|---:|
-| `nullius-seawater-intake-1` | 1 |
-| `nullius-hydro-plant-1` | 5 |
-| `nullius-air-filter-1` | 1 |
-| `nullius-chemical-plant-1` | 1 |
-| `nullius-distillery-1` | 1 |
-| `nullius-small-furnace-1` | 1 |
-| `nullius-foundry-1` | 1 |
-| `nullius-small-assembler-1` | 1 |
-| `nullius-medium-assembler-1` | 1 |
-| `nullius-vulcanus-radiator-1` | 1 |
-| `transport-belt` | 50 |
-| `inserter` | 12 |
-| `pipe` | 50 |
-| `pipe-to-ground` | 10 |
-| `storage-tank` | 2 |
-| `wooden-chest` | 4 |
-| `nullius-heat-pipe-1` | 30 |
-
-Expected static totals: 50 selected production steps, 24,233.4 gas consumed,
-and no research beyond the assumed pneumatic closure. Expected terminal gas is
-30.6. The other exact terminal surplus is 2 inserters, 100 lava, 88 aluminum
-carbide, 2 aluminum ingots, 70 carbon dioxide, 25 crushed limestone, 43 gravel,
-1 hydro plant, 1 iron gear, 4 iron rods, 4 iron sheets, the returned rutile, 308
-silica, 1 steel beam, 1 steel ingot, 3 pipes, 1 underground pipe, 2,635 stone,
-15 sulfur, and 6 belts. Production statistics for every target must be at least
-its table count; items already present in the wreck do not satisfy the
-assertion. All rocks are mined by the character or an extractor, and all
-non-rock ingredients are accounted for by the manifest's recipe outputs.
-
-## V11 — ten-pack material line
-
-Input: the five wreck executor types named by
-`@nullius-star/progression/vulcanus-pack.args`, 24 gas as the finite V02 prime,
-enough rocks to mine 35 graphite and 1 rutile, free lava, and no injected
-intermediate. The fixture accepts exactly those mined counts.
-
-Action: execute the manifest's exact batches:
-
-| Product | Recipe cycles | Single-executor ticks |
-|---|---:|---:|
-| metallurgic pack | 10 | 18,000 |
-| aluminum ingot | 7 | 16,800 |
-| sulfur | 10 | 2,400 |
-| iron bloom | 8 | 2,400 |
-| aluminum bloom | 21 | 6,300 |
-| crushed limestone | 2 | 480 |
-| silica and sulfur dioxide | 40 | 7,200 |
-| dedicated gas | 76 | 9,120 |
-| lava pumping | 75 | 4,500 |
-
-The 30 iron blooms spoil for 1,800 ticks and the 63 aluminum blooms spoil for
-2,400 ticks before their consumers can use them.
-
-Expected output: exactly 10 metallurgic packs, 5,985 gas consumed, 4 gas
-remaining, and terminal surplus of 115 lava, 28 aluminum carbide, 1 aluminum
-ingot, 2 crushed limestone, 2 iron blooms, 400 oxygen, the returned rutile, 310
-silica, and 676 stone. The pack recipe consumes 30 iron ingots, 20 aluminum
-ingots, 10 crushed limestone, 10 silica, and 10 sulfur. No recipe or executor
-may differ from the checked-in manifest.
-
-## V12 — complete slice
-
-Input: only the V01 activation result and a fixed map containing a lava shore
-and enough volcanic rocks to meet the V10 and V11 raw boundaries. No item,
-fluid, heat, recipe output, or equipment is inserted after activation.
-
-Action:
-
-1. recover the wreck and switch to the Vulcanus body;
-2. obtain the 24-gas prime through V02 and disconnect the vent;
-3. keep V03 dedicated gas production operational;
-4. manufacture the complete V10 replacement set;
-5. place one additional production cell using only items counted by
-   post-activation production statistics;
-6. produce 10 metallurgic packs in that cell and insert them into the wreck lab.
-
-Expected output:
-
-- every V10 target count was produced, not merely recovered from the wreck;
-- the additional cell's placed entities are matched item-for-entity by those
-  post-activation production counts;
-- 10 metallurgic packs were produced by that cell and accepted by the wreck
-  lab;
-- graphite, limestone, and rutile were obtained only by mining the placed
-  rocks; lava came only from the intake recipe; and
-- the gas network is nonempty and completes another dedicated gas cycle with
-  the vent disconnected.
