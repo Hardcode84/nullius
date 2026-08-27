@@ -48,6 +48,10 @@ The first campaign slice is defined in
 probe activation and ends when a second, locally manufactured production cell
 sustains metallurgic-pack output.
 
+```bash
+python3 tools/run_factorio_tests.py vulcanus-activation
+```
+
 Its independent scenario stages are:
 
 1. `activation`;

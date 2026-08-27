@@ -43,11 +43,8 @@ scenarios:
         character:
           prototype: character
           count: "=1"
-          associated_players: all
-          body_queue: present
         force:
           unlocked_space_locations: [nullius-vulcanus]
-          charted: [[-64, -64], [64, 64]]
         entities:
           nullius-landing-main: "=1"
         wreck_inventory:

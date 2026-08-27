@@ -28,6 +28,7 @@ DEPENDENCY_MODS = (
     "configurable-valves",
 )
 DEFAULT_UNTIL_TICKS = {
+    "vulcanus-activation": 10,
     "vulcanus-gas-vent-smoke": 60,
     "vulcanus-pneumatic-heat": 120,
 }
