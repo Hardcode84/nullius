@@ -211,11 +211,16 @@ scenarios:
   bloom-cooldown:
     milestone: M3
     matrix:
-      - {id: iron, input: {nullius-molten-iron-bloom: 4}, ticks: 1800, output: {nullius-iron-ingot: 4}}
-      - {id: aluminum, input: {nullius-molten-aluminum-bloom: 3}, ticks: 2400, output: {nullius-alumina: 3}}
+      - {id: iron, input: {nullius-molten-iron-bloom: 4}, spoil_ticks: 1800, ticks: 1801, output: {nullius-iron-ingot: 4}}
+      - {id: aluminum, input: {nullius-molten-aluminum-bloom: 3}, spoil_ticks: 2400, ticks: 2401, output: {nullius-alumina: 3}}
     given: {inventory: "=matrix.input"}
+    place:
+      cooldown-inventory: {prototype: iron-chest, at: auto}
     run: {ticks: matrix.ticks}
     expect:
+      before_terminal:
+        tick: matrix.spoil_ticks
+        inventory: "=matrix.input"
       terminal: {inventory: "=matrix.output", input_remaining: 0}
 
   aluminum-reduction:
