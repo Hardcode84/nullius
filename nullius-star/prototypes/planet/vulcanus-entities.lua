@@ -246,6 +246,7 @@ data:extend({
   },
 })
 
+
 -- Hidden heat interfaces for pneumatic machines.
 local vulcanus_util = require("prototypes.planet.vulcanus-util")
 local make_heat_connections = vulcanus_util.make_heat_connections
@@ -355,17 +356,10 @@ for i = 1, 2 do
     -- Never crafts: a recipe category with no recipes. The hidden drill vents gas.
     lava_gasvent.crafting_categories = {"nullius-gas-vent-shell"}
     lava_gasvent.fixed_recipe = nil
-    -- A real gas output on the shell makes the player-facing entity rotatable,
-    -- shows/blueprints the pipe connection, and gives pipes something visible to
-    -- connect to. The hidden drill overlaps this output and supplies the gas.
-    lava_gasvent.fluid_boxes_off_when_no_fluid_recipe = false
-    lava_gasvent.fluid_boxes = {{
-      production_type = "output",
-      volume = 500,
-      pipe_covers = pipecoverspictures(),
-      filter = "nullius-compressed-volcanic-gas",
-      pipe_connections = {{position = {0, 1}, flow_direction = "output", direction = defines.direction.south}},
-    }}
+    -- The hidden drill owns the physical output. Duplicating that connection on
+    -- the overlapping shell creates two independent fluid boxes and traps the
+    -- mined gas in the drill instead of connecting it to the player's pipe.
+    lava_gasvent.fluid_boxes = {}
     data:extend({lava_gasvent})
   end
 end
@@ -442,4 +436,3 @@ data:extend({
     stages = {sheet = {filename = "__core__/graphics/empty.png", width = 1, height = 1, variation_count = 1}},
   },
 })
-
