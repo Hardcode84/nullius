@@ -49,7 +49,7 @@ probe activation and ends when a second, locally manufactured production cell
 sustains metallurgic-pack output.
 
 ```bash
-python3 tools/run_factorio_tests.py vulcanus-activation vulcanus-vent-prime vulcanus-gas-self-power
+python3 tools/run_factorio_tests.py vulcanus-activation vulcanus-vent-prime vulcanus-gas-self-power vulcanus-lava-separation-iron vulcanus-lava-separation-aluminum vulcanus-lava-separation-calcite vulcanus-lava-separation-silica -n auto
 ```
 
 Its independent scenario stages are:

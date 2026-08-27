@@ -132,34 +132,49 @@ scenarios:
     matrix:
       - id: iron
         recipe: nullius-lava-iron-separation
-        ticks: 300
+        recipe_ticks: 300
+        ticks: 380
         input: {lava: 100, nullius-compressed-volcanic-gas: 60}
         output: {nullius-molten-iron-bloom: 4, nullius-compressed-volcanic-gas: 30, stone: 10}
         gas_terminal: 30
       - id: aluminum
         recipe: nullius-lava-aluminum-separation
-        ticks: 300
+        recipe_ticks: 300
+        ticks: 380
         input: {lava: 100, nullius-compressed-volcanic-gas: 60}
         output: {nullius-molten-aluminum-bloom: 3, nullius-compressed-volcanic-gas: 25, stone: 8}
         gas_terminal: 25
       - id: calcite
         recipe: nullius-lava-calcite-separation
-        ticks: 240
+        recipe_ticks: 240
+        ticks: 313
         input: {lava: 80, nullius-compressed-volcanic-gas: 48}
         output: {nullius-crushed-limestone: 6, nullius-compressed-volcanic-gas: 20}
         gas_terminal: 20
       - id: silica
         recipe: nullius-lava-silica-extraction
-        ticks: 180
+        recipe_ticks: 180
+        ticks: 244
         input: {lava: 60, nullius-compressed-volcanic-gas: 36}
         output: {nullius-silica: 8, stone: 5, nullius-compressed-volcanic-gas: 15, nullius-sulfur-dioxide: 10}
         gas_terminal: 15
     place:
       hydro: {prototype: nullius-hydro-plant-1-pneumatic, at: [0, 0]}
-      output: {prototype: infinity-chest, at: auto, mode: sink-disabled}
+      gas-buffer: {prototype: storage-tank, at: auto}
+      fluid-output: {prototype: storage-tank, at: auto}
+      item-output: {prototype: infinity-chest, at: auto}
+      item-inserter: {prototype: inserter, at: auto}
+      debug-power: {prototype: electric-energy-interface, at: auto}
+      power-pole: {prototype: small-electric-pole, at: auto}
     connect:
-      - matrix.input -> hydro
-      - hydro -> output
+      - matrix.input.lava -> hydro.fluid_input
+      - matrix.input.nullius-compressed-volcanic-gas -> gas
+      - gas-buffer <-> gas
+      - gas -> hydro.energy_input
+      - hydro.gas_output -> gas
+      - hydro.fluid_output -> fluid-output
+      - hydro.item_output -> item-output
+      - debug-power -> power-pole -> item-inserter
     act:
       - set_recipe: {entity: hydro, recipe: matrix.recipe}
     run: {ticks: matrix.ticks}
@@ -169,6 +184,7 @@ scenarios:
         input_remaining: 0
         gas: "=matrix.gas_terminal"
       before_terminal:
+        tick: matrix.recipe_ticks
         produced: 0
 
   bloom-cooldown:
