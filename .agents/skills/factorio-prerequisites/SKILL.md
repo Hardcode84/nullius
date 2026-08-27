@@ -8,7 +8,7 @@ description: Analyze Factorio item or production-cell reachability from resolved
 Run the repository checker from the repository root:
 
 ```bash
-python3 tools/analyze_factorio_prereqs.py [BOUNDARIES] ITEM [ITEM ...]
+python3 tools/analyze_factorio_prereqs.py [BOUNDARIES] ITEM[=COUNT] [ITEM[=COUNT] ...]
 ```
 
 Omit `--data-raw` when checking the current checkout so the tool loads the
@@ -28,23 +28,47 @@ Declare the starting contract explicitly:
 - `--available-machine ITEM` permits that bootstrap machine to execute recipes
   without treating the machine item as a consumable input. Use this for wreck
   or starting equipment.
+- `--recipe PRODUCT=RECIPE` selects the intended route when several recipes
+  produce the same product.
+- `--executor CATEGORY=ENTITY` selects the exact runtime entity whose crafting
+  speed and energy source define the manifest.
+- `--machine-category CATEGORY` forbids hand crafting for that category.
 - `--surface-property NAME=VALUE` excludes recipes incompatible with a declared
   surface property.
 - `--require-no-additional-technologies` makes undeclared research a failing
   contract. Without it, the report lists the additional research closure.
 
+Use `--manifest` with counted targets and `--fuel FLUID` to calculate integer
+recipe batches, exact deterministic inputs and outputs, byproducts, executor
+ticks, fluid-fuel demand, heat requirements, and the aggregate raw/available
+boundaries. The fuel recipe is part of the graph and is sized by net output
+after powering itself. The checker fails instead of averaging probabilistic or
+ranged results. Put a repeatable contract in an argument file and invoke it as
+`@path/to/file.args`.
+
+Declare finite bootstrap material with `--stock ITEM=COUNT`. Unlike
+`--available`, stock is consumed and the checker expands production after it is
+exhausted. A self-powered fuel recipe must name the first-cycle prime this way;
+net-positive steady state does not prove startup from an empty pipe.
+
+Use `--prototype-overlay PATH` only to quantify a deliberately specified
+prototype that has not been implemented. An overlay may add prototypes but
+cannot replace resolved ones, so implementation forces the contract to be
+reconciled rather than silently masking production data.
+
 Use `--json` when another script or test consumes the report. A successful
 query proves an acyclic material route and an executor for every selected
-recipe. Unknown raw declarations and unresolved products fail with a nonzero
-exit status. Do not replace those failures with guessed recipes or injected
-items.
+recipe. In manifest mode it also proves the reported arithmetic for that exact
+route and executor selection. Unknown raw declarations and unresolved products
+fail with a nonzero exit status. Do not replace those failures with guessed
+recipes or injected items.
 
-Treat the result as a reachability witness. It does not establish recipe
-amounts, throughput, fuel or heat sufficiency, machine counts, placement, or
-tick behavior; derive quantities separately and prove runtime behavior with a
-Factorio scenario test. For a production cell, pass every machine and logistics
-item that the cell must reproduce as a target, rather than querying only its
-final product.
+Treat the default result as a reachability witness and the manifest as a static
+production contract. A manifest's single-executor tick totals do not model
+parallel machine scheduling, fluid transfer, heat propagation, placement, or
+runtime control behavior; prove those in Factorio scenario tests. For a
+production cell, pass every machine and logistics item that the cell must
+reproduce as a target, rather than querying only its final product.
 
 When changing the checker, run:
 

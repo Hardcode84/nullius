@@ -1,215 +1,297 @@
-# Vulcanus Progression: Activation to Scalable Metallurgic Packs
+# Vulcanus test specification: activation to metallurgic pack
 
-This is the current playable campaign slice. It begins when
-`nullius-probe-vulcanus` completes and ends when the Vulcanus factory can
-expand and sustain metallurgic science production using locally manufactured
-equipment.
+Every case in this file is independently runnable. A case creates its own fixed
+surface and fixture; it never loads another case's save. Counts are exact unless
+an assertion explicitly uses `at least`. All production actions use normal
+recipes and entity simulation. Infinity pipes/chests may supply a component
+test's declared inputs or consume its declared outputs, but may not supply an
+undeclared intermediate or target.
 
-The wreck is bootstrap equipment, not the completion condition. Producing one
-pack with irreplaceable wreck machines does not pass this slice. The factory
-must manufacture the machines and logistics needed to build another production
-cell. Renewable graphite, Vulcanus-specific research, multiplayer behavior,
-map generation, and interplanetary logistics remain outside this slice.
+`nullius-pneumatic-technology` and its prerequisites are researched before each
+Vulcanus production case. The fixed surface has
+`nullius-ambient-temperature=200`. Graphite, rutile, and limestone come from
+placed minable volcanic rocks, not direct item insertion, in V10 and V12.
 
-## Starting contract
+The static contracts are executable from the repository root:
 
-- `nullius-probe-vulcanus` is completed on Nauvis.
-- `nullius-pneumatic-technology` is then researched on Nauvis before depending
-  on any Vulcanus machine. This is intentionally part of the activation phase.
-- The wreck inventory created by `scripts/probe.lua` is authoritative.
-- No cargo or material import is available. Force-wide research knowledge is
-  shared normally.
-- Volcanic rocks are the source of the initial graphite and catalytic rutile.
-  They are not a finite campaign budget: the generated surface provides more
-  rocks as the player explores farther.
-- Existing Vulcanus recipes remain enabled for this slice. Recipe gating and
-  the Vulcanus research branch are not prerequisites for producing the first
-  pack.
-
-The fixed campaign-test map may place the wreck, lava shore, and a sufficient
-number of rocks near the start. That removes travel and map-generation variance;
-it does not inject graphite, rutile, lava products, sulfur, or finished
-materials.
-
-## Production path
-
-The resolved Factorio 2.0.77 prototypes establish this path:
-
-```text
-probe activation + Nauvis pneumatic research
-  -> wreck recovery and consciousness transfer
-  -> free lava intake + free-gas vent
-  -> pneumatic hydro plant running lava gas extraction
-  -> self-powered dedicated gas production
-  -> pneumatic lava-processing lines
-       -> iron bloom -> cooldown -> iron ingot
-       -> aluminum bloom -> cooldown -> alumina
-       -> crushed limestone
-       -> silica + sulfur dioxide
-  -> gas-powered foundry shapes iron
-  -> working pneumatic machines generate heat
-  -> thermal furnace reduces alumina with rock graphite
-       -> aluminum ingot
-  -> low-temperature radiator decomposes sulfur dioxide
-       + rock rutile catalyst -> sulfur + oxygen + returned rutile
-  -> steel, motors, pumps, filters, and construction intermediates
-  -> locally manufactured processing machines and logistics
-  -> a second metallurgic-pack production cell built from those outputs
-  -> sustained metallurgic science packs
+```bash
+python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args
+python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args
 ```
 
-The pack recipe for this slice is:
+The pack command uses
+`progression/vulcanus-planned-prototypes.json` because the pack prototype is not
+implemented. The overlay refuses to replace a resolved prototype; once the
+prototype exists, the command fails until the overlay is removed and the real
+prototype satisfies the same contract.
 
-| Input | Amount |
+## V00 — pack prototype
+
+Input: the resolved mod prototypes plus the planned prototype overlay.
+
+Action: run the pack manifest command.
+
+Expected output:
+
+- item `nullius-metallurgic-pack`, stack size 200, durability 1;
+- enabled `small-crafting` recipe, 900 base ticks;
+- input: 3 `nullius-iron-ingot`, 2 `nullius-aluminum-ingot`, 1
+  `nullius-crushed-limestone`, 1 `nullius-silica`, 1 `sulfur`;
+- output: 1 `nullius-metallurgic-pack`;
+- surface condition: `nullius-ambient-temperature >= 100`;
+- no research beyond `nullius-pneumatic-technology` and its prerequisite
+  closure.
+
+## V01 — activation
+
+Input: a force on Nauvis with `nullius-probe-vulcanus` completed and
+`nullius-pneumatic-technology` researched.
+
+Action: deliver the probe-research completion event once.
+
+Expected output:
+
+- one surface attached to planet `nullius-vulcanus`;
+- one valid `character` at the landing site, associated with every player in
+  the force and registered for body switching;
+- the force has `nullius-vulcanus` unlocked and the square from `(-64,-64)` to
+  `(64,64)` charted;
+- one `nullius-landing-main` containing exactly:
+
+| Item | Count |
 |---|---:|
-| `nullius-iron-ingot` | 3 |
-| `nullius-aluminum-ingot` | 2 |
-| `nullius-crushed-limestone` | 1 |
-| `nullius-silica` | 1 |
-| `sulfur` | 1 |
+| `nullius-seawater-intake-1` | 2 |
+| `nullius-hydro-plant-1` | 4 |
+| `nullius-small-furnace-1` | 4 |
+| `pipe` | 50 |
+| `nullius-heat-pipe-1` | 30 |
+| `pipe-to-ground` | 10 |
+| `nullius-extractor-1` | 2 |
+| `nullius-air-filter-1` | 2 |
+| `nullius-distillery-1` | 2 |
+| `nullius-chemical-plant-1` | 2 |
+| `nullius-foundry-1` | 4 |
+| `nullius-small-assembler-1` | 4 |
+| `inserter` | 12 |
+| `iron-chest` | 4 |
+| `nullius-lab-1` | 1 |
+| `transport-belt` | 50 |
+| `splitter` | 4 |
+| `cliff-explosives` | 30 |
 
-It produces one `nullius-metallurgic-pack` in 15 seconds in the
-`small-crafting` category. `nullius-crushed-limestone` is the implemented lava
-calcite product; no separate `calcite` item is introduced for this slice.
+Without `Companion_Drones`, the android additionally has one
+`nullius-chassis-1`, its code-defined charger/hangar/solar/battery equipment,
+and 6 `nullius-construction-bot-1`.
 
-## Milestones
+## V02 — free-vent prime
 
-### V0: Activated and authorized
+Input: 1 `nullius-seawater-intake-1`, connected pipe with at least 24 units of
+free capacity, and no compressed volcanic gas.
 
-Complete the probe research event, create the Vulcanus surface and wreck, then
-complete `nullius-pneumatic-technology` in an existing Nauvis lab. Transfer to
-the Vulcanus body and recover the code-defined wreck inventory.
+Action: place the intake through the production placement event, toggle it to
+gas-vent mode, and simulate 120 ticks.
 
-Boundary:
+Expected output: at least 24 `nullius-compressed-volcanic-gas` in the connected
+network. Destroying the visible vent removes its hidden drill and resource.
 
-- both technologies are researched;
-- the Vulcanus body can be controlled;
-- the wreck yielded its actual configured inventory; and
-- no Vulcanus material has been injected.
+## V03 — self-powered gas
 
-### V1: Gas bootstrap
+Input: 1 pneumatic `nullius-hydro-plant-1`, 100 lava, 24
+`nullius-compressed-volcanic-gas`, output capacity for gas and stone, and no
+connected vent after tick 0.
 
-Place one wreck intake as a lava intake and toggle the other to a free-gas vent.
-Use the vent to start a pneumatic hydro plant on
-`nullius-lava-gas-extraction`.
+Action: select `nullius-lava-gas-extraction` and simulate 240 ticks.
 
-The hydro plant consumes about 12 gas/s. Gas extraction produces 60 gas in two
-seconds, so one cycle consumes about 24 gas and leaves about 36 gas before other
-factory loads. Metal recipes are gas consumers, not power sources.
+Expected output after the first 120 ticks: 60 gas and 3 stone produced, 24 gas
+consumed, and the gas inventory is 60. Expected output after 240 ticks: 120 gas
+and 6 stone produced, 48 gas consumed, and the gas inventory is 96. The second
+cycle therefore completes using only the first cycle's net output.
 
-Boundary:
+## V04 — lava separations
 
-- lava reaches the hydro plant;
-- the first gas-extraction cycle completes;
-- stored gas increases;
-- the vent is disabled or disconnected; and
-- gas extraction continues from its own output for a declared interval.
+This is a parameterized case. Each row starts with one pneumatic
+`nullius-hydro-plant-1`, the listed lava and gas, empty output storage, and the
+named recipe.
 
-### V2: Four lava products
+| Recipe | Ticks | Exact input | Exact recipe output | Gas remaining |
+|---|---:|---|---|---:|
+| `nullius-lava-iron-separation` | 300 | 100 lava, 60 gas | 4 `nullius-molten-iron-bloom`, 30 gas, 10 stone | 30 |
+| `nullius-lava-aluminum-separation` | 300 | 100 lava, 60 gas | 3 `nullius-molten-aluminum-bloom`, 25 gas, 8 stone | 25 |
+| `nullius-lava-calcite-separation` | 240 | 80 lava, 48 gas | 6 `nullius-crushed-limestone`, 20 gas | 20 |
+| `nullius-lava-silica-extraction` | 180 | 60 lava, 36 gas | 8 `nullius-silica`, 5 stone, 15 gas, 10 `nullius-sulfur-dioxide` | 15 |
 
-Keep a dedicated gas-extraction line running and use other wreck hydro plants
-for iron, aluminum, limestone, and silica processing. Let actual engine spoilage
-cool iron blooms for 1,800 ticks and aluminum blooms for 2,400 ticks.
+The assertion is made on production statistics and storage contents immediately
+after the listed tick count. No output may appear before a recipe completes.
 
-Boundary:
+## V05 — bloom cooldown
 
-- at least 3 iron ingots exist;
-- at least 9 alumina exist, enough for one aluminum-ingot batch;
-- at least 1 crushed limestone exists;
-- at least 40 units of sulfur dioxide have been produced;
-- at least 1 silica remains for the pack after radiator construction; and
-- the gas network never starves.
+This is a two-row parameterized case using real item spoilage.
 
-### V3: Heat, aluminum, and sulfur
+| Input at tick 0 | Run | Expected output |
+|---|---:|---|
+| 4 `nullius-molten-iron-bloom` | 1,800 ticks | 4 `nullius-iron-ingot`, 0 iron bloom |
+| 3 `nullius-molten-aluminum-bloom` | 2,400 ticks | 3 `nullius-alumina`, 0 aluminum bloom |
 
-Mine graphite and rutile from real volcanic rocks. Route heat generated by
-working pneumatic machines through the wreck heat pipes.
+## V06 — aluminum reduction
 
-Use that heat to:
+Input: 1 pneumatic `nullius-small-furnace-1` connected to a heat network at or
+above 100 C with at least 2.76 MJ available, 9 `nullius-alumina`, and 5
+`nullius-graphite`.
 
-1. run a thermal furnace on `nullius-aluminum-ingot`; and
-2. raise a low-temperature radiator to its working temperature and run
-   `nullius-so2-catalytic-decomposition`.
+Action: select `nullius-aluminum-ingot` and simulate 2,400 ticks.
 
-Boundary:
+Expected output: 3 `nullius-aluminum-ingot`, 4
+`nullius-aluminum-carbide`, no alumina, and no graphite.
 
-- at least 2 aluminum ingots exist;
-- at least 1 sulfur exists;
-- the rutile catalyst is returned;
-- both thermal recipes were powered by machine-generated heat; and
-- no test heat interface or preheated pipe supplied the heat.
+## V07 — sulfur catalysis
 
-### V4: Construction closure
+Input: 1 `nullius-vulcanus-radiator-1` connected to a heat network at or above
+200 C with at least 4 MJ available, 40 `nullius-sulfur-dioxide`, and 1
+`nullius-rutile`.
 
-Use local materials to manufacture the equipment needed to reproduce and scale
-the pack line. Wreck equipment may execute these recipes, but it does not count
-as a manufactured result.
+Action: select `nullius-so2-catalytic-decomposition` and simulate 240 ticks.
 
-The closure includes every additional instance required by the test layout and
-at least one new item from each relevant class:
+Expected output: 40 `nullius-oxygen`, 1 `sulfur`, and the same 1
+`nullius-rutile`. The initial catalyst must be present before the first cycle;
+the returned catalyst cannot satisfy that initial input.
 
-- lava/seawater intake and hydro plant;
-- air filter, distillery, and chemical plant used by their intermediates;
-- small furnace, foundry, small assembler, and medium assembler;
-- radiator and heat pipe; and
-- belts, inserters, pipes, underground pipes, storage tanks, and chests.
+## V08 — endogenous heat
 
-Boundary:
+Input: 4 pneumatic `nullius-hydro-plant-1` connected to infinity lava input and
+unbounded product sinks, 96 gas to prime one simultaneous extraction cycle, 30
+`nullius-heat-pipe-1`, 1 pneumatic `nullius-small-furnace-1` containing 9
+alumina and 5 graphite, and 1 radiator containing 40 sulfur dioxide and 1
+rutile. All heat entities start at their engine default temperature.
 
-- production statistics prove that each declared equipment item was crafted
-  after activation;
-- all of their recursive recipe ingredients were produced or extracted from
-  the declared rock boundaries;
-- every crafting category has either the Vulcanus character or a present
-  machine capable of executing it;
-- no required recipe needs research beyond the pneumatic technology and its
-  prerequisite closure; and
-- the dedicated gas line remains operational throughout construction.
+Action: run `nullius-lava-gas-extraction` continuously in all four hydro plants;
+connect both heat consumers through the 30 heat pipes; simulate at most 30,000
+ticks.
 
-### V5: Scaled metallurgic-pack production
+Expected output before the deadline:
 
-First craft a pack in the bootstrap factory. Then place a second operational
-pack cell using only equipment counted by V4 and feed it with the local
-production chains. Wreck machines may continue seeding upstream production,
-but no wreck item may be placed as part of the second cell.
+- the furnace reaches at least 100 C and produces 3 aluminum ingots plus 4
+  aluminum carbide;
+- the radiator reaches at least 200 C and produces 40 oxygen plus 1 sulfur,
+  returning 1 rutile;
+- every degree of heat comes from hidden interfaces owned by the four working
+  pneumatic plants; no preheated entity or debug heat source exists; and
+- disconnecting the pipes prevents another thermal cycle after residual heat
+  falls below the recipe threshold.
 
-Boundary:
+## V09 — one pack
 
-- the second cell produces at least 10 `nullius-metallurgic-pack`;
-- its five ingredient types were consumed by the real recipe;
-- every newly placed machine and logistics entity in that cell is accounted
-  for by post-activation item-production statistics;
-- the dedicated gas line remains operational; and
-- the result records elapsed ticks, remaining gas, rock-derived graphite and
-  rutile consumption, manufactured equipment, and remaining wreck equipment.
+Input: 1 pneumatic `nullius-small-assembler-1`, 3 iron ingots, 2 aluminum
+ingots, 1 crushed limestone, 1 silica, 1 sulfur, and 88.5 compressed volcanic
+gas.
 
-## Prerequisite query
+Action: select `nullius-metallurgic-pack` and simulate 1,800 ticks.
 
-`tools/analyze_factorio_prereqs.py` derives the recursive recipe, intermediate,
-technology, crafting-category, and machine closure from Factorio's resolved
-prototype dump. Raw resources and bootstrap machines are explicit inputs, so a
-recipe from another planet or a wreck-repair loop cannot silently satisfy the
-graph.
+Expected output: exactly 1 metallurgic pack, all five item inputs consumed, and
+no gas remaining.
 
-For this slice, the query declares rock graphite, rutile, and limestone as raw;
-declares the relevant wreck machines with `--available-machine`; assumes
-`nullius-pneumatic-technology`; and targets the full V4 equipment list. The
-command exits nonzero for an unknown raw resource or any product that has no
-acyclic executable route. `--json` provides the same report for scenario or CI
-validation. This slice also passes `--require-no-additional-technologies` so a
-route outside the declared research closure fails rather than merely being
-reported.
+## V10 — replacement construction set
 
-## Implementation required
+Input:
 
-The pack endpoint is absent from the current resolved prototypes:
+- the V01 wreck machines as recipe executors, without counting them as output;
+- 24 compressed volcanic gas as the finite V02 prime;
+- enough volcanic rocks to mine 128 graphite, 100 limestone, and 1 rutile; the
+  production fixture accepts exactly those counts and leaves additional mined
+  material outside the cell;
+- free lava through `nullius-lava-pumping`;
+- empty output storage and no injected intermediate.
 
-1. add the `nullius-metallurgic-pack` tool prototype;
-2. add the recipe above, enabled for this slice and restricted to Vulcanus by
-   the existing ambient-temperature surface condition; and
-3. allow the existing wreck lab to accept the pack. Defining the subsequent
-   Vulcanus research branch is a separate slice.
+Action: execute every batch printed by
+`@nullius-star/progression/vulcanus-construction.args`. Recipes may run in
+parallel and may reuse byproducts. Continue until these target counts have been
+produced after activation:
 
-The first end-to-end implementation target is V0 through V1. It validates the
-actual activation and power boundary before the longer material and thermal
-chains are encoded.
+| Target | Count |
+|---|---:|
+| `nullius-seawater-intake-1` | 1 |
+| `nullius-hydro-plant-1` | 5 |
+| `nullius-air-filter-1` | 1 |
+| `nullius-chemical-plant-1` | 1 |
+| `nullius-distillery-1` | 1 |
+| `nullius-small-furnace-1` | 1 |
+| `nullius-foundry-1` | 1 |
+| `nullius-small-assembler-1` | 1 |
+| `nullius-medium-assembler-1` | 1 |
+| `nullius-vulcanus-radiator-1` | 1 |
+| `transport-belt` | 50 |
+| `inserter` | 12 |
+| `pipe` | 50 |
+| `pipe-to-ground` | 10 |
+| `storage-tank` | 2 |
+| `wooden-chest` | 4 |
+| `nullius-heat-pipe-1` | 30 |
+
+Expected static totals: 50 selected production steps, 24,233.4 gas consumed,
+and no research beyond the assumed pneumatic closure. Expected terminal gas is
+30.6. The other exact terminal surplus is 2 inserters, 100 lava, 88 aluminum
+carbide, 2 aluminum ingots, 70 carbon dioxide, 25 crushed limestone, 43 gravel,
+1 hydro plant, 1 iron gear, 4 iron rods, 4 iron sheets, the returned rutile, 308
+silica, 1 steel beam, 1 steel ingot, 3 pipes, 1 underground pipe, 2,635 stone,
+15 sulfur, and 6 belts. Production statistics for every target must be at least
+its table count; items already present in the wreck do not satisfy the
+assertion. All rocks are mined by the character or an extractor, and all
+non-rock ingredients are accounted for by the manifest's recipe outputs.
+
+## V11 — ten-pack material line
+
+Input: the five wreck executor types named by
+`@nullius-star/progression/vulcanus-pack.args`, 24 gas as the finite V02 prime,
+enough rocks to mine 35 graphite and 1 rutile, free lava, and no injected
+intermediate. The fixture accepts exactly those mined counts.
+
+Action: execute the manifest's exact batches:
+
+| Product | Recipe cycles | Single-executor ticks |
+|---|---:|---:|
+| metallurgic pack | 10 | 18,000 |
+| aluminum ingot | 7 | 16,800 |
+| sulfur | 10 | 2,400 |
+| iron bloom | 8 | 2,400 |
+| aluminum bloom | 21 | 6,300 |
+| crushed limestone | 2 | 480 |
+| silica and sulfur dioxide | 40 | 7,200 |
+| dedicated gas | 76 | 9,120 |
+| lava pumping | 75 | 4,500 |
+
+The 30 iron blooms spoil for 1,800 ticks and the 63 aluminum blooms spoil for
+2,400 ticks before their consumers can use them.
+
+Expected output: exactly 10 metallurgic packs, 5,985 gas consumed, 4 gas
+remaining, and terminal surplus of 115 lava, 28 aluminum carbide, 1 aluminum
+ingot, 2 crushed limestone, 2 iron blooms, 400 oxygen, the returned rutile, 310
+silica, and 676 stone. The pack recipe consumes 30 iron ingots, 20 aluminum
+ingots, 10 crushed limestone, 10 silica, and 10 sulfur. No recipe or executor
+may differ from the checked-in manifest.
+
+## V12 — complete slice
+
+Input: only the V01 activation result and a fixed map containing a lava shore
+and enough volcanic rocks to meet the V10 and V11 raw boundaries. No item,
+fluid, heat, recipe output, or equipment is inserted after activation.
+
+Action:
+
+1. recover the wreck and switch to the Vulcanus body;
+2. obtain the 24-gas prime through V02 and disconnect the vent;
+3. keep V03 dedicated gas production operational;
+4. manufacture the complete V10 replacement set;
+5. place one additional production cell using only items counted by
+   post-activation production statistics;
+6. produce 10 metallurgic packs in that cell and insert them into the wreck lab.
+
+Expected output:
+
+- every V10 target count was produced, not merely recovered from the wreck;
+- the additional cell's placed entities are matched item-for-entity by those
+  post-activation production counts;
+- 10 metallurgic packs were produced by that cell and accepted by the wreck
+  lab;
+- graphite, limestone, and rutile were obtained only by mining the placed
+  rocks; lava came only from the intake recipe; and
+- the gas network is nonempty and completes another dedicated gas cycle with
+  the vent disconnected.

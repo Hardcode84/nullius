@@ -5,12 +5,19 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from analyze_factorio_prereqs import analyze
+from analyze_factorio_prereqs import (
+    TestFailure,
+    analyze,
+    build_production_manifest,
+    merge_prototype_overlay,
+    parse_target,
+)
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
@@ -19,6 +26,7 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             "item": {
                 "target": {"name": "target"},
                 "ore": {"name": "ore"},
+                "catalyst": {"name": "catalyst"},
                 "broken-machine": {"name": "broken-machine"},
                 "machine-item": {
                     "name": "machine-item",
@@ -157,6 +165,215 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             report["selected_recipes"][0]["provider"],
             "<available:chemical-plant>",
         )
+
+    def test_quantifies_batches_byproducts_ticks_and_fluid_fuel(self) -> None:
+        data = {
+            "item": {
+                "ore": {"name": "ore"},
+                "machine-item": {
+                    "name": "machine-item",
+                    "place_result": "machine-fluid",
+                },
+            },
+            "fluid": {"fuel": {"name": "fuel", "fuel_value": "10kJ"}},
+            "recipe": {
+                "make-product": {
+                    "name": "make-product",
+                    "enabled": True,
+                    "category": "chemistry",
+                    "energy_required": 2,
+                    "ingredients": [
+                        {"type": "item", "name": "ore", "amount": 2},
+                        {"type": "item", "name": "catalyst", "amount": 1},
+                    ],
+                    "results": [
+                        {"type": "item", "name": "product", "amount": 2},
+                        {"type": "item", "name": "byproduct", "amount": 1},
+                        {"type": "item", "name": "catalyst", "amount": 1},
+                    ],
+                }
+            },
+            "simple-entity": {
+                "ore-rock": {
+                    "name": "ore-rock",
+                    "minable": {"result": "ore"},
+                },
+                "catalyst-rock": {
+                    "name": "catalyst-rock",
+                    "minable": {"result": "catalyst"},
+                },
+            },
+            "assembling-machine": {
+                "machine-fluid": {
+                    "name": "machine-fluid",
+                    "crafting_categories": ["chemistry"],
+                    "crafting_speed": 1,
+                    "energy_usage": "100kW",
+                    "energy_source": {"type": "fluid", "effectivity": 1},
+                    "minable": {"result": "machine-item"},
+                }
+            },
+        }
+        args = SimpleNamespace(
+            targets=["product"],
+            technology=[],
+            surface_property=[],
+            available=["fuel"],
+            available_machine=["machine-item"],
+            executor=[("chemistry", "machine-fluid")],
+            raw=["ore", "catalyst"],
+        )
+
+        report = analyze(data, args)
+        manifest = build_production_manifest(
+            data, report, {"product": 3}, "fuel"
+        )
+
+        self.assertEqual(manifest["raw_inputs"], {"catalyst": 1, "ore": 4})
+        self.assertEqual(manifest["fuel_consumption"], {"fuel": 40})
+        self.assertEqual(manifest["available_inputs"], {"fuel": 40})
+        self.assertEqual(
+            manifest["surplus"],
+            {"byproduct": 2, "catalyst": 1, "product": 1},
+        )
+        step = manifest["steps"][0]
+        self.assertEqual(step["cycles"], 2)
+        self.assertEqual(step["ticks_per_cycle"], 120)
+        self.assertEqual(step["total_ticks_single_executor"], 240)
+        self.assertEqual(step["fuel"]["amount_per_cycle"], 20)
+
+    def test_fuel_recipe_is_quantified_by_net_output(self) -> None:
+        data = {
+            "item": {
+                "hydro": {"name": "hydro", "place_result": "hydro-fluid"},
+                "lava": {"name": "lava"},
+            },
+            "fluid": {"gas": {"name": "gas", "fuel_value": "20kJ"}},
+            "recipe": {
+                "extract-gas": {
+                    "name": "extract-gas",
+                    "enabled": True,
+                    "category": "treatment",
+                    "energy_required": 2,
+                    "ingredients": [
+                        {"type": "item", "name": "lava", "amount": 50}
+                    ],
+                    "results": [
+                        {"type": "fluid", "name": "gas", "amount": 60}
+                    ],
+                }
+            },
+            "simple-entity": {
+                "lava-source": {
+                    "name": "lava-source",
+                    "minable": {"result": "lava"},
+                }
+            },
+            "assembling-machine": {
+                "hydro-fluid": {
+                    "name": "hydro-fluid",
+                    "crafting_categories": ["treatment"],
+                    "crafting_speed": 1,
+                    "energy_usage": "240kW",
+                    "energy_source": {"type": "fluid"},
+                    "minable": {"result": "hydro"},
+                }
+            },
+        }
+        args = SimpleNamespace(
+            targets=["gas"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=["hydro"],
+            executor=[("treatment", "hydro-fluid")],
+            raw=["lava"],
+        )
+
+        report = analyze(data, args)
+        manifest = build_production_manifest(data, report, {"gas": 40}, "gas")
+
+        self.assertEqual(manifest["raw_inputs"], {"lava": 100})
+        self.assertEqual(manifest["fuel_consumption"], {"gas": 48})
+        self.assertEqual(manifest["surplus"], {"gas": 32})
+        self.assertEqual(manifest["steps"][0]["cycles"], 2)
+
+        primed = build_production_manifest(
+            data, report, {"gas": 40}, "gas", {"gas": 24}
+        )
+        self.assertEqual(primed["initial_stock"], {"gas": 24})
+        self.assertEqual(primed["raw_inputs"], {"lava": 50})
+        self.assertEqual(primed["fuel_consumption"], {"gas": 24})
+        self.assertEqual(primed["surplus"], {"gas": 20})
+        self.assertEqual(primed["steps"][0]["cycles"], 1)
+
+    def test_recipe_override_selects_the_declared_route(self) -> None:
+        data = {
+            "item": {
+                "ore-a": {"name": "ore-a"},
+                "ore-b": {"name": "ore-b"},
+            },
+            "recipe": {
+                "route-a": {
+                    "name": "route-a",
+                    "enabled": True,
+                    "ingredients": [{"name": "ore-a", "amount": 1}],
+                    "results": [{"name": "product", "amount": 1}],
+                },
+                "route-b": {
+                    "name": "route-b",
+                    "enabled": True,
+                    "ingredients": [{"name": "ore-b", "amount": 1}],
+                    "results": [{"name": "product", "amount": 1}],
+                },
+            },
+            "simple-entity": {
+                "rock-a": {"minable": {"result": "ore-a"}},
+                "rock-b": {"minable": {"result": "ore-b"}},
+            },
+            "character": {
+                "character": {"crafting_categories": ["crafting"]},
+            },
+        }
+        args = SimpleNamespace(
+            targets=["product"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=[],
+            recipe=[("product", "route-b")],
+            raw=["ore-a", "ore-b"],
+        )
+
+        report = analyze(data, args)
+
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
+        self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
+
+    def test_target_counts_and_overlay_fail_closed(self) -> None:
+        self.assertEqual(parse_target("item"), ("item", 1))
+        self.assertEqual(parse_target("item=2.5"), ("item", 2.5))
+
+        data = {"item": {"existing": {"name": "existing"}}}
+        overlay = self.create_temp_file(
+            '{"item": {"added": {"name": "added"}}}'
+        )
+        merge_prototype_overlay(data, overlay)
+        self.assertIn("added", data["item"])
+
+        replacement = self.create_temp_file(
+            '{"item": {"existing": {"name": "replacement"}}}'
+        )
+        with self.assertRaisesRegex(TestFailure, "refuses to replace"):
+            merge_prototype_overlay(data, replacement)
+
+    def create_temp_file(self, contents: str) -> Path:
+        handle = tempfile.NamedTemporaryFile(mode="w", delete=False)
+        self.addCleanup(Path(handle.name).unlink, missing_ok=True)
+        with handle:
+            handle.write(contents)
+        return Path(handle.name)
 
 
 if __name__ == "__main__":

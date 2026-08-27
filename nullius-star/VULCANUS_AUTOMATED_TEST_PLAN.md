@@ -50,15 +50,14 @@ sustains metallurgic-pack output.
 
 Its independent scenario stages are:
 
-1. activation plus Nauvis pneumatic research;
-2. free-vent priming followed by self-powered dedicated lava-to-gas production;
-3. iron, aluminum, limestone, and silica production with real bloom cooldown;
-4. machine-generated heat powering aluminum reduction and sulfur production;
-   and
-5. local manufacture of every processing and logistics class required to
-   reproduce the line; and
-6. placement of a second cell from those manufactured items followed by 10
-   metallurgic packs.
+1. V01 activation;
+2. V02 free-vent priming and V03 self-powered gas;
+3. V04 lava separations and V05 real bloom cooldown;
+4. V06 aluminum, V07 sulfur, and V08 machine-generated heat;
+5. V09 one real pack recipe cycle;
+6. V10 manufacture of the replacement construction set;
+7. V11 the exact ten-pack material manifest; and
+8. V12 the complete activation-to-pack scenario.
 
 Each stage declares the preceding milestone as its fixture and validates its own
 production through real machines. No stage consumes another stage's result, so

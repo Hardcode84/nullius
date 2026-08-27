@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 from collections import defaultdict, deque
 import json
+import math
 from pathlib import Path
+import re
 import shutil
 import sys
 import tempfile
@@ -31,6 +33,83 @@ NATURAL_MINABLE_PROTOTYPE_TYPES = {
     "simple-entity",
     "tree",
 }
+
+ENERGY_PREFIXES = {
+    "": 1.0,
+    "k": 1_000.0,
+    "M": 1_000_000.0,
+    "G": 1_000_000_000.0,
+}
+
+
+def parse_target(value: str) -> tuple[str, float]:
+    if "=" not in value:
+        return value, 1.0
+    name, raw_count = value.rsplit("=", 1)
+    try:
+        count = float(raw_count)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("expected ITEM or ITEM=COUNT") from error
+    if not name or not math.isfinite(count) or count <= 0:
+        raise argparse.ArgumentTypeError("target count must be finite and positive")
+    return name, count
+
+
+def parse_name_assignment(value: str) -> tuple[str, str]:
+    try:
+        name, assigned = value.split("=", 1)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("expected NAME=VALUE") from error
+    if not name or not assigned:
+        raise argparse.ArgumentTypeError("expected nonempty NAME=VALUE")
+    return name, assigned
+
+
+def parse_energy(value: str | None, expected_unit: str) -> float | None:
+    if value is None:
+        return None
+    match = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?)([kMG]?)([JW])", value)
+    if match is None or match.group(3) != expected_unit:
+        raise TestFailure(f"unsupported energy value: {value}")
+    return float(match.group(1)) * ENERGY_PREFIXES[match.group(2)]
+
+
+def deterministic_amount(entry: Prototype) -> float:
+    probability = float(entry.get("probability", 1))
+    if probability != 1:
+        raise TestFailure(
+            f"probabilistic amount is not an exact contract: {entry['name']}"
+        )
+    if "amount" in entry:
+        return float(entry["amount"])
+    if entry.get("amount_min") == entry.get("amount_max"):
+        return float(entry["amount_min"])
+    raise TestFailure(f"ranged amount is not an exact contract: {entry['name']}")
+
+
+def merge_prototype_overlay(data: Prototype, path: Path | None) -> None:
+    if path is None:
+        return
+    overlay = json.loads(path.expanduser().resolve().read_text(encoding="utf-8"))
+    if not isinstance(overlay, dict):
+        raise TestFailure("prototype overlay root must be an object")
+    for prototype_type, prototypes in overlay.items():
+        if not isinstance(prototypes, dict):
+            raise TestFailure(f"prototype overlay {prototype_type} must be an object")
+        destination = data.setdefault(prototype_type, {})
+        if not isinstance(destination, dict):
+            raise TestFailure(f"resolved prototype type {prototype_type} is not an object")
+        for prototype_name, prototype in prototypes.items():
+            if prototype_name in destination:
+                raise TestFailure(
+                    f"prototype overlay refuses to replace existing {prototype_type} "
+                    f"{prototype_name}"
+                )
+            if not isinstance(prototype, dict):
+                raise TestFailure(
+                    f"prototype overlay {prototype_type}.{prototype_name} must be an object"
+                )
+            destination[prototype_name] = prototype
 
 
 def parse_assignment(value: str) -> tuple[str, float]:
@@ -155,6 +234,9 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     unlockers: dict[str, list[str]] = defaultdict(list)
     extraction_sources: dict[str, list[str]] = defaultdict(list)
     machine_items: dict[str, list[str]] = defaultdict(list)
+    category_machine_entities: dict[str, dict[str, list[tuple[str, str]]]] = (
+        defaultdict(lambda: defaultdict(list))
+    )
 
     for recipe_name, recipe in recipes.items():
         if recipe.get("category", "crafting") in IGNORED_RECIPE_CATEGORIES:
@@ -215,6 +297,9 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                 items = machine_items.get(machine_name) or []
                 for item_name in items:
                     category_machines[category].append(item_name)
+                    category_machine_entities[category][item_name].append(
+                        (prototype_type, machine_name)
+                    )
 
     for lab_name in data.get("lab", {}):
         for item_name in machine_items.get(lab_name) or []:
@@ -227,6 +312,9 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
 
     available = set(args.available)
     available_machines = set(getattr(args, "available_machine", []))
+    executor_overrides = dict(getattr(args, "executor", []))
+    recipe_overrides = dict(getattr(args, "recipe", []))
+    machine_only_categories = set(getattr(args, "machine_category", []))
     raw = set(getattr(args, "raw", []))
     invalid_raw = sorted(raw - set(extraction_sources))
     pending = deque(args.targets)
@@ -237,6 +325,65 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     unresolved: list[str] = []
     categories: set[str] = set()
     required_technologies: set[str] = set()
+
+    def executor_contract(category: str, provider_name: str) -> Prototype:
+        if provider_name.startswith("<character:"):
+            character_name = provider_name.removeprefix("<character:").removesuffix(
+                ">"
+            )
+            character = data.get("character", {}).get(character_name, {})
+            return {
+                "kind": "character",
+                "name": character_name,
+                "crafting_speed": float(character.get("crafting_speed", 1)),
+                "alternatives": sorted(
+                    set(character_categories.get(category, []))
+                ),
+            }
+
+        item_name = provider_name
+        if provider_name.startswith("<available:"):
+            item_name = provider_name.removeprefix("<available:").removesuffix(">")
+        candidates = sorted(
+            set(category_machine_entities.get(category, {}).get(item_name, [])),
+            key=lambda candidate: (candidate[1] != item_name, candidate),
+        )
+        override = executor_overrides.get(category)
+        if override is not None:
+            matching = [candidate for candidate in candidates if candidate[1] == override]
+            if not matching:
+                rendered = ", ".join(name for _, name in candidates) or "none"
+                raise TestFailure(
+                    f"executor {override} cannot run {category} with item {item_name}; "
+                    f"candidates: {rendered}"
+                )
+            selected_type, selected_name = matching[0]
+        elif candidates:
+            selected_type, selected_name = candidates[0]
+        else:
+            raise TestFailure(
+                f"no entity executor for {category} with item {item_name}"
+            )
+        machine = data[selected_type][selected_name]
+        energy_source = machine.get("energy_source") or {}
+        return {
+            "kind": "machine",
+            "item": item_name,
+            "prototype_type": selected_type,
+            "name": selected_name,
+            "crafting_speed": float(machine.get("crafting_speed", 1)),
+            "energy_usage": machine.get("energy_usage"),
+            "energy_source": {
+                "type": energy_source.get("type"),
+                "effectivity": float(energy_source.get("effectivity", 1)),
+                "minimum_working_temperature": energy_source.get(
+                    "min_working_temperature"
+                ),
+                "maximum_temperature": energy_source.get("max_temperature"),
+            },
+            "alternatives": [name for _, name in candidates],
+            "explicit_override": override is not None,
+        }
 
     spoil_sources: dict[str, list[str]] = defaultdict(list)
     for item_name, item in data.get("item", {}).items():
@@ -257,7 +404,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         states: dict[str, tuple[frozenset[str], int]],
     ) -> tuple[str, tuple[frozenset[str], int]] | None:
         characters = sorted(set(character_categories.get(category, [])))
-        if characters:
+        if characters and category not in machine_only_categories:
             return f"<character:{characters[0]}>", (frozenset(), 0)
         candidates: list[tuple[str, tuple[frozenset[str], int]]] = []
         for item_name in sorted(set(category_machines.get(category, []))):
@@ -325,7 +472,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
 
     def recipe_score(
         recipe_name: str, product: str
-    ) -> tuple[int, int, int, int, str]:
+    ) -> tuple[int, int, int, int, int, str]:
         recipe = recipes[recipe_name]
         technology_requirements = missing_technologies(recipe_name)
         product_state = production_state.get(product)
@@ -355,6 +502,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             candidate_state = None
         establishes_product = candidate_state == product_state
         return (
+            0 if recipe_overrides.get(product) == recipe_name else 1,
             0 if establishes_product else 1,
             0 if recipe.get("enabled") else 1,
             state_key(candidate_state)[0]
@@ -380,6 +528,13 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             set(producers.get(product, [])),
             key=lambda recipe_name: recipe_score(recipe_name, product),
         )
+        requested_recipe = recipe_overrides.get(product)
+        if requested_recipe is not None and requested_recipe not in candidates:
+            rendered = ", ".join(candidates) or "none"
+            raise TestFailure(
+                f"recipe {requested_recipe} does not produce {product}; "
+                f"candidates: {rendered}"
+            )
         product_state = production_state.get(product)
         product_spoil_sources = sorted(
             source
@@ -389,9 +544,13 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             == (production_state[source][0], production_state[source][1] + 1)
         )
         recipe_establishes_product = bool(
-            candidates and recipe_score(candidates[0], product)[0] == 0
+            candidates and recipe_score(candidates[0], product)[1] == 0
         )
-        if product_spoil_sources and not recipe_establishes_product:
+        if (
+            product_spoil_sources
+            and not recipe_establishes_product
+            and requested_recipe is None
+        ):
             source = product_spoil_sources[0]
             selected_recipes[product] = f"<spoil:{source}>"
             alternatives[product] = [
@@ -444,20 +603,34 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                     "producer": recipe_name,
                     "category": "<spoil>",
                     "ingredients": [{"type": "item", "name": source}],
+                    "results": [
+                        {"type": "item", "name": product, "amount": 1}
+                    ],
+                    "spoil_ticks": data.get("item", {})
+                    .get(source, {})
+                    .get("spoil_ticks"),
+                    "rank": production_state[product][1],
                     "alternatives": alternatives[product],
                 }
             )
             continue
         recipe = recipes[recipe_name]
+        provider_name = best_provider(
+            recipe.get("category", "crafting"), production_state
+        )[0]
         selected.append(
             {
                 "product": product,
                 "producer": recipe_name,
                 "category": recipe.get("category", "crafting"),
-                "provider": best_provider(
-                    recipe.get("category", "crafting"), production_state
-                )[0],
+                "provider": provider_name,
+                "executor": executor_contract(
+                    recipe.get("category", "crafting"), provider_name
+                ),
                 "ingredients": recipe.get("ingredients") or [],
+                "results": recipe_results(recipe),
+                "energy_required": float(recipe.get("energy_required", 0.5)),
+                "rank": production_state[product][1],
                 "unlock_technologies": sorted(unlockers.get(recipe_name, [])),
                 "alternatives": alternatives[product],
             }
@@ -485,6 +658,252 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "raw_sources": raw_sources,
         "invalid_raw": invalid_raw,
         "unresolved": sorted(set(unresolved)),
+    }
+
+
+def build_production_manifest(
+    data: Prototype,
+    report: Prototype,
+    target_quantities: dict[str, float],
+    fuel_name: str | None,
+    initial_stock: dict[str, float] | None = None,
+) -> Prototype:
+    if report["unresolved"] or report["invalid_raw"]:
+        raise TestFailure("cannot quantify an unresolved prerequisite graph")
+
+    steps_by_product = {
+        step["product"]: step for step in report["selected_recipes"]
+    }
+    demands: dict[str, float] = defaultdict(float, target_quantities)
+    for step in report["selected_recipes"]:
+        provider = step.get("provider")
+        if provider and not provider.startswith("<"):
+            demands[provider] = max(demands[provider], 1)
+
+    stock: dict[str, float] = defaultdict(float, initial_stock or {})
+    deferred_surplus: dict[str, float] = defaultdict(float)
+    raw_inputs: dict[str, float] = defaultdict(float)
+    available_inputs: dict[str, float] = defaultdict(float)
+    fuel_consumption: dict[str, float] = defaultdict(float)
+    quantified_steps: list[Prototype] = []
+    processed: set[str] = set()
+    raw = set(report["raw"])
+    available = set(report["available"])
+
+    fuel_value = None
+    if fuel_name is not None:
+        fuel = data.get("fluid", {}).get(fuel_name)
+        if fuel is None:
+            raise TestFailure(f"fuel fluid prototype not found: {fuel_name}")
+        fuel_value = parse_energy(fuel.get("fuel_value"), "J")
+        if not fuel_value:
+            raise TestFailure(f"fluid has no positive fuel value: {fuel_name}")
+
+    while demands:
+        product = max(
+            demands,
+            key=lambda name: (
+                steps_by_product.get(name, {}).get("rank", 0),
+                name,
+            ),
+        )
+        requested = demands.pop(product)
+        if requested <= 1e-9:
+            continue
+        if product in processed:
+            raise TestFailure(
+                f"production ordering reintroduced already processed product: {product}"
+            )
+        processed.add(product)
+
+        from_stock = min(stock[product], requested)
+        stock[product] -= from_stock
+        required = requested - from_stock
+        if required <= 1e-9:
+            continue
+        if product in raw:
+            raw_inputs[product] += required
+            continue
+        if product in available:
+            available_inputs[product] += required
+            continue
+
+        step = steps_by_product.get(product)
+        if step is None:
+            raise TestFailure(f"quantitative route has no producer for {product}")
+        if step["category"] == "<spoil>":
+            source = step["ingredients"][0]["name"]
+            demands[source] += required
+            quantified_steps.append(
+                {
+                    "product": product,
+                    "producer": step["producer"],
+                    "requested": requested,
+                    "from_stock": from_stock,
+                    "cycles": required,
+                    "ingredients": [
+                        {"type": "item", "name": source, "amount": required}
+                    ],
+                    "outputs": [
+                        {"type": "item", "name": product, "amount": required}
+                    ],
+                    "spoil_ticks": step["spoil_ticks"],
+                }
+            )
+            continue
+
+        product_results = [
+            result for result in step["results"] if result["name"] == product
+        ]
+        if not product_results:
+            raise TestFailure(f"selected recipe does not produce {product}")
+        output_per_cycle = sum(
+            deterministic_amount(result) for result in product_results
+        )
+        if output_per_cycle <= 0:
+            raise TestFailure(f"selected recipe has no positive output for {product}")
+
+        executor = step["executor"]
+        crafting_speed = float(executor["crafting_speed"])
+        if crafting_speed <= 0:
+            raise TestFailure(
+                f"executor has nonpositive crafting speed: {executor['name']}"
+            )
+        seconds_per_cycle = float(step["energy_required"]) / crafting_speed
+        ticks_per_cycle = math.ceil(seconds_per_cycle * 60 - 1e-12)
+        energy_usage_watts = parse_energy(executor.get("energy_usage"), "W")
+        energy_per_cycle_joules = (
+            energy_usage_watts * seconds_per_cycle
+            if energy_usage_watts is not None
+            else None
+        )
+        energy_source = executor.get("energy_source") or {}
+        fuel_per_cycle = None
+        if energy_source.get("type") == "fluid":
+            if fuel_name is None or fuel_value is None:
+                raise TestFailure(
+                    f"fluid-powered executor {executor['name']} requires --fuel"
+                )
+            effectivity = float(energy_source.get("effectivity", 1))
+            if effectivity <= 0 or energy_per_cycle_joules is None:
+                raise TestFailure(
+                    f"cannot calculate fuel for executor {executor['name']}"
+                )
+            fuel_per_cycle = energy_per_cycle_joules / effectivity / fuel_value
+
+        effective_output_per_cycle = output_per_cycle
+        if product == fuel_name and fuel_per_cycle is not None:
+            effective_output_per_cycle -= fuel_per_cycle
+            if effective_output_per_cycle <= 0:
+                raise TestFailure(
+                    f"fuel recipe {step['producer']} does not power itself"
+                )
+        cycles = math.ceil((required / effective_output_per_cycle) - 1e-12)
+
+        result_per_cycle: dict[str, float] = defaultdict(float)
+        for result in step["results"]:
+            result_per_cycle[result["name"]] += deterministic_amount(result)
+
+        ingredients = []
+        catalyst_products: set[str] = set()
+        for ingredient in step["ingredients"]:
+            amount_per_cycle = deterministic_amount(ingredient)
+            amount = amount_per_cycle * cycles
+            ingredients.append(
+                {
+                    "type": ingredient.get("type", "item"),
+                    "name": ingredient["name"],
+                    "amount": amount,
+                }
+            )
+            returned_per_cycle = result_per_cycle.get(ingredient["name"], 0)
+            if returned_per_cycle > 0:
+                reusable = min(amount_per_cycle, returned_per_cycle)
+                demands[ingredient["name"]] += (
+                    amount - reusable * (cycles - 1)
+                )
+                deferred_surplus[ingredient["name"]] += (
+                    returned_per_cycle * cycles - reusable * (cycles - 1)
+                )
+                catalyst_products.add(ingredient["name"])
+            else:
+                demands[ingredient["name"]] += amount
+
+        outputs = []
+        for result in step["results"]:
+            amount = deterministic_amount(result) * cycles
+            outputs.append(
+                {
+                    "type": result.get("type", "item"),
+                    "name": result["name"],
+                    "amount": amount,
+                }
+            )
+            if result["name"] not in catalyst_products:
+                stock[result["name"]] += amount
+        stock[product] -= required
+        if fuel_per_cycle is not None and fuel_name is not None:
+            total_fuel = fuel_per_cycle * cycles
+            fuel_consumption[fuel_name] += total_fuel
+            if product == fuel_name:
+                stock[product] -= total_fuel
+            else:
+                demands[fuel_name] += total_fuel
+
+        quantified_steps.append(
+            {
+                "product": product,
+                "producer": step["producer"],
+                "requested": requested,
+                "from_stock": from_stock,
+                "cycles": cycles,
+                "ingredients": ingredients,
+                "outputs": outputs,
+                "executor": executor,
+                "seconds_per_cycle": seconds_per_cycle,
+                "ticks_per_cycle": ticks_per_cycle,
+                "total_ticks_single_executor": ticks_per_cycle * cycles,
+                "energy_per_cycle_joules": energy_per_cycle_joules,
+                "fuel": (
+                    {
+                        "name": fuel_name,
+                        "amount_per_cycle": fuel_per_cycle,
+                        "total_amount": fuel_per_cycle * cycles,
+                    }
+                    if fuel_per_cycle is not None
+                    else None
+                ),
+                "heat": (
+                    {
+                        "minimum_working_temperature": energy_source.get(
+                            "minimum_working_temperature"
+                        ),
+                        "maximum_temperature": energy_source.get(
+                            "maximum_temperature"
+                        ),
+                        "energy_per_cycle_joules": energy_per_cycle_joules,
+                    }
+                    if energy_source.get("type") == "heat"
+                    else None
+                ),
+            }
+        )
+
+    for name, amount in deferred_surplus.items():
+        stock[name] += amount
+
+    return {
+        "targets": target_quantities,
+        "initial_stock": dict(sorted((initial_stock or {}).items())),
+        "steps": quantified_steps,
+        "raw_inputs": dict(sorted(raw_inputs.items())),
+        "available_inputs": dict(sorted(available_inputs.items())),
+        "fuel_consumption": dict(sorted(fuel_consumption.items())),
+        "surplus": {
+            name: amount
+            for name, amount in sorted(stock.items())
+            if amount > 1e-9
+        },
     }
 
 
@@ -530,13 +949,73 @@ def print_human(report: Prototype) -> None:
     if not report["invalid_raw"]:
         print("  none")
 
+    manifest = report.get("production_manifest")
+    if manifest is not None:
+        print("\nProduction manifest:")
+        for step in manifest["steps"]:
+            if "spoil_ticks" in step:
+                print(
+                    f"  {step['product']}: spoil {step['ingredients'][0]['amount']:g} "
+                    f"{step['ingredients'][0]['name']} for {step['spoil_ticks']} ticks"
+                )
+                continue
+            inputs = ", ".join(
+                f"{entry['amount']:g} {entry['name']}"
+                for entry in step["ingredients"]
+            ) or "none"
+            outputs = ", ".join(
+                f"{entry['amount']:g} {entry['name']}"
+                for entry in step["outputs"]
+            ) or "none"
+            fuel = step.get("fuel")
+            fuel_text = (
+                f"; fuel={fuel['total_amount']:g} {fuel['name']}"
+                if fuel is not None
+                else ""
+            )
+            heat = step.get("heat")
+            heat_text = (
+                "; heat="
+                f"{heat['minimum_working_temperature']}.."
+                f"{heat['maximum_temperature']} C, "
+                f"{heat['energy_per_cycle_joules']:g} J/cycle"
+                if heat is not None
+                else ""
+            )
+            print(
+                f"  {step['product']}: {step['cycles']} x {step['producer']} "
+                f"on {step['executor']['name']} "
+                f"({step['total_ticks_single_executor']} ticks); "
+                f"inputs={inputs}; outputs={outputs}{fuel_text}{heat_text}"
+            )
+        for boundary in (
+            "initial_stock",
+            "raw_inputs",
+            "available_inputs",
+            "fuel_consumption",
+            "surplus",
+        ):
+            values = ", ".join(
+                f"{amount:g} {name}"
+                for name, amount in manifest[boundary].items()
+            ) or "none"
+            print(f"  {boundary}: {values}")
+
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Trace item prerequisites through resolved Factorio prototypes."
+        description="Trace item prerequisites through resolved Factorio prototypes.",
+        fromfile_prefix_chars="@",
     )
-    parser.add_argument("targets", nargs="+", metavar="ITEM")
+    parser.add_argument(
+        "targets", nargs="+", metavar="ITEM[=COUNT]", type=parse_target
+    )
     parser.add_argument("--data-raw", type=Path)
+    parser.add_argument(
+        "--prototype-overlay",
+        type=Path,
+        help="add planned prototypes without replacing resolved prototypes",
+    )
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
@@ -557,6 +1036,46 @@ def parse_arguments() -> argparse.Namespace:
         help="machine item available for recipe execution but not as an item input",
     )
     parser.add_argument(
+        "--executor",
+        type=parse_name_assignment,
+        action="append",
+        default=[],
+        metavar="CATEGORY=ENTITY",
+        help="select the exact runtime entity for a crafting category",
+    )
+    parser.add_argument(
+        "--recipe",
+        type=parse_name_assignment,
+        action="append",
+        default=[],
+        metavar="PRODUCT=RECIPE",
+        help="select an exact producer when a product has multiple routes",
+    )
+    parser.add_argument(
+        "--machine-category",
+        action="append",
+        default=[],
+        metavar="CATEGORY",
+        help="require a placeable machine even when a character can craft the category",
+    )
+    parser.add_argument(
+        "--fuel",
+        help="fluid fuel used by fluid-powered executors in --manifest mode",
+    )
+    parser.add_argument(
+        "--stock",
+        type=parse_assignment,
+        action="append",
+        default=[],
+        metavar="ITEM=COUNT",
+        help="finite starting stock consumed before production is expanded",
+    )
+    parser.add_argument(
+        "--manifest",
+        action="store_true",
+        help="calculate exact batches, inputs, outputs, ticks, fuel, and heat",
+    )
+    parser.add_argument(
         "--surface-property", type=parse_assignment, action="append", default=[]
     )
     parser.add_argument(
@@ -573,7 +1092,32 @@ def main() -> int:
     run_directory: Path | None = None
     try:
         data, run_directory = dump_resolved_data(args)
+        merge_prototype_overlay(data, args.prototype_overlay)
+        target_quantities: dict[str, float] = defaultdict(float)
+        target_names: list[str] = []
+        for target_name, target_count in args.targets:
+            if target_name not in target_quantities:
+                target_names.append(target_name)
+            target_quantities[target_name] += target_count
+        if args.manifest and args.fuel and args.fuel not in target_names:
+            target_names.append(args.fuel)
+        args.targets = target_names
         report = analyze(data, args)
+        if args.manifest:
+            initial_stock: dict[str, float] = defaultdict(float)
+            for stock_name, stock_count in args.stock:
+                if not math.isfinite(stock_count) or stock_count <= 0:
+                    raise TestFailure(
+                        f"initial stock must be finite and positive: {stock_name}"
+                    )
+                initial_stock[stock_name] += stock_count
+            report["production_manifest"] = build_production_manifest(
+                data,
+                report,
+                dict(target_quantities),
+                args.fuel,
+                dict(initial_stock),
+            )
         if args.json_output:
             print(json.dumps(report, indent=2, sort_keys=True))
         else:
