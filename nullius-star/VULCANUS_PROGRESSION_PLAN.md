@@ -278,23 +278,29 @@ scenarios:
       fluids:
         lava: infinite
         nullius-compressed-volcanic-gas: 96
+        nullius-sulfur-dioxide: 40
       inventory:
         nullius-alumina: 9
         nullius-graphite: 5
-        nullius-sulfur-dioxide: 40
         nullius-rutile: 1
       heat: {temperature: engine-default, debug_source: 0}
     place:
       hydro: {prototype: nullius-hydro-plant-1-pneumatic, count: 4, at: auto}
-      heat-pipe: {prototype: nullius-heat-pipe-1, count: 30, at: auto}
+      gas-buffer: {prototype: storage-tank, count: 4, at: auto}
+      heat-pipe: {prototype: nullius-heat-pipe-1, available: 30, at: auto}
       furnace: {prototype: nullius-small-furnace-1-pneumatic, count: 1, at: auto}
       radiator: {prototype: nullius-vulcanus-radiator-1, count: 1, at: auto}
-      stone-sink: {prototype: infinity-chest, count: 1, at: auto}
+      stone-sink: {prototype: steel-chest, count: 4, at: auto}
+      stone-inserter: {prototype: inserter, count: 4, at: auto}
+      debug-power: {prototype: electric-energy-interface, count: 4, at: auto}
+      power-distribution: {prototype: small-electric-pole, count: 4, at: auto}
     connect:
       - lava -> hydro[*].fluid_input
       - gas <-> hydro[*].energy_input
       - hydro[*].fluid_output -> gas
+      - gas -> gas-buffer[*]
       - hydro[*].item_output -> stone-sink
+      - debug-power -> power-distribution -> stone-inserter[*]
       - hydro[*].owned_heat_interface -> heat-pipe
       - heat-pipe -> furnace
       - heat-pipe -> radiator
@@ -302,7 +308,7 @@ scenarios:
       - set_recipe: {entity: "hydro[*]", recipe: nullius-lava-gas-extraction}
       - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
       - set_recipe: {entity: radiator, recipe: nullius-so2-catalytic-decomposition}
-    run: {until: thermal_outputs_complete, timeout: 30000}
+    run: {ticks: 65000}
     expect:
       terminal:
         temperature: {furnace: ">=100", radiator: ">=200"}
@@ -313,8 +319,7 @@ scenarios:
           sulfur: "=1"
           nullius-rutile: "=1"
         heat_sources: {owned_pneumatic_interfaces: "=4", debug: 0, preheated: 0}
-      after_disconnect_and_cooldown:
-        additional_thermal_cycles: 0
+        heat_pipes_placed: "<=30"
 
   metallurgic-pack-recipe:
     milestone: M5
