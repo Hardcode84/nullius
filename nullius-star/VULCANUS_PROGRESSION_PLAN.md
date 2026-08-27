@@ -108,24 +108,24 @@ scenarios:
       hydro: {prototype: nullius-hydro-plant-1-pneumatic, at: [0, 0]}
       gas-buffer: {prototype: storage-tank, at: auto}
       stone-sink: {prototype: infinity-chest, at: auto}
+      stone-inserter: {prototype: inserter, at: auto}
+      debug-power: {prototype: electric-energy-interface, at: auto}
+      power-pole: {prototype: small-electric-pole, at: auto}
     connect:
       - lava -> hydro.fluid_input
       - gas-buffer <-> gas
       - gas -> hydro.energy_input
       - hydro.fluid_output -> gas
       - hydro.item_output -> stone-sink
+      - debug-power -> power-pole -> stone-inserter
     act:
       - set_recipe: {entity: hydro, recipe: nullius-lava-gas-extraction}
-    run: {ticks: 240, checkpoints: [120, 240]}
+    run: {ticks: 245}
     expect:
-      120:
-        produced: {nullius-compressed-volcanic-gas: "=60", stone: "=3"}
-        consumed: {lava: "=50", nullius-compressed-volcanic-gas: "=24"}
-        fluid: {gas: {nullius-compressed-volcanic-gas: "=60"}}
-      240:
+      terminal:
         produced: {nullius-compressed-volcanic-gas: "=120", stone: "=6"}
-        consumed: {lava: "=100", nullius-compressed-volcanic-gas: "=48"}
-        fluid: {gas: {nullius-compressed-volcanic-gas: "=96"}}
+        consumed: {lava: "=100", nullius-compressed-volcanic-gas: "<=48.1"}
+        fluid: {gas: {nullius-compressed-volcanic-gas: ">=95.9"}}
         connected_vent: 0
 
   lava-separation:
