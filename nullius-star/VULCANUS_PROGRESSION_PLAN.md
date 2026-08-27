@@ -1,4 +1,21 @@
-# Vulcanus progression tests
+# Vulcanus progression
+
+## Level 1 — Player milestones
+
+| ID | Milestone | Segment time | Cumulative time |
+|---|---|---:|---:|
+| M0 | Land, recover the wreck, and assess the starting area | 0–5 min | 0–5 min |
+| M1 | Establish temporary pneumatic bootstrap | 5–10 min | 5–15 min |
+| M2 | Make the pneumatic bootstrap self-sustaining | 5–10 min | 10–25 min |
+| M3 | Establish the basic local material palette | 15–25 min | 25–50 min |
+| M4 | Bring heat-dependent metallurgy and chemistry online | 15–25 min | 40–75 min |
+| M5 | Produce the first metallurgic science | 10–15 min | 50–90 min |
+| M6 | Reproduce and expand the core factory from local production | 25–40 min | 75–130 min |
+| M7 | Deliver the first stable science batch with the next cycle ready | 15–25 min | 90–155 min |
+
+Time basis: first solo playthrough after activation, no prepared layout.
+
+## Level 2 — Scenario specifications
 
 ```yaml
 format:
@@ -29,6 +46,7 @@ validators:
 
 scenarios:
   activation:
+    milestone: M0
     given:
       surface: nauvis
       force:
@@ -76,6 +94,7 @@ scenarios:
           inventory: {nullius-construction-bot-1: "=6"}
 
   vent-prime:
+    milestone: M1
     given:
       inventory: {nullius-seawater-intake-1: "=1"}
       fluids: {nullius-compressed-volcanic-gas: 0}
@@ -100,6 +119,7 @@ scenarios:
         owned_hidden_resource: {vent: 0}
 
   gas-self-power:
+    milestone: M2
     given:
       fluids:
         lava: "=100"
@@ -129,6 +149,7 @@ scenarios:
         connected_vent: 0
 
   lava-separation:
+    milestone: M3
     matrix:
       - id: iron
         recipe: nullius-lava-iron-separation
@@ -188,6 +209,7 @@ scenarios:
         produced: 0
 
   bloom-cooldown:
+    milestone: M3
     matrix:
       - {id: iron, input: {nullius-molten-iron-bloom: 4}, ticks: 1800, output: {nullius-iron-ingot: 4}}
       - {id: aluminum, input: {nullius-molten-aluminum-bloom: 3}, ticks: 2400, output: {nullius-alumina: 3}}
@@ -197,6 +219,7 @@ scenarios:
       terminal: {inventory: "=matrix.output", input_remaining: 0}
 
   aluminum-reduction:
+    milestone: M4
     given:
       inventory: {nullius-alumina: 9, nullius-graphite: 5}
       heat: {temperature: ">=100", available_energy_j: ">=2760000"}
@@ -212,6 +235,7 @@ scenarios:
         consumed: {nullius-alumina: "=9", nullius-graphite: "=5"}
 
   sulfur-catalysis:
+    milestone: M4
     given:
       fluids: {nullius-sulfur-dioxide: 40}
       inventory: {nullius-rutile: 1}
@@ -229,6 +253,7 @@ scenarios:
         inventory: {nullius-rutile: "=1"}
 
   pneumatic-heat:
+    milestone: M4
     given:
       fluids:
         lava: infinite
@@ -272,6 +297,7 @@ scenarios:
         additional_thermal_cycles: 0
 
   metallurgic-pack-recipe:
+    milestone: M5
     validator: metallurgic-pack
     given:
       inventory:
@@ -294,6 +320,7 @@ scenarios:
         fluid: {gas: 0}
 
   construction-closure:
+    milestone: M6
     validator: construction
     given:
       fixture: activation.wreck_inventory
@@ -351,6 +378,7 @@ scenarios:
           transport-belt: 6
 
   metallurgic-pack-10:
+    milestone: M7
     validator: metallurgic-pack
     given:
       executors: activation.wreck_inventory
@@ -397,6 +425,7 @@ scenarios:
           nullius-molten-aluminum-bloom: 2400
 
   campaign-through-metallurgic-science:
+    milestones: [M0, M1, M2, M3, M4, M5, M6, M7]
     given:
       fixture: activation
       map:
