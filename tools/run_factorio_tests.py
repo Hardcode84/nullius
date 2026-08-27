@@ -27,13 +27,6 @@ DEPENDENCY_MODS = (
     "boblogistics",
     "configurable-valves",
 )
-DEFAULT_UNTIL_TICKS = {
-    "vulcanus-activation": 10,
-    "vulcanus-gas-vent-smoke": 60,
-    "vulcanus-pneumatic-heat": 120,
-}
-
-
 class TestFailure(RuntimeError):
     pass
 
@@ -129,9 +122,36 @@ def discover_cases() -> list[str]:
 
 
 def deadline_for(args: argparse.Namespace, case: str) -> int:
+    scenario = MOD_UNDER_TEST / "scenarios" / case
+    if not scenario.is_dir() or not (scenario / "control.lua").is_file():
+        raise TestFailure(f"scenario not found: {scenario}")
+    metadata_path = scenario / "test.json"
+    if not metadata_path.is_file():
+        raise TestFailure(f"scenario metadata not found: {metadata_path}")
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise TestFailure(
+            f"invalid scenario metadata {metadata_path}: {error}"
+        ) from error
+    if not isinstance(metadata, dict) or set(metadata) != {"schema", "until_tick"}:
+        raise TestFailure(
+            f"scenario metadata must contain only schema and until_tick: "
+            f"{metadata_path}"
+        )
+    if metadata["schema"] != 1:
+        raise TestFailure(
+            f"unsupported scenario metadata schema in {metadata_path}: "
+            f"{metadata['schema']!r}"
+        )
+    until_tick = metadata["until_tick"]
+    if isinstance(until_tick, bool) or not isinstance(until_tick, int) or until_tick < 1:
+        raise TestFailure(
+            f"scenario until_tick must be a positive integer: {metadata_path}"
+        )
     if args.until_tick is not None:
         return args.until_tick
-    return DEFAULT_UNTIL_TICKS.get(case, 60)
+    return until_tick
 
 
 def execute(
@@ -317,6 +337,8 @@ def main() -> int:
     args = parse_arguments()
     try:
         cases = args.cases or discover_cases()
+        for case in cases:
+            deadline_for(args, case)
     except (TestFailure, OSError) as error:
         if args.json_output:
             print(json.dumps({"status": "fail", "error": str(error)}))

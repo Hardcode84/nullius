@@ -71,6 +71,7 @@ independence:
 - Avoid per-tick script work; schedule checks at required ticks or terminal
   events.
 - Stage duration is a test contract, not shared orchestration machinery.
+- Encode each default deadline in the scenario's `test.json`.
 - Run independent scenarios in parallel with `-n auto` unless debugging one
   case.
 
