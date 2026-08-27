@@ -26,7 +26,6 @@
 - Keep repeatable queries in checked-in argument/configuration files.
 - Fail on unknown, ambiguous, probabilistic, or ranged values when an exact
   contract is required; do not guess or average.
-- Local Factorio documentation: `/home/vano/factorio-mod-wiki/`.
 
 ## Factorio prerequisite analysis
 
@@ -75,33 +74,7 @@ independence:
 - Run independent scenarios in parallel with `-n auto` unless debugging one
   case.
 
-## Engineering
-
-- Handle supported cases completely or fail loudly.
-- Fix the contract that permits a bug before adding fallback branches.
-- Prefer fewer states, branches, flags, adapters, and dependencies.
-- Add no dependency until an existing repository or standard-library facility
-  is insufficient.
-- Tests must exercise production behavior; do not weaken production contracts
-  for test convenience.
-- A passing test is evidence only when its fixture and assertions exercise the
-  named mechanism.
-- Preserve user changes and unrelated dirty-worktree files.
-- Use `apply_patch` for manual file edits.
-- Before replacing a design document:
-  1. write the complete replacement beside the original;
-  2. compare both for required contracts;
-  3. delete or replace the original only after the comparison.
-
 ## Completion
-
-```bash
-git diff --check
-git status
-git add <task-files>
-git commit -m "..."
-git status
-```
 
 - Run focused tests and fresh resolved-prototype checks appropriate to the
   change.
