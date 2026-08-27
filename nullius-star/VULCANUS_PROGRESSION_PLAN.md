@@ -226,15 +226,22 @@ scenarios:
   aluminum-reduction:
     milestone: M4
     given:
+      force:
+        researched: [nullius-pneumatic-technology]
+        closure_contains: [nullius-aluminum-production]
       inventory: {nullius-alumina: 9, nullius-graphite: 5}
       heat: {temperature: ">=100", available_energy_j: ">=2760000"}
     place:
-      furnace: {prototype: nullius-small-furnace-1-pneumatic, at: [0, 0]}
-    connect: [heat -> furnace]
+      furnace: {prototype: nullius-small-furnace-1-pneumatic, at: [20, 0]}
+      heat-pipe: {prototype: nullius-heat-pipe-1, at: runtime-heat-connection}
+    connect: [heat-pipe -> furnace]
     act:
       - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
-    run: {ticks: 2400}
+    run: {recipe_ticks: 600, crafting_speed: 0.25, ticks: 2402}
     expect:
+      before_terminal:
+        tick: 2400
+        produced: 0
       terminal:
         produced: {nullius-aluminum-ingot: "=3", nullius-aluminum-carbide: "=4"}
         consumed: {nullius-alumina: "=9", nullius-graphite: "=5"}
