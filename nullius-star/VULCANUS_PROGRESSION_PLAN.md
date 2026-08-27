@@ -249,16 +249,24 @@ scenarios:
   sulfur-catalysis:
     milestone: M4
     given:
+      force: {researched: [nullius-pneumatic-technology]}
       fluids: {nullius-sulfur-dioxide: 40}
       inventory: {nullius-rutile: 1}
       heat: {temperature: ">=200", available_energy_j: ">=4000000"}
     place:
-      radiator: {prototype: nullius-vulcanus-radiator-1, at: [0, 0]}
-    connect: [heat -> radiator]
+      radiator: {prototype: nullius-vulcanus-radiator-1, at: [20, 0]}
+      heat-pipe: {prototype: nullius-heat-pipe-1, at: runtime-heat-connection}
+      input-pipe: {prototype: pipe, at: runtime-fluid-input}
+      output-pipe: {prototype: pipe, at: runtime-fluid-output}
+    connect:
+      - heat-pipe -> radiator
+      - input-pipe -> radiator.fluid_input
+      - radiator.fluid_output -> output-pipe
     act:
       - set_recipe: {entity: radiator, recipe: nullius-so2-catalytic-decomposition}
-    run: {ticks: 240}
+    run: {recipe_ticks: 240, crafting_speed: 1, ticks: 242}
     expect:
+      before_terminal: {tick: 240, produced: 0}
       terminal:
         produced: {nullius-oxygen: "=40", sulfur: "=1", nullius-rutile: "=1"}
         consumed: {nullius-sulfur-dioxide: "=40"}
