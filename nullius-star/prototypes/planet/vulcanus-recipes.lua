@@ -170,7 +170,7 @@ data:extend({
   {
     type = "recipe",
     name = "nullius-metallurgic-pack",
-    enabled = true,
+    enabled = false,
     category = "small-crafting",
     subgroup = "research-pack-2",
     order = "nullius-va",

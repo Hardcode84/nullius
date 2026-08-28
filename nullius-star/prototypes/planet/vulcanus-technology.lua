@@ -1,5 +1,13 @@
 local recipe_productivity = require("prototypes.recipe-productivity")
 
+local pneumatic = data.raw.technology["nullius-pneumatic-technology"]
+if not pneumatic then error("Missing nullius-pneumatic-technology") end
+pneumatic.effects = pneumatic.effects or {}
+pneumatic.effects[#pneumatic.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-metallurgic-pack",
+}
+
 local function productivity_technology(name, order, icon, prerequisite,
     categories)
   return {
@@ -60,9 +68,9 @@ data:extend({
       count = 10,
       ingredients = {
         {"nullius-metallurgic-pack", 80},
-        {"nullius-geology-pack", 2},
-        {"nullius-mechanical-pack", 1},
-        {"nullius-electrical-pack", 1},
+        {"nullius-geology-pack", 8},
+        {"nullius-mechanical-pack", 4},
+        {"nullius-electrical-pack", 4},
       },
       time = 45,
     },
@@ -86,10 +94,10 @@ data:extend({
       count = 20,
       ingredients = {
         {"nullius-metallurgic-pack", 160},
-        {"nullius-geology-pack", 2},
-        {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1},
-        {"nullius-electrical-pack", 1},
+        {"nullius-geology-pack", 16},
+        {"nullius-climatology-pack", 8},
+        {"nullius-mechanical-pack", 8},
+        {"nullius-electrical-pack", 8},
       },
       time = 60,
     },

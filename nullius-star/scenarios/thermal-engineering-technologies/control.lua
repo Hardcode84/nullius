@@ -25,9 +25,9 @@ local TECHNOLOGIES = {
     seconds = 45,
     ingredients = {
       ["nullius-metallurgic-pack"] = 80,
-      ["nullius-geology-pack"] = 2,
-      ["nullius-mechanical-pack"] = 1,
-      ["nullius-electrical-pack"] = 1,
+      ["nullius-geology-pack"] = 8,
+      ["nullius-mechanical-pack"] = 4,
+      ["nullius-electrical-pack"] = 4,
     },
     prerequisites = {
       ["nullius-thermal-engineering-1"] = true,
@@ -44,10 +44,10 @@ local TECHNOLOGIES = {
     seconds = 60,
     ingredients = {
       ["nullius-metallurgic-pack"] = 160,
-      ["nullius-geology-pack"] = 2,
-      ["nullius-climatology-pack"] = 1,
-      ["nullius-mechanical-pack"] = 1,
-      ["nullius-electrical-pack"] = 1,
+      ["nullius-geology-pack"] = 16,
+      ["nullius-climatology-pack"] = 8,
+      ["nullius-mechanical-pack"] = 8,
+      ["nullius-electrical-pack"] = 8,
     },
     prerequisites = {
       ["nullius-thermal-engineering-2"] = true,

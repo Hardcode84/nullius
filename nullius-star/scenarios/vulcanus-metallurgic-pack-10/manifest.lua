@@ -547,6 +547,7 @@ return {
         alternatives = {
           "nullius-small-furnace-1",
           "nullius-small-furnace-1-pneumatic",
+          "nullius-small-furnace-1-thermal",
         },
         crafting_speed = 0.25,
         energy_source = {

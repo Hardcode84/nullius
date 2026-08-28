@@ -200,6 +200,9 @@ local function setup()
   local initial_technology = force.technologies[INITIAL_TECH]
   check(initial_technology ~= nil, "missing initial pneumatic technology")
   if not initial_technology then finish() return end
+  initial_technology.researched = false
+  check(force.recipes[RECIPE] and not force.recipes[RECIPE].enabled,
+    "metallurgic-pack recipe was enabled before Pneumatic Technology")
   research_closure(initial_technology, {})
   check(initial_technology.researched,
     "failed to research initial pneumatic technology")
