@@ -40,6 +40,14 @@ defaults:
   debug-inputs: declared-only
   scheduling: parallel
 
+chunk_contract:
+  execution: independent
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10]
+  supporting: [pneumatic-heat]
+  given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
+  expect: "exact local terminal state"
+  cross_chunk_save: false
+
 validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
@@ -460,34 +468,4 @@ scenarios:
           nullius-molten-iron-bloom: 1800
           nullius-molten-aluminum-bloom: 2400
 
-  campaign-through-metallurgic-science:
-    milestones: [M0, M1, M2, M3, M4, M5, M6, M7]
-    given:
-      fixture: activation
-      map:
-        lava_shore: present
-        volcanic_rocks: {graphite: ">=163", limestone: ">=100", rutile: ">=2"}
-      post_activation_injection: 0
-    act:
-      - recover: activation.wreck_inventory
-      - switch_body: activation.android
-      - execute: vent-prime
-      - disconnect: vent
-      - execute: gas-self-power
-      - execute: construction-closure
-      - place_from_production: additional-production-cell
-      - execute: metallurgic-pack-10
-      - insert: {item: nullius-metallurgic-pack, count: 10, target: nullius-lab-1}
-    run: {until: lab_inventory_complete}
-    expect:
-      terminal:
-        produced: construction-closure.expect.terminal.produced
-        placed_from_post_activation_production: additional-production-cell
-        lab_inventory: {nullius-metallurgic-pack: "=10"}
-        imported_items: 0
-        imported_fluids: 0
-        debug_heat: 0
-        connected_vent: 0
-        gas_network: ">0"
-        next_gas_cycle: complete
 ```

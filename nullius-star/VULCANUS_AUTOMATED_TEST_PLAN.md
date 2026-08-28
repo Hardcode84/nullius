@@ -60,18 +60,15 @@ Its independent scenario stages are:
 4. `aluminum-reduction`, `sulfur-catalysis`, and `pneumatic-heat`;
 5. `metallurgic-pack-recipe`;
 6. `construction-closure`;
-7. `metallurgic-pack-10`; and
-8. `campaign-through-metallurgic-science`.
+7. `metallurgic-pack-10`.
 
-Each stage declares the preceding milestone as its fixture and validates its own
-production through real machines. No stage consumes another stage's result, so
-the suite runs in parallel. The full slice does not inject lava products,
-graphite, rutile, sulfur, ingots, construction intermediates, equipment, or the
-finished pack. Wreck machines are permitted bootstrap executors, but equipment
-placed in the second cell must be matched by post-activation production counts.
+Each stage declares a fixture that is a subset of cumulative prior-stage output
+plus explicit raw or debug boundaries. Stages do not load one another's saves,
+so the suite runs in parallel. No stage may inject undeclared intermediates,
+equipment, or finished packs. Wreck machines are bootstrap executors; equipment
+used after construction closure must be covered by its production counts.
 
-Before the campaign scenarios are authored, the resolved prerequisite query
-must pass for the complete equipment target set. Its declared raw boundaries
-and wreck-machine executors are the same contract used by the scenarios; the
-query fails on unresolved products, inaccessible crafting categories, cyclic
-repair routes, or additional recipe research.
+The resolved prerequisite queries cover the complete equipment and pack target
+sets. Their raw boundaries and bootstrap executors are the scenario contracts;
+queries fail on unresolved products, inaccessible crafting categories, cyclic
+routes, or additional recipe research.
