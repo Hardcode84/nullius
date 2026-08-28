@@ -1,0 +1,27 @@
+require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
+  case = "vulcanus-basic-science-10",
+  contract = require("manifest"),
+  deadline = 409900,
+  fixture = {
+    ["nullius-seawater-intake-1"] = 1,
+    ["nullius-hydro-plant-1"] = 4,
+    ["nullius-air-filter-1"] = 1,
+    ["nullius-distillery-1"] = 1,
+    ["nullius-chemical-plant-1"] = 1,
+    ["nullius-foundry-1"] = 1,
+    ["nullius-small-furnace-1"] = 1,
+    ["nullius-small-assembler-1"] = 1,
+    ["nullius-medium-assembler-1"] = 1,
+    ["nullius-vulcanus-radiator-1"] = 1,
+    ["nullius-vulcanus-radiator-2"] = 1,
+    ["nullius-heat-pipe-1"] = 30,
+  },
+  direct_heat = {
+    producer_index = 2,
+    item = "nullius-vulcanus-radiator-2",
+    name = "nullius-vulcanus-radiator-2",
+    position = {41, -4},
+    minimum_temperature = 450,
+    initial_temperature = 500,
+  },
+}

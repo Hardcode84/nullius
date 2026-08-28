@@ -10,6 +10,7 @@ local MAX_STEP_WAIT = 72000
 local POLL_TICKS = 30
 local BACKGROUND_TICKS = 127
 local CASE_DEADLINE = CONFIG.deadline
+local DIRECT_HEAT = CONFIG.direct_heat
 
 local FIXTURE = CONFIG.fixture
 
@@ -196,12 +197,23 @@ local function build_executor(item, name, position)
   return entity
 end
 
+local function background_machine(entity)
+  for _, background in ipairs(storage.background_gas or {}) do
+    if background.machine == entity then return true end
+  end
+  return false
+end
+
 local function ensure_machine(executor)
   local pool = storage.machines[executor.name]
   if pool and #pool > 0 then
-    local next_index = (storage.machine_cursor[executor.name] or 0) % #pool + 1
-    storage.machine_cursor[executor.name] = next_index
-    return pool[next_index]
+    for _ = 1, #pool do
+      local next_index = (storage.machine_cursor[executor.name] or 0) % #pool + 1
+      storage.machine_cursor[executor.name] = next_index
+      if not background_machine(pool[next_index]) then return pool[next_index] end
+    end
+    check(false, "all " .. executor.name .. " executors are occupied")
+    return nil
   end
   local position
   if executor.name == "nullius-vulcanus-radiator-1" then
@@ -343,19 +355,27 @@ local function machine_cycle_complete()
   local active = storage.active
   local machine = active.machine
   local step = active.step
-  if step.heat and machine.products_finished > active.products_finished and
-      storage.background_gas then
+  local direct_active = storage.direct_heat and machine == storage.direct_heat.machine
+  if step.heat and not direct_active and
+      machine.products_finished > active.products_finished and storage.background_gas then
     script.on_nth_tick(game.tick + POLL_TICKS, machine_cycle_complete)
     return
   end
   if machine.products_finished <= active.products_finished then
     fill_pending_fuel(active)
+    if step.heat and not storage.background_gas then
+      start_background_gas()
+    end
     if game.tick >= active.deadline then
       check(false, "step " .. step.producer .. " did not complete one cycle; status=" ..
         status_name(machine.status) .. ", temperature=" .. tostring(machine.temperature) ..
         ", fluids=" .. helpers.table_to_json(machine.get_fluid_contents()) ..
         ", boxes=" .. helpers.table_to_json(fluid_box_state(machine)) ..
+        ", cycle=" .. tostring(active.cycle) .. "/" .. tostring(step.cycles) ..
         ", gas_cycles=" .. tostring(storage.completed_cycles[storage.gas_step_index]) ..
+        ", gas_ledger=" .. tostring(storage.ledger["nullius-compressed-volcanic-gas"]) ..
+        ", lava_ledger=" .. tostring(storage.ledger["nullius-lava"]) ..
+        ", background=" .. tostring(storage.background_gas ~= nil) ..
         ", heat=" .. helpers.table_to_json((function()
           local values = {}
           for _, entity in ipairs(storage.surface.find_entities_filtered{
@@ -431,10 +451,15 @@ local function background_gas_complete()
 end
 
 start_background_gas = function()
+  if storage.background_gas then return end
   local step = CONTRACT.steps[storage.gas_step_index]
   if (storage.completed_cycles[storage.gas_step_index] or 0) >= step.cycles then return end
   local pool = storage.machines[step.executor.name]
   if not pool then return end
+  if storage.direct_heat and storage.active and
+      storage.active.machine == storage.direct_heat.machine then
+    pool = {storage.direct_heat.producer}
+  end
   local lava = step.ingredients[1].amount / step.cycles
   local fuel = step.fuel.amount_per_cycle
   local backgrounds = {}
@@ -612,7 +637,11 @@ local function check_terminal()
   local expected_ledger = {}
   for name, amount in pairs(CONTRACT.targets) do add(expected_ledger, name, amount) end
   for name, amount in pairs(CONTRACT.surplus) do add(expected_ledger, name, amount) end
-  for name, amount in pairs(storage.production_placed) do add(expected_ledger, name, -amount) end
+  for name, amount in pairs(storage.production_placed) do
+    if expected_ledger[name] then
+      add(expected_ledger, name, -math.min(amount, expected_ledger[name]))
+    end
+  end
 
   check_exact_map(storage.produced, expected_produced, "produced")
   check_exact_map(storage.ledger, expected_ledger, "terminal ledger")
@@ -637,6 +666,30 @@ local function check_terminal()
   for _, interface in ipairs(heat_interfaces) do
     check(string.find(interface.name, "^nullius%-pneumatic%-heat%-") ~= nil,
       "heat topology contains a debug heat interface: " .. interface.name)
+  end
+  if storage.direct_heat then
+    local direct = storage.direct_heat
+    local target = heat_target(direct.machine)
+    check(direct.machine.temperature >= direct.minimum_temperature,
+      "direct-heat executor fell below " .. direct.minimum_temperature .. " C")
+    check(direct.interface.valid,
+      "direct-heat producer lost its owned heat interface")
+    check(target and #storage.surface.find_entities_filtered{
+      name = {"nullius-heat-pipe-1", "nullius-heat-pipe-2"},
+      position = target,
+      radius = 0.1,
+    } == 0, "direct-heat executor has an intervening heat pipe")
+    check(#storage.surface.find_entities_filtered{name = "nullius-heat-pipe-2"} == 0,
+      "direct-heat fixture contains heat-pipe-2")
+    observations.direct_heat = {
+      machine = direct.machine.name,
+      machine_position = direct.machine.position,
+      machine_temperature = direct.machine.temperature,
+      producer = direct.producer.name,
+      producer_position = direct.producer.position,
+      interface_temperature = direct.interface.temperature,
+      heat_target = target,
+    }
   end
 
   observations.terminal = {
@@ -683,6 +736,7 @@ advance = function()
   local selected_index = nil
   local gas_index = nil
   local lava_index = nil
+  local direct_heat_index = nil
   local complete = true
   for index, candidate in ipairs(CONTRACT.steps) do
     local completed = storage.completed_cycles[index] or 0
@@ -692,15 +746,53 @@ advance = function()
         selected_index = index
         if candidate.producer == "nullius-lava-gas-extraction" then gas_index = index end
         if candidate.producer == "nullius-lava-pumping" then lava_index = index end
+        if storage.direct_heat and candidate.executor and
+            candidate.executor.name == storage.direct_heat.machine.name then
+          direct_heat_index = index
+        end
       end
     end
   end
-  if not storage.gas_bootstrapped then
+  if storage.direct_heat and lava_index then
+    selected_index = lava_index
+  elseif not storage.gas_bootstrapped then
     selected_index = gas_index or lava_index or selected_index
+  elseif direct_heat_index then
+    selected_index = direct_heat_index
   end
   if complete then check_terminal() return end
   if not selected_index then
-    check(false, "production manifest reached a material or executor deadlock")
+    local blocked = {}
+    for index, candidate in ipairs(CONTRACT.steps) do
+      local completed = storage.completed_cycles[index] or 0
+      if completed < candidate.cycles then
+        local divisor = candidate.spoil_ticks and 1 or candidate.cycles
+        local missing = {}
+        for _, ingredient in ipairs(candidate.ingredients) do
+          local required = ingredient.amount / divisor
+          local available = storage.ledger[ingredient.name] or 0
+          if available + 0.00001 < required then
+            missing[ingredient.name] = {required = required, available = available}
+          end
+        end
+        if candidate.fuel then
+          local available = storage.ledger[candidate.fuel.name] or 0
+          if available + 0.00001 < candidate.fuel.amount_per_cycle then
+            missing[candidate.fuel.name] = {
+              required = candidate.fuel.amount_per_cycle,
+              available = available,
+            }
+          end
+        end
+        blocked[#blocked + 1] = {
+          producer = candidate.producer,
+          cycles = {completed = completed, required = candidate.cycles},
+          missing = missing,
+        }
+      end
+    end
+    check(false, "production manifest reached a material or executor deadlock: " ..
+      helpers.table_to_json(blocked))
     finish()
     return
   end
@@ -718,7 +810,10 @@ advance = function()
     local machine = ensure_machine(step.executor)
     if not machine then finish() return end
     storage.active.machine = machine
-    if step.heat then machine.temperature = step.heat.maximum_temperature end
+    if step.heat and
+        (not storage.direct_heat or machine ~= storage.direct_heat.machine) then
+      machine.temperature = step.heat.maximum_temperature
+    end
   end
   if step.executor.kind == "character" then
     start_character_cycle(step)
@@ -735,6 +830,40 @@ local function setup_heat_fixture()
     if not hydro then return false end
     hydros[#hydros + 1] = hydro
   end
+  if DIRECT_HEAT then
+    local producer = hydros[DIRECT_HEAT.producer_index]
+    if not check(producer ~= nil, "direct-heat producer index is invalid") then
+      return false
+    end
+    local machine = build_executor(DIRECT_HEAT.item, DIRECT_HEAT.name,
+      DIRECT_HEAT.position)
+    if not machine then return false end
+    local interfaces = storage.surface.find_entities_filtered{
+      type = "heat-interface",
+      position = producer.position,
+      radius = 0.1,
+    }
+    if not check(#interfaces == 1,
+        "direct-heat producer does not own exactly one heat interface") then
+      return false
+    end
+    local target = heat_target(machine)
+    if not check(target ~= nil, "direct-heat executor has no heat target") then
+      return false
+    end
+    check(#storage.surface.find_entities_filtered{
+      name = {"nullius-heat-pipe-1", "nullius-heat-pipe-2"},
+      position = target,
+      radius = 0.1,
+    } == 0, "direct-heat executor target contains a heat pipe")
+    storage.direct_heat = {
+      machine = machine,
+      producer = producer,
+      interface = interfaces[1],
+      minimum_temperature = DIRECT_HEAT.minimum_temperature,
+      initial_temperature = DIRECT_HEAT.initial_temperature,
+    }
+  end
   local furnace = build_executor("nullius-small-furnace-1",
     "nullius-small-furnace-1-pneumatic", {BASE_X, -4})
   if not furnace then return false end
@@ -744,13 +873,21 @@ local function setup_heat_fixture()
   local coordinates = {}
   local top_y = hydros[1].position.y - 3
   local bottom_y = hydros[3].position.y - 3
-  for x = hydros[1].position.x, hydros[2].position.x do
-    coordinates[#coordinates + 1] = {x, top_y}
-  end
   for x = hydros[3].position.x, hydros[4].position.x do
     coordinates[#coordinates + 1] = {x, bottom_y}
   end
-  coordinates[#coordinates + 1] = furnace_target
+  if DIRECT_HEAT then
+    local furnace_y = furnace_target[2]
+    while furnace_y <= bottom_y do
+      coordinates[#coordinates + 1] = {furnace_target[1], furnace_y}
+      furnace_y = furnace_y + 1
+    end
+  else
+    for x = hydros[1].position.x, hydros[2].position.x do
+      coordinates[#coordinates + 1] = {x, top_y}
+    end
+    coordinates[#coordinates + 1] = furnace_target
+  end
   local radiator_source = prototypes.entity["nullius-vulcanus-radiator-1"]
     .heat_energy_source_prototype
   local radiator_ghost = storage.surface.create_entity{
@@ -788,7 +925,14 @@ local function setup_heat_fixture()
   check(#heat_interfaces == 4,
     "heat fixture must contain exactly four owned pneumatic heat interfaces")
   for _, interface in ipairs(heat_interfaces) do interface.temperature = 500 end
-  check(#coordinates == 27, "heat fixture must place exactly 27 heat pipes")
+  if DIRECT_HEAT then
+    storage.direct_heat.machine.temperature = DIRECT_HEAT.initial_temperature
+    storage.direct_heat.interface.temperature = DIRECT_HEAT.initial_temperature
+    check(#coordinates <= FIXTURE[HEAT_PIPE],
+      "split heat fixture exceeds landing heat-pipe stock")
+  else
+    check(#coordinates == 27, "heat fixture must place exactly 27 heat pipes")
+  end
   return true
 end
 
@@ -868,7 +1012,8 @@ local function setup()
     heat_pipes = storage.fixture_placed[HEAT_PIPE],
     heat_pipe_temperature = 250,
     pneumatic_heat_temperature = 500,
-    heat_mode = "scripted-preheat-per-cycle",
+    heat_mode = DIRECT_HEAT and "direct-high-temperature" or
+      "scripted-preheat-per-cycle",
   }
   if #failures > 0 then finish() return end
   storage.started_tick = game.tick

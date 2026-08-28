@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from analyze_factorio_prereqs import (
     TestFailure,
+    add_raw_bootstrap_for_execution,
     analyze,
     build_production_manifest,
     merge_prototype_overlay,
@@ -21,6 +22,30 @@ from analyze_factorio_prereqs import (
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_adds_minimum_raw_bootstrap_for_byproduct_cycle(self) -> None:
+        steps = [
+            {
+                "producer": "make-hydrogen",
+                "cycles": 1,
+                "ingredients": [{"name": "hcl", "amount": 3}],
+                "outputs": [{"name": "hydrogen", "amount": 1}],
+            },
+            {
+                "producer": "return-hcl",
+                "cycles": 1,
+                "ingredients": [{"name": "hydrogen", "amount": 1}],
+                "outputs": [{"name": "hcl", "amount": 1}],
+            },
+        ]
+        raw_inputs = {"hcl": 2}
+
+        added = add_raw_bootstrap_for_execution(
+            steps, raw_inputs, {}, {}, {"hcl"}
+        )
+
+        self.assertEqual(added, {"hcl": 1})
+        self.assertEqual(raw_inputs, {"hcl": 3})
+
     def test_selects_renewable_route_and_reports_technology_and_machine(self) -> None:
         data = {
             "item": {
@@ -291,7 +316,9 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         )
 
         report = analyze(data, args)
-        manifest = build_production_manifest(data, report, {"gas": 40}, "gas")
+        manifest = build_production_manifest(
+            data, report, {"gas": 64}, "gas", {"gas": 24}
+        )
 
         self.assertEqual(manifest["raw_inputs"], {"lava": 100})
         self.assertEqual(manifest["fuel_consumption"], {"gas": 48})
@@ -306,6 +333,82 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(primed["fuel_consumption"], {"gas": 24})
         self.assertEqual(primed["surplus"], {"gas": 20})
         self.assertEqual(primed["steps"][0]["cycles"], 1)
+
+    def test_fuel_is_quantified_after_all_consuming_recipes(self) -> None:
+        data = {
+            "item": {
+                "ore": {"name": "ore"},
+                "machine-item": {
+                    "name": "machine-item",
+                    "place_result": "machine",
+                },
+            },
+            "fluid": {"fuel": {"name": "fuel", "fuel_value": "10kJ"}},
+            "recipe": {
+                "make-a": {
+                    "name": "make-a",
+                    "enabled": True,
+                    "category": "chemistry",
+                    "energy_required": 2,
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "a", "amount": 1}],
+                },
+                "make-b": {
+                    "name": "make-b",
+                    "enabled": True,
+                    "category": "chemistry",
+                    "energy_required": 2,
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "b", "amount": 1}],
+                },
+                "make-fuel": {
+                    "name": "make-fuel",
+                    "enabled": True,
+                    "ingredients": [],
+                    "results": [
+                        {"type": "fluid", "name": "fuel", "amount": 100}
+                    ],
+                },
+            },
+            "simple-entity": {
+                "ore-rock": {"minable": {"result": "ore"}},
+            },
+            "assembling-machine": {
+                "machine": {
+                    "name": "machine",
+                    "crafting_categories": ["chemistry"],
+                    "crafting_speed": 1,
+                    "energy_usage": "100kW",
+                    "energy_source": {"type": "fluid"},
+                    "minable": {"result": "machine-item"},
+                },
+            },
+            "character": {
+                "character": {"crafting_categories": ["crafting"]},
+            },
+        }
+        args = SimpleNamespace(
+            targets=["a", "b", "fuel"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=["machine-item"],
+            executor=[("chemistry", "machine")],
+            raw=["ore"],
+        )
+
+        report = analyze(data, args)
+        manifest = build_production_manifest(
+            data, report, {"a": 1, "b": 1}, "fuel"
+        )
+
+        self.assertEqual(manifest["fuel_consumption"], {"fuel": 40})
+        self.assertEqual(manifest["raw_inputs"], {"ore": 2})
+        self.assertEqual(manifest["surplus"], {"fuel": 60})
+        self.assertEqual(
+            [step["product"] for step in manifest["steps"]],
+            ["b", "a", "fuel"],
+        )
 
     def test_recipe_override_selects_the_declared_route(self) -> None:
         data = {

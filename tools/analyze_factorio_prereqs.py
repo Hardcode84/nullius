@@ -678,6 +678,85 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     }
 
 
+def add_raw_bootstrap_for_execution(
+    steps: list[Prototype],
+    raw_inputs: dict[str, float],
+    available_inputs: dict[str, float],
+    initial_stock: dict[str, float],
+    raw_products: set[str],
+) -> dict[str, float]:
+    ledger: dict[str, float] = defaultdict(float)
+    for source in (raw_inputs, available_inputs, initial_stock):
+        for name, amount in source.items():
+            ledger[name] += amount
+    remaining = [float(step["cycles"]) for step in steps]
+    added: dict[str, float] = defaultdict(float)
+
+    while any(amount > 1e-9 for amount in remaining):
+        ready: list[int] = []
+        for index in range(len(steps) - 1, -1, -1):
+            if remaining[index] <= 1e-9:
+                continue
+            step = steps[index]
+            atomic = bool(step.get("spoil_ticks"))
+            divisor = 1 if atomic else float(step["cycles"])
+            ingredients = [
+                (ingredient["name"], float(ingredient["amount"]) / divisor)
+                for ingredient in step["ingredients"]
+            ]
+            fuel = step.get("fuel")
+            if fuel:
+                ingredients.append((fuel["name"], float(fuel["amount_per_cycle"])))
+            if any(ledger[name] + 1e-9 < amount for name, amount in ingredients):
+                continue
+            ready.append(index)
+
+        if ready:
+            selected = ready[0]
+            step = steps[selected]
+            atomic = bool(step.get("spoil_ticks"))
+            divisor = 1 if atomic else float(step["cycles"])
+            for ingredient in step["ingredients"]:
+                ledger[ingredient["name"]] -= float(ingredient["amount"]) / divisor
+            fuel = step.get("fuel")
+            if fuel:
+                ledger[fuel["name"]] -= float(fuel["amount_per_cycle"])
+            for output in step["outputs"]:
+                ledger[output["name"]] += float(output["amount"]) / divisor
+            remaining[selected] = 0 if atomic else remaining[selected] - 1
+            continue
+
+        candidates: list[tuple[float, str]] = []
+        for index, step in enumerate(steps):
+            if remaining[index] <= 1e-9:
+                continue
+            divisor = 1 if step.get("spoil_ticks") else float(step["cycles"])
+            for ingredient in step["ingredients"]:
+                name = ingredient["name"]
+                if name not in raw_products:
+                    continue
+                required = float(ingredient["amount"]) / divisor
+                deficit = required - ledger[name]
+                if deficit > 1e-9:
+                    candidates.append((deficit, name))
+        if not candidates:
+            blocked = [
+                steps[index]["producer"]
+                for index, amount in enumerate(remaining)
+                if amount > 1e-9
+            ]
+            raise TestFailure(
+                "quantified production manifest is not executable; blocked steps: "
+                + ", ".join(blocked)
+            )
+        deficit, name = min(candidates)
+        ledger[name] += deficit
+        raw_inputs[name] += deficit
+        added[name] += deficit
+
+    return dict(sorted(added.items()))
+
+
 def build_production_manifest(
     data: Prototype,
     report: Prototype,
@@ -708,6 +787,7 @@ def build_production_manifest(
     available = set(report["available"])
 
     fuel_value = None
+    fuel_dependency_products: set[str] = set()
     if fuel_name is not None:
         fuel = data.get("fluid", {}).get(fuel_name)
         if fuel is None:
@@ -715,11 +795,25 @@ def build_production_manifest(
         fuel_value = parse_energy(fuel.get("fuel_value"), "J")
         if not fuel_value:
             raise TestFailure(f"fluid has no positive fuel value: {fuel_name}")
+        pending_fuel_products = [fuel_name]
+        while pending_fuel_products:
+            dependency = pending_fuel_products.pop()
+            if dependency in fuel_dependency_products:
+                continue
+            fuel_dependency_products.add(dependency)
+            dependency_step = steps_by_product.get(dependency)
+            if dependency_step is None:
+                continue
+            pending_fuel_products.extend(
+                ingredient["name"]
+                for ingredient in dependency_step["ingredients"]
+            )
 
     while demands:
         product = max(
             demands,
             key=lambda name: (
+                name not in fuel_dependency_products,
                 steps_by_product.get(name, {}).get("rank", 0),
                 name,
             ),
@@ -909,11 +1003,20 @@ def build_production_manifest(
     for name, amount in deferred_surplus.items():
         stock[name] += amount
 
+    bootstrap_raw_inputs = add_raw_bootstrap_for_execution(
+        quantified_steps,
+        raw_inputs,
+        available_inputs,
+        initial_stock or {},
+        raw,
+    )
+
     return {
         "targets": target_quantities,
         "initial_stock": dict(sorted((initial_stock or {}).items())),
         "steps": quantified_steps,
         "raw_inputs": dict(sorted(raw_inputs.items())),
+        "bootstrap_raw_inputs": bootstrap_raw_inputs,
         "available_inputs": dict(sorted(available_inputs.items())),
         "fuel_consumption": dict(sorted(fuel_consumption.items())),
         "surplus": {

@@ -13,6 +13,7 @@
 | M6 | Reproduce and expand the core factory from local production | 25–40 min | 75–130 min |
 | M7 | Deliver the first stable science batch with the next cycle ready | 15–25 min | 90–155 min |
 | M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
+| M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
 
 Time basis: first solo playthrough after activation, no prepared layout.
 
@@ -43,7 +44,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -507,5 +508,59 @@ scenarios:
         entity:
           nullius-heat-pipe-1: 0
           nullius-heat-pipe-2: 0
+
+  basic-science-10:
+    milestone: M9
+    validator: basic-science
+    given:
+      prior_stage: hcl-thermal-cracking
+      fixture:
+        nullius-seawater-intake-1: 1
+        nullius-hydro-plant-1: 4
+        nullius-air-filter-1: 1
+        nullius-distillery-1: 1
+        nullius-chemical-plant-1: 1
+        nullius-foundry-1: 1
+        nullius-small-furnace-1: 1
+        nullius-small-assembler-1: 1
+        nullius-medium-assembler-1: 1
+        nullius-vulcanus-radiator-1: 1
+        nullius-vulcanus-radiator-2: 1
+        nullius-heat-pipe-1: 30
+      stock: {nullius-compressed-volcanic-gas: 24}
+      raw:
+        nullius-hydrogen-chloride: 27975
+        nullius-limestone: 124
+        nullius-rutile: 1
+      forbidden: [seawater-pumping]
+      injected_intermediates: 0
+    place:
+      direct-heat-producer: {prototype: nullius-hydro-plant-1-pneumatic, at: [36, -4]}
+      high-temperature-radiator: {prototype: nullius-vulcanus-radiator-2, at: [41, -4]}
+    connect: [direct-heat-producer.owned_heat_interface -> high-temperature-radiator]
+    act:
+      - execute_manifest: basic-science
+    run: {until: targets_complete, ticks: 404292, timeout: 410000}
+    expect:
+      terminal:
+        produced:
+          nullius-geology-pack: "=10"
+          nullius-climatology-pack: "=10"
+          nullius-mechanical-pack: "=10"
+          nullius-electrical-pack: "=10"
+        reserve:
+          nullius-compressed-volcanic-gas: "=9417.65"
+          nullius-hydrogen-chloride: "=15"
+        selected_steps: "=46"
+        fuel_consumed: {nullius-compressed-volcanic-gas: "=41236.35"}
+        cycles:
+          nullius-lava-pumping: 400
+          nullius-lava-gas-extraction: 800
+          nullius-vulcanus-cracking: 466
+        heat:
+          radiator_temperature: ">=450"
+          direct_connection: true
+          nullius-heat-pipe-2: 0
+        seawater: 0
 
 ```
