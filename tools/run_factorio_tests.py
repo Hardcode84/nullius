@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -266,6 +267,16 @@ def format_failure(error: str) -> str:
     return error.replace("\n", "\n    ")
 
 
+def format_duration(seconds: float) -> str:
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    minutes, remainder = divmod(seconds, 60)
+    if minutes < 60:
+        return f"{int(minutes)}m {remainder:.1f}s"
+    hours, minutes = divmod(minutes, 60)
+    return f"{int(hours)}h {int(minutes)}m {remainder:.1f}s"
+
+
 def parse_worker_count(value: str) -> int:
     if value == "auto":
         if hasattr(os, "sched_getaffinity"):
@@ -285,6 +296,7 @@ def parse_worker_count(value: str) -> int:
 
 
 def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
+    started = time.perf_counter()
     safe_case = "".join(
         character if character.isalnum() or character in "-_" else "-"
         for character in case
@@ -297,6 +309,7 @@ def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
         result = execute(args, case, run_directory)
         success = True
         result_record = dict(result)
+        result_record["duration_seconds"] = time.perf_counter() - started
         if args.keep_run_directory:
             result_record["run_directory"] = str(run_directory)
         return result_record
@@ -305,6 +318,7 @@ def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
             "case": case,
             "status": "fail",
             "error": str(error),
+            "duration_seconds": time.perf_counter() - started,
             "run_directory": str(run_directory),
         }
     finally:
@@ -316,6 +330,7 @@ def print_case_result(
     index: int, total: int, case: str, result: dict[str, object]
 ) -> None:
     prefix = f"[{index}/{total}]"
+    duration = format_duration(float(result["duration_seconds"]))
     if result.get("status") == "pass":
         assertions = result.get("assertions", "?")
         tick = result.get("tick", "?")
@@ -323,17 +338,18 @@ def print_case_result(
         context = f"{assertions} assertions, completed tick {tick}"
         if version is not None:
             context += f", Factorio {version}"
-        print(f"{prefix} PASS {case} - {context}")
+        print(f"{prefix} PASS {case} - {context}, {duration}")
         if "run_directory" in result:
             print(f"      artifacts: {result['run_directory']}")
         return
 
-    print(f"{prefix} FAIL {case}")
+    print(f"{prefix} FAIL {case} - {duration}")
     print(f"      {format_failure(str(result['error']))}")
     print(f"      artifacts: {result['run_directory']}")
 
 
 def main() -> int:
+    suite_started = time.perf_counter()
     args = parse_arguments()
     try:
         cases = args.cases or discover_cases()
@@ -411,12 +427,16 @@ def main() -> int:
         "status": "pass" if failed == 0 else "fail",
         "passed": passed,
         "failed": failed,
+        "wall_time_seconds": time.perf_counter() - suite_started,
         "results": completed_results,
     }
     if args.json_output:
         print(json.dumps(suite, indent=2, sort_keys=True))
     else:
-        print(f"\nResult: {passed} passed, {failed} failed")
+        print(
+            f"\nResult: {passed} passed, {failed} failed in "
+            f"{format_duration(float(suite['wall_time_seconds']))}"
+        )
     return 0 if failed == 0 else 1
 
 
