@@ -408,17 +408,26 @@ scenarios:
     milestone: M7
     validator: metallurgic-pack
     given:
-      executors: activation.wreck_inventory
+      prior_stage: construction-closure
+      fixture:
+        nullius-seawater-intake-1: 1
+        nullius-hydro-plant-1: 4
+        nullius-small-furnace-1: 1
+        nullius-small-assembler-1: 1
+        nullius-vulcanus-radiator-1: 1
+        nullius-heat-pipe-1: 30
       stock: {nullius-compressed-volcanic-gas: 24}
       mined_input: {nullius-graphite: 35, nullius-rutile: 1}
       lava: nullius-lava-pumping
       injected_intermediates: 0
+      heat: {mode: scripted-preheat-per-cycle, heat_pipe_temperature: 250, pneumatic_heat_temperature: 500}
     act:
       - execute_manifest: metallurgic-pack
-    run: {until: targets_complete}
+    run: {until: targets_complete, ticks: 71046, timeout: 71100}
     expect:
       terminal:
         produced: {nullius-metallurgic-pack: "=10"}
+        selected_steps: "=11"
         consumed:
           nullius-iron-ingot: 30
           nullius-aluminum-ingot: 20
