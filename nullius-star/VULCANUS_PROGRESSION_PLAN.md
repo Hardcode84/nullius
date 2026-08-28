@@ -50,7 +50,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, efficient-metallurgic-research, efficient-metallurgic-science, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, efficient-metallurgic-research, efficient-metallurgic-science, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -65,7 +65,7 @@ validators:
   basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
   thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/nauvis-thermal-furnace-sizes.args"
 
-planned_prototypes:
+prototypes:
   technologies:
     nullius-efficient-metallurgic-science:
       prerequisites: [nullius-pneumatic-technology]
@@ -802,7 +802,77 @@ scenarios:
         next_level_cost: {nullius-crushing-productivity-1: 400, nullius-smelting-productivity-1: 400, nullius-casting-productivity-1: 400}
         downstream_technology_prerequisites_added: 0
 
-implementation_holes:
-  - {id: thermal-production-cells, required_by: [M13, M14], missing: [thermal-cell-2, thermal-cell-3]}
+  thermal-cell-2:
+    milestone: M14
+    given:
+      surface: nauvis
+      force: {researched: [nullius-thermal-engineering-2]}
+      inventory: {nullius-solar-collector-2: 25, nullius-heat-pipe-2: 25, nullius-crusher-2: 5, nullius-small-furnace-2: 5, nullius-medium-furnace-2: 5, nullius-large-furnace-2: 5, nullius-foundry-2: 5}
+      recipe_inputs: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-box-ceramic-powder: 200, nullius-iron-ingot: 400}
+      modules: 0
+    place:
+      heat-source: {prototype: nullius-solar-collector-2, count: 25, at: auto}
+      heat-pipe: {prototype: nullius-heat-pipe-2, count: 25, at: runtime-heat-connection}
+      crusher: {prototype: nullius-crusher-2, count: 5, at: auto}
+      small-furnace: {prototype: nullius-small-furnace-2, count: 5, at: auto}
+      medium-furnace: {prototype: nullius-medium-furnace-2, count: 5, at: auto}
+      large-furnace: {prototype: nullius-large-furnace-2, count: 5, at: auto}
+      foundry: {prototype: nullius-foundry-2, count: 5, at: auto}
+      debug-input-chest: {prototype: steel-chest, count: 25, at: auto}
+      debug-output-chest: {prototype: steel-chest, count: 5, at: auto}
+    connect: ["heat-source[*] -> heat-pipe[*]", "heat-pipe[*] -> process-machine[*]"]
+    act:
+      - rotate_mode: {entities: [crusher, small-furnace, medium-furnace, large-furnace, foundry], mode: thermal}
+      - set_recipe: {entity: crusher, recipe: nullius-crushed-limestone}
+      - set_recipe: {entity: small-furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: medium-furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: large-furnace, recipe: nullius-boxed-refractory-brick}
+      - set_recipe: {entity: foundry, recipe: nullius-iron-plate}
+    run: {base_cycles: {per_machine: 20, crusher: 100, dry-smelting: 200, bulk-smelting: 100, casting: 100}, until: all_inputs_consumed, timeout: 65000}
+    expect:
+      terminal:
+        entities: {crusher: {prototype: nullius-crusher-2-thermal, count: 5}, small-furnace: {prototype: nullius-small-furnace-2-thermal, count: 5}, medium-furnace: {prototype: nullius-medium-furnace-2-thermal, count: 5}, large-furnace: {prototype: nullius-large-furnace-2-thermal, count: 5}, foundry: {prototype: nullius-foundry-2-thermal, count: 5}}
+        temperature: {heat-source: ">=200", heat-pipe: ">=200", process-machine: ">=200"}
+        consumed: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-box-ceramic-powder: 200, nullius-iron-ingot: 400}
+        produced: {nullius-crushed-limestone: 550, stone: 330, nullius-aluminum-ingot: 660, nullius-aluminum-carbide: 880, nullius-box-refractory-brick: 660, nullius-iron-plate: 330}
+        productivity_bonus: {process-machine: 0.10}
+        electric_energy_consumed_by_process_machines: 0
+        items_preserved: {nullius-crusher-2: 5, nullius-small-furnace-2: 5, nullius-medium-furnace-2: 5, nullius-large-furnace-2: 5, nullius-foundry-2: 5}
+
+  thermal-cell-3:
+    milestone: M15
+    given:
+      surface: nauvis
+      force: {researched: [nullius-thermal-engineering-3]}
+      inventory: {nullius-reactor: 20, nullius-fusion-cell: 40, nullius-heat-pipe-3: 20, nullius-crusher-3: 5, nullius-small-furnace-3: 5, nullius-medium-furnace-3: 5, nullius-foundry-3: 5}
+      recipe_inputs: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-iron-ingot: 400}
+      modules: 0
+    place:
+      heat-source: {prototype: nullius-reactor, count: 20, at: auto}
+      heat-pipe: {prototype: nullius-heat-pipe-3, count: 20, at: runtime-heat-connection}
+      crusher: {prototype: nullius-crusher-3, count: 5, at: auto}
+      small-furnace: {prototype: nullius-small-furnace-3, count: 5, at: auto}
+      medium-furnace: {prototype: nullius-medium-furnace-3, count: 5, at: auto}
+      foundry: {prototype: nullius-foundry-3, count: 5, at: auto}
+      debug-input-chest: {prototype: steel-chest, count: 20, at: auto}
+      debug-output-chest: {prototype: steel-chest, count: 4, at: auto}
+    connect: ["heat-source[*] -> heat-pipe[*]", "heat-pipe[*] -> process-machine[*]"]
+    act:
+      - fuel: {entity: heat-source, item: nullius-fusion-cell, count_each: 2}
+      - rotate_mode: {entities: [crusher, small-furnace, medium-furnace, foundry], mode: thermal}
+      - set_recipe: {entity: crusher, recipe: nullius-crushed-limestone}
+      - set_recipe: {entity: small-furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: medium-furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: foundry, recipe: nullius-iron-plate}
+    run: {base_cycles: {per_machine: 20, crusher: 100, dry-smelting: 200, casting: 100}, until: all_inputs_consumed, timeout: 20000}
+    expect:
+      terminal:
+        entities: {crusher: {prototype: nullius-crusher-3-thermal, count: 5}, small-furnace: {prototype: nullius-small-furnace-3-thermal, count: 5}, medium-furnace: {prototype: nullius-medium-furnace-3-thermal, count: 5}, foundry: {prototype: nullius-foundry-3-thermal, count: 5}}
+        temperature: {heat-source: ">=500", heat-pipe: ">=500", process-machine: ">=500"}
+        consumed: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-iron-ingot: 400}
+        produced: {nullius-crushed-limestone: 575, stone: 345, nullius-aluminum-ingot: 690, nullius-aluminum-carbide: 920, nullius-iron-plate: 345}
+        productivity_bonus: {process-machine: 0.15}
+        electric_energy_consumed_by_process_machines: 0
+        items_preserved: {nullius-crusher-3: 5, nullius-small-furnace-3: 5, nullius-medium-furnace-3: 5, nullius-foundry-3: 5}
 
 ```
