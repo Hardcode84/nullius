@@ -807,18 +807,91 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 | **Deep Deposit Surveying** | 500 | 20 geology + 10 mechanical | Reveals titanium deposit locations on map | Vulcanus-only |
 | **Synthetic Demolisher Design** | 800 | 30 all generic | Demolisher deployment (requires Gleba bio-research prereq) | Vulcanus-only |
 
-### 6.2 Global Benefits (Why Visit Vulcanus Pre-Cargo)
+### 6.2 Thermal Heavy Industry on Nauvis
+
+The main pre-cargo benefit of Vulcanus research is **heat-powered heavy industry
+on Nauvis**. Vulcanus exports process knowledge before it can export materials.
+The existing electric production chain remains complete; thermal machinery is
+an optional alternative for players who build a heat network.
+
+Each ordinary Nauvis machine tier enables research for the corresponding
+thermal adaptation on Vulcanus:
+
+```text
+Nauvis machine tier 1 + Vulcanus thermal engineering 1
+  -> thermal machine tier 1
+
+Nauvis machine tier 2 + thermal machine tier 1 + Vulcanus thermal engineering 2
+  -> thermal machine tier 2
+
+Nauvis machine tier 3 + thermal machine tier 2 + Vulcanus thermal engineering 3
+  -> thermal machine tier 3
+```
+
+The initial machine families are:
+
+- crushers;
+- furnaces and other smelting machines;
+- foundries and other casting machines.
+
+The thermal research branches are optional leaves. They do not become
+prerequisites of ordinary Nauvis crushing, metallurgy, casting, generic science
+packs, or other main progression. Advancing the ordinary machine tier on Nauvis
+creates a new research opportunity on Vulcanus; completing it makes the thermal
+mode globally available.
+
+Placed machines remain mode-neutral items and use contextual `Ctrl+R`
+transitions:
+
+| Surface | Modes |
+|---|---|
+| Nauvis | electric <-> thermal |
+| Vulcanus | electric <-> pneumatic |
+
+Thermal variants consume heat instead of electricity and have an innate
+productivity bonus. Their cost is the required heat-generation, distribution,
+storage, and warm-up infrastructure. Early tiers are operable from solar heat;
+higher tiers require increasing temperature and throughput, with nuclear heat
+eventually providing continuous heavy-industry baseload.
+
+The intended Nauvis progression is:
+
+```text
+solar heat
+  -> intermittent thermal crushing, smelting, and casting
+  -> larger solar collection and thermal storage
+  -> higher-temperature thermal machinery
+  -> continuous nuclear-heated heavy industry
+```
+
+Productivity bonuses, crafting speed, operating temperatures, heat consumption,
+module compatibility, research costs, and tier boundaries are **preliminary**.
+They will be balanced in a separate pass. The stable design contract is:
+
+```yaml
+thermal_heavy_industry:
+  power: heat
+  productivity: greater_than_electric_equivalent
+  prerequisite: corresponding_nauvis_machine_tier
+  unlock_location: vulcanus_research
+  nauvis_critical_path: false
+  early_heat: solar
+  late_heat: nuclear
+```
+
+### 6.3 Other Global Benefits (Why Visit Vulcanus Pre-Cargo)
 
 Even without shipping materials, Vulcanus research unlocks:
 
 | Unlock | Benefit on Other Planets |
 |---|---|
-| Heat-resistant alloys | Higher-tier furnaces and pipes usable on Nauvis, Fulgora, etc. |
+| Thermal heavy industry | Heat-powered crushers, furnaces, and foundries with innate productivity |
+| Heat-resistant alloys | Higher-temperature machines and heat infrastructure usable on Nauvis, Fulgora, etc. |
 | Advanced calcite processing | Cheaper calcium compounds everywhere (useful for chlorine disposal on Nauvis!) |
 | Improved metal yields | Better smelting ratios apply to all planets with metal production |
 | Volcanic metallurgy knowledge | Prerequisite for some Tier 6+ cross-planet techs |
 
-### 6.3 Weapons Research (Post-Scouts)
+### 6.4 Weapons Research (Post-Scouts)
 
 | Tech | Prerequisites | Packs | Unlocks |
 |---|---|---|---|
