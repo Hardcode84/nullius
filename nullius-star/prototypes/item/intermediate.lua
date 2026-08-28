@@ -2775,40 +2775,6 @@ data:extend({
   },
   {
     type = "recipe",
-    name = "nullius-silica-2",
-    localised_name = {"recipe-name.nullius-silica-2"},
-    hide_from_signal_gui = false,
-    icons = {
-      {
-        icon = "__angelssmeltinggraphics__/graphics/icons/powder-silica.png",
-        icon_size = 64,
-        
-      },
-      {
-        icon = "__angelssmeltinggraphics__/graphics/icons/powder-titanium.png",
-        icon_size = 64,
-        
-        scale = 0.25,
-        shift = {9, 9}
-      }
-    },
-    enabled = false,
-    category = "ore-flotation",
-    energy_required = 15,
-    ingredients = {
-      {type="item", name="nullius-sand", amount=15},
-      {type="fluid", name="nullius-caustic-solution", amount=60},
-      {type="fluid", name="nullius-acid-hydrochloric", amount=75}
-    },
-    results = {
-      {type="item", name="nullius-silica", amount=12},
-      {type="item", name="nullius-rutile", amount=1},
-      {type="fluid", name="nullius-wastewater", amount=120, fluidbox_index=1}
-    },
-    main_product = "nullius-silica"
-  },
-  {
-    type = "recipe",
     name = "nullius-boxed-silica-1",
     localised_name = {"", {"item-name.nullius-box", {"item-name.nullius-silica"}}, " ", tostring(1)},
     enabled = false,
@@ -2827,57 +2793,19 @@ data:extend({
   },
   {
     type = "recipe",
-    name = "nullius-boxed-silica-2",
-    localised_name = {"", {"item-name.nullius-box", {"item-name.nullius-silica"}}, " ", tostring(2)},
-    icons = {
-      {
-        icon = ICONPATH .. "crate.png",
-        icon_size = 64
-      },
-      {
-        icon = "__angelssmeltinggraphics__/graphics/icons/powder-silica.png",
-        icon_size = 64,
-        
-        scale = 0.45
-      },
-      {
-        icon = "__angelssmeltinggraphics__/graphics/icons/powder-titanium.png",
-        icon_size = 64,
-        
-        scale = 0.23,
-        shift = {8, 8}
-      }
-    },
-    enabled = false,
-    category = "ore-flotation",
-    subgroup = "boxed-silicon",
-    energy_required = 75,
-    ingredients = {
-      {type="item", name="nullius-box-sand", amount=15},
-      {type="fluid", name="nullius-caustic-solution", amount=300},
-      {type="fluid", name="nullius-acid-hydrochloric", amount=375}
-    },
-    results = {
-      {type="item", name="nullius-box-silica", amount=12},
-      {type="item", name="nullius-box-rutile", amount=1},
-      {type="fluid", name="nullius-wastewater", amount=600, fluidbox_index=1}
-    },
-    main_product = "nullius-box-silica"
-  },
-  {
-    type = "recipe",
     name = "nullius-rutile",
     enabled = false,
     category = "ore-flotation",
-    energy_required = 3,
+    energy_required = 12,
     ingredients = {
-      {type="item", name="nullius-sand", amount=5},
-      {type="fluid", name="nullius-acid-sulfuric", amount=15, fluidbox_index=1}
+      {type="item", name="nullius-sand", amount=50},
+      {type="fluid", name="nullius-acid-sulfuric", amount=150, fluidbox_index=1}
     },
     results = {
       {type="item", name="nullius-rutile", amount=1},
-      {type="fluid", name="nullius-sludge", amount=10},
-      {type="fluid", name="nullius-carbon-dioxide", amount=5}
+      {type="item", name="nullius-mineral-dust", amount=5},
+      {type="fluid", name="nullius-sludge", amount=80},
+      {type="fluid", name="nullius-carbon-dioxide", amount=25}
     },
     main_product = "nullius-rutile"
   },
@@ -2888,15 +2816,16 @@ data:extend({
     category = "ore-flotation",
     subgroup = "boxed-titanium",
     order = "nullius-bb",
-    energy_required = 15,
+    energy_required = 60,
     ingredients = {
-      {type="item", name="nullius-box-sand", amount=5},
-      {type="fluid", name="nullius-acid-sulfuric", amount=75, fluidbox_index=1}
+      {type="item", name="nullius-box-sand", amount=50},
+      {type="fluid", name="nullius-acid-sulfuric", amount=750, fluidbox_index=1}
     },
     results = {
       {type="item", name="nullius-box-rutile", amount=1},
-      {type="fluid", name="nullius-sludge", amount=50},
-      {type="fluid", name="nullius-carbon-dioxide", amount=25}
+      {type="item", name="nullius-box-mineral-dust", amount=5},
+      {type="fluid", name="nullius-sludge", amount=400},
+      {type="fluid", name="nullius-carbon-dioxide", amount=125}
     },
     main_product = "nullius-box-rutile"
   },

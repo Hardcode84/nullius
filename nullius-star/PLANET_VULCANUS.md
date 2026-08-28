@@ -309,8 +309,8 @@ These recipes are generally **worse** than Nauvis equivalents (more steps, more 
 
 | Change | Inputs | Outputs | Time | Status |
 |---|---|---|---|---|
-| Delete `nullius-silica-2` | - | - | - | Remove recipe and unlock; without rutile it is dominated by the existing silica recipe |
-| Retune `nullius-rutile` | 50 sand + 150 sulfuric acid | 1 rutile + 80 sludge + 5 mineral dust + 25 carbon dioxide | 12s | Preliminary balance |
+| Delete `nullius-silica-2` | - | - | - | Implemented; normal and boxed recipes and unlocks removed |
+| Retune `nullius-rutile` | 50 sand + 150 sulfuric acid | 1 rutile + 80 sludge + 5 mineral dust + 25 carbon dioxide | 12s | Implemented; boxed recipe is exactly 5x |
 | Reduce titanium-ingot checkpoint | - | First proof batch | - | Target 10% of current requirement, rounded up |
 
 | Invariant | Requirement |

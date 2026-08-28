@@ -4728,10 +4728,6 @@ data:extend({
     effects = {
       {
         type = "unlock-recipe",
-        recipe = "nullius-silica-2"
-      },
-      {
-        type = "unlock-recipe",
         recipe = "nullius-rutile"
       }
     },
@@ -8805,10 +8801,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-processor-1"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-boxed-silica-2"
       },
       {
         type = "unlock-recipe",
