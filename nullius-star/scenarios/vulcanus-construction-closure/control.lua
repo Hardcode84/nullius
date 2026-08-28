@@ -1,7 +1,19 @@
 require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
   case = "vulcanus-construction-closure",
   contract = require("manifest"),
-  deadline = 310950,
+  deadline = 270000,
+  parallelism = 8,
+  parallel_fixture = {
+    ["nullius-seawater-intake-1"] = 6,
+    ["nullius-hydro-plant-1"] = 4,
+    ["nullius-small-furnace-1"] = 4,
+    ["nullius-extractor-1"] = 6,
+    ["nullius-air-filter-1"] = 6,
+    ["nullius-distillery-1"] = 6,
+    ["nullius-chemical-plant-1"] = 6,
+    ["nullius-foundry-1"] = 4,
+    ["nullius-small-assembler-1"] = 4,
+  },
   fixture = {
     ["nullius-seawater-intake-1"] = 2,
     ["nullius-hydro-plant-1"] = 4,

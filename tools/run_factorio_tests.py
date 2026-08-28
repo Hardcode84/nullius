@@ -29,8 +29,22 @@ DEPENDENCY_MODS = (
     "boblogistics",
     "configurable-valves",
 )
+MAX_UNTIL_TICK = 300_000
+
+
 class TestFailure(RuntimeError):
     pass
+
+
+def validate_until_tick(value: object, source: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise TestFailure(f"scenario until_tick must be a positive integer: {source}")
+    if value > MAX_UNTIL_TICK:
+        raise TestFailure(
+            f"scenario until_tick {value} exceeds repository maximum "
+            f"{MAX_UNTIL_TICK}: {source}"
+        )
+    return value
 
 
 def default_factorio() -> Path:
@@ -150,13 +164,9 @@ def deadline_for(args: argparse.Namespace, case: str) -> int:
             f"unsupported scenario metadata schema in {metadata_path}: "
             f"{metadata['schema']!r}"
         )
-    until_tick = metadata["until_tick"]
-    if isinstance(until_tick, bool) or not isinstance(until_tick, int) or until_tick < 1:
-        raise TestFailure(
-            f"scenario until_tick must be a positive integer: {metadata_path}"
-        )
+    until_tick = validate_until_tick(metadata["until_tick"], str(metadata_path))
     if args.until_tick is not None:
-        return args.until_tick
+        return validate_until_tick(args.until_tick, "--until-tick")
     return until_tick
 
 
@@ -248,7 +258,11 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
     )
-    parser.add_argument("--until-tick", type=int)
+    parser.add_argument(
+        "--until-tick",
+        type=int,
+        help=f"override the scenario deadline, capped at {MAX_UNTIL_TICK} ticks",
+    )
     parser.add_argument("--timeout-seconds", type=int, default=300)
     parser.add_argument("--keep-run-directory", action="store_true")
     parser.add_argument(

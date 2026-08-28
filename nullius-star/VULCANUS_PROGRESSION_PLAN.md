@@ -411,6 +411,7 @@ scenarios:
     validator: construction
     given:
       fixture: activation.wreck_inventory
+      debug_parallel_fixture: {nullius-seawater-intake-1: 6, nullius-hydro-plant-1: 4, nullius-small-furnace-1: 4, nullius-extractor-1: 6, nullius-air-filter-1: 6, nullius-distillery-1: 6, nullius-chemical-plant-1: 6, nullius-foundry-1: 4, nullius-small-assembler-1: 4}
       stock: {nullius-compressed-volcanic-gas: 24}
       mined_input: {nullius-graphite: 128, nullius-limestone: 100, nullius-rutile: 1}
       lava: nullius-lava-pumping
@@ -418,7 +419,7 @@ scenarios:
       heat: {mode: scripted-preheat-per-cycle, heat_pipe_temperature: 250, pneumatic_heat_temperature: 500}
     act:
       - execute_manifest: construction
-    run: {until: targets_complete, ticks: 310892, timeout: 310950}
+    run: {until: targets_complete, ticks: 264062, timeout: 270000, parallel_executors: 8}
     expect:
       terminal:
         produced:
@@ -576,6 +577,7 @@ scenarios:
         nullius-vulcanus-radiator-1: 1
         nullius-vulcanus-radiator-2: 1
         nullius-heat-pipe-1: 30
+      debug_parallel_fixture: {nullius-seawater-intake-1: 7, nullius-hydro-plant-1: 4, nullius-air-filter-1: 7, nullius-distillery-1: 7, nullius-chemical-plant-1: 7, nullius-foundry-1: 7, nullius-small-furnace-1: 7, nullius-small-assembler-1: 7, nullius-medium-assembler-1: 7}
       stock: {nullius-compressed-volcanic-gas: 24}
       raw:
         nullius-hydrogen-chloride: 27975
@@ -589,7 +591,7 @@ scenarios:
     connect: [direct-heat-producer.owned_heat_interface -> high-temperature-radiator]
     act:
       - execute_manifest: basic-science
-    run: {until: targets_complete, ticks: 404292, timeout: 410000}
+    run: {until: targets_complete, ticks: 276436, timeout: 280000, parallel_executors: 8}
     expect:
       terminal:
         produced:

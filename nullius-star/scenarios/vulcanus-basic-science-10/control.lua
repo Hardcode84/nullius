@@ -1,7 +1,19 @@
 require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
   case = "vulcanus-basic-science-10",
   contract = require("manifest"),
-  deadline = 409900,
+  deadline = 280000,
+  parallelism = 8,
+  parallel_fixture = {
+    ["nullius-seawater-intake-1"] = 7,
+    ["nullius-hydro-plant-1"] = 4,
+    ["nullius-air-filter-1"] = 7,
+    ["nullius-distillery-1"] = 7,
+    ["nullius-chemical-plant-1"] = 7,
+    ["nullius-foundry-1"] = 7,
+    ["nullius-small-furnace-1"] = 7,
+    ["nullius-small-assembler-1"] = 7,
+    ["nullius-medium-assembler-1"] = 7,
+  },
   fixture = {
     ["nullius-seawater-intake-1"] = 1,
     ["nullius-hydro-plant-1"] = 4,

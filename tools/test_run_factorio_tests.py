@@ -7,10 +7,13 @@ import unittest
 
 from tools.run_factorio_tests import (
     DEPENDENCY_MODS,
+    MAX_UNTIL_TICK,
     TEST_SUPPORT_MOD,
+    TestFailure,
     format_duration,
     prepare_mods,
     print_case_result,
+    validate_until_tick,
 )
 
 
@@ -58,6 +61,18 @@ class FactorioTestRunnerTests(unittest.TestCase):
             "[2/3] PASS example - 7 assertions, completed tick 42, "
             "Factorio 2.0.77, 1m 5.5s\n",
         )
+
+    def test_until_tick_accepts_repository_maximum(self) -> None:
+        self.assertEqual(
+            validate_until_tick(MAX_UNTIL_TICK, "test"), MAX_UNTIL_TICK
+        )
+
+    def test_until_tick_rejects_value_above_repository_maximum(self) -> None:
+        with self.assertRaisesRegex(
+            TestFailure,
+            rf"{MAX_UNTIL_TICK + 1} exceeds repository maximum {MAX_UNTIL_TICK}",
+        ):
+            validate_until_tick(MAX_UNTIL_TICK + 1, "test")
 
 
 if __name__ == "__main__":

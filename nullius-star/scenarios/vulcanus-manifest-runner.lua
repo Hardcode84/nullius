@@ -11,6 +11,8 @@ local POLL_TICKS = 30
 local BACKGROUND_TICKS = 127
 local CASE_DEADLINE = CONFIG.deadline
 local DIRECT_HEAT = CONFIG.direct_heat
+local PARALLELISM = CONFIG.parallelism or 1
+local PARALLEL_FIXTURE = CONFIG.parallel_fixture or {}
 
 local FIXTURE = CONFIG.fixture
 
@@ -151,11 +153,22 @@ local function consume_build_item(item)
     storage.fixture_placed[item] = (storage.fixture_placed[item] or 0) + 1
     return true
   end
+  if (storage.parallel_remaining[item] or 0) >= 1 then
+    storage.parallel_remaining[item] = storage.parallel_remaining[item] - 1
+    storage.parallel_placed[item] = (storage.parallel_placed[item] or 0) + 1
+    return true
+  end
   if consume(storage.ledger, item, 1, "placing executor") then
     storage.production_placed[item] = (storage.production_placed[item] or 0) + 1
     return true
   end
   return false
+end
+
+local function build_item_available(item)
+  return (storage.fixture_remaining[item] or 0) >= 1 or
+    (storage.parallel_remaining[item] or 0) >= 1 or
+    (storage.ledger[item] or 0) >= 1
 end
 
 local function register_machine(entity)
@@ -168,8 +181,10 @@ local function build_executor(item, name, position)
   if not consume_build_item(item) then return nil end
   local entity
   if name == "nullius-lava-intake-1" then
+    local intake_index = storage.lava_intake_count or 0
+    storage.lava_intake_count = intake_index + 1
     local valid_position = storage.surface.find_non_colliding_position(
-      item, {80, -32}, 48, 1)
+      item, {80 + intake_index * 10, -32}, 8, 1)
     if not check(valid_position ~= nil, "no valid lava-intake shoreline position") then
       return nil
     end
@@ -204,15 +219,21 @@ local function background_machine(entity)
   return false
 end
 
-local function ensure_machine(executor)
+local function ensure_machine(executor, optional)
   local pool = storage.machines[executor.name]
   if pool and #pool > 0 then
     for _ = 1, #pool do
       local next_index = (storage.machine_cursor[executor.name] or 0) % #pool + 1
       storage.machine_cursor[executor.name] = next_index
-      if not background_machine(pool[next_index]) then return pool[next_index] end
+      local candidate = pool[next_index]
+      if not background_machine(candidate) and
+          not storage.batch_busy[candidate.unit_number] then
+        return candidate
+      end
     end
-    check(false, "all " .. executor.name .. " executors are occupied")
+  end
+  if not build_item_available(executor.item) then
+    if not optional then check(false, "no available " .. executor.name .. " executor") end
     return nil
   end
   local position
@@ -221,7 +242,7 @@ local function ensure_machine(executor)
   else
     local index = storage.executor_count
     storage.executor_count = index + 1
-    position = {80 + (index % 5) * 12, -24 + math.floor(index / 5) * 12}
+    position = {80 + (index % 8) * 12, -24 + math.floor(index / 8) * 12}
   end
   local machine = build_executor(executor.item, executor.name, position)
   if machine and executor.name == "nullius-vulcanus-radiator-1" then
@@ -353,25 +374,29 @@ end
 local function machine_cycle_complete()
   script.on_nth_tick(game.tick, nil)
   local active = storage.active
-  local machine = active.machine
   local step = active.step
-  local direct_active = storage.direct_heat and machine == storage.direct_heat.machine
-  if step.heat and not direct_active and
-      machine.products_finished > active.products_finished and storage.background_gas then
-    script.on_nth_tick(game.tick + POLL_TICKS, machine_cycle_complete)
-    return
-  end
-  if machine.products_finished <= active.products_finished then
-    fill_pending_fuel(active)
-    if step.heat and not storage.background_gas then
-      start_background_gas()
+  local waiting = nil
+  for _, execution in ipairs(active.executions) do
+    if execution.machine.products_finished <= execution.products_finished then
+      fill_pending_fuel(execution)
+      waiting = waiting or execution
     end
+  end
+  local direct_active = storage.direct_heat and
+    active.machine == storage.direct_heat.machine
+  if step.heat and not direct_active and storage.background_gas then
+    waiting = waiting or active.executions[1]
+  end
+  if waiting then
+    if step.heat and not storage.background_gas then start_background_gas() end
     if game.tick >= active.deadline then
-      check(false, "step " .. step.producer .. " did not complete one cycle; status=" ..
+      local machine = waiting.machine
+      check(false, "step " .. step.producer .. " did not complete batch; status=" ..
         status_name(machine.status) .. ", temperature=" .. tostring(machine.temperature) ..
         ", fluids=" .. helpers.table_to_json(machine.get_fluid_contents()) ..
         ", boxes=" .. helpers.table_to_json(fluid_box_state(machine)) ..
         ", cycle=" .. tostring(active.cycle) .. "/" .. tostring(step.cycles) ..
+        ", batch=" .. tostring(#active.executions) ..
         ", gas_cycles=" .. tostring(storage.completed_cycles[storage.gas_step_index]) ..
         ", gas_ledger=" .. tostring(storage.ledger["nullius-compressed-volcanic-gas"]) ..
         ", lava_ledger=" .. tostring(storage.ledger["nullius-lava"]) ..
@@ -380,8 +405,11 @@ local function machine_cycle_complete()
           local values = {}
           for _, entity in ipairs(storage.surface.find_entities_filtered{
               type = {"heat-interface", "heat-pipe"}}) do
-            values[#values + 1] = {name = entity.name, position = entity.position,
-              temperature = entity.temperature}
+            values[#values + 1] = {
+              name = entity.name,
+              position = entity.position,
+              temperature = entity.temperature,
+            }
           end
           return values
         end)()))
@@ -391,27 +419,33 @@ local function machine_cycle_complete()
     script.on_nth_tick(game.tick + active.poll_ticks, machine_cycle_complete)
     return
   end
-  machine.active = false
-  record_outputs(step, step.cycles, function(name, amount, kind)
-    if kind == "fluid" then return collect_machine_fluid(machine, name, amount) end
-    return collect_machine_item(machine, name, amount)
-  end)
-  if step.fuel then
-    local box = active.fuel_box
-    local contents = box and machine.fluidbox[box]
-    local returned = contents and contents.name == step.fuel.name and contents.amount or 0
-    if returned > 0 then
-      machine.fluidbox[box] = nil
-      add(storage.ledger, step.fuel.name, returned)
-      add(storage.fuel_consumed, step.fuel.name, -returned)
+
+  for _, execution in ipairs(active.executions) do
+    local machine = execution.machine
+    machine.active = false
+    record_outputs(step, step.cycles, function(name, amount, kind)
+      if kind == "fluid" then return collect_machine_fluid(machine, name, amount) end
+      return collect_machine_item(machine, name, amount)
+    end)
+    if step.fuel then
+      local box = execution.fuel_box
+      local contents = box and machine.fluidbox[box]
+      local returned = contents and contents.name == step.fuel.name and
+        contents.amount or 0
+      if returned > 0 then
+        machine.fluidbox[box] = nil
+        add(storage.ledger, step.fuel.name, returned)
+        add(storage.fuel_consumed, step.fuel.name, -returned)
+      end
+      if execution.fuel_pending > 0 then
+        add(storage.ledger, step.fuel.name, execution.fuel_pending)
+        add(storage.fuel_consumed, step.fuel.name, -execution.fuel_pending)
+      end
     end
-    if active.fuel_pending > 0 then
-      add(storage.ledger, step.fuel.name, active.fuel_pending)
-      add(storage.fuel_consumed, step.fuel.name, -active.fuel_pending)
-    end
+    storage.batch_busy[machine.unit_number] = nil
   end
-  active.cycle = active.cycle + 1
-  storage.completed_cycles[active.step_index] = active.cycle - 1
+  storage.completed_cycles[active.step_index] =
+    (storage.completed_cycles[active.step_index] or 0) + #active.executions
   storage.active = nil
   advance()
 end
@@ -446,7 +480,9 @@ local function background_gas_complete()
   end
   storage.background_gas = nil
   local heat_active = storage.active and storage.active.step.heat and
-    storage.active.machine.products_finished <= storage.active.products_finished
+    storage.active.executions and storage.active.executions[1] and
+    storage.active.executions[1].machine.products_finished <=
+      storage.active.executions[1].products_finished
   if heat_active then start_background_gas() end
 end
 
@@ -486,46 +522,86 @@ start_background_gas = function()
   script.on_nth_tick(BACKGROUND_TICKS, background_gas_complete)
 end
 
-local function start_machine_cycle(step)
-  local active = storage.active
-  local machine = active.machine
-  local cycle_label = step.producer .. " cycle " .. active.cycle
-  check(machine.set_recipe(step.producer), "failed to set recipe " .. step.producer)
+local function cycle_materials_ready(step)
   for _, ingredient in ipairs(step.ingredients) do
-    local amount = ingredient.amount / step.cycles
-    if not consume(storage.ledger, ingredient.name, amount, cycle_label) then finish() return end
-    if ingredient.type == "fluid" then
-      if not insert_machine_fluid(machine, ingredient.name, amount, "input") then
+    if (storage.ledger[ingredient.name] or 0) + 0.00001 <
+        ingredient.amount / step.cycles then return false end
+  end
+  if not step.fuel then return true end
+  local required = step.fuel.amount_per_cycle
+  if step.producer ~= "nullius-lava-gas-extraction" and
+      (storage.completed_cycles[storage.gas_step_index] or 0) <
+        CONTRACT.steps[storage.gas_step_index].cycles then
+    required = required + CONTRACT.steps[storage.gas_step_index].fuel.amount_per_cycle
+  end
+  return (storage.ledger[step.fuel.name] or 0) + 0.00001 >= required
+end
+
+local function start_machine_batch(step)
+  local active = storage.active
+  local remaining = step.cycles - (storage.completed_cycles[active.step_index] or 0)
+  local batch_limit = step.heat and 1 or math.min(PARALLELISM, remaining)
+  active.executions = {}
+  active.poll_ticks = POLL_TICKS
+  for batch_index = 1, batch_limit do
+    if not cycle_materials_ready(step) then break end
+    local machine = ensure_machine(step.executor, batch_index > 1)
+    if not machine then break end
+    storage.batch_busy[machine.unit_number] = true
+    if step.heat and
+        (not storage.direct_heat or machine ~= storage.direct_heat.machine) then
+      machine.temperature = step.heat.maximum_temperature
+    end
+    local execution = {
+      machine = machine,
+      step = step,
+      cycle = active.cycle + batch_index - 1,
+    }
+    local cycle_label = step.producer .. " cycle " .. execution.cycle
+    check(machine.set_recipe(step.producer), "failed to set recipe " .. step.producer)
+    for _, ingredient in ipairs(step.ingredients) do
+      local amount = ingredient.amount / step.cycles
+      if not consume(storage.ledger, ingredient.name, amount, cycle_label) then
         finish() return
       end
+      if ingredient.type == "fluid" then
+        if not insert_machine_fluid(machine, ingredient.name, amount, "input") then
+          finish() return
+        end
+      else
+        if not insert_machine_item(machine, ingredient.name, amount) then
+          finish() return
+        end
+      end
+    end
+    if step.fuel then
+      local amount = step.fuel.amount_per_cycle
+      if not consume(storage.ledger, step.fuel.name, amount,
+          cycle_label .. " fuel") then finish() return end
+      execution.fuel_box = fluid_box(machine, step.fuel.name, "fuel")
+      if not check(execution.fuel_box ~= nil,
+          machine.name .. " has no fuel fluid box for " .. step.fuel.name) then
+        finish() return
+      end
+      execution.fuel_pending = amount
+      local capacity = machine.fluidbox.get_capacity(execution.fuel_box)
+      active.poll_ticks = math.max(active.poll_ticks,
+        math.floor(step.ticks_per_cycle * capacity / amount * 0.75))
+      fill_pending_fuel(execution)
+      add(storage.fuel_consumed, step.fuel.name, amount)
     else
-      if not insert_machine_item(machine, ingredient.name, amount) then finish() return end
+      execution.fuel_pending = 0
     end
+    execution.products_finished = machine.products_finished
+    machine.active = true
+    active.executions[#active.executions + 1] = execution
   end
-  if step.fuel then
-    local amount = step.fuel.amount_per_cycle
-    if not consume(storage.ledger, step.fuel.name, amount, cycle_label .. " fuel") then
-      finish() return
-    end
-    active.fuel_box = fluid_box(machine, step.fuel.name, "fuel")
-    if not check(active.fuel_box ~= nil,
-        machine.name .. " has no fuel fluid box for " .. step.fuel.name) then
-      finish() return
-    end
-    active.fuel_pending = amount
-    local capacity = machine.fluidbox.get_capacity(active.fuel_box)
-    active.poll_ticks = math.max(POLL_TICKS,
-      math.floor(step.ticks_per_cycle * capacity / amount * 0.75))
-    fill_pending_fuel(active)
-    add(storage.fuel_consumed, step.fuel.name, amount)
-  else
-    active.poll_ticks = POLL_TICKS
-  end
-  active.products_finished = machine.products_finished
+  if not check(#active.executions > 0,
+      "failed to start executor batch for " .. step.producer) then finish() return end
+  active.machine = active.executions[1].machine
   active.deadline = game.tick + MAX_STEP_WAIT
-  machine.active = true
   local first_check = step.ticks_per_cycle + 2
-  if step.fuel and active.fuel_pending > 0 then
+  if step.fuel then
     first_check = math.min(first_check, active.poll_ticks)
   end
   script.on_nth_tick(game.tick + first_check, machine_cycle_complete)
@@ -650,6 +726,11 @@ local function check_terminal()
     check((storage.fixture_remaining[item] or 0) + (storage.fixture_placed[item] or 0) == count,
       "fixture conservation failed for " .. item)
   end
+  for item, count in pairs(PARALLEL_FIXTURE) do
+    check((storage.parallel_remaining[item] or 0) +
+      (storage.parallel_placed[item] or 0) == count,
+      "parallel fixture conservation failed for " .. item)
+  end
   local completed_steps = 0
   for index, step in ipairs(CONTRACT.steps) do
     if storage.completed_cycles[index] == step.cycles then
@@ -699,6 +780,7 @@ local function check_terminal()
     ledger = storage.ledger,
     fuel_consumed = storage.fuel_consumed,
     fixture_placed = storage.fixture_placed,
+    parallel_fixture_placed = storage.parallel_placed,
     production_placed = storage.production_placed,
   }
   finish()
@@ -724,8 +806,7 @@ local function step_ready(step)
     local pool = storage.machines[step.executor.name]
     if not pool or #pool == 0 then
       local item = step.executor.item
-      if (storage.fixture_remaining[item] or 0) < 1 and
-          (storage.ledger[item] or 0) < 1 then return false end
+      if not build_item_available(item) then return false end
     end
   end
   return true
@@ -806,19 +887,10 @@ advance = function()
     cycle = (storage.completed_cycles[selected_index] or 0) + 1,
   }
   if step.spoil_ticks then start_spoil(step) return end
-  if step.executor.kind == "machine" then
-    local machine = ensure_machine(step.executor)
-    if not machine then finish() return end
-    storage.active.machine = machine
-    if step.heat and
-        (not storage.direct_heat or machine ~= storage.direct_heat.machine) then
-      machine.temperature = step.heat.maximum_temperature
-    end
-  end
   if step.executor.kind == "character" then
     start_character_cycle(step)
   else
-    start_machine_cycle(step)
+    start_machine_batch(step)
   end
 end
 
@@ -948,7 +1020,7 @@ local function setup()
   surface.force_generate_chunk_requests()
   local tiles = {}
   for x = 0, 220 do
-    for y = -48, 48 do
+    for y = -80, 80 do
       tiles[#tiles + 1] = {
         name = (y <= -32) and "lava-hot" or "volcanic-soil-dark",
         position = {x, y},
@@ -957,7 +1029,7 @@ local function setup()
   end
   surface.set_tiles(tiles, true, false, false, false)
   for _, entity in ipairs(surface.find_entities_filtered{
-      area = {{0, -48}, {220, 48}},
+      area = {{0, -80}, {220, 80}},
       type = {"simple-entity", "tree", "cliff", "resource"},
   }) do entity.destroy() end
 
@@ -986,6 +1058,8 @@ local function setup()
   end
   storage.fixture_remaining = copy_map(FIXTURE)
   storage.fixture_placed = {}
+  storage.parallel_remaining = copy_map(PARALLEL_FIXTURE)
+  storage.parallel_placed = {}
   storage.production_placed = {}
   storage.ledger = {}
   storage.produced = {}
@@ -993,7 +1067,9 @@ local function setup()
   storage.machines = {}
   storage.machine_cursor = {}
   storage.executor_count = 0
+  storage.lava_intake_count = 0
   storage.completed_cycles = {}
+  storage.batch_busy = {}
   for index, step in ipairs(CONTRACT.steps) do
     if step.producer == "nullius-lava-gas-extraction" then
       storage.gas_step_index = index
@@ -1006,6 +1082,8 @@ local function setup()
   if not setup_heat_fixture() then finish() return end
   observations.initial = {
     fixture = FIXTURE,
+    parallelism = PARALLELISM,
+    parallel_fixture = PARALLEL_FIXTURE,
     raw_inputs = CONTRACT.raw_inputs,
     initial_stock = CONTRACT.initial_stock,
     selected_steps = #CONTRACT.steps,
