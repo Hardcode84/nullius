@@ -70,6 +70,18 @@ data:extend({
     allow_productivity = true,
     maximum_productivity = 0.52,
   },
+  {
+    type = "recipe",
+    name = "factorio-test-productivity-disabled",
+    enabled = false,
+    hidden = true,
+    category = category,
+    energy_required = 0.1,
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+    allow_productivity = false,
+    maximum_productivity = 0,
+  },
   machine,
   {
     type = "technology",

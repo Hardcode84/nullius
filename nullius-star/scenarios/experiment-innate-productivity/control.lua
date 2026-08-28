@@ -69,6 +69,8 @@ local function validate()
     {id = "capped_with_module", machine = storage.capped_module,
       inserted = storage.capped_module_inserted,
       expected_inserted = 1, expected_bonus = 0.54, expected_output = 152},
+    {id = "disabled_without_module", machine = storage.disabled_plain,
+      inserted = 0, expected_bonus = 0.5, expected_output = 100},
   }
   for _, case in ipairs(cases) do
     local output = case.machine.get_output_inventory().get_item_count(OUTPUT)
@@ -103,6 +105,7 @@ script.on_nth_tick(1, function()
   force.recipes["factorio-test-productivity-rejected"].enabled = true
   force.recipes["factorio-test-productivity-allowed"].enabled = true
   force.recipes["factorio-test-productivity-capped"].enabled = true
+  force.recipes["factorio-test-productivity-disabled"].enabled = true
   local surface = game.surfaces.nauvis
   storage.rejected_plain = create_machine(surface, {0, 0},
     "factorio-test-productivity-rejected", false)
@@ -114,6 +117,8 @@ script.on_nth_tick(1, function()
     create_machine(surface, {12, 0}, "factorio-test-productivity-allowed", true)
   storage.capped_module, storage.capped_module_inserted =
     create_machine(surface, {16, 0}, "factorio-test-productivity-capped", true)
+  storage.disabled_plain = create_machine(surface, {20, 0},
+    "factorio-test-productivity-disabled", false)
 
   script.on_nth_tick(180, function()
     validate()
