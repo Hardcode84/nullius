@@ -708,11 +708,11 @@ scenarios:
 
 implementation_holes:
   - {id: thermal-technologies, required_by: [M13, M14], missing: [nullius-thermal-engineering-2, nullius-thermal-engineering-3]}
-  - {id: thermal-entities, required_by: [M11, M13, M14], missing: [nullius-crusher-1-thermal, nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-1-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-foundry-1-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
-  - {id: nauvis-transition, required_by: thermal-cell-1, current: "Ctrl+R supports Vulcanus electric-pneumatic only", fix: "add Nauvis electric-thermal pairs gated by thermal engineering tier"}
+  - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
+  - {id: nauvis-transition, required_by: [M13, M14], missing: [thermal-engineering-2-pairs, thermal-engineering-3-pairs]}
   - {id: solar-heat-throughput, required_by: thermal-cell-1, current: "nullius-solar-collector-1 consumption is 150W; tier-1 process machines total 316kW", fix: "define and validate collector heat output above connected process demand plus network losses"}
   - {id: repeatable-technologies, required_by: M12, missing: [nullius-crushing-productivity-1, nullius-smelting-productivity-1, nullius-casting-productivity-1]}
   - {id: recipe-family-generator, required_by: repeatable-technologies, fix: "generate change-recipe-productivity effects from resolved recipe categories; exclude maximum_productivity=0"}
-  - {id: thermal-test-contracts, required_by: [M10, M11, M12], missing: [vulcanus-thermal-engineering.args, thermal-machine-prototypes, thermal-cell-1, industrial-optimization-1]}
+  - {id: thermal-test-contracts, required_by: [M10, M11, M12], missing: [vulcanus-thermal-engineering.args, thermal-cell-1, industrial-optimization-1]}
 
 ```

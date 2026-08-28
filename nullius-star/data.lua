@@ -26,6 +26,7 @@ require("prototypes.item.landfill")
 require("prototypes.item.boxing")
 
 require("prototypes.entity.furnace") 
+require("prototypes.planet.thermal-machines")
 require("prototypes.entity.assembler")
 require("prototypes.entity.miner")
 require("prototypes.entity.plumbing")

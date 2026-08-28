@@ -339,57 +339,7 @@ local function toggle_conf_valve(entity, name, force, force_toggle)
   conf_valve_check_one_way(control_behavior.circuit_condition, entity.unit_number)
 end
 
--- Transition table: declarative entity mode toggling via Ctrl+R.
--- Each entry is a list of candidate transitions, tried in order.
--- First whose condition() passes (or has none) is used.
---   target:    replacement entity name.
---   condition: fn(entity, force) -> bool. Nil means always.
---   gate:      fn(entity) -> bool. If false, transition blocked (gate does side-effects).
---   on_leave:  fn(entity). Called before destroying old entity.
---   on_enter:  fn(new_entity). Called after creating new entity.
---   replace_fn: fn(entity, target, force) -> new_entity. Overrides default replace_fluid_entity.
-local transitions = {}
-
-function register_transition(from, to, opts)
-  if not transitions[from] then
-    transitions[from] = {}
-  end
-  table.insert(transitions[from], {
-    target = to,
-    condition = opts and opts.condition,
-    gate = opts and opts.gate,
-    on_leave = opts and opts.on_leave,
-    on_enter = opts and opts.on_enter,
-    replace_fn = opts and opts.replace_fn,
-  })
-end
-
-local function execute_transition(entity, name, force)
-  local chain = transitions[name]
-  if not chain then return false end
-
-  for _, tr in ipairs(chain) do
-    if not tr.condition or tr.condition(entity, force) then
-      if tr.gate and not tr.gate(entity) then
-        return true
-      end
-      if tr.on_leave then
-        tr.on_leave(entity)
-      end
-      local new_entity
-      if tr.replace_fn then
-        new_entity = tr.replace_fn(entity, tr.target, force)
-      else
-        new_entity = replace_fluid_entity(entity, tr.target, force, nil)
-      end
-      if tr.on_enter and new_entity and new_entity.valid then
-        tr.on_enter(new_entity)
-      end
-      return true
-    end
-  end
-  return false
-end
+local transitions = require("scripts.transitions")
 
 -- Global helpers for pump/valve transitions (used by vulcanus_transitions.lua).
 -- Replaces entity by destroy+create (pumps and valves cannot fast_replace).
@@ -428,7 +378,7 @@ function valve_gate(entity)
   return false
 end
 
--- Vulcanus-specific transitions are registered in scripts/vulcanus_transitions.lua.
+-- Planet-specific transitions are registered after this script is loaded.
 
 local function priority_event(event)
   local player = game.players[event.player_index]
@@ -444,7 +394,7 @@ local function priority_event(event)
     toggle_surge(target, name, force)
   elseif (is_hangar_entity(name)) then
     toggle_hangar(target, name, force)
-  elseif execute_transition(target, name, force) then
+  elseif transitions.execute(target, name, force) then
     -- Handled by transition table (pneumatic toggles, Vulcanus pump cycle).
   -- elseif (is_pump_entity(name)) then
   --   toggle_pump(target, name, force)

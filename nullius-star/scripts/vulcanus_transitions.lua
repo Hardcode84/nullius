@@ -1,6 +1,7 @@
 -- Vulcanus-specific entity transitions (Ctrl+R toggling).
--- Registers pneumatic machine and radiator mode transitions
--- into the global transition table from turbine.lua.
+-- Registers pneumatic machine and radiator mode transitions.
+
+local transitions = require("scripts.transitions")
 
 -- Condition: entity is on Vulcanus and pneumatic tech is researched.
 local function is_vulcanus_pneumatic(entity, force)
@@ -22,11 +23,11 @@ end
 -- Convenience: register both directions of a pneumatic pair.
 -- Must match entities generated in prototypes/pneumatic.lua.
 local function register_pneumatic_pair(electric, pneumatic)
-  register_transition(electric, pneumatic, {
+  transitions.register(electric, pneumatic, {
     condition = is_vulcanus_pneumatic,
     on_enter = on_enter_pneumatic,
   })
-  register_transition(pneumatic, electric, {
+  transitions.register(pneumatic, electric, {
     on_leave = on_leave_pneumatic,
   })
 end
@@ -84,18 +85,18 @@ for i = 1, 2 do
   local pneumatic = lava .. "-pneumatic"  -- legacy/dev saves only.
   local gasvent = lava .. "-gasvent"
 
-  register_transition(lava, gasvent, {
+  transitions.register(lava, gasvent, {
     condition = is_vulcanus_pneumatic,
     replace_fn = replace_pump_valve,
     on_enter = function(entity) vulcanus_gasvent.register(entity) end,
   })
-  register_transition(pneumatic, gasvent, {
+  transitions.register(pneumatic, gasvent, {
     -- Leaving legacy pneumatic mode: tear down its heat interface.
     replace_fn = replace_pump_valve,
     on_leave = on_leave_pneumatic,
     on_enter = function(entity) vulcanus_gasvent.register(entity) end,
   })
-  register_transition(gasvent, lava, {
+  transitions.register(gasvent, lava, {
     replace_fn = replace_pump_valve,
     on_leave = function(entity) vulcanus_gasvent.remove(entity.unit_number) end,
   })
@@ -107,17 +108,17 @@ for _, pair in ipairs(pump_valve_pairs) do
   local pn_valve = valve .. "-pneumatic"
 
   -- Electric valve -> pneumatic pump (Vulcanus only, after valve done cycling).
-  register_transition(valve, pn_pump, {
+  transitions.register(valve, pn_pump, {
     condition = is_vulcanus_pneumatic,
     gate = valve_gate,
     replace_fn = replace_pump_valve,
   })
   -- Pneumatic pump -> pneumatic valve.
-  register_transition(pn_pump, pn_valve, {
+  transitions.register(pn_pump, pn_valve, {
     replace_fn = replace_pump_valve,
   })
   -- Pneumatic valve -> electric pump (after valve done cycling).
-  register_transition(pn_valve, pump, {
+  transitions.register(pn_valve, pump, {
     gate = valve_gate,
     replace_fn = replace_pump_valve,
   })
