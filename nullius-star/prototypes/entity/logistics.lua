@@ -136,6 +136,7 @@ data:extend({
     },
     hidden = true,
     inputs = {
+      "nullius-metallurgic-pack",
       "nullius-geology-pack",
       "nullius-climatology-pack",
       "nullius-mechanical-pack",
@@ -182,6 +183,7 @@ data:extend({
     energy_usage = "95kW",
     researching_speed = 1,
     inputs = {
+      "nullius-metallurgic-pack",
       "nullius-geology-pack",
       "nullius-climatology-pack",
       "nullius-mechanical-pack",
