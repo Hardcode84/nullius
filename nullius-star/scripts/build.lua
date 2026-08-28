@@ -133,6 +133,7 @@ end
 
 script.on_event(defines.events.on_built_entity, entity_hand_built)
 script.on_event(defines.events.on_robot_built_entity, entity_bot_built)
+script.on_event(defines.events.script_raised_built, entity_raised)
 script.on_event(defines.events.script_raised_revive, entity_raised)
 
 script.on_event(defines.events.on_player_mined_entity, entity_mined)

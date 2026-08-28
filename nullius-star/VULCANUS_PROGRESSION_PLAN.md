@@ -666,31 +666,33 @@ scenarios:
     given:
       surface: nauvis
       force: {researched: [nullius-thermal-engineering-1]}
-      inventory: {nullius-solar-collector-1: 6, nullius-heat-pipe-1: 30, nullius-crusher-1: 1, nullius-small-furnace-1: 1, nullius-foundry-1: 1}
+      inventory: {nullius-solar-collector-1: 15, nullius-heat-pipe-1: 30, nullius-crusher-1: 5, nullius-small-furnace-1: 5, nullius-foundry-1: 5}
       recipe_inputs: {nullius-limestone: 800, nullius-alumina: 900, nullius-graphite: 500, nullius-iron-ingot: 400}
       modules: 0
     place:
-      heat-source: {prototype: nullius-solar-collector-1, count: 6, at: auto}
+      heat-source: {prototype: nullius-solar-collector-1, count: 15, at: auto}
       heat-pipe: {prototype: nullius-heat-pipe-1, count: "<=30", at: auto}
-      crusher: {prototype: nullius-crusher-1, at: auto}
-      furnace: {prototype: nullius-small-furnace-1, at: auto}
-      foundry: {prototype: nullius-foundry-1, at: auto}
+      crusher: {prototype: nullius-crusher-1, count: 5, at: auto}
+      furnace: {prototype: nullius-small-furnace-1, count: 5, at: auto}
+      foundry: {prototype: nullius-foundry-1, count: 5, at: auto}
+      debug-input-chest: {prototype: steel-chest, count: 15, at: auto}
+      debug-output-chest: {prototype: steel-chest, count: 3, at: auto}
     connect: ["heat-source[*] -> heat-pipe", "heat-pipe -> crusher", "heat-pipe -> furnace", "heat-pipe -> foundry"]
     act:
       - rotate_mode: {entities: [crusher, furnace, foundry], mode: thermal}
       - set_recipe: {entity: crusher, recipe: nullius-crushed-limestone}
       - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
       - set_recipe: {entity: foundry, recipe: nullius-iron-plate}
-    run: {base_cycles: 100, until: all_inputs_consumed, timeout: 300000}
+    run: {base_cycles: {per_machine: 20, total_per_recipe: 100}, until: all_inputs_consumed, timeout: 65000}
     expect:
       terminal:
-        entities: {crusher: nullius-crusher-1-thermal, furnace: nullius-small-furnace-1-thermal, foundry: nullius-foundry-1-thermal}
+        entities: {crusher: {prototype: nullius-crusher-1-thermal, count: 5}, furnace: {prototype: nullius-small-furnace-1-thermal, count: 5}, foundry: {prototype: nullius-foundry-1-thermal, count: 5}}
         temperature: {crusher: ">=100", furnace: ">=100", foundry: ">=100"}
         consumed: {nullius-limestone: 800, nullius-alumina: 900, nullius-graphite: 500, nullius-iron-ingot: 400}
         produced: {nullius-crushed-limestone: 525, stone: 315, nullius-aluminum-ingot: 315, nullius-aluminum-carbide: 420, nullius-iron-plate: 315}
         productivity_bonus: {crusher: 0.05, furnace: 0.05, foundry: 0.05}
         electric_energy_consumed_by_process_machines: 0
-        items_preserved: {nullius-crusher-1: 1, nullius-small-furnace-1: 1, nullius-foundry-1: 1}
+        items_preserved: {nullius-crusher-1: 5, nullius-small-furnace-1: 5, nullius-foundry-1: 5}
 
   industrial-optimization-1:
     milestone: M12
@@ -716,9 +718,8 @@ implementation_holes:
   - {id: thermal-technologies, required_by: [M13, M14], missing: [nullius-thermal-engineering-2, nullius-thermal-engineering-3]}
   - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-2-thermal, nullius-medium-furnace-3-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
   - {id: nauvis-transition, required_by: [M13, M14], missing: [thermal-engineering-2-pairs, thermal-engineering-3-pairs]}
-  - {id: solar-heat-throughput, required_by: thermal-cell-1, current: "nullius-solar-collector-1 consumption is 150W; tier-1 process machines total 316kW", fix: "define and validate collector heat output above connected process demand plus network losses"}
   - {id: repeatable-technologies, required_by: M12, missing: [nullius-crushing-productivity-1, nullius-smelting-productivity-1, nullius-casting-productivity-1]}
   - {id: recipe-family-generator, required_by: repeatable-technologies, fix: "generate change-recipe-productivity effects from resolved recipe categories; exclude maximum_productivity=0"}
-  - {id: thermal-test-contracts, required_by: [M10, M11, M12], missing: [vulcanus-thermal-engineering.args, thermal-cell-1, industrial-optimization-1]}
+  - {id: thermal-test-contracts, required_by: M12, missing: [industrial-optimization-1]}
 
 ```
