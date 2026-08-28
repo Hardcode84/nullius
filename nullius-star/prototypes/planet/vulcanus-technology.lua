@@ -7,6 +7,10 @@ pneumatic.effects[#pneumatic.effects + 1] = {
   type = "unlock-recipe",
   recipe = "nullius-metallurgic-pack",
 }
+pneumatic.effects[#pneumatic.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-vulcanus-barrel",
+}
 
 local function productivity_technology(name, order, icon, prerequisite,
     categories)

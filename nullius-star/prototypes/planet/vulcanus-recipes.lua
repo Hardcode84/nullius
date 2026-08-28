@@ -163,10 +163,32 @@ data:extend({
   },
 })
 
--- Vulcanus generic science pack recipes. These provide the tiny local
--- trickle needed for planet-local research without importing Nauvis ores or
--- seawater. They are intentionally slower than the normal Nauvis recipes.
+-- Vulcanus-local crafting and science recipes.
 data:extend({
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-barrel",
+    localised_name = {"recipe-name.nullius-vulcanus-barrel"},
+    enabled = false,
+    category = "small-crafting",
+    subgroup = "canisters",
+    order = "nullius-ba",
+    always_show_made_in = true,
+    allow_decomposition = false,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 10,
+    ingredients = {
+      {type = "item", name = "nullius-steel-sheet", amount = 2},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+      {type = "item", name = "nullius-glass", amount = 1},
+      {type = "item", name = "nullius-one-way-valve", amount = 1},
+    },
+    results = {
+      {type = "item", name = "barrel", amount = 3},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
   {
     type = "recipe",
     name = "nullius-metallurgic-pack",

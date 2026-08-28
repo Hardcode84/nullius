@@ -49,7 +49,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -57,6 +57,7 @@ chunk_contract:
 
 validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
+  inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-barrel.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
@@ -465,6 +466,28 @@ scenarios:
           stone: 2635
           sulfur: 15
           transport-belt: 6
+
+  inorganic-barrel:
+    milestone: M6
+    validator: inorganic-barrel
+    given:
+      inventory:
+        nullius-steel-sheet: 2
+        nullius-aluminum-sheet: 2
+        nullius-glass: 1
+        nullius-one-way-valve: 1
+      fluids: {nullius-compressed-volcanic-gas: 59}
+    place:
+      assembler: {prototype: nullius-small-assembler-1-pneumatic, at: [0, 0]}
+    connect: [gas -> assembler.energy_input]
+    act:
+      - set_recipe: {entity: assembler, recipe: nullius-vulcanus-barrel}
+    run: {recipe_ticks: 600, crafting_speed: 0.5, ticks: 1202}
+    expect:
+      terminal:
+        produced: {barrel: "=3"}
+        input_remaining: 0
+        organic_inputs: 0
 
   metallurgic-pack-10:
     milestone: M7
