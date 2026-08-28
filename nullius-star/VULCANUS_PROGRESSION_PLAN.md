@@ -354,9 +354,10 @@ scenarios:
       mined_input: {nullius-graphite: 128, nullius-limestone: 100, nullius-rutile: 1}
       lava: nullius-lava-pumping
       injected_intermediates: 0
+      heat: {mode: scripted-preheat-per-cycle, heat_pipe_temperature: 250, pneumatic_heat_temperature: 500}
     act:
       - execute_manifest: construction
-    run: {until: targets_complete}
+    run: {until: targets_complete, ticks: 310892, timeout: 310950}
     expect:
       terminal:
         produced:
@@ -377,7 +378,7 @@ scenarios:
           storage-tank: "=7"
           wooden-chest: "=8"
           nullius-heat-pipe-1: "=30"
-        selected_steps: "=50"
+        selected_steps: "=47"
         additional_research: 0
         fuel_consumed: {nullius-compressed-volcanic-gas: "=24233.4"}
         surplus:
