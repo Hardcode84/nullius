@@ -337,8 +337,9 @@ scenarios:
     connect: [gas -> assembler.energy_input]
     act:
       - set_recipe: {entity: assembler, recipe: nullius-metallurgic-pack}
-    run: {ticks: 1800}
+    run: {recipe_ticks: 900, crafting_speed: 0.5, ticks: 1802}
     expect:
+      before_terminal: {tick: 1800, produced: 0}
       terminal:
         produced: {nullius-metallurgic-pack: "=1"}
         input_remaining: 0

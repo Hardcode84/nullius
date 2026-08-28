@@ -43,6 +43,18 @@ data:extend({
     order = "nullius-vc",
     stack_size = 100,
   },
+  {
+    type = "tool",
+    name = "nullius-metallurgic-pack",
+    icon = "__space-age__/graphics/icons/metallurgic-science-pack.png",
+    icon_size = 64,
+    subgroup = "research-pack",
+    order = "nullius-v",
+    stack_size = 200,
+    durability = 1,
+    durability_description_key = "description.science-pack-remaining-amount-key",
+    durability_description_value = "description.science-pack-remaining-amount-value",
+  },
 })
 
 -- Lava processing recipes. Category: nullius-water-treatment (hydro-plant).
@@ -155,6 +167,26 @@ data:extend({
 -- trickle needed for planet-local research without importing Nauvis ores or
 -- seawater. They are intentionally slower than the normal Nauvis recipes.
 data:extend({
+  {
+    type = "recipe",
+    name = "nullius-metallurgic-pack",
+    enabled = true,
+    category = "small-crafting",
+    subgroup = "research-pack-2",
+    order = "nullius-va",
+    energy_required = 15,
+    ingredients = {
+      {type = "item", name = "nullius-iron-ingot", amount = 3},
+      {type = "item", name = "nullius-aluminum-ingot", amount = 2},
+      {type = "item", name = "nullius-crushed-limestone", amount = 1},
+      {type = "item", name = "nullius-silica", amount = 1},
+      {type = "item", name = "sulfur", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-metallurgic-pack", amount = 1},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
   {
     type = "recipe",
     name = "nullius-geology-pack-vulcanus",

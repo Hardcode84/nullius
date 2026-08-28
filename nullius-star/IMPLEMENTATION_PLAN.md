@@ -131,7 +131,7 @@ Phases 1-4 are independent of each other and can be developed in parallel or any
 
 ### 1.6 Metallurgic Science Pack
 
-- [ ] Define pack recipe from Vulcanus-local materials (lava metals, volcanic compounds, cooled ingots)
+- [x] Define pack recipe from Vulcanus-local materials (lava metals, volcanic compounds, cooled ingots)
 - [ ] Define Vulcanus-specific research techs consuming metallurgic packs
 - [ ] Set asymmetric multipliers (heavy metallurgic, light generic)
 
