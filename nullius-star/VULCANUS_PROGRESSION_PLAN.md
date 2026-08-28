@@ -60,6 +60,7 @@ validators:
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
+  thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/nauvis-thermal-furnace-sizes.args"
 
 planned_prototypes:
   technologies:
@@ -67,17 +68,17 @@ planned_prototypes:
       prerequisites: [nullius-pneumatic-technology, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
       totals: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5}
-      unlocks: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-foundry-1-thermal]
+      unlocks: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal]
     nullius-thermal-engineering-2:
       prerequisites: [nullius-thermal-engineering-1, nullius-mineral-processing-2, nullius-metallurgy-2, nullius-metalworking-2, nullius-thermal-storage-2, nullius-solar-thermal-power-2]
       unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 80, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
       totals: {nullius-metallurgic-pack: 800, nullius-geology-pack: 20, nullius-mechanical-pack: 10, nullius-electrical-pack: 10}
-      unlocks: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-foundry-2-thermal]
+      unlocks: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-medium-furnace-2-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal]
     nullius-thermal-engineering-3:
       prerequisites: [nullius-thermal-engineering-2, nullius-mineral-processing-3, nullius-metallurgy-3, nullius-metalworking-4, nullius-thermal-storage-3, nullius-nuclear-power-1]
       unit: {count: 20, time: 60, ingredients: {nullius-metallurgic-pack: 160, nullius-geology-pack: 2, nullius-climatology-pack: 1, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
       totals: {nullius-metallurgic-pack: 3200, nullius-geology-pack: 40, nullius-climatology-pack: 20, nullius-mechanical-pack: 20, nullius-electrical-pack: 20}
-      unlocks: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-foundry-3-thermal]
+      unlocks: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-3-thermal, nullius-foundry-3-thermal]
     repeatable:
       common: {max_level: infinite, count_formula: "100*L^2", time: 30, ingredients: {nullius-metallurgic-pack: 1}, change_per_level: 0.01}
       branches:
@@ -96,11 +97,11 @@ planned_prototypes:
       allowed_effects: unchanged
       crafting_categories: unchanged
     tiers:
-      1: {entities: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-foundry-1-thermal], base_productivity: 0.05, min_temperature: 100, max_temperature: 250, distribution: nullius-heat-pipe-1, source: nullius-solar-collector-1}
-      2: {entities: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-foundry-2-thermal], base_productivity: 0.10, min_temperature: 200, max_temperature: 500, distribution: nullius-heat-pipe-2, source: nullius-solar-collector-2}
-      3: {entities: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-foundry-3-thermal], base_productivity: 0.15, min_temperature: 500, max_temperature: 1500, distribution: nullius-heat-pipe-3, source: nullius-reactor}
+      1: {entities: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal], base_productivity: 0.05, min_temperature: 100, max_temperature: 250, distribution: nullius-heat-pipe-1, source: nullius-solar-collector-1}
+      2: {entities: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-medium-furnace-2-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal], base_productivity: 0.10, min_temperature: 200, max_temperature: 500, distribution: nullius-heat-pipe-2, source: nullius-solar-collector-2}
+      3: {entities: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-3-thermal, nullius-foundry-3-thermal], base_productivity: 0.15, min_temperature: 500, max_temperature: 1500, distribution: nullius-heat-pipe-3, source: nullius-reactor}
   transitions:
-    nauvis: {before: electric, after: thermal, input: Ctrl+R, research: corresponding_nullius_thermal_engineering_tier}
+    nauvis: {before: electric, after: thermal, input: Ctrl+R, requires: [corresponding_nullius_thermal_engineering_tier, base_building_recipe_enabled]}
     nullius-vulcanus: {before: electric, after: pneumatic, input: Ctrl+R, unchanged: true}
     other_surfaces: {transition: none}
 
@@ -636,12 +637,17 @@ scenarios:
     matrix:
       - {tier: 1, base: nullius-crusher-1, thermal: nullius-crusher-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
       - {tier: 1, base: nullius-small-furnace-1, thermal: nullius-small-furnace-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-medium-furnace-1, thermal: nullius-medium-furnace-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-large-furnace-1, thermal: nullius-large-furnace-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
       - {tier: 1, base: nullius-foundry-1, thermal: nullius-foundry-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
       - {tier: 2, base: nullius-crusher-2, thermal: nullius-crusher-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
       - {tier: 2, base: nullius-small-furnace-2, thermal: nullius-small-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-medium-furnace-2, thermal: nullius-medium-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-large-furnace-2, thermal: nullius-large-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
       - {tier: 2, base: nullius-foundry-2, thermal: nullius-foundry-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
       - {tier: 3, base: nullius-crusher-3, thermal: nullius-crusher-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
       - {tier: 3, base: nullius-small-furnace-3, thermal: nullius-small-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-medium-furnace-3, thermal: nullius-medium-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
       - {tier: 3, base: nullius-foundry-3, thermal: nullius-foundry-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
     expect:
       prototype:
@@ -708,7 +714,7 @@ scenarios:
 
 implementation_holes:
   - {id: thermal-technologies, required_by: [M13, M14], missing: [nullius-thermal-engineering-2, nullius-thermal-engineering-3]}
-  - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
+  - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-2-thermal, nullius-medium-furnace-3-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
   - {id: nauvis-transition, required_by: [M13, M14], missing: [thermal-engineering-2-pairs, thermal-engineering-3-pairs]}
   - {id: solar-heat-throughput, required_by: thermal-cell-1, current: "nullius-solar-collector-1 consumption is 150W; tier-1 process machines total 316kW", fix: "define and validate collector heat output above connected process demand plus network losses"}
   - {id: repeatable-technologies, required_by: M12, missing: [nullius-crushing-productivity-1, nullius-smelting-productivity-1, nullius-casting-productivity-1]}

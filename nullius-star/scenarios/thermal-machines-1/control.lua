@@ -13,10 +13,10 @@ local cases = {
     outputs = {["nullius-crushed-limestone"] = 5, stone = 3},
   },
   {
-    id = "furnace",
+    id = "small-furnace",
     base = "nullius-small-furnace-1",
     recipe = "nullius-aluminum-ingot",
-    position = {0, 0},
+    position = {-8, 0},
     heat_pipe_offset = {-0.5, -1.5},
     inputs = {["nullius-alumina"] = 9, ["nullius-graphite"] = 5},
     outputs = {
@@ -25,10 +25,36 @@ local cases = {
     },
   },
   {
+    id = "medium-furnace",
+    base = "nullius-medium-furnace-1",
+    recipe = "nullius-aluminum-ingot",
+    position = {4, 0},
+    heat_pipe_offset = {-1, -2},
+    inputs = {["nullius-alumina"] = 9, ["nullius-graphite"] = 5},
+    outputs = {
+      ["nullius-aluminum-ingot"] = 3,
+      ["nullius-aluminum-carbide"] = 4,
+    },
+  },
+  {
+    id = "large-furnace",
+    base = "nullius-large-furnace-1",
+    recipe = "nullius-boxed-hard-glass",
+    position = {17, 0},
+    heat_pipe_offset = {-1.5, -2.5},
+    inputs = {
+      ["nullius-box-silica"] = 5,
+      ["nullius-box-alumina"] = 3,
+      ["nullius-box-lime"] = 2,
+      ["nullius-box-acid-boric"] = 1,
+    },
+    outputs = {["nullius-box-hard-glass"] = 4},
+  },
+  {
     id = "foundry",
     base = "nullius-foundry-1",
     recipe = "nullius-iron-plate",
-    position = {16, 0},
+    position = {32, 0},
     heat_pipe_offset = {-1, -2},
     inputs = {["nullius-iron-ingot"] = 4},
     outputs = {["nullius-iron-plate"] = 3},
@@ -270,7 +296,7 @@ local function setup()
   surface.request_to_generate_chunks({0, 0}, 2)
   surface.force_generate_chunk_requests()
   for _, entity in ipairs(surface.find_entities_filtered{
-      area = {{-24, -8}, {24, 8}},
+      area = {{-28, -8}, {36, 8}},
       type = {"simple-entity", "tree", "cliff", "resource"},
   }) do
     entity.destroy()
@@ -283,6 +309,7 @@ local function setup()
   for _, test in ipairs(cases) do
     validate_prototype(test)
     force.recipes[test.recipe].enabled = true
+    force.recipes[test.base].enabled = true
     local machine = surface.create_entity{
       name = test.base, position = test.position, force = force,
     }
@@ -302,6 +329,17 @@ local function setup()
   end
 
   technology.researched = true
+  for _, test in ipairs(cases) do
+    force.recipes[test.base].enabled = false
+    local base = entity_at(surface, test.base, test.position)
+    check(base ~= nil, test.id .. " base machine disappeared before recipe gate")
+    if base then
+      toggle(base)
+      check(base.valid and base.name == test.base,
+        test.id .. " entered thermal mode before its base recipe was unlocked")
+    end
+    force.recipes[test.base].enabled = true
+  end
   storage.machines = {}
   for _, test in ipairs(cases) do
     local base = entity_at(surface, test.base, test.position)

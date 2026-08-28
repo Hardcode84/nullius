@@ -40,4 +40,6 @@ end
 
 thermal_variant("nullius-crusher-1")
 thermal_variant("nullius-small-furnace-1")
+thermal_variant("nullius-medium-furnace-1")
+thermal_variant("nullius-large-furnace-1")
 thermal_variant("nullius-foundry-1")
