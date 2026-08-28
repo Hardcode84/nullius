@@ -12,6 +12,7 @@
 | M5 | Produce the first metallurgic science | 10–15 min | 50–90 min |
 | M6 | Reproduce and expand the core factory from local production | 25–40 min | 75–130 min |
 | M7 | Deliver the first stable science batch with the next cycle ready | 15–25 min | 90–155 min |
+| M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
 
 Time basis: first solo playthrough after activation, no prepared layout.
 
@@ -42,7 +43,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -51,6 +52,7 @@ chunk_contract:
 validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
+  renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
 
 scenarios:
   activation:
@@ -467,5 +469,42 @@ scenarios:
         spoil_ticks:
           nullius-molten-iron-bloom: 1800
           nullius-molten-aluminum-bloom: 2400
+
+  hcl-thermal-cracking:
+    milestone: M8
+    given:
+      force: {researched: [nullius-pneumatic-technology]}
+      fluids:
+        lava: infinite
+        nullius-compressed-volcanic-gas: 24
+        nullius-hydrogen-chloride: 60
+    place:
+      heat-producer: {prototype: nullius-hydro-plant-1-pneumatic, at: [32, 0]}
+      radiator: {prototype: nullius-vulcanus-radiator-2, at: [37, 0]}
+      lava-source: {prototype: infinity-pipe, at: auto}
+      gas-sink: {prototype: infinity-pipe, at: auto}
+      stone-sink: {prototype: infinity-chest, at: auto}
+    connect:
+      - heat-producer.owned_heat_interface -> radiator
+    act:
+      - set_recipe: {entity: heat-producer, recipe: nullius-lava-gas-extraction}
+      - set_recipe: {entity: radiator, recipe: nullius-vulcanus-cracking}
+    run: {warmup_ticks: 80000, recipe_ticks: 120, ticks: 80122}
+    expect:
+      before_terminal:
+        tick: 80120
+        produced: 0
+      terminal:
+        produced:
+          nullius-hydrogen: "=30"
+          nullius-chlorine: "=30"
+        consumed: {nullius-hydrogen-chloride: "=60"}
+        temperature:
+          heat-producer-interface: ">=450"
+          radiator: ">=450"
+        direct_heat_connection: true
+        entity:
+          nullius-heat-pipe-1: 0
+          nullius-heat-pipe-2: 0
 
 ```
