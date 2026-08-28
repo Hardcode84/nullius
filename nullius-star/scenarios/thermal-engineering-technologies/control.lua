@@ -2,6 +2,20 @@ local CASE = "thermal-engineering-technologies"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGIES = {
   {
+    name = "nullius-efficient-metallurgic-science",
+    count = 5,
+    seconds = 30,
+    ingredients = {
+      ["nullius-metallurgic-pack"] = 2,
+      ["nullius-geology-pack"] = 2,
+      ["nullius-mechanical-pack"] = 1,
+      ["nullius-electrical-pack"] = 1,
+    },
+    prerequisites = {
+      ["nullius-pneumatic-technology"] = true,
+    },
+  },
+  {
     name = "nullius-thermal-engineering-1",
     count = 5,
     seconds = 30,
@@ -11,7 +25,7 @@ local TECHNOLOGIES = {
       ["nullius-mechanical-pack"] = 1,
     },
     prerequisites = {
-      ["nullius-pneumatic-technology"] = true,
+      ["nullius-efficient-metallurgic-science"] = true,
       ["nullius-mineral-processing-1"] = true,
       ["nullius-metallurgy-1"] = true,
       ["nullius-metalworking-1"] = true,

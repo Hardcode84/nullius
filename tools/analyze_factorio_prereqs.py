@@ -182,6 +182,36 @@ def recipe_results(recipe: Prototype) -> list[Prototype]:
     return []
 
 
+def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
+    recipes: dict[str, Prototype] = data.get("recipe", {})
+    unlockers: dict[str, list[str]] = defaultdict(list)
+    for technology_name, technology in data.get("technology", {}).items():
+        for effect in technology.get("effects") or []:
+            if effect.get("type") == "unlock-recipe":
+                unlockers[effect["recipe"]].append(technology_name)
+
+    descriptions = []
+    for name in names:
+        recipe = recipes.get(name)
+        if recipe is None:
+            raise TestFailure(f"recipe prototype not found: {name}")
+        descriptions.append(
+            {
+                "name": name,
+                "enabled": bool(recipe.get("enabled")),
+                "category": recipe.get("category", "crafting"),
+                "energy_required": float(recipe.get("energy_required", 0.5)),
+                "allow_productivity": bool(recipe.get("allow_productivity")),
+                "maximum_productivity": recipe.get("maximum_productivity"),
+                "ingredients": recipe.get("ingredients") or [],
+                "results": recipe_results(recipe),
+                "surface_conditions": recipe.get("surface_conditions") or [],
+                "unlock_technologies": sorted(unlockers.get(name, [])),
+            }
+        )
+    return descriptions
+
+
 def minable_results(prototype: Prototype) -> list[Prototype]:
     minable = prototype.get("minable") or {}
     if minable.get("results"):
@@ -1130,7 +1160,7 @@ def parse_arguments() -> argparse.Namespace:
         fromfile_prefix_chars="@",
     )
     parser.add_argument(
-        "targets", nargs="+", metavar="ITEM[=COUNT]", type=parse_target
+        "targets", nargs="*", metavar="ITEM[=COUNT]", type=parse_target
     )
     parser.add_argument("--data-raw", type=Path)
     parser.add_argument(
@@ -1213,6 +1243,13 @@ def parse_arguments() -> argparse.Namespace:
         help="fail if the selected route needs technology outside --technology",
     )
     parser.add_argument("--json", action="store_true", dest="json_output")
+    parser.add_argument(
+        "--describe-recipe",
+        action="append",
+        default=[],
+        metavar="RECIPE",
+        help="describe an exact resolved recipe prototype without tracing it",
+    )
     return parser.parse_args()
 
 
@@ -1222,6 +1259,39 @@ def main() -> int:
     try:
         data, run_directory = dump_resolved_data(args)
         merge_prototype_overlay(data, args.prototype_overlay)
+        if args.describe_recipe:
+            if args.targets:
+                raise TestFailure(
+                    "recipe inspection cannot be combined with prerequisite targets"
+                )
+            descriptions = describe_recipes(data, args.describe_recipe)
+            if args.json_output:
+                print(json.dumps(descriptions, indent=2, sort_keys=True))
+            else:
+                for recipe in descriptions:
+                    print(
+                        f"{recipe['name']}: {recipe['energy_required']:g}s "
+                        f"[{recipe['category']}]"
+                    )
+                    print(
+                        "  inputs: "
+                        + ", ".join(
+                            f"{entry.get('amount', 1):g} {entry['name']}"
+                            for entry in recipe["ingredients"]
+                        )
+                    )
+                    print(
+                        "  outputs: "
+                        + ", ".join(
+                            f"{entry.get('amount', 1):g} {entry['name']}"
+                            for entry in recipe["results"]
+                        )
+                    )
+            return 0
+        if not args.targets:
+            raise TestFailure(
+                "provide at least one prerequisite target or --describe-recipe"
+            )
         target_quantities: dict[str, float] = defaultdict(float)
         target_names: list[str] = []
         for target_name, target_count in args.targets:

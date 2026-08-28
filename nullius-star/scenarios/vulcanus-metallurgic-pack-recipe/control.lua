@@ -6,16 +6,16 @@ local GAS = "nullius-compressed-volcanic-gas"
 local PACK = "nullius-metallurgic-pack"
 local INITIAL_TECH = "nullius-pneumatic-technology"
 local MACHINE_POSITION = {20, 0}
-local RECIPE_TICKS = 900
-local CRAFT_TICKS = 1800
-local TERMINAL_TICKS = 1802
-local GAS_INPUT = 88.5
+local RECIPE_TICKS = 3600
+local CRAFT_TICKS = 7200
+local TERMINAL_TICKS = 7202
+local GAS_INPUT = 354
 local INPUTS = {
-  ["nullius-iron-ingot"] = 3,
-  ["nullius-aluminum-ingot"] = 2,
-  ["nullius-crushed-limestone"] = 1,
-  ["nullius-silica"] = 1,
-  sulfur = 1,
+  ["nullius-iron-ingot"] = 12,
+  ["nullius-aluminum-ingot"] = 8,
+  ["nullius-crushed-limestone"] = 4,
+  ["nullius-silica"] = 4,
+  sulfur = 4,
 }
 local OUTPUTS = {[PACK] = 1}
 
@@ -286,23 +286,37 @@ local function setup()
   local connection = machine.fluidbox.get_pipe_connections(gas_box)[1]
   check(connection ~= nil, "compressed-gas energy box has no pipe connection")
   if not connection then finish() return end
-  local gas_pipe = surface.create_entity{
-    name = "pipe",
-    position = connection.target_position,
-    force = force,
-  }
-  check(gas_pipe ~= nil, "failed to connect compressed-gas input pipe")
-  if not gas_pipe then finish() return end
-  storage.gas_entities = {gas_pipe}
-  local inserted_gas = gas_pipe.insert_fluid{
+  local delta_x = connection.target_position.x - machine.position.x
+  local delta_y = connection.target_position.y - machine.position.y
+  local vector
+  if math.abs(delta_x) > math.abs(delta_y) then
+    vector = {delta_x > 0 and 1 or -1, 0}
+  else
+    vector = {0, delta_y > 0 and 1 or -1}
+  end
+  storage.gas_entities = {}
+  for distance = 0, 3 do
+    local gas_pipe = surface.create_entity{
+      name = "pipe",
+      position = {
+        connection.target_position.x + vector[1] * distance,
+        connection.target_position.y + vector[2] * distance,
+      },
+      force = force,
+    }
+    check(gas_pipe ~= nil, "failed to build compressed-gas input pipe")
+    if not gas_pipe then finish() return end
+    storage.gas_entities[#storage.gas_entities + 1] = gas_pipe
+  end
+  local inserted_gas = storage.gas_entities[#storage.gas_entities].insert_fluid{
     name = GAS,
     amount = GAS_INPUT,
     temperature = prototypes.fluid[GAS].default_temperature,
   }
   check(close(inserted_gas, GAS_INPUT),
-    "failed to insert exactly 88.5 compressed volcanic gas")
+    "failed to insert exactly 354 compressed volcanic gas")
   check(close(gas_total(), GAS_INPUT),
-    "gas fixture did not contain exactly 88.5 compressed volcanic gas")
+    "gas fixture did not contain exactly 354 compressed volcanic gas")
 
   local input_inventory = machine.get_inventory(
     defines.inventory.assembling_machine_input)

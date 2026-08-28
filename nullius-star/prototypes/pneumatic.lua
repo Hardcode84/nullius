@@ -49,6 +49,7 @@ register_pneumatic("assembling-machine", "nullius-small-assembler-1")
 register_pneumatic("assembling-machine", "nullius-small-assembler-2")
 register_pneumatic("assembling-machine", "nullius-medium-assembler-1")
 register_pneumatic("assembling-machine", "nullius-medium-assembler-2")
+register_pneumatic("assembling-machine", "nullius-barrel-pump-1")
 
 -- Register inserter (Nullius reuses bob-turbo-inserter as inserter-2).
 register_pneumatic("inserter", "inserter")

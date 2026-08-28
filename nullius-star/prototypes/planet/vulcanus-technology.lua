@@ -38,6 +38,29 @@ end
 data:extend({
   {
     type = "technology",
+    name = "nullius-efficient-metallurgic-science",
+    order = "nullius-df-z",
+    icon = "__base__/graphics/technology/advanced-material-processing-2.png",
+    icon_size = 256,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-metallurgic-pack-efficient"},
+      {type = "unlock-recipe", recipe = "nullius-chlorine-barrel"},
+      {type = "unlock-recipe", recipe = "nullius-sulfur-dioxide-barrel"},
+    },
+    unit = {
+      count = 5,
+      ingredients = {
+        {"nullius-metallurgic-pack", 2},
+        {"nullius-geology-pack", 2},
+        {"nullius-mechanical-pack", 1},
+        {"nullius-electrical-pack", 1},
+      },
+      time = 30,
+    },
+    prerequisites = {"nullius-pneumatic-technology"},
+  },
+  {
+    type = "technology",
     name = "nullius-thermal-engineering-1",
     order = "nullius-dg-a",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",
@@ -53,7 +76,7 @@ data:extend({
       time = 30,
     },
     prerequisites = {
-      "nullius-pneumatic-technology",
+      "nullius-efficient-metallurgic-science",
       "nullius-mineral-processing-1",
       "nullius-metallurgy-1",
       "nullius-metalworking-1",

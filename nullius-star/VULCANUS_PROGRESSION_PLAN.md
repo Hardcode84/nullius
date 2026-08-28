@@ -9,16 +9,17 @@
 | M2 | Make the pneumatic bootstrap self-sustaining | 5–10 min | 10–25 min |
 | M3 | Establish the basic local material palette | 15–25 min | 25–50 min |
 | M4 | Bring heat-dependent metallurgy and chemistry online | 15–25 min | 40–75 min |
-| M5 | Produce the first metallurgic science | 10–15 min | 50–90 min |
+| M5 | Produce the first bootstrap metallurgic science | 15–25 min | 55–100 min |
 | M6 | Reproduce and expand the core factory from local production | 25–40 min | 75–130 min |
-| M7 | Deliver the first stable science batch with the next cycle ready | 15–25 min | 90–155 min |
+| M7 | Accumulate bootstrap metallurgic science | 30–60 min | 105–190 min |
 | M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
 | M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
-| M10 | Scale local science and complete Thermal Engineering 1 | 45–75 min | 210–350 min |
-| M11 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 230–390 min |
-| M12 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 260–440 min |
-| M13 | Unlock and deploy tier-2 thermal industry alongside Nauvis progression | 2–4 h | 6–11 h |
-| M14 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–19 h |
+| M10 | Research and commission efficient hot-bloom metallurgic science | 30–45 min | 195–320 min |
+| M11 | Scale local science and complete Thermal Engineering 1 | 45–75 min | 240–395 min |
+| M12 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 260–435 min |
+| M13 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 290–485 min |
+| M14 | Unlock and deploy tier-2 thermal industry alongside Nauvis progression | 2–4 h | 6–11 h |
+| M15 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–19 h |
 
 Time basis: first solo playthrough after activation, no prepared layout.
 
@@ -49,7 +50,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, efficient-metallurgic-research, efficient-metallurgic-science, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -58,6 +59,7 @@ chunk_contract:
 validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
   inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-barrel.args"
+  efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-efficient-pack.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
@@ -65,8 +67,13 @@ validators:
 
 planned_prototypes:
   technologies:
+    nullius-efficient-metallurgic-science:
+      prerequisites: [nullius-pneumatic-technology]
+      unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 2, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
+      totals: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5}
+      unlocks: [nullius-metallurgic-pack-efficient, nullius-chlorine-barrel, nullius-sulfur-dioxide-barrel]
     nullius-thermal-engineering-1:
-      prerequisites: [nullius-pneumatic-technology, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
+      prerequisites: [nullius-efficient-metallurgic-science, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
       totals: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5}
       unlocks: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal]
@@ -388,20 +395,20 @@ scenarios:
     validator: metallurgic-pack
     given:
       inventory:
-        nullius-iron-ingot: 3
-        nullius-aluminum-ingot: 2
-        nullius-crushed-limestone: 1
-        nullius-silica: 1
-        sulfur: 1
-      fluids: {nullius-compressed-volcanic-gas: 88.5}
+        nullius-iron-ingot: 12
+        nullius-aluminum-ingot: 8
+        nullius-crushed-limestone: 4
+        nullius-silica: 4
+        sulfur: 4
+      fluids: {nullius-compressed-volcanic-gas: 354}
     place:
       assembler: {prototype: nullius-small-assembler-1-pneumatic, at: [0, 0]}
     connect: [gas -> assembler.energy_input]
     act:
       - set_recipe: {entity: assembler, recipe: nullius-metallurgic-pack}
-    run: {recipe_ticks: 900, crafting_speed: 0.5, ticks: 1802}
+    run: {recipe_ticks: 3600, crafting_speed: 0.5, ticks: 7202}
     expect:
-      before_terminal: {tick: 1800, produced: 0}
+      before_terminal: {tick: 7200, produced: 0}
       terminal:
         produced: {nullius-metallurgic-pack: "=1"}
         input_remaining: 0
@@ -501,46 +508,46 @@ scenarios:
         nullius-small-assembler-1: 1
         nullius-vulcanus-radiator-1: 1
         nullius-heat-pipe-1: 30
+      debug_parallel_fixture: {nullius-seawater-intake-1: 7, nullius-hydro-plant-1: 12, nullius-small-furnace-1: 15, nullius-small-assembler-1: 15, nullius-vulcanus-radiator-1: 15}
       stock: {nullius-compressed-volcanic-gas: 24}
-      mined_input: {nullius-graphite: 35, nullius-rutile: 1}
+      mined_input: {nullius-graphite: 135, nullius-rutile: 1}
       lava: nullius-lava-pumping
       injected_intermediates: 0
       heat: {mode: scripted-preheat-per-cycle, heat_pipe_temperature: 250, pneumatic_heat_temperature: 500}
     act:
       - execute_manifest: metallurgic-pack
-    run: {until: targets_complete, ticks: 71046, timeout: 71100}
+    run: {until: targets_complete, ticks: 212788, timeout: 220000, parallel_executors: 16}
     expect:
       terminal:
         produced: {nullius-metallurgic-pack: "=10"}
         selected_steps: "=11"
         consumed:
-          nullius-iron-ingot: 30
-          nullius-aluminum-ingot: 20
-          nullius-crushed-limestone: 10
-          nullius-silica: 10
-          sulfur: 10
-          nullius-compressed-volcanic-gas: 5985
+          nullius-iron-ingot: 120
+          nullius-aluminum-ingot: 80
+          nullius-crushed-limestone: 40
+          nullius-silica: 40
+          sulfur: 40
+          nullius-compressed-volcanic-gas: 23520
         surplus:
-          lava: 115
-          nullius-aluminum-carbide: 28
+          lava: 65
+          nullius-aluminum-carbide: 108
           nullius-aluminum-ingot: 1
-          nullius-compressed-volcanic-gas: 4
+          nullius-compressed-volcanic-gas: 29
           nullius-crushed-limestone: 2
-          nullius-molten-iron-bloom: 2
-          nullius-oxygen: 400
+          nullius-oxygen: 1600
           nullius-rutile: 1
-          nullius-silica: 310
-          stone: 676
+          nullius-silica: 1240
+          stone: 2651
         cycles:
           nullius-metallurgic-pack: 10
-          nullius-aluminum-ingot: 7
-          nullius-so2-catalytic-decomposition: 10
-          nullius-lava-iron-separation: 8
-          nullius-lava-aluminum-separation: 21
-          nullius-lava-calcite-separation: 2
-          nullius-lava-silica-extraction: 40
-          nullius-lava-gas-extraction: 76
-          nullius-lava-pumping: 75
+          nullius-aluminum-ingot: 27
+          nullius-so2-catalytic-decomposition: 40
+          nullius-lava-iron-separation: 30
+          nullius-lava-aluminum-separation: 81
+          nullius-lava-calcite-separation: 7
+          nullius-lava-silica-extraction: 160
+          nullius-lava-gas-extraction: 301
+          nullius-lava-pumping: 291
         spoil_ticks:
           nullius-molten-iron-bloom: 1800
           nullius-molten-aluminum-bloom: 2400
@@ -637,11 +644,67 @@ scenarios:
           nullius-heat-pipe-2: 0
         seawater: 0
 
-  thermal-engineering-1:
+  efficient-metallurgic-research:
     milestone: M10
     given:
-      prior_stage: basic-science-10
-      force: {researched: [nullius-pneumatic-technology, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]}
+      inventory: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5}
+      fluids: {nullius-compressed-volcanic-gas: 712.5}
+    place:
+      lab: {prototype: nullius-lab-1-pneumatic, at: [0, 0]}
+    connect: [gas -> lab.energy_input]
+    act:
+      - set_research: nullius-efficient-metallurgic-science
+      - insert_research_inputs: lab
+    run: {unit_count: 5, unit_time: 30, researching_speed: 1, ticks: 9002}
+    expect:
+      terminal:
+        force: {researched: [nullius-efficient-metallurgic-science]}
+        unlocked: [nullius-metallurgic-pack-efficient, nullius-chlorine-barrel, nullius-sulfur-dioxide-barrel]
+        consumed: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5, nullius-compressed-volcanic-gas: 712.5}
+
+  efficient-metallurgic-science:
+    milestone: M10
+    validator: efficient-metallurgic-science
+    given:
+      force: {researched: [nullius-efficient-metallurgic-science]}
+      inventory:
+        barrel: 2
+        nullius-molten-iron-bloom: 2
+        nullius-molten-aluminum-bloom: 2
+        nullius-crucible: 1
+      fluids:
+        nullius-chlorine: 50
+        nullius-sulfur-dioxide: 50
+        nullius-compressed-volcanic-gas: 108.6
+    place:
+      chlorine-pump: {prototype: nullius-barrel-pump-1-pneumatic, at: [10, -4]}
+      sulfur-dioxide-pump: {prototype: nullius-barrel-pump-1-pneumatic, at: [10, 4]}
+      assembler: {prototype: nullius-medium-assembler-1-pneumatic, at: [20, 0]}
+    connect:
+      - gas -> chlorine-pump.energy_input
+      - gas -> sulfur-dioxide-pump.energy_input
+      - gas -> assembler.energy_input
+    act:
+      - set_recipe: {entity: chlorine-pump, recipe: nullius-chlorine-barrel}
+      - set_recipe: {entity: sulfur-dioxide-pump, recipe: nullius-sulfur-dioxide-barrel}
+      - transfer: {from: chlorine-pump, to: assembler, item: nullius-chlorine-barrel}
+      - transfer: {from: sulfur-dioxide-pump, to: assembler, item: nullius-sulfur-dioxide-barrel}
+      - set_recipe: {entity: assembler, recipe: nullius-metallurgic-pack-efficient}
+    run: {barreling_ticks: 15, recipe_ticks: 900, timeout: 1000}
+    expect:
+      terminal:
+        produced: {nullius-metallurgic-pack: "=5", barrel: "1..2"}
+        expected_barrels: 1.9
+        barrel_productivity_eligible: false
+        pack_productivity_eligible: true
+        input_remaining: 0
+        spoiled: {nullius-iron-ingot: 0, nullius-alumina: 0}
+
+  thermal-engineering-1:
+    milestone: M11
+    given:
+      prior_stage: efficient-metallurgic-science
+      force: {researched: [nullius-efficient-metallurgic-science, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]}
       inventory: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5}
       fluids: {nullius-compressed-volcanic-gas: 712.5}
     place:
@@ -658,7 +721,7 @@ scenarios:
         lab_inputs_contains: [nullius-metallurgic-pack, nullius-geology-pack, nullius-mechanical-pack]
 
   thermal-machine-prototypes:
-    milestone: [M11, M13, M14]
+    milestone: [M12, M14, M15]
     matrix:
       - {tier: 1, base: nullius-crusher-1, thermal: nullius-crusher-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
       - {tier: 1, base: nullius-small-furnace-1, thermal: nullius-small-furnace-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
@@ -687,7 +750,7 @@ scenarios:
         effect_receiver: {base_effect: {productivity: matrix.productivity}}
 
   thermal-cell-1:
-    milestone: M11
+    milestone: M12
     given:
       surface: nauvis
       force: {researched: [nullius-thermal-engineering-1]}
@@ -720,7 +783,7 @@ scenarios:
         items_preserved: {nullius-crusher-1: 5, nullius-small-furnace-1: 5, nullius-foundry-1: 5}
 
   industrial-optimization-1:
-    milestone: M12
+    milestone: M13
     given:
       force: {researched: [nullius-thermal-engineering-1]}
       inventory: {nullius-metallurgic-pack: 300}

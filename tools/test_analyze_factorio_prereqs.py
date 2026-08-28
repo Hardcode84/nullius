@@ -16,12 +16,49 @@ from analyze_factorio_prereqs import (
     add_raw_bootstrap_for_execution,
     analyze,
     build_production_manifest,
+    describe_recipes,
     merge_prototype_overlay,
     parse_target,
 )
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_describes_locked_recipe_without_resolving_ingredients(self) -> None:
+        data = {
+            "recipe": {
+                "bad-science": {
+                    "enabled": False,
+                    "category": "research-crafting",
+                    "energy_required": 120,
+                    "ingredients": [{"name": "unreachable", "amount": 50}],
+                    "results": [{"name": "science", "amount": 1}],
+                }
+            },
+            "technology": {
+                "science-tech": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "bad-science"}
+                    ]
+                }
+            },
+        }
+
+        self.assertEqual(
+            describe_recipes(data, ["bad-science"]),
+            [{
+                "name": "bad-science",
+                "enabled": False,
+                "category": "research-crafting",
+                "energy_required": 120.0,
+                "allow_productivity": False,
+                "maximum_productivity": None,
+                "ingredients": [{"name": "unreachable", "amount": 50}],
+                "results": [{"name": "science", "amount": 1}],
+                "surface_conditions": [],
+                "unlock_technologies": ["science-tech"],
+            }],
+        )
+
     def test_adds_minimum_raw_bootstrap_for_byproduct_cycle(self) -> None:
         steps = [
             {

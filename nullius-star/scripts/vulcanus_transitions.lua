@@ -41,6 +41,7 @@ register_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-
 register_pneumatic_pair("nullius-small-assembler-2", "nullius-small-assembler-2-pneumatic")
 register_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pneumatic")
 register_pneumatic_pair("nullius-medium-assembler-2", "nullius-medium-assembler-2-pneumatic")
+register_pneumatic_pair("nullius-barrel-pump-1", "nullius-barrel-pump-1-pneumatic")
 register_pneumatic_pair("inserter", "inserter-pneumatic")
 register_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
 for i = 1, 3 do
