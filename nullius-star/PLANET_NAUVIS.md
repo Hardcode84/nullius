@@ -194,7 +194,7 @@ Once cargo rockets are available, Nauvis exports:
 
 | Import | Source | Purpose |
 |---|---|---|
-| Titanium | Vulcanus | Advanced alloys, heat-resistant equipment |
+| Rutile or titanium ingots | Vulcanus | Replaces punitive synthetic rutile for scalable advanced alloys and heat-resistant equipment |
 | Advanced polymers | Fulgora | Organic electronics, advanced chemistry |
 | Exotic biochemicals | Gleba | Advanced biology packs, organism progenitors |
 | Tritium, lithium, fusion cells | Aquilo | Solves nuclear bottleneck |

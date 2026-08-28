@@ -297,9 +297,31 @@ Implementation: purely prototype-level. Vulcanus recipes output the unstable ite
 
 These recipes are generally **worse** than Nauvis equivalents (more steps, more ingredients) but they work without organics. The player builds ugly inorganic production lines and moves on.
 
-### 3.4 Titanium (Full Kroll Process -- Vulcanus Native)
+### 3.4 Titanium: Nauvis Bootstrap, Vulcanus Scale
 
-The existing Nullius titanium chain already resembles the Kroll process. On Vulcanus, the chain is:
+| Phase | Titanium source | Contract |
+|---|---|---|
+| Nauvis, before shipments | Synthetic rutile from sand | Complete titanium chain remains possible; bulk production is deliberately uneconomic |
+| Vulcanus | Physical rutile deposits | Bulk titanium source |
+| Nauvis, after shipments | Imported rutile or titanium ingots | Imports bypass the punitive sand, acid, and waste burden |
+
+#### Nauvis synthetic rutile
+
+| Change | Inputs | Outputs | Time | Status |
+|---|---|---|---|---|
+| Delete `nullius-silica-2` | - | - | - | Remove recipe and unlock; without rutile it is dominated by the existing silica recipe |
+| Retune `nullius-rutile` | 50 sand + 150 sulfuric acid | 1 rutile + 80 sludge + 5 mineral dust + 25 carbon dioxide | 12s | Preliminary balance |
+| Reduce titanium-ingot checkpoint | - | First proof batch | - | Target 10% of current requirement, rounded up |
+
+| Invariant | Requirement |
+|---|---|
+| Availability | Nauvis progression cannot hard-require a shipment to make its first titanium products |
+| Scaling | Sustained Nauvis titanium production must require massive quarry, acid, and waste-processing capacity |
+| Checkpoint | Proves the complete titanium chain once; does not require scaling the temporary synthetic-rutile factory |
+| Downstream chemistry | TiCl4, sodium/argon reduction, casting, and working recipes remain unchanged |
+| Vulcanus payoff | Physical material shipments, not a remote research bonus, remove the synthetic-rutile burden |
+
+#### Vulcanus chain
 
 ```
 Deep Deposit (demolisher-exposed)
@@ -320,9 +342,11 @@ Titanium Tetrachloride (TiCl4 fluid)
 Titanium Ingot --> Plate, Sheet, etc.
 ```
 
-**Vulcanus advantage**: Chlorine is abundant from volcanic HCl processing. On Nauvis, chlorine is the bottleneck byproduct. On Vulcanus, the volcanic gas provides HCl directly, and chlorine sinks are plentiful (volcanic calcium compounds). The Kroll process that's painful on Nauvis is natural on Vulcanus.
-
-**Vulcanus disadvantage**: Needs sodium (from where? Probably imported or from trace lava extraction) and argon (from volcanic gas separation).
+| Property | Effect |
+|---|---|
+| Abundant volcanic HCl | Chlorine-intensive Kroll chemistry scales naturally |
+| Physical rutile deposits | Removes Nauvis sand and sulfuric-acid multiplication |
+| Sodium and argon demand | Remains part of the ingot-production infrastructure |
 
 ### 3.5 Calcite and Calcium
 
