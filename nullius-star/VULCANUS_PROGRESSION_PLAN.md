@@ -14,6 +14,11 @@
 | M7 | Deliver the first stable science batch with the next cycle ready | 15–25 min | 90–155 min |
 | M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
 | M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
+| M10 | Scale local science and complete Thermal Engineering 1 | 45–75 min | 210–350 min |
+| M11 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 230–390 min |
+| M12 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 260–440 min |
+| M13 | Unlock and deploy tier-2 thermal industry alongside Nauvis progression | 2–4 h | 6–11 h |
+| M14 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–19 h |
 
 Time basis: first solo playthrough after activation, no prepared layout.
 
@@ -44,7 +49,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, thermal-engineering-1, thermal-cell-1, industrial-optimization-1]
   supporting: [pneumatic-heat]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -55,6 +60,49 @@ validators:
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
+
+planned_prototypes:
+  technologies:
+    nullius-thermal-engineering-1:
+      prerequisites: [nullius-pneumatic-technology, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
+      unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
+      totals: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5}
+      unlocks: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-foundry-1-thermal]
+    nullius-thermal-engineering-2:
+      prerequisites: [nullius-thermal-engineering-1, nullius-mineral-processing-2, nullius-metallurgy-2, nullius-metalworking-2, nullius-thermal-storage-2, nullius-solar-thermal-power-2]
+      unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 80, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
+      totals: {nullius-metallurgic-pack: 800, nullius-geology-pack: 20, nullius-mechanical-pack: 10, nullius-electrical-pack: 10}
+      unlocks: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-foundry-2-thermal]
+    nullius-thermal-engineering-3:
+      prerequisites: [nullius-thermal-engineering-2, nullius-mineral-processing-3, nullius-metallurgy-3, nullius-metalworking-4, nullius-thermal-storage-3, nullius-nuclear-power-1]
+      unit: {count: 20, time: 60, ingredients: {nullius-metallurgic-pack: 160, nullius-geology-pack: 2, nullius-climatology-pack: 1, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
+      totals: {nullius-metallurgic-pack: 3200, nullius-geology-pack: 40, nullius-climatology-pack: 20, nullius-mechanical-pack: 20, nullius-electrical-pack: 20}
+      unlocks: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-foundry-3-thermal]
+    repeatable:
+      common: {max_level: infinite, count_formula: "100*L^2", time: 30, ingredients: {nullius-metallurgic-pack: 1}, change_per_level: 0.01}
+      branches:
+        nullius-crushing-productivity-1: {prerequisites: [nullius-thermal-engineering-1, nullius-mineral-processing-1], categories: [ore-crushing]}
+        nullius-smelting-productivity-1: {prerequisites: [nullius-thermal-engineering-1, nullius-metallurgy-1], categories: [dry-smelting]}
+        nullius-casting-productivity-1: {prerequisites: [nullius-thermal-engineering-1, nullius-metalworking-1], categories: [machine-casting]}
+      recipe_selector: {category_or_additional_category: branch.categories, exclude: {maximum_productivity: 0}}
+  entities:
+    common:
+      source: corresponding_electric_entity
+      placeable_by: corresponding_base_item
+      minable_result: corresponding_base_item
+      energy_source: heat
+      crafting_speed: unchanged
+      module_slots: unchanged
+      allowed_effects: unchanged
+      crafting_categories: unchanged
+    tiers:
+      1: {entities: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-foundry-1-thermal], base_productivity: 0.05, min_temperature: 100, max_temperature: 250, distribution: nullius-heat-pipe-1, source: nullius-solar-collector-1}
+      2: {entities: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-foundry-2-thermal], base_productivity: 0.10, min_temperature: 200, max_temperature: 500, distribution: nullius-heat-pipe-2, source: nullius-solar-collector-2}
+      3: {entities: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-foundry-3-thermal], base_productivity: 0.15, min_temperature: 500, max_temperature: 1500, distribution: nullius-heat-pipe-3, source: nullius-reactor}
+  transitions:
+    nauvis: {before: electric, after: thermal, input: Ctrl+R, research: corresponding_nullius_thermal_engineering_tier}
+    nullius-vulcanus: {before: electric, after: pneumatic, input: Ctrl+R, unchanged: true}
+    other_surfaces: {transition: none}
 
 scenarios:
   activation:
@@ -562,5 +610,111 @@ scenarios:
           direct_connection: true
           nullius-heat-pipe-2: 0
         seawater: 0
+
+  thermal-engineering-1:
+    milestone: M10
+    given:
+      prior_stage: basic-science-10
+      force: {researched: [nullius-pneumatic-technology, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]}
+      inventory: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5}
+      fluids: {nullius-compressed-volcanic-gas: 712.5}
+    place:
+      lab: {prototype: nullius-lab-1-pneumatic, at: [0, 0]}
+    connect: [gas -> lab.energy_input]
+    act:
+      - set_research: nullius-thermal-engineering-1
+      - insert_research_inputs: lab
+    run: {unit_count: 5, unit_time: 30, researching_speed: 1, ticks: 9002}
+    expect:
+      terminal:
+        force: {researched: [nullius-thermal-engineering-1]}
+        consumed: {nullius-metallurgic-pack: 200, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-compressed-volcanic-gas: 712.5}
+        lab_inputs_contains: [nullius-metallurgic-pack, nullius-geology-pack, nullius-mechanical-pack]
+        transitions_enabled: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-foundry-1-thermal]
+
+  thermal-machine-prototypes:
+    milestone: [M11, M13, M14]
+    matrix:
+      - {tier: 1, base: nullius-crusher-1, thermal: nullius-crusher-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-small-furnace-1, thermal: nullius-small-furnace-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-foundry-1, thermal: nullius-foundry-1-thermal, research: nullius-thermal-engineering-1, productivity: 0.05, min_temperature: 100, max_temperature: 250}
+      - {tier: 2, base: nullius-crusher-2, thermal: nullius-crusher-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-small-furnace-2, thermal: nullius-small-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-foundry-2, thermal: nullius-foundry-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
+      - {tier: 3, base: nullius-crusher-3, thermal: nullius-crusher-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-small-furnace-3, thermal: nullius-small-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-foundry-3, thermal: nullius-foundry-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
+    expect:
+      prototype:
+        item_to_place: matrix.base
+        minable_result: matrix.base
+        crafting_speed: "=base.crafting_speed"
+        crafting_categories: "=base.crafting_categories"
+        module_slots: "=base.module_slots"
+        allowed_effects: "=base.allowed_effects"
+        energy_usage: "=base.energy_usage"
+        energy_source: {type: heat, min_temperature: matrix.min_temperature, max_temperature: matrix.max_temperature}
+        effect_receiver: {base_effect: {productivity: matrix.productivity}}
+
+  thermal-cell-1:
+    milestone: M11
+    given:
+      surface: nauvis
+      force: {researched: [nullius-thermal-engineering-1]}
+      inventory: {nullius-solar-collector-1: 6, nullius-heat-pipe-1: 30, nullius-crusher-1: 1, nullius-small-furnace-1: 1, nullius-foundry-1: 1}
+      recipe_inputs: {nullius-limestone: 800, nullius-alumina: 900, nullius-graphite: 500, nullius-iron-ingot: 400}
+      modules: 0
+    place:
+      heat-source: {prototype: nullius-solar-collector-1, count: 6, at: auto}
+      heat-pipe: {prototype: nullius-heat-pipe-1, count: "<=30", at: auto}
+      crusher: {prototype: nullius-crusher-1, at: auto}
+      furnace: {prototype: nullius-small-furnace-1, at: auto}
+      foundry: {prototype: nullius-foundry-1, at: auto}
+    connect: ["heat-source[*] -> heat-pipe", "heat-pipe -> crusher", "heat-pipe -> furnace", "heat-pipe -> foundry"]
+    act:
+      - rotate_mode: {entities: [crusher, furnace, foundry], mode: thermal}
+      - set_recipe: {entity: crusher, recipe: nullius-crushed-limestone}
+      - set_recipe: {entity: furnace, recipe: nullius-aluminum-ingot}
+      - set_recipe: {entity: foundry, recipe: nullius-iron-plate}
+    run: {base_cycles: 100, until: all_inputs_consumed, timeout: 300000}
+    expect:
+      terminal:
+        entities: {crusher: nullius-crusher-1-thermal, furnace: nullius-small-furnace-1-thermal, foundry: nullius-foundry-1-thermal}
+        temperature: {crusher: ">=100", furnace: ">=100", foundry: ">=100"}
+        consumed: {nullius-limestone: 800, nullius-alumina: 900, nullius-graphite: 500, nullius-iron-ingot: 400}
+        produced: {nullius-crushed-limestone: 525, stone: 315, nullius-aluminum-ingot: 315, nullius-aluminum-carbide: 420, nullius-iron-plate: 315}
+        productivity_bonus: {crusher: 0.05, furnace: 0.05, foundry: 0.05}
+        electric_energy_consumed_by_process_machines: 0
+        items_preserved: {nullius-crusher-1: 1, nullius-small-furnace-1: 1, nullius-foundry-1: 1}
+
+  industrial-optimization-1:
+    milestone: M12
+    given:
+      force: {researched: [nullius-thermal-engineering-1]}
+      inventory: {nullius-metallurgic-pack: 300}
+    matrix:
+      - {technology: nullius-crushing-productivity-1, recipe: nullius-crushed-limestone, unrelated: nullius-aluminum-ingot}
+      - {technology: nullius-smelting-productivity-1, recipe: nullius-aluminum-ingot, unrelated: nullius-iron-plate}
+      - {technology: nullius-casting-productivity-1, recipe: nullius-iron-plate, unrelated: nullius-crushed-limestone}
+    act:
+      - research_each: matrix.technology
+    run: {levels_each: 1, level_cost: 100, total_units: 300}
+    expect:
+      terminal:
+        consumed: {nullius-metallurgic-pack: 300}
+        technology_level: {nullius-crushing-productivity-1: 2, nullius-smelting-productivity-1: 2, nullius-casting-productivity-1: 2}
+        recipe_productivity_bonus: {nullius-crushed-limestone: 0.01, nullius-aluminum-ingot: 0.01, nullius-iron-plate: 0.01}
+        next_level_cost: {nullius-crushing-productivity-1: 400, nullius-smelting-productivity-1: 400, nullius-casting-productivity-1: 400}
+        downstream_technology_prerequisites_added: 0
+
+implementation_holes:
+  - {id: metallurgic-lab-input, required_by: thermal-engineering-1, current_failure: "no lab accepts nullius-metallurgic-pack", fix: "add pack to nullius-lab-1 inputs and inherited lab variants"}
+  - {id: thermal-technologies, required_by: [M10, M13, M14], missing: [nullius-thermal-engineering-1, nullius-thermal-engineering-2, nullius-thermal-engineering-3]}
+  - {id: thermal-entities, required_by: [M11, M13, M14], missing: [nullius-crusher-1-thermal, nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-1-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-foundry-1-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
+  - {id: nauvis-transition, required_by: thermal-cell-1, current: "Ctrl+R supports Vulcanus electric-pneumatic only", fix: "add Nauvis electric-thermal pairs gated by thermal engineering tier"}
+  - {id: solar-heat-throughput, required_by: thermal-cell-1, current: "nullius-solar-collector-1 consumption is 150W; tier-1 process machines total 316kW", fix: "define and validate collector heat output above connected process demand plus network losses"}
+  - {id: repeatable-technologies, required_by: M12, missing: [nullius-crushing-productivity-1, nullius-smelting-productivity-1, nullius-casting-productivity-1]}
+  - {id: recipe-family-generator, required_by: repeatable-technologies, fix: "generate change-recipe-productivity effects from resolved recipe categories; exclude maximum_productivity=0"}
+  - {id: thermal-test-contracts, required_by: [M10, M11, M12], missing: [vulcanus-thermal-engineering.args, thermal-engineering-1, thermal-machine-prototypes, thermal-cell-1, industrial-optimization-1]}
 
 ```
