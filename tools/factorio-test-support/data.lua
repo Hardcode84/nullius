@@ -1,6 +1,8 @@
 local category = "factorio-test-innate-productivity"
 local input = "factorio-test-productivity-input"
 local output = "factorio-test-productivity-output"
+local family_primary = "factorio-test-family-primary"
+local family_additional = "factorio-test-family-additional"
 
 local machine = table.deepcopy(data.raw["assembling-machine"]["nullius-small-assembler-1"])
 machine.name = "factorio-test-innate-productivity-machine"
@@ -36,6 +38,8 @@ data:extend({
     stack_size = 1000,
   },
   {type = "recipe-category", name = category},
+  {type = "recipe-category", name = family_primary},
+  {type = "recipe-category", name = family_additional},
   {
     type = "recipe",
     name = "factorio-test-productivity-rejected",
@@ -82,6 +86,54 @@ data:extend({
     allow_productivity = false,
     maximum_productivity = 0,
   },
+  {
+    type = "recipe",
+    name = "factorio-test-family-a-primary",
+    enabled = false,
+    hidden = true,
+    category = family_primary,
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+  },
+  {
+    type = "recipe",
+    name = "factorio-test-family-b-additional",
+    enabled = false,
+    hidden = true,
+    category = category,
+    additional_categories = {family_additional},
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+  },
+  {
+    type = "recipe",
+    name = "factorio-test-family-c-both",
+    enabled = false,
+    hidden = true,
+    category = family_primary,
+    additional_categories = {family_additional},
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+  },
+  {
+    type = "recipe",
+    name = "factorio-test-family-d-zero-cap",
+    enabled = false,
+    hidden = true,
+    category = family_primary,
+    maximum_productivity = 0,
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+  },
+  {
+    type = "recipe",
+    name = "factorio-test-family-e-unrelated",
+    enabled = false,
+    hidden = true,
+    category = category,
+    ingredients = {{type = "item", name = input, amount = 1}},
+    results = {{type = "item", name = output, amount = 1}},
+  },
   machine,
   {
     type = "technology",
@@ -105,3 +157,41 @@ data:extend({
     },
   },
 })
+
+local family_generator =
+  require("__nullius-star__/prototypes/recipe-productivity")
+local family_effects = family_generator.effects(
+  {family_additional, family_primary}, 0.01)
+local expected_family_recipes = {
+  "factorio-test-family-a-primary",
+  "factorio-test-family-b-additional",
+  "factorio-test-family-c-both",
+}
+
+assert(#family_effects == #expected_family_recipes,
+  "recipe family generator selected an unexpected number of recipes")
+for index, expected_recipe in ipairs(expected_family_recipes) do
+  local effect = family_effects[index]
+  assert(effect.type == "change-recipe-productivity",
+    "recipe family generator emitted an unexpected effect type")
+  assert(effect.recipe == expected_recipe,
+    "recipe family generator order mismatch at index " .. index)
+  assert(effect.change == 0.01,
+    "recipe family generator emitted an unexpected change")
+end
+
+data:extend({{
+  type = "technology",
+  name = "factorio-test-recipe-productivity-family",
+  localised_name = "Recipe productivity family test",
+  icon = "__base__/graphics/technology/research-speed.png",
+  icon_size = 256,
+  enabled = false,
+  visible_when_disabled = false,
+  effects = family_effects,
+  unit = {
+    count = 1,
+    ingredients = {{"nullius-geology-pack", 1}},
+    time = 1,
+  },
+}})
