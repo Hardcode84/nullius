@@ -228,6 +228,18 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         technologies, set(args.technology)
     )
     surface_properties = dict(args.surface_property)
+    forbidden_categories = set(getattr(args, "forbid_category", []))
+    recipe_categories = {
+        recipe.get("category", "crafting") for recipe in recipes.values()
+    }
+    unknown_forbidden_categories = sorted(
+        forbidden_categories - recipe_categories
+    )
+    if unknown_forbidden_categories:
+        raise TestFailure(
+            "unknown forbidden crafting categories: "
+            + ", ".join(unknown_forbidden_categories)
+        )
 
     producers: dict[str, list[str]] = defaultdict(list)
     eligible_recipes: set[str] = set()
@@ -239,7 +251,11 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     )
 
     for recipe_name, recipe in recipes.items():
-        if recipe.get("category", "crafting") in IGNORED_RECIPE_CATEGORIES:
+        category = recipe.get("category", "crafting")
+        if (
+            category in IGNORED_RECIPE_CATEGORIES
+            or category in forbidden_categories
+        ):
             continue
         if recipe.get("hidden") or not allowed_on_surface(recipe, surface_properties):
             continue
@@ -642,6 +658,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "available": sorted(available),
         "available_machines": sorted(available_machines),
         "raw": sorted(raw),
+        "forbidden_categories": sorted(forbidden_categories),
         "selected_recipes": selected,
         "required_technologies": sorted(required_technologies),
         "crafting_categories": {
@@ -909,6 +926,8 @@ def build_production_manifest(
 
 def print_human(report: Prototype) -> None:
     print("Targets: " + ", ".join(report["targets"]))
+    forbidden = ", ".join(report["forbidden_categories"]) or "none"
+    print("Forbidden crafting categories: " + forbidden)
     print(f"Selected production steps: {len(report['selected_recipes'])}")
     for step in report["selected_recipes"]:
         ingredients = ", ".join(
@@ -1057,6 +1076,13 @@ def parse_arguments() -> argparse.Namespace:
         default=[],
         metavar="CATEGORY",
         help="require a placeable machine even when a character can craft the category",
+    )
+    parser.add_argument(
+        "--forbid-category",
+        action="append",
+        default=[],
+        metavar="CATEGORY",
+        help="exclude a crafting category unavailable at the campaign boundary",
     )
     parser.add_argument(
         "--fuel",

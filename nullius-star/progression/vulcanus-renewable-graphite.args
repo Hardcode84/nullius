@@ -3,6 +3,8 @@ nullius-pneumatic-technology
 --require-no-additional-technologies
 --surface-property
 nullius-ambient-temperature=200
+--forbid-category
+seawater-pumping
 --raw
 nullius-hydrogen-chloride
 --available-machine

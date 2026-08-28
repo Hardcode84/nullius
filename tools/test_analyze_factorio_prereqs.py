@@ -351,6 +351,83 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
         self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
 
+    def test_forbidden_category_excludes_impossible_machine_mode(self) -> None:
+        data = {
+            "item": {
+                "intake": {"name": "intake", "place_result": "seawater-intake"},
+            },
+            "recipe": {
+                "seawater": {
+                    "name": "seawater",
+                    "enabled": True,
+                    "category": "seawater-pumping",
+                    "ingredients": [],
+                    "results": [{"name": "seawater", "amount": 1}],
+                },
+                "lava": {
+                    "name": "lava",
+                    "enabled": True,
+                    "category": "lava-pumping",
+                    "ingredients": [],
+                    "results": [{"name": "lava", "amount": 1}],
+                },
+                "a-normal-pack": {
+                    "name": "a-normal-pack",
+                    "enabled": True,
+                    "ingredients": [{"name": "seawater", "amount": 1}],
+                    "results": [{"name": "pack", "amount": 1}],
+                },
+                "b-volcanic-pack": {
+                    "name": "b-volcanic-pack",
+                    "enabled": True,
+                    "ingredients": [{"name": "lava", "amount": 1}],
+                    "results": [{"name": "pack", "amount": 1}],
+                },
+            },
+            "assembling-machine": {
+                "seawater-intake": {
+                    "name": "seawater-intake",
+                    "crafting_categories": ["seawater-pumping"],
+                    "minable": {"result": "intake"},
+                },
+                "lava-intake": {
+                    "name": "lava-intake",
+                    "crafting_categories": ["lava-pumping"],
+                    "minable": {"result": "intake"},
+                },
+            },
+            "character": {
+                "character": {"crafting_categories": ["crafting"]},
+            },
+        }
+        args = SimpleNamespace(
+            targets=["pack"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=["intake"],
+            raw=[],
+            forbid_category=["seawater-pumping"],
+        )
+
+        report = analyze(data, args)
+
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual(report["forbidden_categories"], ["seawater-pumping"])
+        selected = {
+            step["product"]: step["producer"]
+            for step in report["selected_recipes"]
+        }
+        self.assertEqual(selected["pack"], "b-volcanic-pack")
+        self.assertEqual(selected["lava"], "lava")
+        self.assertNotIn("seawater", selected)
+
+        args.forbid_category = ["typo-pumping"]
+        with self.assertRaisesRegex(
+            TestFailure, "unknown forbidden crafting categories: typo-pumping"
+        ):
+            analyze(data, args)
+
     def test_target_counts_and_overlay_fail_closed(self) -> None:
         self.assertEqual(parse_target("item"), ("item", 1))
         self.assertEqual(parse_target("item=2.5"), ("item", 2.5))

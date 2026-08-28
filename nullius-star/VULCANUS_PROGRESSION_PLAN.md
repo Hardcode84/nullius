@@ -53,6 +53,7 @@ validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
+  basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
 
 scenarios:
   activation:

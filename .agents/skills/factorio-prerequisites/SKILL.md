@@ -35,6 +35,10 @@ Declare the starting contract explicitly:
 - `--machine-category CATEGORY` forbids hand crafting for that category.
 - `--surface-property NAME=VALUE` excludes recipes incompatible with a declared
   surface property.
+- `--forbid-category CATEGORY` excludes an operation unavailable at the
+  campaign boundary even when a shared machine item can execute it elsewhere.
+  For example, forbid `seawater-pumping` on a surface without seawater while
+  retaining the same intake item's lava-pumping mode.
 - `--require-no-additional-technologies` makes undeclared research a failing
   contract. Without it, the report lists the additional research closure.
 
