@@ -30,6 +30,10 @@ Declare the starting contract explicitly:
   or starting equipment.
 - `--recipe PRODUCT=RECIPE` selects the intended route when several recipes
   produce the same product.
+- `--find-dependency ITEM` reports recursive ingredient paths from every target
+  to that item at the declared technology and surface boundary. Repeat it for a
+  material family. Implicit routes follow only a recipe's primary product; use
+  `--recipe PRODUCT=RECIPE` to select an intentional byproduct route.
 - `--executor CATEGORY=ENTITY` selects the exact runtime entity whose crafting
   speed and energy source define the manifest.
 - `--machine-category CATEGORY` forbids hand crafting for that category.

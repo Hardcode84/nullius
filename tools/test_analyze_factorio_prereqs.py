@@ -17,12 +17,263 @@ from analyze_factorio_prereqs import (
     analyze,
     build_production_manifest,
     describe_recipes,
+    find_dependency_paths,
     merge_prototype_overlay,
     parse_target,
 )
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_finds_structural_dependency_at_technology_boundary(self) -> None:
+        data = {
+            "item": {
+                "science": {},
+                "machine": {},
+                "titanium": {},
+                "steel": {},
+            },
+            "recipe": {
+                "make-science": {
+                    "enabled": False,
+                    "ingredients": [{"name": "machine", "amount": 1}],
+                    "results": [{"name": "science", "amount": 1}],
+                },
+                "make-machine": {
+                    "enabled": False,
+                    "ingredients": [
+                        {"name": "steel", "amount": 2},
+                        {"name": "titanium", "amount": 1},
+                    ],
+                    "results": [{"name": "machine", "amount": 1}],
+                },
+            },
+            "technology": {
+                "machines": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "make-machine"}
+                    ]
+                },
+                "science": {
+                    "prerequisites": ["machines"],
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "make-science"}
+                    ],
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["science"],
+            technology=["science"],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[],
+            available=[],
+            raw=[],
+        )
+
+        report = find_dependency_paths(data, args, ["titanium"])
+
+        self.assertEqual(report["missing"], [])
+        self.assertEqual(
+            report["matches"][0]["path"],
+            [
+                {
+                    "product": "science",
+                    "producer": "make-science",
+                    "ingredient": "machine",
+                },
+                {
+                    "product": "machine",
+                    "producer": "make-machine",
+                    "ingredient": "titanium",
+                },
+            ],
+        )
+
+    def test_dependency_query_excludes_recipes_beyond_boundary(self) -> None:
+        data = {
+            "item": {"target": {}, "ore": {}, "titanium": {}},
+            "recipe": {
+                "base-route": {
+                    "enabled": False,
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+                "later-route": {
+                    "enabled": False,
+                    "ingredients": [{"name": "titanium", "amount": 1}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+            },
+            "technology": {
+                "base": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "base-route"}
+                    ]
+                },
+                "later": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "later-route"}
+                    ]
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=["base"],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[],
+            available=[],
+            raw=[],
+        )
+
+        report = find_dependency_paths(data, args, ["titanium"])
+
+        self.assertEqual(report["matches"], [])
+        self.assertEqual(
+            report["missing"],
+            [{"target": "target", "dependency": "titanium"}],
+        )
+
+    def test_dependency_query_ignores_byproduct_as_implicit_route(self) -> None:
+        data = {
+            "item": {
+                "target": {},
+                "waste": {},
+                "titanium": {},
+                "useful-product": {},
+            },
+            "recipe": {
+                "make-target": {
+                    "enabled": True,
+                    "ingredients": [{"name": "waste", "amount": 1}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+                "titanium-process": {
+                    "enabled": True,
+                    "main_product": "useful-product",
+                    "ingredients": [{"name": "titanium", "amount": 1}],
+                    "results": [
+                        {"name": "useful-product", "amount": 1},
+                        {"name": "waste", "amount": 1},
+                    ],
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[],
+            available=[],
+            raw=[],
+        )
+
+        report = find_dependency_paths(data, args, ["titanium"])
+
+        self.assertEqual(report["matches"], [])
+
+    def test_dependency_query_can_explicitly_select_byproduct_route(self) -> None:
+        data = {
+            "item": {
+                "target": {},
+                "waste": {},
+                "titanium": {},
+                "useful-product": {},
+            },
+            "recipe": {
+                "make-target": {
+                    "enabled": True,
+                    "ingredients": [{"name": "waste", "amount": 1}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+                "titanium-process": {
+                    "enabled": True,
+                    "main_product": "useful-product",
+                    "ingredients": [{"name": "titanium", "amount": 1}],
+                    "results": [
+                        {"name": "useful-product", "amount": 1},
+                        {"name": "waste", "amount": 1},
+                    ],
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[("waste", "titanium-process")],
+            available=[],
+            raw=[],
+        )
+
+        report = find_dependency_paths(data, args, ["titanium"])
+
+        self.assertEqual(
+            report["matches"][0]["path"],
+            [
+                {
+                    "product": "target",
+                    "producer": "make-target",
+                    "ingredient": "waste",
+                },
+                {
+                    "product": "waste",
+                    "producer": "titanium-process",
+                    "ingredient": "titanium",
+                },
+            ],
+        )
+
+    def test_dependency_query_stops_at_declared_boundary(self) -> None:
+        data = {
+            "item": {"target": {}, "assembly": {}, "titanium": {}},
+            "recipe": {
+                "make-target": {
+                    "enabled": True,
+                    "ingredients": [{"name": "assembly", "amount": 1}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+                "make-assembly": {
+                    "enabled": True,
+                    "ingredients": [{"name": "titanium", "amount": 1}],
+                    "results": [{"name": "assembly", "amount": 1}],
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[],
+            available=["assembly"],
+            raw=[],
+        )
+
+        report = find_dependency_paths(data, args, ["titanium"])
+
+        self.assertEqual(report["matches"], [])
+
+    def test_dependency_query_rejects_unknown_product(self) -> None:
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            forbid_category=[],
+            recipe=[],
+            available=[],
+            raw=[],
+        )
+
+        with self.assertRaisesRegex(TestFailure, "products are unknown: missing"):
+            find_dependency_paths(
+                {"item": {"target": {}}}, args, ["missing"]
+            )
+
     def test_describes_locked_recipe_without_resolving_ingredients(self) -> None:
         data = {
             "recipe": {

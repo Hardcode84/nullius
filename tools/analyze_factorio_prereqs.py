@@ -182,6 +182,17 @@ def recipe_results(recipe: Prototype) -> list[Prototype]:
     return []
 
 
+def recipe_primary_products(recipe: Prototype) -> list[str]:
+    """Return products that may implicitly select this recipe as their route."""
+    main_product = recipe.get("main_product")
+    if main_product:
+        return [main_product]
+    results = recipe_results(recipe)
+    if len(results) == 1:
+        return [results[0]["name"]]
+    return []
+
+
 def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
     recipes: dict[str, Prototype] = data.get("recipe", {})
     unlockers: dict[str, list[str]] = defaultdict(list)
@@ -249,6 +260,172 @@ def technology_closure(
         if technology is not None:
             pending.extend(technology.get("prerequisites") or [])
     return closure
+
+
+def find_dependency_paths(
+    data: Prototype,
+    args: argparse.Namespace,
+    dependencies: list[str],
+) -> Prototype:
+    """Find shortest structural recipe paths from targets to dependencies."""
+    recipes: dict[str, Prototype] = data.get("recipe", {})
+    technologies: dict[str, Prototype] = data.get("technology", {})
+    assumed_technologies = technology_closure(
+        technologies, set(args.technology)
+    )
+    surface_properties = dict(args.surface_property)
+    forbidden_categories = set(getattr(args, "forbid_category", []))
+    recipe_categories = {
+        recipe.get("category", "crafting") for recipe in recipes.values()
+    }
+    unknown_forbidden_categories = sorted(
+        forbidden_categories - recipe_categories
+    )
+    if unknown_forbidden_categories:
+        raise TestFailure(
+            "unknown forbidden crafting categories: "
+            + ", ".join(unknown_forbidden_categories)
+        )
+
+    unlockers: dict[str, list[str]] = defaultdict(list)
+    for technology_name, technology in technologies.items():
+        for effect in technology.get("effects") or []:
+            if effect.get("type") == "unlock-recipe":
+                unlockers[effect["recipe"]].append(technology_name)
+
+    def available_at_boundary(recipe_name: str) -> bool:
+        recipe = recipes[recipe_name]
+        if recipe.get("enabled"):
+            return True
+        return any(
+            technology_closure(technologies, {technology_name})
+            <= assumed_technologies
+            for technology_name in unlockers.get(recipe_name, [])
+        )
+
+    producers: dict[str, list[str]] = defaultdict(list)
+    eligible_recipes: set[str] = set()
+    known_products: set[str] = set()
+    for prototype_type in ("item", "fluid", "tool"):
+        known_products.update(data.get(prototype_type, {}))
+    for recipe_name, recipe in recipes.items():
+        for ingredient in recipe.get("ingredients") or []:
+            known_products.add(ingredient["name"])
+        for result in recipe_results(recipe):
+            known_products.add(result["name"])
+        category = recipe.get("category", "crafting")
+        if (
+            category in IGNORED_RECIPE_CATEGORIES
+            or category in forbidden_categories
+            or recipe.get("hidden")
+            or not allowed_on_surface(recipe, surface_properties)
+            or not available_at_boundary(recipe_name)
+        ):
+            continue
+        eligible_recipes.add(recipe_name)
+        for product in recipe_primary_products(recipe):
+            producers[product].append(recipe_name)
+
+    unknown_targets = sorted(set(args.targets) - known_products)
+    if unknown_targets:
+        raise TestFailure(
+            "dependency query targets are unknown: " + ", ".join(unknown_targets)
+        )
+    unknown_dependencies = sorted(set(dependencies) - known_products)
+    if unknown_dependencies:
+        raise TestFailure(
+            "dependency query products are unknown: "
+            + ", ".join(unknown_dependencies)
+        )
+
+    recipe_overrides = dict(getattr(args, "recipe", []))
+    for product, recipe_name in recipe_overrides.items():
+        recipe = recipes.get(recipe_name)
+        if recipe is None:
+            raise TestFailure(
+                f"dependency-query recipe does not exist: {recipe_name}"
+            )
+        if product not in {
+            result["name"] for result in recipe_results(recipe)
+        }:
+            raise TestFailure(
+                f"dependency-query recipe {recipe_name} does not produce {product}"
+            )
+        if recipe_name not in eligible_recipes:
+            raise TestFailure(
+                f"recipe {recipe_name} is not available for dependency-query "
+                f"product {product} at the declared boundary"
+            )
+        if recipe_name not in producers[product]:
+            producers[product].append(recipe_name)
+
+    boundaries = set(getattr(args, "available", [])) | set(
+        getattr(args, "raw", [])
+    )
+    edges: dict[str, list[Prototype]] = defaultdict(list)
+    for product, candidate_names in producers.items():
+        if product in boundaries:
+            continue
+        selected_names = candidate_names
+        if product in recipe_overrides:
+            selected_names = [recipe_overrides[product]]
+        for recipe_name in selected_names:
+            for ingredient in recipes[recipe_name].get("ingredients") or []:
+                edges[product].append(
+                    {
+                        "product": product,
+                        "producer": recipe_name,
+                        "ingredient": ingredient["name"],
+                    }
+                )
+        edges[product].sort(
+            key=lambda edge: (edge["ingredient"], edge["producer"])
+        )
+
+    matches = []
+    missing = []
+    for target in args.targets:
+        for dependency in dependencies:
+            if target == dependency:
+                matches.append(
+                    {"target": target, "dependency": dependency, "path": []}
+                )
+                continue
+            pending: deque[tuple[str, list[Prototype]]] = deque([(target, [])])
+            visited = {target}
+            match_path: list[Prototype] | None = None
+            while pending and match_path is None:
+                product, path = pending.popleft()
+                for edge in edges.get(product, []):
+                    next_product = edge["ingredient"]
+                    next_path = [*path, edge]
+                    if next_product == dependency:
+                        match_path = next_path
+                        break
+                    if next_product not in visited:
+                        visited.add(next_product)
+                        pending.append((next_product, next_path))
+            if match_path is None:
+                missing.append({"target": target, "dependency": dependency})
+            else:
+                matches.append(
+                    {
+                        "target": target,
+                        "dependency": dependency,
+                        "path": match_path,
+                    }
+                )
+
+    return {
+        "targets": list(args.targets),
+        "dependencies": list(dependencies),
+        "assumed_technologies": sorted(assumed_technologies),
+        "available": sorted(set(getattr(args, "available", []))),
+        "raw": sorted(set(getattr(args, "raw", []))),
+        "forbidden_categories": sorted(forbidden_categories),
+        "matches": matches,
+        "missing": missing,
+    }
 
 
 def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
@@ -1154,6 +1331,29 @@ def print_human(report: Prototype) -> None:
             print(f"  {boundary}: {values}")
 
 
+def print_dependency_paths(report: Prototype) -> None:
+    matches = {
+        (match["target"], match["dependency"]): match
+        for match in report["matches"]
+    }
+    print("Dependency paths:")
+    for target in report["targets"]:
+        for dependency in report["dependencies"]:
+            match = matches.get((target, dependency))
+            if match is None:
+                print(f"  {target} -> {dependency}: no")
+                continue
+            print(f"  {target} -> {dependency}: yes")
+            if not match["path"]:
+                print(f"    {target} is {dependency}")
+                continue
+            for edge in match["path"]:
+                print(
+                    f"    {edge['product']} --{edge['producer']}--> "
+                    f"{edge['ingredient']}"
+                )
+
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Trace item prerequisites through resolved Factorio prototypes.",
@@ -1250,6 +1450,16 @@ def parse_arguments() -> argparse.Namespace:
         metavar="RECIPE",
         help="describe an exact resolved recipe prototype without tracing it",
     )
+    parser.add_argument(
+        "--find-dependency",
+        action="append",
+        default=[],
+        metavar="ITEM",
+        help=(
+            "find shortest recursive ingredient paths from each target to ITEM "
+            "using recipes available at the declared technology and surface boundary"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -1301,6 +1511,13 @@ def main() -> int:
         if args.manifest and args.fuel and args.fuel not in target_names:
             target_names.append(args.fuel)
         args.targets = target_names
+        if args.find_dependency:
+            report = find_dependency_paths(data, args, args.find_dependency)
+            if args.json_output:
+                print(json.dumps(report, indent=2, sort_keys=True))
+            else:
+                print_dependency_paths(report)
+            return 0
         report = analyze(data, args)
         if args.manifest:
             initial_stock: dict[str, float] = defaultdict(float)
