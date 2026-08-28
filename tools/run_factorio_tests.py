@@ -17,6 +17,7 @@ import time
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 MOD_UNDER_TEST = REPOSITORY / "nullius-star"
+TEST_SUPPORT_MOD = REPOSITORY / "tools" / "factorio-test-support"
 BUILTIN_MODS = ("base", "elevated-rails", "quality", "space-age")
 DEPENDENCY_MODS = (
     "alien-biomes",
@@ -67,6 +68,10 @@ def prepare_mods(run_mods: Path, dependency_mods: Path) -> None:
 
     (run_mods / "nullius-star").symlink_to(MOD_UNDER_TEST, target_is_directory=True)
     enabled.append("nullius-star")
+    (run_mods / "factorio-test-support").symlink_to(
+        TEST_SUPPORT_MOD, target_is_directory=True
+    )
+    enabled.append("factorio-test-support")
     mod_list = {"mods": [{"name": name, "enabled": True} for name in enabled]}
     (run_mods / "mod-list.json").write_text(
         json.dumps(mod_list, indent=2) + "\n", encoding="utf-8"

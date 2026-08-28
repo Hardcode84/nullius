@@ -1,0 +1,9 @@
+{
+  "name": "factorio-test-support",
+  "version": "0.0.1",
+  "factorio_version": "2.0",
+  "title": "Nullius Star test support",
+  "author": "Nullius Star tests",
+  "description": "Prototype fixtures loaded only by tools/run_factorio_tests.py.",
+  "dependencies": ["nullius-star = 0.0.1"]
+}
