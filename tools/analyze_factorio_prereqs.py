@@ -223,6 +223,54 @@ def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
     return descriptions
 
 
+def describe_products(data: Prototype, names: list[str]) -> list[Prototype]:
+    known_products: set[str] = set()
+    for prototype_type in ("item", "fluid", "tool"):
+        known_products.update(data.get(prototype_type, {}))
+    producers: dict[str, list[str]] = defaultdict(list)
+    for recipe_name, recipe in data.get("recipe", {}).items():
+        for result in recipe_results(recipe):
+            producers[result["name"]].append(recipe_name)
+            known_products.add(result["name"])
+
+    unknown = sorted(set(names) - known_products)
+    if unknown:
+        raise TestFailure(
+            "product prototypes not found: " + ", ".join(unknown)
+        )
+
+    descriptions = []
+    for name in names:
+        recipe_names = sorted(producers.get(name, []))
+        descriptions.append(
+            {
+                "name": name,
+                "producers": describe_recipes(data, recipe_names),
+            }
+        )
+    return descriptions
+
+
+def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
+    technologies: dict[str, Prototype] = data.get("technology", {})
+    descriptions = []
+    for name in names:
+        technology = technologies.get(name)
+        if technology is None:
+            raise TestFailure(f"technology prototype not found: {name}")
+        descriptions.append(
+            {
+                "name": name,
+                "prerequisites": sorted(technology.get("prerequisites") or []),
+                "unit": technology.get("unit"),
+                "research_trigger": technology.get("research_trigger"),
+                "effects": technology.get("effects") or [],
+                "max_level": technology.get("max_level"),
+            }
+        )
+    return descriptions
+
+
 def minable_results(prototype: Prototype) -> list[Prototype]:
     minable = prototype.get("minable") or {}
     if minable.get("results"):
@@ -1451,6 +1499,20 @@ def parse_arguments() -> argparse.Namespace:
         help="describe an exact resolved recipe prototype without tracing it",
     )
     parser.add_argument(
+        "--describe-product",
+        action="append",
+        default=[],
+        metavar="ITEM",
+        help="describe every resolved recipe that produces an item or fluid",
+    )
+    parser.add_argument(
+        "--describe-technology",
+        action="append",
+        default=[],
+        metavar="TECHNOLOGY",
+        help="describe a resolved technology's prerequisites, cost, trigger, and effects",
+    )
+    parser.add_argument(
         "--find-dependency",
         action="append",
         default=[],
@@ -1469,14 +1531,82 @@ def main() -> int:
     try:
         data, run_directory = dump_resolved_data(args)
         merge_prototype_overlay(data, args.prototype_overlay)
-        if args.describe_recipe:
+        if (
+            args.describe_recipe
+            or args.describe_product
+            or args.describe_technology
+        ):
             if args.targets:
                 raise TestFailure(
-                    "recipe inspection cannot be combined with prerequisite targets"
+                    "prototype inspection cannot be combined with prerequisite targets"
                 )
-            descriptions = describe_recipes(data, args.describe_recipe)
+            inspection_modes = sum(
+                bool(values)
+                for values in (
+                    args.describe_recipe,
+                    args.describe_product,
+                    args.describe_technology,
+                )
+            )
+            if inspection_modes != 1:
+                raise TestFailure(
+                    "choose exactly one prototype inspection mode"
+                )
+            if args.describe_recipe:
+                descriptions = describe_recipes(data, args.describe_recipe)
+            elif args.describe_product:
+                descriptions = describe_products(data, args.describe_product)
+            else:
+                descriptions = describe_technologies(
+                    data, args.describe_technology
+                )
             if args.json_output:
                 print(json.dumps(descriptions, indent=2, sort_keys=True))
+            elif args.describe_technology:
+                for technology in descriptions:
+                    prerequisites = ", ".join(technology["prerequisites"])
+                    print(f"{technology['name']}:")
+                    print(f"  prerequisites: {prerequisites or 'none'}")
+                    print(
+                        "  unit: "
+                        + json.dumps(technology["unit"], sort_keys=True)
+                    )
+                    print(
+                        "  research_trigger: "
+                        + json.dumps(
+                            technology["research_trigger"], sort_keys=True
+                        )
+                    )
+                    print(
+                        "  effects: "
+                        + json.dumps(technology["effects"], sort_keys=True)
+                    )
+            elif args.describe_product:
+                for product in descriptions:
+                    print(f"{product['name']}:")
+                    if not product["producers"]:
+                        print("  producers: none")
+                    for recipe in product["producers"]:
+                        print(
+                            f"  {recipe['name']}: {recipe['energy_required']:g}s "
+                            f"[{recipe['category']}]"
+                        )
+                        print(
+                            "    inputs: "
+                            + ", ".join(
+                                f"{entry.get('amount', 1):g} {entry['name']}"
+                                for entry in recipe["ingredients"]
+                            )
+                        )
+                        print(
+                            "    outputs: "
+                            + ", ".join(
+                                f"{entry.get('amount', 1):g} {entry['name']}"
+                                for entry in recipe["results"]
+                            )
+                        )
+                        unlocks = ", ".join(recipe["unlock_technologies"])
+                        print(f"    unlocks: {unlocks or 'enabled'}")
             else:
                 for recipe in descriptions:
                     print(
@@ -1500,7 +1630,7 @@ def main() -> int:
             return 0
         if not args.targets:
             raise TestFailure(
-                "provide at least one prerequisite target or --describe-recipe"
+                "provide at least one prerequisite target or prototype inspection"
             )
         target_quantities: dict[str, float] = defaultdict(float)
         target_names: list[str] = []

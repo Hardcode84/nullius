@@ -16,6 +16,12 @@ actual mod set in Factorio and creates a fresh resolved prototype dump. Reuse a
 dump with `--data-raw PATH` only for repeated queries against the same Factorio
 version, mod versions, and startup settings.
 
+Use repeatable `--describe-product ITEM` to inspect every resolved producer,
+including byproduct recipes, exact inputs and outputs, categories, surface
+conditions, and unlock technologies. Use `--describe-recipe RECIPE` when the
+exact recipe prototype is already known. Use `--describe-technology TECHNOLOGY`
+for its prerequisite, research cost or trigger, and effects contract.
+
 Declare the starting contract explicitly:
 
 - `--technology TECH` assumes that technology and its prerequisite closure are

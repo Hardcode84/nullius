@@ -16,7 +16,9 @@ from analyze_factorio_prereqs import (
     add_raw_bootstrap_for_execution,
     analyze,
     build_production_manifest,
+    describe_products,
     describe_recipes,
+    describe_technologies,
     find_dependency_paths,
     merge_prototype_overlay,
     parse_target,
@@ -24,6 +26,64 @@ from analyze_factorio_prereqs import (
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_describes_resolved_technology_contract(self) -> None:
+        data = {
+            "technology": {
+                "target-tech": {
+                    "prerequisites": ["z-tech", "a-tech"],
+                    "unit": {"count": 20, "time": 5, "ingredients": []},
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "target-recipe"}
+                    ],
+                }
+            }
+        }
+
+        descriptions = describe_technologies(data, ["target-tech"])
+
+        self.assertEqual(descriptions[0]["prerequisites"], ["a-tech", "z-tech"])
+        self.assertEqual(descriptions[0]["unit"]["count"], 20)
+        self.assertIsNone(descriptions[0]["research_trigger"])
+
+    def test_describes_all_resolved_product_producers(self) -> None:
+        data = {
+            "item": {"target": {}, "ore": {}, "waste": {}},
+            "recipe": {
+                "target-from-ore": {
+                    "enabled": False,
+                    "ingredients": [{"name": "ore", "amount": 3}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+                "target-byproduct": {
+                    "enabled": True,
+                    "ingredients": [{"name": "ore", "amount": 2}],
+                    "results": [
+                        {"name": "waste", "amount": 1},
+                        {"name": "target", "amount": 2},
+                    ],
+                },
+            },
+            "technology": {
+                "target-tech": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "target-from-ore"}
+                    ]
+                }
+            },
+        }
+
+        descriptions = describe_products(data, ["target"])
+
+        self.assertEqual(descriptions[0]["name"], "target")
+        self.assertEqual(
+            [recipe["name"] for recipe in descriptions[0]["producers"]],
+            ["target-byproduct", "target-from-ore"],
+        )
+        self.assertEqual(
+            descriptions[0]["producers"][1]["unlock_technologies"],
+            ["target-tech"],
+        )
+
     def test_finds_structural_dependency_at_technology_boundary(self) -> None:
         data = {
             "item": {
