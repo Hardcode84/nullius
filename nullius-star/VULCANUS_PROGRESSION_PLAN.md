@@ -717,7 +717,6 @@ scenarios:
         downstream_technology_prerequisites_added: 0
 
 implementation_holes:
-  - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-2-thermal, nullius-medium-furnace-3-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
-  - {id: nauvis-transition, required_by: [M13, M14], missing: [thermal-engineering-2-pairs, thermal-engineering-3-pairs]}
+  - {id: thermal-production-cells, required_by: [M13, M14], missing: [thermal-cell-2, thermal-cell-3]}
 
 ```
