@@ -879,19 +879,51 @@ thermal_heavy_industry:
   late_heat: nuclear
 ```
 
-### 6.3 Other Global Benefits (Why Visit Vulcanus Pre-Cargo)
+### 6.3 Repeatable Industrial Optimization
+
+```yaml
+repeatable_industrial_optimization:
+  currency: metallurgic_pack
+  branches:
+    crushing:
+      effect: productivity
+      scope: crushing_recipes
+    smelting:
+      effect: productivity
+      scope: smelting_recipes
+    casting:
+      effect: productivity
+      scope: casting_recipes
+  effect_per_level: approximately_1_percent_preliminary
+  cost_growth: superlinear_preliminary
+  maximum_level: none
+  prerequisite_for_other_research: false
+  machine_modes: [electric, thermal, pneumatic]
+```
+
+Each branch improves only its named process family. Bonuses apply through the
+recipe family, independent of the machine or power mode executing it. Branches
+are independent, repeatable leaves and never gate finite research or main
+progression.
+
+The exact bonus, cost function, process membership, and productivity caps are
+balance parameters. Costs use metallurgic packs as the primary sink and grow
+superlinearly, providing useful marginal investment without a completion point.
+
+### 6.4 Other Global Benefits (Why Visit Vulcanus Pre-Cargo)
 
 Even without shipping materials, Vulcanus research unlocks:
 
 | Unlock | Benefit on Other Planets |
 |---|---|
 | Thermal heavy industry | Heat-powered crushers, furnaces, and foundries with innate productivity |
+| Industrial optimization | Repeatable, process-specific productivity improvements |
 | Heat-resistant alloys | Higher-temperature machines and heat infrastructure usable on Nauvis, Fulgora, etc. |
 | Advanced calcite processing | Cheaper calcium compounds everywhere (useful for chlorine disposal on Nauvis!) |
 | Improved metal yields | Better smelting ratios apply to all planets with metal production |
 | Volcanic metallurgy knowledge | Prerequisite for some Tier 6+ cross-planet techs |
 
-### 6.4 Weapons Research (Post-Scouts)
+### 6.5 Weapons Research (Post-Scouts)
 
 | Tech | Prerequisites | Packs | Unlocks |
 |---|---|---|---|
