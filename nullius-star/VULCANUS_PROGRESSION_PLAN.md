@@ -720,6 +720,5 @@ implementation_holes:
   - {id: thermal-technologies, required_by: [M13, M14], missing: [nullius-thermal-engineering-2, nullius-thermal-engineering-3]}
   - {id: thermal-entities, required_by: [M13, M14], missing: [nullius-crusher-2-thermal, nullius-crusher-3-thermal, nullius-small-furnace-2-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-2-thermal, nullius-medium-furnace-3-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal, nullius-foundry-3-thermal]}
   - {id: nauvis-transition, required_by: [M13, M14], missing: [thermal-engineering-2-pairs, thermal-engineering-3-pairs]}
-  - {id: thermal-test-contracts, required_by: M12, missing: [industrial-optimization-1]}
 
 ```
