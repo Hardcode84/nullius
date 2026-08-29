@@ -29,8 +29,15 @@ data:extend({
 -- The pneumatic variant will be named "entity-name-pneumatic".
 local pneumatic_machines = {}
 
-local function register_pneumatic(entity_type, entity_name, thermal)
-  table.insert(pneumatic_machines, { name = entity_name, type = entity_type, thermal = thermal })
+local function register_pneumatic(entity_type, entity_name, thermal,
+    gas_offset, gas_edge)
+  table.insert(pneumatic_machines, {
+    name = entity_name,
+    type = entity_type,
+    thermal = thermal,
+    gas_offset = gas_offset,
+    gas_edge = gas_edge,
+  })
 end
 
 -- Register furnace tiers (thermal: heat-powered, not gas-powered).
@@ -77,6 +84,8 @@ for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-surge-compressor-" .. i)
   register_pneumatic("assembling-machine", "nullius-priority-compressor-" .. i)
 end
+register_pneumatic("assembling-machine", "nullius-flotation-cell-1",
+  false, -0.5, 1.5)
 
 -- Register labs.
 register_pneumatic("lab", "nullius-lab-1")
@@ -133,33 +142,75 @@ for _, entry in pairs(pneumatic_machines) do
       off_w = 0.4
     end
 
-    -- Check if entity has existing east/west fluid connections.
+    local occupied_connections = {}
+    local function connection_key(direction, offset)
+      return tostring(direction) .. ":" .. string.format("%.3f", offset)
+    end
+
+    -- Check which edges and lateral offsets recipe fluids already occupy.
     local has_ew_fluid = false
     for _, fb in pairs(pneumatic.fluid_boxes or {}) do
       if type(fb) == "table" and fb.pipe_connections then
         for _, pc in pairs(fb.pipe_connections) do
+          local position = pc.position or
+            (pc.positions and pc.positions[1]) or {0, 0}
           local dir = pc.direction
+          if not dir then
+            if math.abs(position[1]) > math.abs(position[2]) then
+              dir = (position[1] > 0) and defines.direction.east or
+                defines.direction.west
+            else
+              dir = (position[2] > 0) and defines.direction.south or
+                defines.direction.north
+            end
+          end
           if dir == defines.direction.east or dir == defines.direction.west then
             has_ew_fluid = true
-            break
+            occupied_connections[connection_key(dir, position[2])] = true
+          elseif dir == defines.direction.north or
+              dir == defines.direction.south then
+            occupied_connections[connection_key(dir, position[1])] = true
           end
         end
       end
-      if has_ew_fluid then break end
+    end
+
+    local function free_offset(direction, preferred, maximum)
+      local candidates
+      if math.abs(preferred % 1) > 0.001 then
+        candidates = {preferred, -preferred, 0.5, -0.5, 1.5, -1.5}
+      else
+        candidates = {preferred, 0, 1, -1, 2, -2}
+      end
+      for _, candidate in ipairs(candidates) do
+        if math.abs(candidate) <= maximum and
+            not occupied_connections[connection_key(direction, candidate)] then
+          return candidate
+        end
+      end
+      error("No free pneumatic fluid connection for " .. entry.name)
     end
 
     local pipe_connections
     if has_ew_fluid then
       -- Entity uses east/west for recipe fluids, use north/south for energy.
+      local north_offset = free_offset(defines.direction.north,
+        entry.gas_offset or off_w, half_w)
+      local south_offset = free_offset(defines.direction.south,
+        entry.gas_offset or off_w, half_w)
       pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.north, position = {off_w, -half_h} },
-        { flow_direction = "input-output", direction = defines.direction.south, position = {off_w, half_h} },
+        { flow_direction = "input-output", direction = defines.direction.north, position = {north_offset, -(entry.gas_edge or half_h)} },
+        { flow_direction = "input-output", direction = defines.direction.south, position = {south_offset, entry.gas_edge or half_h} },
       }
     else
       -- Default: east/west pass-through.
+      local east_offset = free_offset(defines.direction.east,
+        entry.gas_offset or off_h, half_h)
+      local west_offset = free_offset(defines.direction.west,
+        entry.gas_offset or off_h, half_h)
       pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.east, position = {half_w, off_h} },
-        { flow_direction = "input-output", direction = defines.direction.west, position = {-half_w, off_h} },
+        { flow_direction = "input-output", direction = defines.direction.east, position = {entry.gas_edge or half_w, east_offset} },
+        { flow_direction = "input-output", direction = defines.direction.west, position = {-(entry.gas_edge or half_w), west_offset} },
       }
     end
 

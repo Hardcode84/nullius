@@ -74,6 +74,8 @@ for i = 1, 3 do
   register_pneumatic_pair("nullius-chemical-plant-" .. i, "nullius-chemical-plant-" .. i .. "-pneumatic")
   register_pneumatic_priority_cycle("compressor", i)
 end
+register_pneumatic_pair("nullius-flotation-cell-1",
+  "nullius-flotation-cell-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
 for i = 1, 3 do

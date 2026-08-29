@@ -3,6 +3,7 @@ local CASE = CONFIG.case
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local CONTRACT = CONFIG.contract
 local INITIAL_TECH = CONFIG.initial_technology or "nullius-pneumatic-technology"
+local INITIAL_TECHS = CONFIG.initial_technologies or {INITIAL_TECH}
 local GAS = "nullius-compressed-volcanic-gas"
 local HEAT_PIPE = "nullius-heat-pipe-1"
 local BASE_X = 32
@@ -14,6 +15,7 @@ local DIRECT_HEAT = CONFIG.direct_heat
 local HEAT_FIXTURE = CONFIG.heat_fixture ~= false
 local PARALLELISM = CONFIG.parallelism or 1
 local PARALLEL_FIXTURE = CONFIG.parallel_fixture or {}
+local TRANSITION_BUILDS = CONFIG.transition_builds or {}
 
 local FIXTURE = CONFIG.fixture
 
@@ -207,7 +209,23 @@ local function build_executor(item, name, position)
     check(#converted == 1, "seawater intake did not convert to one lava intake")
     entity = converted[1]
   else
-    entity = build(name, position)
+    local build_name = TRANSITION_BUILDS[name] or name
+    entity = build(build_name, position)
+    if entity and build_name ~= name then
+      local transition_position = entity.position
+      if not check(remote.interfaces["nullius-test-transitions"] ~= nil,
+          "transition test interface is missing") then return nil end
+      if not check(remote.call("nullius-test-transitions", "execute", entity),
+          build_name .. " had no registered transition") then return nil end
+      local replacements = storage.surface.find_entities_filtered{
+        name = name,
+        position = transition_position,
+        radius = 0.1,
+      }
+      if not check(#replacements == 1,
+          build_name .. " did not transition to one " .. name) then return nil end
+      entity = replacements[1]
+    end
   end
   if entity then register_machine(entity) end
   return entity
@@ -389,7 +407,8 @@ local function machine_cycle_complete()
     waiting = waiting or active.executions[1]
   end
   if waiting then
-    if step.heat and not storage.background_gas then start_background_gas() end
+    if step.heat and storage.gas_step_index and
+        not storage.background_gas then start_background_gas() end
     if game.tick >= active.deadline then
       local machine = waiting.machine
       check(false, "step " .. step.producer .. " did not complete batch; status=" ..
@@ -482,9 +501,13 @@ local function background_gas_complete()
   storage.background_gas = nil
   local heat_active = storage.active and storage.active.step.heat and
     storage.active.executions and storage.active.executions[1] and
-    storage.active.executions[1].machine.products_finished <=
+      storage.active.executions[1].machine.products_finished <=
       storage.active.executions[1].products_finished
-  if heat_active then start_background_gas() end
+  if heat_active then
+    start_background_gas()
+  elseif not storage.active then
+    advance()
+  end
 end
 
 start_background_gas = function()
@@ -612,7 +635,7 @@ local function start_machine_batch(step)
     first_check = math.min(first_check, active.poll_ticks)
   end
   script.on_nth_tick(game.tick + first_check, machine_cycle_complete)
-  if step.heat then start_background_gas() end
+  if step.heat and storage.gas_step_index then start_background_gas() end
 end
 
 local function character_cycle_complete()
@@ -852,6 +875,7 @@ advance = function()
     selected_index = direct_heat_index
   end
   if complete then check_terminal() return end
+  if not selected_index and storage.background_gas then return end
   if not selected_index then
     local blocked = {}
     for index, candidate in ipairs(CONTRACT.steps) do
@@ -1043,10 +1067,13 @@ local function setup()
       type = {"simple-entity", "tree", "cliff", "resource"},
   }) do entity.destroy() end
 
-  local technology = game.forces.player.technologies[INITIAL_TECH]
-  if not check(technology ~= nil, "missing initial pneumatic technology") then finish() return end
   local researched = {}
-  research_closure(technology, researched)
+  for _, technology_name in ipairs(INITIAL_TECHS) do
+    local technology = game.forces.player.technologies[technology_name]
+    if not check(technology ~= nil,
+        "missing initial technology " .. technology_name) then finish() return end
+    research_closure(technology, researched)
+  end
   for _, name in ipairs(CONTRACT.assumed_technologies) do
     check(researched[name] == true, "manifest assumed technology outside initial closure: " .. name)
   end
@@ -1085,10 +1112,10 @@ local function setup()
       storage.gas_step_index = index
     end
   end
-  if not storage.gas_step_index then
+  if not storage.gas_step_index and not HEAT_FIXTURE then
     for _, step in ipairs(CONTRACT.steps) do
       check(not step.heat,
-        "heat manifest without a gas-bootstrap step: " .. step.producer)
+        "heat manifest without a heat fixture: " .. step.producer)
     end
   end
   for name, amount in pairs(CONTRACT.raw_inputs) do add(storage.ledger, name, amount) end
