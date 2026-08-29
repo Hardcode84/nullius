@@ -37,6 +37,10 @@ function transition.execute(entity, name, force)
   return false
 end
 
+function transition.has(name)
+  return transitions[name] ~= nil
+end
+
 if script.active_mods["factorio-test-support"] then
   remote.add_interface("nullius-test-transitions", {
     execute = function(entity)

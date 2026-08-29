@@ -515,11 +515,11 @@ Stirling Engine 1 recipe (Nauvis mid-game):
   30 lubricant              <-- available via Vulcanus alt recipe (section 3.3)
 ```
 
-The lubricant alt recipe (section 3.3) makes lubricant locally producible, but compressed nitrogen and other ingredients may still require imports. The probe carries no Stirling engine; electricity is optional later, not part of bootstrap.
+The lubricant alt recipe (section 3.3) and pneumatic compressor make every Stirling engine ingredient locally producible. The probe carries no Stirling engine; electricity is optional later, not part of bootstrap.
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
-Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via Ctrl+R (same transition system as surge/priority electrolyzers and pump/valve toggles).
+Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via Ctrl+R. Compressors use one combined priority/surge/electric/pneumatic cycle.
 
 **Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks the ability to toggle any placed machine to pneumatic mode on Vulcanus (surface_conditions restrict the toggle to Vulcanus).
 
@@ -618,7 +618,7 @@ NOT enough for: mass production. The player is forced into the lava-processing l
 | **Late** | Optimized processing + higher-tier lava recipes | Large factory | Higher-tier lava separation (more gas per batch) |
 | **Endgame** | Mass lava processing arrays | Megabase | Full research tree |
 
-**Electricity role on Vulcanus**: none at bootstrap. The probe carries no Stirling; the factory starts and runs entirely on gas. Stirling engines can still be *crafted* later (lubricant alt recipe is local; compressed nitrogen may need import) for the few things that specifically want electricity (circuit fabrication, signal processing, advanced electronics), but they are a fully optional niche tool, never a survival requirement. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics.
+**Electricity role on Vulcanus**: none at bootstrap. The probe carries no Stirling; the factory starts and runs entirely on gas. Stirling engines can be crafted locally later, using compressed nitrogen from pneumatic compressors, for the few things that specifically want electricity (circuit fabrication, signal processing, advanced electronics), but they are a fully optional niche tool, never a survival requirement. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics.
 
 ### 4.5 Why This Works
 
@@ -1104,7 +1104,6 @@ There is no electrical infrastructure at all. The free-gas vent primes the loop;
 | Bulk water | Almost none locally | HCl chain produces trickle; cargo for bulk |
 | Titanium | Deep deposits inaccessible | Demolishers (requires Gleba bio-research) |
 | Copper/advanced electronics | No copper | Cargo imports |
-| Additional Stirling engines | Recipe needs lubricant + compressed nitrogen | Local lubricant alt recipe exists; may still need import for other ingredients |
 
 ### 7.6 Key Design Notes
 
@@ -1323,7 +1322,6 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 | Water | No water sources | Nauvis |
 | Advanced electronics (processor 2+) | May need copper or complex organics | Nauvis or Fulgora |
 | Bio-feed for demolishers | Biological organisms | Gleba |
-| Standard Stirling engines | Recipe needs lubricant + compressed nitrogen | Lubricant available locally; may still need import for compressed nitrogen |
 
 ---
 

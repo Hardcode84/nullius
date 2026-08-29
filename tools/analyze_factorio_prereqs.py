@@ -271,6 +271,58 @@ def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
     return descriptions
 
 
+def find_electric_required_paths(
+    targets: list[str], selected_recipes: list[Prototype]
+) -> list[Prototype]:
+    """Find selected production steps that require an electric executor."""
+    steps = {step["product"]: step for step in selected_recipes}
+    matches: list[Prototype] = []
+
+    for target in targets:
+        pending = deque([(target, [])])
+        visited: set[str] = set()
+        while pending:
+            product, path = pending.popleft()
+            if product in visited:
+                continue
+            visited.add(product)
+            step = steps.get(product)
+            if step is None or step.get("producer", "").startswith("<spoil:"):
+                continue
+            executor = step.get("executor") or {}
+            if (executor.get("energy_source") or {}).get("type") == "electric":
+                matches.append(
+                    {
+                        "target": target,
+                        "product": product,
+                        "producer": step["producer"],
+                        "executor": executor["name"],
+                        "path": path,
+                    }
+                )
+            dependencies = [
+                ingredient["name"] for ingredient in step.get("ingredients", [])
+            ]
+            provider = step.get("provider")
+            if provider and not provider.startswith("<"):
+                dependencies.append(provider)
+            for dependency in dependencies:
+                pending.append(
+                    (
+                        dependency,
+                        [
+                            *path,
+                            {
+                                "product": product,
+                                "producer": step["producer"],
+                                "dependency": dependency,
+                            },
+                        ],
+                    )
+                )
+    return matches
+
+
 def minable_results(prototype: Prototype) -> list[Prototype]:
     minable = prototype.get("minable") or {}
     if minable.get("results"):
@@ -907,7 +959,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             }
         )
 
-    return {
+    report = {
         "targets": args.targets,
         "assumed_technologies": sorted(assumed_technologies),
         "available": sorted(available),
@@ -931,6 +983,10 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "invalid_raw": invalid_raw,
         "unresolved": sorted(set(unresolved)),
     }
+    report["electric_required_paths"] = find_electric_required_paths(
+        args.targets, selected
+    )
+    return report
 
 
 def add_raw_bootstrap_for_execution(
@@ -1326,6 +1382,17 @@ def print_human(report: Prototype) -> None:
     if not report["invalid_raw"]:
         print("  none")
 
+    print("\nElectric-required paths:")
+    for match in report["electric_required_paths"]:
+        chain = [match["target"]]
+        chain.extend(edge["dependency"] for edge in match["path"])
+        print(
+            f"  {' -> '.join(chain)}: {match['producer']} "
+            f"requires {match['executor']}"
+        )
+    if not report["electric_required_paths"]:
+        print("  none")
+
     manifest = report.get("production_manifest")
     if manifest is not None:
         print("\nProduction manifest:")
@@ -1489,6 +1556,11 @@ def parse_arguments() -> argparse.Namespace:
         "--require-no-additional-technologies",
         action="store_true",
         help="fail if the selected route needs technology outside --technology",
+    )
+    parser.add_argument(
+        "--require-no-electricity",
+        action="store_true",
+        help="fail if any selected production step requires an electric executor",
     )
     parser.add_argument("--json", action="store_true", dest="json_output")
     parser.add_argument(
@@ -1672,11 +1744,16 @@ def main() -> int:
             args.require_no_additional_technologies
             and bool(report["required_technologies"])
         )
+        failed_electricity_contract = (
+            args.require_no_electricity
+            and bool(report["electric_required_paths"])
+        )
         return (
             1
             if report["unresolved"]
             or report["invalid_raw"]
             or failed_technology_contract
+            or failed_electricity_contract
             else 0
         )
     except (TestFailure, OSError, json.JSONDecodeError) as error:

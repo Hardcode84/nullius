@@ -20,12 +20,66 @@ from analyze_factorio_prereqs import (
     describe_recipes,
     describe_technologies,
     find_dependency_paths,
+    find_electric_required_paths,
     merge_prototype_overlay,
     parse_target,
 )
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_reports_paths_to_electric_executors(self) -> None:
+        selected = [
+            {
+                "product": "pack",
+                "producer": "make-pack",
+                "ingredients": [{"name": "gas"}],
+                "provider": "<available:assembler>",
+                "executor": {
+                    "name": "pneumatic-assembler",
+                    "energy_source": {"type": "fluid"},
+                },
+            },
+            {
+                "product": "gas",
+                "producer": "compress-gas",
+                "ingredients": [{"name": "air"}],
+                "provider": "compressor",
+                "executor": {
+                    "name": "electric-compressor",
+                    "energy_source": {"type": "electric"},
+                },
+            },
+            {
+                "product": "compressor",
+                "producer": "make-compressor",
+                "ingredients": [{"name": "plate"}],
+                "provider": "<character:character>",
+                "executor": {
+                    "name": "character",
+                    "energy_source": {},
+                },
+            },
+        ]
+
+        self.assertEqual(
+            find_electric_required_paths(["pack"], selected),
+            [
+                {
+                    "target": "pack",
+                    "product": "gas",
+                    "producer": "compress-gas",
+                    "executor": "electric-compressor",
+                    "path": [
+                        {
+                            "product": "pack",
+                            "producer": "make-pack",
+                            "dependency": "gas",
+                        }
+                    ],
+                }
+            ],
+        )
+
     def test_describes_resolved_technology_contract(self) -> None:
         data = {
             "technology": {

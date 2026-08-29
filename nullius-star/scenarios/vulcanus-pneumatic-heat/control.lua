@@ -18,7 +18,7 @@ local cases = {
   },
   {
     size = "medium2",
-    machine = "nullius-surge-electrolyzer-1-pneumatic",
+    machine = "nullius-surge-compressor-1-pneumatic",
     interface = "nullius-pneumatic-heat-medium2",
     pipe_offset = {-1.5, -2.5},
     position = {10, 0},

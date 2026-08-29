@@ -32,6 +32,30 @@ local function register_pneumatic_pair(electric, pneumatic)
   })
 end
 
+-- Four-state cycle for machines that already have priority/surge modes:
+-- priority electric -> surge electric -> surge pneumatic ->
+-- priority pneumatic -> priority electric.  Before pneumatic research or away
+-- from Vulcanus, the ordinary priority/surge toggle remains in effect.
+local function register_pneumatic_priority_cycle(machine, tier)
+  local priority = "nullius-priority-" .. machine .. "-" .. tier
+  local surge = "nullius-surge-" .. machine .. "-" .. tier
+  local pneumatic_priority = priority .. "-pneumatic"
+  local pneumatic_surge = surge .. "-pneumatic"
+
+  transitions.register(priority, surge, {condition = is_vulcanus_pneumatic})
+  transitions.register(surge, pneumatic_surge, {
+    condition = is_vulcanus_pneumatic,
+    on_enter = on_enter_pneumatic,
+  })
+  transitions.register(pneumatic_surge, pneumatic_priority, {
+    on_leave = on_leave_pneumatic,
+    on_enter = on_enter_pneumatic,
+  })
+  transitions.register(pneumatic_priority, priority, {
+    on_leave = on_leave_pneumatic,
+  })
+end
+
 for i = 1, 3 do
   register_pneumatic_pair("nullius-small-furnace-" .. i, "nullius-small-furnace-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-medium-furnace-" .. i, "nullius-medium-furnace-" .. i .. "-pneumatic")
@@ -48,8 +72,7 @@ for i = 1, 3 do
   register_pneumatic_pair("nullius-hydro-plant-" .. i, "nullius-hydro-plant-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-distillery-" .. i, "nullius-distillery-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-chemical-plant-" .. i, "nullius-chemical-plant-" .. i .. "-pneumatic")
-  register_pneumatic_pair("nullius-surge-electrolyzer-" .. i, "nullius-surge-electrolyzer-" .. i .. "-pneumatic")
-  register_pneumatic_pair("nullius-priority-electrolyzer-" .. i, "nullius-priority-electrolyzer-" .. i .. "-pneumatic")
+  register_pneumatic_priority_cycle("compressor", i)
 end
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")

@@ -74,8 +74,8 @@ for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-hydro-plant-" .. i)
   register_pneumatic("assembling-machine", "nullius-distillery-" .. i)
   register_pneumatic("assembling-machine", "nullius-chemical-plant-" .. i)
-  register_pneumatic("assembling-machine", "nullius-surge-electrolyzer-" .. i)
-  register_pneumatic("assembling-machine", "nullius-priority-electrolyzer-" .. i)
+  register_pneumatic("assembling-machine", "nullius-surge-compressor-" .. i)
+  register_pneumatic("assembling-machine", "nullius-priority-compressor-" .. i)
 end
 
 -- Register labs.
@@ -96,8 +96,6 @@ register_pneumatic("pump", "nullius-togglable-small-pump-1")
 register_pneumatic("pump", "nullius-togglable-small-pump-2")
 
 -- Generate pneumatic variants.
-local pneumatic_pairs = {}  -- mapping: original name --> pneumatic name.
-
 for _, entry in pairs(pneumatic_machines) do
   local original = data.raw[entry.type][entry.name]
   if original then
@@ -218,12 +216,5 @@ for _, entry in pairs(pneumatic_machines) do
     pneumatic.hidden = true
 
     data:extend({pneumatic})
-
-    pneumatic_pairs[entry.name] = pneumatic_name
-    pneumatic_pairs[pneumatic_name] = entry.name
   end
 end
-
--- NOTE: The pneumatic_pairs mapping is duplicated in scripts/turbine.lua
--- because mod-data prototypes are not accessible at runtime.
--- Keep both lists in sync when adding new pneumatic machines.

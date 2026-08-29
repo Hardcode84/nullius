@@ -390,6 +390,9 @@ local function priority_event(event)
   local force = (target.force or player.force)
   if (string.sub(name, 9, 16) == "turbine-") then
     toggle_turbine(target, name, force)
+  elseif transitions.has(name) and transitions.execute(target, name, force) then
+    -- Planet-specific state cycles take precedence over their ordinary
+    -- two-state toggle when their surface/technology condition applies.
   elseif (is_surge_entity(name)) then
     toggle_surge(target, name, force)
   elseif (is_hangar_entity(name)) then
