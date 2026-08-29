@@ -73,7 +73,11 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The 24 checked-in argument files under `tests/progression/` define the
+The 25 checked-in argument files under `tests/progression/` define the
 resolved prerequisite contracts. Queries fail on unresolved products,
 inaccessible crafting categories, cyclic routes, undeclared recipe research,
 or forbidden electric execution paths.
+
+`tests/test_vulcanus_physics_contract.py` requires the full Vulcanus physics
+contract to fail only at Nanofabricator 1 operation for monocrystalline silicon
+and Processor 1.

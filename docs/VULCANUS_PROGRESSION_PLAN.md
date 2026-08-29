@@ -75,6 +75,7 @@ validators:
   thermite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-thermite.args"
   boric-acid: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-boric-acid.args"
   carbothermic-sodium: "python3 tools/analyze_factorio_prereqs.py @tests/progression/carbothermic-sodium.args"
+  physics-production: "python3 -m unittest tests.test_vulcanus_physics_contract"
   thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-thermal-furnace-sizes.args"
 
 prototypes:
