@@ -193,7 +193,10 @@ Mining volcanic rocks provides early-game materials without lava processing:
 | **Huge volcanic rock** | 10-25 | 3-8 | 1-3 |
 | **Big volcanic rock** | 5-15 | 2-5 | 0-2 (50% chance) |
 
-Graphite from rocks gives early carbon before atmospheric processing is set up. Rutile from rocks is the only pre-demolisher titanium source -- scarce, finite, used as catalyst in SO2 decomposition.
+Graphite from rocks gives early carbon before atmospheric processing is set up.
+Rutile from rocks is the cheap pre-demolisher source; the infinite map makes it
+renewable in practice, but collection cost grows with travel distance. The
+synthetic sand route provides a stationary but deliberately terrible fallback.
 
 ### 2.6 Proposed Deep Deposits (Demolisher-Gated, Late Game)
 
@@ -242,7 +245,67 @@ Lava --> [Lava Aluminum Separation] --> Molten Aluminum Bloom
                             +--- Silicon-Insulated Wire (Vulcanus variant)
 ```
 
-### 3.3 Alternative Recipes (IMPLEMENTED)
+### 3.3 Proposed Direct Hot Casting
+
+```yaml
+research:
+  name: Hot Metalworking
+  prerequisites:
+    vulcanus: Efficient Metallurgic Science
+    nauvis: corresponding metalworking tier
+recipes:
+  surface: Vulcanus
+  executor: pneumatic foundry
+  inputs: molten blooms before spoilage
+  outputs: ordinary plates, sheets, and rods
+  reheating: forbidden
+  productivity: ordinary casting family
+  failure_path:
+    iron_bloom: iron ingot after 30 seconds
+    aluminum_bloom: alumina after 40 seconds
+invariants:
+  item_family: no parallel hot intermediates
+  aluminum_advantage: better than cooldown plus graphite reduction
+```
+
+| Input | Direct products | Advantage | Missed deadline |
+|---|---|---|---|
+| Molten iron bloom | Iron plate or rod | Skips passive cooling before metalworking | Bloom cools to iron ingot; ordinary recipes remain available |
+| Molten aluminum bloom | Aluminum sheet or rod | Preserves metal before oxidation and skips graphite reduction | Bloom oxidizes to alumina; dry reduction remains available |
+
+### 3.4 Proposed Refractory Production
+
+```yaml
+research:
+  name: Vulcanus Refractory Engineering
+  prerequisites:
+    vulcanus: [Efficient Metallurgic Science, Hot Metalworking]
+    nauvis: corresponding ceramics and thermal-storage research
+material_contract:
+  raw_boundaries: [lava, atmosphere, hydrogen chloride]
+  water: 0
+  organics: 0
+  electricity: 0
+chain:
+  mixing:
+    inputs: [alumina, silica, mineral dust]
+    executor: pneumatic assembler
+    output: refractory mix
+  firing:
+    input: refractory mix
+    executor: hot pneumatic or thermal furnace
+    output: refractory brick
+uses:
+  - dry alternative recipes for heat-pipe 2 and high-temperature radiators
+  - dry alternative recipes for tier-2 pneumatic process equipment
+  - high-temperature crucibles and furnace linings
+invariants:
+  item_family: one shared refractory intermediate
+  fuel: machine heat, not a consumed heat item
+  role: construction material, not recurring fuel
+```
+
+### 3.5 Alternative Recipes (IMPLEMENTED)
 
 Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These alt recipes replace organic/wet ingredients with locally available materials. All are Vulcanus-only (`surface_conditions: nullius-ambient-temperature >= 100`).
 
@@ -299,12 +362,13 @@ Implementation: purely prototype-level. Vulcanus recipes output the unstable ite
 
 These recipes are generally **worse** than Nauvis equivalents (more steps, more ingredients) but they work without organics. The player builds ugly inorganic production lines and moves on.
 
-### 3.4 Titanium: Nauvis Bootstrap, Vulcanus Scale
+### 3.6 Titanium: Nauvis Bootstrap, Vulcanus Scale
 
 | Phase | Titanium source | Contract |
 |---|---|---|
 | Nauvis, before shipments | Synthetic rutile from sand | Complete titanium chain remains possible; bulk production is deliberately uneconomic |
-| Vulcanus, current | Rutile recovered from big and huge volcanic rocks | Physical source; collection cost grows with travel distance |
+| Vulcanus, pre-cargo | Rutile from volcanic rocks or synthetic rutile from local sand | Rocks are cheaper but require exploration; synthesis is stationary and extremely wasteful |
+| Vulcanus, pre-cargo | Aluminothermic TiCl4 reduction | Limited local titanium for advanced equipment without sodium metal, argon, or electricity |
 | Vulcanus, later | Demolisher-exposed deep deposits | Planned bulk titanium source |
 | Nauvis, after shipments | Imported rutile or titanium ingots | Imports bypass the punitive sand, acid, and waste burden |
 
@@ -324,35 +388,57 @@ These recipes are generally **worse** than Nauvis equivalents (more steps, more 
 | Downstream chemistry | TiCl4, sodium/argon reduction, casting, and working recipes remain unchanged |
 | Vulcanus payoff | Physical material shipments, not a remote research bonus, remove the synthetic-rutile burden |
 
-#### Vulcanus chain
+#### Vulcanus rutile sources
 
+| Source | Baseline input | Output | Constraint |
+|---|---|---|---|
+| Volcanic rocks | Big and huge volcanic rocks | Rutile plus other rock products | Sparse; collection distance increases |
+| Synthetic rutile | 50 sand + 150 sulfuric acid | 1 rutile + 80 sludge + 5 mineral dust + 25 carbon dioxide | Existing global recipe; intentionally terrible |
+
+The stationary route closes locally through existing slag reprocessing:
+
+```text
+136 gravel
+  -> 51 sand + 102 mineral dust
+
+50 sand + 150 sulfuric acid
+  -> 1 rutile + 80 sludge + 5 mineral dust + 25 carbon dioxide
+
+baseline net for one rutile:
+  136 gravel + 150 sulfuric acid
+  -> 1 rutile + 1 sand + 107 mineral dust + 80 sludge + 25 carbon dioxide
 ```
-Big/huge volcanic rocks (implemented)
-    |
-    v
-Rutile (TiO2) -- mined from exposed deposit
-    |
-    v
-[Wet Smelting] 4 rutile + 7 graphite + 80 chlorine --> 15 TiCl4 + 2 mineral dust
-    |
-    v
-Titanium Tetrachloride (TiCl4 fluid)
-    |
-    v
-[Ore Flotation] 10 TiCl4 + 6 sodium + 1 argon --> 1 titanium ingot
-    |
-    v
-Titanium Ingot --> Plate, Sheet, etc.
+
+This is the same punitive recipe used for Nauvis bootstrap titanium. Vulcanus
+can sustain it because gravel and sulfuric acid are local, but the material and
+waste volumes prevent it from replacing later deep deposits.
+
+#### Proposed Vulcanus reduction chain
+
+```yaml
+research:
+  name: Volcanic Titanium Metallurgy
+  prerequisites:
+    vulcanus: [Vulcanus Refractory Engineering, Efficient Metallurgic Science]
+    nauvis: Titanium Production 2
+recipe:
+  surface: Vulcanus
+  category: high-temperature-radiator
+  upstream:
+    inputs: [rutile, graphite, chlorine]
+    output: titanium tetrachloride
+  inputs: [titanium tetrachloride, aluminum]
+  outputs: [titanium ingot, aluminum chloride]
+  forbidden_inputs: [argon, elemental sodium]
+  electricity: 0
+scale_limit_before_cargo: rutile supply
+invariants:
+  aluminum_chloride_recovery: net aluminum loss
+  pilot_output: enough for refractory-lined tier-2 equipment
+  bulk_output: unattractive before deep deposits
 ```
 
-| Property | Effect |
-|---|---|
-| Abundant volcanic HCl | Chlorine-intensive Kroll chemistry scales naturally |
-| Physical rutile from volcanic rocks | Removes Nauvis sand and sulfuric-acid multiplication; scaling requires exploration |
-| Deep deposits | Planned later source for stationary bulk mining |
-| Sodium and argon demand | Remains part of the ingot-production infrastructure |
-
-### 3.5 Volcanic Sodium
+### 3.7 Volcanic Sodium
 
 #### Source
 
@@ -432,7 +518,7 @@ brine -> salt -> electric electrolysis -> elemental sodium + chlorine
 
 Every step through chemical-science sodium hydroxide runs in pneumatic chemical, distillation, or water-treatment machines. Elemental sodium retains the existing electric electrolysis route later. Pneumatic electrolyzers are not part of the Vulcanus design.
 
-### 3.6 Calcite and Calcium
+### 3.8 Calcite and Calcium
 
 ```
 Lava --> [Lava Calcite Separation] --> Calcite (direct)
@@ -446,7 +532,7 @@ Lava --> [Lava Calcite Separation] --> Calcite (direct)
 
 Calcite is cheap and abundant on Vulcanus. On Nauvis, limestone must be mined from non-starting-area deposits. This makes Vulcanus a natural calcium/lime exporter.
 
-### 3.7 Atmospheric Chemistry (CO2 Capture)
+### 3.9 Atmospheric Chemistry (CO2 Capture)
 
 Vulcanus has a dense CO2 atmosphere. Using the existing Nullius air processing pattern but with Vulcanus-specific ratios (atmosphere is mostly CO2, trace N2):
 
@@ -525,7 +611,7 @@ Nauvis air separation recipes (which extract O2 from air directly) are **disable
 
 This shifts water from "completely absent" to "agonizingly scarce local resource." Importing water via cargo is still far more practical for bulk use, but the local trickle means the player isn't completely helpless before cargo rockets.
 
-### 3.8 Volcanic Chemistry (Chlorine Economy -- Inverted)
+### 3.10 Volcanic Chemistry (Chlorine Economy -- Inverted)
 
 On Nauvis, chlorine is the unwanted byproduct you can't void. On Vulcanus, the chlorine economy is inverted:
 
@@ -596,10 +682,10 @@ Stirling Engine 1 recipe (Nauvis mid-game):
   2 turbine-closed-2
   8 heat-pipe-1
   600 compressed nitrogen
-  30 lubricant              <-- available via Vulcanus alt recipe (section 3.3)
+  30 lubricant              <-- available via Vulcanus alt recipe (section 3.5)
 ```
 
-The lubricant alt recipe (section 3.3) and pneumatic compressor make every Stirling engine ingredient locally producible. The probe carries no Stirling engine; electricity is optional later, not part of bootstrap.
+The lubricant alt recipe (section 3.5) and pneumatic compressor make every Stirling engine ingredient locally producible. The probe carries no Stirling engine; electricity is optional later, not part of bootstrap.
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
@@ -934,6 +1020,14 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 | **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
 | **Industrial Optimization** | `100*L^2` per branch | none | +1% crushing, smelting, or casting productivity per level | Global process bonus |
 
+Proposed finite additions:
+
+| Tech | Prerequisite shape | Cost shape | Unlocks | Role |
+|---|---|---|---|---|
+| **Hot Metalworking** | Efficient Metallurgic Science + corresponding Nauvis metalworking | Metallurgic-heavy + mechanical | Direct iron and aluminum bloom casting | Local throughput and timed logistics |
+| **Vulcanus Refractory Engineering** | Hot Metalworking + corresponding Nauvis ceramics/thermal storage | Metallurgic-heavy + geology + chemical | Refractory brick and dry high-temperature equipment recipes | High-temperature construction prerequisite |
+| **Volcanic Titanium Metallurgy** | Refractory Engineering + Nauvis Titanium Production 2 | Metallurgic-heavy + geology + chemical | Aluminothermic TiCl4 reduction | Limited titanium and tier-2 local construction closure |
+
 ### 6.2 Thermal Heavy Industry on Nauvis
 
 The main pre-cargo benefit of Vulcanus research is **heat-powered heavy industry
@@ -1172,7 +1266,7 @@ Once extractors are built (volcanism-1 tech, already researched on Nauvis):
 23. H2 + Cl2 available:
     - H2 + atmospheric CO2 --> carbon monoxide/graphite + water byproducts.
     - HCl + atmospheric O2 --> chlorine + water through the Deacon route.
-    - Cl2 --> calcium chloride, future titanium chemistry.
+    - Cl2 --> calcium chloride and pilot titanium chemistry.
 24. Atmosphere processing: CO2 capture --> CO2 + N2 + SO2.
     - Feeds into graphite production chain with H2 from geysers.
 ```
@@ -1334,6 +1428,7 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 | Insulated wire | Normal recipe needs rubber | **YES** | Vulcanus silicon-insulation recipe |
 | Capacitor | Normal recipe needs plastic | **YES** | Vulcanus silica capacitor recipe |
 | Logic circuit | Normal recipe needs plastic | **YES** | Vulcanus silicon circuit recipe |
+| Titanium ingot | Normal tier-2 route needs sodium metal and argon | **PROPOSED** | Rock or synthetic rutile, TiCl4, aluminum, and high-temperature refractory equipment |
 
 ### 10.3 The Plastic Problem
 
@@ -1352,7 +1447,7 @@ Almost every electronic/mechanical component needs plastic:
 | **Motor 1** | iron wire + plate + **plastic** + rod | iron wire + plate + **silica-ceramic** + rod | Ceramic bushing replaces plastic bearing |
 | **Capacitor** | aluminum sheet + **plastic** + alumina + graphite | aluminum sheet + **silica glass** + alumina + graphite | Glass dielectric replaces plastic |
 | **Logic circuit** | **plastic** + aluminum wire + poly-silicon + graphite | **ceramic substrate** + aluminum wire + poly-silicon + graphite | Ceramic PCB replaces plastic PCB |
-| **Insulated wire** | aluminum wire + **rubber** | aluminum wire + **silicon insulation** | Already defined in section 3.3 |
+| **Insulated wire** | aluminum wire + **rubber** | aluminum wire + **silicon insulation** | Already defined in section 3.5 |
 
 **Additional implemented alt recipes** (not just plastic/rubber replacements):
 
@@ -1371,8 +1466,10 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 
 ```
 Lava
-  |--> Iron bloom --> (cool) --> Iron ingot --> plate, rod, wire, gear
-  |--> Aluminum bloom --> (cool) --> Alumina --> [dry smelt + graphite] --> Aluminum ingot --> sheet, wire, rod
+  |--> Iron bloom ----> [hot casting] --> plate, rod
+  |       +-----------> (cool) --> Iron ingot --> plate, rod, wire, gear
+  |--> Aluminum bloom -> [hot casting] --> sheet, rod
+  |       +-----------> (cool) --> Alumina --> [dry smelt + graphite] --> Aluminum ingot --> sheet, wire, rod
   |--> Calcite --> lime, calcium
   |--> Silica --> glass, silicon ingot, ceramic substrate
   |--> SO2 --> [rutile-catalyzed decomposition] --> Sulfur + O2
@@ -1382,6 +1479,10 @@ Lava
 HCl geyser --> thermal cracking --> hydrogen + chlorine
 Atmosphere --> CO2 + N2 + SO2
 CO2 + hydrogen --> carbon monoxide --> graphite + water
+Alumina + silica + mineral dust --> refractory mix --> refractory brick
+Gravel --> sand; sand + sulfuric acid --> rutile + sludge + mineral dust
+Rutile + graphite + chlorine --> TiCl4
+TiCl4 + aluminum --> titanium ingot + aluminum chloride
 Silicon ingot + HCl --> Polycrystalline silicon
 Silica --> Ceramic substrate (Vulcanus alt for plastic PCB)
 Silica + aluminum sheet --> Silicon insulation (Vulcanus alt for rubber insulation)
@@ -1464,7 +1565,8 @@ Engineering 3 consumes 320.
 
 ## 11. Open Questions
 
-- Argon source on Vulcanus: volcanic gas separation? (Realistic -- volcanic gas contains trace noble gases.)
+- What exact aluminum-to-titanium ratio and aluminum-chloride recovery loss keep the pilot titanium route useful without making deep deposits irrelevant?
+- Which tier-2 equipment recipes require refractory brick for construction closure?
 - Should the metallurgic pack recipe require cooled ingots specifically, or accept molten blooms too? (Requiring cooled ingots means the cooldown bottleneck affects science production.)
 - How many deep deposits per map? How large? How fast do demolishers expose them?
 - Should demolisher bio-feed be a continuous stream or periodic batches?
