@@ -71,7 +71,7 @@ local checkpoint_data = {
 	-- 		{ CHK_BUILD, STT_NET, 2, {{"nullius-mirror-combustion-chamber-2"}} }},
 
   ["propene"] = {{ CHK_FLUID, STT_CONSUME, 300000, {{"nullius-propene"}} }},
-  ["titanium-ingot"] = {{ CHK_ITEM, STT_PRODUCE, 100, {{"nullius-titanium-ingot"}} }},
+  ["titanium-ingot"] = {{ CHK_ITEM, STT_PRODUCE, 10, {{"nullius-titanium-ingot"}} }},
   ["soda-ash"] = {{ CHK_ITEM, STT_PRODUCE, 1000, {{"nullius-soda-ash"}} }},
   ["monocrystalline-silicon"] = {{ CHK_ITEM, STT_PRODUCE, 20, {{"nullius-monocrystalline-silicon"}} }},
   ["crushed-iron-ore"] = {{ CHK_ITEM, STT_CONSUME, 40000, {{"nullius-crushed-iron-ore"}} }},

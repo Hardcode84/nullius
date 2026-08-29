@@ -1104,7 +1104,7 @@ data:extend({
     localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-assay",
 	    {"item-name.nullius-titanium-ingot"}}},
     localised_description = {"technology-description.nullius-produce",
-	    {"technology-description.nullius-item", tostring(100), "nullius-titanium-ingot", {"item-name.nullius-titanium-ingot"}}},
+	    {"technology-description.nullius-item", tostring(10), "nullius-titanium-ingot", {"item-name.nullius-titanium-ingot"}}},
     order = "nullius-ye",
     icons = {
 	  {
