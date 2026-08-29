@@ -60,6 +60,7 @@ python3 tools/run_factorio_tests.py -n auto
 | Bootstrap metallurgy | `vulcanus-metallurgic-pack-recipe`, `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `vulcanus-metallurgic-pack-10` |
 | Local generic science | `vulcanus-basic-science-10` |
 | Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |
+| Volcanic gas and boric acid | `vulcanus-boric-acid` |
 | Thermite explosives | `vulcanus-thermite` |
 | Efficient metallurgy and hot casting | `vulcanus-efficient-metallurgic-research`, `vulcanus-efficient-metallurgic-science`, `vulcanus-hot-casting` |
 | Refractory production | `vulcanus-refractory-production` |
@@ -72,7 +73,7 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The 21 checked-in argument files under `tests/progression/` define the
+The 22 checked-in argument files under `tests/progression/` define the
 resolved prerequisite contracts. Queries fail on unresolved products,
 inaccessible crafting categories, cyclic routes, undeclared recipe research,
 or forbidden electric execution paths.

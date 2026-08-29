@@ -51,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, boric-acid, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -75,6 +75,7 @@ validators:
   chemical-concrete-barrels: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-concrete-barrels.args"
   chemical-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-pack.args"
   thermite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-thermite.args"
+  boric-acid: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-boric-acid.args"
   thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-thermal-furnace-sizes.args"
 
 prototypes:
@@ -927,6 +928,20 @@ scenarios:
         recipe_productivity_bonus: {nullius-crushed-limestone: 0.01, nullius-aluminum-ingot: 0.01, nullius-iron-plate: 0.01}
         next_level_cost: {nullius-crushing-productivity-1: 400, nullius-smelting-productivity-1: 400, nullius-casting-productivity-1: 400}
         downstream_technology_prerequisites_added: 0
+
+  boric-acid:
+    milestone: M15
+    validator: boric-acid
+    given:
+      force: {researched: [nullius-sulfur-processing-2, nullius-pneumatic-technology]}
+      fluids: {nullius-compressed-volcanic-gas: 68.2}
+      forbidden: [electricity]
+      executors: {decompression: nullius-barrel-pump-1-pneumatic, distillation: nullius-distillery-1-pneumatic}
+    act:
+      - {recipe: nullius-decompress-volcanic-gas, input: {nullius-compressed-volcanic-gas: 25}, output: {nullius-volcanic-gas: 100}, ticks: 60}
+      - {recipe: nullius-volcanic-separation-2, input: {nullius-volcanic-gas: 80}, output: {nullius-acid-boric: 1, nullius-sulfur-dioxide: 16, nullius-air: 24, nullius-carbon-monoxide: 32}, ticks: 180}
+    run: {until: targets_complete, ticks: 240, timeout: 600}
+    expect: {produced: {nullius-acid-boric: "=1"}, retained: {nullius-volcanic-gas: "=20"}, fuel_consumed: {nullius-compressed-volcanic-gas: "=43.2"}, additional_technologies: 0, electric_paths: 0}
 
   refractory-production:
     milestone: M15

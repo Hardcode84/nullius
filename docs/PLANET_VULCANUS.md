@@ -635,6 +635,24 @@ This shifts water from "completely absent" to "agonizingly scarce local resource
 
 ### 3.10 Volcanic Chemistry (Chlorine Economy -- Inverted)
 
+```yaml
+boric_acid:
+  unlock: nullius-sulfur-processing-2
+  decompression:
+    recipe: nullius-decompress-volcanic-gas
+    executor: nullius-barrel-pump-1-pneumatic
+    input: {nullius-compressed-volcanic-gas: 25}
+    output: {nullius-volcanic-gas: 100}
+    time: 1
+    productivity: false
+  separation:
+    recipe: nullius-volcanic-separation-2
+    executor: nullius-distillery-1-pneumatic
+    input: {nullius-volcanic-gas: 80}
+    output: {nullius-acid-boric: 1, nullius-sulfur-dioxide: 16, nullius-air: 24, nullius-carbon-monoxide: 32}
+    time: 3
+```
+
 On Nauvis, chlorine is the unwanted byproduct you can't void. On Vulcanus, the chlorine economy is inverted:
 
 ```

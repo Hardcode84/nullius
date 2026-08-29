@@ -12,6 +12,14 @@ pneumatic.effects[#pneumatic.effects + 1] = {
   recipe = "nullius-vulcanus-barrel",
 }
 
+local sulfur_processing_2 = data.raw.technology["nullius-sulfur-processing-2"]
+if not sulfur_processing_2 then error("Missing nullius-sulfur-processing-2") end
+sulfur_processing_2.effects = sulfur_processing_2.effects or {}
+sulfur_processing_2.effects[#sulfur_processing_2.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-decompress-volcanic-gas",
+}
+
 local function productivity_technology(name, order, icon, prerequisite,
     categories)
   return {

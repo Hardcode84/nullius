@@ -20,7 +20,7 @@
 | Planet access | Vulcanus probe research unlocks the planet, creates the surface and wreck, and transfers control to a new android body | Activation scenario |
 | Bootstrap | Free lava intake and diminishing-return gas vent prime a net-positive lava-gas loop | Vent-prime and gas-self-power scenarios |
 | Pneumatic factory | Eligible machines, labs, compressors, and flotation cells switch through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
-| Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, and sulfuric acid are reachable without seawater or organic chemistry | Production scenarios and prerequisite manifests |
+| Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, and boric acid are reachable without seawater or organic chemistry | Production scenarios and prerequisite manifests |
 | Local science | Geology, climatology, mechanical, electrical, chemical, bootstrap metallurgic, and efficient metallurgic packs are producible | Science-production scenarios |
 | Thermite explosives | Inorganic chlorine, sulfur dioxide, aluminum powder, circuitry, and a disposable miner produce stable cliff explosives without electricity or organic chemistry | Thermite scenario and prerequisite manifest |
 | Hot casting | Hot Metalworking unlocks direct pneumatic casting of iron and aluminum blooms before spoilage | Hot-casting scenario and prerequisite manifest |

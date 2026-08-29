@@ -448,6 +448,36 @@ data:extend({
   },
 })
 
+-- Restore ordinary volcanic gas pressure for the existing separation chain.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-decompress-volcanic-gas",
+    localised_name = {"recipe-name.nullius-decompress-volcanic-gas"},
+    icons = data.raw.fluid["nullius-volcanic-gas"].icons,
+    enabled = false,
+    show_amount_in_title = false,
+    always_show_products = true,
+    allow_decomposition = false,
+    allow_as_intermediate = false,
+    hide_from_stats = true,
+    category = "decompression",
+    subgroup = "decompression",
+    order = "nullius-z",
+    energy_required = 1,
+    ingredients = {
+      {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 25},
+    },
+    results = {
+      {type = "fluid", name = "nullius-volcanic-gas", amount = 100},
+    },
+    main_product = "nullius-volcanic-gas",
+    allow_productivity = false,
+    no_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
 -- Inefficient alkali recovery from sodium-bearing volcanic silicates.  These
 -- recipes are globally usable: their poor yields are the constraint, while
 -- Vulcanus supplies renewable gravel, hydrogen chloride, and pneumatic power.
