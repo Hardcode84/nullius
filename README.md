@@ -4,4 +4,4 @@ https://mods.factorio.com/mod/nullius
 
 ## Development
 
-- [Autonomous Factorio Mod Development and Certification](AUTONOMOUS_MOD_DEVELOPMENT.md)
+- [Autonomous Factorio Mod Development and Certification](docs/AUTONOMOUS_MOD_DEVELOPMENT.md)

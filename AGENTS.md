@@ -1,5 +1,23 @@
 # Repository rules
 
+## Repository layout
+
+| Content | Location |
+|---|---|
+| Distributable Nullius* mod | `nullius-star/` |
+| Design and validation documents | `docs/` |
+| Factorio scenario tests | `tests/scenarios/` |
+| Prerequisite argument contracts | `tests/progression/` |
+| Test-support mod | `tests/factorio-test-support/` |
+| Python unit tests | `tests/test_*.py` |
+| Development commands and analyzers | `tools/` |
+
+- Keep documentation, scenarios, fixtures, test support, and unit tests out of
+  `nullius-star/`; that directory is packaged as the released mod.
+- Scenario code may import shared scenario modules through the
+  `__nullius-star__/scenarios/` namespace. The external runner supplies that
+  namespace only in its temporary test overlay.
+
 ## Communication
 
 - Lead with concrete results.

@@ -1,7 +1,7 @@
 # Vulcanus Automated Test Plan
 
 The generic test architecture is defined in
-[`AUTONOMOUS_MOD_DEVELOPMENT.md`](../AUTONOMOUS_MOD_DEVELOPMENT.md). This file
+[`AUTONOMOUS_MOD_DEVELOPMENT.md`](AUTONOMOUS_MOD_DEVELOPMENT.md). This file
 contains only the Nullius Star cases and progression milestones for Vulcanus.
 
 ## First feature tests
@@ -69,7 +69,7 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The 16 checked-in argument files under `nullius-star/progression/` define the
+The 16 checked-in argument files under `tests/progression/` define the
 resolved prerequisite contracts. Queries fail on unresolved products,
 inaccessible crafting categories, cyclic routes, undeclared recipe research,
 or forbidden electric execution paths.

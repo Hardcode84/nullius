@@ -8,6 +8,8 @@ import unittest
 from tools.run_factorio_tests import (
     DEPENDENCY_MODS,
     MAX_UNTIL_TICK,
+    MOD_UNDER_TEST,
+    SCENARIOS,
     TEST_SUPPORT_MOD,
     TestFailure,
     format_duration,
@@ -18,6 +20,11 @@ from tools.run_factorio_tests import (
 
 
 class FactorioTestRunnerTests(unittest.TestCase):
+    def test_distributable_mod_excludes_repository_only_content(self) -> None:
+        self.assertEqual(list(MOD_UNDER_TEST.glob("*.md")), [])
+        self.assertFalse((MOD_UNDER_TEST / "scenarios").exists())
+        self.assertFalse((MOD_UNDER_TEST / "progression").exists())
+
     def test_prepare_mods_loads_test_support_after_nullius_star(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -29,6 +36,16 @@ class FactorioTestRunnerTests(unittest.TestCase):
             run_mods = root / "mods"
             prepare_mods(run_mods, dependencies)
 
+            staged_mod = run_mods / "nullius-star"
+            self.assertTrue(staged_mod.is_dir())
+            self.assertFalse(staged_mod.is_symlink())
+            self.assertEqual(
+                (staged_mod / "info.json").resolve(),
+                (MOD_UNDER_TEST / "info.json").resolve(),
+            )
+            self.assertEqual(
+                (staged_mod / "scenarios").resolve(), SCENARIOS.resolve()
+            )
             support_link = run_mods / "factorio-test-support"
             self.assertTrue(support_link.is_symlink())
             self.assertEqual(support_link.resolve(), TEST_SUPPORT_MOD.resolve())

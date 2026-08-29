@@ -133,8 +133,8 @@ explained.
 |---|---|---|
 | Dependency-free external runner | Implemented | `python3 tools/run_factorio_tests.py` |
 | Assertion, timeout, missing-result, and tick-cap failures | Implemented | Python runner tests |
-| Mod feature scenarios | Implemented | `nullius-star/scenarios/*/test.json` |
-| Independent fixed-map campaign stages | Implemented | `nullius-star/VULCANUS_PROGRESSION_PLAN.md` |
+| Mod feature scenarios | Implemented | `tests/scenarios/*/test.json` |
+| Independent fixed-map campaign stages | Implemented | `docs/VULCANUS_PROGRESSION_PLAN.md` |
 | Parallel execution | Implemented | `python3 tools/run_factorio_tests.py -n auto` |
 | Resolved prerequisite and manifest generation | Implemented | `tools/analyze_factorio_prereqs.py`, `tools/generate_factorio_scenario_manifest.py` |
 | Factorio-version candidate comparison | Not implemented | Candidate-versus-supported comparison remains required |

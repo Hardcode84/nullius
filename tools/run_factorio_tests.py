@@ -17,7 +17,8 @@ import time
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 MOD_UNDER_TEST = REPOSITORY / "nullius-star"
-TEST_SUPPORT_MOD = REPOSITORY / "tools" / "factorio-test-support"
+SCENARIOS = REPOSITORY / "tests" / "scenarios"
+TEST_SUPPORT_MOD = REPOSITORY / "tests" / "factorio-test-support"
 BUILTIN_MODS = ("base", "elevated-rails", "quality", "space-age")
 DEPENDENCY_MODS = (
     "alien-biomes",
@@ -72,6 +73,25 @@ def find_archive(mod_directory: Path, mod_name: str) -> Path:
     return matches[0].resolve()
 
 
+def stage_mod_under_test(run_mods: Path) -> None:
+    if not SCENARIOS.is_dir():
+        raise TestFailure(f"scenario directory not found: {SCENARIOS}")
+    if (MOD_UNDER_TEST / "scenarios").exists():
+        raise TestFailure(
+            "test scenarios must remain outside the distributable nullius-star mod"
+        )
+
+    staged_mod = run_mods / "nullius-star"
+    staged_mod.mkdir()
+    for source in sorted(MOD_UNDER_TEST.iterdir()):
+        (staged_mod / source.name).symlink_to(
+            source.resolve(), target_is_directory=source.is_dir()
+        )
+    (staged_mod / "scenarios").symlink_to(
+        SCENARIOS.resolve(), target_is_directory=True
+    )
+
+
 def prepare_mods(run_mods: Path, dependency_mods: Path) -> None:
     run_mods.mkdir(parents=True)
     enabled = [*BUILTIN_MODS]
@@ -80,7 +100,7 @@ def prepare_mods(run_mods: Path, dependency_mods: Path) -> None:
         (run_mods / archive.name).symlink_to(archive)
         enabled.append(mod_name)
 
-    (run_mods / "nullius-star").symlink_to(MOD_UNDER_TEST, target_is_directory=True)
+    stage_mod_under_test(run_mods)
     enabled.append("nullius-star")
     (run_mods / "factorio-test-support").symlink_to(
         TEST_SUPPORT_MOD, target_is_directory=True
@@ -131,9 +151,7 @@ def tail(path: Path, lines: int = 40) -> str:
 
 
 def discover_cases() -> list[str]:
-    scenarios = MOD_UNDER_TEST / "scenarios"
-    if not scenarios.is_dir():
-        raise TestFailure(f"scenario directory not found: {scenarios}")
+    scenarios = SCENARIOS
     return sorted(
         path.name
         for path in scenarios.iterdir()
@@ -142,7 +160,7 @@ def discover_cases() -> list[str]:
 
 
 def deadline_for(args: argparse.Namespace, case: str) -> int:
-    scenario = MOD_UNDER_TEST / "scenarios" / case
+    scenario = SCENARIOS / case
     if not scenario.is_dir() or not (scenario / "control.lua").is_file():
         raise TestFailure(f"scenario not found: {scenario}")
     metadata_path = scenario / "test.json"
@@ -175,7 +193,7 @@ def execute(
 ) -> dict[str, object]:
     factorio = args.factorio.expanduser().resolve()
     dependency_mods = args.dependency_mod_directory.expanduser().resolve()
-    scenario = MOD_UNDER_TEST / "scenarios" / case
+    scenario = SCENARIOS / case
     if not factorio.is_file():
         raise TestFailure(f"Factorio executable not found: {factorio}")
     if not scenario.is_dir():

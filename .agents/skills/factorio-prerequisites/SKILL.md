@@ -91,7 +91,7 @@ reproduce as a target, rather than querying only its final product.
 When changing the checker, run:
 
 ```bash
-python3 -m unittest tools/test_analyze_factorio_prereqs.py
+python3 -m unittest tests/test_analyze_factorio_prereqs.py
 ```
 
 Also run at least one fresh-dump query representative of the changed behavior.

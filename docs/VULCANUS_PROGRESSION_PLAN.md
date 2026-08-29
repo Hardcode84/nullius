@@ -58,19 +58,19 @@ chunk_contract:
   cross_chunk_save: false
 
 validators:
-  construction: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-construction.args"
-  inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-barrel.args"
-  efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-efficient-pack.args"
-  metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-pack.args"
-  renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-renewable-graphite.args"
-  basic-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-basic-science.args"
-  chemical-science: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-science.args"
-  chemical-acid: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-acid.args"
-  chemical-alkali: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-alkali.args"
-  chemical-glass-lubricant: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-glass-lubricant.args"
-  chemical-concrete-barrels: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-concrete-barrels.args"
-  chemical-pack: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/vulcanus-chemical-pack.args"
-  thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @nullius-star/progression/nauvis-thermal-furnace-sizes.args"
+  construction: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-construction.args"
+  inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-barrel.args"
+  efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-efficient-pack.args"
+  metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-pack.args"
+  renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-renewable-graphite.args"
+  basic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-basic-science.args"
+  chemical-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-science.args"
+  chemical-acid: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-acid.args"
+  chemical-alkali: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-alkali.args"
+  chemical-glass-lubricant: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-glass-lubricant.args"
+  chemical-concrete-barrels: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-concrete-barrels.args"
+  chemical-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-pack.args"
+  thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-thermal-furnace-sizes.args"
 
 prototypes:
   technologies:
