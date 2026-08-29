@@ -61,6 +61,7 @@ python3 tools/run_factorio_tests.py -n auto
 | Local generic science | `vulcanus-basic-science-10` |
 | Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |
 | Efficient metallurgy and hot casting | `vulcanus-efficient-metallurgic-research`, `vulcanus-efficient-metallurgic-science`, `vulcanus-hot-casting` |
+| Refractory production | `vulcanus-refractory-production` |
 | Thermal research and cells | `thermal-engineering-*`, `thermal-machines-*`, `thermal-cell-*`, `industrial-optimization-1`, `industrial-productivity-technologies`, `recipe-productivity-family` |
 
 Each stage declares a fixture that is a subset of cumulative prior-stage output
@@ -69,7 +70,7 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The 17 checked-in argument files under `tests/progression/` define the
+The 18 checked-in argument files under `tests/progression/` define the
 resolved prerequisite contracts. Queries fail on unresolved products,
 inaccessible crafting categories, cyclic routes, undeclared recipe research,
 or forbidden electric execution paths.

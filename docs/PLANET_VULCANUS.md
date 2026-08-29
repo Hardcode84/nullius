@@ -276,14 +276,13 @@ invariants:
 | Molten iron bloom | Iron plate or rod | Skips passive cooling before metalworking | Bloom cools to iron ingot; ordinary recipes remain available |
 | Molten aluminum bloom | Aluminum sheet or rod | Preserves metal before oxidation and skips graphite reduction | Bloom oxidizes to alumina; dry reduction remains available |
 
-### 3.4 Proposed Refractory Production
+### 3.4 Refractory Production
 
 ```yaml
 research:
-  name: Vulcanus Refractory Engineering
-  prerequisites:
-    vulcanus: [Efficient Metallurgic Science, Hot Metalworking]
-    nauvis: corresponding ceramics and thermal-storage research
+  prototype: nullius-vulcanus-refractory-engineering
+  prerequisites: [nullius-hot-metalworking, nullius-ceramics, nullius-thermal-storage-2]
+  cost: {count: 10, time: 45, metallurgic: 40, geology: 4, chemical: 4}
 material_contract:
   raw_boundaries: [lava, atmosphere, hydrogen chloride]
   water: 0
@@ -291,17 +290,26 @@ material_contract:
   electricity: 0
 chain:
   mixing:
-    inputs: [alumina, silica, mineral dust]
+    recipe: nullius-refractory-mix-vulcanus
+    inputs: {nullius-alumina: 5, nullius-silica: 8, nullius-mineral-dust: 12}
     executor: pneumatic assembler
-    output: refractory mix
+    output: {nullius-refractory-mix: 10}
+    time: 12
   firing:
-    input: refractory mix
-    executor: hot pneumatic or thermal furnace
-    output: refractory brick
+    recipe: nullius-refractory-brick-vulcanus
+    input: {nullius-refractory-mix: 10}
+    executor: heat-powered pneumatic furnace
+    output: {nullius-refractory-brick: 30}
+    time: 15
 uses:
-  - dry alternative recipes for heat-pipe 2 and high-temperature radiators
-  - dry alternative recipes for tier-2 pneumatic process equipment
-  - high-temperature crucibles and furnace linings
+  recipes:
+    nullius-heat-pipe-2-vulcanus:
+      input: {nullius-heat-pipe-1: 1, nullius-pipe-2: 2, nullius-aluminum-sheet: 4, nullius-refractory-brick: 4, nullius-silicon-insulation: 2, nullius-eutectic-salt: 5}
+      output: {nullius-heat-pipe-2: 2}
+    nullius-vulcanus-radiator-2-refractory:
+      input: {nullius-vulcanus-radiator-1: 1, nullius-aluminum-sheet: 4, nullius-refractory-brick: 4, nullius-heat-pipe-1: 1, nullius-pipe-2: 4}
+      output: {nullius-vulcanus-radiator-2: 1}
+  roles: [tier-2 pneumatic equipment, high-temperature crucibles, furnace linings]
 invariants:
   item_family: one shared refractory intermediate
   fuel: machine heat, not a consumed heat item
@@ -1019,6 +1027,7 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 | **Volcanic Alkali Processing** | 0 metallurgic | 50 each geology, climatology, mechanical, electrical | Volcanic saline and non-electric causticization | Enables chemical science |
 | **Efficient Metallurgic Science** | 10 | 10 geology + 5 mechanical + 5 electrical | Efficient pack recipe and chlorine/SO2 barreling | Vulcanus production |
 | **Hot Metalworking** | 100 | 10 mechanical | Direct iron and aluminum bloom casting | Vulcanus throughput |
+| **Vulcanus Refractory Engineering** | 400 | 40 geology + 40 chemical | Refractory mix, industrial brick firing, dry heat pipe 2, improved high-temp radiator | Vulcanus high-temperature infrastructure |
 | **Thermal Engineering 1** | 200 | 10 geology + 5 mechanical | Tier-1 thermal crushers, all tier-1 furnace sizes, and foundries | Optional Nauvis industry |
 | **Thermal Engineering 2** | 800 | 80 geology + 40 mechanical + 40 electrical + 40 chemical | Tier-2 thermal heavy industry | Optional Nauvis industry |
 | **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
@@ -1028,7 +1037,6 @@ Proposed finite additions:
 
 | Tech | Prerequisite shape | Cost shape | Unlocks | Role |
 |---|---|---|---|---|
-| **Vulcanus Refractory Engineering** | Hot Metalworking + corresponding Nauvis ceramics/thermal storage | Metallurgic-heavy + geology + chemical | Refractory brick and dry high-temperature equipment recipes | High-temperature construction prerequisite |
 | **Volcanic Titanium Metallurgy** | Refractory Engineering + Nauvis Titanium Production 2 | Metallurgic-heavy + geology + chemical | Aluminothermic TiCl4 reduction | Limited titanium and tier-2 local construction closure |
 
 ### 6.2 Thermal Heavy Industry on Nauvis

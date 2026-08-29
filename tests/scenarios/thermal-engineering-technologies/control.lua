@@ -29,6 +29,21 @@ local TECHNOLOGIES = {
     },
   },
   {
+    name = "nullius-vulcanus-refractory-engineering",
+    count = 10,
+    seconds = 45,
+    ingredients = {
+      ["nullius-metallurgic-pack"] = 40,
+      ["nullius-geology-pack"] = 4,
+      ["nullius-chemical-pack"] = 4,
+    },
+    prerequisites = {
+      ["nullius-hot-metalworking"] = true,
+      ["nullius-ceramics"] = true,
+      ["nullius-thermal-storage-2"] = true,
+    },
+  },
+  {
     name = "nullius-thermal-engineering-1",
     count = 5,
     seconds = 30,

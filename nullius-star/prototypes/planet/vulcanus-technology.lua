@@ -108,6 +108,33 @@ data:extend({
   },
   {
     type = "technology",
+    name = "nullius-vulcanus-refractory-engineering",
+    order = "nullius-df-zb",
+    icon = "__angelssmeltinggraphics__/graphics/icons/brick-clay.png",
+    icon_size = 32,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-refractory-mix-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-refractory-brick-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-heat-pipe-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-vulcanus-radiator-2-refractory"},
+    },
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-metallurgic-pack", 40},
+        {"nullius-geology-pack", 4},
+        {"nullius-chemical-pack", 4},
+      },
+      time = 45,
+    },
+    prerequisites = {
+      "nullius-hot-metalworking",
+      "nullius-ceramics",
+      "nullius-thermal-storage-2",
+    },
+  },
+  {
+    type = "technology",
     name = "nullius-thermal-engineering-1",
     order = "nullius-dg-a",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",

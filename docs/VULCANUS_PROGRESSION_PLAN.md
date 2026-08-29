@@ -19,7 +19,7 @@
 | M12 | Commission direct hot casting and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
 | M13 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 305–510 min |
 | M14 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 335–560 min |
-| M15 | Unlock and deploy tier-2 thermal industry alongside Nauvis progression | 2–4 h | 6–12 h |
+| M15 | Establish refractory infrastructure and deploy tier-2 thermal industry | 2–4 h | 6–12 h |
 | M16 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–20 h |
 
 Time basis: first solo playthrough after activation, no prepared layout.
@@ -51,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -62,6 +62,7 @@ validators:
   inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-barrel.args"
   efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-efficient-pack.args"
   hot-casting: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-hot-casting.args"
+  refractory-production: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-refractory-production.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-basic-science.args"
@@ -85,6 +86,11 @@ prototypes:
       unit: {count: 10, time: 30, ingredients: {nullius-metallurgic-pack: 10, nullius-mechanical-pack: 1}}
       totals: {nullius-metallurgic-pack: 100, nullius-mechanical-pack: 10}
       unlocks: [nullius-hot-iron-plate, nullius-hot-iron-rod, nullius-hot-aluminum-sheet, nullius-hot-aluminum-rod]
+    nullius-vulcanus-refractory-engineering:
+      prerequisites: [nullius-hot-metalworking, nullius-ceramics, nullius-thermal-storage-2]
+      unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 4, nullius-chemical-pack: 4}}
+      totals: {nullius-metallurgic-pack: 400, nullius-geology-pack: 40, nullius-chemical-pack: 40}
+      unlocks: [nullius-refractory-mix-vulcanus, nullius-refractory-brick-vulcanus, nullius-heat-pipe-2-vulcanus, nullius-vulcanus-radiator-2-refractory]
     nullius-thermal-engineering-1:
       prerequisites: [nullius-efficient-metallurgic-science, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
@@ -889,6 +895,34 @@ scenarios:
         recipe_productivity_bonus: {nullius-crushed-limestone: 0.01, nullius-aluminum-ingot: 0.01, nullius-iron-plate: 0.01}
         next_level_cost: {nullius-crushing-productivity-1: 400, nullius-smelting-productivity-1: 400, nullius-casting-productivity-1: 400}
         downstream_technology_prerequisites_added: 0
+
+  refractory-production:
+    milestone: M15
+    validator: refractory-production
+    given:
+      force: {researched: [nullius-vulcanus-refractory-engineering]}
+      inventory: {nullius-alumina: 5, nullius-silica: 8, nullius-mineral-dust: 12, nullius-aluminum-sheet: 8, nullius-silicon-insulation: 2, nullius-eutectic-salt: 5, nullius-heat-pipe-1: 2, nullius-pipe-2: 6, nullius-vulcanus-radiator-1: 1}
+      fluids: {nullius-compressed-volcanic-gas: 203.4}
+      heat: {furnace: 500}
+    place:
+      mixer: {prototype: nullius-medium-assembler-1-pneumatic, at: [8, 0]}
+      furnace: {prototype: nullius-small-furnace-2-pneumatic, at: [20, 0]}
+      foundry: {prototype: nullius-foundry-1-pneumatic, at: [32, -4]}
+      radiator-assembler: {prototype: nullius-medium-assembler-1-pneumatic, at: [32, 4]}
+    act:
+      - set_recipe: {entity: mixer, recipe: nullius-refractory-mix-vulcanus}
+      - transfer: {from: mixer, to: furnace, item: nullius-refractory-mix, count: 10}
+      - set_recipe: {entity: furnace, recipe: nullius-refractory-brick-vulcanus}
+      - transfer: {from: furnace, to: [foundry, radiator-assembler], item: nullius-refractory-brick, count: 8}
+      - set_recipe: {entity: foundry, recipe: nullius-heat-pipe-2-vulcanus}
+      - set_recipe: {entity: radiator-assembler, recipe: nullius-vulcanus-radiator-2-refractory}
+    run: {stages: sequential, final_stage_parallelism: 2, ticks: 3210, timeout: 3500}
+    expect:
+      terminal:
+        produced: {nullius-refractory-mix: 10, nullius-refractory-brick: 30, nullius-heat-pipe-2: 2, nullius-vulcanus-radiator-2: 1}
+        retained: {nullius-refractory-brick: 22}
+        consumed: {nullius-alumina: 5, nullius-silica: 8, nullius-mineral-dust: 12, nullius-aluminum-sheet: 8, nullius-silicon-insulation: 2, nullius-eutectic-salt: 5, nullius-heat-pipe-1: 2, nullius-pipe-2: 6, nullius-vulcanus-radiator-1: 1, nullius-compressed-volcanic-gas: 203.4}
+        forbidden_inputs: [nullius-insulation, nullius-pipe-3, nullius-plastic, nullius-rubber]
 
   thermal-cell-2:
     milestone: M15

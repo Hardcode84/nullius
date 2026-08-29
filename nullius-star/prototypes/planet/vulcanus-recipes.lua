@@ -44,6 +44,19 @@ data:extend({
     stack_size = 100,
   },
   {
+    type = "item",
+    name = "nullius-refractory-mix",
+    localised_name = {"item-name.nullius-refractory-mix"},
+    icons = {{
+      icon = "__angelssmeltinggraphics__/graphics/icons/powder-silica.png",
+      icon_size = 64,
+      tint = {r = 0.8, g = 0.65, b = 0.5},
+    }},
+    subgroup = "masonry",
+    order = "nullius-bz",
+    stack_size = 100,
+  },
+  {
     type = "tool",
     name = "nullius-metallurgic-pack",
     icon = "__space-age__/graphics/icons/metallurgic-science-pack.png",
@@ -135,6 +148,96 @@ data:extend({
     },
     main_product = "nullius-aluminum-rod",
     allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
+-- Industrial refractory production consumes abundant Vulcanus mineral
+-- byproducts and avoids the wet, organic ceramic route.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-refractory-mix-vulcanus",
+    localised_name = {"recipe-name.nullius-refractory-mix-vulcanus"},
+    enabled = false,
+    category = "medium-crafting",
+    subgroup = "masonry",
+    order = "nullius-vc",
+    energy_required = 12,
+    ingredients = {
+      {type = "item", name = "nullius-alumina", amount = 5},
+      {type = "item", name = "nullius-silica", amount = 8},
+      {type = "item", name = "nullius-mineral-dust", amount = 12},
+    },
+    results = {
+      {type = "item", name = "nullius-refractory-mix", amount = 10},
+    },
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-refractory-brick-vulcanus",
+    localised_name = {"recipe-name.nullius-refractory-brick-vulcanus"},
+    enabled = false,
+    category = "dry-smelting",
+    subgroup = "masonry",
+    order = "nullius-vd",
+    energy_required = 15,
+    ingredients = {
+      {type = "item", name = "nullius-refractory-mix", amount = 10},
+    },
+    results = {
+      {type = "item", name = "nullius-refractory-brick", amount = 30},
+    },
+    main_product = "nullius-refractory-brick",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-heat-pipe-2-vulcanus",
+    localised_name = {"recipe-name.nullius-heat-pipe-2-vulcanus"},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = "heat-energy",
+    order = "nullius-vc",
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-heat-pipe-1", amount = 1},
+      {type = "item", name = "nullius-pipe-2", amount = 2},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 4},
+      {type = "item", name = "nullius-refractory-brick", amount = 4},
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+      {type = "item", name = "nullius-eutectic-salt", amount = 5},
+    },
+    results = {
+      {type = "item", name = "nullius-heat-pipe-2", amount = 2},
+    },
+    main_product = "nullius-heat-pipe-2",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-radiator-2-refractory",
+    localised_name = {"recipe-name.nullius-vulcanus-radiator-2-refractory"},
+    enabled = false,
+    category = "medium-crafting",
+    subgroup = "energy",
+    order = "nullius-vc",
+    energy_required = 10,
+    ingredients = {
+      {type = "item", name = "nullius-vulcanus-radiator-1", amount = 1},
+      {type = "item", name = "nullius-aluminum-sheet", amount = 4},
+      {type = "item", name = "nullius-refractory-brick", amount = 4},
+      {type = "item", name = "nullius-heat-pipe-1", amount = 1},
+      {type = "item", name = "nullius-pipe-2", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-vulcanus-radiator-2", amount = 1},
+    },
+    main_product = "nullius-vulcanus-radiator-2",
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
