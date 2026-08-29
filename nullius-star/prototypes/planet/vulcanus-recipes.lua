@@ -478,6 +478,35 @@ data:extend({
   },
 })
 
+-- Obsolete but electricity-free sodium production by carbothermic reduction
+-- and immediate condensation of sodium vapor.  Its poor yield and refractory
+-- wear keep electrolysis preferable wherever power is available.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-carbothermic-sodium",
+    localised_name = {"recipe-name.nullius-carbothermic-sodium"},
+    enabled = false,
+    category = "nullius-high-temp-radiator",
+    subgroup = "sodium-product",
+    order = "nullius-vc",
+    always_show_products = true,
+    energy_required = 20,
+    ingredients = {
+      {type = "item", name = "nullius-soda-ash", amount = 3},
+      {type = "item", name = "nullius-graphite", amount = 6},
+      {type = "item", name = "nullius-refractory-brick", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-sodium", amount = 2},
+      {type = "fluid", name = "nullius-carbon-monoxide", amount = 90},
+    },
+    main_product = "nullius-sodium",
+    allow_productivity = false,
+    no_productivity = true,
+  },
+})
+
 -- Inefficient alkali recovery from sodium-bearing volcanic silicates.  These
 -- recipes are globally usable: their poor yields are the constraint, while
 -- Vulcanus supplies renewable gravel, hydrogen chloride, and pneumatic power.

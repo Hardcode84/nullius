@@ -651,6 +651,16 @@ boric_acid:
     input: {nullius-volcanic-gas: 80}
     output: {nullius-acid-boric: 1, nullius-sulfur-dioxide: 16, nullius-air: 24, nullius-carbon-monoxide: 32}
     time: 3
+metallic_sodium:
+  unlock: nullius-sodium-processing
+  scope: global
+  recipe: nullius-carbothermic-sodium
+  executor: nullius-vulcanus-radiator-2
+  input: {nullius-soda-ash: 3, nullius-graphite: 6, nullius-refractory-brick: 1}
+  output: {nullius-sodium: 2, nullius-carbon-monoxide: 90}
+  time: 20
+  heat: {minimum_temperature: 450, energy: 20MJ}
+  productivity: false
 ```
 
 On Nauvis, chlorine is the unwanted byproduct you can't void. On Vulcanus, the chlorine economy is inverted:

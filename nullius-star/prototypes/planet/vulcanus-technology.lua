@@ -20,6 +20,14 @@ sulfur_processing_2.effects[#sulfur_processing_2.effects + 1] = {
   recipe = "nullius-decompress-volcanic-gas",
 }
 
+local sodium_processing = data.raw.technology["nullius-sodium-processing"]
+if not sodium_processing then error("Missing nullius-sodium-processing") end
+sodium_processing.effects = sodium_processing.effects or {}
+sodium_processing.effects[#sodium_processing.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-carbothermic-sodium",
+}
+
 local function productivity_technology(name, order, icon, prerequisite,
     categories)
   return {
