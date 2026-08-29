@@ -424,28 +424,39 @@ This is the same punitive recipe used for Nauvis bootstrap titanium. Vulcanus
 can sustain it because gravel and sulfuric acid are local, but the material and
 waste volumes prevent it from replacing later deep deposits.
 
-#### Proposed Vulcanus reduction chain
+#### Vulcanus reduction chain
 
 ```yaml
 research:
-  name: Volcanic Titanium Metallurgy
-  prerequisites:
-    vulcanus: [Vulcanus Refractory Engineering, Efficient Metallurgic Science]
-    nauvis: Titanium Production 2
-recipe:
-  surface: Vulcanus
-  category: high-temperature-radiator
+  prototype: nullius-volcanic-titanium-metallurgy
+  prerequisites: [nullius-vulcanus-refractory-engineering, nullius-titanium-production-2, nullius-water-filtration-3, nullius-metalworking-2]
+  cost: {count: 10, time: 60, metallurgic: 80, geology: 8, chemical: 8}
+recipes:
   upstream:
-    inputs: [rutile, graphite, chlorine]
-    output: titanium tetrachloride
-  inputs: [titanium tetrachloride, aluminum]
-  outputs: [titanium ingot, aluminum chloride]
-  forbidden_inputs: [argon, elemental sodium]
-  electricity: 0
+    recipe: nullius-titanium-tetrachloride
+    input: {nullius-rutile: 4, nullius-graphite: 7, nullius-chlorine: 80}
+    output: {nullius-titanium-tetrachloride: 15, nullius-mineral-dust: 2}
+  reduction:
+    recipe: nullius-titanium-ingot-vulcanus
+    category: nullius-high-temp-radiator
+    input: {nullius-titanium-tetrachloride: 15, nullius-aluminum-ingot: 4}
+    output: {nullius-titanium-ingot: 2, nullius-aluminum-chloride: 4}
+    time: 8
+  recovery:
+    recipe: nullius-aluminum-chloride-recovery
+    category: nullius-high-temp-radiator
+    input: {nullius-aluminum-chloride: 4, nullius-water: 30}
+    output: {nullius-alumina: 1, nullius-mineral-dust: 3, nullius-hydrogen-chloride: 60}
+    time: 6
+  equipment:
+    nullius-hydro-plant-2-vulcanus: {input: {nullius-hydro-plant-1: 1, nullius-chemical-plant-1: 1, nullius-medium-tank-2: 1, nullius-refractory-brick: 20, nullius-titanium-plate: 2, nullius-red-wire: 5}, output: {nullius-hydro-plant-2: 1}}
+    nullius-foundry-2-vulcanus: {input: {nullius-foundry-1: 1, nullius-small-furnace-2: 1, nullius-refractory-brick: 12, nullius-titanium-plate: 1, bob-turbo-inserter: 2}, output: {nullius-foundry-2: 1}}
 scale_limit_before_cargo: rutile supply
 invariants:
-  aluminum_chloride_recovery: net aluminum loss
-  pilot_output: enough for refractory-lined tier-2 equipment
+  forbidden_inputs: [nullius-argon, nullius-sodium]
+  electricity: 0
+  aluminum_chloride_recovery: "4 aluminum ingots -> 4 aluminum chloride -> 1 alumina"
+  pilot_output: "4 titanium ingots -> 3 titanium plates -> hydro plant 2 + foundry 2"
   bulk_output: unattractive before deep deposits
 ```
 
@@ -1028,6 +1039,7 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 | **Efficient Metallurgic Science** | 10 | 10 geology + 5 mechanical + 5 electrical | Efficient pack recipe and chlorine/SO2 barreling | Vulcanus production |
 | **Hot Metalworking** | 100 | 10 mechanical | Direct iron and aluminum bloom casting | Vulcanus throughput |
 | **Vulcanus Refractory Engineering** | 400 | 40 geology + 40 chemical | Refractory mix, industrial brick firing, dry heat pipe 2, improved high-temp radiator | Vulcanus high-temperature infrastructure |
+| **Volcanic Titanium Metallurgy** | 800 | 80 geology + 80 chemical | Aluminothermic titanium, aluminum-chloride recovery, refractory hydro plant 2 and foundry 2 | Limited tier-2 construction closure |
 | **Thermal Engineering 1** | 200 | 10 geology + 5 mechanical | Tier-1 thermal crushers, all tier-1 furnace sizes, and foundries | Optional Nauvis industry |
 | **Thermal Engineering 2** | 800 | 80 geology + 40 mechanical + 40 electrical + 40 chemical | Tier-2 thermal heavy industry | Optional Nauvis industry |
 | **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
@@ -1037,7 +1049,6 @@ Proposed finite additions:
 
 | Tech | Prerequisite shape | Cost shape | Unlocks | Role |
 |---|---|---|---|---|
-| **Volcanic Titanium Metallurgy** | Refractory Engineering + Nauvis Titanium Production 2 | Metallurgic-heavy + geology + chemical | Aluminothermic TiCl4 reduction | Limited titanium and tier-2 local construction closure |
 
 ### 6.2 Thermal Heavy Industry on Nauvis
 
@@ -1439,7 +1450,7 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 | Insulated wire | Normal recipe needs rubber | **YES** | Vulcanus silicon-insulation recipe |
 | Capacitor | Normal recipe needs plastic | **YES** | Vulcanus silica capacitor recipe |
 | Logic circuit | Normal recipe needs plastic | **YES** | Vulcanus silicon circuit recipe |
-| Titanium ingot | Normal tier-2 route needs sodium metal and argon | **PROPOSED** | Rock or synthetic rutile, TiCl4, aluminum, and high-temperature refractory equipment |
+| Titanium ingot | Normal tier-2 route needs sodium metal and argon | **YES** | Synthetic rutile, TiCl4, aluminothermic reduction, and high-temperature refractory equipment |
 
 ### 10.3 The Plastic Problem
 
@@ -1576,8 +1587,6 @@ Engineering 3 consumes 320.
 
 ## 11. Open Questions
 
-- What exact aluminum-to-titanium ratio and aluminum-chloride recovery loss keep the pilot titanium route useful without making deep deposits irrelevant?
-- Which tier-2 equipment recipes require refractory brick for construction closure?
 - Should the metallurgic pack recipe require cooled ingots specifically, or accept molten blooms too? (Requiring cooled ingots means the cooldown bottleneck affects science production.)
 - How many deep deposits per map? How large? How fast do demolishers expose them?
 - Should demolisher bio-feed be a continuous stream or periodic batches?

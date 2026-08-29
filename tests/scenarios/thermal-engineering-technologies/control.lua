@@ -44,6 +44,22 @@ local TECHNOLOGIES = {
     },
   },
   {
+    name = "nullius-volcanic-titanium-metallurgy",
+    count = 10,
+    seconds = 60,
+    ingredients = {
+      ["nullius-metallurgic-pack"] = 80,
+      ["nullius-geology-pack"] = 8,
+      ["nullius-chemical-pack"] = 8,
+    },
+    prerequisites = {
+      ["nullius-vulcanus-refractory-engineering"] = true,
+      ["nullius-titanium-production-2"] = true,
+      ["nullius-water-filtration-3"] = true,
+      ["nullius-metalworking-2"] = true,
+    },
+  },
+  {
     name = "nullius-thermal-engineering-1",
     count = 5,
     seconds = 30,
@@ -143,6 +159,30 @@ local function ingredients_to_map(entries)
   return result
 end
 
+local function product_amount(entries, name)
+  for _, product in pairs(entries) do
+    if product.name == name then return product.amount end
+  end
+  return nil
+end
+
+local function ignored_productivity(entries, name)
+  for _, product in pairs(entries) do
+    if product.name == name then
+      return product.ignored_by_productivity or 0
+    end
+  end
+  return nil
+end
+
+local function unlocked_recipes(technology)
+  local result = {}
+  for _, effect in pairs(technology.prototype.effects) do
+    if effect.type == "unlock-recipe" then result[effect.recipe] = true end
+  end
+  return result
+end
+
 local function check_exact(actual, expected, label)
   for name, value in pairs(expected) do
     check(actual[name] == value,
@@ -181,6 +221,55 @@ script.on_nth_tick(1, function()
       check_exact(prerequisites, expected.prerequisites,
         expected.name .. " prerequisites")
     end
+  end
+
+  local titanium_technology = force.technologies[
+    "nullius-volcanic-titanium-metallurgy"]
+  if titanium_technology then
+    check_exact(unlocked_recipes(titanium_technology), {
+      ["nullius-titanium-ingot-vulcanus"] = true,
+      ["nullius-aluminum-chloride-recovery"] = true,
+      ["nullius-hydro-plant-2-vulcanus"] = true,
+      ["nullius-foundry-2-vulcanus"] = true,
+    }, "volcanic titanium recipe unlocks")
+  end
+
+  local reduction = force.recipes["nullius-titanium-ingot-vulcanus"]
+  check(reduction ~= nil, "missing Vulcanus titanium reduction recipe")
+  if reduction then
+    check(reduction.prototype.category == "nullius-high-temp-radiator",
+      "Vulcanus titanium reduction has wrong category")
+    check(reduction.energy == 8,
+      "Vulcanus titanium reduction has wrong duration")
+    check_exact(ingredients_to_map(reduction.ingredients), {
+      ["nullius-titanium-tetrachloride"] = 15,
+      ["nullius-aluminum-ingot"] = 4,
+    }, "Vulcanus titanium reduction ingredients")
+    check(product_amount(reduction.products, "nullius-titanium-ingot") == 2,
+      "Vulcanus titanium reduction has wrong titanium yield")
+    check(product_amount(reduction.products, "nullius-aluminum-chloride") == 4,
+      "Vulcanus titanium reduction has wrong aluminum chloride yield")
+    check(ignored_productivity(
+        reduction.products, "nullius-aluminum-chloride") == 4,
+      "productivity can duplicate aluminum chloride")
+  end
+
+  local recovery = force.recipes["nullius-aluminum-chloride-recovery"]
+  check(recovery ~= nil, "missing aluminum chloride recovery recipe")
+  if recovery then
+    check(recovery.prototype.category == "nullius-high-temp-radiator",
+      "aluminum chloride recovery has wrong category")
+    check(recovery.energy == 6,
+      "aluminum chloride recovery has wrong duration")
+    check_exact(ingredients_to_map(recovery.ingredients), {
+      ["nullius-aluminum-chloride"] = 4,
+      ["nullius-water"] = 30,
+    }, "aluminum chloride recovery ingredients")
+    check_exact(ingredients_to_map(recovery.products), {
+      ["nullius-alumina"] = 1,
+      ["nullius-mineral-dust"] = 3,
+      ["nullius-hydrogen-chloride"] = 60,
+    }, "aluminum chloride recovery products")
   end
 
   finish()

@@ -242,6 +242,106 @@ data:extend({
   },
 })
 
+-- Pilot titanium metallurgy substitutes local aluminum for sodium and argon.
+-- Aluminum chloride is recoverable only as a small alumina fraction, keeping
+-- the route useful for construction without closing an aluminum loop.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-titanium-ingot-vulcanus",
+    localised_name = {"recipe-name.nullius-titanium-ingot-vulcanus"},
+    enabled = false,
+    category = "nullius-high-temp-radiator",
+    subgroup = "titanium-product",
+    order = "nullius-vc",
+    energy_required = 8,
+    ingredients = {
+      {type = "fluid", name = "nullius-titanium-tetrachloride", amount = 15},
+      {type = "item", name = "nullius-aluminum-ingot", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-titanium-ingot", amount = 2},
+      {
+        type = "item",
+        name = "nullius-aluminum-chloride",
+        amount = 4,
+        ignored_by_productivity = 4,
+      },
+    },
+    main_product = "nullius-titanium-ingot",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-aluminum-chloride-recovery",
+    localised_name = {"recipe-name.nullius-aluminum-chloride-recovery"},
+    enabled = false,
+    category = "nullius-high-temp-radiator",
+    subgroup = "aluminum-ingot",
+    order = "nullius-vd",
+    energy_required = 6,
+    ingredients = {
+      {type = "item", name = "nullius-aluminum-chloride", amount = 4},
+      {type = "fluid", name = "nullius-water", amount = 30},
+    },
+    results = {
+      {type = "item", name = "nullius-alumina", amount = 1},
+      {type = "item", name = "nullius-mineral-dust", amount = 3},
+      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
+    },
+    main_product = "nullius-alumina",
+    allow_productivity = false,
+    no_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-hydro-plant-2-vulcanus",
+    localised_name = {"recipe-name.nullius-hydro-plant-2-vulcanus"},
+    enabled = false,
+    category = "medium-crafting",
+    subgroup = "water-treatment",
+    order = "nullius-vc",
+    energy_required = 16,
+    ingredients = {
+      {type = "item", name = "nullius-hydro-plant-1", amount = 1},
+      {type = "item", name = "nullius-chemical-plant-1", amount = 1},
+      {type = "item", name = "nullius-medium-tank-2", amount = 1},
+      {type = "item", name = "nullius-refractory-brick", amount = 20},
+      {type = "item", name = "nullius-titanium-plate", amount = 2},
+      {type = "item", name = "nullius-red-wire", amount = 5},
+    },
+    results = {
+      {type = "item", name = "nullius-hydro-plant-2", amount = 1},
+    },
+    main_product = "nullius-hydro-plant-2",
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-foundry-2-vulcanus",
+    localised_name = {"recipe-name.nullius-foundry-2-vulcanus"},
+    enabled = false,
+    category = "medium-crafting",
+    subgroup = "ore-processing",
+    order = "nullius-vd",
+    energy_required = 15,
+    ingredients = {
+      {type = "item", name = "nullius-foundry-1", amount = 1},
+      {type = "item", name = "nullius-small-furnace-2", amount = 1},
+      {type = "item", name = "nullius-refractory-brick", amount = 12},
+      {type = "item", name = "nullius-titanium-plate", amount = 1},
+      {type = "item", name = "bob-turbo-inserter", amount = 2},
+    },
+    results = {
+      {type = "item", name = "nullius-foundry-2", amount = 1},
+    },
+    main_product = "nullius-foundry-2",
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
 -- Lava processing recipes. Category: nullius-water-treatment (hydro-plant).
 -- All produce compressed volcanic gas as byproduct.
 data:extend({

@@ -19,7 +19,7 @@
 | M12 | Commission direct hot casting and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
 | M13 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 305–510 min |
 | M14 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 335–560 min |
-| M15 | Establish refractory infrastructure and deploy tier-2 thermal industry | 2–4 h | 6–12 h |
+| M15 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry | 2–4 h | 6–12 h |
 | M16 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–20 h |
 
 Time basis: first solo playthrough after activation, no prepared layout.
@@ -51,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -63,6 +63,8 @@ validators:
   efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-efficient-pack.args"
   hot-casting: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-hot-casting.args"
   refractory-production: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-refractory-production.args"
+  titanium-pilot: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-titanium-pilot.args"
+  titanium-construction: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-titanium-construction.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-basic-science.args"
@@ -91,6 +93,11 @@ prototypes:
       unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 4, nullius-chemical-pack: 4}}
       totals: {nullius-metallurgic-pack: 400, nullius-geology-pack: 40, nullius-chemical-pack: 40}
       unlocks: [nullius-refractory-mix-vulcanus, nullius-refractory-brick-vulcanus, nullius-heat-pipe-2-vulcanus, nullius-vulcanus-radiator-2-refractory]
+    nullius-volcanic-titanium-metallurgy:
+      prerequisites: [nullius-vulcanus-refractory-engineering, nullius-titanium-production-2, nullius-water-filtration-3, nullius-metalworking-2]
+      unit: {count: 10, time: 60, ingredients: {nullius-metallurgic-pack: 80, nullius-geology-pack: 8, nullius-chemical-pack: 8}}
+      totals: {nullius-metallurgic-pack: 800, nullius-geology-pack: 80, nullius-chemical-pack: 80}
+      unlocks: [nullius-titanium-ingot-vulcanus, nullius-aluminum-chloride-recovery, nullius-hydro-plant-2-vulcanus, nullius-foundry-2-vulcanus]
     nullius-thermal-engineering-1:
       prerequisites: [nullius-efficient-metallurgic-science, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
@@ -923,6 +930,44 @@ scenarios:
         retained: {nullius-refractory-brick: 22}
         consumed: {nullius-alumina: 5, nullius-silica: 8, nullius-mineral-dust: 12, nullius-aluminum-sheet: 8, nullius-silicon-insulation: 2, nullius-eutectic-salt: 5, nullius-heat-pipe-1: 2, nullius-pipe-2: 6, nullius-vulcanus-radiator-1: 1, nullius-compressed-volcanic-gas: 203.4}
         forbidden_inputs: [nullius-insulation, nullius-pipe-3, nullius-plastic, nullius-rubber]
+
+  titanium-pilot:
+    milestone: M15
+    validator: titanium-pilot
+    given:
+      force: {researched: [nullius-volcanic-titanium-metallurgy]}
+      inventory: {nullius-sand: 400, nullius-graphite: 14, nullius-aluminum-ingot: 8}
+      fluids: {nullius-acid-sulfuric: 1200, nullius-chlorine: 160, nullius-water: 60, nullius-acid-nitric: 2, nullius-compressed-volcanic-gas: 963.9}
+      heat: {wet-furnace: 500, radiators: 500}
+    place:
+      flotation-cell: {prototype: nullius-flotation-cell-1-pneumatic, count: 8, at: auto}
+      wet-furnace: {prototype: nullius-medium-furnace-2-pneumatic, count: 2, at: auto}
+      radiator: {prototype: nullius-vulcanus-radiator-2, count: 2, at: auto}
+      foundry: {prototype: nullius-foundry-1-pneumatic, count: 1, at: auto}
+    run: {parallelism: 8, ticks: 3316, timeout: 4600}
+    expect:
+      terminal:
+        produced: {nullius-rutile: 8, nullius-titanium-tetrachloride: 30, nullius-titanium-ingot: 4, nullius-aluminum-chloride: 8, nullius-titanium-plate: 3, nullius-hydrogen-chloride: 120}
+        retained: {nullius-titanium-plate: 3, nullius-hydrogen-chloride: 120, nullius-alumina: 2, nullius-carbon-dioxide: 200, nullius-mineral-dust: 50, nullius-sludge: 641}
+        forbidden_inputs: [nullius-sodium, nullius-argon]
+        electric_paths: 0
+
+  titanium-construction:
+    milestone: M15
+    validator: titanium-construction
+    given:
+      force: {researched: [nullius-volcanic-titanium-metallurgy]}
+      inventory: {nullius-titanium-plate: 3, nullius-refractory-brick: 32, nullius-hydro-plant-1: 1, nullius-chemical-plant-1: 1, nullius-medium-tank-2: 1, nullius-red-wire: 5, nullius-foundry-1: 1, nullius-small-furnace-2: 1, bob-turbo-inserter: 2}
+      fluids: {nullius-compressed-volcanic-gas: 223.2}
+    place:
+      assembler: {prototype: nullius-medium-assembler-1-pneumatic, count: 2, at: auto}
+    run: {parallelism: 2, ticks: 1864, timeout: 2100}
+    expect:
+      terminal:
+        produced: {nullius-hydro-plant-2: 1, nullius-foundry-2: 1}
+        retained_inputs: 0
+        seawater_intake_consumed: 0
+        electric_paths: 0
 
   thermal-cell-2:
     milestone: M15

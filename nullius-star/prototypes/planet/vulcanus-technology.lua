@@ -135,6 +135,34 @@ data:extend({
   },
   {
     type = "technology",
+    name = "nullius-volcanic-titanium-metallurgy",
+    order = "nullius-df-zc",
+    icon = "__angelssmeltinggraphics__/graphics/technology/smelting-titanium-tech.png",
+    icon_size = 256,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-titanium-ingot-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-aluminum-chloride-recovery"},
+      {type = "unlock-recipe", recipe = "nullius-hydro-plant-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-foundry-2-vulcanus"},
+    },
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-metallurgic-pack", 80},
+        {"nullius-geology-pack", 8},
+        {"nullius-chemical-pack", 8},
+      },
+      time = 60,
+    },
+    prerequisites = {
+      "nullius-vulcanus-refractory-engineering",
+      "nullius-titanium-production-2",
+      "nullius-water-filtration-3",
+      "nullius-metalworking-2",
+    },
+  },
+  {
+    type = "technology",
     name = "nullius-thermal-engineering-1",
     order = "nullius-dg-a",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",

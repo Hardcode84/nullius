@@ -12,7 +12,8 @@ local POLL_TICKS = 30
 local BACKGROUND_TICKS = 127
 local CASE_DEADLINE = CONFIG.deadline
 local DIRECT_HEAT = CONFIG.direct_heat
-local HEAT_FIXTURE = CONFIG.heat_fixture ~= false
+local SCRIPTED_HEAT = CONFIG.scripted_heat == true
+local HEAT_FIXTURE = not SCRIPTED_HEAT and CONFIG.heat_fixture ~= false
 local PARALLELISM = CONFIG.parallelism or 1
 local PARALLEL_FIXTURE = CONFIG.parallel_fixture or {}
 local TRANSITION_BUILDS = CONFIG.transition_builds or {}
@@ -1112,7 +1113,7 @@ local function setup()
       storage.gas_step_index = index
     end
   end
-  if not storage.gas_step_index and not HEAT_FIXTURE then
+  if not storage.gas_step_index and not HEAT_FIXTURE and not SCRIPTED_HEAT then
     for _, step in ipairs(CONTRACT.steps) do
       check(not step.heat,
         "heat manifest without a heat fixture: " .. step.producer)
@@ -1132,9 +1133,10 @@ local function setup()
     heat_pipes = storage.fixture_placed[HEAT_PIPE],
     heat_pipe_temperature = HEAT_FIXTURE and 250 or nil,
     pneumatic_heat_temperature = HEAT_FIXTURE and 500 or nil,
-    heat_mode = not HEAT_FIXTURE and "disabled" or
+    heat_mode = SCRIPTED_HEAT and "scripted-preheat-per-cycle" or
+      (not HEAT_FIXTURE and "disabled" or
       (DIRECT_HEAT and "direct-high-temperature" or
-        "scripted-preheat-per-cycle"),
+        "fixture-network")),
   }
   if #failures > 0 then finish() return end
   storage.started_tick = game.tick
