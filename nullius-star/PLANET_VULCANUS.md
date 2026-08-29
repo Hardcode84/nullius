@@ -357,6 +357,7 @@ Sodium in volcanic rock is bound in aluminosilicate minerals and glass. It is no
 | Recipe | Input | Output | Time | Category | Conditions |
 |---|---|---|---|---|---|
 | Volcanic saline (PROPOSED) | 10 gravel + 50 hydrogen chloride + 100 water | 70 saline + 4 silica + 5 mineral dust | 8s | basic-chemistry | Vulcanus; productivity disabled |
+| Volcanic causticization (PROPOSED) | 1 soda ash + 1 lime + 100 water | 2 sodium hydroxide + 1 crushed limestone | 30s | water-treatment | Vulcanus; productivity disabled |
 
 `nullius-water` is synthesized locally. Hydrogen chloride comes from volcanic geysers. The pneumatic chemical plant performs the leach without electricity.
 
@@ -365,6 +366,7 @@ Sodium in volcanic rock is bound in aluminosilicate minerals and glass. It is no
 | Property | Contract |
 |---|---|
 | Research | `nullius-volcanic-alkali-processing` |
+| Prerequisite | `nullius-nitrogen-chemistry-1` |
 | Position | After local basic science; before local chemical science |
 | Preliminary cost | 50 geology + 50 climatology + 50 mechanical + 50 electrical packs |
 | Surface condition | `nullius-ambient-temperature >= 100` |
@@ -382,7 +384,17 @@ chemical pack
             requires sodium hydroxide
 ```
 
-Volcanic saline supplies the missing external sodium boundary.
+Volcanic saline supplies the missing external sodium boundary. The first sodium hydroxide does not use electrolysis:
+
+```text
+125 saline
+  -> 30 brine + 90 recovered water
+  -> 1 soda ash + 15 recovered hydrogen chloride
+  + lime + synthesized water
+  -> 2 sodium hydroxide + crushed limestone
+```
+
+The soda-ash step is the existing Solvay-style recipe: 30 brine + 80 carbon dioxide + 8 ammonia. Local ammonia uses pneumatically compressed hydrogen and nitrogen. The intentionally slow, water-hungry causticization step abstracts slaking lime and reacting calcium hydroxide with sodium carbonate.
 
 #### Downstream chemistry
 
@@ -393,24 +405,28 @@ lava metal industry -> stone/gravel
                          v
                        saline
                          |
-        +----------------+----------------+
-        |                                 |
-        v                                 v
-saline electrolysis                sand + saline
-        |                                 |
-        v                                 v
-NaOH + H2 + O2 + Cl2              silica + wastewater
-        |
-        v
-chemical science
+        +----------------+-----------------------------+
+        |                                              |
+        v                                              v
+  sand + saline                              desalination -> brine
+        |                                              |
+        v                                              v
+silica + wastewater                    CO2 + ammonia -> soda ash
+                                                       |
+                                                       + lime + water
+                                                       v
+                                              sodium hydroxide
+                                                       |
+                                                       v
+                                               chemical science
 
-saline -> brine -> salt -> elemental sodium + chlorine
-                                  |
-                                  v
-                           titanium reduction
+brine -> salt -> electric electrolysis -> elemental sodium + chlorine
+                                                    |
+                                                    v
+                                             titanium reduction
 ```
 
-Elemental sodium retains the existing electric electrolysis route. Pneumatic electrolyzers are not part of the Vulcanus design; chlor-alkali chemistry creates a deliberate small electrical load after gas-powered bootstrap.
+Every step through chemical-science sodium hydroxide runs in pneumatic chemical, distillation, or water-treatment machines. Elemental sodium retains the existing electric electrolysis route later. Pneumatic electrolyzers are not part of the Vulcanus design.
 
 ### 3.6 Calcite and Calcium
 
