@@ -590,7 +590,9 @@ local function start_machine_batch(step)
       cycle = active.cycle + batch_index - 1,
     }
     local cycle_label = step.producer .. " cycle " .. execution.cycle
-    check(machine.set_recipe(step.producer), "failed to set recipe " .. step.producer)
+    if machine.type ~= "furnace" then
+      check(machine.set_recipe(step.producer), "failed to set recipe " .. step.producer)
+    end
     for _, ingredient in ipairs(step.ingredients) do
       local amount = ingredient.amount / step.cycles
       if not consume(storage.ledger, ingredient.name, amount, cycle_label) then

@@ -78,6 +78,13 @@ for _, electric in ipairs(pneumatic_families.barrel_pumps(
   end
   register_pneumatic_pair(electric, pneumatic)
 end
+for _, electric in ipairs(pneumatic_families.boxers(prototypes.entity)) do
+  local pneumatic = electric .. "-pneumatic"
+  if not prototypes.entity[pneumatic] then
+    error("Missing pneumatic boxer prototype " .. pneumatic)
+  end
+  register_pneumatic_pair(electric, pneumatic)
+end
 register_pneumatic_pair("inserter", "inserter-pneumatic")
 register_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
 for i = 1, 3 do

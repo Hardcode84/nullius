@@ -62,6 +62,10 @@ for _, name in ipairs(pneumatic_families.barrel_pumps(
     data.raw["assembling-machine"])) do
   register_pneumatic("assembling-machine", name)
 end
+for _, name in ipairs(pneumatic_families.boxers(
+    data.raw["furnace"])) do
+  register_pneumatic("furnace", name)
+end
 
 -- Register inserter (Nullius reuses bob-turbo-inserter as inserter-2).
 register_pneumatic("inserter", "inserter")

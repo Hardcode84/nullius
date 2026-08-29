@@ -56,7 +56,7 @@ python3 tools/run_factorio_tests.py -n auto
 |---|---|
 | Activation and fuel bootstrap | `vulcanus-activation`, `vulcanus-vent-prime`, `vulcanus-gas-self-power` |
 | Lava materials and cooling | `vulcanus-lava-separation-*`, `vulcanus-bloom-cooldown-*`, `vulcanus-aluminum-reduction`, `vulcanus-sulfur-catalysis` |
-| Pneumatic machinery and heat | `pneumatic-assemblers`, `pneumatic-barrel-pumps`, `vulcanus-pneumatic-compressor`, `vulcanus-pneumatic-heat`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` |
+| Pneumatic machinery and heat | `pneumatic-assemblers`, `pneumatic-barrel-pumps`, `pneumatic-boxer`, `vulcanus-pneumatic-compressor`, `vulcanus-pneumatic-heat`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` |
 | Bootstrap metallurgy | `vulcanus-metallurgic-pack-recipe`, `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `vulcanus-metallurgic-pack-10` |
 | Local generic science | `vulcanus-basic-science-10` |
 | Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |
@@ -73,7 +73,7 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The 23 checked-in argument files under `tests/progression/` define the
+The 24 checked-in argument files under `tests/progression/` define the
 resolved prerequisite contracts. Queries fail on unresolved products,
 inaccessible crafting categories, cyclic routes, undeclared recipe research,
 or forbidden electric execution paths.

@@ -746,11 +746,34 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
 **Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
 - Electric mode: standard Nullius behavior, consumes electricity.
 - Vulcanus mode: depends on machine type:
-  - **All ordinary assembler sizes and tiers, both barrel pumps, labs, chemistry, extractors, and air filters**: Pneumatic (compressed volcanic gas via `FluidEnergySource`). Gas pipe connections east/west.
-  - **Furnaces**: Thermal (heat via `HeatEnergySource`). Heat pipe connections on all edges. Consumes waste heat from other machines.
-  - **Inserters**: Pneumatic (gas). No heat interface spawned (too small).
+  - **Gas-powered**: ordinary assemblers, boxer, barrel pumps, crushers,
+    foundries, air filters, hydro plants, distilleries, chemical plants,
+    compressors, flotation cell 1, lab 1, extractors, pumps, and inserter tiers
+    1-2.
+  - **Heat-powered**: small and medium furnaces. Heat pipe connections are on
+    all edges; these machines consume process heat rather than gas directly.
 - Entities in inventory are mode-neutral. Mode is set after placement.
 - The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
+
+**Resolved building-family audit**:
+
+| Treatment | Families |
+|---|---|
+| Add gas mode | solid miners (all 8 size/tier variants); inserter tiers 3-4; chimney 3; flotation cells 2-3; labs 2-3 |
+| Add heat mode on Vulcanus | large furnaces 1-2; reuse their existing thermal prototypes |
+| Keep electric | electrolyzers; nanofabricators; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; roboports and robot infrastructure; accumulators and grid infrastructure; rocket silo |
+| No alternate mode | passive belts, pipes, tanks, chests, valves, rails and wagons; existing void-, burner-, heat-, and generation-powered entities |
+| Planet source special case | seawater intakes and wells do not get generic pneumatic clones; Vulcanus intake placement already selects lava-intake and gas-vent modes |
+
+The audit is generated from resolved placeable prototypes with:
+
+```bash
+python3 tools/analyze_factorio_prereqs.py --describe-placeable-prefix nullius-
+```
+
+Pneumatic variants are for mechanically driven work. Electrical current or
+electronic control intrinsic to a process remains an electricity boundary;
+this excludes pneumatic electrolyzers and nanofabricators.
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
@@ -774,7 +797,7 @@ Lava (under pressure) --> [Lava Processing]
                     |           |           |               |
                     v           v           v               v
                  Inserters  Assemblers  Furnaces          Labs
-                (gas-powered) (gas-powered) (gas+heat)  (gas-powered)
+                (gas-powered) (gas-powered) (heat)      (gas-powered)
 ```
 
 Lava separation recipes return some compressed gas as a coproduct but are

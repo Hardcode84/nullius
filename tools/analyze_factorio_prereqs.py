@@ -284,6 +284,58 @@ def describe_category_executors(data: Prototype, category: str) -> list[Prototyp
     )
 
 
+def describe_placeable_entities(data: Prototype, prefix: str) -> list[Prototype]:
+    """Describe resolved entities reached through item place_result fields."""
+    place_items: dict[str, list[str]] = defaultdict(list)
+    hidden_items: set[str] = set()
+    for prototypes in data.values():
+        if not isinstance(prototypes, dict):
+            continue
+        for item_name, prototype in prototypes.items():
+            if not isinstance(prototype, dict) or "place_result" not in prototype:
+                continue
+            place_items[prototype["place_result"]].append(item_name)
+            if "hidden" in (prototype.get("flags") or []):
+                hidden_items.add(item_name)
+
+    result = []
+    for prototype_type, prototypes in data.items():
+        if not isinstance(prototypes, dict):
+            continue
+        for name, prototype in prototypes.items():
+            if (
+                name not in place_items
+                or not name.startswith(prefix)
+                or not isinstance(prototype, dict)
+                or "place_result" in prototype
+                or (
+                    "collision_box" not in prototype
+                    and "selection_box" not in prototype
+                )
+            ):
+                continue
+            energy_source = prototype.get("energy_source") or {}
+            result.append(
+                {
+                    "name": name,
+                    "prototype_type": prototype_type,
+                    "place_items": sorted(place_items[name]),
+                    "energy_source_type": energy_source.get("type"),
+                    "crafting_categories": sorted(
+                        prototype.get("crafting_categories") or []
+                    ),
+                    "resource_categories": sorted(
+                        prototype.get("resource_categories") or []
+                    ),
+                    "hidden": (
+                        "hidden" in (prototype.get("flags") or [])
+                        or all(item in hidden_items for item in place_items[name])
+                    ),
+                }
+            )
+    return sorted(result, key=lambda entity: (entity["name"], entity["prototype_type"]))
+
+
 def describe_consumers(data: Prototype, names: list[str]) -> list[Prototype]:
     known_products: set[str] = set()
     for prototype_type in ("item", "fluid", "tool"):
@@ -1674,6 +1726,13 @@ def parse_arguments() -> argparse.Namespace:
         help="describe a resolved technology's prerequisites, cost, trigger, and effects",
     )
     parser.add_argument(
+        "--describe-placeable-prefix",
+        metavar="PREFIX",
+        help=(
+            "describe every resolved placeable entity whose name starts with PREFIX"
+        ),
+    )
+    parser.add_argument(
         "--find-dependency",
         action="append",
         default=[],
@@ -1697,6 +1756,7 @@ def main() -> int:
             or args.describe_product
             or args.describe_consumers
             or args.describe_technology
+            or args.describe_placeable_prefix is not None
         ):
             if args.targets:
                 raise TestFailure(
@@ -1709,6 +1769,7 @@ def main() -> int:
                     args.describe_product,
                     args.describe_consumers,
                     args.describe_technology,
+                    args.describe_placeable_prefix is not None,
                 )
             )
             if inspection_modes != 1:
@@ -1721,12 +1782,27 @@ def main() -> int:
                 descriptions = describe_products(data, args.describe_product)
             elif args.describe_consumers:
                 descriptions = describe_consumers(data, args.describe_consumers)
+            elif args.describe_placeable_prefix is not None:
+                descriptions = describe_placeable_entities(
+                    data, args.describe_placeable_prefix
+                )
             else:
                 descriptions = describe_technologies(
                     data, args.describe_technology
                 )
             if args.json_output:
                 print(json.dumps(descriptions, indent=2, sort_keys=True))
+            elif args.describe_placeable_prefix is not None:
+                for entity in descriptions:
+                    categories = entity["crafting_categories"] or entity[
+                        "resource_categories"
+                    ]
+                    print(
+                        f"{entity['name']}: {entity['prototype_type']} "
+                        f"[{entity['energy_source_type'] or 'passive'}]"
+                    )
+                    print("  items: " + ", ".join(entity["place_items"]))
+                    print("  categories: " + (", ".join(categories) or "none"))
             elif args.describe_technology:
                 for technology in descriptions:
                     prerequisites = ", ".join(technology["prerequisites"])

@@ -17,6 +17,7 @@ from analyze_factorio_prereqs import (
     analyze,
     build_production_manifest,
     describe_consumers,
+    describe_placeable_entities,
     describe_products,
     describe_recipes,
     describe_technologies,
@@ -28,6 +29,42 @@ from analyze_factorio_prereqs import (
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_describes_resolved_placeable_entities(self) -> None:
+        data = {
+            "item": {
+                "nullius-machine": {
+                    "place_result": "nullius-machine",
+                    "flags": ["hidden"],
+                },
+                "other-machine": {"place_result": "other-machine"},
+            },
+            "assembling-machine": {
+                "nullius-machine": {
+                    "collision_box": [[-1, -1], [1, 1]],
+                    "crafting_categories": ["z", "a"],
+                    "energy_source": {"type": "fluid"},
+                },
+                "other-machine": {
+                    "collision_box": [[-1, -1], [1, 1]],
+                },
+            },
+        }
+
+        self.assertEqual(
+            describe_placeable_entities(data, "nullius-"),
+            [
+                {
+                    "name": "nullius-machine",
+                    "prototype_type": "assembling-machine",
+                    "place_items": ["nullius-machine"],
+                    "energy_source_type": "fluid",
+                    "crafting_categories": ["a", "z"],
+                    "resource_categories": [],
+                    "hidden": True,
+                }
+            ],
+        )
+
     def test_reports_paths_to_electric_executors(self) -> None:
         selected = [
             {

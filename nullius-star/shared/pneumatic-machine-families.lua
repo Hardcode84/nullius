@@ -29,4 +29,13 @@ function pneumatic_machine_families.barrel_pumps(prototypes_by_name)
     pneumatic_machine_families.is_barrel_pump)
 end
 
+function pneumatic_machine_families.is_boxer(name)
+  return name == "nullius-boxer"
+end
+
+function pneumatic_machine_families.boxers(prototypes_by_name)
+  return matching_names(prototypes_by_name,
+    pneumatic_machine_families.is_boxer)
+end
+
 return pneumatic_machine_families
