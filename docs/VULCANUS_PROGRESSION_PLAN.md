@@ -16,7 +16,7 @@
 | M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
 | M10 | Establish local sulfur, alkali, lubricant, and chemical-science production | 45–75 min | 210–350 min |
 | M11 | Research and commission efficient hot-bloom metallurgic science | 30–45 min | 240–395 min |
-| M12 | Scale local science and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
+| M12 | Commission direct hot casting and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
 | M13 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 305–510 min |
 | M14 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 335–560 min |
 | M15 | Unlock and deploy tier-2 thermal industry alongside Nauvis progression | 2–4 h | 6–12 h |
@@ -51,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -61,6 +61,7 @@ validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-construction.args"
   inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-barrel.args"
   efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-efficient-pack.args"
+  hot-casting: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-hot-casting.args"
   metallurgic-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-pack.args"
   renewable-graphite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-renewable-graphite.args"
   basic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-basic-science.args"
@@ -79,6 +80,11 @@ prototypes:
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 2, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
       totals: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5}
       unlocks: [nullius-metallurgic-pack-efficient, nullius-chlorine-barrel, nullius-sulfur-dioxide-barrel]
+    nullius-hot-metalworking:
+      prerequisites: [nullius-efficient-metallurgic-science, nullius-aluminum-working-1]
+      unit: {count: 10, time: 30, ingredients: {nullius-metallurgic-pack: 10, nullius-mechanical-pack: 1}}
+      totals: {nullius-metallurgic-pack: 100, nullius-mechanical-pack: 10}
+      unlocks: [nullius-hot-iron-plate, nullius-hot-iron-rod, nullius-hot-aluminum-sheet, nullius-hot-aluminum-rod]
     nullius-thermal-engineering-1:
       prerequisites: [nullius-efficient-metallurgic-science, nullius-mineral-processing-1, nullius-metallurgy-1, nullius-metalworking-1, nullius-boiling-1, nullius-solar-thermal-power-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 40, nullius-geology-pack: 2, nullius-mechanical-pack: 1}}
@@ -758,6 +764,28 @@ scenarios:
         barrel_productivity_eligible: false
         pack_productivity_eligible: true
         input_remaining: 0
+        spoiled: {nullius-iron-ingot: 0, nullius-alumina: 0}
+
+  hot-casting:
+    milestone: M12
+    validator: hot-casting
+    given:
+      force: {researched: [nullius-hot-metalworking]}
+      inventory: {nullius-molten-iron-bloom: 8, nullius-molten-aluminum-bloom: 8}
+      fluids: {nullius-compressed-volcanic-gas: 112.5}
+    place:
+      foundry: {prototype: nullius-foundry-1-pneumatic, count: 4, at: auto}
+    connect: [gas -> foundry[*].energy_input]
+    act:
+      - set_recipe: {entity: foundry[1], recipe: nullius-hot-iron-plate}
+      - set_recipe: {entity: foundry[2], recipe: nullius-hot-iron-rod}
+      - set_recipe: {entity: foundry[3], recipe: nullius-hot-aluminum-sheet}
+      - set_recipe: {entity: foundry[4], recipe: nullius-hot-aluminum-rod}
+    run: {parallel_executors: 4, ticks: 243, timeout: 500}
+    expect:
+      terminal:
+        consumed: {nullius-molten-iron-bloom: 8, nullius-molten-aluminum-bloom: 8, nullius-compressed-volcanic-gas: 112.5}
+        produced: {nullius-iron-plate: 3, nullius-iron-rod: 5, nullius-aluminum-sheet: 5, nullius-aluminum-rod: 5}
         spoiled: {nullius-iron-ingot: 0, nullius-alumina: 0}
 
   thermal-engineering-1:

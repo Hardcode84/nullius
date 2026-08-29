@@ -22,6 +22,7 @@
 | Pneumatic factory | Eligible machines, labs, compressors, and flotation cells switch through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, and sulfuric acid are reachable without seawater or organic chemistry | Production scenarios and prerequisite manifests |
 | Local science | Geology, climatology, mechanical, electrical, chemical, bootstrap metallurgic, and efficient metallurgic packs are producible | Science-production scenarios |
+| Hot casting | Hot Metalworking unlocks direct pneumatic casting of iron and aluminum blooms before spoilage | Hot-casting scenario and prerequisite manifest |
 | Construction closure | The Vulcanus cell reproduces the buildings and logistics required to scale the implemented slice | Construction-closure scenario and manifest |
 | Thermal industry | Three research tiers unlock heat-powered crusher, furnace-size, and foundry variants through the common transition system; eligible recipes receive innate and repeatable productivity | Thermal and productivity scenarios |
 | Automated validation | Scenario runner supports selection, parallel workers, per-test timing, wall time, and tick ceilings; prerequisite checker consumes resolved prototypes | Full automated suite |

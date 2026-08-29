@@ -57,6 +57,88 @@ data:extend({
   },
 })
 
+-- Shape reactive blooms before they cool.  Iron retains the ordinary ingot
+-- casting ratios; aluminum avoids oxidation and the subsequent graphite
+-- reduction step.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-hot-iron-plate",
+    localised_name = {"recipe-name.nullius-hot-iron-plate"},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = "iron-product",
+    order = "nullius-va",
+    energy_required = 3,
+    ingredients = {
+      {type = "item", name = "nullius-molten-iron-bloom", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-iron-plate", amount = 3},
+    },
+    main_product = "nullius-iron-plate",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-hot-iron-rod",
+    localised_name = {"recipe-name.nullius-hot-iron-rod"},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = "iron-product",
+    order = "nullius-vb",
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-molten-iron-bloom", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-iron-rod", amount = 5},
+    },
+    main_product = "nullius-iron-rod",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-hot-aluminum-sheet",
+    localised_name = {"recipe-name.nullius-hot-aluminum-sheet"},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = "aluminum-product",
+    order = "nullius-va",
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-molten-aluminum-bloom", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-aluminum-sheet", amount = 5},
+    },
+    main_product = "nullius-aluminum-sheet",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  {
+    type = "recipe",
+    name = "nullius-hot-aluminum-rod",
+    localised_name = {"recipe-name.nullius-hot-aluminum-rod"},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = "aluminum-product",
+    order = "nullius-vb",
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-molten-aluminum-bloom", amount = 4},
+    },
+    results = {
+      {type = "item", name = "nullius-aluminum-rod", amount = 5},
+    },
+    main_product = "nullius-aluminum-rod",
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
 -- Lava processing recipes. Category: nullius-water-treatment (hydro-plant).
 -- All produce compressed volcanic gas as byproduct.
 data:extend({

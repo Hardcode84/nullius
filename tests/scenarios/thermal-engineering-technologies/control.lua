@@ -16,6 +16,19 @@ local TECHNOLOGIES = {
     },
   },
   {
+    name = "nullius-hot-metalworking",
+    count = 10,
+    seconds = 30,
+    ingredients = {
+      ["nullius-metallurgic-pack"] = 10,
+      ["nullius-mechanical-pack"] = 1,
+    },
+    prerequisites = {
+      ["nullius-efficient-metallurgic-science"] = true,
+      ["nullius-aluminum-working-1"] = true,
+    },
+  },
+  {
     name = "nullius-thermal-engineering-1",
     count = 5,
     seconds = 30,

@@ -245,19 +245,22 @@ Lava --> [Lava Aluminum Separation] --> Molten Aluminum Bloom
                             +--- Silicon-Insulated Wire (Vulcanus variant)
 ```
 
-### 3.3 Proposed Direct Hot Casting
+### 3.3 Direct Hot Casting
 
 ```yaml
 research:
-  name: Hot Metalworking
+  prototype: nullius-hot-metalworking
   prerequisites:
-    vulcanus: Efficient Metallurgic Science
-    nauvis: corresponding metalworking tier
+    - nullius-efficient-metallurgic-science
+    - nullius-aluminum-working-1
+  cost: {count: 10, time: 30, metallurgic: 10, mechanical: 1}
 recipes:
   surface: Vulcanus
   executor: pneumatic foundry
-  inputs: molten blooms before spoilage
-  outputs: ordinary plates, sheets, and rods
+  nullius-hot-iron-plate: {input: [4, nullius-molten-iron-bloom], output: [3, nullius-iron-plate], time: 3}
+  nullius-hot-iron-rod: {input: [4, nullius-molten-iron-bloom], output: [5, nullius-iron-rod], time: 4}
+  nullius-hot-aluminum-sheet: {input: [4, nullius-molten-aluminum-bloom], output: [5, nullius-aluminum-sheet], time: 4}
+  nullius-hot-aluminum-rod: {input: [4, nullius-molten-aluminum-bloom], output: [5, nullius-aluminum-rod], time: 4}
   reheating: forbidden
   productivity: ordinary casting family
   failure_path:
@@ -1015,6 +1018,7 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 |---|---|---|---|---|
 | **Volcanic Alkali Processing** | 0 metallurgic | 50 each geology, climatology, mechanical, electrical | Volcanic saline and non-electric causticization | Enables chemical science |
 | **Efficient Metallurgic Science** | 10 | 10 geology + 5 mechanical + 5 electrical | Efficient pack recipe and chlorine/SO2 barreling | Vulcanus production |
+| **Hot Metalworking** | 100 | 10 mechanical | Direct iron and aluminum bloom casting | Vulcanus throughput |
 | **Thermal Engineering 1** | 200 | 10 geology + 5 mechanical | Tier-1 thermal crushers, all tier-1 furnace sizes, and foundries | Optional Nauvis industry |
 | **Thermal Engineering 2** | 800 | 80 geology + 40 mechanical + 40 electrical + 40 chemical | Tier-2 thermal heavy industry | Optional Nauvis industry |
 | **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
@@ -1024,7 +1028,6 @@ Proposed finite additions:
 
 | Tech | Prerequisite shape | Cost shape | Unlocks | Role |
 |---|---|---|---|---|
-| **Hot Metalworking** | Efficient Metallurgic Science + corresponding Nauvis metalworking | Metallurgic-heavy + mechanical | Direct iron and aluminum bloom casting | Local throughput and timed logistics |
 | **Vulcanus Refractory Engineering** | Hot Metalworking + corresponding Nauvis ceramics/thermal storage | Metallurgic-heavy + geology + chemical | Refractory brick and dry high-temperature equipment recipes | High-temperature construction prerequisite |
 | **Volcanic Titanium Metallurgy** | Refractory Engineering + Nauvis Titanium Production 2 | Metallurgic-heavy + geology + chemical | Aluminothermic TiCl4 reduction | Limited titanium and tier-2 local construction closure |
 

@@ -83,6 +83,31 @@ data:extend({
   },
   {
     type = "technology",
+    name = "nullius-hot-metalworking",
+    order = "nullius-df-za",
+    icon = "__base__/graphics/technology/advanced-material-processing-2.png",
+    icon_size = 256,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-hot-iron-plate"},
+      {type = "unlock-recipe", recipe = "nullius-hot-iron-rod"},
+      {type = "unlock-recipe", recipe = "nullius-hot-aluminum-sheet"},
+      {type = "unlock-recipe", recipe = "nullius-hot-aluminum-rod"},
+    },
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-metallurgic-pack", 10},
+        {"nullius-mechanical-pack", 1},
+      },
+      time = 30,
+    },
+    prerequisites = {
+      "nullius-efficient-metallurgic-science",
+      "nullius-aluminum-working-1",
+    },
+  },
+  {
+    type = "technology",
     name = "nullius-thermal-engineering-1",
     order = "nullius-dg-a",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",
