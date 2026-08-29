@@ -41,26 +41,27 @@ checks removal cleanup:
 python3 tools/run_factorio_tests.py vulcanus-pneumatic-heat
 ```
 
-## First campaign slice
+## Campaign coverage
 
-The first campaign slice is defined in
+The implemented campaign slice is defined in
 [`VULCANUS_PROGRESSION_PLAN.md`](VULCANUS_PROGRESSION_PLAN.md). It begins with
-probe activation and ends when a second, locally manufactured production cell
-sustains metallurgic-pack output.
+probe activation, proves local basic and chemical science, and continues through
+tier-3 thermal heavy industry on Nauvis.
 
 ```bash
 python3 tools/run_factorio_tests.py -n auto
 ```
 
-Its independent scenario stages are:
-
-1. `activation`;
-2. `vent-prime` and `gas-self-power`;
-3. `lava-separation` and `bloom-cooldown`;
-4. `aluminum-reduction`, `sulfur-catalysis`, and `pneumatic-heat`;
-5. `metallurgic-pack-recipe`;
-6. `construction-closure`;
-7. `metallurgic-pack-10`.
+| Boundary | Scenarios |
+|---|---|
+| Activation and fuel bootstrap | `vulcanus-activation`, `vulcanus-vent-prime`, `vulcanus-gas-self-power` |
+| Lava materials and cooling | `vulcanus-lava-separation-*`, `vulcanus-bloom-cooldown-*`, `vulcanus-aluminum-reduction`, `vulcanus-sulfur-catalysis` |
+| Pneumatic machinery and heat | `vulcanus-pneumatic-compressor`, `vulcanus-pneumatic-heat`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` |
+| Bootstrap metallurgy | `vulcanus-metallurgic-pack-recipe`, `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `vulcanus-metallurgic-pack-10` |
+| Local generic science | `vulcanus-basic-science-10` |
+| Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |
+| Efficient metallurgy | `vulcanus-efficient-metallurgic-research`, `vulcanus-efficient-metallurgic-science` |
+| Thermal research and cells | `thermal-engineering-*`, `thermal-machines-*`, `thermal-cell-*`, `industrial-optimization-1`, `industrial-productivity-technologies`, `recipe-productivity-family` |
 
 Each stage declares a fixture that is a subset of cumulative prior-stage output
 plus explicit raw or debug boundaries. Stages do not load one another's saves,
@@ -68,7 +69,7 @@ so the suite runs in parallel. No stage may inject undeclared intermediates,
 equipment, or finished packs. Wreck machines are bootstrap executors; equipment
 used after construction closure must be covered by its production counts.
 
-The resolved prerequisite queries cover the complete equipment and pack target
-sets. Their raw boundaries and bootstrap executors are the scenario contracts;
-queries fail on unresolved products, inaccessible crafting categories, cyclic
-routes, or additional recipe research.
+The 16 checked-in argument files under `nullius-star/progression/` define the
+resolved prerequisite contracts. Queries fail on unresolved products,
+inaccessible crafting categories, cyclic routes, undeclared recipe research,
+or forbidden electric execution paths.

@@ -22,7 +22,7 @@
 
 | Conflict | Nullius Current | Space Age Adds | Resolution Options |
 |---|---|---|---|
-| **Quality** | Incompatible (marked in info.json) | Items have quality tiers | **Remain incompatible.** Excluded from Nullius SA. |
+| **Quality** | Loaded transitively by Space Age | Items have quality tiers | Keep loaded; disable quality effects, modules, and generated recycling in Nullius*. |
 | **Tech tree** | Fully replaced, checkpoint-gated | Planet-specific tech branches | Merge: Nullius tiers 1-4 on Nauvis, tiers 5-7 split across planets. |
 | **Science packs** | 15 Nullius-specific packs | Planet-specific packs (metallurgic, electromagnetic, agricultural, cryogenic) | A) Replace SA packs with Nullius packs produced on appropriate planets. B) Add SA packs as new tiers. |
 | **Pollution** | Disabled | Some planets use pollution mechanics | Could remain disabled or repurpose as atmosphere contamination. |
@@ -1197,13 +1197,18 @@ Space platforms in Nullius context could be:
 
 ## 5. Quality Mechanic
 
-**Decision: Remain incompatible.** Quality is excluded from Nullius SA.
+**Decision: Loaded but disabled.** Space Age requires the Quality mod, so
+Nullius* cannot mark it incompatible. The data stage disables its gameplay
+effects instead.
 
 Rationale:
 - Nullius already has its own complexity layers (boxing, byproduct management, checkpoint gating, module system). Quality adds pervasive complexity on top of that for marginal design benefit.
 - Quality interacts with spoilage (higher quality = slower spoil), which would complicate the Vulcanus cooldown and Gleba decay mechanics.
-- `allow_quality = false` exists on RecipePrototype, so individual recipes can opt out, but the system is fundamentally all-or-nothing in practice.
-- Nullius SA will mark `quality` as incompatible, same as current Nullius.
+- Every recipe has `allow_quality = false`.
+- Recycling recipes are hidden and disabled, and Nullius items opt out of
+  automatic recycling generation.
+- Quality-tier multipliers and transition probabilities are neutralized, and
+  quality modules are hidden.
 
 ---
 
@@ -1239,7 +1244,7 @@ Rationale:
 2. **Phase 2**: Vulcanus + Fulgora integration (industrial planets, less narrative conflict)
 3. **Phase 3**: Gleba integration (biology rework, spoilage mechanics)
 4. **Phase 4**: Aquilo integration (nuclear rework, endgame)
-5. ~~Phase 5: Quality mechanic~~ -- **excluded**
+5. Quality compatibility -- **implemented as loaded but gameplay-neutralized**
 
 ### 7.2 Scope Estimate
 This is a massive undertaking:

@@ -1,7 +1,7 @@
 # Nullius SA: Vulcanus -- Planet Design Document
 
-> **Status**: Partially implemented (updated 2026-06-14)
-> **Role**: Heavy industry. Abundant metals from lava. No water, no organics.
+> **Status**: Mixed: progression through tier-3 thermal industry is implemented; explicitly proposed sections are design only (updated 2026-08-29)
+> **Role**: Heavy industry. Abundant metals from lava. No natural water, no early organics.
 > **Unlock**: Volcanic Probe Signal Recovery (Tier 3, after signal acquisition + metallurgy-2)
 > **Theme**: Time-gated production (spoilage-as-cooldown), silicon-only insulation, late-game synthetic demolishers.
 
@@ -18,7 +18,7 @@
 | **Silicon insulation only** | Abundant silica from volcanic rock replaces organic insulation. |
 | **Abundant metals** | Iron, aluminum, calcite from lava. Cheap but need time to cool. |
 | **Abundant geothermal** | Constant heat from fumaroles. No intermittency problem. |
-| **No wind/solar** | Wind: dense corrosive atmosphere (CO2 + SO2 + HCl traces) destroys exposed mechanical parts. Solar: surface temperature exceeds panel operating range -- semiconductor junctions degrade rapidly above 150C, Vulcanus ambient is 200C. |
+| **No electric bootstrap** | The wreck contains no generator or electric grid. Initial industry uses free-gas priming, pneumatic machines, and process heat. Electricity may be built later but is not required by the validated local science path. |
 
 ---
 
@@ -48,9 +48,9 @@ Molten blooms are the key mechanic. They are items with `spoil_ticks` that "cool
 |---|---|---|---|---|
 | Molten Iron Bloom | 1800 (30s) | nullius-iron-ingot | 30 seconds | Cools directly into usable ingot. |
 | Molten Aluminum Bloom | 2400 (40s) | **nullius-alumina** | 40 seconds | Oxidizes on cooling. Must reduce alumina to ingot via dry-smelting (9 alumina + 5 graphite --> 3 ingot). Extra step makes aluminum harder than iron. |
-| Molten Titanium Bloom | 3600 (60s) | nullius-titanium-ingot | 60 seconds | **NOT YET IMPLEMENTED.** Only from deep deposits (demolishers). |
+| Proposed molten titanium bloom | 3600 (60s) | nullius-titanium-ingot | 60 seconds | Design for demolisher-exposed deep deposits. |
 
-**Water quenching** (requires imported water, late tech):
+**Proposed water quenching** (requires imported water, late tech):
 
 | Recipe | Input | Output | Time | Notes |
 |---|---|---|---|---|
@@ -66,9 +66,11 @@ Byproduct of all lava processing. Abundant. Pre-compressed by underground pressu
 
 Primary use: fuel for all gas-powered machines (see section 4).
 
-### 2.4 HCl Geysers (Fixed Map Feature)
+### 2.4 HCl Geysers
 
-HCl does NOT come from lava processing. It comes from **dedicated volcanic geysers** -- fixed positions on the map (like SA's chemical vents or Nauvis fumaroles).
+HCl does NOT come from lava processing. The resolved raw source is the
+`sulfuric-acid-geyser` resource, extracted as hydrogen chloride by the existing
+extractor chain.
 
 ```
 HCl Geyser (fixed map position, infinite, finite throughput)
@@ -86,26 +88,24 @@ HCl Geyser (fixed map position, infinite, finite throughput)
          production)
 ```
 
-**Two-phase HCl processing:**
+**Implemented HCl processing:**
 
-**Bootstrap (thermal cracking, low-temp):**
-- With no electricity on Vulcanus, HCl electrolysis is not an early option.
-- First H2/Cl2 comes from low-temp HCl thermal cracking as soon as the factory
-  generates enough waste heat to drive a radiator (see 2.4).
-- Slow but functional -- enough to get first graphite, first drops of water
-- (If the player later imports/builds Stirling engines for niche electronics,
-  electrolysis becomes available, but it is never the bootstrap path.)
-
-**Bulk production (thermal cracking via overheated radiators):**
-- Once the factory is running and generating waste heat, radiators are already at high temperature
-- Instead of dumping heat to void, **route HCl through hot radiators** for thermal cracking
-- Thermal HCl decomposition at 600-800C (no catalyst needed)
+- HCl electrolysis is not part of the pneumatic bootstrap.
+- `nullius-vulcanus-cracking` runs in Radiator 2 at a minimum of 450C and
+  produces the first hydrogen and chlorine.
+- Heat-pipe 1 cannot transfer the required temperature. Before higher heat-pipe
+  tiers, Radiator 2 must connect directly to the owned heat interface of an
+  operating heat-producing pneumatic machine.
+- `nullius-vulcanus-deacon` is the separate low-temperature route. It consumes
+  HCl and oxygen to produce chlorine and water; it does not produce hydrogen.
 
 | Recipe | Input | Output | Category | Notes |
 |---|---|---|---|---|
 | HCl thermal cracking | 60 HCl (through hot radiator) | 30 H2 + 30 Cl2 | high-temp-radiator | Radiator must be above min working temperature (450C). |
 
-**The radiator dual-purpose trick**: Radiators already exist to prevent factory overheating (section 4.5). They absorb waste heat from machines via heat pipes. Now they have a SECOND function: if you pipe HCl through a hot radiator, it thermally cracks the HCl while simultaneously cooling the radiator. The waste heat does useful chemistry.
+**The radiator dual-purpose trick**: Radiators turn process heat into useful
+chemistry. The first cracking cell uses a direct machine-to-radiator heat
+connection; later heat-pipe tiers allow a distributed high-temperature network.
 
 ```
 [Factory machines] --heat pipe--> [Hot Radiator] <--HCl pipe-- [Geyser]
@@ -130,7 +130,7 @@ Radiators are the heat-powered chemistry buildings. They consume waste heat from
 | Tier | min_working_temp | Heat Pipe Required | Crafting Categories |
 |---|---|---|---|
 | **Low-temp radiator** | 200C | Tier 1 (max 250C) | `nullius-low-temp-radiator` |
-| **High-temp radiator** | 450C | Tier 2 (max 500C) | `nullius-low-temp-radiator` + `nullius-high-temp-radiator` |
+| **High-temp radiator** | 450C | Direct machine heat initially; tier-2 heat pipe for distribution | `nullius-low-temp-radiator` + `nullius-high-temp-radiator` |
 
 High-temp radiator can craft all low-temp recipes too (it's hotter).
 
@@ -147,7 +147,7 @@ High-temp radiator can craft all low-temp recipes too (it's hotter).
 |---|---|---|---|
 | HCl thermal cracking | 60 HCl | 30 H2 + 30 Cl2 | Bulk H2 production |
 | Carbochlorination | 2 alumina + 30 Cl2 + 3 graphite | 4 AlCl3 + 30 CO | Chlorine sink |
-| H2S thermal cracking (FUTURE) | H2S | H2 + S | From FeS shuttle |
+| Proposed H2S thermal cracking | H2S | H2 + S | Design for the FeS shuttle |
 
 **Design distinction**: Thermal furnaces (HeatEnergySource) handle solid-to-solid smelting. Radiators handle fluid-input thermal chemistry. Clean separation -- furnaces eat heat to smelt metal, radiators eat heat to crack molecules.
 
@@ -167,7 +167,9 @@ Player picks the recipe in the radiator like any assembling machine. No Ctrl+R t
 
 **Implementation**: Two entity prototypes with `fast_replaceable_group` for upgrade path. Both are assembling-machines with HeatEnergySource and 2-3 fluid connections. No toggle script needed -- standard recipe selection UI.
 
-**Why this matters**: The entire Vulcanus chemistry chain now runs on waste heat from production. Electricity is only needed for the initial bootstrap (probe's Stirling engine) and niche electronics. Once the thermal factory is established, chemistry is powered by the factory's own thermal exhaust.
+**Why this matters**: The entire validated Vulcanus chemistry chain runs on
+process heat and pneumatic power. The wreck contains no Stirling engine and the
+bootstrap requires no electricity.
 
 **Why geysers, not lava byproduct:**
 - Separates metal production (lava) from chemistry (HCl). Two independent supply chains, both must be invested in.
@@ -193,7 +195,7 @@ Mining volcanic rocks provides early-game materials without lava processing:
 
 Graphite from rocks gives early carbon before atmospheric processing is set up. Rutile from rocks is the only pre-demolisher titanium source -- scarce, finite, used as catalyst in SO2 decomposition.
 
-### 2.6 Deep Deposits (Demolisher-Gated, Late Game -- NOT YET IMPLEMENTED)
+### 2.6 Proposed Deep Deposits (Demolisher-Gated, Late Game)
 
 Surface lava provides iron, aluminum, calcite, silica. **Titanium ore (rutile)** bulk deposits are only found deep beneath the volcanic crust, inaccessible to normal mining.
 
@@ -287,11 +289,11 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 | Recipe | Input | Output | Time | Category | Replaces |
 |---|---|---|---|---|---|
 | Thermite explosive (IMPLEMENTED) | 1 chlorine-barrel + 1 SO2-barrel + 4 aluminum-powder + 1 red-wire + 1 green-wire + 1 small-miner | 1 unstable-explosive | 30s | hand-crafting | Methanol in improvised explosive |
-| ANFO explosive (NOT YET IMPLEMENTED) | 30 ammonia + 20 nitric-acid + 20 SO2 + 4 aluminum-powder + 2 iron-oxide + 1 red-wire | 1 unstable-explosive + 16 wastewater | ~4s | basic-chemistry | Glycerol/plastic in industrial explosive-1 |
+| Proposed ANFO explosive | 30 ammonia + 20 nitric-acid + 20 SO2 + 4 aluminum-powder + 2 iron-oxide + 1 red-wire | 1 unstable-explosive + 16 wastewater | ~4s | basic-chemistry | Glycerol/plastic in industrial explosive-1 |
 
 Thermite: field-expedient IED (aluminum-sulfur thermite in a pressurized barrel). ANFO: proper industrial production (ammonium nitrate + aluminum fuel + iron oxide casing, all inorganic).
 
-**Explosive spoilage on Vulcanus (NOT YET IMPLEMENTED).** Ammonium nitrate decomposes at ~230C, Vulcanus ambient is 200C (right on the edge). Vulcanus explosive recipes produce `nullius-unstable-explosive` instead of `cliff-explosives`. Same function, but with `spoil_ticks` (limited shelf life) and `spoil_to_trigger_result` (actual explosion on spoilage -- engine-native trigger, no scripts). Normal `cliff-explosives` from Nauvis recipes stays stable everywhere.
+**Proposed explosive spoilage on Vulcanus.** Ammonium nitrate decomposes at ~230C, Vulcanus ambient is 200C (right on the edge). Vulcanus explosive recipes would produce `nullius-unstable-explosive` instead of `cliff-explosives`. Same function, but with `spoil_ticks` (limited shelf life) and `spoil_to_trigger_result` (actual explosion on spoilage -- engine-native trigger, no scripts). Normal `cliff-explosives` from Nauvis recipes stays stable everywhere.
 
 Implementation: purely prototype-level. Vulcanus recipes output the unstable item variant. `spoil_to_trigger_result` fires a `Trigger` (explosion, damage, particles) when spoilage timer expires. `items_per_trigger` controls how many items detonate per trigger tick. No inventory scanning scripts needed -- the item is inherently unstable from the moment it's crafted. Manufacture on demand, not in bulk.
 
@@ -302,7 +304,8 @@ These recipes are generally **worse** than Nauvis equivalents (more steps, more 
 | Phase | Titanium source | Contract |
 |---|---|---|
 | Nauvis, before shipments | Synthetic rutile from sand | Complete titanium chain remains possible; bulk production is deliberately uneconomic |
-| Vulcanus | Physical rutile deposits | Bulk titanium source |
+| Vulcanus, current | Rutile recovered from big and huge volcanic rocks | Physical source; collection cost grows with travel distance |
+| Vulcanus, later | Demolisher-exposed deep deposits | Planned bulk titanium source |
 | Nauvis, after shipments | Imported rutile or titanium ingots | Imports bypass the punitive sand, acid, and waste burden |
 
 #### Nauvis synthetic rutile
@@ -324,7 +327,7 @@ These recipes are generally **worse** than Nauvis equivalents (more steps, more 
 #### Vulcanus chain
 
 ```
-Deep Deposit (demolisher-exposed)
+Big/huge volcanic rocks (implemented)
     |
     v
 Rutile (TiO2) -- mined from exposed deposit
@@ -345,7 +348,8 @@ Titanium Ingot --> Plate, Sheet, etc.
 | Property | Effect |
 |---|---|
 | Abundant volcanic HCl | Chlorine-intensive Kroll chemistry scales naturally |
-| Physical rutile deposits | Removes Nauvis sand and sulfuric-acid multiplication |
+| Physical rutile from volcanic rocks | Removes Nauvis sand and sulfuric-acid multiplication; scaling requires exploration |
+| Deep deposits | Planned later source for stationary bulk mining |
 | Sodium and argon demand | Remains part of the ingot-production infrastructure |
 
 ### 3.5 Volcanic Sodium
@@ -565,7 +569,7 @@ Alumina and graphite are cheap from lava. AlCl3 is a solid that can be dumped in
 
 **Future**: AlCl3 is the real-world Friedel-Crafts catalyst. Plan to use it as non-consumed catalyst in Vulcanus organic chemistry alt recipes, giving it value beyond a void sink.
 
-**Alternative H2 extraction: Iron sulfide shuttle (NOT YET IMPLEMENTED):**
+**Proposed alternative H2 extraction: iron sulfide shuttle:**
 
 A second pathway to extract hydrogen from HCl, using sulfur as a recycled catalyst:
 
@@ -637,20 +641,27 @@ Lava (under pressure) --> [Lava Processing]
                 (gas-powered) (gas-powered) (gas+heat)  (gas-powered)
 ```
 
-Every lava processing recipe produces **both** metal blooms AND compressed gas as outputs. The deeper/hotter the lava source, the more compressed gas per batch. The planet's geology IS your compressor.
+Lava separation recipes return some compressed gas as a coproduct but are
+net-negative after machine fuel. `nullius-lava-gas-extraction` is the dedicated
+net-positive recipe: 50 lava produces 60 compressed gas and 3 stone in two
+seconds.
 
 | Process | Energy Source | Notes |
 |---|---|---|
-| Lava pumping | Compressed gas (self-bootstrapping once primed) | First pump primed from probe's gas supply |
-| Lava separation | Heat (lava is hot) + compressed gas (mechanical work) | Produces compressed gas as byproduct -- net positive! |
+| Lava pumping | Void/free | Intake placement converts to a lava intake on Vulcanus |
+| Lava gas extraction | Compressed gas | Dedicated self-powered gas source after a 24-gas vent prime |
+| Lava separation | Compressed gas | Produces a gas coproduct but remains net-negative |
 | Molten bloom cooldown | Passive (just wait) | None |
-| Smelting / vent-smelting | Geothermal heat + compressed gas | Heat does the work, gas powers the machine |
+| Smelting / vent-smelting | Pneumatic process heat + compressed gas | Operating pneumatic machines provide the initial usable heat |
 | Inserters | Compressed volcanic gas | Gas-burner inserters |
 | Assemblers | Compressed volcanic gas | Fluid-energy-source variants |
 | Labs | Compressed volcanic gas | Gas-powered labs |
 | Pumps | Compressed volcanic gas | Gas-powered pumps |
 
-**The key insight**: Lava processing is **net-positive on compressed gas** -- it produces more gas than the machines consume to process it. The factory is self-fueling once the initial lava processing loop is primed. The bottleneck isn't energy production, it's **lava throughput** -- how fast you can pump and process lava determines your total gas supply, which determines how many machines can run.
+**The key insight**: Dedicated lava-gas extraction is net-positive and funds
+the rest of the pneumatic factory. Metal and mineral separation consume part of
+that surplus. Gas capacity therefore competes directly with material-processing
+capacity for lava and hydro plants.
 
 ### 4.2 The Lava Throughput Bottleneck
 
@@ -662,11 +673,18 @@ Lava Intake (free/void) --> Lava Processing (gas-powered)
      +----<-------- gas feedback loop ---------+
 ```
 
-The loop is self-sustaining but not infinitely scalable. Each lava processing step produces more gas than the processor consumes, creating a small surplus. The lava intake itself is free/void-powered because its lava-side footprint cannot accept gas pipes. That surplus powers additional machines (inserters, assemblers, labs). More lava processing = more surplus gas = more factory capacity.
+The gas-extraction loop is self-sustaining after its vent prime. The lava intake
+is free/void-powered. Scaling the rest of the factory requires explicit
+gas-extraction capacity; ordinary separation lines do not fund themselves.
 
-**Scaling**: To grow the factory, build more lava intakes and processors. Each new processing line generates its own gas surplus. The growth is linear, not exponential -- you can't "bootstrap" infinite gas from one intake.
+**Scaling**: To grow the factory, allocate more intakes and pneumatic hydro
+plants to gas extraction alongside the hydro plants assigned to metals and
+minerals. Growth is linear in lava and machine throughput.
 
-**Bootstrap**: No electricity, no Stirling engine. The lava intake is free/void-powered and toggles (Ctrl+R, see 4.3) between **free lava intake** and **free-gas vent**. Lava is therefore available immediately; the vent supplies the first compressed gas needed to run a pneumatic hydro plant. Once lava processing runs, its net-positive gas surplus takes over and the vent becomes a negligible trickle.
+**Bootstrap**: No electricity, no Stirling engine. The lava intake is
+free/void-powered and toggles between **free lava intake** and **free-gas vent**.
+The vent supplies the first 24 gas; the first lava-gas extraction cycle then
+makes the loop self-sustaining.
 
 ### 4.3 Bootstrap Power Budget: The Free-Gas Vent (IMPLEMENTED)
 
@@ -680,7 +698,9 @@ Each free-gas vent on a surface delivers `BASE / sqrt(N)` gas, where N is the nu
 | 4 | BASE/2 | 2 * BASE |
 | 100 | BASE/10 | 10 * BASE |
 
-`BASE` is tuned (currently 12 gas/s) so one vent roughly primes one pneumatic machine. Because free gas scales sub-linearly while lava processing scales linearly and is net-positive, the vent matters only at bootstrap; at any real factory scale it is a rounding error.
+`BASE` is tuned (currently 12 gas/s) so one vent primes the first gas-extraction
+cycle. Because free gas scales sub-linearly while dedicated gas extraction
+scales linearly, the vent matters only at bootstrap.
 
 **Implementation** (Space Exploration 0.5 core-miner pattern, engine-metered): The free-gas mode is the intake's Ctrl+R alternate state. The player-facing entity is a cosmetic intake-shaped assembling-machine shell that blueprints normally; when built, `vulcanus_gasvent.lua` spawns a hidden void-energy fluid mining drill plus an invisible infinite gas resource underneath it. The resource has `infinite_depletion_amount = 0`, so the engine never changes its amount; the script owns it. Because the engine meters an infinite resource's output at `amount/normal`, throttling is just rewriting `resource.amount = normal/sqrt(N)` on build/remove. The engine does the metering smoothly -- no duty-cycling, no per-tick loop. N is recomputed only when a vent is toggled, built, or mined. See `scripts/vulcanus_gasvent.lua`.
 
@@ -693,22 +713,28 @@ NOT enough for: mass production. The player is forced into the lava-processing l
 | Phase | Gas Source | Factory Scale | Unlocked By |
 |---|---|---|---|
 | **Bootstrap** | Free-gas vent (sqrt-capped) + free lava intake | First lava processor | Starting equipment |
-| **Early** | First self-sustaining lava loop | Small surplus -- a few machines | First lava processing recipe |
-| **Mid** | Multiple lava processing lines | Medium factory (each line generates surplus) | Vulcanus Metallurgy 2 (improved yields) |
-| **Late** | Optimized processing + higher-tier lava recipes | Large factory | Higher-tier lava separation (more gas per batch) |
+| **Early** | First self-sustaining lava-gas extraction loop | Small surplus -- a few machines | Pneumatic Technology |
+| **Mid** | Parallel gas extraction and material separation | Medium factory | Locally reproduced pneumatic machines |
+| **Late** | Scaled gas extraction plus optimized processes | Large factory | Thermal engineering and industrial optimization |
 | **Endgame** | Mass lava processing arrays | Megabase | Full research tree |
 
-**Electricity role on Vulcanus**: none at bootstrap. The probe carries no Stirling; the factory starts and runs entirely on gas. Stirling engines can be crafted locally later, using compressed nitrogen from pneumatic compressors, for the few things that specifically want electricity (circuit fabrication, signal processing, advanced electronics), but they are a fully optional niche tool, never a survival requirement. The "Anhydrous Thermal Conversion" research (lubricant-free Stirling variant) is a nice-to-have for scaling electronics.
+**Electricity role on Vulcanus**: none at bootstrap. The probe carries no
+Stirling; the factory starts and the validated local-science route runs entirely
+on gas and heat. Stirling engines become locally buildable after chemical
+production supplies their lubricant and pneumatic compressors supply compressed
+nitrogen. They are optional for the current Vulcanus progression slice.
 
 ### 4.5 Why This Works
 
-The Vulcanus power design creates a unique challenge: **the factory fuels itself through lava processing, but growth is gated by lava throughput.** More lava processing = more gas = more machines. The bottleneck is pump count and processing capacity, not a separate energy infrastructure.
+The Vulcanus power design creates a unique challenge: **dedicated lava-gas
+extraction fuels the factory, while every material line competes for the same
+lava and hydro-plant capacity.**
 
 The factory FEELS different from every other planet:
 - **Pipes everywhere**: compressed gas lines run to every machine, not power poles
 - **No electrical grid**: almost zero power poles. Just gas pipes and heat pipes.
-- **Lava processors are the "power plants"**: more lava throughput = more gas = more capacity
-- **Self-fueling loops**: each processing line generates its own fuel surplus
+- **Gas-extraction hydros are the power plants**: more dedicated gas throughput means more factory capacity
+- **Explicit fuel allocation**: metal lines consume the surplus rather than generating their own
 - **Belt design for cooldown**: long belts where molten blooms passively cool while traveling to the next station
 
 This is distinct from every other planet:
@@ -781,9 +807,9 @@ The cheapness compensates for the quantity -- each duct is trivial to craft (loc
 - **Inserters**: no heat interface (too small).
 - **Cleanup**: heat interface destroyed immediately when machine mined.
 
-**NOT YET IMPLEMENTED**: Overheating penalty (machines stopping/taking damage at high temperature).
+**Proposed**: overheating penalty in which machines stop or take damage at high temperature.
 
-### 4.8 Ongoing Tension: Heat Dissipation (FUTURE DESIGN)
+### 4.8 Proposed Heat-Dissipation Pressure
 
 The self-fueling lava loop is too comfortable once established. Needs an ongoing management challenge. Candidates:
 
@@ -883,15 +909,13 @@ Produced from Vulcanus-local materials:
 
 | Recipe | Input | Output | Time | Category |
 |---|---|---|---|---|
-| Metallurgic pack | 3 iron-ingot + 2 aluminum-ingot + 1 calcite + 1 silica + 1 sulfur | 1 metallurgic-pack | 15s | small-crafting |
+| Bootstrap metallurgic pack | 12 iron-ingot + 8 aluminum-ingot + 4 crushed-limestone + 4 silica + 4 sulfur | 1 metallurgic-pack | 60s | small-crafting |
+| Efficient metallurgic pack | 2 molten-iron-bloom + 2 molten-aluminum-bloom + 1 crucible + 1 chlorine-barrel + 1 sulfur-dioxide-barrel | 5 metallurgic-pack + 2 barrels with expected return 1.9 | 15s | medium-crafting |
 
-All ingredients from lava processing. The iron and aluminum ingots must be **cooled** (not molten), so the science pack production inherently includes the cooldown bottleneck.
-
-**Boxed variant** for large assembler:
-
-| Recipe | Input | Output | Time |
-|---|---|---|---|
-| Boxed metallurgic pack | 3 box-iron-ingot + 2 box-aluminum-ingot + 1 box-calcite + 1 box-silica + 1 box-sulfur | 1 box-metallurgic-pack | 75s |
+The bootstrap recipe is intentionally slow and wasteful. Efficient Metallurgic
+Science replaces it with a hot-bloom process tied to crucibles and chlorine and
+sulfur chemistry. Barrel return is productivity-ineligible and averages 1.9;
+the pack output remains productivity-eligible.
 
 ---
 
@@ -903,13 +927,12 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 
 | Tech | Metallurgic Packs | Generic Packs | Unlocks | Globally Useful? |
 |---|---|---|---|---|
-| **Volcanic Metallurgy 1** | 200 | 10 geology + 5 mechanical | Lava processing recipes, molten bloom items | Yes -- unlocks Vulcanus production |
-| **Volcanic Metallurgy 2** | 400 | 15 geology + 10 mechanical | Improved lava separation yields, water quenching | Yes -- better metal yields |
-| **Heat-Resistant Alloys** | 300 | 10 mechanical + 5 electrical | Tier 4 furnaces, heat-resistant pipes | Yes -- better furnaces on ALL planets |
-| **Advanced Calcite Processing** | 250 | 10 geology | Improved calcium chain, bulk lime production | Yes -- cheaper calcium everywhere |
-| **Volcanic Insulation** | 150 | 10 electrical | Silicon insulation recipes | Vulcanus-only (surface_conditions) |
-| **Deep Deposit Surveying** | 500 | 20 geology + 10 mechanical | Reveals titanium deposit locations on map | Vulcanus-only |
-| **Synthetic Demolisher Design** | 800 | 30 all generic | Demolisher deployment (requires Gleba bio-research prereq) | Vulcanus-only |
+| **Volcanic Alkali Processing** | 0 metallurgic | 50 each geology, climatology, mechanical, electrical | Volcanic saline and non-electric causticization | Enables chemical science |
+| **Efficient Metallurgic Science** | 10 | 10 geology + 5 mechanical + 5 electrical | Efficient pack recipe and chlorine/SO2 barreling | Vulcanus production |
+| **Thermal Engineering 1** | 200 | 10 geology + 5 mechanical | Tier-1 thermal crushers, all tier-1 furnace sizes, and foundries | Optional Nauvis industry |
+| **Thermal Engineering 2** | 800 | 80 geology + 40 mechanical + 40 electrical + 40 chemical | Tier-2 thermal heavy industry | Optional Nauvis industry |
+| **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
+| **Industrial Optimization** | `100*L^2` per branch | none | +1% crushing, smelting, or casting productivity per level | Global process bonus |
 
 ### 6.2 Thermal Heavy Industry on Nauvis
 
@@ -1022,17 +1045,15 @@ Even without shipping materials, Vulcanus research unlocks:
 |---|---|
 | Thermal heavy industry | Heat-powered crushers, furnaces, and foundries with innate productivity |
 | Industrial optimization | Repeatable, process-specific productivity improvements |
-| Heat-resistant alloys | Higher-temperature machines and heat infrastructure usable on Nauvis, Fulgora, etc. |
-| Advanced calcite processing | Cheaper calcium compounds everywhere (useful for chlorine disposal on Nauvis!) |
-| Improved metal yields | Better smelting ratios apply to all planets with metal production |
-| Volcanic metallurgy knowledge | Prerequisite for some Tier 6+ cross-planet techs |
+| Efficient metallurgic science | Replaces the deliberately poor bootstrap recipe with hot-bloom chemistry |
+| Volcanic alkali processing | Non-electric sodium hydroxide route for local chemical science |
 
-### 6.5 Weapons Research (Post-Scouts)
+### 6.5 Proposed Weapons Research (Post-Scouts)
 
 | Tech | Prerequisites | Packs | Unlocks |
 |---|---|---|---|
-| Long-Range Overpressure Vessels 1 | Anomaly Analysis 2, Volcanic Metallurgy 2 | 400 metallurgic + 20 mechanical | Basic artillery, explosive shells |
-| Long-Range Overpressure Vessels 2 | LROV-1, Heat-Resistant Alloys | 800 metallurgic + 40 mechanical + 20 chemical | Advanced artillery, incendiary shells |
+| Long-Range Overpressure Vessels 1 | Anomaly Analysis 2, thermal research | 400 metallurgic + 20 mechanical | Basic artillery, explosive shells |
+| Long-Range Overpressure Vessels 2 | LROV-1, higher-tier thermal research | 800 metallurgic + 40 mechanical + 20 chemical | Advanced artillery, incendiary shells |
 | Orbital Overpressure Delivery | LROV-2, Rocket Science 1 | 1500 metallurgic + physics | "Offensive Use of Geoengineering Tools" (MIRV platform) |
 
 ---
@@ -1048,14 +1069,22 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 | Item | Count | Phase | Notes |
 |---|---|---|---|
 | Seawater intake | 2 | A | Auto-swaps to free lava intake on Vulcanus. Toggle (Ctrl+R) between lava intake / free-gas vent. Place on lava shore. |
-| Hydro plant | 1 | B | Lava separation (water-treatment category). Toggle to pneumatic; runs on free-gas vent output at bootstrap. |
-| Small furnace | 2 | B | Smelting (ingot --> plate/rod). Toggle to pneumatic/thermal. |
-| Pipe | 20 | B | Lava and gas piping. |
-| Small assembler | 1 | C | For crafting components. Toggle to pneumatic. |
-| Inserter | 6 | C | Toggle to pneumatic. |
-| Iron chest | 2 | C | Storage. |
+| Hydro plant | 4 | B | Lava separation. Toggle to pneumatic. |
+| Small furnace | 4 | B | Smelting and initial process heat. Toggle to pneumatic. |
+| Pipe | 50 | B | Lava, gas, and chemistry piping. |
+| Heat pipe 1 | 30 | B | Low-temperature heat distribution. |
+| Pipe to ground | 10 | B | Fluid crossings. |
+| Extractor 1 | 2 | C | HCl geyser extraction. Toggle to pneumatic. |
+| Air filter 1 | 2 | C | Atmospheric intake. Toggle to pneumatic. |
+| Distillery 1 | 2 | C | Atmospheric and fluid separation. Toggle to pneumatic. |
+| Chemical plant 1 | 2 | C | Local inorganic chemistry. Toggle to pneumatic. |
+| Foundry 1 | 4 | C | Casting. Toggle to pneumatic. |
+| Small assembler | 4 | C | Component production. Toggle to pneumatic. |
+| Inserter | 12 | C | Material handling. |
+| Iron chest | 4 | C | Storage. |
 | Lab | 1 | E | For Vulcanus research. Toggle to pneumatic. |
 | Transport belt | 50 | C | Cooling conveyors for molten blooms. |
+| Splitter | 4 | C | Belt logistics. |
 | Explosives | 30 | A | Clear Vulcanus cliffs near the landing site. |
 
 No electronics in wreck (melted in volcanic heat). Player must rebuild circuits from silicon insulation + local materials. No Stirling, no electrical grid: one intake pumps lava for free, one intake toggles to a free-gas vent to bootstrap the gas loop, then everything runs on pneumatic gas from lava processing.
@@ -1064,7 +1093,7 @@ No electronics in wreck (melted in volcanic heat). Player must rebuild circuits 
 
 **Phase A: Free-Gas Bootstrap -- Prime the Loop (minutes 0-5)**
 
-No electricity is used on Vulcanus at all.
+No electricity is used during bootstrap.
 
 ```
 1. Mine probe wreck --> collect starting items.
@@ -1084,9 +1113,9 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
 
 ```
 6. Place a hydro plant (from wreck), Ctrl+R to PNEUMATIC mode.
-   - Powered by the free-gas vent. Set recipe to lava iron separation.
-   - Lava flows in from intake #1. Produces molten iron blooms + compressed gas.
-   - This is net-positive on gas: processing makes more than the machines burn.
+   - Powered by the free-gas vent. Set recipe to lava gas extraction.
+   - Each cycle consumes 50 lava and produces 60 compressed volcanic gas plus 3 stone.
+   - Its output powers its next cycle and leaves a net gas surplus.
 7. Pipe the compressed gas output back into the machine gas network.
 8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.
 9. Build a second furnace. Toggle it to PNEUMATIC mode (Ctrl+R).
@@ -1095,7 +1124,8 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
     - Assemblers, inserters, labs -- all toggled to pneumatic via Ctrl+R.
     - Each connects to the gas pipe network.
 11. GAS-POWERED FACTORY IS LIVE.
-    - Lava-processing surplus now dwarfs the vent. The free-gas vent intake can
+    - Dedicated gas-extraction capacity supplies the other, net-negative lava
+      separation recipes. The free-gas vent intake can
       be toggled back to lava intake mode if more lava throughput is useful (or
       left venting as a small buffer).
     - Nothing is electrical.
@@ -1127,7 +1157,7 @@ Rebuilding electronics from scratch without organic materials.
 18. Capacitors using Vulcanus alt recipe (glass/silica dielectric).
 19. Logic circuits using Vulcanus alt recipe (ceramic substrate PCB).
 20. Gas-powered lab built --> begin Vulcanus research.
-    - First research: Volcanic Metallurgy 1 (formalizes lava recipes, improves yields).
+    - Early targets: Efficient Metallurgic Science and Volcanic Alkali Processing.
 ```
 
 **Phase E: HCl Chemistry (minutes 60-120)**
@@ -1137,11 +1167,11 @@ Once extractors are built (volcanism-1 tech, already researched on Nauvis):
 ```
 21. Place extractor on HCl geyser --> HCl gas flows.
 22. HCl thermal cracking via radiators (heat-powered, no electricity).
-    - Early: low-temp cracking as soon as the factory makes enough waste heat.
-    - Later: high-temp radiators for bulk H2 + carbochlorination.
+    - Radiator 2 must be heated to at least 450C by a direct heat-producing
+      machine connection until a higher-temperature heat-pipe tier is available.
 23. H2 + Cl2 available:
-    - H2 --> CO2 reduction --> graphite (essential for smelting recipes).
-    - H2 --> water synthesis (tiny amounts, precious).
+    - H2 + atmospheric CO2 --> carbon monoxide/graphite + water byproducts.
+    - HCl + atmospheric O2 --> chlorine + water through the Deacon route.
     - Cl2 --> calcium chloride, future titanium chemistry.
 24. Atmosphere processing: CO2 capture --> CO2 + N2 + SO2.
     - Feeds into graphite production chain with H2 from geysers.
@@ -1160,7 +1190,8 @@ The factory now has both gas pipes and heat pipes:
     - 2-tile underground gas ducts for crossing heat pipe runs.
     - Factory layout becomes a routing puzzle.
 27. Expand lava processing lines (each line generates gas surplus).
-28. Begin Vulcanus-specific research chain (metallurgic science packs).
+28. Produce metallurgic and local generic science, then establish sulfur,
+    alkali, lubricant, and chemical-science production.
 ```
 
 ### 7.4 The Two Power Phases
@@ -1168,11 +1199,16 @@ The factory now has both gas pipes and heat pipes:
 | Phase | Duration | Power Source | What Runs On It |
 |---|---|---|---|
 | **Free-gas bootstrap** | Minutes 0-10 | Free-gas vent (sqrt-capped) + free lava intake | First pneumatic hydro plant to start lava processing |
-| **Pneumatic** | Minutes 10+ forever | Compressed volcanic gas from lava | Everything. Machines toggled to pneumatic mode via Ctrl+R. |
+| **Pneumatic** | Minutes 10+ through the current slice | Compressed volcanic gas from lava | Validated local production. Machines toggled to pneumatic mode via Ctrl+R. |
 
-There is no electrical infrastructure at all. The free-gas vent primes the loop; once lava processing runs, its net-positive surplus carries the factory and the vent (diminishing returns) fades to irrelevance.
+There is no required electrical infrastructure. The free-gas vent primes the
+dedicated lava-gas extraction loop; its surplus powers material processing and
+the vent fades to irrelevance.
 
-**The player does NOT build an electrical grid on Vulcanus.** No power poles. Machines are placed in electric mode (default) then immediately toggled to pneumatic. The entire factory runs on gas pipes.
+**The validated progression does not require an electrical grid on Vulcanus.**
+Machines are placed in electric mode (default) and immediately toggled to
+pneumatic. Optional later electric production is outside this bootstrap
+contract.
 
 **Pneumatic Technology** is researched on Nauvis (cheap, unlocked right after probe reactivation) before or immediately after first visiting Vulcanus. Without it, machines can't be toggled to pneumatic mode and the intake can't be toggled to free-gas vent mode, so reach it before relying on free gas.
 
@@ -1182,22 +1218,27 @@ There is no electrical infrastructure at all. The free-gas vent primes the loop;
 |---|---|---|
 | Organic chemistry | No organics on Vulcanus | Cargo imports from Fulgora/Nauvis |
 | Bulk water | Almost none locally | HCl chain produces trickle; cargo for bulk |
-| Titanium | Deep deposits inaccessible | Demolishers (requires Gleba bio-research) |
+| Bulk stationary rutile mining | Current rutile comes from scattered volcanic rocks | Planned demolisher-exposed deposits |
 | Copper/advanced electronics | No copper | Cargo imports |
 
 ### 7.6 Key Design Notes
 
-**Free gas is a bootstrap, not a power system.** The free-gas vent exists to prime the lava loop. Its diminishing returns (sqrt cap) make it useless to scale -- the player who tries to power a factory off a field of vents is doing it wrong. Real power is the net-positive lava-processing loop.
+**Free gas is a bootstrap, not a power system.** The free-gas vent exists to
+prime lava-gas extraction. Its diminishing returns make it useless to scale.
+Real power comes from hydro plants running the dedicated gas recipe.
 
 **Gas is abundant but must be piped.** Every machine needs a gas pipe connection. The factory layout is driven by gas pipe routing + heat pipe routing, not by belt throughput or power pole coverage.
 
-**The bootstrap should take 15-30 minutes for an experienced player** from "empty surface" to "functioning gas-powered mini-factory with cooling belts." The first lava separation (Phase B) is the critical moment -- before it, the player has nothing. After it, metals and gas flow.
+**The bootstrap should take 15-30 minutes for an experienced player** from
+"empty surface" to "functioning gas-powered mini-factory with cooling belts."
+The first self-powered lava-gas extraction cycle is the critical moment. Metal
+separation scales only after dedicated gas production is established.
 
 **Switching back to Nauvis is always available.** Ctrl+U returns to Nauvis. Vulcanus is a challenge, not a prison.
 
 ---
 
-## 8. Cross-Planet Interactions
+## 8. Proposed Cross-Planet Interactions
 
 ### 8.1 Vulcanus Needs From Other Planets
 
@@ -1225,7 +1266,7 @@ There is no electrical infrastructure at all. The free-gas vent primes the loop;
 
 ---
 
-## 9. Demolishers (Late Vulcanus Content)
+## 9. Proposed Demolishers (Late Vulcanus Content)
 
 ### 9.1 Unlocking
 
@@ -1263,14 +1304,13 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 |---|---|---|---|
 | Iron ingot | Iron ore --> crush --> smelt | Lava --> molten bloom --> cooldown | **LOCAL** (abundant) |
 | Aluminum ingot | Bauxite --> alumina --> electrolysis | Lava --> molten bloom --> cooldown | **LOCAL** (abundant) |
-| Steel ingot | Iron ingot + O2 --> wet smelting | Iron ingot + volcanic gas? (alt recipe) | **LOCAL** (needs alt recipe, no O2 from water electrolysis) |
-| Graphite | Mined on Nauvis | CO2 atmospheric capture --> carbon/graphite | **LOCAL** (from atmosphere) |
+| Steel ingot | Iron ingot + O2 --> smelting | Same chemistry; oxygen comes from SO2 catalytic decomposition | **LOCAL** |
+| Graphite | Mined on Nauvis | Atmospheric CO2 + hydrogen from thermal HCl cracking --> CO --> graphite | **LOCAL** |
 | Silica/Sand | Sandstone --> crush | Lava silica extraction | **LOCAL** (abundant) |
 | Calcite/Lime | Limestone (non-starting) | Lava calcite separation | **LOCAL** (abundant) |
 | Silicon ingot | Silica + graphite --> smelting | Same recipe, local inputs | **LOCAL** |
 | Sulfur | Various chemistry | SO2 from lava/atmosphere --> catalytic decomposition --> solid sulfur | **LOCAL** |
-| Water | Seawater intake | Synthesized: HCl electrolysis --> H2 + atmospheric O2 --> H2O | **TRACE LOCAL** (agonizingly slow, bulk still import) |
-| Graphite/Carbon | Mined on Nauvis | CO2 atmospheric capture --> carbon | **LOCAL** (from atmosphere) |
+| Water | Seawater intake | Deacon synthesis, CO/graphite byproducts, and saline recovery | **LOCAL** (expensive; bulk import remains optional) |
 | Oxygen | Air separation on Nauvis | CO2 splitting --> O2 | **LOCAL** (from atmosphere) |
 | Plastic | Ethylene + Cl2 (PVC) or propene (PP) | **NONE** (organic) | **IMPORT** (or alt recipe?) |
 | Rubber | Butadiene + styrene | **NONE** (organic) | **IMPORT** |
@@ -1288,12 +1328,12 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 | Aluminum wire | 5 aluminum rod --> 7 wire | **YES** | None |
 | Aluminum rod | aluminum ingot --> rod | **YES** | None |
 | Alumina | aluminum ore processing | **YES** (from lava aluminum) | May need alt recipe |
-| Polycrystalline silicon | 3 silicon ingot + 45 HCl | **YES** | HCl from volcanic gas |
-| Glass | silica processing | **MAYBE** | Check recipe - may need specific furnace |
-| Motor 1 | 2 iron wire + 1 iron plate + 1 plastic + 1 iron rod | **NO** -- needs plastic | **IMPORT plastic or alt recipe** |
-| Insulated wire | 3 aluminum wire + 2 rubber | **NO** -- needs rubber | **IMPORT rubber or silicon insulation alt** |
-| Capacitor | 2 aluminum sheet + 3 plastic + 1 alumina + 1 graphite | **NO** -- needs plastic | **IMPORT or alt recipe** |
-| Logic circuit | 3 plastic + 4 aluminum wire + 2 poly-silicon + 1 graphite | **NO** -- needs plastic | **IMPORT or alt recipe** |
+| Polycrystalline silicon | 3 silicon ingot + 45 HCl | **YES** | HCl geyser extraction |
+| Glass | silica processing | **YES** | Pneumatic foundry; validated by chemical-science scenario |
+| Motor 1 | Normal recipe needs plastic | **YES** | Vulcanus ceramic motor recipe |
+| Insulated wire | Normal recipe needs rubber | **YES** | Vulcanus silicon-insulation recipe |
+| Capacitor | Normal recipe needs plastic | **YES** | Vulcanus silica capacitor recipe |
+| Logic circuit | Normal recipe needs plastic | **YES** | Vulcanus silicon circuit recipe |
 
 ### 10.3 The Plastic Problem
 
@@ -1337,9 +1377,12 @@ Lava
   |--> Silica --> glass, silicon ingot, ceramic substrate
   |--> SO2 --> [rutile-catalyzed decomposition] --> Sulfur + O2
   |--> Compressed volcanic gas (fuel)
-  +--> Mineral dust, graphite (byproducts)
+  +--> Stone and mineral intermediates
 
-Silicon ingot + HCl (from volcanic gas) --> Polycrystalline silicon
+HCl geyser --> thermal cracking --> hydrogen + chlorine
+Atmosphere --> CO2 + N2 + SO2
+CO2 + hydrogen --> carbon monoxide --> graphite + water
+Silicon ingot + HCl --> Polycrystalline silicon
 Silica --> Ceramic substrate (Vulcanus alt for plastic PCB)
 Silica + aluminum sheet --> Silicon insulation (Vulcanus alt for rubber insulation)
 Silica --> Silica glass (Vulcanus alt for plastic dielectric)
@@ -1354,7 +1397,10 @@ Logic circuit + capacitor + insulated wire --> Electronics for lab
 Aluminum sheet + glass + logic circuits + inserters --> Lab (gas-powered)
 ```
 
-**Everything from lava.** No imports needed for basic bootstrap. The alt recipes are uglier and less efficient than Nauvis versions, but they work.
+The validated local slice closes over lava, atmosphere, HCl geysers, volcanic
+rocks, and the wreck inventory. It needs no cargo imports through chemical
+science. The alternative recipes are deliberately less efficient than their
+Nauvis counterparts.
 
 ### 10.5 Generic Science Pack Alt Recipes (Vulcanus-Local)
 
@@ -1366,7 +1412,7 @@ Problem: Vulcanus has no ore patches -- metals come from lava as ingots, not raw
 
 | Vulcanus Alt Recipe | Input | Output | Time | Notes |
 |---|---|---|---|---|
-| Vulcanus geology pack (IMPLEMENTED) | 2 mineral dust + 2 silica + 1 calcium carbonate + 1 sulfur | 1 geology pack | 40s | All from lava processing byproducts. Slower than Nauvis (40s vs 30s). Mineral analysis of volcanic deposits. |
+| Vulcanus geology pack (IMPLEMENTED) | 2 mineral dust + 2 silica + 1 crushed limestone + 1 sulfur | 1 geology pack | 40s | All from local mineral processing. |
 
 **Climatology Pack (Nauvis: 5000 air + 4000 seawater OR 200 N2 + 100 wastewater + 5 volcanic gas)**
 
@@ -1390,16 +1436,27 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 
 | Vulcanus Recipe | Input | Output | Time | Notes |
 |---|---|---|---|---|
-| (Same as Nauvis) | 1 logic-circuit (ceramic alt) + 1 lamp + 2 insulated-wire (silicon alt) + 1 capacitor (glass alt) | 1 electrical pack | 12s | Uses Vulcanus alt components. Pack recipe unchanged. |
+| (Same as Nauvis) | 1 decider-combinator + 1 small-lamp + 2 copper-cable + 1 capacitor | 1 electrical pack | 12s | The named component recipes close through Vulcanus alternatives. |
 
 **Summary: 2 alt recipes implemented** (geology + climatology packs). Mechanical and electrical packs work with existing component-level alt recipes.
+
+**Chemical Pack**
+
+| Recipe | Input | Output | Time | Executor |
+|---|---|---|---|---|
+| Chemical pack | 3 glass + 5 concrete + 1 ammonia barrel + 2 sodium hydroxide + 20 sulfuric acid + 4 lubricant | 1 chemical pack | 15s | Pneumatic chemical plant |
+
+The full resolved contract includes local sulfuric acid, volcanic saline and
+causticization, glass, graphite lubricant, cement/concrete, inorganic barrels,
+and ammonia. Thermal Engineering 2 consumes 40 chemical packs; Thermal
+Engineering 3 consumes 320.
 
 ### 10.6 What Still Requires Import (Post-Cargo)
 
 | Item | Why | Import From |
 |---|---|---|
 | Plastic/rubber | No organic chemistry on Vulcanus | Fulgora or Nauvis |
-| Water | No water sources | Nauvis |
+| Bulk water | Local synthesis is deliberately expensive | Nauvis |
 | Advanced electronics (processor 2+) | May need copper or complex organics | Nauvis or Fulgora |
 | Bio-feed for demolishers | Biological organisms | Gleba |
 

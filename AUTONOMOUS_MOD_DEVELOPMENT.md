@@ -127,18 +127,17 @@ To evaluate a new Factorio version:
 The version is accepted only when both layers pass and every observed change is
 explained.
 
-## First implementation
+## Implementation status
 
-1. Add the dependency-free scenario runner and prove pass, assertion-failure,
-   timeout, and missing-result behavior.
-2. Add the first mod-specific feature cases in the separate test plan.
-3. Add two independent campaign stages on fixed maps and run them in parallel.
-   Each declares its starting assumptions and verifies its own research or
-   production goal through full engine simulation.
-4. Run the same slice on the next Factorio version and compare its results.
-
-Only after this vertical slice works should more feature cases or campaign
-milestones be added.
+| Contract | Status | Evidence |
+|---|---|---|
+| Dependency-free external runner | Implemented | `python3 tools/run_factorio_tests.py` |
+| Assertion, timeout, missing-result, and tick-cap failures | Implemented | Python runner tests |
+| Mod feature scenarios | Implemented | `nullius-star/scenarios/*/test.json` |
+| Independent fixed-map campaign stages | Implemented | `nullius-star/VULCANUS_PROGRESSION_PLAN.md` |
+| Parallel execution | Implemented | `python3 tools/run_factorio_tests.py -n auto` |
+| Resolved prerequisite and manifest generation | Implemented | `tools/analyze_factorio_prereqs.py`, `tools/generate_factorio_scenario_manifest.py` |
+| Factorio-version candidate comparison | Not implemented | Candidate-versus-supported comparison remains required |
 
 ## Sources
 
