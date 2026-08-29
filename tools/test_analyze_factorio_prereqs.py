@@ -16,6 +16,7 @@ from analyze_factorio_prereqs import (
     add_raw_bootstrap_for_execution,
     analyze,
     build_production_manifest,
+    describe_consumers,
     describe_products,
     describe_recipes,
     describe_technologies,
@@ -137,6 +138,70 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             descriptions[0]["producers"][1]["unlock_technologies"],
             ["target-tech"],
         )
+
+    def test_describes_consumers_and_net_consumption(self) -> None:
+        data = {
+            "fluid": {"water": {}},
+            "item": {"ore": {}, "product": {}},
+            "recipe": {
+                "consume-water": {
+                    "enabled": False,
+                    "ingredients": [
+                        {"type": "fluid", "name": "water", "amount": 10},
+                        {"type": "item", "name": "ore", "amount": 1},
+                    ],
+                    "results": [{"name": "product", "amount": 1}],
+                },
+                "recycle-water": {
+                    "enabled": True,
+                    "ingredients": [
+                        {"type": "fluid", "name": "water", "amount": 20},
+                    ],
+                    "results": [
+                        {"name": "product", "amount": 1},
+                        {"type": "fluid", "name": "water", "amount": 5},
+                    ],
+                },
+            },
+            "assembling-machine": {
+                "electric-machine": {
+                    "crafting_categories": ["crafting"],
+                    "energy_source": {"type": "electric"},
+                },
+                "void-machine": {
+                    "crafting_categories": ["crafting"],
+                    "energy_source": {"type": "void"},
+                },
+            },
+            "technology": {
+                "consumer-tech": {
+                    "effects": [
+                        {"type": "unlock-recipe", "recipe": "consume-water"}
+                    ]
+                }
+            },
+        }
+
+        descriptions = describe_consumers(data, ["water"])
+
+        self.assertEqual(descriptions[0]["name"], "water")
+        consumers = descriptions[0]["consumers"]
+        self.assertEqual(
+            [recipe["name"] for recipe in consumers],
+            ["consume-water", "recycle-water"],
+        )
+        self.assertEqual(consumers[0]["input_amount"], 10)
+        self.assertEqual(consumers[0]["returned_amount"], 0)
+        self.assertEqual(consumers[0]["net_consumption"], 10)
+        self.assertEqual(consumers[0]["unlock_technologies"], ["consumer-tech"])
+        self.assertEqual(
+            [executor["name"] for executor in consumers[0]["executors"]],
+            ["electric-machine", "void-machine"],
+        )
+        self.assertFalse(consumers[0]["electricity_required"])
+        self.assertEqual(consumers[1]["input_amount"], 20)
+        self.assertEqual(consumers[1]["returned_amount"], 5)
+        self.assertEqual(consumers[1]["net_consumption"], 15)
 
     def test_finds_structural_dependency_at_technology_boundary(self) -> None:
         data = {

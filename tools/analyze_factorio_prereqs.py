@@ -251,6 +251,89 @@ def describe_products(data: Prototype, names: list[str]) -> list[Prototype]:
     return descriptions
 
 
+def describe_category_executors(data: Prototype, category: str) -> list[Prototype]:
+    executors = []
+    for prototype_type in ("assembling-machine", "furnace", "rocket-silo"):
+        for name, machine in data.get(prototype_type, {}).items():
+            if category not in (machine.get("crafting_categories") or []):
+                continue
+            energy_source = machine.get("energy_source") or {}
+            executors.append(
+                {
+                    "kind": "machine",
+                    "name": name,
+                    "prototype_type": prototype_type,
+                    "energy_source_type": energy_source.get("type"),
+                }
+            )
+    for name, character in data.get("character", {}).items():
+        if category in (character.get("crafting_categories") or []):
+            executors.append(
+                {
+                    "kind": "character",
+                    "name": name,
+                    "prototype_type": "character",
+                    "energy_source_type": None,
+                }
+            )
+    return sorted(
+        executors,
+        key=lambda executor: (
+            executor["kind"], executor["name"], executor["prototype_type"]
+        ),
+    )
+
+
+def describe_consumers(data: Prototype, names: list[str]) -> list[Prototype]:
+    known_products: set[str] = set()
+    for prototype_type in ("item", "fluid", "tool"):
+        known_products.update(data.get(prototype_type, {}))
+
+    unknown = sorted(set(names) - known_products)
+    if unknown:
+        raise TestFailure(
+            "product prototypes not found: " + ", ".join(unknown)
+        )
+
+    consumers: dict[str, list[str]] = defaultdict(list)
+    for recipe_name, recipe in data.get("recipe", {}).items():
+        for ingredient in recipe.get("ingredients") or []:
+            if ingredient["name"] in known_products:
+                consumers[ingredient["name"]].append(recipe_name)
+
+    descriptions = []
+    for name in names:
+        recipe_names = sorted(set(consumers.get(name, [])))
+        recipes = describe_recipes(data, recipe_names)
+        for recipe in recipes:
+            input_amount = sum(
+                deterministic_amount(ingredient)
+                for ingredient in recipe["ingredients"]
+                if ingredient["name"] == name
+            )
+            returned_amount = sum(
+                deterministic_amount(result)
+                for result in recipe["results"]
+                if result["name"] == name
+            )
+            recipe["input_amount"] = input_amount
+            recipe["returned_amount"] = returned_amount
+            recipe["net_consumption"] = input_amount - returned_amount
+            recipe["executors"] = describe_category_executors(
+                data, recipe["category"]
+            )
+            recipe["electricity_required"] = (
+                all(
+                    executor["energy_source_type"] == "electric"
+                    for executor in recipe["executors"]
+                )
+                if recipe["executors"]
+                else None
+            )
+        descriptions.append({"name": name, "consumers": recipes})
+    return descriptions
+
+
 def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
     technologies: dict[str, Prototype] = data.get("technology", {})
     descriptions = []
@@ -1580,6 +1663,13 @@ def parse_arguments() -> argparse.Namespace:
         help="describe every resolved recipe that produces an item or fluid",
     )
     parser.add_argument(
+        "--describe-consumers",
+        action="append",
+        default=[],
+        metavar="ITEM",
+        help="describe every resolved recipe that consumes an item or fluid",
+    )
+    parser.add_argument(
         "--describe-technology",
         action="append",
         default=[],
@@ -1608,6 +1698,7 @@ def main() -> int:
         if (
             args.describe_recipe
             or args.describe_product
+            or args.describe_consumers
             or args.describe_technology
         ):
             if args.targets:
@@ -1619,6 +1710,7 @@ def main() -> int:
                 for values in (
                     args.describe_recipe,
                     args.describe_product,
+                    args.describe_consumers,
                     args.describe_technology,
                 )
             )
@@ -1630,6 +1722,8 @@ def main() -> int:
                 descriptions = describe_recipes(data, args.describe_recipe)
             elif args.describe_product:
                 descriptions = describe_products(data, args.describe_product)
+            elif args.describe_consumers:
+                descriptions = describe_consumers(data, args.describe_consumers)
             else:
                 descriptions = describe_technologies(
                     data, args.describe_technology
@@ -1655,16 +1749,38 @@ def main() -> int:
                         "  effects: "
                         + json.dumps(technology["effects"], sort_keys=True)
                     )
-            elif args.describe_product:
+            elif args.describe_product or args.describe_consumers:
                 for product in descriptions:
                     print(f"{product['name']}:")
-                    if not product["producers"]:
-                        print("  producers: none")
-                    for recipe in product["producers"]:
+                    recipes = product.get("producers", product.get("consumers", []))
+                    if not recipes:
+                        label = "producers" if args.describe_product else "consumers"
+                        print(f"  {label}: none")
+                    for recipe in recipes:
                         print(
                             f"  {recipe['name']}: {recipe['energy_required']:g}s "
                             f"[{recipe['category']}]"
                         )
+                        if args.describe_consumers:
+                            print(
+                                f"    consumption: {recipe['input_amount']:g} in, "
+                                f"{recipe['returned_amount']:g} returned, "
+                                f"{recipe['net_consumption']:g} net"
+                            )
+                            executors = ", ".join(
+                                f"{executor['name']}"
+                                f"[{executor['energy_source_type'] or executor['kind']}]"
+                                for executor in recipe["executors"]
+                            )
+                            print(f"    executors: {executors or 'none'}")
+                            print(
+                                "    electricity_required: "
+                                + (
+                                    "unknown"
+                                    if recipe["electricity_required"] is None
+                                    else str(recipe["electricity_required"]).lower()
+                                )
+                            )
                         print(
                             "    inputs: "
                             + ", ".join(

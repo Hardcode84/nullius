@@ -21,6 +21,10 @@ including byproduct recipes, exact inputs and outputs, categories, surface
 conditions, and unlock technologies. Use `--describe-recipe RECIPE` when the
 exact recipe prototype is already known. Use `--describe-technology TECHNOLOGY`
 for its prerequisite, research cost or trigger, and effects contract.
+Use repeatable `--describe-consumers ITEM` to inspect every resolved recipe
+that consumes an item or fluid, including the amount returned by the same
+recipe, its net consumption per cycle, compatible executor entities, and
+whether every compatible executor requires electricity.
 
 Declare the starting contract explicitly:
 
