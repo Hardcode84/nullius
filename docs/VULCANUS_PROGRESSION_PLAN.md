@@ -14,7 +14,7 @@
 | M7 | Accumulate bootstrap metallurgic science | 30–60 min | 105–190 min |
 | M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
 | M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
-| M10 | Establish local sulfur, alkali, lubricant, and chemical-science production | 45–75 min | 210–350 min |
+| M10 | Establish local sulfur, alkali, lubricant, chemical science, and replacement thermite explosives | 45–75 min | 210–350 min |
 | M11 | Research and commission efficient hot-bloom metallurgic science | 30–45 min | 240–395 min |
 | M12 | Commission direct hot casting and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
 | M13 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 305–510 min |
@@ -51,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -74,6 +74,7 @@ validators:
   chemical-glass-lubricant: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-glass-lubricant.args"
   chemical-concrete-barrels: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-concrete-barrels.args"
   chemical-pack: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-chemical-pack.args"
+  thermite: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-thermite.args"
   thermal-furnace-sizes: "python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-thermal-furnace-sizes.args"
 
 prototypes:
@@ -722,6 +723,30 @@ scenarios:
       executors: {basic-chemistry: nullius-chemical-plant-1-pneumatic}
     run: {until: targets_complete, ticks: 902, timeout: 1500, parallel_executors: 10}
     expect: {produced: {nullius-chemical-pack: "=10"}, additional_technologies: 0, electric_paths: 0}
+
+  thermite:
+    milestone: M10
+    validator: thermite
+    given:
+      force: {researched: [nullius-explosives-1, nullius-experimental-chemistry, nullius-volcanic-alkali-processing, nullius-pneumatic-technology]}
+      stock: {nullius-compressed-volcanic-gas: 24}
+      raw: {nullius-graphite: 38, nullius-hydrogen-chloride: 165, nullius-limestone: 4, nullius-rutile: 1}
+      forbidden: [seawater-pumping, electricity]
+      selected_recipes: {cliff-explosives: nullius-thermite-explosive, decider-combinator: nullius-logic-circuit-vulcanus, copper-cable: nullius-insulated-wire-vulcanus, barrel: nullius-vulcanus-barrel}
+    place:
+      parallel_executors: {nullius-seawater-intake-1: 8, nullius-hydro-plant-1: 8, nullius-air-filter-1: 4, nullius-distillery-1: 4, nullius-chemical-plant-1: 4, nullius-foundry-1: 8, nullius-medium-furnace-1: 8, nullius-small-assembler-1: 8, nullius-crusher-1: 4, nullius-barrel-pump-1: 2, nullius-vulcanus-radiator-1: 4, nullius-vulcanus-radiator-2: 4}
+      character: {count: 1}
+    run: {until: targets_complete, ticks: 48988, timeout: 65000, parallelism: 8, selected_steps: 44}
+    expect:
+      terminal:
+        produced: {cliff-explosives: 1}
+        raw_inputs: {nullius-graphite: 38, nullius-hydrogen-chloride: 165, nullius-limestone: 4, nullius-rutile: 1}
+        fuel_consumed: {nullius-compressed-volcanic-gas: 7208.65}
+        retained: {barrel: 1, copper-cable: 3, decider-combinator: 2, lava: 60, nullius-aluminum-carbide: 28, nullius-aluminum-ingot: 1, nullius-aluminum-plate: 1, nullius-aluminum-powder: 2, nullius-aluminum-sheet: 4, nullius-carbon-dioxide: 460, nullius-chlorine: 25, nullius-compressed-volcanic-gas: 15.35, nullius-crushed-limestone: 1, nullius-gravel: 5, nullius-green-wire: 3, nullius-hydrogen: 75, nullius-iron-gear: 1, nullius-iron-plate: 2, nullius-iron-rod: 3, nullius-iron-sheet: 5, nullius-iron-wire: 2, nullius-nitrogen: 1, nullius-red-wire: 2, nullius-rutile: 1, nullius-silica: 210, nullius-silicon-insulation: 1, nullius-steel-plate: 1, nullius-steel-sheet: 4, nullius-sulfur-dioxide: 30, nullius-water: 398, pipe: 4, stone: 727, stone-brick: 4, sulfur: 6}
+        unstable_explosive: 0
+        additional_technologies: 0
+        electric_paths: 0
+        seawater: 0
 
   efficient-metallurgic-research:
     milestone: M11

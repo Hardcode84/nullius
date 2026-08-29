@@ -1176,7 +1176,6 @@ def build_production_manifest(
     available_inputs: dict[str, float] = defaultdict(float)
     fuel_consumption: dict[str, float] = defaultdict(float)
     quantified_steps: list[Prototype] = []
-    processed: set[str] = set()
     raw = set(report["raw"])
     available = set(report["available"])
 
@@ -1203,6 +1202,10 @@ def build_production_manifest(
                 for ingredient in dependency_step["ingredients"]
             )
 
+    # Recipe overrides can make a consumer shallower than one of its selected
+    # ingredients.  A reconvergent branch may therefore add demand after that
+    # ingredient was quantified once; the stock ledger absorbs any surplus and
+    # a later pass quantifies only the remaining demand.
     while demands:
         product = max(
             demands,
@@ -1215,12 +1218,6 @@ def build_production_manifest(
         requested = demands.pop(product)
         if requested <= 1e-9:
             continue
-        if product in processed:
-            raise TestFailure(
-                f"production ordering reintroduced already processed product: {product}"
-            )
-        processed.add(product)
-
         from_stock = min(stock[product], requested)
         stock[product] -= from_stock
         required = requested - from_stock

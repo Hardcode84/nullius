@@ -983,6 +983,82 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
         self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
 
+    def test_manifest_aggregates_reconvergent_overridden_route(self) -> None:
+        data = {
+            "item": {
+                "ore": {"name": "ore"},
+                "a-override": {"name": "a-override"},
+                "left": {"name": "left"},
+                "z-shared": {"name": "z-shared"},
+                "target": {"name": "target"},
+            },
+            "recipe": {
+                "free-override": {
+                    "name": "free-override",
+                    "enabled": True,
+                    "ingredients": [],
+                    "results": [{"name": "a-override", "amount": 1}],
+                },
+                "selected-override": {
+                    "name": "selected-override",
+                    "enabled": True,
+                    "ingredients": [{"name": "z-shared", "amount": 1}],
+                    "results": [{"name": "a-override", "amount": 1}],
+                },
+                "make-left": {
+                    "name": "make-left",
+                    "enabled": True,
+                    "ingredients": [{"name": "z-shared", "amount": 1}],
+                    "results": [{"name": "left", "amount": 1}],
+                },
+                "make-shared": {
+                    "name": "make-shared",
+                    "enabled": True,
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "z-shared", "amount": 1}],
+                },
+                "make-target": {
+                    "name": "make-target",
+                    "enabled": True,
+                    "ingredients": [
+                        {"name": "a-override", "amount": 1},
+                        {"name": "left", "amount": 1},
+                    ],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+            },
+            "simple-entity": {
+                "ore-rock": {"minable": {"result": "ore"}},
+            },
+            "character": {
+                "character": {"crafting_categories": ["crafting"]},
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=[],
+            recipe=[("a-override", "selected-override")],
+            raw=["ore"],
+        )
+
+        manifest = build_production_manifest(
+            data, analyze(data, args), {"target": 1}, None
+        )
+
+        self.assertEqual(manifest["raw_inputs"], {"ore": 2})
+        self.assertEqual(
+            sum(
+                step["cycles"]
+                for step in manifest["steps"]
+                if step["producer"] == "make-shared"
+            ),
+            2,
+        )
+        self.assertEqual(manifest["surplus"], {})
+
     def test_forbidden_category_excludes_impossible_machine_mode(self) -> None:
         data = {
             "item": {

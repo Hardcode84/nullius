@@ -257,7 +257,7 @@ local function ensure_machine(executor, optional)
     return nil
   end
   local position
-  if executor.name == "nullius-vulcanus-radiator-1" then
+  if HEAT_FIXTURE and executor.name == "nullius-vulcanus-radiator-1" then
     position = {BASE_X, 9}
   else
     local index = storage.executor_count
@@ -265,7 +265,8 @@ local function ensure_machine(executor, optional)
     position = {80 + (index % 8) * 12, -24 + math.floor(index / 8) * 12}
   end
   local machine = build_executor(executor.item, executor.name, position)
-  if machine and executor.name == "nullius-vulcanus-radiator-1" then
+  if machine and HEAT_FIXTURE and
+      executor.name == "nullius-vulcanus-radiator-1" then
     local target = heat_target(machine)
     check(target and close(target[1], storage.radiator_heat_target[1]) and
       close(target[2], storage.radiator_heat_target[2]),
