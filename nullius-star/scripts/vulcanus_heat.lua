@@ -36,6 +36,10 @@ function vulcanus_heat.add_heat_interface(entity)
   local surface = entity.surface
   if not surface.planet or surface.planet.name ~= "nullius-vulcanus" then return end
 
+  local existing = storage.nullius_pneumatic_heat and
+    storage.nullius_pneumatic_heat[entity.unit_number]
+  if existing and existing.valid then return existing end
+
   local size = get_heat_size(entity)
   local heat_name = "nullius-pneumatic-heat-" .. size
   local heat = surface.create_entity{
@@ -64,6 +68,7 @@ function vulcanus_heat.add_heat_interface(entity)
 
     script.register_on_object_destroyed(entity)
   end
+  return heat
 end
 
 -- Remove heat interface when machine is removed/toggled back.

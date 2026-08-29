@@ -4,6 +4,8 @@
 -- Toggle between electric/pneumatic via Ctrl+R (same as priority toggle)
 -- on Vulcanus surface only.
 
+local pneumatic_families = require("shared.pneumatic-machine-families")
+
 -- Compressed volcanic gas fluid.
 data:extend({
   {
@@ -51,12 +53,15 @@ for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-foundry-" .. i)
 end
 
--- Register assembler tiers.
-register_pneumatic("assembling-machine", "nullius-small-assembler-1")
-register_pneumatic("assembling-machine", "nullius-small-assembler-2")
-register_pneumatic("assembling-machine", "nullius-medium-assembler-1")
-register_pneumatic("assembling-machine", "nullius-medium-assembler-2")
-register_pneumatic("assembling-machine", "nullius-barrel-pump-1")
+-- Register every ordinary assembler size and tier.
+for _, name in ipairs(pneumatic_families.normal_assemblers(
+    data.raw["assembling-machine"])) do
+  register_pneumatic("assembling-machine", name)
+end
+for _, name in ipairs(pneumatic_families.barrel_pumps(
+    data.raw["assembling-machine"])) do
+  register_pneumatic("assembling-machine", name)
+end
 
 -- Register inserter (Nullius reuses bob-turbo-inserter as inserter-2).
 register_pneumatic("inserter", "inserter")

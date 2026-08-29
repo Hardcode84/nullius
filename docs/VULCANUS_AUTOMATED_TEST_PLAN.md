@@ -56,7 +56,7 @@ python3 tools/run_factorio_tests.py -n auto
 |---|---|
 | Activation and fuel bootstrap | `vulcanus-activation`, `vulcanus-vent-prime`, `vulcanus-gas-self-power` |
 | Lava materials and cooling | `vulcanus-lava-separation-*`, `vulcanus-bloom-cooldown-*`, `vulcanus-aluminum-reduction`, `vulcanus-sulfur-catalysis` |
-| Pneumatic machinery and heat | `vulcanus-pneumatic-compressor`, `vulcanus-pneumatic-heat`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` |
+| Pneumatic machinery and heat | `pneumatic-assemblers`, `pneumatic-barrel-pumps`, `vulcanus-pneumatic-compressor`, `vulcanus-pneumatic-heat`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` |
 | Bootstrap metallurgy | `vulcanus-metallurgic-pack-recipe`, `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `vulcanus-metallurgic-pack-10` |
 | Local generic science | `vulcanus-basic-science-10` |
 | Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |

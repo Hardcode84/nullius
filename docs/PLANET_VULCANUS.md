@@ -736,7 +736,7 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
 **Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
 - Electric mode: standard Nullius behavior, consumes electricity.
 - Vulcanus mode: depends on machine type:
-  - **Assemblers, labs, chemistry, extractors, air filters**: Pneumatic (compressed volcanic gas via `FluidEnergySource`). Gas pipe connections east/west.
+  - **All ordinary assembler sizes and tiers, both barrel pumps, labs, chemistry, extractors, and air filters**: Pneumatic (compressed volcanic gas via `FluidEnergySource`). Gas pipe connections east/west.
   - **Furnaces**: Thermal (heat via `HeatEnergySource`). Heat pipe connections on all edges. Consumes waste heat from other machines.
   - **Inserters**: Pneumatic (gas). No heat interface spawned (too small).
 - Entities in inventory are mode-neutral. Mode is set after placement.

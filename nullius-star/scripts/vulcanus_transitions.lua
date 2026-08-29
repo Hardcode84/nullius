@@ -2,6 +2,7 @@
 -- Registers pneumatic machine and radiator mode transitions.
 
 local transitions = require("scripts.transitions")
+local pneumatic_families = require("shared.pneumatic-machine-families")
 
 -- Condition: entity is on Vulcanus and pneumatic tech is researched.
 local function is_vulcanus_pneumatic(entity, force)
@@ -61,11 +62,22 @@ for i = 1, 3 do
   register_pneumatic_pair("nullius-medium-furnace-" .. i, "nullius-medium-furnace-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-foundry-" .. i, "nullius-foundry-" .. i .. "-pneumatic")
 end
-register_pneumatic_pair("nullius-small-assembler-1", "nullius-small-assembler-1-pneumatic")
-register_pneumatic_pair("nullius-small-assembler-2", "nullius-small-assembler-2-pneumatic")
-register_pneumatic_pair("nullius-medium-assembler-1", "nullius-medium-assembler-1-pneumatic")
-register_pneumatic_pair("nullius-medium-assembler-2", "nullius-medium-assembler-2-pneumatic")
-register_pneumatic_pair("nullius-barrel-pump-1", "nullius-barrel-pump-1-pneumatic")
+for _, electric in ipairs(pneumatic_families.normal_assemblers(
+    prototypes.entity)) do
+  local pneumatic = electric .. "-pneumatic"
+  if not prototypes.entity[pneumatic] then
+    error("Missing pneumatic assembler prototype " .. pneumatic)
+  end
+  register_pneumatic_pair(electric, pneumatic)
+end
+for _, electric in ipairs(pneumatic_families.barrel_pumps(
+    prototypes.entity)) do
+  local pneumatic = electric .. "-pneumatic"
+  if not prototypes.entity[pneumatic] then
+    error("Missing pneumatic barrel pump prototype " .. pneumatic)
+  end
+  register_pneumatic_pair(electric, pneumatic)
+end
 register_pneumatic_pair("inserter", "inserter-pneumatic")
 register_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
 for i = 1, 3 do
