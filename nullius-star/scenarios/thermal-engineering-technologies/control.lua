@@ -42,6 +42,7 @@ local TECHNOLOGIES = {
       ["nullius-geology-pack"] = 8,
       ["nullius-mechanical-pack"] = 4,
       ["nullius-electrical-pack"] = 4,
+      ["nullius-chemical-pack"] = 4,
     },
     prerequisites = {
       ["nullius-thermal-engineering-1"] = true,
@@ -62,6 +63,7 @@ local TECHNOLOGIES = {
       ["nullius-climatology-pack"] = 8,
       ["nullius-mechanical-pack"] = 8,
       ["nullius-electrical-pack"] = 8,
+      ["nullius-chemical-pack"] = 16,
     },
     prerequisites = {
       ["nullius-thermal-engineering-2"] = true,

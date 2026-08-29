@@ -79,13 +79,13 @@ prototypes:
       unlocks: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal]
     nullius-thermal-engineering-2:
       prerequisites: [nullius-thermal-engineering-1, nullius-mineral-processing-2, nullius-metallurgy-2, nullius-metalworking-2, nullius-thermal-storage-2, nullius-solar-thermal-power-2]
-      unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 80, nullius-geology-pack: 8, nullius-mechanical-pack: 4, nullius-electrical-pack: 4}}
-      totals: {nullius-metallurgic-pack: 800, nullius-geology-pack: 80, nullius-mechanical-pack: 40, nullius-electrical-pack: 40}
+      unit: {count: 10, time: 45, ingredients: {nullius-metallurgic-pack: 80, nullius-geology-pack: 8, nullius-mechanical-pack: 4, nullius-electrical-pack: 4, nullius-chemical-pack: 4}}
+      totals: {nullius-metallurgic-pack: 800, nullius-geology-pack: 80, nullius-mechanical-pack: 40, nullius-electrical-pack: 40, nullius-chemical-pack: 40}
       unlocks: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-medium-furnace-2-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal]
     nullius-thermal-engineering-3:
       prerequisites: [nullius-thermal-engineering-2, nullius-mineral-processing-3, nullius-metallurgy-3, nullius-metalworking-4, nullius-thermal-storage-3, nullius-nuclear-power-1]
-      unit: {count: 20, time: 60, ingredients: {nullius-metallurgic-pack: 160, nullius-geology-pack: 16, nullius-climatology-pack: 8, nullius-mechanical-pack: 8, nullius-electrical-pack: 8}}
-      totals: {nullius-metallurgic-pack: 3200, nullius-geology-pack: 320, nullius-climatology-pack: 160, nullius-mechanical-pack: 160, nullius-electrical-pack: 160}
+      unit: {count: 20, time: 60, ingredients: {nullius-metallurgic-pack: 160, nullius-geology-pack: 16, nullius-climatology-pack: 8, nullius-mechanical-pack: 8, nullius-electrical-pack: 8, nullius-chemical-pack: 16}}
+      totals: {nullius-metallurgic-pack: 3200, nullius-geology-pack: 320, nullius-climatology-pack: 160, nullius-mechanical-pack: 160, nullius-electrical-pack: 160, nullius-chemical-pack: 320}
       unlocks: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-3-thermal, nullius-foundry-3-thermal]
     repeatable:
       common: {max_level: infinite, count_formula: "100*L^2", time: 30, ingredients: {nullius-metallurgic-pack: 1}, change_per_level: 0.01}
