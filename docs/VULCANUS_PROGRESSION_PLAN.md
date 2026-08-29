@@ -2,27 +2,25 @@
 
 ## Level 1 — Player milestones
 
-| ID | Milestone | Segment time | Cumulative time |
-|---|---|---:|---:|
-| M0 | Land, recover the wreck, and assess the starting area | 0–5 min | 0–5 min |
-| M1 | Establish temporary pneumatic bootstrap | 5–10 min | 5–15 min |
-| M2 | Make the pneumatic bootstrap self-sustaining | 5–10 min | 10–25 min |
-| M3 | Establish the basic local material palette | 15–25 min | 25–50 min |
-| M4 | Bring heat-dependent metallurgy and chemistry online | 15–25 min | 40–75 min |
-| M5 | Produce the first bootstrap metallurgic science | 15–25 min | 55–100 min |
-| M6 | Reproduce and expand the core factory from local production | 25–40 min | 75–130 min |
-| M7 | Accumulate bootstrap metallurgic science | 30–60 min | 105–190 min |
-| M8 | Replace rock-mined graphite with atmosphere and HCl chemistry | 30–45 min | 120–200 min |
-| M9 | Produce geology, climatology, mechanical, and electrical science | 45–75 min | 165–275 min |
-| M10 | Establish local sulfur, alkali, lubricant, chemical science, and replacement thermite explosives | 45–75 min | 210–350 min |
-| M11 | Research and commission efficient hot-bloom metallurgic science | 30–45 min | 240–395 min |
-| M12 | Commission direct hot casting and complete Thermal Engineering 1 | 45–75 min | 285–470 min |
-| M13 | Start solar-heated crushing, smelting, and casting on Nauvis | 20–40 min | 305–510 min |
-| M14 | Complete the first crushing, smelting, and casting optimization levels | 30–50 min | 335–560 min |
-| M15 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry | 2–4 h | 6–12 h |
-| M16 | Unlock tier-3 thermal industry and supply it from nuclear heat | 4–8 h | 10–20 h |
-
-Time basis: first solo playthrough after activation, no prepared layout.
+| ID | Milestone |
+|---|---|
+| M0 | Land, recover the wreck, and assess the starting area |
+| M1 | Establish temporary pneumatic bootstrap |
+| M2 | Make the pneumatic bootstrap self-sustaining |
+| M3 | Establish the basic local material palette |
+| M4 | Bring heat-dependent metallurgy and chemistry online |
+| M5 | Produce the first bootstrap metallurgic science |
+| M6 | Reproduce and expand the core factory from local production |
+| M7 | Accumulate bootstrap metallurgic science |
+| M8 | Replace rock-mined graphite with atmosphere and HCl chemistry |
+| M9 | Produce geology, climatology, mechanical, and electrical science |
+| M10 | Establish local sulfur, alkali, lubricant, chemical science, and replacement thermite explosives |
+| M11 | Research and commission efficient hot-bloom metallurgic science |
+| M12 | Commission direct hot casting and complete Thermal Engineering 1 |
+| M13 | Start solar-heated crushing, smelting, and casting on Nauvis |
+| M14 | Complete the first crushing, smelting, and casting optimization levels |
+| M15 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry |
+| M16 | Unlock tier-3 thermal industry and supply it from nuclear heat |
 
 ## Level 2 — Scenario specifications
 
