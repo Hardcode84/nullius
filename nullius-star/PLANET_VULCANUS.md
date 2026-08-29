@@ -348,7 +348,71 @@ Titanium Ingot --> Plate, Sheet, etc.
 | Physical rutile deposits | Removes Nauvis sand and sulfuric-acid multiplication |
 | Sodium and argon demand | Remains part of the ingot-production infrastructure |
 
-### 3.5 Calcite and Calcium
+### 3.5 Volcanic Sodium
+
+#### Source
+
+Sodium in volcanic rock is bound in aluminosilicate minerals and glass. It is not present as free metal or separable sodium oxide. Vulcanus recovers it by acid-leaching the gravel byproduct of lava-based metal production.
+
+| Recipe | Input | Output | Time | Category | Conditions |
+|---|---|---|---|---|---|
+| Volcanic saline (PROPOSED) | 10 gravel + 50 hydrogen chloride + 100 water | 70 saline + 4 silica + 5 mineral dust | 8s | basic-chemistry | Vulcanus; productivity disabled |
+
+`nullius-water` is synthesized locally. Hydrogen chloride comes from volcanic geysers. The pneumatic chemical plant performs the leach without electricity.
+
+#### Progression
+
+| Property | Contract |
+|---|---|
+| Research | `nullius-volcanic-alkali-processing` |
+| Position | After local basic science; before local chemical science |
+| Preliminary cost | 50 geology + 50 climatology + 50 mechanical + 50 electrical packs |
+| Surface condition | `nullius-ambient-temperature >= 100` |
+| Bootstrap invariant | Must not depend on Sodium Processing or chemical packs |
+
+The early unlock is required to break the existing cycle:
+
+```text
+chemical pack
+  requires sodium hydroxide
+    produced by saline electrolysis
+      requires saline
+        produced by hydrochloric neutralization
+          requires caustic solution
+            requires sodium hydroxide
+```
+
+Volcanic saline supplies the missing external sodium boundary.
+
+#### Downstream chemistry
+
+```text
+lava metal industry -> stone/gravel
+                         |
+                         + HCl + synthesized water
+                         v
+                       saline
+                         |
+        +----------------+----------------+
+        |                                 |
+        v                                 v
+saline electrolysis                sand + saline
+        |                                 |
+        v                                 v
+NaOH + H2 + O2 + Cl2              silica + wastewater
+        |
+        v
+chemical science
+
+saline -> brine -> salt -> elemental sodium + chlorine
+                                  |
+                                  v
+                           titanium reduction
+```
+
+Elemental sodium retains the existing electric electrolysis route. Pneumatic electrolyzers are not part of the Vulcanus design; chlor-alkali chemistry creates a deliberate small electrical load after gas-powered bootstrap.
+
+### 3.6 Calcite and Calcium
 
 ```
 Lava --> [Lava Calcite Separation] --> Calcite (direct)
@@ -362,7 +426,7 @@ Lava --> [Lava Calcite Separation] --> Calcite (direct)
 
 Calcite is cheap and abundant on Vulcanus. On Nauvis, limestone must be mined from non-starting-area deposits. This makes Vulcanus a natural calcium/lime exporter.
 
-### 3.6 Atmospheric Chemistry (CO2 Capture)
+### 3.7 Atmospheric Chemistry (CO2 Capture)
 
 Vulcanus has a dense CO2 atmosphere. Using the existing Nullius air processing pattern but with Vulcanus-specific ratios (atmosphere is mostly CO2, trace N2):
 
@@ -441,7 +505,7 @@ Nauvis air separation recipes (which extract O2 from air directly) are **disable
 
 This shifts water from "completely absent" to "agonizingly scarce local resource." Importing water via cargo is still far more practical for bulk use, but the local trickle means the player isn't completely helpless before cargo rockets.
 
-### 3.7 Volcanic Chemistry (Chlorine Economy -- Inverted)
+### 3.8 Volcanic Chemistry (Chlorine Economy -- Inverted)
 
 On Nauvis, chlorine is the unwanted byproduct you can't void. On Vulcanus, the chlorine economy is inverted:
 
@@ -1327,7 +1391,6 @@ All ingredients need Vulcanus ceramic/silicon alt recipes (section 10.3). Once t
 
 ## 11. Open Questions
 
-- Sodium source on Vulcanus: trace lava extraction? Or import from Nauvis?
 - Argon source on Vulcanus: volcanic gas separation? (Realistic -- volcanic gas contains trace noble gases.)
 - Should the metallurgic pack recipe require cooled ingots specifically, or accept molten blooms too? (Requiring cooled ingots means the cooldown bottleneck affects science production.)
 - How many deep deposits per map? How large? How fast do demolishers expose them?
