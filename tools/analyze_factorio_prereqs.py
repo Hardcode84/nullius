@@ -1321,6 +1321,8 @@ def build_production_manifest(
         initial_stock or {},
         raw,
     )
+    for name, amount in bootstrap_raw_inputs.items():
+        stock[name] += amount
 
     return {
         "targets": target_quantities,

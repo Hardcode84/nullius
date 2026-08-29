@@ -2,7 +2,7 @@ return function(CONFIG)
 local CASE = CONFIG.case
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local CONTRACT = CONFIG.contract
-local INITIAL_TECH = "nullius-pneumatic-technology"
+local INITIAL_TECH = CONFIG.initial_technology or "nullius-pneumatic-technology"
 local GAS = "nullius-compressed-volcanic-gas"
 local HEAT_PIPE = "nullius-heat-pipe-1"
 local BASE_X = 32
@@ -11,6 +11,7 @@ local POLL_TICKS = 30
 local BACKGROUND_TICKS = 127
 local CASE_DEADLINE = CONFIG.deadline
 local DIRECT_HEAT = CONFIG.direct_heat
+local HEAT_FIXTURE = CONFIG.heat_fixture ~= false
 local PARALLELISM = CONFIG.parallelism or 1
 local PARALLEL_FIXTURE = CONFIG.parallel_fixture or {}
 
@@ -488,6 +489,11 @@ end
 
 start_background_gas = function()
   if storage.background_gas then return end
+  if not check(storage.gas_step_index ~= nil,
+      "heat execution requires a gas-bootstrap step") then
+    finish()
+    return
+  end
   local step = CONTRACT.steps[storage.gas_step_index]
   if (storage.completed_cycles[storage.gas_step_index] or 0) >= step.cycles then return end
   local pool = storage.machines[step.executor.name]
@@ -529,7 +535,8 @@ local function cycle_materials_ready(step)
   end
   if not step.fuel then return true end
   local required = step.fuel.amount_per_cycle
-  if step.producer ~= "nullius-lava-gas-extraction" and
+  if storage.gas_step_index and
+      step.producer ~= "nullius-lava-gas-extraction" and
       (storage.completed_cycles[storage.gas_step_index] or 0) <
         CONTRACT.steps[storage.gas_step_index].cycles then
     required = required + CONTRACT.steps[storage.gas_step_index].fuel.amount_per_cycle
@@ -739,14 +746,16 @@ local function check_terminal()
   end
   check(completed_steps == #CONTRACT.steps,
     "completed " .. completed_steps .. "/" .. #CONTRACT.steps .. " steps")
-  check((storage.fixture_placed[HEAT_PIPE] or 0) <= FIXTURE[HEAT_PIPE],
-    "heat topology exceeded landing heat-pipe stock")
-  local heat_interfaces = storage.surface.find_entities_filtered{type = "heat-interface"}
-  check(#heat_interfaces >= 4,
-    "heat topology lost one or more landing pneumatic heat interfaces")
-  for _, interface in ipairs(heat_interfaces) do
-    check(string.find(interface.name, "^nullius%-pneumatic%-heat%-") ~= nil,
-      "heat topology contains a debug heat interface: " .. interface.name)
+  if HEAT_FIXTURE then
+    check((storage.fixture_placed[HEAT_PIPE] or 0) <= FIXTURE[HEAT_PIPE],
+      "heat topology exceeded landing heat-pipe stock")
+    local heat_interfaces = storage.surface.find_entities_filtered{type = "heat-interface"}
+    check(#heat_interfaces >= 4,
+      "heat topology lost one or more landing pneumatic heat interfaces")
+    for _, interface in ipairs(heat_interfaces) do
+      check(string.find(interface.name, "^nullius%-pneumatic%-heat%-") ~= nil,
+        "heat topology contains a debug heat interface: " .. interface.name)
+    end
   end
   if storage.direct_heat then
     local direct = storage.direct_heat
@@ -797,7 +806,8 @@ local function step_ready(step)
   end
   if step.fuel and (storage.ledger[step.fuel.name] or 0) + 0.00001 <
       step.fuel.amount_per_cycle then return false end
-  if step.fuel and step.producer ~= "nullius-lava-gas-extraction" and
+  if step.fuel and storage.gas_step_index and
+      step.producer ~= "nullius-lava-gas-extraction" and
       (storage.completed_cycles[storage.gas_step_index] or 0) <
         CONTRACT.steps[storage.gas_step_index].cycles and
       (storage.ledger[step.fuel.name] or 0) + 0.00001 <
@@ -1075,11 +1085,16 @@ local function setup()
       storage.gas_step_index = index
     end
   end
-  check(storage.gas_step_index ~= nil, "manifest has no gas-bootstrap step")
+  if not storage.gas_step_index then
+    for _, step in ipairs(CONTRACT.steps) do
+      check(not step.heat,
+        "heat manifest without a gas-bootstrap step: " .. step.producer)
+    end
+  end
   for name, amount in pairs(CONTRACT.raw_inputs) do add(storage.ledger, name, amount) end
   for name, amount in pairs(CONTRACT.initial_stock) do add(storage.ledger, name, amount) end
 
-  if not setup_heat_fixture() then finish() return end
+  if HEAT_FIXTURE and not setup_heat_fixture() then finish() return end
   observations.initial = {
     fixture = FIXTURE,
     parallelism = PARALLELISM,
@@ -1088,10 +1103,11 @@ local function setup()
     initial_stock = CONTRACT.initial_stock,
     selected_steps = #CONTRACT.steps,
     heat_pipes = storage.fixture_placed[HEAT_PIPE],
-    heat_pipe_temperature = 250,
-    pneumatic_heat_temperature = 500,
-    heat_mode = DIRECT_HEAT and "direct-high-temperature" or
-      "scripted-preheat-per-cycle",
+    heat_pipe_temperature = HEAT_FIXTURE and 250 or nil,
+    pneumatic_heat_temperature = HEAT_FIXTURE and 500 or nil,
+    heat_mode = not HEAT_FIXTURE and "disabled" or
+      (DIRECT_HEAT and "direct-high-temperature" or
+        "scripted-preheat-per-cycle"),
   }
   if #failures > 0 then finish() return end
   storage.started_tick = game.tick

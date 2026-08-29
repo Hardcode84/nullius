@@ -38,6 +38,28 @@ end
 data:extend({
   {
     type = "technology",
+    name = "nullius-volcanic-alkali-processing",
+    order = "nullius-df-y",
+    icon = "__base__/graphics/technology/oil-processing.png",
+    icon_size = 256,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-volcanic-saline"},
+      {type = "unlock-recipe", recipe = "nullius-volcanic-causticization"},
+    },
+    unit = {
+      count = 50,
+      ingredients = {
+        {"nullius-geology-pack", 1},
+        {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1},
+        {"nullius-electrical-pack", 1},
+      },
+      time = 30,
+    },
+    prerequisites = {"nullius-nitrogen-chemistry-1"},
+  },
+  {
+    type = "technology",
     name = "nullius-efficient-metallurgic-science",
     order = "nullius-df-z",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",

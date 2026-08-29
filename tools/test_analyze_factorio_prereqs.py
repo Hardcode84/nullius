@@ -448,6 +448,68 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(added, {"hcl": 1})
         self.assertEqual(raw_inputs, {"hcl": 3})
 
+    def test_raw_bootstrap_remains_as_downstream_byproduct_surplus(self) -> None:
+        data = {
+            "item": {
+                "salt": {"name": "salt"},
+                "machine-item": {
+                    "name": "machine-item",
+                    "place_result": "machine",
+                },
+            },
+            "recipe": {
+                "make-precursor": {
+                    "name": "make-precursor",
+                    "enabled": True,
+                    "category": "chemistry",
+                    "energy_required": 1,
+                    "ingredients": [{"name": "salt", "amount": 3}],
+                    "results": [{"name": "precursor", "amount": 1}],
+                },
+                "make-product": {
+                    "name": "make-product",
+                    "enabled": True,
+                    "category": "chemistry",
+                    "energy_required": 1,
+                    "ingredients": [{"name": "precursor", "amount": 1}],
+                    "results": [
+                        {"name": "product", "amount": 1},
+                        {"name": "salt", "amount": 1},
+                    ],
+                },
+            },
+            "simple-entity": {
+                "salt-rock": {"name": "salt-rock", "minable": {"result": "salt"}},
+            },
+            "assembling-machine": {
+                "machine": {
+                    "name": "machine",
+                    "crafting_categories": ["chemistry"],
+                    "crafting_speed": 1,
+                    "energy_usage": "1W",
+                    "energy_source": {"type": "void"},
+                    "minable": {"result": "machine-item"},
+                },
+            },
+        }
+        args = SimpleNamespace(
+            targets=["product"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=["machine-item"],
+            executor=[("chemistry", "machine")],
+            raw=["salt"],
+        )
+
+        manifest = build_production_manifest(
+            data, analyze(data, args), {"product": 1}, None
+        )
+
+        self.assertEqual(manifest["bootstrap_raw_inputs"], {"salt": 1})
+        self.assertEqual(manifest["raw_inputs"], {"salt": 3})
+        self.assertEqual(manifest["surplus"], {"salt": 1})
+
     def test_selects_renewable_route_and_reports_technology_and_machine(self) -> None:
         data = {
             "item": {

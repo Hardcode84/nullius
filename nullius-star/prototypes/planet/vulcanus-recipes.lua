@@ -163,6 +163,64 @@ data:extend({
   },
 })
 
+-- Inefficient alkali recovery from sodium-bearing volcanic silicates.  These
+-- recipes are globally usable: their poor yields are the constraint, while
+-- Vulcanus supplies renewable gravel, hydrogen chloride, and pneumatic power.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-volcanic-saline",
+    localised_name = {"recipe-name.nullius-volcanic-saline"},
+    icon = data.raw.fluid["nullius-saline"].icon,
+    icon_size = data.raw.fluid["nullius-saline"].icon_size,
+    enabled = false,
+    category = "basic-chemistry",
+    subgroup = "nullius-water-treatment",
+    order = "nullius-vs",
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 8,
+    ingredients = {
+      {type = "item", name = "nullius-gravel", amount = 10},
+      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 50},
+      {type = "fluid", name = "nullius-water", amount = 100},
+    },
+    results = {
+      {type = "fluid", name = "nullius-saline", amount = 70},
+      {type = "item", name = "nullius-silica", amount = 4},
+      {type = "item", name = "nullius-mineral-dust", amount = 5},
+    },
+    main_product = "nullius-saline",
+    allow_productivity = false,
+    no_productivity = true,
+  },
+  {
+    type = "recipe",
+    name = "nullius-volcanic-causticization",
+    localised_name = {"recipe-name.nullius-volcanic-causticization"},
+    icon = data.raw.item["nullius-sodium-hydroxide"].icon,
+    icon_size = data.raw.item["nullius-sodium-hydroxide"].icon_size,
+    enabled = false,
+    category = "nullius-water-treatment",
+    subgroup = "sodium-product",
+    order = "nullius-vc",
+    always_show_products = true,
+    energy_required = 30,
+    ingredients = {
+      {type = "item", name = "nullius-soda-ash", amount = 1},
+      {type = "item", name = "nullius-lime", amount = 1},
+      {type = "fluid", name = "nullius-water", amount = 100},
+    },
+    results = {
+      {type = "item", name = "nullius-sodium-hydroxide", amount = 2},
+      {type = "item", name = "nullius-crushed-limestone", amount = 1},
+    },
+    main_product = "nullius-sodium-hydroxide",
+    allow_productivity = false,
+    no_productivity = true,
+  },
+})
+
 -- Vulcanus-local crafting and science recipes.
 data:extend({
   {

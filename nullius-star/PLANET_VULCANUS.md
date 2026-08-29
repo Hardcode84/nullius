@@ -356,8 +356,8 @@ Sodium in volcanic rock is bound in aluminosilicate minerals and glass. It is no
 
 | Recipe | Input | Output | Time | Category | Conditions |
 |---|---|---|---|---|---|
-| Volcanic saline (PROPOSED) | 10 gravel + 50 hydrogen chloride + 100 water | 70 saline + 4 silica + 5 mineral dust | 8s | basic-chemistry | Vulcanus; productivity disabled |
-| Volcanic causticization (PROPOSED) | 1 soda ash + 1 lime + 100 water | 2 sodium hydroxide + 1 crushed limestone | 30s | water-treatment | Vulcanus; productivity disabled |
+| Volcanic saline (IMPLEMENTED) | 10 gravel + 50 hydrogen chloride + 100 water | 70 saline + 4 silica + 5 mineral dust | 8s | basic-chemistry | Global; productivity disabled |
+| Volcanic causticization (IMPLEMENTED) | 1 soda ash + 1 lime + 100 water | 2 sodium hydroxide + 1 crushed limestone | 30s | water-treatment | Global; productivity disabled |
 
 `nullius-water` is synthesized locally. Hydrogen chloride comes from volcanic geysers. The pneumatic chemical plant performs the leach without electricity.
 
@@ -369,7 +369,7 @@ Sodium in volcanic rock is bound in aluminosilicate minerals and glass. It is no
 | Prerequisite | `nullius-nitrogen-chemistry-1` |
 | Position | After local basic science; before local chemical science |
 | Preliminary cost | 50 geology + 50 climatology + 50 mechanical + 50 electrical packs |
-| Surface condition | `nullius-ambient-temperature >= 100` |
+| Recipe availability | Global; poor yield rather than a surface restriction |
 | Bootstrap invariant | Must not depend on Sodium Processing or chemical packs |
 
 The early unlock is required to break the existing cycle:
