@@ -13,7 +13,7 @@
 |---|---|
 | **CO2 atmosphere** | Dense carbon dioxide atmosphere. Separation yields CO2 + trace N2 + SO2. Oxygen obtained via SO2 catalytic decomposition (rutile catalyst). |
 | **Almost no water** | No oceans, no rain. Tiny amounts from Deacon process (HCl + O2 --> Cl2 + H2O). |
-| **No organic chemistry** | Too hot for organics. No plastic, rubber, methanol, ethylene. |
+| **No early commodity organics** | Ordinary plastic, rubber, and BPA/epichlorohydrin epoxy are not ambient-stable. Later specialized synthesis uses closed equipment and heat-resistant products. |
 | **No biology** | No organisms can survive. Purely inorganic world. |
 | **Silicon insulation only** | Abundant silica from volcanic rock replaces organic insulation. |
 | **Abundant metals** | Iron, aluminum, calcite from lava. Cheap but need time to cool. |
@@ -1539,7 +1539,70 @@ Almost every electronic/mechanical component needs plastic:
 
 All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >= 100`). Uses only locally available materials.
 
-### 10.4 Complete Bootstrap Chain (Vulcanus-Local Only)
+### 10.4 High-Temperature Resin
+
+```yaml
+shared_product:
+  prototype: nullius-epoxy
+  gameplay_identity: uncured-thermoset-resin
+  downstream_recipes: unchanged
+
+ordinary_epoxy:
+  chemistry: BPA-epichlorohydrin
+  surface_condition: {nullius-ambient-temperature: "<200"}
+  inputs: [nullius-bpa, nullius-ech, nullius-solvent]
+
+vulcanus_high_temperature_resin:
+  chemistry: phthalonitrile-inspired
+  surface_condition: {nullius-ambient-temperature: ">=200"}
+  category: basic-chemistry
+  inputs:
+    consumed:
+      - nullius-benzene
+      - nullius-acrylonitrile
+      - nullius-ammonia
+      - nullius-oxygen
+      - nullius-solvent
+    catalyst:
+      input: nullius-alumina
+      output: nullius-alumina
+  outputs:
+    primary: nullius-epoxy
+    byproducts: [nullius-wastewater, nullius-carbon-dioxide]
+  new_item_or_fluid_prototypes: 0
+  productivity: true
+```
+
+```text
+propene + oxygen + ammonia
+  -> acrylonitrile
+
+methanol + carbon monoxide + oxygen
+  -> solvent
+
+benzene + acrylonitrile + ammonia + oxygen + solvent
+  --alumina catalyst-> high-temperature resin + wastewater + carbon dioxide
+```
+
+The Vulcanus recipe abstracts aromatic oxidation, ammoxidation, and resin
+functionalization. The fluid remains `nullius-epoxy`; its localized recipe name
+is `High-temperature resin`. Existing fiberglass, composites, optical cable,
+processor, and building recipes remain unchanged.
+
+| Ordinary route | Vulcanus route |
+|---|---|
+| BPA branch | Benzene branch |
+| Epichlorohydrin branch | Acrylonitrile/ammonia branch |
+| Solvent branch | Solvent branch |
+| Epoxy synthesis | High-temperature-resin synthesis |
+
+BPA melts at approximately 156-159 C and approaches its decomposition range at
+the 200 C Vulcanus ambient boundary. It is excluded from the local route rather
+than transported as a boxed solid. The phthalonitrile-inspired resin uses the
+ambient temperature as its initial processing and curing range; higher thermal
+stability is developed during final curing in the consuming recipe.
+
+### 10.5 Complete Bootstrap Chain (Vulcanus-Local Only)
 
 ```
 Lava
@@ -1580,7 +1643,7 @@ rocks, and the wreck inventory. It needs no cargo imports through chemical
 science. The alternative recipes are deliberately less efficient than their
 Nauvis counterparts.
 
-### 10.5 Generic Science Pack Alt Recipes (Vulcanus-Local)
+### 10.6 Generic Science Pack Alt Recipes (Vulcanus-Local)
 
 Each generic pack needs a Vulcanus-specific alt recipe using only local materials. These are intentionally worse than Nauvis versions (slower, more ingredients) -- the player builds a janky minimum-viable-science-line, not a proper setup.
 
@@ -1629,11 +1692,11 @@ causticization, glass, graphite lubricant, cement/concrete, inorganic barrels,
 and ammonia. Thermal Engineering 2 consumes 40 chemical packs; Thermal
 Engineering 3 consumes 320.
 
-### 10.6 What Still Requires Import (Post-Cargo)
+### 10.7 What Still Requires Import (Post-Cargo)
 
 | Item | Why | Import From |
 |---|---|---|
-| Plastic/rubber | No organic chemistry on Vulcanus | Fulgora or Nauvis |
+| Plastic/rubber | No ambient-stable commodity production on Vulcanus | Fulgora or Nauvis |
 | Bulk water | Local synthesis is deliberately expensive | Nauvis |
 | Advanced electronics (processor 2+) | May need copper or complex organics | Nauvis or Fulgora |
 | Bio-feed for demolishers | Biological organisms | Gleba |
