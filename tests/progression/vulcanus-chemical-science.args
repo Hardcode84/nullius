@@ -81,11 +81,11 @@ basic-chemistry=nullius-chemical-plant-1-pneumatic
 --executor
 ore-flotation=nullius-flotation-cell-1-pneumatic
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --executor
-dry-smelting=nullius-medium-furnace-1-pneumatic
+dry-smelting=nullius-medium-furnace-1-thermal
 --executor
-vent-smelting=nullius-medium-furnace-1-pneumatic
+vent-smelting=nullius-medium-furnace-1-thermal
 --executor
 small-crafting=nullius-small-assembler-1-pneumatic
 --executor
@@ -95,7 +95,7 @@ medium-crafting=nullius-small-assembler-1-pneumatic
 --executor
 large-crafting=nullius-medium-assembler-1-pneumatic
 --executor
-ore-crushing=nullius-crusher-1-pneumatic
+ore-crushing=nullius-crusher-1-thermal
 --executor
 nullius-barrel=nullius-barrel-pump-1-pneumatic
 --executor

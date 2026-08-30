@@ -1,7 +1,7 @@
 # Nullius* implementation status
 
 > **Status**: Active vertical slice
-> **Updated**: 2026-08-29
+> **Updated**: 2026-08-30
 
 ## Authority
 
@@ -19,7 +19,7 @@
 | Space Age load | Space Age is required; Quality loads transitively and its gameplay effects, modules, and recycling are disabled | Strict prototype load |
 | Planet access | Vulcanus probe research unlocks the planet, creates the surface and wreck, and transfers control to a new android body | Activation scenario |
 | Bootstrap | Free lava intake and diminishing-return gas vent prime a net-positive lava-gas loop | Vent-prime and gas-self-power scenarios |
-| Pneumatic factory | Eligible machines, labs, compressors, and flotation cells switch through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
+| Pneumatic factory | Eligible non-heavy-industry machines switch on Vulcanus through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, boric acid, and metallic sodium are reachable without seawater, organic chemistry, or electricity | Production scenarios and prerequisite manifests |
 | Local science | Geology, climatology, mechanical, electrical, chemical, bootstrap metallurgic, and efficient metallurgic packs are producible | Science-production scenarios |
 | Thermite explosives | Inorganic chlorine, sulfur dioxide, aluminum powder, circuitry, and a disposable miner produce stable cliff explosives without electricity or organic chemistry | Thermite scenario and prerequisite manifest |
@@ -27,7 +27,7 @@
 | Refractory production | Local mineral byproducts become refractory mix and bricks for organic-free tier-2 heat pipes and improved high-temperature radiators | Refractory-production scenario and prerequisite manifest |
 | Titanium pilot | Synthetic rutile and TiCl4 feed aluminothermic reduction; chloride recovery and three titanium plates close refractory hydro-plant-2 and foundry-2 construction | Titanium pilot and construction scenarios and manifests |
 | Construction closure | The Vulcanus cell reproduces the buildings and logistics required to scale the implemented slice | Construction-closure scenario and manifest |
-| Thermal industry | Three research tiers unlock heat-powered crusher, furnace-size, and foundry variants through the common transition system; eligible recipes receive innate and repeatable productivity | Thermal and productivity scenarios |
+| Thermal industry | Pneumatic technology unlocks global tier-1 heat-powered crushers, furnace sizes, and foundries; metallurgic research unlocks tiers 2-3; eligible recipes receive innate and repeatable productivity | Thermal and productivity scenarios |
 | Automated validation | Scenario runner supports selection, parallel workers, per-test timing, wall time, and tick ceilings; prerequisite checker consumes resolved prototypes | Full automated suite |
 
 ## Active hardening work

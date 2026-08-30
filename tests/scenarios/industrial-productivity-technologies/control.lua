@@ -49,8 +49,8 @@ local function finish()
 end
 
 local function check_prerequisites(technology, branch_prerequisite)
-  check(technology.prerequisites["nullius-thermal-engineering-1"] ~= nil,
-    technology.name .. " is missing thermal engineering prerequisite")
+  check(technology.prerequisites["nullius-efficient-metallurgic-science"] ~= nil,
+    technology.name .. " is missing efficient metallurgic science prerequisite")
   check(technology.prerequisites[branch_prerequisite] ~= nil,
     technology.name .. " is missing " .. branch_prerequisite .. " prerequisite")
 

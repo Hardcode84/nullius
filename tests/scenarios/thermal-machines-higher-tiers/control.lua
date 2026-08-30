@@ -1,5 +1,7 @@
 local CASE = "thermal-machines-higher-tiers"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
+local THERMAL_PRODUCTIVITY =
+  require("__nullius-star__/thermal-machine-config").productivity
 local TIERS = {
   {
     tier = 2,
@@ -7,7 +9,7 @@ local TIERS = {
     heat_pipe = "nullius-heat-pipe-2",
     min_temperature = 200,
     max_temperature = 500,
-    productivity = 0.10,
+    productivity = THERMAL_PRODUCTIVITY[2],
     machines = {
       "nullius-crusher-2",
       "nullius-small-furnace-2",
@@ -22,7 +24,7 @@ local TIERS = {
     heat_pipe = "nullius-heat-pipe-3",
     min_temperature = 500,
     max_temperature = 1500,
-    productivity = 0.15,
+    productivity = THERMAL_PRODUCTIVITY[3],
     machines = {
       "nullius-crusher-3",
       "nullius-small-furnace-3",
@@ -192,9 +194,15 @@ local function surface_witnesses(force, tier)
   check(other_machine ~= nil, "failed to place tier " .. tier.tier ..
     " other-surface witness")
   if other_machine then
+    local position = other_machine.position
     toggle(other_machine)
-    check(other_machine.valid and other_machine.name == base_name,
-      base_name .. " transitioned outside Nauvis")
+    local thermal = other.find_entity(base_name .. "-thermal", position)
+    check(thermal ~= nil, base_name .. " did not transition on an arbitrary surface")
+    if thermal then
+      toggle(thermal)
+      check(other.find_entity(base_name, position) ~= nil,
+        base_name .. " did not return to electric mode on an arbitrary surface")
+    end
   end
 
   force.technologies["nullius-pneumatic-technology"].researched = true
@@ -210,8 +218,15 @@ local function surface_witnesses(force, tier)
   if vulcanus_machine then
     local position = vulcanus_machine.position
     toggle(vulcanus_machine)
-    check(vulcanus.find_entity(base_name .. "-pneumatic", position) ~= nil,
-      base_name .. " toggled to thermal instead of pneumatic on Vulcanus")
+    local thermal = vulcanus.find_entity(base_name .. "-thermal", position)
+    check(thermal ~= nil, base_name .. " did not enter thermal mode on Vulcanus")
+    check(prototypes.entity[base_name .. "-pneumatic"] == nil,
+      base_name .. " retains a dedicated Vulcanus prototype")
+    if thermal then
+      toggle(thermal)
+      check(vulcanus.find_entity(base_name, position) ~= nil,
+        base_name .. " did not return to electric mode on Vulcanus")
+    end
   end
 end
 

@@ -61,11 +61,11 @@ nullius-hydrogen-chloride=nullius-aluminum-chloride-recovery
 --executor
 ore-flotation=nullius-flotation-cell-1-pneumatic
 --executor
-wet-smelting=nullius-medium-furnace-2-pneumatic
+wet-smelting=nullius-medium-furnace-2-thermal
 --executor
 nullius-high-temp-radiator=nullius-vulcanus-radiator-2
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --machine-category
 ore-flotation
 --machine-category

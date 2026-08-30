@@ -11,7 +11,7 @@ local cases = {
   },
   {
     size = "medium",
-    machine = "nullius-foundry-1-pneumatic",
+    machine = "nullius-medium-assembler-1-pneumatic",
     interface = "nullius-pneumatic-heat-medium",
     pipe_offset = {-1, -2},
     position = {-10, 0},

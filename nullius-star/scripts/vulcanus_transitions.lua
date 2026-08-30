@@ -69,11 +69,6 @@ local function register_pneumatic_priority_cycle(machine, tier)
   })
 end
 
-for i = 1, 3 do
-  register_pneumatic_pair("nullius-small-furnace-" .. i, "nullius-small-furnace-" .. i .. "-pneumatic")
-  register_pneumatic_pair("nullius-medium-furnace-" .. i, "nullius-medium-furnace-" .. i .. "-pneumatic")
-  register_pneumatic_pair("nullius-foundry-" .. i, "nullius-foundry-" .. i .. "-pneumatic")
-end
 for _, electric in ipairs(pneumatic_families.normal_assemblers(
     prototypes.entity)) do
   local pneumatic = electric .. "-pneumatic"
@@ -109,9 +104,6 @@ register_pneumatic_pair("nullius-flotation-cell-1",
   "nullius-flotation-cell-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
-for i = 1, 3 do
-  register_pneumatic_pair("nullius-crusher-" .. i, "nullius-crusher-" .. i .. "-pneumatic")
-end
 for i = 1, 3 do
   register_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
 end

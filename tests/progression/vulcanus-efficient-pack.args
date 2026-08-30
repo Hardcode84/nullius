@@ -42,9 +42,9 @@ nullius-lava-pumping=nullius-lava-intake-1
 --executor
 nullius-water-treatment=nullius-hydro-plant-1-pneumatic
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --executor
-dry-smelting=nullius-small-furnace-1-pneumatic
+dry-smelting=nullius-small-furnace-1-thermal
 --executor
 small-crafting=nullius-small-assembler-1-pneumatic
 --executor

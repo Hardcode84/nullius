@@ -169,7 +169,7 @@ local function setup()
     entity.destroy()
   end
 
-  force.technologies["nullius-thermal-engineering-1"].researched = true
+  force.technologies["nullius-efficient-metallurgic-science"].researched = true
   for _, test in ipairs(TECHNOLOGIES) do
     force.technologies[test.prerequisite].researched = true
     local technology = force.technologies[test.name]

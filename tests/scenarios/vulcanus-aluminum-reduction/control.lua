@@ -1,6 +1,6 @@
 local CASE = "vulcanus-aluminum-reduction"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local MACHINE = "nullius-small-furnace-1-pneumatic"
+local MACHINE = "nullius-small-furnace-1-thermal"
 local RECIPE = "nullius-aluminum-ingot"
 local HEAT_PIPE = "nullius-heat-pipe-1"
 local RECIPE_TICKS = 600
@@ -222,7 +222,7 @@ local function setup()
     force = force,
     expires = false,
   }
-  check(ghost ~= nil, "failed to create pneumatic furnace ghost")
+  check(ghost ~= nil, "failed to create thermal furnace ghost")
   if not ghost then finish() return end
   ghost.revive{raise_revive = true}
   local machines = surface.find_entities_filtered{
@@ -231,19 +231,19 @@ local function setup()
     radius = 0.1,
   }
   check(#machines == 1,
-    "production build did not create exactly one pneumatic furnace")
+    "production build did not create exactly one thermal furnace")
   if #machines ~= 1 then finish() return end
   local machine = machines[1]
   storage.machine = machine
   machine.active = false
 
   local heat_source = machine.prototype.heat_energy_source_prototype
-  check(heat_source ~= nil, "pneumatic furnace has no heat energy source")
+  check(heat_source ~= nil, "thermal furnace has no heat energy source")
   check(machine.prototype.fluid_energy_source_prototype == nil,
-    "pneumatic furnace unexpectedly requires fluid fuel")
+    "thermal furnace unexpectedly requires fluid fuel")
   if not heat_source then finish() return end
   check(#heat_source.connections > 0,
-    "pneumatic furnace has no runtime heat connection")
+    "thermal furnace has no runtime heat connection")
   if #heat_source.connections == 0 then finish() return end
   machine.temperature = heat_source.max_temperature
 
@@ -251,7 +251,7 @@ local function setup()
   check(recipe_set, "failed to set aluminum reduction recipe")
   local recipe = machine.get_recipe()
   check(recipe and recipe.name == RECIPE,
-    "pneumatic furnace has the wrong recipe")
+    "thermal furnace has the wrong recipe")
   if not recipe_set or not recipe or recipe.name ~= RECIPE then
     finish()
     return
@@ -301,7 +301,7 @@ local function setup()
 
   local input_inventory = machine.get_inventory(
     defines.inventory.assembling_machine_input)
-  check(input_inventory ~= nil, "pneumatic furnace has no crafter input inventory")
+  check(input_inventory ~= nil, "thermal furnace has no crafter input inventory")
   if not input_inventory then finish() return end
   storage.input_inventory = input_inventory
   for name, amount in pairs(INPUTS) do

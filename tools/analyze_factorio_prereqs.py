@@ -705,6 +705,23 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         for result in recipe_results(recipe):
             producers[result["name"]].append(recipe_name)
 
+    recipe_overrides = dict(getattr(args, "recipe", []))
+    for product, recipe_name in recipe_overrides.items():
+        recipe = recipes.get(recipe_name)
+        if recipe is None:
+            raise TestFailure(f"selected recipe does not exist: {recipe_name}")
+        if product not in {
+            result["name"] for result in recipe_results(recipe)
+        }:
+            raise TestFailure(
+                f"selected recipe {recipe_name} does not produce {product}"
+            )
+        if recipe_name not in eligible_recipes:
+            raise TestFailure(
+                f"selected recipe {recipe_name} is not available for {product} "
+                "at the declared boundary"
+            )
+
     for technology_name, technology in technologies.items():
         for effect in technology.get("effects") or []:
             if effect.get("type") == "unlock-recipe":
@@ -771,7 +788,6 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     available = set(args.available)
     available_machines = set(getattr(args, "available_machine", []))
     executor_overrides = dict(getattr(args, "executor", []))
-    recipe_overrides = dict(getattr(args, "recipe", []))
     machine_only_categories = set(getattr(args, "machine_category", []))
     raw = set(getattr(args, "raw", []))
     invalid_raw = sorted(raw - set(extraction_sources))

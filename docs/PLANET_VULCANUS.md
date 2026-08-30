@@ -1,6 +1,6 @@
 # Nullius SA: Vulcanus -- Planet Design Document
 
-> **Status**: Mixed: progression through tier-3 thermal industry is implemented; explicitly proposed sections are design only (updated 2026-08-29)
+> **Status**: Mixed: progression through tier-3 thermal industry is implemented; explicitly proposed sections are design only (updated 2026-08-30)
 > **Role**: Heavy industry. Abundant metals from lava. No natural water, no early organics.
 > **Unlock**: Volcanic Probe Signal Recovery (Tier 3, after signal acquisition + metallurgy-2)
 > **Theme**: Time-gated production (spoilage-as-cooldown), silicon-only insulation, late-game synthetic demolishers.
@@ -256,7 +256,7 @@ research:
   cost: {count: 10, time: 30, metallurgic: 10, mechanical: 1}
 recipes:
   surface: Vulcanus
-  executor: pneumatic foundry
+  executor: thermal foundry
   nullius-hot-iron-plate: {input: [4, nullius-molten-iron-bloom], output: [3, nullius-iron-plate], time: 3}
   nullius-hot-iron-rod: {input: [4, nullius-molten-iron-bloom], output: [5, nullius-iron-rod], time: 4}
   nullius-hot-aluminum-sheet: {input: [4, nullius-molten-aluminum-bloom], output: [5, nullius-aluminum-sheet], time: 4}
@@ -298,7 +298,7 @@ chain:
   firing:
     recipe: nullius-refractory-brick-vulcanus
     input: {nullius-refractory-mix: 10}
-    executor: heat-powered pneumatic furnace
+    executor: thermal furnace
     output: {nullius-refractory-brick: 30}
     time: 15
 uses:
@@ -739,21 +739,21 @@ The lubricant alt recipe (section 3.5) and pneumatic compressor make every Stirl
 
 ### 4.1 Steam(Hydrogen)punk: Compressed Gas Industry
 
-Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines are toggled between electric and pneumatic mode via Ctrl+R. Compressors use one combined priority/surge/electric/pneumatic cycle.
+Vulcanus industry uses **compressed volcanic gas and process heat**, not electricity. Machines are toggled between electric and pneumatic or thermal mode via Ctrl+R. Compressors use one combined priority/surge/electric/pneumatic cycle.
 
-**Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks the ability to toggle any placed machine to pneumatic mode on Vulcanus (surface_conditions restrict the toggle to Vulcanus).
+**Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks Vulcanus-only pneumatic machinery and tier-1 thermal heavy industry on every surface.
 
 **Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
 - Electric mode: standard Nullius behavior, consumes electricity.
 - Vulcanus mode: depends on machine type:
-  - **Gas-powered**: ordinary assemblers, boxer, barrel pumps, crushers,
-    foundries, air filters, hydro plants, distilleries, chemical plants,
+  - **Gas-powered**: ordinary assemblers, boxer, barrel pumps, air filters,
+    hydro plants, distilleries, chemical plants,
     compressors, flotation cell 1, lab 1, extractors, pumps, and inserter tiers
     1-2.
-  - **Heat-powered**: small and medium furnaces. Heat pipe connections are on
-    all edges; these machines consume process heat rather than gas directly.
-    Nanofabricators use higher-temperature thermal variants at twice the
-    electric energy demand.
+  - **Heat-powered**: crushers, all furnace sizes, and foundries use global
+    thermal variants with tier-specific innate productivity. Nanofabricators
+    use separate higher-temperature thermal variants at twice the electric
+    energy demand.
 - Entities in inventory are mode-neutral. Mode is set after placement.
 - The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
 
@@ -762,7 +762,8 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
 | Treatment | Families |
 |---|---|
 | Add gas mode | solid miners (all 8 size/tier variants); inserter tiers 3-4; chimney 3; flotation cells 2-3; labs 2-3 |
-| Add heat mode on Vulcanus | large furnaces 1-2; nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
+| Add global heat mode | crushers, every furnace size, and foundries; tier 1 with Pneumatic Technology, tiers 2-3 with Thermal Engineering |
+| Add heat mode on Vulcanus | nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
 | Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; roboports and robot infrastructure; accumulators and grid infrastructure; rocket silo |
 | No alternate mode | passive belts, pipes, tanks, chests, valves, rails and wagons; existing void-, burner-, heat-, and generation-powered entities |
 | Planet source special case | seawater intakes and wells do not get generic pneumatic clones; Vulcanus intake placement already selects lava-intake and gas-vent modes |
@@ -773,9 +774,9 @@ The audit is generated from resolved placeable prototypes with:
 python3 tools/analyze_factorio_prereqs.py --describe-placeable-prefix nullius-
 ```
 
-Pneumatic variants are for mechanically driven work. Electrolyzers remain an
-electricity boundary. Nanofabricators use direct process heat rather than a
-pneumatic variant.
+Pneumatic variants are for mechanically driven work. Heavy industry and
+nanofabricators use direct process heat. Electrolyzers remain an electricity
+boundary.
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
@@ -955,7 +956,7 @@ The cheapness compensates for the quantity -- each duct is trivial to craft (loc
 
 ### 4.7 Heat Generation System (IMPLEMENTED)
 
-**Current implementation**: Hidden heat-interface entities spawn alongside pneumatic machines. Working machines increase their heat-interface temperature proportional to energy consumption. Heat flows through heat pipes to thermal furnaces and radiators.
+**Current implementation**: Hidden heat-interface entities spawn alongside pneumatic machines. Working machines increase their heat-interface temperature proportional to energy consumption. Heat flows through heat pipes to thermal heavy industry and radiators.
 
 - **Amortized bucket system**: 443 buckets, one per tick (same as Stirling engines). Each machine updated every ~7.4 seconds.
 - **Heat scales with machine energy**: `get_max_energy_usage() * (1 + consumption_bonus) / 200`. Speed modules = more heat. Efficiency modules = less heat.
@@ -964,7 +965,7 @@ The cheapness compensates for the quantity -- each duct is trivial to craft (loc
   - Chemical plant (240kW): ~20 deg/update (~2.7C/sec)
   - Multiple machines on same heat network heat up faster.
 - **MAX_HEAT**: 500C (matches heat pipe tier 2 max).
-- **Furnaces** (thermal mode): consume heat from network, no hidden interface.
+- **Crushers, furnaces, and foundries** (thermal mode): consume heat from the network and have no hidden interface.
 - **Inserters**: no heat interface (too small).
 - **Cleanup**: heat interface destroyed immediately when machine mined.
 
@@ -1093,7 +1094,6 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 | **Hot Metalworking** | 100 | 10 mechanical | Direct iron and aluminum bloom casting | Vulcanus throughput |
 | **Vulcanus Refractory Engineering** | 400 | 40 geology + 40 chemical | Refractory mix, industrial brick firing, dry heat pipe 2, improved high-temp radiator | Vulcanus high-temperature infrastructure |
 | **Volcanic Titanium Metallurgy** | 800 | 80 geology + 80 chemical | Aluminothermic titanium, aluminum-chloride recovery, refractory hydro plant 2 and foundry 2 | Limited tier-2 construction closure |
-| **Thermal Engineering 1** | 200 | 10 geology + 5 mechanical | Tier-1 thermal crushers, all tier-1 furnace sizes, and foundries | Optional Nauvis industry |
 | **Thermal Engineering 2** | 800 | 80 geology + 40 mechanical + 40 electrical + 40 chemical | Tier-2 thermal heavy industry | Optional Nauvis industry |
 | **Thermal Engineering 3** | 3200 | 320 geology + 160 climatology + 160 mechanical + 160 electrical + 320 chemical | Tier-3 thermal heavy industry | Optional Nauvis industry |
 | **Industrial Optimization** | `100*L^2` per branch | none | +1% crushing, smelting, or casting productivity per level | Global process bonus |
@@ -1103,25 +1103,22 @@ Proposed finite additions:
 | Tech | Prerequisite shape | Cost shape | Unlocks | Role |
 |---|---|---|---|---|
 
-### 6.2 Thermal Heavy Industry on Nauvis
+### 6.2 Global Thermal Heavy Industry
 
 The main pre-cargo benefit of Vulcanus research is **heat-powered heavy industry
-on Nauvis**. Vulcanus exports process knowledge before it can export materials.
+on every surface**. Vulcanus exports process knowledge before it can export materials.
 The existing electric production chain remains complete; thermal machinery is
 an optional alternative for players who build a heat network.
 
-Each ordinary Nauvis machine tier enables research for the corresponding
-thermal adaptation on Vulcanus:
-
 ```text
-Nauvis machine tier 1 + Vulcanus thermal engineering 1
-  -> thermal machine tier 1
+Pneumatic Technology
+  -> global thermal machine tier 1
 
-Nauvis machine tier 2 + thermal machine tier 1 + Vulcanus thermal engineering 2
-  -> thermal machine tier 2
+metallurgic Thermal Engineering 2
+  -> global thermal machine tier 2
 
-Nauvis machine tier 3 + thermal machine tier 2 + Vulcanus thermal engineering 3
-  -> thermal machine tier 3
+metallurgic Thermal Engineering 3
+  -> global thermal machine tier 3
 ```
 
 The initial machine families are:
@@ -1132,17 +1129,16 @@ The initial machine families are:
 
 The thermal research branches are optional leaves. They do not become
 prerequisites of ordinary Nauvis crushing, metallurgy, casting, generic science
-packs, or other main progression. Advancing the ordinary machine tier on Nauvis
-creates a new research opportunity on Vulcanus; completing it makes the thermal
-mode globally available.
+packs, or other main progression. Thermal mode requires its tier research and
+an enabled recipe for the corresponding base machine.
 
 Placed machines remain mode-neutral items and use contextual `Ctrl+R`
 transitions:
 
 | Surface | Modes |
 |---|---|
-| Nauvis | electric <-> thermal |
-| Vulcanus | electric <-> pneumatic for mechanical machines; electric <-> thermal for nanofabricators |
+| Any surface | electric <-> thermal for crushers, furnaces, and foundries |
+| Vulcanus | electric <-> pneumatic for eligible non-heavy-industry machines; electric <-> thermal for nanofabricators |
 
 Thermal variants consume heat instead of electricity. Heavy-industry variants
 have an innate productivity bonus; nanofabricator variants preserve the
@@ -1170,7 +1166,9 @@ They will be balanced in a separate pass. The stable design contract is:
 thermal_heavy_industry:
   power: heat
   productivity: greater_than_electric_equivalent
-  prerequisite: corresponding_nauvis_machine_tier
+  tier_1_unlock: pneumatic_technology
+  higher_tier_unlock: metallurgic_thermal_research
+  transition_requires: base_machine_recipe_enabled
   unlock_location: vulcanus_research
   nauvis_critical_path: false
   early_heat: solar
@@ -1196,7 +1194,7 @@ repeatable_industrial_optimization:
   cost_growth: superlinear_preliminary
   maximum_level: none
   prerequisite_for_other_research: false
-  machine_modes: [electric, thermal, pneumatic]
+  machine_modes: [electric, thermal]
 ```
 
 Each branch improves only its named process family. Bonuses apply through the
@@ -1241,7 +1239,7 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 |---|---|---|---|
 | Seawater intake | 2 | A | Auto-swaps to free lava intake on Vulcanus. Toggle (Ctrl+R) between lava intake / free-gas vent. Place on lava shore. |
 | Hydro plant | 4 | B | Lava separation. Toggle to pneumatic. |
-| Small furnace | 4 | B | Smelting and initial process heat. Toggle to pneumatic. |
+| Small furnace | 4 | B | Smelting. Toggle to thermal mode. |
 | Pipe | 50 | B | Lava, gas, and chemistry piping. |
 | Heat pipe 1 | 30 | B | Low-temperature heat distribution. |
 | Pipe to ground | 10 | B | Fluid crossings. |
@@ -1249,7 +1247,7 @@ By probe reactivation (Tier 3), the player has all Tier 1-2 techs, electrical en
 | Air filter 1 | 2 | C | Atmospheric intake. Toggle to pneumatic. |
 | Distillery 1 | 2 | C | Atmospheric and fluid separation. Toggle to pneumatic. |
 | Chemical plant 1 | 2 | C | Local inorganic chemistry. Toggle to pneumatic. |
-| Foundry 1 | 4 | C | Casting. Toggle to pneumatic. |
+| Foundry 1 | 4 | C | Casting. Toggle to thermal mode. |
 | Small assembler | 4 | C | Component production. Toggle to pneumatic. |
 | Inserter | 12 | C | Material handling. |
 | Iron chest | 4 | C | Storage. |
@@ -1289,10 +1287,11 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
    - Its output powers its next cycle and leaves a net gas surplus.
 7. Pipe the compressed gas output back into the machine gas network.
 8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.
-9. Build a second furnace. Toggle it to PNEUMATIC mode (Ctrl+R).
+9. Build a second furnace. Toggle it to THERMAL mode (Ctrl+R).
    - Connects to the gas pipe network. Runs on processing surplus.
-10. Build more machines, all in pneumatic mode.
-    - Assemblers, inserters, labs -- all toggled to pneumatic via Ctrl+R.
+10. Build more machines in their applicable alternate modes.
+    - Crushers, furnaces, and foundries use thermal mode.
+    - Assemblers, inserters, and labs use pneumatic mode on Vulcanus.
     - Each connects to the gas pipe network.
 11. GAS-POWERED FACTORY IS LIVE.
     - Dedicated gas-extraction capacity supplies the other, net-negative lava

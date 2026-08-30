@@ -1,8 +1,7 @@
 local CASE = "vulcanus-hot-casting"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-hot-metalworking"
-local MACHINE = "nullius-foundry-1-pneumatic"
-local GAS = "nullius-compressed-volcanic-gas"
+local MACHINE = "nullius-foundry-1-thermal"
 local CASES = {
   {
     recipe = "nullius-hot-iron-plate",
@@ -44,6 +43,12 @@ local CASES = {
     spoil_ticks = 2400,
     seconds = 4,
   },
+}
+local DIRECTION_OFFSET = {
+  [defines.direction.north] = {0, -1},
+  [defines.direction.east] = {1, 0},
+  [defines.direction.south] = {0, 1},
+  [defines.direction.west] = {-1, 0},
 }
 
 local assertions = 0
@@ -121,27 +126,36 @@ local function build(surface, name, position)
   return entity
 end
 
-local function connect_gas(surface, machine)
-  local gas_box = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
-    if filter and filter.name == GAS then gas_box = index end
-    if not filter and not gas_box then gas_box = index end
-  end
-  check(gas_box ~= nil, machine.name .. " has no volcanic-gas energy box")
-  if not gas_box then return nil end
-  local connection = machine.fluidbox.get_pipe_connections(gas_box)[1]
-  check(connection ~= nil, machine.name .. " gas box has no pipe connection")
+local function connect_heat(surface, machine)
+  local source = machine.prototype.heat_energy_source_prototype
+  check(source ~= nil, machine.name .. " has no heat energy source")
+  if not source then return nil end
+  local connection = source.connections[1]
+  check(connection ~= nil, machine.name .. " has no heat connection")
   if not connection then return nil end
+  local outward = DIRECTION_OFFSET[connection.direction]
+  check(outward ~= nil, machine.name .. " heat connection is not cardinal")
+  if not outward then return nil end
+  local pipe_position = {
+    machine.position.x + connection.position[1] + outward[1],
+    machine.position.y + connection.position[2] + outward[2],
+  }
   local pipe = surface.create_entity{
-    name = "pipe",
-    position = connection.target_position,
+    name = "nullius-heat-pipe-1",
+    position = pipe_position,
     force = game.forces.player,
   }
-  check(pipe ~= nil, "failed to connect gas pipe to " .. machine.name)
+  check(pipe ~= nil, "failed to connect heat pipe to " .. machine.name)
   if not pipe then return nil end
-  check(pipe.insert_fluid{name = GAS, amount = 100} == 100,
-    "failed to fuel " .. machine.name)
+  local interface = surface.create_entity{
+    name = "heat-interface",
+    position = {pipe_position[1] + outward[1], pipe_position[2] + outward[2]},
+    force = game.forces.player,
+  }
+  check(interface ~= nil, "failed to place heat source for " .. machine.name)
+  if not interface then return nil end
+  interface.set_heat_setting{temperature = 250, mode = "at-least"}
+  machine.temperature = 250
   return pipe
 end
 
@@ -247,7 +261,7 @@ local function setup()
       defines.inventory.assembling_machine_input)
     check(input.insert{name = expected.input, count = expected.input_count} ==
       expected.input_count, "failed to insert inputs for " .. expected.recipe)
-    if not connect_gas(surface, machine) then finish() return end
+    if not connect_heat(surface, machine) then finish() return end
     local craft_ticks = math.ceil(recipe.energy * 60 / machine.crafting_speed)
     local spoil_ticks = expected.spoil_ticks
     check(craft_ticks < spoil_ticks,

@@ -31,26 +31,14 @@ data:extend({
 -- The pneumatic variant will be named "entity-name-pneumatic".
 local pneumatic_machines = {}
 
-local function register_pneumatic(entity_type, entity_name, thermal,
-    gas_offset, gas_edge)
+local function register_pneumatic(entity_type, entity_name, gas_offset,
+    gas_edge)
   table.insert(pneumatic_machines, {
     name = entity_name,
     type = entity_type,
-    thermal = thermal,
     gas_offset = gas_offset,
     gas_edge = gas_edge,
   })
-end
-
--- Register furnace tiers (thermal: heat-powered, not gas-powered).
-for i = 1, 3 do
-  register_pneumatic("assembling-machine", "nullius-small-furnace-" .. i, true)
-  register_pneumatic("assembling-machine", "nullius-medium-furnace-" .. i, true)
-end
-
--- Register foundry tiers (gas-powered, not thermal).
-for i = 1, 3 do
-  register_pneumatic("assembling-machine", "nullius-foundry-" .. i)
 end
 
 -- Register every ordinary assembler size and tier.
@@ -75,11 +63,6 @@ register_pneumatic("inserter", "bob-turbo-inserter")
 register_pneumatic("mining-drill", "nullius-extractor-1")
 register_pneumatic("mining-drill", "nullius-extractor-2")
 
--- Register crushers.
-for i = 1, 3 do
-  register_pneumatic("assembling-machine", "nullius-crusher-" .. i)
-end
-
 -- Register air filters.
 for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-air-filter-" .. i)
@@ -93,8 +76,7 @@ for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-surge-compressor-" .. i)
   register_pneumatic("assembling-machine", "nullius-priority-compressor-" .. i)
 end
-register_pneumatic("assembling-machine", "nullius-flotation-cell-1",
-  false, -0.5, 1.5)
+register_pneumatic("assembling-machine", "nullius-flotation-cell-1", -0.5, 1.5)
 
 -- Register labs.
 register_pneumatic("lab", "nullius-lab-1")
@@ -223,42 +205,22 @@ for _, entry in pairs(pneumatic_machines) do
       }
     end
 
-    if entry.thermal then
-      -- Furnaces use heat energy source (thermal smelting from waste heat).
-      local vulcanus_util = require("prototypes.planet.vulcanus-util")
-      local cb_raw = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
-      local heat_half = math.abs(cb_raw[1][1]) - 0.1
-      if heat_half < 0.5 then heat_half = 0.8 end
-      pneumatic.energy_source = {
-        type = "heat",
-        max_temperature = 500,
-        specific_heat = "200kJ",
-        max_transfer = "2MW",
-        min_working_temperature = 100,
-        default_temperature = 15,
-        connections = vulcanus_util.make_heat_connections(heat_half),
-        pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.pipe_covers,
-        heat_pipe_covers = data.raw.boiler["heat-exchanger"].energy_source.heat_pipe_covers,
-      }
-    else
-      -- All other machines use gas (fluid energy source).
-      pneumatic.energy_source = {
-        type = "fluid",
-        burns_fluid = true,
-        scale_fluid_usage = true,
-        fluid_usage_per_tick = 1,
-        fluid_box = {
-          volume = 200,
-          pipe_connections = pipe_connections,
-        },
-        smoke = {{
-          name = "smoke",
-          frequency = 10,
-          position = {0, -0.7},
-          starting_vertical_speed = 0.08,
-        }},
-      }
-    end
+    pneumatic.energy_source = {
+      type = "fluid",
+      burns_fluid = true,
+      scale_fluid_usage = true,
+      fluid_usage_per_tick = 1,
+      fluid_box = {
+        volume = 200,
+        pipe_connections = pipe_connections,
+      },
+      smoke = {{
+        name = "smoke",
+        frequency = 10,
+        position = {0, -0.7},
+        starting_vertical_speed = 0.08,
+      }},
+    }
 
     -- Same fast_replaceable_group so toggle works.
     pneumatic.fast_replaceable_group = original.fast_replaceable_group or entry.name

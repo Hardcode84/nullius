@@ -1,8 +1,10 @@
+local config = require("thermal-machine-config")
+
 return {
   {
     tier = 1,
-    technology = "nullius-thermal-engineering-1",
-    productivity = 0.05,
+    technology = "nullius-pneumatic-technology",
+    productivity = config.productivity[1],
     min_temperature = 100,
     max_temperature = 250,
     machines = {
@@ -16,7 +18,7 @@ return {
   {
     tier = 2,
     technology = "nullius-thermal-engineering-2",
-    productivity = 0.10,
+    productivity = config.productivity[2],
     min_temperature = 200,
     max_temperature = 500,
     machines = {
@@ -30,7 +32,7 @@ return {
   {
     tier = 3,
     technology = "nullius-thermal-engineering-3",
-    productivity = 0.15,
+    productivity = config.productivity[3],
     min_temperature = 500,
     max_temperature = 1500,
     machines = {

@@ -572,7 +572,12 @@ end
 local function start_machine_batch(step)
   local active = storage.active
   local remaining = step.cycles - (storage.completed_cycles[active.step_index] or 0)
-  local batch_limit = step.heat and 1 or math.min(PARALLELISM, remaining)
+  local direct_executor = storage.direct_heat and step.executor.name ==
+    storage.direct_heat.machine.name
+  local shared_radiator = HEAT_FIXTURE and
+    step.executor.name == "nullius-vulcanus-radiator-1"
+  local batch_limit = (direct_executor or shared_radiator) and 1 or
+    math.min(PARALLELISM, remaining)
   active.executions = {}
   active.poll_ticks = POLL_TICKS
   for batch_index = 1, batch_limit do
@@ -975,7 +980,7 @@ local function setup_heat_fixture()
     }
   end
   local furnace = build_executor("nullius-small-furnace-1",
-    "nullius-small-furnace-1-pneumatic", {BASE_X, -4})
+    "nullius-small-furnace-1-thermal", {BASE_X, -4})
   if not furnace then return false end
   local furnace_target = heat_target(furnace)
   if not furnace_target then return false end

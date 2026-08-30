@@ -275,14 +275,20 @@ local function setup()
       recipe_name .. " was enabled before refractory engineering")
   end
   research_closure(technology, {})
+  local thermal = force.technologies["nullius-thermal-engineering-2"]
+  if not check(thermal ~= nil, "missing Thermal Engineering 2") then
+    finish()
+    return
+  end
+  research_closure(thermal, {})
   for _, recipe_name in ipairs(RECIPES) do
     check(force.recipes[recipe_name] and force.recipes[recipe_name].enabled,
       recipe_name .. " was not unlocked by refractory engineering")
   end
 
   storage.mixer = build(surface, "nullius-medium-assembler-1-pneumatic", {8, 0})
-  storage.furnace = build(surface, "nullius-small-furnace-2-pneumatic", {20, 0})
-  storage.foundry = build(surface, "nullius-foundry-1-pneumatic", {32, -4})
+  storage.furnace = build(surface, "nullius-small-furnace-2-thermal", {20, 0})
+  storage.foundry = build(surface, "nullius-foundry-1-thermal", {32, -4})
   storage.radiator_assembler = build(
     surface, "nullius-medium-assembler-1-pneumatic", {32, 4})
   if #failures > 0 then finish() return end
@@ -318,8 +324,8 @@ local function setup()
     ["nullius-mineral-dust"] = 12,
   })
   fuel(surface, storage.mixer, 86.4)
-  fuel(surface, storage.foundry, 45)
   fuel(surface, storage.radiator_assembler, 72)
+  storage.foundry.temperature = 250
   if #failures > 0 then finish() return end
   storage.mixer.active = true
   storage.stage = "mix"

@@ -31,8 +31,6 @@ end
 function vulcanus_heat.add_heat_interface(entity)
   if not entity or not entity.valid then return end
   if entity.type == "inserter" then return end
-  -- Thermal furnaces have their own heat connections, skip them.
-  if string.find(entity.name, "furnace") then return end
   local surface = entity.surface
   if not surface.planet or surface.planet.name ~= "nullius-vulcanus" then return end
 

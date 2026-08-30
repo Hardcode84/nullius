@@ -114,7 +114,7 @@ return {
     "nullius-wind-power-1",
   },
   fuel_consumption = {
-    ["nullius-compressed-volcanic-gas"] = 7038.0,
+    ["nullius-compressed-volcanic-gas"] = 288.0,
   },
   initial_stock = {
     ["nullius-compressed-volcanic-gas"] = 7038.0,
@@ -130,29 +130,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 225.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 6750.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 4500000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 90.0,
@@ -177,13 +176,12 @@ return {
       executor = {
         alternatives = {
           "nullius-medium-furnace-1",
-          "nullius-medium-furnace-1-pneumatic",
           "nullius-medium-furnace-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = 500,
+          maximum_temperature = 250,
           minimum_working_temperature = 100,
           type = "heat",
         },
@@ -191,13 +189,13 @@ return {
         explicit_override = true,
         item = "nullius-medium-furnace-1",
         kind = "machine",
-        name = "nullius-medium-furnace-1-pneumatic",
+        name = "nullius-medium-furnace-1-thermal",
         prototype_type = "assembling-machine",
       },
       fuel = nil,
       heat = {
         energy_per_cycle_joules = 2700000.0,
-        maximum_temperature = 500,
+        maximum_temperature = 250,
         minimum_working_temperature = 100,
       },
       ingredients = {
@@ -289,6 +287,7 @@ return {
   },
   surplus = {
     ["nullius-acid-hydrochloric"] = 50.0,
+    ["nullius-compressed-volcanic-gas"] = 6750.0,
     ["nullius-silicon-ingot"] = 1.0,
   },
   targets = {

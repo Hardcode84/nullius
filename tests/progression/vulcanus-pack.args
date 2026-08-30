@@ -28,7 +28,7 @@ nullius-lava-pumping=nullius-lava-intake-1
 --executor
 nullius-water-treatment=nullius-hydro-plant-1-pneumatic
 --executor
-dry-smelting=nullius-small-furnace-1-pneumatic
+dry-smelting=nullius-small-furnace-1-thermal
 --executor
 nullius-low-temp-radiator=nullius-vulcanus-radiator-1
 --executor

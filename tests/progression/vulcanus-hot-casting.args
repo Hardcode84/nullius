@@ -20,7 +20,7 @@ nullius-aluminum-sheet=nullius-hot-aluminum-sheet
 --recipe
 nullius-aluminum-rod=nullius-hot-aluminum-rod
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --machine-category
 machine-casting
 --fuel

@@ -1,6 +1,9 @@
 local CASE = "thermal-cell-1"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local TECHNOLOGY = "nullius-thermal-engineering-1"
+local TECHNOLOGY = "nullius-pneumatic-technology"
+local PRODUCTIVITY =
+  require("__nullius-star__/thermal-machine-config").productivity[1]
+local PRODUCTIVE_CYCLES = 100 + math.floor(100 * PRODUCTIVITY + 0.5)
 local TRANSITION_INTERFACE = "nullius-test-transitions"
 local TRANSFER_PERIOD = 60
 local MACHINES_PER_CELL = 5
@@ -17,7 +20,10 @@ local cells = {
     connection_x_offset = -1,
     collector_x_offset = -4,
     inputs = {['nullius-limestone'] = 800},
-    outputs = {['nullius-crushed-limestone'] = 525, stone = 315},
+    outputs = {
+      ['nullius-crushed-limestone'] = 5 * PRODUCTIVE_CYCLES,
+      stone = 3 * PRODUCTIVE_CYCLES,
+    },
   },
   {
     id = "furnace",
@@ -30,8 +36,8 @@ local cells = {
     collector_x_offset = -3.5,
     inputs = {['nullius-alumina'] = 900, ['nullius-graphite'] = 500},
     outputs = {
-      ['nullius-aluminum-ingot'] = 315,
-      ['nullius-aluminum-carbide'] = 420,
+      ['nullius-aluminum-ingot'] = 3 * PRODUCTIVE_CYCLES,
+      ['nullius-aluminum-carbide'] = 4 * PRODUCTIVE_CYCLES,
     },
   },
   {
@@ -44,7 +50,7 @@ local cells = {
     connection_x_offset = -1,
     collector_x_offset = -4,
     inputs = {['nullius-iron-ingot'] = 400},
-    outputs = {['nullius-iron-plate'] = 315},
+    outputs = {['nullius-iron-plate'] = 3 * PRODUCTIVE_CYCLES},
   },
 }
 
@@ -181,9 +187,9 @@ local function terminal_check()
       check(machine.temperature >= 100,
         cell.id .. " machine " .. machine_index ..
         " did not retain its working temperature")
-      check(close(machine.productivity_bonus, 0.05),
+      check(close(machine.productivity_bonus, PRODUCTIVITY),
         cell.id .. " machine " .. machine_index ..
-        " productivity bonus differs from 5 percent")
+        " productivity bonus differs from tier contract")
       check(machine.prototype.electric_energy_source_prototype == nil,
         cell.id .. " machine " .. machine_index ..
         " retained an electric energy source")
@@ -337,7 +343,7 @@ local function setup()
   end
 
   local technology = force.technologies[TECHNOLOGY]
-  check(technology ~= nil, "missing Thermal Engineering 1")
+  check(technology ~= nil, "missing Pneumatic Technology")
   check(remote.interfaces[TRANSITION_INTERFACE] ~= nil,
     "transition test interface is missing")
   if not technology or not remote.interfaces[TRANSITION_INTERFACE] then

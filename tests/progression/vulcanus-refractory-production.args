@@ -40,9 +40,9 @@ nullius-vulcanus-radiator-2=nullius-vulcanus-radiator-2-refractory
 --executor
 medium-crafting=nullius-medium-assembler-1-pneumatic
 --executor
-dry-smelting=nullius-small-furnace-2-pneumatic
+dry-smelting=nullius-small-furnace-2-thermal
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --machine-category
 medium-crafting
 --machine-category

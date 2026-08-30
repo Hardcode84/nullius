@@ -114,7 +114,7 @@ return {
     "nullius-wind-power-1",
   },
   fuel_consumption = {
-    ["nullius-compressed-volcanic-gas"] = 24233.4,
+    ["nullius-compressed-volcanic-gas"] = 17642.4,
   },
   initial_stock = {
     ["nullius-compressed-volcanic-gas"] = 24.0,
@@ -127,7 +127,7 @@ return {
   schema = 1,
   steps = {
     {
-      cycles = 278,
+      cycles = 234,
       executor = {
         alternatives = {
           "nullius-lava-intake-1",
@@ -152,7 +152,7 @@ return {
       ingredients = {},
       outputs = {
         {
-          amount = 34750.0,
+          amount = 29250.0,
           name = "lava",
           type = "fluid",
         },
@@ -160,10 +160,10 @@ return {
       producer = "nullius-lava-pumping",
       product = "lava",
       ticks_per_cycle = 60,
-      total_ticks_single_executor = 16680,
+      total_ticks_single_executor = 14040,
     },
     {
-      cycles = 319,
+      cycles = 210,
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
@@ -187,24 +187,24 @@ return {
       fuel = {
         amount_per_cycle = 24.0,
         name = "nullius-compressed-volcanic-gas",
-        total_amount = 7656.0,
+        total_amount = 5040.0,
       },
       heat = nil,
       ingredients = {
         {
-          amount = 15950.0,
+          amount = 10500.0,
           name = "lava",
           type = "fluid",
         },
       },
       outputs = {
         {
-          amount = 19140.0,
+          amount = 12600.0,
           name = "nullius-compressed-volcanic-gas",
           type = "fluid",
         },
         {
-          amount = 957.0,
+          amount = 630.0,
           name = "stone",
           type = "item",
         },
@@ -212,7 +212,7 @@ return {
       producer = "nullius-lava-gas-extraction",
       product = "nullius-compressed-volcanic-gas",
       ticks_per_cycle = 120,
-      total_ticks_single_executor = 38280,
+      total_ticks_single_executor = 25200,
     },
     {
       cycles = 25,
@@ -489,29 +489,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 225.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 675.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 4500000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 9.0,
@@ -593,13 +592,12 @@ return {
       executor = {
         alternatives = {
           "nullius-small-furnace-1",
-          "nullius-small-furnace-1-pneumatic",
           "nullius-small-furnace-1-thermal",
         },
         crafting_speed = 0.25,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = 500,
+          maximum_temperature = 250,
           minimum_working_temperature = 100,
           type = "heat",
         },
@@ -607,13 +605,13 @@ return {
         explicit_override = true,
         item = "nullius-small-furnace-1",
         kind = "machine",
-        name = "nullius-small-furnace-1-pneumatic",
+        name = "nullius-small-furnace-1-thermal",
         prototype_type = "assembling-machine",
       },
       fuel = nil,
       heat = {
         energy_per_cycle_joules = 2760000.0,
-        maximum_temperature = 500,
+        maximum_temperature = 250,
         minimum_working_temperature = 100,
       },
       ingredients = {
@@ -650,29 +648,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 22.5,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 1035.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 450000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 184.0,
@@ -697,29 +694,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 30.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 720.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 600000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 96.0,
@@ -744,29 +740,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 30.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 480.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 600000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 64.0,
@@ -1498,29 +1493,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 90.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 900.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 1800000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 60.0,
@@ -1879,29 +1873,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 15.0,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 15.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 300000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 3.0,
@@ -1926,29 +1919,28 @@ return {
       executor = {
         alternatives = {
           "nullius-foundry-1",
-          "nullius-foundry-1-pneumatic",
           "nullius-foundry-1-thermal",
         },
         crafting_speed = 1.0,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
+          maximum_temperature = 250,
+          minimum_working_temperature = 100,
+          type = "heat",
         },
         energy_usage = "150kW",
         explicit_override = true,
         item = "nullius-foundry-1",
         kind = "machine",
-        name = "nullius-foundry-1-pneumatic",
+        name = "nullius-foundry-1-thermal",
         prototype_type = "assembling-machine",
       },
-      fuel = {
-        amount_per_cycle = 37.5,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 150.0,
+      fuel = nil,
+      heat = {
+        energy_per_cycle_joules = 750000.0,
+        maximum_temperature = 250,
+        minimum_working_temperature = 100,
       },
-      heat = nil,
       ingredients = {
         {
           amount = 16.0,
@@ -2171,11 +2163,11 @@ return {
   },
   surplus = {
     inserter = 2.0,
-    lava = 100.0,
+    lava = 50.0,
     ["nullius-aluminum-carbide"] = 88.0,
     ["nullius-aluminum-ingot"] = 2.0,
     ["nullius-carbon-dioxide"] = 70.0,
-    ["nullius-compressed-volcanic-gas"] = 30.599999999998545,
+    ["nullius-compressed-volcanic-gas"] = 21.600000000000364,
     ["nullius-crushed-limestone"] = 25.0,
     ["nullius-gravel"] = 43.0,
     ["nullius-hydro-plant-1"] = 1.0,
@@ -2188,7 +2180,7 @@ return {
     ["nullius-steel-ingot"] = 1.0,
     pipe = 3.0,
     ["pipe-to-ground"] = 1.0,
-    stone = 2635.0,
+    stone = 2308.0,
     sulfur = 15.0,
     ["transport-belt"] = 6.0,
   },
@@ -2196,6 +2188,7 @@ return {
     inserter = 12.0,
     ["nullius-air-filter-1"] = 1.0,
     ["nullius-chemical-plant-1"] = 1.0,
+    ["nullius-compressed-volcanic-gas"] = 60.0,
     ["nullius-distillery-1"] = 1.0,
     ["nullius-foundry-1"] = 1.0,
     ["nullius-heat-pipe-1"] = 30.0,

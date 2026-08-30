@@ -546,13 +546,12 @@ return {
       executor = {
         alternatives = {
           "nullius-small-furnace-1",
-          "nullius-small-furnace-1-pneumatic",
           "nullius-small-furnace-1-thermal",
         },
         crafting_speed = 0.25,
         energy_source = {
           effectivity = 1.0,
-          maximum_temperature = 500,
+          maximum_temperature = 250,
           minimum_working_temperature = 100,
           type = "heat",
         },
@@ -560,13 +559,13 @@ return {
         explicit_override = true,
         item = "nullius-small-furnace-1",
         kind = "machine",
-        name = "nullius-small-furnace-1-pneumatic",
+        name = "nullius-small-furnace-1-thermal",
         prototype_type = "assembling-machine",
       },
       fuel = nil,
       heat = {
         energy_per_cycle_joules = 2760000.0,
-        maximum_temperature = 500,
+        maximum_temperature = 250,
         minimum_working_temperature = 100,
       },
       ingredients = {

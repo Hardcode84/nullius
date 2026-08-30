@@ -98,8 +98,10 @@ class VulcanusResinContractTest(unittest.TestCase):
             check=False,
         )
         self.assertNotEqual(completed.returncode, 0)
-        report = json.loads(completed.stdout)
-        self.assertIn("nullius-bpa", report["unresolved"])
+        self.assertIn(
+            "selected recipe nullius-plastic-pc-abs is not available",
+            completed.stderr,
+        )
 
 
 if __name__ == "__main__":

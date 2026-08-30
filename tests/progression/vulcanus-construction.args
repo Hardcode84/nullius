@@ -40,9 +40,9 @@ distillation=nullius-distillery-1-pneumatic
 --executor
 basic-chemistry=nullius-chemical-plant-1-pneumatic
 --executor
-dry-smelting=nullius-small-furnace-1-pneumatic
+dry-smelting=nullius-small-furnace-1-thermal
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --executor
 nullius-low-temp-radiator=nullius-vulcanus-radiator-1
 --fuel
@@ -67,3 +67,4 @@ pipe-to-ground=10
 storage-tank=2
 wooden-chest=4
 nullius-heat-pipe-1=30
+nullius-compressed-volcanic-gas=60

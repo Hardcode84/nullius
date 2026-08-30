@@ -60,24 +60,6 @@ local TECHNOLOGIES = {
     },
   },
   {
-    name = "nullius-thermal-engineering-1",
-    count = 5,
-    seconds = 30,
-    ingredients = {
-      ["nullius-metallurgic-pack"] = 40,
-      ["nullius-geology-pack"] = 2,
-      ["nullius-mechanical-pack"] = 1,
-    },
-    prerequisites = {
-      ["nullius-efficient-metallurgic-science"] = true,
-      ["nullius-mineral-processing-1"] = true,
-      ["nullius-metallurgy-1"] = true,
-      ["nullius-metalworking-1"] = true,
-      ["nullius-boiling-1"] = true,
-      ["nullius-solar-thermal-power-1"] = true,
-    },
-  },
-  {
     name = "nullius-thermal-engineering-2",
     count = 10,
     seconds = 45,
@@ -89,7 +71,7 @@ local TECHNOLOGIES = {
       ["nullius-chemical-pack"] = 4,
     },
     prerequisites = {
-      ["nullius-thermal-engineering-1"] = true,
+      ["nullius-efficient-metallurgic-science"] = true,
       ["nullius-mineral-processing-2"] = true,
       ["nullius-metallurgy-2"] = true,
       ["nullius-metalworking-2"] = true,

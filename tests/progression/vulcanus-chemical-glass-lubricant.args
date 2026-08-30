@@ -29,9 +29,9 @@ nullius-chemical-plant-1
 --recipe
 nullius-lubricant=nullius-lubricant-vulcanus
 --executor
-machine-casting=nullius-foundry-1-pneumatic
+machine-casting=nullius-foundry-1-thermal
 --executor
-dry-smelting=nullius-medium-furnace-1-pneumatic
+dry-smelting=nullius-medium-furnace-1-thermal
 --executor
 basic-chemistry=nullius-chemical-plant-1-pneumatic
 --fuel

@@ -1,3 +1,7 @@
+local PRODUCTIVITY =
+  require("__nullius-star__/thermal-machine-config").productivity[3]
+local PRODUCTIVE_CYCLES = 100 + math.floor(100 * PRODUCTIVITY + 0.5)
+
 local function crusher_or_foundry(id, base, recipe, row, inputs, outputs)
   return {
     id = id,
@@ -24,8 +28,8 @@ local function furnace(id, base, row)
       ["nullius-graphite"] = 500,
     },
     outputs = {
-      ["nullius-aluminum-ingot"] = 345,
-      ["nullius-aluminum-carbide"] = 460,
+      ["nullius-aluminum-ingot"] = 3 * PRODUCTIVE_CYCLES,
+      ["nullius-aluminum-carbide"] = 4 * PRODUCTIVE_CYCLES,
     },
   }
 end
@@ -36,7 +40,7 @@ require("__nullius-star__/scenarios/thermal-cell-runner"){
   machines_per_cell = 5,
   timeout_tick = 20000,
   min_temperature = 500,
-  productivity = 0.15,
+  productivity = PRODUCTIVITY,
   heat_source = "nullius-reactor",
   heat_pipe = "nullius-heat-pipe-3",
   source_fuel = "nullius-fusion-cell",
@@ -49,12 +53,13 @@ require("__nullius-star__/scenarios/thermal-cell-runner"){
     crusher_or_foundry(
       "crusher", "nullius-crusher-3", "nullius-crushed-limestone", -24,
       {["nullius-limestone"] = 800},
-      {["nullius-crushed-limestone"] = 575, stone = 345}),
+      {["nullius-crushed-limestone"] = 5 * PRODUCTIVE_CYCLES,
+        stone = 3 * PRODUCTIVE_CYCLES}),
     furnace("small-furnace", "nullius-small-furnace-3", -8),
     furnace("medium-furnace", "nullius-medium-furnace-3", 8),
     crusher_or_foundry(
       "foundry", "nullius-foundry-3", "nullius-iron-plate", 24,
       {["nullius-iron-ingot"] = 400},
-      {["nullius-iron-plate"] = 345}),
+      {["nullius-iron-plate"] = 3 * PRODUCTIVE_CYCLES}),
   },
 }

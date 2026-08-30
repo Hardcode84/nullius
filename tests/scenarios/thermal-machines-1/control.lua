@@ -1,6 +1,8 @@
 local CASE = "thermal-machines-1"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local TECHNOLOGY = "nullius-thermal-engineering-1"
+local TECHNOLOGY = "nullius-pneumatic-technology"
+local THERMAL_PRODUCTIVITY =
+  require("__nullius-star__/thermal-machine-config").productivity
 
 local cases = {
   {
@@ -164,8 +166,9 @@ local function validate_prototype(test)
   check(thermal.effect_receiver ~= nil,
     test.id .. " thermal variant has no effect receiver")
   if thermal.effect_receiver then
-    check(close(thermal.effect_receiver.base_effect.productivity, 0.05),
-      test.id .. " innate productivity differs from 5 percent")
+    check(close(thermal.effect_receiver.base_effect.productivity,
+        THERMAL_PRODUCTIVITY[1]),
+      test.id .. " innate productivity differs from tier contract")
   end
   check(#thermal.items_to_place_this == 1,
     test.id .. " thermal variant has wrong place-item count")
@@ -196,8 +199,8 @@ local function check_production()
       test.id .. " machine left thermal mode")
     check(machine.temperature >= 100,
       test.id .. " machine never reached working temperature")
-    check(close(machine.productivity_bonus, 0.05),
-      test.id .. " runtime productivity bonus differs from 5 percent")
+    check(close(machine.productivity_bonus, THERMAL_PRODUCTIVITY[1]),
+      test.id .. " runtime productivity bonus differs from tier contract")
     check(machine.products_finished == 1,
       test.id .. " did not finish exactly one recipe cycle")
     check_exact(inventory_counts(input_inventory), {}, test.id .. " input")
@@ -271,8 +274,15 @@ local function prepare_vulcanus(force)
   if not machine then return end
   local position = machine.position
   toggle(machine)
-  check(entity_at(surface, "nullius-crusher-1-pneumatic", position) ~= nil,
-    "Vulcanus crusher toggled to thermal instead of pneumatic mode")
+  local thermal = entity_at(surface, "nullius-crusher-1-thermal", position)
+  check(thermal ~= nil, "Vulcanus crusher did not enter thermal mode")
+  check(prototypes.entity["nullius-crusher-1-pneumatic"] == nil,
+    "dedicated Vulcanus crusher prototype still exists")
+  if thermal then
+    toggle(thermal)
+    check(entity_at(surface, "nullius-crusher-1", position) ~= nil,
+      "Vulcanus crusher did not return to electric mode")
+  end
 end
 
 local function prepare_other_surface(force)
@@ -284,9 +294,15 @@ local function prepare_other_surface(force)
   }
   check(machine ~= nil, "failed to place other-surface transition witness")
   if not machine then return end
+  local position = machine.position
   toggle(machine)
-  check(machine.valid and machine.name == "nullius-crusher-1",
-    "crusher transitioned on a non-planet surface")
+  local thermal = entity_at(surface, "nullius-crusher-1-thermal", position)
+  check(thermal ~= nil, "crusher did not enter thermal mode on an arbitrary surface")
+  if thermal then
+    toggle(thermal)
+    check(entity_at(surface, "nullius-crusher-1", position) ~= nil,
+      "crusher did not return to electric mode on an arbitrary surface")
+  end
 end
 
 local function setup()
@@ -303,7 +319,7 @@ local function setup()
   end
 
   local technology = force.technologies[TECHNOLOGY]
-  check(technology ~= nil, "missing Thermal Engineering 1")
+  check(technology ~= nil, "missing Pneumatic Technology")
   if not technology then finish() return end
   technology.researched = false
   for _, test in ipairs(cases) do
