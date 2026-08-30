@@ -1,5 +1,6 @@
 local CASE = "vulcanus-activation"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
+local research = require("__nullius-star__/scripts/research")
 
 local expected_wreck = {
   ["nullius-seawater-intake-1"] = 2,
@@ -68,12 +69,13 @@ local function equipment_counts(grid)
   return result
 end
 
-local function research_prerequisites(technology, visited)
+local function check_prerequisites_researched(technology, visited)
   if visited[technology.name] then return end
   visited[technology.name] = true
   for _, prerequisite in pairs(technology.prerequisites) do
-    research_prerequisites(prerequisite, visited)
-    prerequisite.researched = true
+    check(prerequisite.researched,
+      "prerequisite was not researched: " .. prerequisite.name)
+    check_prerequisites_researched(prerequisite, visited)
   end
 end
 
@@ -147,6 +149,8 @@ local function validate()
     "nullius-pneumatic-technology is not researched")
   check(probe and probe.researched,
     "nullius-probe-vulcanus is not completed")
+  check(commands.commands["nullius-vulcanus"] ~= nil,
+    "nullius-vulcanus command is not registered")
   finish()
 end
 
@@ -160,17 +164,11 @@ local function activate()
   check(probe ~= nil, "missing nullius-probe-vulcanus")
   if not pneumatic or not probe then finish() return end
 
-  local prerequisites = {}
-  research_prerequisites(probe, prerequisites)
-  observations.probe_prerequisite_count = table_size(prerequisites) - 1
-  pneumatic.researched = true
-  probe.researched = false
-  check(force.add_research(probe),
-    "Factorio refused to start nullius-probe-vulcanus research")
-  check(force.current_research == probe,
-    "nullius-probe-vulcanus is not the active research")
-  if force.current_research ~= probe then finish() return end
-  force.research_progress = 1
+  observations.pneumatic_research_count =
+    research.complete_with_prerequisites(pneumatic)
+  check(pneumatic.researched,
+    "nullius-pneumatic-technology was not researched")
+  check_prerequisites_researched(pneumatic, {})
   script.on_nth_tick(2, validate)
 end
 
