@@ -1509,9 +1509,10 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 
 ### 10.3 The Plastic Problem
 
-Current prototypes permit local plastic and rubber from CO/H2-derived organic
-feedstocks.  The intended restriction makes ordinary polymer synthesis
-Nauvis-only while preserving packaging, unboxing, and use of imported material.
+All 22 recipes that create plastic or rubber are Nauvis-only, including
+chemical synthesis, biological harvesting, barrel recycling, and direct boxed
+production. Packaging, unboxing, consumption, and disposal of imported
+polymers remain available on Vulcanus.
 
 Almost every electronic/mechanical component needs plastic:
 - Motor 1 (1 plastic)

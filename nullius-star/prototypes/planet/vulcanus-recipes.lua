@@ -45,6 +45,35 @@ for _, name in ipairs{
   recipe.surface_conditions = table.deepcopy(nauvis_only)
 end
 
+for _, name in ipairs{
+    "nullius-arthropod-disposal",
+    "nullius-arthropod-egg-disposal",
+    "nullius-arthropod-egg-harvest",
+    "nullius-arthropod-harvest",
+    "nullius-barrel-recycling",
+    "nullius-legacy-arthropod-egg-harvest",
+    "nullius-legacy-barrel-recycling",
+    "nullius-legacy-plastic-pex",
+    "nullius-plastic",
+    "nullius-plastic-pc-abs",
+    "nullius-plastic-pex",
+    "nullius-polypropylene",
+    "nullius-latex",
+    "nullius-rubber",
+    "nullius-rubber-nbr",
+    "nullius-boxed-arthropod-disposal",
+    "nullius-boxed-arthropod-harvest",
+    "nullius-boxed-plastic",
+    "nullius-boxed-plastic-pex",
+    "nullius-legacy-boxed-plastic-pex",
+    "nullius-boxed-latex",
+    "nullius-boxed-rubber",
+} do
+  local recipe = data.raw.recipe[name]
+  if not recipe then error("Missing polymer production recipe: " .. name) end
+  recipe.surface_conditions = table.deepcopy(nauvis_only)
+end
+
 -- Molten bloom items: spoil into ingots after cooling.
 data:extend({
   {
