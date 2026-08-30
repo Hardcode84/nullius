@@ -4,6 +4,7 @@ local GAS = "nullius-compressed-volcanic-gas"
 local INTAKE = "nullius-seawater-intake-1"
 local LAVA_INTAKE = "nullius-lava-intake-1"
 local VENT = "nullius-lava-intake-1-gasvent"
+local VENT_2 = "nullius-lava-intake-2-gasvent"
 local DRILL = "nullius-gas-vent-drill"
 local SEAM = "nullius-gas-vent-seam"
 
@@ -122,6 +123,20 @@ local function setup()
   end
   surface.set_tiles(tiles, true, false, false, false)
 
+  local tier_2_vent = surface.create_entity{
+    name = VENT_2,
+    position = {6.5, 6.5},
+    direction = defines.direction.north,
+    force = force,
+  }
+  check(tier_2_vent ~= nil, "failed to create tier-2 free-gas vent")
+  if tier_2_vent then
+    check(tier_2_vent.rotate(), "tier-2 free-gas vent refused rotation")
+    check(tier_2_vent.direction == defines.direction.east,
+      "tier-2 free-gas vent did not rotate from north to east")
+    tier_2_vent.destroy()
+  end
+
   local position = surface.find_non_colliding_position(INTAKE, {0, 0}, 64, 1)
   check(position ~= nil, "no valid intake position near Vulcanus origin")
   if not position then finish() return end
@@ -178,6 +193,12 @@ local function setup()
 
   local drills = entities_at(surface, DRILL, position)
   if #drills ~= 1 then finish() return end
+  check(vent.rotate(), "free-gas vent refused clockwise rotation")
+  check(vent.direction == defines.direction.east,
+    "free-gas vent did not rotate from north to east")
+  remote.call("nullius-test-gasvent", "rotated", vent)
+  check(drills[1].direction == vent.direction,
+    "hidden gas drill did not follow free-gas vent rotation")
   local pipe_position = nil
   for _, connection in pairs(drills[1].fluidbox.get_pipe_connections(1)) do
     if connection.target_position then
@@ -195,10 +216,22 @@ local function setup()
   check(pipe ~= nil, "failed to place pipe on gas-vent output")
   if not pipe then finish() return end
 
-  local tank_position = {position.x + 1, position.y + 4}
+  local outward_x = math.max(-1, math.min(1, pipe_position.x - position.x))
+  local outward_y = math.max(-1, math.min(1, pipe_position.y - position.y))
+  local tank_position = {
+    pipe_position.x + (2 * outward_x) + outward_y,
+    pipe_position.y + (2 * outward_y) - outward_x,
+  }
+  observations.layout = {
+    vent = position,
+    pipe = pipe_position,
+    tank = tank_position,
+    direction = vent.direction,
+  }
   local tank = surface.create_entity{
     name = "storage-tank",
     position = tank_position,
+    direction = vent.direction,
     force = force,
   }
   check(tank ~= nil, "failed to place gas buffer at vent output")

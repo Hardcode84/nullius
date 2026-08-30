@@ -266,4 +266,12 @@ function vulcanus_gasvent.remove(unit_number)
   return true
 end
 
+if script.active_mods["factorio-test-support"] then
+  remote.add_interface("nullius-test-gasvent", {
+    rotated = function(shell)
+      vulcanus_gasvent.rotated(shell)
+    end,
+  })
+end
+
 return vulcanus_gasvent

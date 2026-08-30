@@ -356,10 +356,20 @@ for i = 1, 2 do
     -- Never crafts: a recipe category with no recipes. The hidden drill vents gas.
     lava_gasvent.crafting_categories = {"nullius-gas-vent-shell"}
     lava_gasvent.fixed_recipe = nil
-    -- The hidden drill owns the physical output. Duplicating that connection on
-    -- the overlapping shell creates two independent fluid boxes and traps the
-    -- mined gas in the drill instead of connecting it to the player's pipe.
-    lava_gasvent.fluid_boxes = {}
+    -- Keep a directional connection so Factorio allows the shell to rotate.
+    -- Its private connection category cannot join ordinary pipes; the hidden
+    -- drill remains the sole owner of the physical gas network at this position.
+    lava_gasvent.fluid_boxes = {{
+      production_type = "output",
+      volume = 1,
+      hide_connection_info = true,
+      pipe_connections = {{
+        position = {0, 1},
+        direction = defines.direction.south,
+        flow_direction = "output",
+        connection_category = "nullius-gasvent-shell-direction",
+      }},
+    }}
     data:extend({lava_gasvent})
   end
 end
