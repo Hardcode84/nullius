@@ -1233,6 +1233,135 @@ data:extend({
   },
 })
 
+local function boxed_vulcanus_recipe(source_name, name, enabled,
+    energy_required, ingredients, overrides)
+  local source = data.raw.recipe[source_name]
+  if not source then error("Missing boxed recipe: " .. source_name) end
+  local recipe = table.deepcopy(source)
+  recipe.name = name
+  recipe.enabled = enabled
+  recipe.energy_required = energy_required
+  recipe.ingredients = ingredients
+  recipe.allow_decomposition = false
+  recipe.surface_conditions = {
+    {property = "nullius-ambient-temperature", min = 100},
+  }
+  for key, value in pairs(overrides or {}) do
+    recipe[key] = value
+  end
+  return recipe
+end
+
+-- Bulk counterparts for every Vulcanus polymer-free product whose existing
+-- boxed recipe still consumes boxed plastic or rubber.  Five unboxed units
+-- equal one boxed unit; intermediates without boxed prototypes are scaled by 5.
+data:extend({
+  boxed_vulcanus_recipe(
+    "nullius-boxed-barrel-1",
+    "nullius-boxed-barrel-vulcanus",
+    false,
+    50,
+    {
+      {type = "item", name = "nullius-box-steel-sheet", amount = 2},
+      {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},
+      {type = "item", name = "nullius-box-glass", amount = 1},
+      {type = "item", name = "nullius-box-one-way-valve", amount = 1},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-explosive",
+    "nullius-boxed-thermite-explosive",
+    false,
+    150,
+    {
+      {type = "item", name = "nullius-chlorine-barrel", amount = 5},
+      {type = "item", name = "nullius-sulfur-dioxide-barrel", amount = 5},
+      {type = "item", name = "nullius-box-aluminum-powder", amount = 4},
+      {type = "item", name = "nullius-box-red-wire", amount = 1},
+      {type = "item", name = "nullius-box-green-wire", amount = 1},
+      {type = "item", name = "nullius-small-miner-1", amount = 5},
+    },
+    {
+      localised_name = {"recipe-name.nullius-boxed",
+        {"recipe-name.nullius-thermite-explosive"}},
+      results = {
+        {type = "item", name = "nullius-box-explosive", amount = 1},
+      },
+      main_product = "nullius-box-explosive",
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-logic-circuit",
+    "nullius-boxed-logic-circuit-vulcanus",
+    false,
+    25,
+    {
+      {type = "item", name = "nullius-silicon-insulation", amount = 15},
+      {type = "item", name = "nullius-box-aluminum-wire", amount = 4},
+      {type = "item", name = "nullius-box-polycrystalline-silicon", amount = 2},
+      {type = "item", name = "nullius-box-graphite", amount = 1},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-capacitor",
+    "nullius-boxed-capacitor-vulcanus",
+    false,
+    30,
+    {
+      {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},
+      {type = "item", name = "nullius-box-silica", amount = 4},
+      {type = "item", name = "nullius-box-alumina", amount = 1},
+      {type = "item", name = "nullius-box-graphite", amount = 1},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-filter-1",
+    "nullius-boxed-filter-1-vulcanus",
+    false,
+    40,
+    {
+      {type = "item", name = "nullius-box-silica", amount = 2},
+      {type = "item", name = "nullius-box-graphite", amount = 1},
+      {type = "item", name = "nullius-box-iron-sheet", amount = 1},
+      {type = "fluid", name = "nullius-carbon-dioxide", amount = 50,
+        fluidbox_index = 3},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-splitter-1",
+    "nullius-boxed-splitter-1-vulcanus",
+    false,
+    20,
+    {
+      {type = "item", name = "nullius-box-underground-belt-1", amount = 2},
+      {type = "item", name = "nullius-silicon-insulation", amount = 10},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-insulated-wire-1",
+    "nullius-boxed-insulated-wire-vulcanus",
+    false,
+    30,
+    {
+      {type = "item", name = "nullius-box-aluminum-wire", amount = 3},
+      {type = "item", name = "nullius-silicon-insulation", amount = 10},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-one-way-valve",
+    "nullius-boxed-one-way-valve-vulcanus",
+    false,
+    20,
+    {
+      {type = "item", name = "nullius-box-pipe-1", amount = 1},
+      {type = "item", name = "nullius-box-iron-sheet", amount = 1},
+    }),
+  boxed_vulcanus_recipe(
+    "nullius-boxed-pump-2",
+    "nullius-boxed-pump-2-vulcanus",
+    false,
+    40,
+    {
+      {type = "item", name = "nullius-box-pump-1", amount = 1},
+      {type = "item", name = "nullius-box-motor-2", amount = 1},
+      {type = "item", name = "nullius-box-pipe-2", amount = 2},
+      {type = "item", name = "nullius-silicon-insulation", amount = 10},
+    }),
+})
+
 -- Thermite explosive: aluminum-sulfur thermite in a chlorine barrel.
 -- Alt to improvised explosive that avoids methanol (organic).
 -- Hand-craftable like the original. No surface condition.

@@ -56,6 +56,11 @@
 - Include machines and logistics in production-cell targets; a final product
   alone does not prove scalability.
 - Model startup stock separately from steady-state net-positive production.
+- For every new or changed recipe path, inspect both the unboxed product and
+  its `nullius-box-*` product with resolved-prototype tools. If an unboxed
+  alternative removes an unavailable ingredient, add or verify the equivalent
+  boxed bulk recipe; ordinary packaging is not a substitute for boxed recipe
+  parity.
 
 ## Test model
 

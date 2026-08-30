@@ -12,6 +12,26 @@ pneumatic.effects[#pneumatic.effects + 1] = {
   recipe = "nullius-vulcanus-barrel",
 }
 
+local mass_production = data.raw.technology["nullius-mass-production-5"]
+if not mass_production then error("Missing nullius-mass-production-5") end
+mass_production.effects = mass_production.effects or {}
+for _, recipe in ipairs({
+    "nullius-boxed-barrel-vulcanus",
+    "nullius-boxed-thermite-explosive",
+    "nullius-boxed-logic-circuit-vulcanus",
+    "nullius-boxed-capacitor-vulcanus",
+    "nullius-boxed-filter-1-vulcanus",
+    "nullius-boxed-splitter-1-vulcanus",
+    "nullius-boxed-insulated-wire-vulcanus",
+    "nullius-boxed-one-way-valve-vulcanus",
+    "nullius-boxed-pump-2-vulcanus",
+}) do
+  mass_production.effects[#mass_production.effects + 1] = {
+    type = "unlock-recipe",
+    recipe = recipe,
+  }
+end
+
 local sulfur_processing_2 = data.raw.technology["nullius-sulfur-processing-2"]
 if not sulfur_processing_2 then error("Missing nullius-sulfur-processing-2") end
 sulfur_processing_2.effects = sulfur_processing_2.effects or {}

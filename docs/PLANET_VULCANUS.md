@@ -1603,16 +1603,20 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 
 | Polymer-consuming recipes | Current replacement path |
 |---|---|
-| `nullius-boxed-barrel-1`, `nullius-legacy-boxed-barrel-2` | Polymer-free barrel -> `nullius-box-barrel` |
-| `nullius-boxed-capacitor`, `nullius-capacitor-2` | Vulcanus capacitor -> `nullius-box-capacitor` |
-| `nullius-boxed-explosive`, `nullius-boxed-explosive-2` | Thermite explosive -> `nullius-box-explosive` |
-| `nullius-boxed-filter-1`, `nullius-boxed-pressure-filter-1` | Vulcanus filter 1 -> `nullius-box-filter-1` |
-| `nullius-boxed-logic-circuit`, `nullius-logic-circuit-2` | Vulcanus logic circuit -> `nullius-box-logic-circuit` |
-| `nullius-boxed-pipe-2` | Steel pipe 2 -> `nullius-box-pipe-2` |
-| `nullius-boxed-splitter-1` | `nullius-splitter-1-vulcanus` |
-| `nullius-boxed-insulated-wire-1`, `nullius-boxed-insulated-wire-2` | Vulcanus insulated wire -> `nullius-box-insulated-wire` |
-| `nullius-boxed-one-way-valve` | Basic one-way valve -> `nullius-box-one-way-valve` |
-| `nullius-boxed-pump-2` | Vulcanus pump 2 -> `nullius-box-pump-2` |
+| `nullius-boxed-barrel-1`, `nullius-legacy-boxed-barrel-2` | `nullius-boxed-barrel-vulcanus` |
+| `nullius-boxed-capacitor`, `nullius-capacitor-2` | `nullius-boxed-capacitor-vulcanus` |
+| `nullius-boxed-explosive`, `nullius-boxed-explosive-2` | `nullius-boxed-thermite-explosive` |
+| `nullius-boxed-filter-1`, `nullius-boxed-pressure-filter-1` | `nullius-boxed-filter-1-vulcanus` |
+| `nullius-boxed-logic-circuit`, `nullius-logic-circuit-2` | `nullius-boxed-logic-circuit-vulcanus` |
+| `nullius-boxed-pipe-2` | `nullius-boxed-pipe-steel` |
+| `nullius-boxed-splitter-1` | `nullius-boxed-splitter-1-vulcanus` |
+| `nullius-boxed-insulated-wire-1`, `nullius-boxed-insulated-wire-2` | `nullius-boxed-insulated-wire-vulcanus` |
+| `nullius-boxed-one-way-valve` | `nullius-boxed-one-way-valve-vulcanus` |
+| `nullius-boxed-pump-2` | `nullius-boxed-pump-2-vulcanus` |
+| Boxed Motor 1 dependency | Existing `nullius-boxed-motor-1` + polymer-free boxed insulated wire |
+
+All new boxed variants require `nullius-mass-production-5` and ambient
+temperature >= 100.
 
 All other boxed-plastic and boxed-rubber consumers inherit the status of their
 unboxed product. Packaging and unboxing remain valid for imported polymers;
