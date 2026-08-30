@@ -1545,35 +1545,35 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 
 | Product | Polymer-consuming recipes superseded | Current replacement recipe | Inputs | Output |
 |---|---|---|---|---|
-| Barrel | `barrel`, `nullius-legacy-barrel-2` | `nullius-vulcanus-barrel` | 2 steel sheet + 2 aluminum sheet + 1 glass + 1 one-way valve | 3 barrel |
+| Barrel | `nullius-barrel-1`, `nullius-legacy-barrel-2` | `nullius-vulcanus-barrel` | 2 steel sheet + 2 aluminum sheet + 1 glass + 1 one-way valve | 3 barrel |
 | Explosive | `cliff-explosives`, `nullius-explosive-2` | `nullius-thermite-explosive` | 1 chlorine barrel + 1 sulfur dioxide barrel + 4 aluminum powder + red wire + green wire + small miner 1 | 1 cliff explosive |
-| Logic circuit | `decider-combinator` | `nullius-logic-circuit-vulcanus` | 3 silicon insulation + 4 aluminum wire + 2 polycrystalline silicon + 1 graphite | 3 decider combinator |
+| Logic circuit | `nullius-logic-circuit` | `nullius-logic-circuit-vulcanus` | 3 silicon insulation + 4 aluminum wire + 2 polycrystalline silicon + 1 graphite | 3 decider combinator |
 | Capacitor | `nullius-capacitor` | `nullius-capacitor-vulcanus` | 2 aluminum sheet + 4 silica + 1 alumina + 1 graphite | 2 capacitor |
 | Filter 1 | `nullius-filter-1`, `nullius-pressure-filter-1` | `nullius-filter-1-vulcanus` | 2 silica + 1 graphite + 1 iron sheet + 10 carbon dioxide | 1 filter 1 |
 | Motor 1 | `nullius-motor-1` | `nullius-motor-1-vulcanus` | 2 iron wire + 1 iron plate + 2 silica + 1 iron rod | 1 motor 1 |
 | Pipe 2 | `nullius-plastic-pipe` | `nullius-pipe-2` | 2 steel rod | 3 pipe 2 |
-| Splitter 1 | `splitter` | `nullius-splitter-1-vulcanus` | 2 underground belt + 2 silicon insulation | 1 splitter |
-| Insulated wire | `copper-cable`, `nullius-insulated-wire-2` | `nullius-insulated-wire-vulcanus` | 3 aluminum wire + 2 silicon insulation | 4 insulated wire |
+| Splitter 1 | `nullius-splitter-1` | `nullius-splitter-1-vulcanus` | 2 underground belt + 2 silicon insulation | 1 splitter |
+| Insulated wire | `nullius-insulated-wire-1`, `nullius-insulated-wire-2` | `nullius-insulated-wire-vulcanus` | 3 aluminum wire + 2 silicon insulation | 4 insulated wire |
 | One-way valve | `nullius-one-way-valve-2` | `nullius-one-way-valve` | 1 pipe + 1 iron sheet | 1 one-way valve |
 | Pump 2 | `nullius-pump-2` | `nullius-pump-2-vulcanus` | 1 pump 1 + 1 motor 2 + 2 pipe 2 + 2 silicon insulation | 1 pump 2 |
+| Display panel | `nullius-display-panel` | `nullius-display-panel-vulcanus` | 1 logic circuit + 1 glass + 1 silicon insulation + 1 aluminum wire | 1 display panel |
+| Identification card | `nullius-align-identification-card` | `nullius-align-identification-card-vulcanus` | 1 steel sheet + 1 aluminum sheet | 1 identification card |
+| Armor plate | `nullius-armor-plate` | `nullius-armor-plate-vulcanus` | 3 steel plate + 6 ceramic powder + 2 textile + 2 silicon insulation | 1 armor plate |
+| Battery 1 | `nullius-battery-1` | `nullius-battery-1-vulcanus` | Original non-plastic inputs + 2 ceramic powder | 1 battery 1 |
+| Insulation | `nullius-insulation` | `nullius-insulation-vulcanus` | 3 gypsum + 2 glass fiber + 2 refractory mix + 1 textile | 2 insulation |
+| Repair pack | `nullius-repair-pack` | `nullius-repair-pack-vulcanus` | Original non-plastic inputs + 1 aluminum sheet | 1 repair pack |
+| Levitation field 1 | `nullius-levitation-field-1` | `nullius-levitation-field-1-vulcanus` | Original non-plastic inputs + 4 silicon insulation | 1 levitation field 1 |
+| Medium tank 2 | `nullius-medium-tank-2` | `nullius-medium-tank-2-vulcanus` | Original non-plastic inputs + 2 glass | 1 medium tank 2 |
+| Optical cable | `nullius-optical-cable` | `nullius-optical-cable-vulcanus` | Original non-plastic inputs + 1 silicon insulation | 1 optical cable |
+| Rail | `nullius-rail` | `nullius-rail-vulcanus` | 2 steel beam + 3 refractory brick + 1 steel rod + 5 gravel | 3 rail |
+| Solar panel 1 | `nullius-solar-panel-1` | `nullius-solar-panel-1-vulcanus` | Original non-plastic inputs + 10 epoxy | 1 solar panel 1 |
+| Transformer | `nullius-transformer` | `nullius-transformer-vulcanus` | Original non-plastic inputs + 1 silicon insulation | 1 transformer |
+| Small power pole | `nullius-power-pole-1` | `nullius-small-electric-pole-vulcanus` | 2 iron wire + 1 iron rod + 1 glass | 1 small power pole |
 
 #### Direct consumers without a current Vulcanus replacement
 
 | Material | Produced item | Consumer recipes |
 |---|---|---|
-| Plastic | Display panel | `display-panel` |
-| Plastic | Identification card | `nullius-align-identification-card` |
-| Plastic + rubber | Armor plate | `nullius-armor-plate` |
-| Plastic | Battery 1 | `nullius-battery-1` |
-| Plastic | Insulation | `nullius-insulation`; `nullius-wood-paneling` also produces insulation but requires wood |
-| Plastic | Repair pack | `repair-pack`, `nullius-legacy-repair-pack` |
-| Plastic | Levitation field 1 | `nullius-levitation-field-1` |
-| Plastic | Medium tank 2 | `nullius-medium-tank-2` |
-| Plastic | Optical cable | `nullius-optical-cable` |
-| Plastic | Rail | `rail`; `nullius-wooden-rail` also produces rail but requires wood |
-| Plastic | Solar panel 1 | `nullius-solar-panel-1` |
-| Plastic | Transformer | `nullius-transformer` |
-| Plastic | Small power pole | `small-electric-pole`; `nullius-wooden-power-pole-1` also produces it but requires wood |
 | Rubber | Bulk inserter | `bulk-inserter` |
 | Rubber | Fast belt | `fast-transport-belt` |
 | Rubber | Iron chest | `iron-chest` |
@@ -1613,6 +1613,16 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 | `nullius-boxed-insulated-wire-1`, `nullius-boxed-insulated-wire-2` | `nullius-boxed-insulated-wire-vulcanus` |
 | `nullius-boxed-one-way-valve` | `nullius-boxed-one-way-valve-vulcanus` |
 | `nullius-boxed-pump-2` | `nullius-boxed-pump-2-vulcanus` |
+| `nullius-boxed-display-panel` | `nullius-boxed-display-panel-vulcanus` |
+| `nullius-boxed-battery-1`, `nullius-boxed-battery-1-copper` | `nullius-boxed-battery-1-vulcanus` |
+| `nullius-boxed-insulation` | `nullius-boxed-insulation-vulcanus` |
+| `nullius-boxed-repair-pack`, `nullius-legacy-boxed-repair-pack` | `nullius-boxed-repair-pack-vulcanus` |
+| `nullius-boxed-levitation-field-1` | `nullius-boxed-levitation-field-1-vulcanus` |
+| `nullius-boxed-medium-tank-2` | `nullius-boxed-medium-tank-2-vulcanus` |
+| `nullius-boxed-optical-cable` | `nullius-boxed-optical-cable-vulcanus` |
+| `nullius-boxed-rail` | `nullius-boxed-rail-vulcanus` |
+| `nullius-boxed-solar-panel-1` | `nullius-boxed-solar-panel-1-vulcanus` |
+| `nullius-boxed-transformer` | `nullius-boxed-transformer-vulcanus` |
 | Boxed Motor 1 dependency | Existing `nullius-boxed-motor-1` + polymer-free boxed insulated wire |
 
 All new boxed variants require `nullius-mass-production-5` and ambient
@@ -1626,7 +1636,7 @@ polymer sinks remain valid disposal recipes.
 
 | Material | Consumer recipes |
 |---|---|
-| Boxed plastic | `cargo-landing-pad`, `nullius-boxed-battery-1`, `nullius-boxed-battery-1-copper`, `nullius-boxed-display-panel`, `nullius-boxed-insulation`, `nullius-boxed-levitation-field-1`, `nullius-boxed-medium-tank-2`, `nullius-boxed-optical-cable`, `nullius-boxed-rail`, `nullius-boxed-repair-pack`, `nullius-boxed-solar-panel-1`, `nullius-boxed-transformer`, `nullius-legacy-boxed-repair-pack`, `nullius-zoology-pack` |
+| Boxed plastic | `cargo-landing-pad`, `nullius-zoology-pack` |
 | Boxed rubber | `cargo-landing-pad`, `nullius-boxed-antenna`, `nullius-boxed-belt-2`, `nullius-boxed-coal`, `nullius-boxed-inserter-3`, `nullius-boxed-power-switch`, `nullius-boxed-rocket-fuel`, `nullius-legacy-boxed-rocket-fuel` |
 | Boxed plastic; disposal | `nullius-carbon-sink`, `nullius-chlorine-sink`, `nullius-boxed-plastic-pyrolysis` |
 | Boxed rubber; disposal | `nullius-carbon-sink` |

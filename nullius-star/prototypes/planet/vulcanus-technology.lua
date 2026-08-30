@@ -25,6 +25,16 @@ for _, recipe in ipairs({
     "nullius-boxed-insulated-wire-vulcanus",
     "nullius-boxed-one-way-valve-vulcanus",
     "nullius-boxed-pump-2-vulcanus",
+    "nullius-boxed-display-panel-vulcanus",
+    "nullius-boxed-battery-1-vulcanus",
+    "nullius-boxed-insulation-vulcanus",
+    "nullius-boxed-repair-pack-vulcanus",
+    "nullius-boxed-levitation-field-1-vulcanus",
+    "nullius-boxed-medium-tank-2-vulcanus",
+    "nullius-boxed-optical-cable-vulcanus",
+    "nullius-boxed-rail-vulcanus",
+    "nullius-boxed-solar-panel-1-vulcanus",
+    "nullius-boxed-transformer-vulcanus",
 }) do
   mass_production.effects[#mass_production.effects + 1] = {
     type = "unlock-recipe",

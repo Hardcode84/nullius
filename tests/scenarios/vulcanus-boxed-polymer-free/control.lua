@@ -65,6 +65,84 @@ local specs = {
       ["nullius-silicon-insulation"] = 10 },
     products = { ["nullius-box-pump-2"] = 1 },
   },
+  ["nullius-boxed-display-panel-vulcanus"] = {
+    energy = 15,
+    ingredients = { ["nullius-box-logic-circuit"] = 1,
+      ["nullius-box-glass"] = 1, ["nullius-silicon-insulation"] = 5,
+      ["nullius-box-aluminum-wire"] = 1 },
+    products = { ["nullius-box-display-panel"] = 1 },
+  },
+  ["nullius-boxed-battery-1-vulcanus"] = {
+    energy = 50,
+    ingredients = { ["nullius-box-sodium"] = 2,
+      ["nullius-box-iron-oxide"] = 2,
+      ["nullius-box-carbon-fiber"] = 3, ["nullius-solvent"] = 80,
+      ["nullius-box-aluminum-sheet"] = 3,
+      ["nullius-box-ceramic-powder"] = 2 },
+    products = { ["nullius-box-battery-1"] = 1 },
+  },
+  ["nullius-boxed-insulation-vulcanus"] = {
+    energy = 30,
+    ingredients = { ["nullius-box-gypsum"] = 3,
+      ["nullius-box-glass-fiber"] = 2,
+      ["nullius-refractory-mix"] = 10,
+      ["nullius-box-textile"] = 1 },
+    products = { ["nullius-box-insulation"] = 2 },
+  },
+  ["nullius-boxed-repair-pack-vulcanus"] = {
+    energy = 30,
+    ingredients = { ["nullius-box-logic-circuit"] = 1,
+      ["nullius-box-fabrication-tool-1"] = 1,
+      ["nullius-box-steel-gear"] = 2,
+      ["nullius-box-aluminum-sheet"] = 1,
+      ["nullius-box-aluminum-carbide"] = 1 },
+    products = { ["nullius-box-repair-pack"] = 1 },
+  },
+  ["nullius-boxed-levitation-field-1-vulcanus"] = {
+    energy = 60,
+    ingredients = { ["nullius-box-insulated-wire"] = 6,
+      ["nullius-silicon-insulation"] = 20,
+      ["nullius-box-iron-rod"] = 3, ["nullius-box-sensor-1"] = 1,
+      ["nullius-box-antenna"] = 2, ["nullius-box-capacitor"] = 3 },
+    products = { ["nullius-box-levitation-field-1"] = 1 },
+  },
+  ["nullius-boxed-medium-tank-2-vulcanus"] = {
+    energy = 50,
+    ingredients = { ["nullius-box-medium-tank-1"] = 1,
+      ["nullius-box-steel-sheet"] = 2, ["nullius-box-steel-rod"] = 1,
+      ["nullius-box-glass"] = 2, ["nullius-box-pipe-2"] = 3 },
+    products = { ["nullius-box-medium-tank-2"] = 1 },
+  },
+  ["nullius-boxed-optical-cable-vulcanus"] = {
+    energy = 15,
+    ingredients = { ["nullius-box-red-wire"] = 2,
+      ["nullius-box-glass-fiber"] = 1,
+      ["nullius-silicon-insulation"] = 5, ["nullius-epoxy"] = 5,
+      ["nullius-argon"] = 5 },
+    products = { ["nullius-box-optical-cable"] = 1 },
+  },
+  ["nullius-boxed-rail-vulcanus"] = {
+    energy = 40,
+    ingredients = { ["nullius-box-steel-beam"] = 2,
+      ["nullius-box-refractory-brick"] = 3,
+      ["nullius-box-steel-rod"] = 1, ["nullius-box-gravel"] = 5 },
+    products = { ["nullius-box-rail"] = 3 },
+  },
+  ["nullius-boxed-solar-panel-1-vulcanus"] = {
+    energy = 40,
+    ingredients = { ["nullius-box-polycrystalline-silicon"] = 6,
+      ["nullius-box-glass"] = 4, ["nullius-box-aluminum-sheet"] = 3,
+      ["nullius-epoxy"] = 50, ["nullius-box-aluminum-rod"] = 1 },
+    products = { ["nullius-box-solar-panel-1"] = 1 },
+  },
+  ["nullius-boxed-transformer-vulcanus"] = {
+    energy = 30,
+    ingredients = { ["nullius-box-iron-plate"] = 2,
+      ["nullius-box-heat-pipe-1"] = 1,
+      ["nullius-box-insulated-wire"] = 2,
+      ["nullius-silicon-insulation"] = 5 },
+    products = { ["nullius-box-transformer"] = 1 },
+  },
 }
 
 local assertions = 0
@@ -146,7 +224,7 @@ local function run()
     assertions = assertions,
     failure_count = #failures,
     failures = failures,
-    observations = {recipe_count = 9},
+    observations = {recipe_count = 19},
   }
   helpers.write_file(RESULT, helpers.table_to_json(result), false)
   if #failures > 0 then error(helpers.table_to_json(result)) end

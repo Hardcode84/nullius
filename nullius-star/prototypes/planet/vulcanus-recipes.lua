@@ -4,6 +4,27 @@ local nauvis_only = {
   {property = "nullius-nauvis-environment", min = 1, max = 1},
 }
 
+local vulcanus_only = {
+  {property = "nullius-ambient-temperature", min = 100},
+}
+
+local recipe_util = require("prototypes.recipe-util")
+
+local function vulcanus_substitute_recipe(source_name, name, substitutions,
+    overrides)
+  overrides = table.deepcopy(overrides or {})
+  overrides.surface_conditions = table.deepcopy(vulcanus_only)
+  return recipe_util.substitute_recipe(
+    source_name, name, substitutions, overrides)
+end
+
+local function vulcanus_plastic_recipe(source_name, name, replacement,
+    overrides)
+  return vulcanus_substitute_recipe(source_name, name, {
+    ["nullius-plastic"] = replacement,
+  }, overrides)
+end
+
 for _, name in ipairs{
     "nullius-bpa",
     "nullius-pressure-bpa",
@@ -651,30 +672,20 @@ data:extend({
 
 -- Vulcanus-local crafting and science recipes.
 data:extend({
-  {
-    type = "recipe",
-    name = "nullius-vulcanus-barrel",
+  vulcanus_plastic_recipe("nullius-barrel-1", "nullius-vulcanus-barrel", {
+    {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+    {type = "item", name = "nullius-glass", amount = 1},
+  }, {
     localised_name = {"recipe-name.nullius-vulcanus-barrel"},
     enabled = false,
     category = "small-crafting",
     subgroup = "canisters",
     order = "nullius-ba",
     always_show_made_in = true,
-    allow_decomposition = false,
     show_amount_in_title = false,
     always_show_products = true,
     energy_required = 10,
-    ingredients = {
-      {type = "item", name = "nullius-steel-sheet", amount = 2},
-      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
-      {type = "item", name = "nullius-glass", amount = 1},
-      {type = "item", name = "nullius-one-way-valve", amount = 1},
-    },
-    results = {
-      {type = "item", name = "barrel", amount = 3},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
+  }),
   {
     type = "recipe",
     name = "nullius-metallurgic-pack",
@@ -815,10 +826,9 @@ data:extend({
 
 -- Vulcanus logistics alt recipes: replace unavailable materials.
 data:extend({
-  -- Splitter alt: underground belt + silicon insulation (replaces plastic).
-  {
-    type = "recipe",
-    name = "nullius-splitter-1-vulcanus",
+  vulcanus_plastic_recipe("nullius-splitter-1", "nullius-splitter-1-vulcanus", {
+    {type = "item", name = "nullius-silicon-insulation", amount = 2},
+  }, {
     localised_name = {"recipe-name.nullius-splitter-vulcanus"},
     enabled = true,
     category = "small-crafting",
@@ -826,38 +836,22 @@ data:extend({
     order = "nullius-vc",
     always_show_made_in = true,
     energy_required = 4,
-    ingredients = {
-      {type = "item", name = "underground-belt", amount = 2},
-      {type = "item", name = "nullius-silicon-insulation", amount = 2},
-    },
-    results = {
-      {type = "item", name = "splitter", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Underground pipe alt: pipe + silica (replaces sand, which needs sandstone).
-  {
-    type = "recipe",
-    name = "nullius-underground-pipe-1-vulcanus",
-    localised_name = {"recipe-name.nullius-underground-pipe-vulcanus"},
-    enabled = true,
-    category = "small-crafting",
-    subgroup = "pipes",
-    order = "nullius-vc",
-    always_show_made_in = true,
-    always_show_products = true,
-    show_amount_in_title = false,
-    energy_required = 8,
-    ingredients = {
-      {type = "item", name = "pipe", amount = 5},
-      {type = "item", name = "nullius-silica", amount = 3},
-    },
-    results = {
-      {type = "item", name = "pipe-to-ground", amount = 2},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
+  }),
+  vulcanus_substitute_recipe("nullius-underground-pipe-1",
+    "nullius-underground-pipe-1-vulcanus", {
+      ["nullius-sand"] = {
+        {type = "item", name = "nullius-silica", amount = 3},
+      },
+    }, {
+      localised_name = {"recipe-name.nullius-underground-pipe-vulcanus"},
+      enabled = true,
+      category = "small-crafting",
+      subgroup = "pipes",
+      order = "nullius-vc",
+      always_show_made_in = true,
+      always_show_products = true,
+      show_amount_in_title = false,
+    }),
   -- Dedicated gas extraction recipe: high gas yield, stone byproduct.
   {
     type = "recipe",
@@ -980,26 +974,21 @@ data:extend({
 
 -- Heat pipe alt: no water needed (Vulcanus has almost no water).
 data:extend({
-  {
-    type = "recipe",
-    name = "nullius-heat-pipe-1-vulcanus",
-    localised_name = {"recipe-name.nullius-heat-pipe-vulcanus"},
-    enabled = true,
-    category = "small-crafting",
-    order = "nullius-vc",
-    show_amount_in_title = false,
-    always_show_products = true,
-    energy_required = 4,
-    ingredients = {
-      {type = "item", name = "nullius-pipe-2", amount = 1},
-      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
-      {type = "item", name = "nullius-silica", amount = 2},
-    },
-    results = {
-      {type = "item", name = "nullius-heat-pipe-1", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
+  vulcanus_substitute_recipe("nullius-heat-pipe-1",
+    "nullius-heat-pipe-1-vulcanus", {
+      ["nullius-water"] = {
+        {type = "item", name = "nullius-aluminum-sheet", amount = 1},
+        {type = "item", name = "nullius-silica", amount = 2},
+      },
+    }, {
+      localised_name = {"recipe-name.nullius-heat-pipe-vulcanus"},
+      enabled = true,
+      category = "small-crafting",
+      order = "nullius-vc",
+      show_amount_in_title = false,
+      always_show_products = true,
+      energy_required = 4,
+    }),
 })
 
 -- Vulcanus alternative recipes: replace organic materials (plastic, rubber)
@@ -1041,171 +1030,133 @@ data:extend({
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 
-  -- Insulated wire alt: aluminum wire + silicon insulation (replaces rubber).
-  {
-    type = "recipe",
-    name = "nullius-insulated-wire-vulcanus",
-    localised_name = {"recipe-name.nullius-insulated-wire-vulcanus"},
-    enabled = true,
-    category = "small-crafting",
-    order = "nullius-vb",
-    always_show_made_in = true,
-    show_amount_in_title = false,
-    always_show_products = true,
-    energy_required = 6,
-    ingredients = {
-      {type = "item", name = "nullius-aluminum-wire", amount = 3},
-      {type = "item", name = "nullius-silicon-insulation", amount = 2},
-    },
-    results = {
-      {type = "item", name = "copper-cable", amount = 4},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Motor alt: iron wire + plate + silica + rod (replaces plastic).
-  {
-    type = "recipe",
-    name = "nullius-motor-1-vulcanus",
-    localised_name = {"recipe-name.nullius-motor-vulcanus"},
-    enabled = true,
-    category = "medium-crafting",
-    subgroup = "mechanical-intermediate",
-    order = "nullius-vb",
-    always_show_made_in = true,
-    energy_required = 8,
-    ingredients = {
-      {type = "item", name = "nullius-iron-wire", amount = 2},
-      {type = "item", name = "nullius-iron-plate", amount = 1},
+  vulcanus_substitute_recipe("nullius-insulated-wire-1",
+    "nullius-insulated-wire-vulcanus", {
+      ["nullius-rubber"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 2},
+      },
+    }, {
+      localised_name = {"recipe-name.nullius-insulated-wire-vulcanus"},
+      enabled = true,
+      order = "nullius-vb",
+    }),
+  vulcanus_plastic_recipe("nullius-motor-1",
+    "nullius-motor-1-vulcanus", {
       {type = "item", name = "nullius-silica", amount = 2},
-      {type = "item", name = "nullius-iron-rod", amount = 1},
-    },
-    results = {
-      {type = "item", name = "nullius-motor-1", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Filter-1 alt: silica + graphite + iron sheet + CO2 (replaces plastic).
-  {
-    type = "recipe",
-    name = "nullius-filter-1-vulcanus",
-    localised_name = {"recipe-name.nullius-filter-vulcanus"},
-    enabled = true,
-    category = "basic-chemistry",
-    order = "nullius-vc",
-    show_amount_in_title = false,
-    always_show_products = true,
-    crafting_machine_tint = {
-      primary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
-      secondary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
-    },
-    energy_required = 8,
-    ingredients = {
+    }, {
+      localised_name = {"recipe-name.nullius-motor-vulcanus"},
+      enabled = true,
+      order = "nullius-vb",
+    }),
+  vulcanus_plastic_recipe("nullius-filter-1",
+    "nullius-filter-1-vulcanus", {
       {type = "item", name = "nullius-silica", amount = 2},
-      {type = "item", name = "nullius-graphite", amount = 1},
-      {type = "item", name = "nullius-iron-sheet", amount = 1},
-      {type = "fluid", name = "nullius-carbon-dioxide", amount = 10, fluidbox_index = 3},
-    },
-    results = {
-      {type = "item", name = "nullius-filter-1", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Motor-2 alt: insulated wire + steel plate + steel gear + steel rod + silica (replaces lubricant).
-  {
-    type = "recipe",
-    name = "nullius-motor-2-vulcanus",
-    localised_name = {"recipe-name.nullius-motor-2-vulcanus"},
-    enabled = true,
-    category = "medium-crafting",
-    subgroup = "mechanical-intermediate",
-    order = "nullius-vc",
-    always_show_made_in = true,
-    energy_required = 10,
-    ingredients = {
-      {type = "item", name = "copper-cable", amount = 2},
-      {type = "item", name = "nullius-steel-plate", amount = 1},
-      {type = "item", name = "nullius-steel-gear", amount = 1},
-      {type = "item", name = "nullius-steel-rod", amount = 1},
-      {type = "item", name = "nullius-silica", amount = 3},
-    },
-    results = {
-      {type = "item", name = "nullius-motor-2", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Pump-2 alt: pump-1 + motor-2 + pipe-2 + silicon insulation (replaces rubber).
-  {
-    type = "recipe",
-    name = "nullius-pump-2-vulcanus",
-    localised_name = {"recipe-name.nullius-pump-2-vulcanus"},
-    enabled = true,
-    category = "medium-crafting",
-    order = "nullius-vc",
-    always_show_made_in = true,
-    energy_required = 8,
-    ingredients = {
-      {type = "item", name = "nullius-pump-1", amount = 1},
-      {type = "item", name = "nullius-motor-2", amount = 1},
-      {type = "item", name = "nullius-pipe-2", amount = 2},
-      {type = "item", name = "nullius-silicon-insulation", amount = 2},
-    },
-    results = {
-      {type = "item", name = "nullius-pump-2", amount = 1},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Capacitor alt: aluminum sheet + silica + alumina + graphite (replaces plastic).
-  {
-    type = "recipe",
-    name = "nullius-capacitor-vulcanus",
-    localised_name = {"recipe-name.nullius-capacitor-vulcanus"},
-    enabled = true,
-    category = "machine-casting",
-    subgroup = "battery",
-    order = "nullius-vc",
-    show_amount_in_title = false,
-    always_show_products = true,
-    energy_required = 6,
-    ingredients = {
-      {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+    }, {
+      localised_name = {"recipe-name.nullius-filter-vulcanus"},
+      enabled = true,
+      order = "nullius-vc",
+      energy_required = 8,
+    }),
+  vulcanus_substitute_recipe("nullius-motor-2",
+    "nullius-motor-2-vulcanus", {
+      ["nullius-lubricant"] = {
+        {type = "item", name = "nullius-silica", amount = 3},
+      },
+    }, {
+      localised_name = {"recipe-name.nullius-motor-2-vulcanus"},
+      enabled = true,
+      category = "medium-crafting",
+      order = "nullius-vc",
+      energy_required = 10,
+    }),
+  vulcanus_substitute_recipe("nullius-pump-2",
+    "nullius-pump-2-vulcanus", {
+      ["nullius-rubber"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 2},
+      },
+    }, {
+      localised_name = {"recipe-name.nullius-pump-2-vulcanus"},
+      enabled = true,
+      order = "nullius-vc",
+      energy_required = 8,
+    }),
+  vulcanus_plastic_recipe("nullius-capacitor",
+    "nullius-capacitor-vulcanus", {
       {type = "item", name = "nullius-silica", amount = 4},
-      {type = "item", name = "nullius-alumina", amount = 1},
-      {type = "item", name = "nullius-graphite", amount = 1},
-    },
-    results = {
-      {type = "item", name = "nullius-capacitor", amount = 2},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
-
-  -- Logic circuit alt: silicon insulation replaces plastic.
-  {
-    type = "recipe",
-    name = "nullius-logic-circuit-vulcanus",
-    localised_name = {"recipe-name.nullius-logic-circuit-vulcanus"},
-    enabled = true,
-    category = "tiny-assembly",
-    subgroup = "electronic-intermediate",
-    order = "nullius-vc",
-    show_amount_in_title = false,
-    always_show_products = true,
-    energy_required = 5,
-    ingredients = {
+    }, {
+      localised_name = {"recipe-name.nullius-capacitor-vulcanus"},
+      enabled = true,
+      order = "nullius-vc",
+      energy_required = 6,
+    }),
+  vulcanus_plastic_recipe("nullius-logic-circuit",
+    "nullius-logic-circuit-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 3},
-      {type = "item", name = "nullius-aluminum-wire", amount = 4},
-      {type = "item", name = "nullius-polycrystalline-silicon", amount = 2},
-      {type = "item", name = "nullius-graphite", amount = 1},
-    },
-    results = {
-      {type = "item", name = "decider-combinator", amount = 3},
-    },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  },
+    }, {
+      localised_name = {"recipe-name.nullius-logic-circuit-vulcanus"},
+      enabled = true,
+      order = "nullius-vc",
+    }),
+  vulcanus_plastic_recipe("nullius-display-panel",
+    "nullius-display-panel-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-align-identification-card",
+    "nullius-align-identification-card-vulcanus", {
+      {type = "item", name = "nullius-aluminum-sheet", amount = 1},
+    }, {enabled = true}),
+  vulcanus_substitute_recipe("nullius-armor-plate",
+    "nullius-armor-plate-vulcanus", {
+      ["nullius-plastic"] = {
+        {type = "item", name = "nullius-ceramic-powder", amount = 2},
+      },
+      ["nullius-rubber"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 2},
+      },
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-battery-1",
+    "nullius-battery-1-vulcanus", {
+      {type = "item", name = "nullius-ceramic-powder", amount = 2},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-insulation",
+    "nullius-insulation-vulcanus", {
+      {type = "item", name = "nullius-refractory-mix", amount = 2},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-repair-pack",
+    "nullius-repair-pack-vulcanus", {
+      {type = "item", name = "nullius-aluminum-sheet", amount = 1},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-levitation-field-1",
+    "nullius-levitation-field-1-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 4},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-medium-tank-2",
+    "nullius-medium-tank-2-vulcanus", {
+      {type = "item", name = "nullius-glass", amount = 2},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-optical-cable",
+    "nullius-optical-cable-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-rail", "nullius-rail-vulcanus", {
+    {type = "item", name = "nullius-refractory-brick", amount = 3},
+  }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-solar-panel-1",
+    "nullius-solar-panel-1-vulcanus", {
+      {type = "fluid", name = "nullius-epoxy", amount = 10,
+        fluidbox_index = 1},
+    }, {
+      enabled = true,
+      category = "large-fluid-assembly",
+    }),
+  vulcanus_plastic_recipe("nullius-transformer",
+    "nullius-transformer-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
+  vulcanus_plastic_recipe("nullius-power-pole-1",
+    "nullius-small-electric-pole-vulcanus", {
+      {type = "item", name = "nullius-glass", amount = 1},
+    }, {enabled = true}),
 
   -- Carbochlorination: Al2O3 + 3Cl2 + 3C -> 2AlCl3 + 3CO.
   -- Chlorine sink: dump AlCl3 into lava.
@@ -1233,54 +1184,43 @@ data:extend({
   },
 })
 
-local function boxed_vulcanus_recipe(source_name, name, enabled,
-    energy_required, ingredients, overrides)
-  local source = data.raw.recipe[source_name]
-  if not source then error("Missing boxed recipe: " .. source_name) end
-  local recipe = table.deepcopy(source)
-  recipe.name = name
-  recipe.enabled = enabled
-  recipe.energy_required = energy_required
-  recipe.ingredients = ingredients
-  recipe.allow_decomposition = false
-  recipe.surface_conditions = {
-    {property = "nullius-ambient-temperature", min = 100},
-  }
-  for key, value in pairs(overrides or {}) do
-    recipe[key] = value
-  end
-  return recipe
+local function vulcanus_boxed_plastic_recipe(source_name, name, replacement,
+    overrides)
+  overrides = table.deepcopy(overrides or {})
+  overrides.enabled = false
+  return vulcanus_substitute_recipe(source_name, name, {
+    ["nullius-box-plastic"] = replacement,
+  }, overrides)
 end
 
 -- Bulk counterparts for every Vulcanus polymer-free product whose existing
 -- boxed recipe still consumes boxed plastic or rubber.  Five unboxed units
 -- equal one boxed unit; intermediates without boxed prototypes are scaled by 5.
 data:extend({
-  boxed_vulcanus_recipe(
-    "nullius-boxed-barrel-1",
-    "nullius-boxed-barrel-vulcanus",
-    false,
-    50,
-    {
-      {type = "item", name = "nullius-box-steel-sheet", amount = 2},
+  vulcanus_boxed_plastic_recipe("nullius-boxed-barrel-1",
+    "nullius-boxed-barrel-vulcanus", {
       {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},
       {type = "item", name = "nullius-box-glass", amount = 1},
-      {type = "item", name = "nullius-box-one-way-valve", amount = 1},
-    }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-explosive",
-    "nullius-boxed-thermite-explosive",
-    false,
-    150,
-    {
-      {type = "item", name = "nullius-chlorine-barrel", amount = 5},
-      {type = "item", name = "nullius-sulfur-dioxide-barrel", amount = 5},
-      {type = "item", name = "nullius-box-aluminum-powder", amount = 4},
-      {type = "item", name = "nullius-box-red-wire", amount = 1},
-      {type = "item", name = "nullius-box-green-wire", amount = 1},
-      {type = "item", name = "nullius-small-miner-1", amount = 5},
-    },
-    {
+    }, {energy_required = 50}),
+  vulcanus_substitute_recipe("nullius-boxed-explosive",
+    "nullius-boxed-thermite-explosive", {
+      ["nullius-acid-nitric"] = {
+        {type = "item", name = "nullius-chlorine-barrel", amount = 5},
+      },
+      ["nullius-acid-sulfuric"] = {
+        {type = "item", name = "nullius-sulfur-dioxide-barrel", amount = 5},
+      },
+      ["nullius-glycerol"] = {
+        {type = "item", name = "nullius-box-aluminum-powder", amount = 4},
+      },
+      ["nullius-box-sand"] = {
+        {type = "item", name = "nullius-box-green-wire", amount = 1},
+        {type = "item", name = "nullius-small-miner-1", amount = 5},
+      },
+      ["nullius-box-plastic"] = {},
+    }, {
+      enabled = false,
+      energy_required = 150,
       localised_name = {"recipe-name.nullius-boxed",
         {"recipe-name.nullius-thermite-explosive"}},
       results = {
@@ -1288,77 +1228,84 @@ data:extend({
       },
       main_product = "nullius-box-explosive",
     }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-logic-circuit",
-    "nullius-boxed-logic-circuit-vulcanus",
-    false,
-    25,
-    {
+  vulcanus_boxed_plastic_recipe("nullius-boxed-logic-circuit",
+    "nullius-boxed-logic-circuit-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 15},
-      {type = "item", name = "nullius-box-aluminum-wire", amount = 4},
-      {type = "item", name = "nullius-box-polycrystalline-silicon", amount = 2},
-      {type = "item", name = "nullius-box-graphite", amount = 1},
     }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-capacitor",
-    "nullius-boxed-capacitor-vulcanus",
-    false,
-    30,
-    {
-      {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},
+  vulcanus_boxed_plastic_recipe("nullius-boxed-capacitor",
+    "nullius-boxed-capacitor-vulcanus", {
       {type = "item", name = "nullius-box-silica", amount = 4},
-      {type = "item", name = "nullius-box-alumina", amount = 1},
-      {type = "item", name = "nullius-box-graphite", amount = 1},
-    }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-filter-1",
-    "nullius-boxed-filter-1-vulcanus",
-    false,
-    40,
-    {
+    }, {energy_required = 30}),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-filter-1",
+    "nullius-boxed-filter-1-vulcanus", {
       {type = "item", name = "nullius-box-silica", amount = 2},
-      {type = "item", name = "nullius-box-graphite", amount = 1},
-      {type = "item", name = "nullius-box-iron-sheet", amount = 1},
-      {type = "fluid", name = "nullius-carbon-dioxide", amount = 50,
-        fluidbox_index = 3},
-    }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-splitter-1",
-    "nullius-boxed-splitter-1-vulcanus",
-    false,
-    20,
-    {
-      {type = "item", name = "nullius-box-underground-belt-1", amount = 2},
+    }, {energy_required = 40}),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-splitter-1",
+    "nullius-boxed-splitter-1-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 10},
-    }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-insulated-wire-1",
-    "nullius-boxed-insulated-wire-vulcanus",
-    false,
-    30,
-    {
-      {type = "item", name = "nullius-box-aluminum-wire", amount = 3},
+    }, {energy_required = 20}),
+  vulcanus_substitute_recipe("nullius-boxed-insulated-wire-1",
+    "nullius-boxed-insulated-wire-vulcanus", {
+      ["nullius-box-rubber"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 10},
+      },
+    }, {enabled = false}),
+  vulcanus_substitute_recipe("nullius-boxed-one-way-valve",
+    "nullius-boxed-one-way-valve-vulcanus", {
+      ["nullius-box-pipe-2"] = {
+        {type = "item", name = "nullius-box-pipe-1", amount = 1},
+      },
+      ["nullius-box-rubber"] = {},
+      ["nullius-box-steel-sheet"] = {
+        {type = "item", name = "nullius-box-iron-sheet", amount = 1},
+      },
+    }, {enabled = false, energy_required = 20}),
+  vulcanus_substitute_recipe("nullius-boxed-pump-2",
+    "nullius-boxed-pump-2-vulcanus", {
+      ["nullius-box-rubber"] = {
       {type = "item", name = "nullius-silicon-insulation", amount = 10},
+      },
+    }, {enabled = false, energy_required = 40}),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-display-panel",
+    "nullius-boxed-display-panel-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 5},
     }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-one-way-valve",
-    "nullius-boxed-one-way-valve-vulcanus",
-    false,
-    20,
-    {
-      {type = "item", name = "nullius-box-pipe-1", amount = 1},
-      {type = "item", name = "nullius-box-iron-sheet", amount = 1},
+  vulcanus_boxed_plastic_recipe("nullius-boxed-battery-1",
+    "nullius-boxed-battery-1-vulcanus", {
+      {type = "item", name = "nullius-box-ceramic-powder", amount = 2},
     }),
-  boxed_vulcanus_recipe(
-    "nullius-boxed-pump-2",
-    "nullius-boxed-pump-2-vulcanus",
-    false,
-    40,
-    {
-      {type = "item", name = "nullius-box-pump-1", amount = 1},
-      {type = "item", name = "nullius-box-motor-2", amount = 1},
-      {type = "item", name = "nullius-box-pipe-2", amount = 2},
-      {type = "item", name = "nullius-silicon-insulation", amount = 10},
+  vulcanus_boxed_plastic_recipe("nullius-boxed-insulation",
+    "nullius-boxed-insulation-vulcanus", {
+      {type = "item", name = "nullius-refractory-mix", amount = 10},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-repair-pack",
+    "nullius-boxed-repair-pack-vulcanus", {
+      {type = "item", name = "nullius-box-aluminum-sheet", amount = 1},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-levitation-field-1",
+    "nullius-boxed-levitation-field-1-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 20},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-medium-tank-2",
+    "nullius-boxed-medium-tank-2-vulcanus", {
+      {type = "item", name = "nullius-box-glass", amount = 2},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-optical-cable",
+    "nullius-boxed-optical-cable-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 5},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-rail",
+    "nullius-boxed-rail-vulcanus", {
+      {type = "item", name = "nullius-box-refractory-brick", amount = 3},
+    }),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-solar-panel-1",
+    "nullius-boxed-solar-panel-1-vulcanus", {
+      {type = "fluid", name = "nullius-epoxy", amount = 50,
+        fluidbox_index = 1},
+    }, {category = "huge-fluid-assembly"}),
+  vulcanus_boxed_plastic_recipe("nullius-boxed-transformer",
+    "nullius-boxed-transformer-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 5},
     }),
 })
 
