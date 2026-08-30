@@ -868,7 +868,7 @@ data:extend({
     localised_name = {"recipe-name.nullius-splitter-vulcanus"},
     enabled = true,
     category = "small-crafting",
-    subgroup = "belt",
+    subgroup = "splitter",
     order = "nullius-vc",
     always_show_made_in = true,
     energy_required = 4,
