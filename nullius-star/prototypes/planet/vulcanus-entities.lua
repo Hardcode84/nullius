@@ -37,6 +37,10 @@ data:extend({
 -- Two tiers: low-temp (200C) for basic chemistry, high-temp (450C) for cracking.
 
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
+local collector_1_icons = table.deepcopy(
+  data.raw.item["nullius-solar-collector-1"].icons)
+local collector_2_icons = table.deepcopy(
+  data.raw.item["nullius-solar-collector-2"].icons)
 
 local radiator_base = {
   type = "assembling-machine",
@@ -101,10 +105,7 @@ local radiator_base = {
 local low_temp = table.deepcopy(radiator_base)
 low_temp.name = "nullius-vulcanus-radiator-1"
 low_temp.localised_name = {"entity-name.nullius-vulcanus-radiator-1"}
-low_temp.icons = {{
-  icon = "__base__/graphics/icons/heat-boiler.png",
-  icon_size = 64,
-}}
+low_temp.icons = collector_1_icons
 low_temp.minable = {mining_time = 1, result = "nullius-vulcanus-radiator-1"}
 low_temp.fast_replaceable_group = "vulcanus-radiator"
 low_temp.crafting_categories = {"nullius-low-temp-radiator"}
@@ -127,11 +128,9 @@ low_temp.energy_source = {
 local high_temp = table.deepcopy(low_temp)
 high_temp.name = "nullius-vulcanus-radiator-2"
 high_temp.localised_name = {"entity-name.nullius-vulcanus-radiator-2"}
-high_temp.icons = {{
-  icon = "__base__/graphics/icons/heat-boiler.png",
-  icon_size = 64,
-  tint = {255, 180, 100},
-}}
+high_temp.icons = collector_2_icons
+high_temp.graphics_set.animation.layers[1].filename =
+  ENTITYPATH .. "collector/collector2.png"
 high_temp.minable = {mining_time = 1, result = "nullius-vulcanus-radiator-2"}
 high_temp.crafting_categories = {"nullius-low-temp-radiator", "nullius-high-temp-radiator"}
 high_temp.energy_source.min_working_temperature = 450
@@ -148,7 +147,7 @@ data:extend({
     type = "item",
     name = "nullius-vulcanus-radiator-1",
     localised_name = {"item-name.nullius-vulcanus-radiator-1"},
-    icons = low_temp.icons,
+    icons = table.deepcopy(low_temp.icons),
     subgroup = "energy",
     order = "nullius-vr1",
     place_result = "nullius-vulcanus-radiator-1",
@@ -159,7 +158,7 @@ data:extend({
     type = "item",
     name = "nullius-vulcanus-radiator-2",
     localised_name = {"item-name.nullius-vulcanus-radiator-2"},
-    icons = high_temp.icons,
+    icons = table.deepcopy(high_temp.icons),
     subgroup = "energy",
     order = "nullius-vr2",
     place_result = "nullius-vulcanus-radiator-2",
