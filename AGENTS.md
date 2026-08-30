@@ -62,6 +62,15 @@
   boxed bulk recipe; ordinary packaging is not a substitute for boxed recipe
   parity.
 
+## Prototype locale audit
+
+- Run `python tools/check_factorio_locale.py` after adding, removing, or
+  renaming player-visible prototypes or English locale entries.
+- The checker uses Factorio's resolved data, prototype-locale dump, and shipped
+  prototype API. Do not replace it with source-text matching.
+- `missing` and `unused` apply to prototype UI sections. Scripted GUI, control,
+  objective, and narrative locale sections are outside this check.
+
 ## Test model
 
 ```yaml
