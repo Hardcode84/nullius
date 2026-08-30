@@ -25,6 +25,13 @@ local function vulcanus_plastic_recipe(source_name, name, replacement,
   }, overrides)
 end
 
+local function vulcanus_rubber_recipe(source_name, name, replacement,
+    overrides)
+  return vulcanus_substitute_recipe(source_name, name, {
+    ["nullius-rubber"] = replacement,
+  }, overrides)
+end
+
 for _, name in ipairs{
     "nullius-bpa",
     "nullius-pressure-bpa",
@@ -1157,6 +1164,59 @@ data:extend({
     "nullius-small-electric-pole-vulcanus", {
       {type = "item", name = "nullius-glass", amount = 1},
     }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-inserter-3",
+    "nullius-bulk-inserter-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-conveyor-belt-2",
+    "nullius-fast-transport-belt-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 4},
+    }, {enabled = true}),
+  vulcanus_substitute_recipe("nullius-small-chest-2",
+    "nullius-iron-chest-vulcanus", {
+      ["wooden-chest"] = {
+        {type = "item", name = "nullius-iron-sheet", amount = 2},
+      },
+      ["nullius-rubber"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 1},
+      },
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-car-1",
+    "nullius-car-1-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 4},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-chassis-2",
+    "nullius-chassis-2-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 8},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-gun",
+    "nullius-gun-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-leg-augmentation-3",
+    "nullius-leg-augmentation-3-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 8},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-refueler",
+    "nullius-refueler-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 3},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-self-repair-pack",
+    "nullius-self-repair-pack-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 2},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-truck-1",
+    "nullius-truck-1-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 8},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-power-switch",
+    "nullius-power-switch-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
+  vulcanus_rubber_recipe("nullius-antenna",
+    "nullius-programmable-speaker-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 1},
+    }, {enabled = true}),
 
   -- Carbochlorination: Al2O3 + 3Cl2 + 3C -> 2AlCl3 + 3CO.
   -- Chlorine sink: dump AlCl3 into lava.
@@ -1190,6 +1250,15 @@ local function vulcanus_boxed_plastic_recipe(source_name, name, replacement,
   overrides.enabled = false
   return vulcanus_substitute_recipe(source_name, name, {
     ["nullius-box-plastic"] = replacement,
+  }, overrides)
+end
+
+local function vulcanus_boxed_rubber_recipe(source_name, name, replacement,
+    overrides)
+  overrides = table.deepcopy(overrides or {})
+  overrides.enabled = false
+  return vulcanus_substitute_recipe(source_name, name, {
+    ["nullius-box-rubber"] = replacement,
   }, overrides)
 end
 
@@ -1305,6 +1374,22 @@ data:extend({
     }, {category = "huge-fluid-assembly"}),
   vulcanus_boxed_plastic_recipe("nullius-boxed-transformer",
     "nullius-boxed-transformer-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 5},
+    }),
+  vulcanus_boxed_rubber_recipe("nullius-boxed-antenna",
+    "nullius-boxed-antenna-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 5},
+    }),
+  vulcanus_boxed_rubber_recipe("nullius-boxed-belt-2",
+    "nullius-boxed-belt-2-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 20},
+    }),
+  vulcanus_boxed_rubber_recipe("nullius-boxed-inserter-3",
+    "nullius-boxed-inserter-3-vulcanus", {
+      {type = "item", name = "nullius-silicon-insulation", amount = 10},
+    }),
+  vulcanus_boxed_rubber_recipe("nullius-boxed-power-switch",
+    "nullius-boxed-power-switch-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 5},
     }),
 })

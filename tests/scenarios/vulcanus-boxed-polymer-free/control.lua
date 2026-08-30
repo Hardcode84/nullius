@@ -143,6 +143,39 @@ local specs = {
       ["nullius-silicon-insulation"] = 5 },
     products = { ["nullius-box-transformer"] = 1 },
   },
+  ["nullius-boxed-antenna-vulcanus"] = {
+    energy = 30,
+    ingredients = { ["nullius-box-aluminum-rod"] = 2,
+      ["nullius-box-red-wire"] = 1,
+      ["nullius-silicon-insulation"] = 5,
+      ["nullius-box-capacitor"] = 1 },
+    products = { ["nullius-box-antenna"] = 1 },
+  },
+  ["nullius-boxed-belt-2-vulcanus"] = {
+    energy = 40,
+    technology = "nullius-mass-production-6",
+    ingredients = { ["nullius-box-belt-1"] = 10,
+      ["nullius-box-motor-2"] = 1, ["nullius-box-steel-gear"] = 2,
+      ["nullius-silicon-insulation"] = 20,
+      ["nullius-lubricant"] = 60 },
+    products = { ["nullius-box-belt-2"] = 8 },
+  },
+  ["nullius-boxed-inserter-3-vulcanus"] = {
+    energy = 35,
+    ingredients = { ["nullius-box-inserter-2"] = 1,
+      ["nullius-box-motor-2"] = 1, ["nullius-box-bearing"] = 1,
+      ["nullius-silicon-insulation"] = 10,
+      ["nullius-box-sensor-1"] = 1 },
+    products = { ["nullius-box-inserter-3"] = 1 },
+  },
+  ["nullius-boxed-power-switch-vulcanus"] = {
+    energy = 15,
+    ingredients = { ["nullius-box-insulated-wire"] = 2,
+      ["nullius-box-steel-sheet"] = 1,
+      ["nullius-silicon-insulation"] = 5,
+      ["nullius-box-iron-rod"] = 1 },
+    products = { ["nullius-box-power-switch"] = 1 },
+  },
 }
 
 local assertions = 0
@@ -185,21 +218,30 @@ end
 local function run()
   script.on_nth_tick(1, nil)
   local force = game.forces.player
-  local technology = force.technologies["nullius-mass-production-5"]
-  check(technology ~= nil, "missing Mass Production 5")
-  if technology then
-    technology.researched = false
+  local mass_production_5 = force.technologies["nullius-mass-production-5"]
+  local mass_production_6 = force.technologies["nullius-mass-production-6"]
+  check(mass_production_5 ~= nil, "missing Mass Production 5")
+  check(mass_production_6 ~= nil, "missing Mass Production 6")
+  if mass_production_5 and mass_production_6 then
+    mass_production_5.researched = false
+    mass_production_6.researched = false
     for name in pairs(specs) do
       check(force.recipes[name] and not force.recipes[name].enabled,
-        name .. " enabled before Mass Production 5")
+        name .. " enabled before its mass production technology")
     end
-    research_closure(technology, {})
+    research_closure(mass_production_5, {})
+    for name, spec in pairs(specs) do
+      local expected = spec.technology ~= "nullius-mass-production-6"
+      check(force.recipes[name] and force.recipes[name].enabled == expected,
+        name .. " has wrong Mass Production 5 unlock state")
+    end
+    research_closure(mass_production_6, {})
   end
   for name, spec in pairs(specs) do
     local recipe = force.recipes[name]
     check(recipe ~= nil, "missing recipe " .. name)
     if recipe then
-      check(recipe.enabled, name .. " not unlocked by Mass Production 5")
+      check(recipe.enabled, name .. " not unlocked by mass production")
       check(recipe.energy == spec.energy,
         name .. ": expected duration " .. spec.energy .. ", found " ..
           tostring(recipe.energy))
@@ -224,7 +266,7 @@ local function run()
     assertions = assertions,
     failure_count = #failures,
     failures = failures,
-    observations = {recipe_count = 19},
+    observations = {recipe_count = 23},
   }
   helpers.write_file(RESULT, helpers.table_to_json(result), false)
   if #failures > 0 then error(helpers.table_to_json(result)) end

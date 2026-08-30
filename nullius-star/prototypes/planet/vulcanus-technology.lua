@@ -35,12 +35,23 @@ for _, recipe in ipairs({
     "nullius-boxed-rail-vulcanus",
     "nullius-boxed-solar-panel-1-vulcanus",
     "nullius-boxed-transformer-vulcanus",
+    "nullius-boxed-antenna-vulcanus",
+    "nullius-boxed-inserter-3-vulcanus",
+    "nullius-boxed-power-switch-vulcanus",
 }) do
   mass_production.effects[#mass_production.effects + 1] = {
     type = "unlock-recipe",
     recipe = recipe,
   }
 end
+
+local mass_production_6 = data.raw.technology["nullius-mass-production-6"]
+if not mass_production_6 then error("Missing nullius-mass-production-6") end
+mass_production_6.effects = mass_production_6.effects or {}
+mass_production_6.effects[#mass_production_6.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-boxed-belt-2-vulcanus",
+}
 
 local sulfur_processing_2 = data.raw.technology["nullius-sulfur-processing-2"]
 if not sulfur_processing_2 then error("Missing nullius-sulfur-processing-2") end

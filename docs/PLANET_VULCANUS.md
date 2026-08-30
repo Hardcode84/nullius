@@ -1569,23 +1569,23 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 | Solar panel 1 | `nullius-solar-panel-1` | `nullius-solar-panel-1-vulcanus` | Original non-plastic inputs + 10 epoxy | 1 solar panel 1 |
 | Transformer | `nullius-transformer` | `nullius-transformer-vulcanus` | Original non-plastic inputs + 1 silicon insulation | 1 transformer |
 | Small power pole | `nullius-power-pole-1` | `nullius-small-electric-pole-vulcanus` | 2 iron wire + 1 iron rod + 1 glass | 1 small power pole |
+| Bulk inserter | `nullius-inserter-3` | `nullius-bulk-inserter-vulcanus` | Original non-rubber inputs + 2 silicon insulation | 1 bulk inserter |
+| Fast belt | `nullius-conveyor-belt-2` | `nullius-fast-transport-belt-vulcanus` | Original non-rubber inputs + 4 silicon insulation | 8 fast belt |
+| Iron chest | `nullius-small-chest-2` | `nullius-iron-chest-vulcanus` | 2 iron sheet + 4 steel sheet + 2 steel rod + 1 silicon insulation | 1 iron chest |
+| Car 1 | `nullius-car-1`, `nullius-legacy-car-1` | `nullius-car-1-vulcanus` | Original non-rubber canonical inputs + 4 silicon insulation | 1 car 1 |
+| Chassis 2 | `nullius-chassis-2` | `nullius-chassis-2-vulcanus` | Original non-rubber inputs + 8 silicon insulation | 1 chassis 2 |
+| Gun | `nullius-gun` | `nullius-gun-vulcanus` | Original non-rubber inputs + 1 silicon insulation | 1 gun |
+| Leg augmentation 3 | `nullius-leg-augmentation-3` | `nullius-leg-augmentation-3-vulcanus` | Original non-rubber inputs + 8 silicon insulation | 1 leg augmentation 3 |
+| Refueler | `nullius-refueler` | `nullius-refueler-vulcanus` | Original non-rubber inputs + 3 silicon insulation | 1 refueler |
+| Self-repair pack | `nullius-self-repair-pack` | `nullius-self-repair-pack-vulcanus` | Original non-rubber inputs + 2 silicon insulation | 10 self-repair packs |
+| Truck 1 | `nullius-truck-1` | `nullius-truck-1-vulcanus` | Original non-rubber inputs + 8 silicon insulation | 1 truck 1 |
+| Power switch | `nullius-power-switch` | `nullius-power-switch-vulcanus` | Original non-rubber inputs + 1 silicon insulation | 1 power switch |
+| Programmable speaker | `nullius-antenna` | `nullius-programmable-speaker-vulcanus` | Original non-rubber inputs + 1 silicon insulation | 1 programmable speaker |
 
 #### Direct consumers without a current Vulcanus replacement
 
 | Material | Produced item | Consumer recipes |
 |---|---|---|
-| Rubber | Bulk inserter | `bulk-inserter` |
-| Rubber | Fast belt | `fast-transport-belt` |
-| Rubber | Iron chest | `iron-chest` |
-| Rubber | Car 1 | `nullius-car-1`, `nullius-legacy-car-1` |
-| Rubber | Chassis 2 | `nullius-chassis-2` |
-| Rubber | Gun | `nullius-gun` |
-| Rubber | Leg augmentation 3 | `nullius-leg-augmentation-3` |
-| Rubber | Refueler | `nullius-refueler` |
-| Rubber | Self-repair pack | `nullius-self-repair-pack` |
-| Rubber | Truck 1 | `nullius-truck-1` |
-| Rubber | Power switch | `power-switch` |
-| Rubber | Programmable speaker | `programmable-speaker` |
 | Rubber | Rocket fuel | `rocket-fuel`, `nullius-legacy-rocket-fuel`; `ammonia-rocket-fuel` requires solid fuel, whose non-recycling producers require oil unavailable on Vulcanus |
 
 #### Import, biology, and disposal consumers
@@ -1623,10 +1623,15 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 | `nullius-boxed-rail` | `nullius-boxed-rail-vulcanus` |
 | `nullius-boxed-solar-panel-1` | `nullius-boxed-solar-panel-1-vulcanus` |
 | `nullius-boxed-transformer` | `nullius-boxed-transformer-vulcanus` |
+| `nullius-boxed-antenna` | `nullius-boxed-antenna-vulcanus` |
+| `nullius-boxed-belt-2` | `nullius-boxed-belt-2-vulcanus` |
+| `nullius-boxed-inserter-3` | `nullius-boxed-inserter-3-vulcanus` |
+| `nullius-boxed-power-switch` | `nullius-boxed-power-switch-vulcanus` |
 | Boxed Motor 1 dependency | Existing `nullius-boxed-motor-1` + polymer-free boxed insulated wire |
 
-All new boxed variants require `nullius-mass-production-5` and ambient
-temperature >= 100.
+Boxed variants require `nullius-mass-production-5` and ambient temperature
+>= 100, except boxed belt 2, which preserves its `nullius-mass-production-6`
+gate.
 
 All other boxed-plastic and boxed-rubber consumers inherit the status of their
 unboxed product. Packaging and unboxing remain valid for imported polymers;
@@ -1637,7 +1642,7 @@ polymer sinks remain valid disposal recipes.
 | Material | Consumer recipes |
 |---|---|
 | Boxed plastic | `cargo-landing-pad`, `nullius-zoology-pack` |
-| Boxed rubber | `cargo-landing-pad`, `nullius-boxed-antenna`, `nullius-boxed-belt-2`, `nullius-boxed-coal`, `nullius-boxed-inserter-3`, `nullius-boxed-power-switch`, `nullius-boxed-rocket-fuel`, `nullius-legacy-boxed-rocket-fuel` |
+| Boxed rubber | `cargo-landing-pad`, `nullius-boxed-coal`, `nullius-boxed-rocket-fuel`, `nullius-legacy-boxed-rocket-fuel` |
 | Boxed plastic; disposal | `nullius-carbon-sink`, `nullius-chlorine-sink`, `nullius-boxed-plastic-pyrolysis` |
 | Boxed rubber; disposal | `nullius-carbon-sink` |
 | Imported material | `nullius-unbox-plastic`, `nullius-unbox-rubber` |
