@@ -3,6 +3,7 @@
 
 local transitions = require("scripts.transitions")
 local pneumatic_families = require("shared.pneumatic-machine-families")
+local thermal_nanofabricators = require("thermal-nanofabricator-specs")
 
 -- Condition: entity is on Vulcanus and pneumatic tech is researched.
 local function is_vulcanus_pneumatic(entity, force)
@@ -11,6 +12,17 @@ local function is_vulcanus_pneumatic(entity, force)
     return false
   end
   return force.technologies["nullius-pneumatic-technology"].researched
+end
+
+local function is_vulcanus(entity)
+  local surface = entity.surface
+  return surface and surface.planet and
+    surface.planet.name == "nullius-vulcanus"
+end
+
+local function nanofabricator_unlocked(entity, force, base)
+  local recipe = force.recipes[base]
+  return is_vulcanus(entity) and recipe ~= nil and recipe.enabled
 end
 
 local function on_leave_pneumatic(entity)
@@ -104,6 +116,17 @@ for i = 1, 3 do
   register_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
 end
 register_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
+
+for _, spec in ipairs(thermal_nanofabricators) do
+  local base = spec.base
+  local thermal = base .. "-thermal"
+  transitions.register(base, thermal, {
+    condition = function(entity, force)
+      return nanofabricator_unlocked(entity, force, base)
+    end,
+  })
+  transitions.register(thermal, base)
+end
 
 -- Pump/valve cycle on Vulcanus:
 -- electric-valve -> pneumatic-pump -> pneumatic-valve -> electric-pump.

@@ -21,6 +21,7 @@
 | M14 | Complete the first crushing, smelting, and casting optimization levels |
 | M15 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry |
 | M16 | Unlock tier-3 thermal industry and supply it from nuclear heat |
+| M17 | Operate thermal nanofabrication and produce physics science locally |
 
 ## Level 2 — Scenario specifications
 
@@ -49,7 +50,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, boric-acid, carbothermic-sodium, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-engineering-1, thermal-cell-1, industrial-optimization-1, boric-acid, carbothermic-sodium, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3, thermal-nanofabrication]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -1093,5 +1094,33 @@ scenarios:
         productivity_bonus: {process-machine: 0.15}
         electric_energy_consumed_by_process_machines: 0
         items_preserved: {nullius-crusher-3: 5, nullius-small-furnace-3: 5, nullius-medium-furnace-3: 5, nullius-foundry-3: 5}
+
+  thermal-nanofabrication:
+    milestone: M17
+    given:
+      surface: nullius-vulcanus
+      force: {researched: [nullius-nanotechnology-1, nullius-nanotechnology-2]}
+      inventory: {nullius-nanofabricator-1: 1, nullius-nanofabricator-2: 1, nullius-heat-pipe-2: 1, nullius-heat-pipe-3: 1}
+      modules: 0
+    place:
+      nanofabricator-1: {prototype: nullius-nanofabricator-1, count: 1, at: "[-10,0]"}
+      nanofabricator-2: {prototype: nullius-nanofabricator-2, count: 1, at: "[10,0]"}
+      heat-pipe-2: {prototype: nullius-heat-pipe-2, count: 1, at: runtime-heat-connection}
+      heat-pipe-3: {prototype: nullius-heat-pipe-3, count: 1, at: runtime-heat-connection}
+      debug-heat-source: {prototype: heat-interface, count: 2, at: runtime-heat-connection}
+    connect: ["debug-heat-source[1] -> heat-pipe-2 -> nanofabricator-1", "debug-heat-source[2] -> heat-pipe-3 -> nanofabricator-2"]
+    act:
+      - rotate_mode: {entities: [nanofabricator-1, nanofabricator-2], mode: thermal}
+    run: {ticks: 2300, timeout: 2400}
+    expect:
+      terminal:
+        entities: {nanofabricator-1: {prototype: nullius-nanofabricator-1-thermal, count: 1}, nanofabricator-2: {prototype: nullius-nanofabricator-2-thermal, count: 1}}
+        crafting_categories: {preserved: true}
+        crafting_speed: {preserved: true}
+        module_slots: {preserved: true}
+        energy_usage_ratio: {thermal_to_electric: 2}
+        temperature: {nanofabricator-1: ">=200", nanofabricator-2: ">=500"}
+        electric_energy_consumed_by_nanofabricators: 0
+        items_preserved: {nullius-nanofabricator-1: 1, nullius-nanofabricator-2: 1}
 
 ```

@@ -16,7 +16,7 @@ CONTRACT = REPOSITORY / "tests" / "progression" / "vulcanus-physics-production.a
 
 
 class VulcanusPhysicsContractTest(unittest.TestCase):
-    def test_only_nanofabrication_blocks_electric_free_production(self) -> None:
+    def test_physics_production_requires_no_electricity(self) -> None:
         completed = subprocess.run(
             [sys.executable, str(ANALYZER), f"@{CONTRACT}", "--json"],
             cwd=REPOSITORY,
@@ -26,30 +26,12 @@ class VulcanusPhysicsContractTest(unittest.TestCase):
             timeout=300,
             check=False,
         )
-        self.assertEqual(completed.returncode, 1, completed.stderr)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads(completed.stdout)
         self.assertEqual(report["required_technologies"], [])
         self.assertEqual(report["unresolved"], [])
         self.assertEqual(report["invalid_raw"], [])
-        blockers = {
-            (path["product"], path["producer"], path["executor"])
-            for path in report["electric_required_paths"]
-        }
-        self.assertEqual(
-            blockers,
-            {
-                (
-                    "nullius-monocrystalline-silicon",
-                    "nullius-monocrystalline-silicon",
-                    "nullius-nanofabricator-1",
-                ),
-                (
-                    "nullius-processor-1",
-                    "nullius-processor-1",
-                    "nullius-nanofabricator-1",
-                ),
-            },
-        )
+        self.assertEqual(report["electric_required_paths"], [])
 
 
 if __name__ == "__main__":

@@ -752,6 +752,8 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
     1-2.
   - **Heat-powered**: small and medium furnaces. Heat pipe connections are on
     all edges; these machines consume process heat rather than gas directly.
+    Nanofabricators use higher-temperature thermal variants at twice the
+    electric energy demand.
 - Entities in inventory are mode-neutral. Mode is set after placement.
 - The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
 
@@ -760,8 +762,8 @@ Vulcanus industry runs on **compressed volcanic gas**, not electricity. Machines
 | Treatment | Families |
 |---|---|
 | Add gas mode | solid miners (all 8 size/tier variants); inserter tiers 3-4; chimney 3; flotation cells 2-3; labs 2-3 |
-| Add heat mode on Vulcanus | large furnaces 1-2; reuse their existing thermal prototypes |
-| Keep electric | electrolyzers; nanofabricators; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; roboports and robot infrastructure; accumulators and grid infrastructure; rocket silo |
+| Add heat mode on Vulcanus | large furnaces 1-2; nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
+| Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; roboports and robot infrastructure; accumulators and grid infrastructure; rocket silo |
 | No alternate mode | passive belts, pipes, tanks, chests, valves, rails and wagons; existing void-, burner-, heat-, and generation-powered entities |
 | Planet source special case | seawater intakes and wells do not get generic pneumatic clones; Vulcanus intake placement already selects lava-intake and gas-vent modes |
 
@@ -771,9 +773,9 @@ The audit is generated from resolved placeable prototypes with:
 python3 tools/analyze_factorio_prereqs.py --describe-placeable-prefix nullius-
 ```
 
-Pneumatic variants are for mechanically driven work. Electrical current or
-electronic control intrinsic to a process remains an electricity boundary;
-this excludes pneumatic electrolyzers and nanofabricators.
+Pneumatic variants are for mechanically driven work. Electrolyzers remain an
+electricity boundary. Nanofabricators use direct process heat rather than a
+pneumatic variant.
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
@@ -1140,13 +1142,15 @@ transitions:
 | Surface | Modes |
 |---|---|
 | Nauvis | electric <-> thermal |
-| Vulcanus | electric <-> pneumatic |
+| Vulcanus | electric <-> pneumatic for mechanical machines; electric <-> thermal for nanofabricators |
 
-Thermal variants consume heat instead of electricity and have an innate
-productivity bonus. Their cost is the required heat-generation, distribution,
-storage, and warm-up infrastructure. Early tiers are operable from solar heat;
-higher tiers require increasing temperature and throughput, with nuclear heat
-eventually providing continuous heavy-industry baseload.
+Thermal variants consume heat instead of electricity. Heavy-industry variants
+have an innate productivity bonus; nanofabricator variants preserve the
+electric machine's effects and instead consume twice as much energy. Their cost
+is the required heat-generation, distribution, storage, and warm-up
+infrastructure. Early tiers are operable from solar heat; higher tiers require
+increasing temperature and throughput, with nuclear heat eventually providing
+continuous heavy-industry baseload.
 
 The intended Nauvis progression is:
 

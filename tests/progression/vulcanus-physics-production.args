@@ -122,6 +122,8 @@ nullius-compressor-1
 nullius-vulcanus-radiator-1
 --available-machine
 nullius-vulcanus-radiator-2
+--available-machine
+nullius-nanofabricator-1-thermal
 --recipe
 barrel=nullius-vulcanus-barrel
 --recipe
@@ -214,6 +216,8 @@ packaging=nullius-small-assembler-1-pneumatic
 nullius-low-temp-radiator=nullius-vulcanus-radiator-1
 --executor
 nullius-high-temp-radiator=nullius-vulcanus-radiator-2
+--executor
+nanotechnology=nullius-nanofabricator-1-thermal
 nullius-physics-pack=25
 nullius-stirling-engine-2=1
 nullius-nanofabricator-1=1
