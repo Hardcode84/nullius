@@ -7,6 +7,8 @@ local nauvis_only = {
 for _, name in ipairs{
     "nullius-bpa",
     "nullius-pressure-bpa",
+    "nullius-boxed-bpa",
+    "nullius-boxed-pressure-bpa",
     "nullius-epoxy",
     "nullius-boxed-epoxy",
 } do

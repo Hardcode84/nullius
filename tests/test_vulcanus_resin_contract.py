@@ -12,19 +12,25 @@ import unittest
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 ANALYZER = REPOSITORY / "tools" / "analyze_factorio_prereqs.py"
-ORDINARY_RECIPES = (
+PHYSICS_CONTRACT = (
+    REPOSITORY / "tests" / "progression" / "vulcanus-physics-production.args"
+)
+NAUVIS_ONLY_RECIPES = (
     "nullius-bpa",
     "nullius-pressure-bpa",
+    "nullius-boxed-bpa",
+    "nullius-boxed-pressure-bpa",
     "nullius-epoxy",
     "nullius-boxed-epoxy",
 )
+UNBOX_RECIPE = "nullius-unbox-bpa"
 HOT_RECIPE = "nullius-high-temperature-resin"
 
 
 class VulcanusResinContractTest(unittest.TestCase):
     def test_surface_and_material_contract(self) -> None:
         command = [sys.executable, str(ANALYZER)]
-        for recipe in (*ORDINARY_RECIPES, HOT_RECIPE):
+        for recipe in (*NAUVIS_ONLY_RECIPES, UNBOX_RECIPE, HOT_RECIPE):
             command.extend(("--describe-recipe", recipe))
         command.append("--json")
         completed = subprocess.run(
@@ -44,8 +50,9 @@ class VulcanusResinContractTest(unittest.TestCase):
             "min": 1,
             "max": 1,
         }]
-        for name in ORDINARY_RECIPES:
+        for name in NAUVIS_ONLY_RECIPES:
             self.assertEqual(recipes[name]["surface_conditions"], nauvis_only)
+        self.assertEqual(recipes[UNBOX_RECIPE]["surface_conditions"], [])
 
         hot = recipes[HOT_RECIPE]
         self.assertEqual(hot["surface_conditions"], [{
@@ -70,6 +77,29 @@ class VulcanusResinContractTest(unittest.TestCase):
         self.assertEqual(products["nullius-wastewater"]["amount"], 50)
         self.assertEqual(products["barrel"]["ignored_by_productivity"], 3)
         self.assertEqual(products["nullius-alumina"]["ignored_by_productivity"], 1)
+
+    def test_pc_abs_cannot_synthesize_local_bpa(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ANALYZER),
+                f"@{PHYSICS_CONTRACT}",
+                "--surface-property",
+                "nullius-nauvis-environment=0",
+                "--recipe",
+                "nullius-plastic=nullius-plastic-pc-abs",
+                "--json",
+            ],
+            cwd=REPOSITORY,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=300,
+            check=False,
+        )
+        self.assertNotEqual(completed.returncode, 0)
+        report = json.loads(completed.stdout)
+        self.assertIn("nullius-bpa", report["unresolved"])
 
 
 if __name__ == "__main__":
