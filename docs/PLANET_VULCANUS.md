@@ -1541,51 +1541,92 @@ Almost every electronic/mechanical component needs plastic:
 
 All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >= 100`). Uses only locally available materials.
 
-#### Current plastic and rubber consumers
+#### Current polymer-free replacement recipes
 
-| Material | Consumer recipes | Vulcanus alternative |
+| Product | Polymer-consuming recipes superseded | Current replacement recipe | Inputs | Output |
+|---|---|---|---|---|
+| Barrel | `barrel`, `nullius-legacy-barrel-2` | `nullius-vulcanus-barrel` | 2 steel sheet + 2 aluminum sheet + 1 glass + 1 one-way valve | 3 barrel |
+| Explosive | `cliff-explosives`, `nullius-explosive-2` | `nullius-thermite-explosive` | 1 chlorine barrel + 1 sulfur dioxide barrel + 4 aluminum powder + red wire + green wire + small miner 1 | 1 cliff explosive |
+| Logic circuit | `decider-combinator` | `nullius-logic-circuit-vulcanus` | 3 silicon insulation + 4 aluminum wire + 2 polycrystalline silicon + 1 graphite | 3 decider combinator |
+| Capacitor | `nullius-capacitor` | `nullius-capacitor-vulcanus` | 2 aluminum sheet + 4 silica + 1 alumina + 1 graphite | 2 capacitor |
+| Filter 1 | `nullius-filter-1`, `nullius-pressure-filter-1` | `nullius-filter-1-vulcanus` | 2 silica + 1 graphite + 1 iron sheet + 10 carbon dioxide | 1 filter 1 |
+| Motor 1 | `nullius-motor-1` | `nullius-motor-1-vulcanus` | 2 iron wire + 1 iron plate + 2 silica + 1 iron rod | 1 motor 1 |
+| Pipe 2 | `nullius-plastic-pipe` | `nullius-pipe-2` | 2 steel rod | 3 pipe 2 |
+| Splitter 1 | `splitter` | `nullius-splitter-1-vulcanus` | 2 underground belt + 2 silicon insulation | 1 splitter |
+| Insulated wire | `copper-cable`, `nullius-insulated-wire-2` | `nullius-insulated-wire-vulcanus` | 3 aluminum wire + 2 silicon insulation | 4 insulated wire |
+| One-way valve | `nullius-one-way-valve-2` | `nullius-one-way-valve` | 1 pipe + 1 iron sheet | 1 one-way valve |
+| Pump 2 | `nullius-pump-2` | `nullius-pump-2-vulcanus` | 1 pump 1 + 1 motor 2 + 2 pipe 2 + 2 silicon insulation | 1 pump 2 |
+
+#### Direct consumers without a current Vulcanus replacement
+
+| Material | Produced item | Consumer recipes |
 |---|---|---|
-| Plastic | `barrel`, `nullius-legacy-barrel-2` | `nullius-vulcanus-barrel` |
-| Plastic | `cliff-explosives`, `nullius-explosive-2` | `nullius-thermite-explosive` |
-| Plastic | `decider-combinator` | `nullius-logic-circuit-vulcanus` |
-| Plastic | `nullius-capacitor` | `nullius-capacitor-vulcanus` |
-| Plastic | `nullius-filter-1`, `nullius-pressure-filter-1` | `nullius-filter-1-vulcanus` |
-| Plastic | `nullius-motor-1` | `nullius-motor-1-vulcanus` |
-| Plastic | `nullius-plastic-pipe` | `nullius-pipe-2` |
-| Plastic | `splitter` | `nullius-splitter-1-vulcanus` |
-| Plastic | `display-panel`, `nullius-align-identification-card`, `nullius-armor-plate`, `nullius-battery-1`, `nullius-insulation`, `nullius-legacy-repair-pack`, `nullius-levitation-field-1`, `nullius-medium-tank-2`, `nullius-optical-cable`, `nullius-solar-panel-1`, `nullius-transformer`, `rail`, `repair-pack`, `small-electric-pole` | -- |
-| Plastic | `nullius-arthropod-progenitor`, `nullius-arthropod-progenitor-2` | --; post-biology |
-| Plastic | `nullius-box-plastic` | Preserve for imported material |
-| Plastic | `nullius-plastic-pyrolysis` | Preserve for disposal |
-| Rubber | `copper-cable`, `nullius-insulated-wire-2` | `nullius-insulated-wire-vulcanus` |
-| Rubber | `nullius-one-way-valve-2` | `nullius-one-way-valve` |
-| Rubber | `nullius-pump-2` | `nullius-pump-2-vulcanus` |
-| Rubber | `bulk-inserter`, `fast-transport-belt`, `iron-chest`, `nullius-armor-plate`, `nullius-car-1`, `nullius-chassis-2`, `nullius-gun`, `nullius-leg-augmentation-3`, `nullius-legacy-car-1`, `nullius-legacy-rocket-fuel`, `nullius-refueler`, `nullius-self-repair-pack`, `nullius-truck-1`, `power-switch`, `programmable-speaker`, `rocket-fuel` | -- |
-| Rubber | `nullius-coal` | --; post-biology |
-| Rubber | `nullius-tree-progenitor`, `nullius-tree-progenitor-2` | --; post-biology |
-| Rubber | `nullius-box-rubber` | Preserve for imported material |
-| Rubber | `nullius-rubber-pyrolysis` | Preserve for disposal |
+| Plastic | Display panel | `display-panel` |
+| Plastic | Identification card | `nullius-align-identification-card` |
+| Plastic + rubber | Armor plate | `nullius-armor-plate` |
+| Plastic | Battery 1 | `nullius-battery-1` |
+| Plastic | Insulation | `nullius-insulation`; `nullius-wood-paneling` also produces insulation but requires wood |
+| Plastic | Repair pack | `repair-pack`, `nullius-legacy-repair-pack` |
+| Plastic | Levitation field 1 | `nullius-levitation-field-1` |
+| Plastic | Medium tank 2 | `nullius-medium-tank-2` |
+| Plastic | Optical cable | `nullius-optical-cable` |
+| Plastic | Rail | `rail`; `nullius-wooden-rail` also produces rail but requires wood |
+| Plastic | Solar panel 1 | `nullius-solar-panel-1` |
+| Plastic | Transformer | `nullius-transformer` |
+| Plastic | Small power pole | `small-electric-pole`; `nullius-wooden-power-pole-1` also produces it but requires wood |
+| Rubber | Bulk inserter | `bulk-inserter` |
+| Rubber | Fast belt | `fast-transport-belt` |
+| Rubber | Iron chest | `iron-chest` |
+| Rubber | Car 1 | `nullius-car-1`, `nullius-legacy-car-1` |
+| Rubber | Chassis 2 | `nullius-chassis-2` |
+| Rubber | Gun | `nullius-gun` |
+| Rubber | Leg augmentation 3 | `nullius-leg-augmentation-3` |
+| Rubber | Refueler | `nullius-refueler` |
+| Rubber | Self-repair pack | `nullius-self-repair-pack` |
+| Rubber | Truck 1 | `nullius-truck-1` |
+| Rubber | Power switch | `power-switch` |
+| Rubber | Programmable speaker | `programmable-speaker` |
+| Rubber | Rocket fuel | `rocket-fuel`, `nullius-legacy-rocket-fuel`; `ammonia-rocket-fuel` requires solid fuel, whose non-recycling producers require oil unavailable on Vulcanus |
 
-#### Current boxed-material consumers
+#### Import, biology, and disposal consumers
 
-| Material | Consumer recipes | Vulcanus alternative |
+| Material | Purpose | Recipes |
 |---|---|---|
-| Boxed plastic | `nullius-boxed-barrel-1`, `nullius-legacy-boxed-barrel-2` | Vulcanus barrel, then package |
-| Boxed plastic | `nullius-boxed-capacitor`, `nullius-capacitor-2` | Vulcanus capacitor, then package |
-| Boxed plastic | `nullius-boxed-explosive`, `nullius-boxed-explosive-2` | Thermite explosive, then package |
-| Boxed plastic | `nullius-boxed-filter-1`, `nullius-boxed-pressure-filter-1` | Vulcanus filter, then package |
-| Boxed plastic | `nullius-boxed-logic-circuit`, `nullius-logic-circuit-2` | Vulcanus logic circuit, then package |
-| Boxed plastic | `nullius-boxed-pipe-2` | Steel pipe 2, then package |
-| Boxed plastic | `nullius-boxed-splitter-1` | Vulcanus splitter, then package |
-| Boxed plastic | `cargo-landing-pad`, `nullius-boxed-battery-1`, `nullius-boxed-battery-1-copper`, `nullius-boxed-display-panel`, `nullius-boxed-insulation`, `nullius-boxed-levitation-field-1`, `nullius-boxed-medium-tank-2`, `nullius-boxed-optical-cable`, `nullius-boxed-rail`, `nullius-boxed-repair-pack`, `nullius-boxed-solar-panel-1`, `nullius-boxed-transformer`, `nullius-legacy-boxed-repair-pack`, `nullius-zoology-pack` | -- |
-| Boxed plastic | `nullius-carbon-sink`, `nullius-chlorine-sink`, `nullius-boxed-plastic-pyrolysis` | Preserve for disposal |
-| Boxed plastic | `nullius-unbox-plastic` | Preserve for imported material |
-| Boxed rubber | `nullius-boxed-insulated-wire-1`, `nullius-boxed-insulated-wire-2` | Vulcanus insulated wire, then package |
-| Boxed rubber | `nullius-boxed-one-way-valve` | Basic one-way valve, then package |
-| Boxed rubber | `nullius-boxed-pump-2` | Vulcanus pump 2, then package |
-| Boxed rubber | `cargo-landing-pad`, `nullius-boxed-antenna`, `nullius-boxed-belt-2`, `nullius-boxed-coal`, `nullius-boxed-inserter-3`, `nullius-boxed-power-switch`, `nullius-boxed-rocket-fuel`, `nullius-legacy-boxed-rocket-fuel` | -- |
-| Boxed rubber | `nullius-carbon-sink` | Preserve for disposal |
-| Boxed rubber | `nullius-unbox-rubber` | Preserve for imported material |
+| Plastic | Package or unpackage imported plastic | `nullius-box-plastic`, `nullius-unbox-plastic` |
+| Rubber | Package or unpackage imported rubber | `nullius-box-rubber`, `nullius-unbox-rubber` |
+| Plastic | Biology | `nullius-arthropod-progenitor`, `nullius-arthropod-progenitor-2` |
+| Rubber | Biology | `nullius-coal`, `nullius-tree-progenitor`, `nullius-tree-progenitor-2` |
+| Plastic | Disposal | `nullius-plastic-pyrolysis` |
+| Rubber | Disposal | `nullius-rubber-pyrolysis` |
+
+#### Boxed consumers already covered by polymer-free production
+
+| Polymer-consuming recipes | Current replacement path |
+|---|---|
+| `nullius-boxed-barrel-1`, `nullius-legacy-boxed-barrel-2` | Polymer-free barrel -> `nullius-box-barrel` |
+| `nullius-boxed-capacitor`, `nullius-capacitor-2` | Vulcanus capacitor -> `nullius-box-capacitor` |
+| `nullius-boxed-explosive`, `nullius-boxed-explosive-2` | Thermite explosive -> `nullius-box-explosive` |
+| `nullius-boxed-filter-1`, `nullius-boxed-pressure-filter-1` | Vulcanus filter 1 -> `nullius-box-filter-1` |
+| `nullius-boxed-logic-circuit`, `nullius-logic-circuit-2` | Vulcanus logic circuit -> `nullius-box-logic-circuit` |
+| `nullius-boxed-pipe-2` | Steel pipe 2 -> `nullius-box-pipe-2` |
+| `nullius-boxed-splitter-1` | `nullius-splitter-1-vulcanus` |
+| `nullius-boxed-insulated-wire-1`, `nullius-boxed-insulated-wire-2` | Vulcanus insulated wire -> `nullius-box-insulated-wire` |
+| `nullius-boxed-one-way-valve` | Basic one-way valve -> `nullius-box-one-way-valve` |
+| `nullius-boxed-pump-2` | Vulcanus pump 2 -> `nullius-box-pump-2` |
+
+All other boxed-plastic and boxed-rubber consumers inherit the status of their
+unboxed product. Packaging and unboxing remain valid for imported polymers;
+polymer sinks remain valid disposal recipes.
+
+#### Boxed consumers without a current Vulcanus replacement
+
+| Material | Consumer recipes |
+|---|---|
+| Boxed plastic | `cargo-landing-pad`, `nullius-boxed-battery-1`, `nullius-boxed-battery-1-copper`, `nullius-boxed-display-panel`, `nullius-boxed-insulation`, `nullius-boxed-levitation-field-1`, `nullius-boxed-medium-tank-2`, `nullius-boxed-optical-cable`, `nullius-boxed-rail`, `nullius-boxed-repair-pack`, `nullius-boxed-solar-panel-1`, `nullius-boxed-transformer`, `nullius-legacy-boxed-repair-pack`, `nullius-zoology-pack` |
+| Boxed rubber | `cargo-landing-pad`, `nullius-boxed-antenna`, `nullius-boxed-belt-2`, `nullius-boxed-coal`, `nullius-boxed-inserter-3`, `nullius-boxed-power-switch`, `nullius-boxed-rocket-fuel`, `nullius-legacy-boxed-rocket-fuel` |
+| Boxed plastic; disposal | `nullius-carbon-sink`, `nullius-chlorine-sink`, `nullius-boxed-plastic-pyrolysis` |
+| Boxed rubber; disposal | `nullius-carbon-sink` |
+| Imported material | `nullius-unbox-plastic`, `nullius-unbox-rubber` |
 
 #### Plastic and rubber checkpoints
 
