@@ -1,5 +1,20 @@
 -- Vulcanus lava processing recipes and molten bloom items.
 
+local nauvis_only = {
+  {property = "nullius-nauvis-environment", min = 1, max = 1},
+}
+
+for _, name in ipairs{
+    "nullius-bpa",
+    "nullius-pressure-bpa",
+    "nullius-epoxy",
+    "nullius-boxed-epoxy",
+} do
+  local recipe = data.raw.recipe[name]
+  if not recipe then error("Missing Nauvis organic recipe: " .. name) end
+  recipe.surface_conditions = table.deepcopy(nauvis_only)
+end
+
 -- Molten bloom items: spoil into ingots after cooling.
 data:extend({
   {
@@ -67,6 +82,73 @@ data:extend({
     durability = 1,
     durability_description_key = "description.science-pack-remaining-amount-key",
     durability_description_value = "description.science-pack-remaining-amount-value",
+  },
+})
+
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-high-temperature-resin",
+    localised_name = {"recipe-name.nullius-high-temperature-resin"},
+    enabled = false,
+    category = "basic-chemistry",
+    subgroup = "organic-chemistry",
+    order = "nullius-jv",
+    always_show_made_in = true,
+    energy_required = 10,
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-acrylonitrile"].flow_color,
+      secondary = data.raw.fluid["nullius-benzene"].flow_color,
+    },
+    ingredients = {
+      {type = "item", name = "nullius-acrylonitrile-barrel", amount = 2},
+      {type = "item", name = "nullius-ammonia-barrel", amount = 1},
+      {type = "item", name = "nullius-alumina", amount = 1},
+      {
+        type = "fluid",
+        name = "nullius-benzene",
+        amount = 30,
+        fluidbox_index = 1,
+      },
+      {
+        type = "fluid",
+        name = "nullius-oxygen",
+        amount = 100,
+        fluidbox_index = 2,
+      },
+      {
+        type = "fluid",
+        name = "nullius-solvent",
+        amount = 10,
+        fluidbox_index = 3,
+      },
+    },
+    results = {
+      {
+        type = "fluid",
+        name = "nullius-epoxy",
+        amount = 40,
+        temperature = 200,
+      },
+      {type = "fluid", name = "nullius-wastewater", amount = 50},
+      {
+        type = "item",
+        name = "barrel",
+        amount = 3,
+        ignored_by_productivity = 3,
+      },
+      {
+        type = "item",
+        name = "nullius-alumina",
+        amount = 1,
+        ignored_by_productivity = 1,
+      },
+    },
+    main_product = "nullius-epoxy",
+    allow_productivity = true,
+    surface_conditions = {
+      {property = "nullius-ambient-temperature", min = 200},
+    },
   },
 })
 

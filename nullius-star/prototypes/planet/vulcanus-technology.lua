@@ -20,6 +20,14 @@ sulfur_processing_2.effects[#sulfur_processing_2.effects + 1] = {
   recipe = "nullius-decompress-volcanic-gas",
 }
 
+local organic_chemistry_5 = data.raw.technology["nullius-organic-chemistry-5"]
+if not organic_chemistry_5 then error("Missing nullius-organic-chemistry-5") end
+organic_chemistry_5.effects = organic_chemistry_5.effects or {}
+organic_chemistry_5.effects[#organic_chemistry_5.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-high-temperature-resin",
+}
+
 local sodium_processing = data.raw.technology["nullius-sodium-processing"]
 if not sodium_processing then error("Missing nullius-sodium-processing") end
 sodium_processing.effects = sodium_processing.effects or {}

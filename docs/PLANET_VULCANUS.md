@@ -1549,7 +1549,7 @@ shared_product:
 
 ordinary_epoxy:
   chemistry: BPA-epichlorohydrin
-  surface_condition: {nullius-ambient-temperature: "<200"}
+  surface_condition: {nullius-nauvis-environment: 1}
   inputs: [nullius-bpa, nullius-ech, nullius-solvent]
 
 vulcanus_high_temperature_resin:
@@ -1559,8 +1559,8 @@ vulcanus_high_temperature_resin:
   inputs:
     consumed:
       - nullius-benzene
-      - nullius-acrylonitrile
-      - nullius-ammonia
+      - nullius-acrylonitrile-barrel
+      - nullius-ammonia-barrel
       - nullius-oxygen
       - nullius-solvent
     catalyst:
@@ -1568,7 +1568,7 @@ vulcanus_high_temperature_resin:
       output: nullius-alumina
   outputs:
     primary: nullius-epoxy
-    byproducts: [nullius-wastewater, nullius-carbon-dioxide]
+    byproducts: [nullius-wastewater, barrel]
   new_item_or_fluid_prototypes: 0
   productivity: true
 ```
@@ -1580,8 +1580,8 @@ propene + oxygen + ammonia
 methanol + carbon monoxide + oxygen
   -> solvent
 
-benzene + acrylonitrile + ammonia + oxygen + solvent
-  --alumina catalyst-> high-temperature resin + wastewater + carbon dioxide
+benzene + barreled acrylonitrile + barreled ammonia + oxygen + solvent
+  --alumina catalyst-> high-temperature resin + wastewater + returned barrels
 ```
 
 The Vulcanus recipe abstracts aromatic oxidation, ammoxidation, and resin

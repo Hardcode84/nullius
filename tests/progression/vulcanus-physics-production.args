@@ -143,6 +143,8 @@ nullius-crushed-limestone=nullius-lava-calcite-separation
 --recipe
 nullius-lubricant=nullius-lubricant-vulcanus
 --recipe
+nullius-epoxy=nullius-high-temperature-resin
+--recipe
 nullius-oxygen=nullius-so2-catalytic-decomposition
 --recipe
 nullius-saline=nullius-volcanic-saline

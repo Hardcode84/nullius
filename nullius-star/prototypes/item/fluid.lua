@@ -520,7 +520,7 @@ data:extend({
     flow_color = {r = 192, g = 184, b = 136},
     heat_capacity = "0.08kJ",
     default_temperature = 25,
-    max_temperature = 100
+    max_temperature = 250
   },
 
   {
