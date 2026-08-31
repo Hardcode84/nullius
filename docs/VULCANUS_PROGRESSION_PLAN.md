@@ -129,9 +129,9 @@ prototypes:
       allowed_effects: unchanged
       crafting_categories: unchanged
     tiers:
-      1: {entities: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal], base_productivity: 0.05, min_temperature: 100, max_temperature: 250, distribution: nullius-heat-pipe-1, source: nullius-solar-collector-1}
-      2: {entities: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-medium-furnace-2-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal], base_productivity: 0.10, min_temperature: 200, max_temperature: 500, distribution: nullius-heat-pipe-2, source: nullius-solar-collector-2}
-      3: {entities: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-3-thermal, nullius-foundry-3-thermal], base_productivity: 0.15, min_temperature: 500, max_temperature: 1500, distribution: nullius-heat-pipe-3, source: nullius-reactor}
+      1: {entities: [nullius-crusher-1-thermal, nullius-small-furnace-1-thermal, nullius-medium-furnace-1-thermal, nullius-large-furnace-1-thermal, nullius-foundry-1-thermal], base_productivity: 0.20, min_temperature: 100, max_temperature: 250, distribution: nullius-heat-pipe-1, source: nullius-solar-collector-1}
+      2: {entities: [nullius-crusher-2-thermal, nullius-small-furnace-2-thermal, nullius-medium-furnace-2-thermal, nullius-large-furnace-2-thermal, nullius-foundry-2-thermal], base_productivity: 0.40, min_temperature: 200, max_temperature: 500, distribution: nullius-heat-pipe-2, source: nullius-solar-collector-2}
+      3: {entities: [nullius-crusher-3-thermal, nullius-small-furnace-3-thermal, nullius-medium-furnace-3-thermal, nullius-foundry-3-thermal], base_productivity: 0.60, min_temperature: 500, max_temperature: 1500, distribution: nullius-heat-pipe-3, source: nullius-reactor}
   transitions:
     nauvis: {before: electric, after: thermal, input: Ctrl+R, requires: [corresponding_nullius_thermal_engineering_tier, base_building_recipe_enabled]}
     nullius-vulcanus: {before: electric, after: pneumatic, input: Ctrl+R, unchanged: true}
@@ -826,20 +826,20 @@ scenarios:
   thermal-machine-prototypes:
     milestone: [M13, M15, M16]
     matrix:
-      - {tier: 1, base: nullius-crusher-1, thermal: nullius-crusher-1-thermal, research: nullius-pneumatic-technology, productivity: 0.05, min_temperature: 100, max_temperature: 250}
-      - {tier: 1, base: nullius-small-furnace-1, thermal: nullius-small-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.05, min_temperature: 100, max_temperature: 250}
-      - {tier: 1, base: nullius-medium-furnace-1, thermal: nullius-medium-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.05, min_temperature: 100, max_temperature: 250}
-      - {tier: 1, base: nullius-large-furnace-1, thermal: nullius-large-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.05, min_temperature: 100, max_temperature: 250}
-      - {tier: 1, base: nullius-foundry-1, thermal: nullius-foundry-1-thermal, research: nullius-pneumatic-technology, productivity: 0.05, min_temperature: 100, max_temperature: 250}
-      - {tier: 2, base: nullius-crusher-2, thermal: nullius-crusher-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
-      - {tier: 2, base: nullius-small-furnace-2, thermal: nullius-small-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
-      - {tier: 2, base: nullius-medium-furnace-2, thermal: nullius-medium-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
-      - {tier: 2, base: nullius-large-furnace-2, thermal: nullius-large-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
-      - {tier: 2, base: nullius-foundry-2, thermal: nullius-foundry-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.10, min_temperature: 200, max_temperature: 500}
-      - {tier: 3, base: nullius-crusher-3, thermal: nullius-crusher-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
-      - {tier: 3, base: nullius-small-furnace-3, thermal: nullius-small-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
-      - {tier: 3, base: nullius-medium-furnace-3, thermal: nullius-medium-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
-      - {tier: 3, base: nullius-foundry-3, thermal: nullius-foundry-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.15, min_temperature: 500, max_temperature: 1500}
+      - {tier: 1, base: nullius-crusher-1, thermal: nullius-crusher-1-thermal, research: nullius-pneumatic-technology, productivity: 0.20, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-small-furnace-1, thermal: nullius-small-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.20, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-medium-furnace-1, thermal: nullius-medium-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.20, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-large-furnace-1, thermal: nullius-large-furnace-1-thermal, research: nullius-pneumatic-technology, productivity: 0.20, min_temperature: 100, max_temperature: 250}
+      - {tier: 1, base: nullius-foundry-1, thermal: nullius-foundry-1-thermal, research: nullius-pneumatic-technology, productivity: 0.20, min_temperature: 100, max_temperature: 250}
+      - {tier: 2, base: nullius-crusher-2, thermal: nullius-crusher-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.40, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-small-furnace-2, thermal: nullius-small-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.40, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-medium-furnace-2, thermal: nullius-medium-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.40, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-large-furnace-2, thermal: nullius-large-furnace-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.40, min_temperature: 200, max_temperature: 500}
+      - {tier: 2, base: nullius-foundry-2, thermal: nullius-foundry-2-thermal, research: nullius-thermal-engineering-2, productivity: 0.40, min_temperature: 200, max_temperature: 500}
+      - {tier: 3, base: nullius-crusher-3, thermal: nullius-crusher-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.60, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-small-furnace-3, thermal: nullius-small-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.60, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-medium-furnace-3, thermal: nullius-medium-furnace-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.60, min_temperature: 500, max_temperature: 1500}
+      - {tier: 3, base: nullius-foundry-3, thermal: nullius-foundry-3-thermal, research: nullius-thermal-engineering-3, productivity: 0.60, min_temperature: 500, max_temperature: 1500}
     expect:
       prototype:
         item_to_place: matrix.base
@@ -881,7 +881,7 @@ scenarios:
         temperature: {crusher: ">=100", furnace: ">=100", foundry: ">=100"}
         consumed: {nullius-limestone: 800, nullius-alumina: 900, nullius-graphite: 500, nullius-iron-ingot: 400}
         produced: {nullius-crushed-limestone: 525, stone: 315, nullius-aluminum-ingot: 315, nullius-aluminum-carbide: 420, nullius-iron-plate: 315}
-        productivity_bonus: {crusher: 0.05, furnace: 0.05, foundry: 0.05}
+        productivity_bonus: {crusher: 0.20, furnace: 0.20, foundry: 0.20}
         electric_energy_consumed_by_process_machines: 0
         items_preserved: {nullius-crusher-1: 5, nullius-small-furnace-1: 5, nullius-foundry-1: 5}
 
@@ -1030,7 +1030,7 @@ scenarios:
         temperature: {heat-source: ">=200", heat-pipe: ">=200", process-machine: ">=200"}
         consumed: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-box-ceramic-powder: 200, nullius-iron-ingot: 400}
         produced: {nullius-crushed-limestone: 550, stone: 330, nullius-aluminum-ingot: 660, nullius-aluminum-carbide: 880, nullius-box-refractory-brick: 660, nullius-iron-plate: 330}
-        productivity_bonus: {process-machine: 0.10}
+        productivity_bonus: {process-machine: 0.40}
         electric_energy_consumed_by_process_machines: 0
         items_preserved: {nullius-crusher-2: 5, nullius-small-furnace-2: 5, nullius-medium-furnace-2: 5, nullius-large-furnace-2: 5, nullius-foundry-2: 5}
 
@@ -1066,7 +1066,7 @@ scenarios:
         temperature: {heat-source: ">=500", heat-pipe: ">=500", process-machine: ">=500"}
         consumed: {nullius-limestone: 800, nullius-alumina: 1800, nullius-graphite: 1000, nullius-iron-ingot: 400}
         produced: {nullius-crushed-limestone: 575, stone: 345, nullius-aluminum-ingot: 690, nullius-aluminum-carbide: 920, nullius-iron-plate: 345}
-        productivity_bonus: {process-machine: 0.15}
+        productivity_bonus: {process-machine: 0.60}
         electric_energy_consumed_by_process_machines: 0
         items_preserved: {nullius-crusher-3: 5, nullius-small-furnace-3: 5, nullius-medium-furnace-3: 5, nullius-foundry-3: 5}
 
