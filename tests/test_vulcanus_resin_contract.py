@@ -45,13 +45,14 @@ class VulcanusResinContractTest(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         recipes = {recipe["name"]: recipe for recipe in json.loads(completed.stdout)}
 
-        nauvis_only = [{
-            "property": "nullius-nauvis-environment",
-            "min": 1,
-            "max": 1,
+        cool_environment_only = [{
+            "property": "nullius-ambient-temperature",
+            "max": 50,
         }]
         for name in NAUVIS_ONLY_RECIPES:
-            self.assertEqual(recipes[name]["surface_conditions"], nauvis_only)
+            self.assertEqual(
+                recipes[name]["surface_conditions"], cool_environment_only
+            )
         self.assertEqual(recipes[UNBOX_RECIPE]["surface_conditions"], [])
 
         hot = recipes[HOT_RECIPE]
@@ -85,7 +86,7 @@ class VulcanusResinContractTest(unittest.TestCase):
                 str(ANALYZER),
                 f"@{PHYSICS_CONTRACT}",
                 "--surface-property",
-                "nullius-nauvis-environment=0",
+                "nullius-ambient-temperature=200",
                 "--recipe",
                 "nullius-plastic=nullius-plastic-pc-abs",
                 "--json",

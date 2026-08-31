@@ -60,6 +60,7 @@ python3 tools/run_factorio_tests.py -n auto
 | Bootstrap metallurgy | `vulcanus-metallurgic-pack-recipe`, `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `vulcanus-metallurgic-pack-10` |
 | Local generic science | `vulcanus-basic-science-10` |
 | Local chemical science | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-acid-200`, `vulcanus-chemical-alkali-20`, `vulcanus-chemical-glass-lubricant`, `vulcanus-chemical-concrete-barrels`, `vulcanus-chemical-pack-10` |
+| Temperature-gated recipes | `recipe-surface-conditions`, `vulcanus-polymer-restrictions`, `vulcanus-high-temperature-resin`, `vulcanus-polymer-free-recipes`, `vulcanus-boxed-polymer-free` |
 | Volcanic gas, boric acid, and metallic sodium | `vulcanus-boric-acid`, `carbothermic-sodium` |
 | Thermite explosives | `vulcanus-thermite` |
 | Efficient metallurgy and hot casting | `vulcanus-efficient-metallurgic-research`, `vulcanus-efficient-metallurgic-science`, `vulcanus-hot-casting` |

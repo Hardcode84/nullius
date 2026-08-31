@@ -1,7 +1,7 @@
 -- Vulcanus lava processing recipes and molten bloom items.
 
-local nauvis_only = {
-  {property = "nullius-nauvis-environment", min = 1, max = 1},
+local cool_environment_only = {
+  {property = "nullius-ambient-temperature", max = 50},
 }
 
 local vulcanus_only = {
@@ -41,8 +41,8 @@ for _, name in ipairs{
     "nullius-boxed-epoxy",
 } do
   local recipe = data.raw.recipe[name]
-  if not recipe then error("Missing Nauvis organic recipe: " .. name) end
-  recipe.surface_conditions = table.deepcopy(nauvis_only)
+  if not recipe then error("Missing cool-environment organic recipe: " .. name) end
+  recipe.surface_conditions = table.deepcopy(cool_environment_only)
 end
 
 for _, name in ipairs{
@@ -71,7 +71,7 @@ for _, name in ipairs{
 } do
   local recipe = data.raw.recipe[name]
   if not recipe then error("Missing polymer production recipe: " .. name) end
-  recipe.surface_conditions = table.deepcopy(nauvis_only)
+  recipe.surface_conditions = table.deepcopy(cool_environment_only)
 end
 
 -- Molten bloom items: spoil into ingots after cooling.

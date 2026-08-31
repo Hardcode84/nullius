@@ -1508,10 +1508,10 @@ Every Nauvis recipe depends on a chain of intermediates. Here's what Vulcanus ca
 
 ### 10.3 The Plastic Problem
 
-All 22 recipes that create plastic or rubber are Nauvis-only, including
-chemical synthesis, biological harvesting, barrel recycling, and direct boxed
-production. Packaging, unboxing, consumption, and disposal of imported
-polymers remain available on Vulcanus.
+All 22 recipes that create plastic or rubber require an ambient temperature
+of 50C or lower, including chemical synthesis, biological harvesting, barrel
+recycling, and direct boxed production. Packaging, unboxing, consumption, and
+disposal of imported polymers remain available on Vulcanus.
 
 Almost every electronic/mechanical component needs plastic:
 - Motor 1 (1 plastic)
@@ -1668,7 +1668,7 @@ shared_product:
 
 ordinary_epoxy:
   chemistry: BPA-epichlorohydrin
-  surface_condition: {nullius-nauvis-environment: 1}
+  surface_condition: {nullius-ambient-temperature: "<=50"}
   inputs: [nullius-bpa, nullius-ech, nullius-solvent]
 
 vulcanus_high_temperature_resin:

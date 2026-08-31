@@ -23,10 +23,10 @@ local function check(condition, message)
   if not condition then failures[#failures + 1] = message end
 end
 
-local function nauvis_only(recipe)
+local function cool_environment_only(recipe)
   for _, condition in pairs(recipe.surface_conditions or {}) do
-    if condition.property == "nullius-nauvis-environment" and
-        condition.min == 1 and condition.max == 1 then
+    if condition.property == "nullius-ambient-temperature" and
+        condition.max == 50 then
       return true
     end
   end
@@ -47,10 +47,12 @@ local function run()
       if import_recipes[name] then
         import_count = import_count + 1
         found_imports[name] = true
-        check(not nauvis_only(recipe), name .. " blocks imported polymers")
+        check(not cool_environment_only(recipe),
+          name .. " blocks imported polymers")
       else
         restricted_count = restricted_count + 1
-        check(nauvis_only(recipe), name .. " is not Nauvis-only")
+        check(cool_environment_only(recipe),
+          name .. " is not restricted to a cool environment")
       end
     end
   end

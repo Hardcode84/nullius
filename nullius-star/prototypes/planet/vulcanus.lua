@@ -18,18 +18,7 @@ data:extend({
     localised_name = {"surface-property-name.nullius-ambient-temperature"},
     localised_unit_key = "surface-property-unit.nullius-ambient-temperature",
   },
-  {
-    type = "surface-property",
-    name = "nullius-nauvis-environment",
-    default_value = 0,
-    localised_name = {"surface-property-name.nullius-nauvis-environment"},
-  },
 })
-
-local nauvis = data.raw.planet["nauvis"]
-if not nauvis then error("Missing Nauvis planet prototype") end
-nauvis.surface_properties = nauvis.surface_properties or {}
-nauvis.surface_properties["nullius-nauvis-environment"] = 1
 
 -- Reuse SA's Vulcanus map gen noise expressions.
 -- They are defined by space-age/prototypes/planet/planet-vulcanus-map-gen.lua
