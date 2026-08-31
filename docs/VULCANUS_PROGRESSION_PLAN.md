@@ -163,7 +163,7 @@ scenarios:
           nullius-hydro-plant-1: "=4"
           nullius-small-furnace-1: "=4"
           pipe: "=50"
-          nullius-heat-pipe-1: "=30"
+          nullius-heat-pipe-1: "=50"
           pipe-to-ground: "=10"
           nullius-extractor-1: "=2"
           nullius-air-filter-1: "=2"
