@@ -3,13 +3,26 @@ local recipe_productivity = require("prototypes.recipe-productivity")
 local pneumatic = data.raw.technology["nullius-pneumatic-technology"]
 if not pneumatic then error("Missing nullius-pneumatic-technology") end
 pneumatic.effects = pneumatic.effects or {}
-pneumatic.effects[#pneumatic.effects + 1] = {
+for _, recipe in ipairs({
+    "nullius-metallurgic-pack",
+    "nullius-vulcanus-barrel",
+    "nullius-vulcanus-radiator-1",
+    "nullius-vulcanus-radiator-2",
+    "nullius-carbochlorination",
+    "nullius-iron-chlorination",
+}) do
+  pneumatic.effects[#pneumatic.effects + 1] = {
+    type = "unlock-recipe",
+    recipe = recipe,
+  }
+end
+
+local boiling_1 = data.raw.technology["nullius-boiling-1"]
+if not boiling_1 then error("Missing nullius-boiling-1") end
+boiling_1.effects = boiling_1.effects or {}
+boiling_1.effects[#boiling_1.effects + 1] = {
   type = "unlock-recipe",
-  recipe = "nullius-metallurgic-pack",
-}
-pneumatic.effects[#pneumatic.effects + 1] = {
-  type = "unlock-recipe",
-  recipe = "nullius-vulcanus-barrel",
+  recipe = "nullius-iron-assisted-sludge-dehydration",
 }
 
 local mass_production = data.raw.technology["nullius-mass-production-5"]

@@ -761,7 +761,10 @@ The lubricant alt recipe (section 3.5) and pneumatic compressor make every Stirl
 
 Vulcanus industry uses **compressed volcanic gas and process heat**, not electricity. Machines are toggled between electric and pneumatic or thermal mode via Ctrl+R. Compressors use one combined priority/surge/electric/pneumatic cycle.
 
-**Pneumatic Technology**: Researched on Nauvis immediately after probe reactivation. Unlocks Vulcanus-only pneumatic machinery and tier-1 thermal heavy industry on every surface.
+**Pneumatic Technology**: Researched on Nauvis immediately after probe
+reactivation. Unlocks Vulcanus-only pneumatic machinery, both radiator tiers,
+carbochlorination, iron chlorination, and tier-1 thermal heavy industry on
+every surface. Boiling 1 unlocks iron-assisted sludge dehydration.
 
 **Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
 - Electric mode: standard Nullius behavior, consumes electricity.

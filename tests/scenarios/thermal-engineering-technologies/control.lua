@@ -205,6 +205,31 @@ script.on_nth_tick(1, function()
     end
   end
 
+  local pneumatic = force.technologies["nullius-pneumatic-technology"]
+  check(pneumatic ~= nil, "missing Pneumatic technology")
+  if pneumatic then
+    local unlocks = unlocked_recipes(pneumatic)
+    for _, recipe in ipairs({
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2",
+        "nullius-carbochlorination",
+        "nullius-iron-chlorination",
+    }) do
+      check(unlocks[recipe] == true,
+        "Pneumatic technology does not unlock " .. recipe)
+      check(force.recipes[recipe] and not force.recipes[recipe].enabled,
+        recipe .. " must be locked before Pneumatic technology")
+    end
+  end
+
+  local boiling_1 = force.technologies["nullius-boiling-1"]
+  check(boiling_1 ~= nil, "missing Boiling 1 technology")
+  if boiling_1 then
+    local unlocks = unlocked_recipes(boiling_1)
+    check(unlocks["nullius-iron-assisted-sludge-dehydration"] == true,
+      "Boiling 1 does not unlock iron-assisted sludge dehydration")
+  end
+
   local titanium_technology = force.technologies[
     "nullius-volcanic-titanium-metallurgy"]
   if titanium_technology then
@@ -257,8 +282,8 @@ script.on_nth_tick(1, function()
   local chlorine_sink = force.recipes["nullius-iron-chlorination"]
   check(chlorine_sink ~= nil, "missing iron chlorination recipe")
   if chlorine_sink then
-    check(chlorine_sink.enabled,
-      "iron chlorination must be available at Vulcanus bootstrap")
+    check(not chlorine_sink.enabled,
+      "iron chlorination must require Pneumatic technology")
     check(chlorine_sink.prototype.category == "nullius-high-temp-radiator",
       "iron chlorination has wrong category")
     check(chlorine_sink.energy == 4,
@@ -277,8 +302,8 @@ script.on_nth_tick(1, function()
   check(sludge_dehydration ~= nil,
     "missing iron-assisted sludge dehydration recipe")
   if sludge_dehydration then
-    check(sludge_dehydration.enabled,
-      "iron-assisted sludge dehydration must be available at bootstrap")
+    check(not sludge_dehydration.enabled,
+      "iron-assisted sludge dehydration must require Boiling 1")
     check(sludge_dehydration.prototype.category == "boiling",
       "iron-assisted sludge dehydration has wrong category")
     check(sludge_dehydration.prototype.surface_conditions == nil,

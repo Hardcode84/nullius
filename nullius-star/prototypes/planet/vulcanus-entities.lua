@@ -210,7 +210,7 @@ data:extend({
     type = "recipe",
     name = "nullius-vulcanus-radiator-1",
     localised_name = {"item-name.nullius-vulcanus-radiator-1"},
-    enabled = true,
+    enabled = false,
     category = "medium-crafting",
     energy_required = 10,
     ingredients = {
@@ -228,7 +228,7 @@ data:extend({
     type = "recipe",
     name = "nullius-vulcanus-radiator-2",
     localised_name = {"item-name.nullius-vulcanus-radiator-2"},
-    enabled = true,
+    enabled = false,
     category = "medium-crafting",
     energy_required = 15,
     ingredients = {

@@ -81,6 +81,10 @@ validators:
 
 prototypes:
   technologies:
+    nullius-pneumatic-technology:
+      unlocks: [nullius-vulcanus-radiator-1, nullius-vulcanus-radiator-2, nullius-carbochlorination, nullius-iron-chlorination]
+    nullius-boiling-1:
+      unlocks_additional: [nullius-iron-assisted-sludge-dehydration]
     nullius-efficient-metallurgic-science:
       prerequisites: [nullius-pneumatic-technology]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 2, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
