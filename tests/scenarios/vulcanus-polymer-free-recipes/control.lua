@@ -188,6 +188,22 @@ end
 local function run()
   script.on_nth_tick(1, nil)
   local recipes = game.forces.player.recipes
+  local identification_card =
+    recipes["nullius-align-identification-card-vulcanus"]
+  check(identification_card ~= nil,
+    "missing Vulcanus identification-card recipe")
+  if identification_card then
+    check(not identification_card.enabled,
+      "Vulcanus identification card is available before Alignment 1")
+  end
+  local alignment = game.forces.player.technologies["nullius-alignment-1"]
+  check(alignment ~= nil, "missing Alignment 1 technology")
+  if alignment then
+    alignment.enabled = true
+    alignment.researched = true
+    check(identification_card and identification_card.enabled,
+      "Alignment 1 did not unlock the Vulcanus identification card")
+  end
   for name, spec in pairs(specs) do
     local recipe = recipes[name]
     check(recipe ~= nil, "missing recipe " .. name)

@@ -1137,10 +1137,6 @@ data:extend({
     "nullius-display-panel-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 1},
     }, {enabled = true}),
-  vulcanus_plastic_recipe("nullius-align-identification-card",
-    "nullius-align-identification-card-vulcanus", {
-      {type = "item", name = "nullius-aluminum-sheet", amount = 1},
-    }, {enabled = true}),
   vulcanus_substitute_recipe("nullius-armor-plate",
     "nullius-armor-plate-vulcanus", {
       ["nullius-plastic"] = {
@@ -1272,6 +1268,27 @@ data:extend({
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
+
+-- Alignment content is optional at startup and its technologies are activated
+-- only for multiplayer forces.  Preserve both gates for the hot-environment
+-- substitute instead of exposing the identification card from game start.
+if data.raw.recipe["nullius-align-identification-card"] then
+  local identification_card = vulcanus_plastic_recipe(
+    "nullius-align-identification-card",
+    "nullius-align-identification-card-vulcanus", {
+      {type = "item", name = "nullius-aluminum-sheet", amount = 1},
+    }, {enabled = false})
+  data:extend({identification_card})
+
+  local technology = data.raw.technology["nullius-alignment-1"]
+  if not technology then
+    error("Missing Alignment 1 technology for Vulcanus identification card")
+  end
+  table.insert(technology.effects, {
+    type = "unlock-recipe",
+    recipe = "nullius-align-identification-card-vulcanus",
+  })
+end
 
 local function vulcanus_boxed_plastic_recipe(source_name, name, replacement,
     overrides)

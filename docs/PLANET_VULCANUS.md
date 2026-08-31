@@ -1557,7 +1557,7 @@ All alt recipes surface-conditioned to Vulcanus (`nullius-ambient-temperature >=
 | One-way valve | `nullius-one-way-valve-2` | `nullius-one-way-valve` | 1 pipe + 1 iron sheet | 1 one-way valve |
 | Pump 2 | `nullius-pump-2` | `nullius-pump-2-vulcanus` | 1 pump 1 + 1 motor 2 + 2 pipe 2 + 2 silicon insulation | 1 pump 2 |
 | Display panel | `nullius-display-panel` | `nullius-display-panel-vulcanus` | 1 logic circuit + 1 glass + 1 silicon insulation + 1 aluminum wire | 1 display panel |
-| Identification card | `nullius-align-identification-card` | `nullius-align-identification-card-vulcanus` | 1 steel sheet + 1 aluminum sheet | 1 identification card |
+| Identification card | `nullius-align-identification-card` | `nullius-align-identification-card-vulcanus` | 1 steel sheet + 1 aluminum sheet | 1 identification card; optional multiplayer Alignment 1 only |
 | Armor plate | `nullius-armor-plate` | `nullius-armor-plate-vulcanus` | 3 steel plate + 6 ceramic powder + 2 textile + 2 silicon insulation | 1 armor plate |
 | Battery 1 | `nullius-battery-1` | `nullius-battery-1-vulcanus` | Original non-plastic inputs + 2 ceramic powder | 1 battery 1 |
 | Insulation | `nullius-insulation` | `nullius-insulation-vulcanus` | 3 gypsum + 2 glass fiber + 2 refractory mix + 1 textile | 2 insulation |
