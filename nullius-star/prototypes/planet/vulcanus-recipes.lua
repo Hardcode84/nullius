@@ -119,6 +119,19 @@ data:extend({
   },
   {
     type = "item",
+    name = "nullius-iron-chloride",
+    localised_name = {"item-name.nullius-iron-chloride"},
+    icons = {{
+      icon = "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-3.png",
+      icon_size = 64,
+      tint = {150, 95, 45},
+    }},
+    subgroup = "iron-ingot",
+    order = "nullius-vc",
+    stack_size = 100,
+  },
+  {
+    type = "item",
     name = "nullius-refractory-mix",
     localised_name = {"item-name.nullius-refractory-mix"},
     icons = {{
@@ -1264,6 +1277,28 @@ data:extend({
     results = {
       {type = "item", name = "nullius-aluminum-chloride", amount = 4},
       {type = "fluid", name = "nullius-carbon-monoxide", amount = 30},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+  -- Direct chlorination provides a renewable chlorine sink independent of
+  -- hydrogen and graphite.  The solid product can be inserted into lava.
+  {
+    type = "recipe",
+    name = "nullius-iron-chlorination",
+    localised_name = {"recipe-name.nullius-iron-chlorination"},
+    enabled = true,
+    category = "nullius-high-temp-radiator",
+    main_product = "nullius-iron-chloride",
+    subgroup = "iron-ingot",
+    order = "nullius-vc",
+    always_show_made_in = true,
+    energy_required = 4,
+    ingredients = {
+      {type = "item", name = "nullius-iron-ingot", amount = 2},
+      {type = "fluid", name = "nullius-chlorine", amount = 30},
+    },
+    results = {
+      {type = "item", name = "nullius-iron-chloride", amount = 4},
     },
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },

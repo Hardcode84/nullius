@@ -254,5 +254,23 @@ script.on_nth_tick(1, function()
     }, "aluminum chloride recovery products")
   end
 
+  local chlorine_sink = force.recipes["nullius-iron-chlorination"]
+  check(chlorine_sink ~= nil, "missing iron chlorination recipe")
+  if chlorine_sink then
+    check(chlorine_sink.enabled,
+      "iron chlorination must be available at Vulcanus bootstrap")
+    check(chlorine_sink.prototype.category == "nullius-high-temp-radiator",
+      "iron chlorination has wrong category")
+    check(chlorine_sink.energy == 4,
+      "iron chlorination has wrong duration")
+    check_exact(ingredients_to_map(chlorine_sink.ingredients), {
+      ["nullius-iron-ingot"] = 2,
+      ["nullius-chlorine"] = 30,
+    }, "iron chlorination ingredients")
+    check_exact(ingredients_to_map(chlorine_sink.products), {
+      ["nullius-iron-chloride"] = 4,
+    }, "iron chlorination products")
+  end
+
   finish()
 end)

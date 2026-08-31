@@ -357,6 +357,7 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 |---|---|---|---|---|---|
 | Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
 | Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | high-temp-radiator | Chlorine sink (dump AlCl3 into lava) |
+| Iron chlorination | 2 iron-ingot + 30 chlorine | 4 iron-chloride | 4s | high-temp-radiator | Renewable chlorine sink; dump solid into lava |
 
 **Explosives:**
 
@@ -693,7 +694,19 @@ Chlorine is a **useful input** on Vulcanus, not a waste product. And hydrogen is
 
 You never have enough H2 for all three. Must prioritize.
 
-**Making thermal cracking H2-positive (chlorine sink):**
+**Renewable chlorine disposal:**
+
+Direct iron chlorination consumes no hydrogen or graphite:
+
+```
+2 Fe + 3 Cl2 --> 2 FeCl3
+```
+
+Iron is produced from lava. The solid iron chloride is dumped into lava by
+inserter, making this the renewable closure for excess chlorine from thermal
+HCl cracking.
+
+**Carbochlorination:**
 
 Thermal cracking produces equal H2 and Cl2. If all you want is hydrogen, the chlorine is a byproduct. **Carbochlorination** (IMPLEMENTED) is the chlorine sink:
 
@@ -701,7 +714,10 @@ Thermal cracking produces equal H2 and Cl2. If all you want is hydrogen, the chl
 Al2O3 + 3 Cl2 + 3 C --> 2 AlCl3 + 3 CO
 ```
 
-Alumina and graphite are cheap from lava. AlCl3 is a solid that can be dumped into lava. CO is a useful intermediate (feeds graphite production). Net effect: trade alumina + graphite to extract hydrogen from HCl with no chlorine waste.
+AlCl3 is a solid that can be dumped into lava, and CO is a useful intermediate
+for graphite production. Because atmospheric graphite itself consumes hydrogen
+from HCl cracking, carbochlorination is a secondary chlorine consumer rather
+than the renewable chlorine closure.
 
 **Future**: AlCl3 is the real-world Friedel-Crafts catalyst. Plan to use it as non-consumed catalyst in Vulcanus organic chemistry alt recipes, giving it value beyond a void sink.
 
@@ -718,7 +734,10 @@ Net:    Fe + 2 HCl --> FeCl2 + H2    (sulfur fully recycled)
 
 Iron is cheap from lava. FeCl2 is a solid dumped into lava. Sulfur loops back to step 1. Different production chain from thermal cracking -- uses smelting + chemistry instead of radiators. Gives the player two independent H2 pathways to invest in.
 
-Note: FeCl2 from this route and FeCl3 from direct chlorination (2Fe + 3Cl2 --> 2FeCl3) can share a single "iron chloride" item in-game (handwave the oxidation state). This unifies two chlorine sinks into one waste product and opens the door for iron chloride as a useful intermediate (PCB etchant, water treatment catalyst, etc).
+FeCl2 from this route can use the implemented iron-chloride item from direct
+chlorination (handwaving the oxidation state). This unifies both sinks into one
+waste product and leaves iron chloride available as a later PCB etchant or
+water-treatment catalyst.
 
 ---
 
