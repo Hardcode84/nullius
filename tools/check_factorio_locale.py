@@ -328,10 +328,25 @@ def visible_in_ui(prototype: dict[str, Any], prototype_type: str = "") -> bool:
     )
 
 
-def requires_resolved_name(prototype: dict[str, Any], domain: str) -> bool:
-    # A recipe with no explicit name is displayed using its main product. The
-    # prototype-locale dump intentionally omits that derived recipe name.
-    return domain != "recipe" or "localised_name" in prototype
+def recipe_uses_product_name(name: str, prototype: dict[str, Any]) -> bool:
+    """Whether Factorio derives an implicit recipe name from its product."""
+    if "localised_name" in prototype or prototype.get("main_product") == "":
+        return False
+    main_product = prototype.get("main_product")
+    if isinstance(main_product, str):
+        return main_product == name
+    results = prototype.get("results")
+    if isinstance(results, list) and len(results) == 1:
+        product = results[0]
+        return isinstance(product, dict) and product.get("name") == name
+    result = prototype.get("result")
+    return isinstance(result, str) and result == name
+
+
+def requires_resolved_name(
+    name: str, prototype: dict[str, Any], domain: str
+) -> bool:
+    return domain != "recipe" or not recipe_uses_product_name(name, prototype)
 
 
 def default_locale_key(
@@ -409,13 +424,20 @@ def audit_locale(
             if (
                 name.startswith(prototype_prefix)
                 and visible_in_ui(prototype, prototype_type)
-                and requires_resolved_name(prototype, domain)
+                and requires_resolved_name(name, prototype, domain)
                 and name not in resolved["names"]
             ):
                 missing_prototypes.append(
                     {"prototype_type": prototype_type, "name": name, "domain": domain}
                 )
-            if "localised_name" not in prototype and name in resolved["names"]:
+            if (
+                "localised_name" not in prototype
+                and name in resolved["names"]
+                and (
+                    domain != "recipe"
+                    or not recipe_uses_product_name(name, prototype)
+                )
+            ):
                 key = default_locale_key(name_section, name, domain)
                 used_references[key].append(
                     f"{prototype_type}.{name}.<default-name>"

@@ -17,6 +17,7 @@ from check_factorio_locale import (
     default_locale_key,
     prototype_type_domains,
     parse_locale_catalog,
+    recipe_uses_product_name,
     requires_resolved_name,
     resolved_prototype_tables,
     visible_in_ui,
@@ -75,14 +76,60 @@ class CheckFactorioLocaleTest(unittest.TestCase):
 
         self.assertEqual(set(tables), {"item"})
 
-    def test_recipe_without_explicit_name_uses_product_name(self) -> None:
-        self.assertFalse(requires_resolved_name({"results": [{}]}, "recipe"))
+    def test_recipe_name_follows_factorio_product_rules(self) -> None:
+        same_product = {
+            "results": [{"type": "item", "name": "nullius-a", "amount": 1}]
+        }
+        alternate_product = {
+            "results": [{"type": "item", "name": "nullius-a", "amount": 1}]
+        }
+        self.assertTrue(recipe_uses_product_name("nullius-a", same_product))
+        self.assertFalse(
+            requires_resolved_name("nullius-a", same_product, "recipe")
+        )
+        self.assertFalse(
+            recipe_uses_product_name("nullius-a-vulcanus", alternate_product)
+        )
         self.assertTrue(
             requires_resolved_name(
-                {"localised_name": ["recipe-name.nullius-a"]}, "recipe"
+                "nullius-a-vulcanus", alternate_product, "recipe"
             )
         )
-        self.assertTrue(requires_resolved_name({}, "item"))
+        self.assertTrue(
+            requires_resolved_name(
+                "nullius-a",
+                {"main_product": "", "results": same_product["results"]},
+                "recipe",
+            )
+        )
+        self.assertFalse(
+            requires_resolved_name(
+                "nullius-a",
+                {
+                    "main_product": "nullius-a",
+                    "results": [
+                        {"name": "nullius-a"},
+                        {"name": "nullius-byproduct"},
+                    ],
+                },
+                "recipe",
+            )
+        )
+        self.assertTrue(
+            requires_resolved_name(
+                "nullius-a",
+                {"results": [{"name": "a"}, {"name": "b"}]},
+                "recipe",
+            )
+        )
+        self.assertTrue(
+            requires_resolved_name(
+                "nullius-a",
+                {"localised_name": ["recipe-name.nullius-a"]},
+                "recipe",
+            )
+        )
+        self.assertTrue(requires_resolved_name("nullius-a", {}, "item"))
 
     def test_disabled_technology_is_not_visible(self) -> None:
         self.assertFalse(visible_in_ui({"enabled": False}, "technology"))
@@ -165,7 +212,19 @@ class CheckFactorioLocaleTest(unittest.TestCase):
                     "type": "item",
                     "name": "nullius-missing-prototype",
                 },
-            }
+            },
+            "recipe": {
+                "nullius-same-product": {
+                    "type": "recipe",
+                    "name": "nullius-same-product",
+                    "results": [{"name": "nullius-same-product"}],
+                },
+                "nullius-alternate": {
+                    "type": "recipe",
+                    "name": "nullius-alternate",
+                    "results": [{"name": "nullius-same-product"}],
+                },
+            },
         }
         dumps = {
             domain: {"names": {}, "descriptions": {}}
@@ -190,7 +249,7 @@ class CheckFactorioLocaleTest(unittest.TestCase):
             dumps,
             catalog,
             "nullius-",
-            {"item": "item"},
+            {"item": "item", "recipe": "recipe"},
         )
 
         self.assertEqual(
@@ -200,7 +259,12 @@ class CheckFactorioLocaleTest(unittest.TestCase):
                     "prototype_type": "item",
                     "name": "nullius-missing-prototype",
                     "domain": "item",
-                }
+                },
+                {
+                    "prototype_type": "recipe",
+                    "name": "nullius-alternate",
+                    "domain": "recipe",
+                },
             ],
         )
         self.assertEqual(
