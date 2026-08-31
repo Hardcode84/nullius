@@ -281,6 +281,8 @@ script.on_nth_tick(1, function()
       "iron-assisted sludge dehydration must be available at bootstrap")
     check(sludge_dehydration.prototype.category == "boiling",
       "iron-assisted sludge dehydration has wrong category")
+    check(sludge_dehydration.prototype.surface_conditions == nil,
+      "iron-assisted sludge dehydration must be surface-independent")
     check(sludge_dehydration.energy == 0.5,
       "iron-assisted sludge dehydration has wrong duration")
     check_exact(ingredients_to_map(sludge_dehydration.ingredients), {

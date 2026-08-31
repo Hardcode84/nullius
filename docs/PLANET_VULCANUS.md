@@ -358,7 +358,7 @@ Vulcanus has no organics (plastic, rubber, methanol) and almost no water. These 
 | Lubricant (graphite) | 1 silicon-ingot + 3 graphite + 50 HCl | 8 lubricant + 10 HCl-acid | 6s | basic-chemistry | Methanol in normal recipe |
 | Carbochlorination | 2 alumina + 30 chlorine + 3 graphite | 4 aluminum-chloride + 30 CO | 6s | high-temp-radiator | Chlorine sink (dump AlCl3 into lava) |
 | Iron chlorination | 2 iron-ingot + 30 chlorine | 4 iron-chloride | 4s | high-temp-radiator | Renewable chlorine sink; dump solid into lava |
-| Iron-assisted sludge dehydration | 30 sludge + 1 iron-chloride | 3 mineral-dust + 90 steam + 6 CO | 0.5s | boiling | Faster tier-1 alternative to pressure dehydration |
+| Iron-assisted sludge dehydration | 30 sludge + 1 iron-chloride | 3 mineral-dust + 90 steam + 6 CO | 0.5s | boiling | Global faster tier-1 alternative to pressure dehydration |
 
 **Explosives:**
 

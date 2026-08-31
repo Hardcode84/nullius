@@ -1326,7 +1326,6 @@ data:extend({
       {type = "fluid", name = "nullius-steam", amount = 90},
       {type = "fluid", name = "nullius-carbon-monoxide", amount = 6},
     },
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
 })
 
