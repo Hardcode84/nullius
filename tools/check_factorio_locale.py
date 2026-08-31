@@ -334,6 +334,16 @@ def requires_resolved_name(prototype: dict[str, Any], domain: str) -> bool:
     return domain != "recipe" or "localised_name" in prototype
 
 
+def default_locale_key(
+    section: str,
+    name: str,
+    domain: str,
+) -> str:
+    if domain == "technology":
+        name = re.sub(r"-\d+$", "", name)
+    return f"{section}.{name}"
+
+
 def applicable_type_domains(
     prototype_tables: dict[str, dict[str, Any]],
     type_domains: dict[str, str],
@@ -406,7 +416,8 @@ def audit_locale(
                     {"prototype_type": prototype_type, "name": name, "domain": domain}
                 )
             if "localised_name" not in prototype and name in resolved["names"]:
-                used_references[f"{name_section}.{name}"].append(
+                key = default_locale_key(name_section, name, domain)
+                used_references[key].append(
                     f"{prototype_type}.{name}.<default-name>"
                 )
             if (
@@ -414,9 +425,21 @@ def audit_locale(
                 and "localised_description" not in prototype
                 and name in resolved["descriptions"]
             ):
-                used_references[f"{description_section}.{name}"].append(
+                key = default_locale_key(description_section, name, domain)
+                used_references[key].append(
                     f"{prototype_type}.{name}.<default-description>"
                 )
+
+    # Settings prototypes are consumed before data.raw is dumped, but Factorio's
+    # dedicated locale dump preserves their resolved production UI strings.
+    for field, section in (
+        ("names", "mod-setting-name"),
+        ("descriptions", "mod-setting-description"),
+    ):
+        for name in locale_dumps["mod-setting"][field]:
+            used_references[f"{section}.{name}"].append(
+                f"mod-setting.{name}.<Factorio-resolved-{field}>"
+            )
 
     def owned_reference(key: str) -> bool:
         section, _, name = key.partition(".")

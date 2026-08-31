@@ -14,6 +14,7 @@ from check_factorio_locale import (
     LocaleEntry,
     audit_locale,
     collect_locale_references,
+    default_locale_key,
     prototype_type_domains,
     parse_locale_catalog,
     requires_resolved_name,
@@ -86,6 +87,24 @@ class CheckFactorioLocaleTest(unittest.TestCase):
     def test_disabled_technology_is_not_visible(self) -> None:
         self.assertFalse(visible_in_ui({"enabled": False}, "technology"))
         self.assertTrue(visible_in_ui({"enabled": False}, "recipe"))
+
+    def test_numbered_technology_uses_base_locale_key(self) -> None:
+        self.assertEqual(
+            default_locale_key(
+                "technology-name",
+                "nullius-actuation-3",
+                "technology",
+            ),
+            "technology-name.nullius-actuation",
+        )
+        self.assertEqual(
+            default_locale_key(
+                "technology-name",
+                "nullius-example-3",
+                "technology",
+            ),
+            "technology-name.nullius-example",
+        )
 
     def test_maps_factorio_prototype_inheritance_to_locale_domains(self) -> None:
         self.assertEqual(
