@@ -211,6 +211,8 @@ def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
                 "name": name,
                 "enabled": bool(recipe.get("enabled")),
                 "category": recipe.get("category", "crafting"),
+                "subgroup": recipe.get("subgroup"),
+                "order": recipe.get("order"),
                 "energy_required": float(recipe.get("energy_required", 0.5)),
                 "allow_productivity": bool(recipe.get("allow_productivity")),
                 "maximum_productivity": recipe.get("maximum_productivity"),

@@ -516,6 +516,8 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                 "name": "bad-science",
                 "enabled": False,
                 "category": "research-crafting",
+                "subgroup": None,
+                "order": None,
                 "energy_required": 120.0,
                 "allow_productivity": False,
                 "maximum_productivity": None,

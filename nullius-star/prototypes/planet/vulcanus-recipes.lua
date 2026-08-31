@@ -1302,6 +1302,32 @@ data:extend({
     },
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },
+  {
+    type = "recipe",
+    name = "nullius-iron-assisted-sludge-dehydration",
+    localised_name = {
+      "recipe-name.nullius-iron-assisted-sludge-dehydration",
+    },
+    enabled = true,
+    category = "boiling",
+    main_product = "nullius-mineral-dust",
+    subgroup = "waste-management",
+    order = "nullius-eb",
+    always_show_made_in = true,
+    allow_productivity = false,
+    no_productivity = true,
+    energy_required = 0.5,
+    ingredients = {
+      {type = "fluid", name = "nullius-sludge", amount = 30},
+      {type = "item", name = "nullius-iron-chloride", amount = 1},
+    },
+    results = {
+      {type = "item", name = "nullius-mineral-dust", amount = 3},
+      {type = "fluid", name = "nullius-steam", amount = 90},
+      {type = "fluid", name = "nullius-carbon-monoxide", amount = 6},
+    },
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
 })
 
 -- Alignment content is optional at startup and its technologies are activated

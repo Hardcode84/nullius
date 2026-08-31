@@ -272,5 +272,27 @@ script.on_nth_tick(1, function()
     }, "iron chlorination products")
   end
 
+  local sludge_dehydration = force.recipes[
+    "nullius-iron-assisted-sludge-dehydration"]
+  check(sludge_dehydration ~= nil,
+    "missing iron-assisted sludge dehydration recipe")
+  if sludge_dehydration then
+    check(sludge_dehydration.enabled,
+      "iron-assisted sludge dehydration must be available at bootstrap")
+    check(sludge_dehydration.prototype.category == "boiling",
+      "iron-assisted sludge dehydration has wrong category")
+    check(sludge_dehydration.energy == 0.5,
+      "iron-assisted sludge dehydration has wrong duration")
+    check_exact(ingredients_to_map(sludge_dehydration.ingredients), {
+      ["nullius-sludge"] = 30,
+      ["nullius-iron-chloride"] = 1,
+    }, "iron-assisted sludge dehydration ingredients")
+    check_exact(ingredients_to_map(sludge_dehydration.products), {
+      ["nullius-mineral-dust"] = 3,
+      ["nullius-steam"] = 90,
+      ["nullius-carbon-monoxide"] = 6,
+    }, "iron-assisted sludge dehydration products")
+  end
+
   finish()
 end)
