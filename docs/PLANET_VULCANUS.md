@@ -788,7 +788,7 @@ every surface. Boiling 1 unlocks iron-assisted sludge dehydration.
 | Add global heat mode | crushers, every furnace size, and foundries; tier 1 with Pneumatic Technology, tiers 2-3 with Thermal Engineering |
 | Add heat mode on Vulcanus | nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
 | Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; accumulators and grid infrastructure; rocket silo |
-| Undecided pneumatic candidate | roboports; engine-native robot behavior backed by a script-fed electric buffer |
+| Add clockwork logistics | Vulcanus-only zero-recharge roboport and disposable logistic robots |
 | No alternate mode | passive belts, pipes, tanks, chests, valves, rails and wagons; existing void-, burner-, heat-, and generation-powered entities |
 | Planet source special case | seawater intakes and wells do not get generic pneumatic clones; Vulcanus intake placement already selects lava-intake and gas-vent modes |
 
@@ -802,19 +802,44 @@ Pneumatic variants are for mechanically driven work. Heavy industry and
 nanofabricators use direct process heat. Electrolyzers remain an electricity
 boundary.
 
-**Pneumatic roboport candidate -- undecided**:
+**Clockwork logistics**:
 
 | Field | Contract |
 |---|---|
-| Engine boundary | Roboports accept electric or void energy sources, not fluid energy sources |
-| Candidate entity | Electric-buffer roboport with `input_flow_limit = 0W` plus an owned compressed-gas reservoir |
-| Conversion | Script removes compressed volcanic gas and writes the equivalent joules to the roboport buffer |
-| Scheduling | Same 443-bucket amortization as pneumatic heat interfaces; process one `unit_number % 443` bucket per tick |
-| Buffer invariant | `capacity >= (idle demand + charging slots * per-slot demand) * 443 / 60` |
-| Tier-1 witness | 20 MJ capacity; 14.77 MJ maximum demand per bucket interval |
-| Experimentally validated | Live-grid isolation; gas consumption; native robot charging; buffer drain on gas starvation; recovery after gas restoration |
-| Not yet validated | Player-facing gas connection geometry; compound-entity ownership across build, mine, death, clone, and migration events |
-| Design decisions | Whether pneumatic roboports fit the planet identity; tiers, recipes, research gates, and gas efficiency |
+| Surface | Vulcanus only |
+| Roboport network | One isolated roboport per logistics area |
+| Network overlap | Forbidden by a hidden collision deny area |
+| Deny-area separation | Port centers remain at least `2 * logistics_radius` apart |
+| Energy source | `void` |
+| External power consumption | None |
+| Charging power | `0W` |
+| Construction radius | `0` |
+| Robot type | Logistic robot |
+| Robot variants | One clockwork robot prototype |
+| Recipe | Cheap, automatable, electric-free |
+| Spoilage | None |
+| `min_to_charge` | `0` |
+| `max_to_charge` | `1` |
+| `speed_multiplier_when_out_of_energy` | `0` |
+| Lifecycle | Dispatch; process queued deliveries until the queue is empty or energy reaches zero |
+| Empty queue | Return to charging point; fail to recharge; expire |
+| In-flight expiration | Robot and carried cargo are destroyed |
+| Replacement | Automated production and inserter loading |
+| Runtime robot lifecycle script | None |
+
+| Validation | Assertion |
+|---|---|
+| Port placement | A second port whose logistics area would intersect is rejected |
+| Completed delivery | Cargo reaches the requester before the robot expires at the charging point |
+| In-flight expiration | Robot expires; requester receives nothing; no ground cargo is created |
+| Parallel dispatch | All dispatched robots expire; none return to the robot inventory |
+
+| Factorio 2.0.77 evidence | Result |
+|---|---|
+| `charging_energy = "0W"` | Prototype accepted |
+| Delivery within battery budget | Cargo delivered; robot expired at charging point |
+| Expiration with cargo | Cargo destroyed; no ground item created |
+| Deconstruction recovery | No job created because expiration creates no ground item |
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
