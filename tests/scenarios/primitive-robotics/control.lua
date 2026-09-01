@@ -119,6 +119,7 @@ local function check_prototypes(surface)
     end
     check_exact(prerequisites, {
       ["nullius-efficient-metallurgic-science"] = 1,
+      ["nullius-weaving-1"] = 1,
     }, "Primitive Robotics prerequisites")
     technology.researched = false
     for _, name in ipairs({PORT, ROBOT, STORAGE, SUPPLY, DEMAND}) do
@@ -133,6 +134,27 @@ local function check_prototypes(surface)
         name .. " recipe is surface-gated")
     end
   end
+
+  check_exact(named_amounts(prototypes.recipe[ROBOT].ingredients), {
+    ["nullius-steel-gear"] = 1,
+    ["nullius-steel-wire"] = 1,
+    ["nullius-aluminum-sheet"] = 1,
+  }, "clockwork robot ingredients")
+  check_exact(named_amounts(prototypes.recipe[STORAGE].ingredients), {
+    ["iron-chest"] = 1,
+    ["nullius-steel-sheet"] = 3,
+    ["nullius-aluminum-sheet"] = 3,
+  }, "primitive storage chest ingredients")
+  check_exact(named_amounts(prototypes.recipe[SUPPLY].ingredients), {
+    ["iron-chest"] = 1,
+    ["nullius-steel-sheet"] = 2,
+    ["nullius-steel-gear"] = 1,
+  }, "primitive supply chest ingredients")
+  check_exact(named_amounts(prototypes.recipe[DEMAND].ingredients), {
+    ["iron-chest"] = 1,
+    ["nullius-aluminum-sheet"] = 2,
+    ["nullius-steel-gear"] = 1,
+  }, "primitive demand chest ingredients")
 
   local nauvis = game.surfaces.nauvis
   for _, name in ipairs({PORT, ROBOT, STORAGE, SUPPLY, DEMAND}) do

@@ -180,7 +180,10 @@ data:extend({
       },
       time = 30,
     },
-    prerequisites = {"nullius-efficient-metallurgic-science"},
+    prerequisites = {
+      "nullius-efficient-metallurgic-science",
+      "nullius-weaving-1",
+    },
   },
   {
     type = "technology",

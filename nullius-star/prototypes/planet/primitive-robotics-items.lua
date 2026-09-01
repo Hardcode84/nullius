@@ -45,20 +45,23 @@ data:extend({
     {type = "item", name = "nullius-aluminum-rod", amount = 4},
   }),
   recipe("nullius-clockwork-logistic-robot", "tiny-crafting", 2, {
-    {type = "item", name = "nullius-iron-gear", amount = 1},
-    {type = "item", name = "nullius-iron-rod", amount = 1},
+    {type = "item", name = "nullius-steel-gear", amount = 1},
+    {type = "item", name = "nullius-steel-wire", amount = 1},
     {type = "item", name = "nullius-aluminum-sheet", amount = 1},
   }),
   recipe("nullius-primitive-storage-chest", "medium-crafting", 2, {
-    {type = "item", name = "nullius-iron-plate", amount = 3},
-    {type = "item", name = "nullius-aluminum-plate", amount = 3},
+    {type = "item", name = "iron-chest", amount = 1},
+    {type = "item", name = "nullius-steel-sheet", amount = 3},
+    {type = "item", name = "nullius-aluminum-sheet", amount = 3},
   }),
   recipe("nullius-primitive-supply-chest", "medium-crafting", 2, {
-    {type = "item", name = "nullius-iron-plate", amount = 2},
-    {type = "item", name = "nullius-iron-gear", amount = 1},
+    {type = "item", name = "iron-chest", amount = 1},
+    {type = "item", name = "nullius-steel-sheet", amount = 2},
+    {type = "item", name = "nullius-steel-gear", amount = 1},
   }),
   recipe("nullius-primitive-demand-chest", "medium-crafting", 2, {
-    {type = "item", name = "nullius-aluminum-plate", amount = 2},
-    {type = "item", name = "nullius-iron-gear", amount = 1},
+    {type = "item", name = "iron-chest", amount = 1},
+    {type = "item", name = "nullius-aluminum-sheet", amount = 2},
+    {type = "item", name = "nullius-steel-gear", amount = 1},
   }),
 })

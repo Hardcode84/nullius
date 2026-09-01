@@ -93,7 +93,7 @@ prototypes:
       totals: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5}
       unlocks: [nullius-metallurgic-pack-efficient, nullius-chlorine-barrel, nullius-sulfur-dioxide-barrel]
     nullius-primitive-robotics:
-      prerequisites: [nullius-efficient-metallurgic-science]
+      prerequisites: [nullius-efficient-metallurgic-science, nullius-weaving-1]
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 5, nullius-mechanical-pack: 2, nullius-electrical-pack: 2}}
       totals: {nullius-metallurgic-pack: 25, nullius-mechanical-pack: 10, nullius-electrical-pack: 10}
       unlocks: [nullius-clockwork-roboport, nullius-clockwork-logistic-robot, nullius-primitive-storage-chest, nullius-primitive-supply-chest, nullius-primitive-demand-chest]
@@ -818,7 +818,7 @@ scenarios:
     given:
       force: {researched: [nullius-primitive-robotics]}
       stock: {nullius-compressed-volcanic-gas: 120}
-      raw: {nullius-graphite: 170}
+      raw: {nullius-graphite: 175, nullius-hydrogen-chloride: 50, nullius-rutile: 1}
       forbidden: [seawater-pumping, electricity]
       production_targets: {nullius-clockwork-roboport: 6, nullius-clockwork-logistic-robot: 4, nullius-primitive-storage-chest: 1, nullius-primitive-supply-chest: 2, nullius-primitive-demand-chest: 2}
     place:

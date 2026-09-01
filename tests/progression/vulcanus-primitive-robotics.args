@@ -9,6 +9,8 @@ seawater-pumping
 --raw
 nullius-graphite
 --raw
+nullius-hydrogen-chloride
+--raw
 nullius-rutile
 --raw
 nullius-limestone
@@ -42,6 +44,8 @@ medium-crafting
 hand-casting
 --recipe
 nullius-compressed-volcanic-gas=nullius-lava-gas-extraction
+--recipe
+iron-chest=nullius-iron-chest-vulcanus
 --executor
 nullius-lava-pumping=nullius-lava-intake-1
 --executor
