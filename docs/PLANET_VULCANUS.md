@@ -807,6 +807,9 @@ boundary.
 | Field | Contract |
 |---|---|
 | Surface | Vulcanus only |
+| Research | Primitive Robotics |
+| Research position | Early metallurgic research; after metallurgic pack production |
+| Unlocks | Clockwork roboport, clockwork logistic robot, primitive supply chest, primitive demand chest, primitive storage chest |
 | Roboport network | Ports may overlap and connect normally |
 | Connected-network risk | Combined coverage may dispatch robots beyond their battery range |
 | Energy source | `void` |
@@ -825,6 +828,17 @@ boundary.
 | In-flight expiration | Robot and carried cargo are destroyed |
 | Replacement | Automated production and inserter loading |
 | Runtime robot lifecycle script | None |
+
+| Logistic chest | Mode | Inventory | Logistic slots | Intended use |
+|---|---|---:|---:|---|
+| Primitive supply chest | Passive provider | 2 | 0 | One machine output plus one byproduct |
+| Primitive demand chest | Requester | 2 | 2 | Two low-throughput inputs for one machine |
+| Primitive storage chest | Storage | 6 | 0 | Mixed low-throughput overflow |
+
+| Excluded chest | Reason |
+|---|---|
+| Active provider | Would turn production outputs into uncontrolled network-wide traffic |
+| Buffer chest | Unnecessary for single-stage local delivery |
 
 | Validation | Assertion |
 |---|---|
@@ -1154,6 +1168,7 @@ These techs require heavy metallurgic packs + small amount of generic packs, res
 |---|---|---|---|---|
 | **Volcanic Alkali Processing** | 0 metallurgic | 50 each geology, climatology, mechanical, electrical | Volcanic saline and non-electric causticization | Enables chemical science |
 | **Efficient Metallurgic Science** | 10 | 10 geology + 5 mechanical + 5 electrical | Efficient pack recipe and chlorine/SO2 barreling | Vulcanus production |
+| **Primitive Robotics** | 25 | 10 mechanical + 10 electrical | Clockwork roboport and robot; 2-slot supply, 2-slot demand, and 6-slot storage chests | Vulcanus low-throughput logistics |
 | **Hot Metalworking** | 100 | 10 mechanical | Direct iron and aluminum bloom casting | Vulcanus throughput |
 | **Vulcanus Refractory Engineering** | 400 | 40 geology + 40 chemical | Refractory mix, industrial brick firing, dry heat pipe 2, improved high-temp radiator | Vulcanus high-temperature infrastructure |
 | **Volcanic Titanium Metallurgy** | 800 | 80 geology + 80 chemical | Aluminothermic titanium, aluminum-chloride recovery, refractory hydro plant 2 and foundry 2 | Limited tier-2 construction closure |
