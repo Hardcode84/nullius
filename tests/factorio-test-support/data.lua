@@ -195,3 +195,31 @@ data:extend({{
     time = 1,
   },
 }})
+
+-- Pneumatic roboport experiment fixtures.  The port's electric buffer cannot
+-- accept grid power; the scenario supplies it from the colocated fluid store.
+local pneumatic_roboport = table.deepcopy(data.raw.roboport["nullius-hangar-1"])
+pneumatic_roboport.name = "factorio-test-pneumatic-roboport"
+pneumatic_roboport.localised_name = "Pneumatic roboport experiment"
+pneumatic_roboport.flags = {"placeable-off-grid", "not-on-map"}
+pneumatic_roboport.minable = nil
+pneumatic_roboport.fast_replaceable_group = nil
+pneumatic_roboport.next_upgrade = nil
+pneumatic_roboport.collision_mask = {layers = {}}
+pneumatic_roboport.energy_source.input_flow_limit = "0W"
+pneumatic_roboport.hidden_in_factoriopedia = true
+
+local pneumatic_reservoir = table.deepcopy(data.raw["storage-tank"]["storage-tank"])
+pneumatic_reservoir.name = "factorio-test-pneumatic-roboport-reservoir"
+pneumatic_reservoir.localised_name = "Pneumatic roboport experiment reservoir"
+pneumatic_reservoir.flags = {"placeable-off-grid", "not-on-map"}
+pneumatic_reservoir.minable = nil
+pneumatic_reservoir.fast_replaceable_group = nil
+pneumatic_reservoir.next_upgrade = nil
+pneumatic_reservoir.collision_box = {{0, 0}, {0, 0}}
+pneumatic_reservoir.collision_mask = {layers = {}}
+pneumatic_reservoir.selection_box = nil
+pneumatic_reservoir.fluid_box.pipe_connections = {}
+pneumatic_reservoir.hidden_in_factoriopedia = true
+
+data:extend({pneumatic_roboport, pneumatic_reservoir})

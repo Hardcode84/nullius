@@ -34,7 +34,7 @@ MAX_UNTIL_TICK = 300_000
 
 
 class TestFailure(RuntimeError):
-    pass
+    __test__ = False
 
 
 def validate_until_tick(value: object, source: str) -> int:
