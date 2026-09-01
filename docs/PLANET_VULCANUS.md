@@ -807,6 +807,7 @@ boundary.
 | Field | Contract |
 |---|---|
 | Surface | Vulcanus only |
+| Standard logistic robots | Cool surfaces only; unavailable on Vulcanus |
 | Research | Primitive Robotics |
 | Research position | Early metallurgic research; after metallurgic pack production |
 | Unlocks | Clockwork roboport, clockwork logistic robot, primitive supply chest, primitive demand chest, primitive storage chest |

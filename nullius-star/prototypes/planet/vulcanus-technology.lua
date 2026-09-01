@@ -51,6 +51,8 @@ for _, recipe in ipairs({
     "nullius-boxed-antenna-vulcanus",
     "nullius-boxed-inserter-3-vulcanus",
     "nullius-boxed-power-switch-vulcanus",
+    "nullius-box-clockwork-logistic-robot",
+    "nullius-unbox-clockwork-logistic-robot",
 }) do
   mass_production.effects[#mass_production.effects + 1] = {
     type = "unlock-recipe",
@@ -155,6 +157,30 @@ data:extend({
       time = 30,
     },
     prerequisites = {"nullius-pneumatic-technology"},
+  },
+  {
+    type = "technology",
+    name = "nullius-primitive-robotics",
+    order = "nullius-df-z0",
+    icon = "__base__/graphics/technology/logistic-robotics.png",
+    icon_size = 256,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-clockwork-roboport"},
+      {type = "unlock-recipe", recipe = "nullius-clockwork-logistic-robot"},
+      {type = "unlock-recipe", recipe = "nullius-primitive-storage-chest"},
+      {type = "unlock-recipe", recipe = "nullius-primitive-supply-chest"},
+      {type = "unlock-recipe", recipe = "nullius-primitive-demand-chest"},
+    },
+    unit = {
+      count = 5,
+      ingredients = {
+        {"nullius-metallurgic-pack", 5},
+        {"nullius-mechanical-pack", 2},
+        {"nullius-electrical-pack", 2},
+      },
+      time = 30,
+    },
+    prerequisites = {"nullius-efficient-metallurgic-science"},
   },
   {
     type = "technology",

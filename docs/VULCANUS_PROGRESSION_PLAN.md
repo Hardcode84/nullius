@@ -16,12 +16,13 @@
 | M9 | Produce geology, climatology, mechanical, and electrical science |
 | M10 | Establish local sulfur, alkali, lubricant, chemical science, and replacement thermite explosives |
 | M11 | Research and commission efficient hot-bloom metallurgic science |
-| M12 | Commission direct hot casting |
-| M13 | Start solar-heated crushing, smelting, and casting on Nauvis |
-| M14 | Complete the first crushing, smelting, and casting optimization levels |
-| M15 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry |
-| M16 | Unlock tier-3 thermal industry and supply it from nuclear heat |
-| M17 | Operate thermal nanofabrication and produce physics science locally |
+| M12 | Establish primitive clockwork logistics |
+| M13 | Commission direct hot casting |
+| M14 | Start solar-heated crushing, smelting, and casting on Nauvis |
+| M15 | Complete the first crushing, smelting, and casting optimization levels |
+| M16 | Establish refractory infrastructure, pilot titanium, and deploy tier-2 industry |
+| M17 | Unlock tier-3 thermal industry and supply it from nuclear heat |
+| M18 | Operate thermal nanofabrication and produce physics science locally |
 
 ## Level 2 — Scenario specifications
 
@@ -50,7 +51,7 @@ defaults:
 
 chunk_contract:
   execution: independent
-  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, hot-casting, thermal-cell-1, industrial-optimization-1, boric-acid, carbothermic-sodium, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3, thermal-nanofabrication]
+  order: [activation, vent-prime, gas-self-power, lava-separation, bloom-cooldown, aluminum-reduction, sulfur-catalysis, metallurgic-pack-recipe, construction-closure, inorganic-barrel, metallurgic-pack-10, hcl-thermal-cracking, basic-science-10, chemical-acid-200, chemical-alkali-20, chemical-glass-lubricant, chemical-concrete-barrels, chemical-pack-10, thermite, efficient-metallurgic-research, efficient-metallurgic-science, primitive-robotics, hot-casting, thermal-cell-1, industrial-optimization-1, boric-acid, carbothermic-sodium, refractory-production, titanium-pilot, titanium-construction, thermal-cell-2, thermal-cell-3, thermal-nanofabrication]
   supporting: [pneumatic-heat, pneumatic-compressor, pneumatic-heat-production, caustic-bootstrap]
   given: "subset of cumulative prior terminal state + declared raw/debug boundaries"
   expect: "exact local terminal state"
@@ -60,6 +61,7 @@ validators:
   construction: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-construction.args"
   inorganic-barrel: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-barrel.args"
   efficient-metallurgic-science: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-efficient-pack.args"
+  primitive-robotics: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-primitive-robotics.args"
   hot-casting: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-hot-casting.args"
   refractory-production: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-refractory-production.args"
   titanium-pilot: "python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-titanium-pilot.args"
@@ -90,6 +92,11 @@ prototypes:
       unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 2, nullius-geology-pack: 2, nullius-mechanical-pack: 1, nullius-electrical-pack: 1}}
       totals: {nullius-metallurgic-pack: 10, nullius-geology-pack: 10, nullius-mechanical-pack: 5, nullius-electrical-pack: 5}
       unlocks: [nullius-metallurgic-pack-efficient, nullius-chlorine-barrel, nullius-sulfur-dioxide-barrel]
+    nullius-primitive-robotics:
+      prerequisites: [nullius-efficient-metallurgic-science]
+      unit: {count: 5, time: 30, ingredients: {nullius-metallurgic-pack: 5, nullius-mechanical-pack: 2, nullius-electrical-pack: 2}}
+      totals: {nullius-metallurgic-pack: 25, nullius-mechanical-pack: 10, nullius-electrical-pack: 10}
+      unlocks: [nullius-clockwork-roboport, nullius-clockwork-logistic-robot, nullius-primitive-storage-chest, nullius-primitive-supply-chest, nullius-primitive-demand-chest]
     nullius-hot-metalworking:
       prerequisites: [nullius-efficient-metallurgic-science, nullius-aluminum-working-1]
       unit: {count: 10, time: 30, ingredients: {nullius-metallurgic-pack: 10, nullius-mechanical-pack: 1}}
@@ -805,8 +812,36 @@ scenarios:
         input_remaining: 0
         spoiled: {nullius-iron-ingot: 0, nullius-alumina: 0}
 
-  hot-casting:
+  primitive-robotics:
     milestone: M12
+    validator: primitive-robotics
+    given:
+      force: {researched: [nullius-primitive-robotics]}
+      stock: {nullius-compressed-volcanic-gas: 120}
+      raw: {nullius-graphite: 170}
+      forbidden: [seawater-pumping, electricity]
+      production_targets: {nullius-clockwork-roboport: 6, nullius-clockwork-logistic-robot: 4, nullius-primitive-storage-chest: 1, nullius-primitive-supply-chest: 2, nullius-primitive-demand-chest: 2}
+    place:
+      short_network: {nullius-clockwork-roboport: 1, nullius-primitive-supply-chest: 1, nullius-primitive-demand-chest: 1, nullius-clockwork-logistic-robot: 3}
+      long_network: {nullius-clockwork-roboport: 5, nullius-primitive-supply-chest: 1, nullius-primitive-demand-chest: 1, nullius-clockwork-logistic-robot: 1}
+    connect:
+      - short_network: single_port
+      - long_network: five_overlapping_ports
+    act:
+      - insert: {network: short_network, item: stone, count: 3}
+      - request: {network: short_network, item: stone, count: 3}
+      - insert: {network: long_network, item: stone, count: 1}
+      - request: {network: long_network, item: stone, count: 1}
+    run: {ticks: 1500, timeout: 1600, parallel_networks: 2}
+    expect:
+      short_network: {delivered: {stone: 3}, expired_robots: 3}
+      long_network: {supply: {stone: 0}, demand: {stone: 0}, expired_robots: 1, spilled_items: 0}
+      normal_logistic_robots: {nauvis_placeable: true, vulcanus_placeable: false}
+      additional_technologies: 0
+      electric_paths: 0
+
+  hot-casting:
+    milestone: M13
     validator: hot-casting
     given:
       force: {researched: [nullius-hot-metalworking]}
@@ -857,7 +892,7 @@ scenarios:
         effect_receiver: {base_effect: {productivity: matrix.productivity}}
 
   thermal-cell-1:
-    milestone: M13
+    milestone: M14
     given:
       surface: nauvis
       force: {researched: [nullius-pneumatic-technology]}
@@ -890,7 +925,7 @@ scenarios:
         items_preserved: {nullius-crusher-1: 5, nullius-small-furnace-1: 5, nullius-foundry-1: 5}
 
   industrial-optimization-1:
-    milestone: M14
+    milestone: M15
     given:
       force: {researched: [nullius-efficient-metallurgic-science]}
       inventory: {nullius-metallurgic-pack: 300}
@@ -910,7 +945,7 @@ scenarios:
         downstream_technology_prerequisites_added: 0
 
   boric-acid:
-    milestone: M15
+    milestone: M16
     validator: boric-acid
     given:
       force: {researched: [nullius-sulfur-processing-2, nullius-pneumatic-technology]}
@@ -924,7 +959,7 @@ scenarios:
     expect: {produced: {nullius-acid-boric: "=1"}, retained: {nullius-volcanic-gas: "=20"}, fuel_consumed: {nullius-compressed-volcanic-gas: "=43.2"}, additional_technologies: 0, electric_paths: 0}
 
   carbothermic-sodium:
-    milestone: M15
+    milestone: M16
     validator: carbothermic-sodium
     given:
       force: {researched: [nullius-sodium-processing]}
@@ -936,7 +971,7 @@ scenarios:
     expect: {produced: {nullius-sodium: "=2", nullius-carbon-monoxide: "=90"}, additional_technologies: 0, electric_paths: 0}
 
   refractory-production:
-    milestone: M15
+    milestone: M16
     validator: refractory-production
     given:
       force: {researched: [nullius-vulcanus-refractory-engineering]}
@@ -964,7 +999,7 @@ scenarios:
         forbidden_inputs: [nullius-insulation, nullius-pipe-3, nullius-plastic, nullius-rubber]
 
   titanium-pilot:
-    milestone: M15
+    milestone: M16
     validator: titanium-pilot
     given:
       force: {researched: [nullius-volcanic-titanium-metallurgy]}
@@ -985,7 +1020,7 @@ scenarios:
         electric_paths: 0
 
   titanium-construction:
-    milestone: M15
+    milestone: M16
     validator: titanium-construction
     given:
       force: {researched: [nullius-volcanic-titanium-metallurgy]}
@@ -1002,7 +1037,7 @@ scenarios:
         electric_paths: 0
 
   thermal-cell-2:
-    milestone: M15
+    milestone: M16
     given:
       surface: nauvis
       force: {researched: [nullius-thermal-engineering-2]}
@@ -1039,7 +1074,7 @@ scenarios:
         items_preserved: {nullius-crusher-2: 5, nullius-small-furnace-2: 5, nullius-medium-furnace-2: 5, nullius-large-furnace-2: 5, nullius-foundry-2: 5}
 
   thermal-cell-3:
-    milestone: M16
+    milestone: M17
     given:
       surface: nauvis
       force: {researched: [nullius-thermal-engineering-3]}
@@ -1075,7 +1110,7 @@ scenarios:
         items_preserved: {nullius-crusher-3: 5, nullius-small-furnace-3: 5, nullius-medium-furnace-3: 5, nullius-foundry-3: 5}
 
   thermal-nanofabrication:
-    milestone: M17
+    milestone: M18
     given:
       surface: nullius-vulcanus
       force: {researched: [nullius-nanotechnology-1, nullius-nanotechnology-2]}

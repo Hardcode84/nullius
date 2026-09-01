@@ -443,6 +443,7 @@ create_boxed_item("grass-seed", "biology", "h")
 create_boxed_item("solar-collector-1", "heat-energy", "bb")
 create_boxed_item("solar-collector-2", "heat-energy", "bc")
 create_boxed_item("solar-collector-3", "heat-energy", "bd")
+create_boxed_item("clockwork-logistic-robot", "robot", "ca")
 
 if mods["ch-concentrated-solar"] then
 create_boxed_item("heliostat-mirror", "heat-energy", "cb", "chcs-heliostat-mirror")
