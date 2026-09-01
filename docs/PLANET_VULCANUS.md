@@ -807,9 +807,8 @@ boundary.
 | Field | Contract |
 |---|---|
 | Surface | Vulcanus only |
-| Roboport network | One isolated roboport per logistics area |
-| Network overlap | Forbidden by a hidden collision deny area |
-| Deny-area separation | Port centers remain at least `2 * logistics_radius` apart |
+| Roboport network | Ports may overlap and connect normally |
+| Connected-network risk | Combined coverage may dispatch robots beyond their battery range |
 | Energy source | `void` |
 | External power consumption | None |
 | Charging power | `0W` |
@@ -829,7 +828,8 @@ boundary.
 
 | Validation | Assertion |
 |---|---|
-| Port placement | A second port whose logistics area would intersect is rejected |
+| Port connection | Overlapping ports form one native logistic network |
+| Unsafe connected route | Robot expires in flight; robot and cargo are lost |
 | Completed delivery | Cargo reaches the requester before the robot expires at the charging point |
 | In-flight expiration | Robot expires; requester receives nothing; no ground cargo is created |
 | Parallel dispatch | All dispatched robots expire; none return to the robot inventory |
