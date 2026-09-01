@@ -787,7 +787,8 @@ every surface. Boiling 1 unlocks iron-assisted sludge dehydration.
 | Add gas mode | solid miners (all 8 size/tier variants); inserter tiers 3-4; chimney 3; flotation cells 2-3; labs 2-3 |
 | Add global heat mode | crushers, every furnace size, and foundries; tier 1 with Pneumatic Technology, tiers 2-3 with Thermal Engineering |
 | Add heat mode on Vulcanus | nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
-| Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; roboports and robot infrastructure; accumulators and grid infrastructure; rocket silo |
+| Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; accumulators and grid infrastructure; rocket silo |
+| Undecided pneumatic candidate | roboports; engine-native robot behavior backed by a script-fed electric buffer |
 | No alternate mode | passive belts, pipes, tanks, chests, valves, rails and wagons; existing void-, burner-, heat-, and generation-powered entities |
 | Planet source special case | seawater intakes and wells do not get generic pneumatic clones; Vulcanus intake placement already selects lava-intake and gas-vent modes |
 
@@ -800,6 +801,20 @@ python3 tools/analyze_factorio_prereqs.py --describe-placeable-prefix nullius-
 Pneumatic variants are for mechanically driven work. Heavy industry and
 nanofabricators use direct process heat. Electrolyzers remain an electricity
 boundary.
+
+**Pneumatic roboport candidate -- undecided**:
+
+| Field | Contract |
+|---|---|
+| Engine boundary | Roboports accept electric or void energy sources, not fluid energy sources |
+| Candidate entity | Electric-buffer roboport with `input_flow_limit = 0W` plus an owned compressed-gas reservoir |
+| Conversion | Script removes compressed volcanic gas and writes the equivalent joules to the roboport buffer |
+| Scheduling | Same 443-bucket amortization as pneumatic heat interfaces; process one `unit_number % 443` bucket per tick |
+| Buffer invariant | `capacity >= (idle demand + charging slots * per-slot demand) * 443 / 60` |
+| Tier-1 witness | 20 MJ capacity; 14.77 MJ maximum demand per bucket interval |
+| Experimentally validated | Live-grid isolation; gas consumption; native robot charging; buffer drain on gas starvation; recovery after gas restoration |
+| Not yet validated | Player-facing gas connection geometry; compound-entity ownership across build, mine, death, clone, and migration events |
+| Design decisions | Whether pneumatic roboports fit the planet identity; tiers, recipes, research gates, and gas efficiency |
 
 **Engine support confirmed**:
 - `FluidEnergySource` with `burns_fluid = true` makes machines consume fluid based on `fuel_value`
