@@ -36,7 +36,7 @@ Lava is Vulcanus's equivalent of Nauvis's ores. Extracted by free lava intakes f
 | Lava aluminum separation | 100 lava | 3 molten-aluminum-bloom + 25 compressed-volcanic-gas + 8 stone | 5s | water-treatment (hydro-plant) |
 | Lava calcite separation | 80 lava | 6 crushed-limestone + 20 compressed-volcanic-gas | 4s | water-treatment (hydro-plant) |
 | Lava silica extraction | 60 lava | 8 silica + 5 stone + 15 compressed-volcanic-gas + 10 SO2 | 3s | water-treatment (hydro-plant) |
-| **Lava gas extraction** | 50 lava | 60 compressed-volcanic-gas + 3 stone | 2s | water-treatment (hydro-plant) |
+| **Lava gas extraction** | 50 lava | 65 compressed-volcanic-gas + 3 stone | 2s | water-treatment (hydro-plant) |
 
 Metal separation recipes are **net-negative on gas** (consume more than they produce). The dedicated gas extraction recipe is the primary gas source. Player must balance hydro-plants between metal production and gas production.
 
@@ -886,7 +886,7 @@ Lava (under pressure) --> [Lava Processing]
 
 Lava separation recipes return some compressed gas as a coproduct but are
 net-negative after machine fuel. `nullius-lava-gas-extraction` is the dedicated
-net-positive recipe: 50 lava produces 60 compressed gas and 3 stone in two
+net-positive recipe: 50 lava produces 65 compressed gas and 3 stone in two
 seconds.
 
 | Process | Energy Source | Notes |
@@ -1365,7 +1365,7 @@ The player has already researched "Pneumatic Technology" on Nauvis (unlocked rig
 ```
 6. Place a hydro plant (from wreck), Ctrl+R to PNEUMATIC mode.
    - Powered by the free-gas vent. Set recipe to lava gas extraction.
-   - Each cycle consumes 50 lava and produces 60 compressed volcanic gas plus 3 stone.
+   - Each cycle consumes 50 lava and produces 65 compressed volcanic gas plus 3 stone.
    - Its output powers its next cycle and leaves a net gas surplus.
 7. Pipe the compressed gas output back into the machine gas network.
 8. Molten iron blooms cool on belt/in chest (30s) --> first iron ingots.

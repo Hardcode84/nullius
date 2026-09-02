@@ -114,7 +114,7 @@ return {
     "nullius-wind-power-1",
   },
   fuel_consumption = {
-    ["nullius-compressed-volcanic-gas"] = 23520.0,
+    ["nullius-compressed-volcanic-gas"] = 22632.0,
   },
   initial_stock = {
     ["nullius-compressed-volcanic-gas"] = 24.0,
@@ -126,7 +126,7 @@ return {
   schema = 1,
   steps = {
     {
-      cycles = 291,
+      cycles = 276,
       executor = {
         alternatives = {
           "nullius-lava-intake-1",
@@ -151,7 +151,7 @@ return {
       ingredients = {},
       outputs = {
         {
-          amount = 36375.0,
+          amount = 34500.0,
           name = "lava",
           type = "fluid",
         },
@@ -159,10 +159,10 @@ return {
       producer = "nullius-lava-pumping",
       product = "lava",
       ticks_per_cycle = 60,
-      total_ticks_single_executor = 17460,
+      total_ticks_single_executor = 16560,
     },
     {
-      cycles = 301,
+      cycles = 264,
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
@@ -186,24 +186,24 @@ return {
       fuel = {
         amount_per_cycle = 24.0,
         name = "nullius-compressed-volcanic-gas",
-        total_amount = 7224.0,
+        total_amount = 6336.0,
       },
       heat = nil,
       ingredients = {
         {
-          amount = 15050.0,
+          amount = 13200.0,
           name = "lava",
           type = "fluid",
         },
       },
       outputs = {
         {
-          amount = 18060.0,
+          amount = 17160.0,
           name = "nullius-compressed-volcanic-gas",
           type = "fluid",
         },
         {
-          amount = 903.0,
+          amount = 792.0,
           name = "stone",
           type = "item",
         },
@@ -211,7 +211,7 @@ return {
       producer = "nullius-lava-gas-extraction",
       product = "nullius-compressed-volcanic-gas",
       ticks_per_cycle = 120,
-      total_ticks_single_executor = 36120,
+      total_ticks_single_executor = 31680,
     },
     {
       cycles = 7,
@@ -665,15 +665,15 @@ return {
     },
   },
   surplus = {
-    lava = 65.0,
+    lava = 40.0,
     ["nullius-aluminum-carbide"] = 108.0,
     ["nullius-aluminum-ingot"] = 1.0,
-    ["nullius-compressed-volcanic-gas"] = 29.0,
+    ["nullius-compressed-volcanic-gas"] = 17.0,
     ["nullius-crushed-limestone"] = 2.0,
     ["nullius-oxygen"] = 1600.0,
     ["nullius-rutile"] = 1.0,
     ["nullius-silica"] = 1240.0,
-    stone = 2651.0,
+    stone = 2540.0,
   },
   targets = {
     ["nullius-metallurgic-pack"] = 10.0,

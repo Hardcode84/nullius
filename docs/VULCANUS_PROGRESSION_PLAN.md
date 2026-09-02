@@ -247,9 +247,9 @@ scenarios:
     run: {ticks: 245}
     expect:
       terminal:
-        produced: {nullius-compressed-volcanic-gas: "=120", stone: "=6"}
+        produced: {nullius-compressed-volcanic-gas: "=130", stone: "=6"}
         consumed: {lava: "=100", nullius-compressed-volcanic-gas: "<=48.1"}
-        fluid: {gas: {nullius-compressed-volcanic-gas: ">=95.9"}}
+        fluid: {gas: {nullius-compressed-volcanic-gas: ">=105.9"}}
         connected_vent: 0
 
   lava-separation:
@@ -687,8 +687,8 @@ scenarios:
       raw: {nullius-hydrogen-chloride: 360, nullius-rutile: 1}
       forbidden: [seawater-pumping, electricity]
       executors: {nullius-lava-pumping: nullius-lava-intake-1, nullius-water-treatment: nullius-hydro-plant-1-pneumatic, basic-chemistry: nullius-chemical-plant-1-pneumatic, nullius-low-temp-radiator: nullius-vulcanus-radiator-1}
-    run: {until: targets_complete, ticks: 4778, timeout: 10000, parallel_executors: 8}
-    expect: {produced: {nullius-acid-sulfuric: "=200"}, additional_technologies: 0, electric_paths: 0}
+    run: {until: targets_complete, ticks: 3864, timeout: 10000, parallel_executors: 8}
+    expect: {produced: {nullius-acid-sulfuric: "=200"}, reserve: {nullius-compressed-volcanic-gas: "=45"}, additional_technologies: 0, electric_paths: 0}
 
   chemical-alkali-20:
     milestone: M10

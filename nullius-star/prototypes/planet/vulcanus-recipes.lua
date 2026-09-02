@@ -920,7 +920,7 @@ data:extend({
       {type = "fluid", name = "lava", amount = 50},
     },
     results = {
-      {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 60},
+      {type = "fluid", name = "nullius-compressed-volcanic-gas", amount = 65},
       {type = "item", name = "stone", amount = 3},
     },
     main_product = "nullius-compressed-volcanic-gas",

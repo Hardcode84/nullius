@@ -3,6 +3,7 @@ local RESULT = "factorio-tests/" .. CASE .. ".json"
 local MACHINE = "nullius-hydro-plant-1-pneumatic"
 local RECIPE = "nullius-lava-gas-extraction"
 local GAS = "nullius-compressed-volcanic-gas"
+local GAS_PER_CYCLE = 65
 local VENT_PARTS = {
   "nullius-lava-intake-1-gasvent",
   "nullius-lava-intake-2-gasvent",
@@ -64,7 +65,7 @@ local function check_terminal()
   local gas = fluid_total(GAS, storage.gas_entities)
   local lava = fluid_total("lava", storage.lava_entities)
   local stone = stone_total()
-  local gas_produced = cycles * 60
+  local gas_produced = cycles * GAS_PER_CYCLE
   local gas_consumed = 24 + gas_produced - gas
   local lava_consumed = 100 - lava
   observations.terminal = {
@@ -83,11 +84,11 @@ local function check_terminal()
   }
 
   check(cycles == 2, "terminal completed an unexpected number of recipe cycles")
-  check(close(gas_produced, 120),
+  check(close(gas_produced, 130),
     "terminal produced an unexpected amount of compressed volcanic gas")
   check(gas_consumed + 0.000001 >= 48 and gas_consumed <= 48.1,
     "terminal gas consumption is outside the two-cycle energy range")
-  check(gas >= 95.9, "terminal gas reserve is below the self-power threshold")
+  check(gas >= 105.9, "terminal gas reserve is below the self-power threshold")
   check(close(lava_consumed, 100), "terminal did not consume all 100 lava")
   check(close(stone, 6), "terminal produced an unexpected amount of stone")
   check(#storage.surface.find_entities_filtered{name = VENT_PARTS} == 0,

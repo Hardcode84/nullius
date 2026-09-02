@@ -180,7 +180,7 @@ return {
     "nullius-wind-power-2",
   },
   fuel_consumption = {
-    ["nullius-compressed-volcanic-gas"] = 5148.55,
+    ["nullius-compressed-volcanic-gas"] = 4956.55,
   },
   initial_stock = {
     ["nullius-compressed-volcanic-gas"] = 24.0,
@@ -194,7 +194,7 @@ return {
   schema = 1,
   steps = {
     {
-      cycles = 66,
+      cycles = 63,
       executor = {
         alternatives = {
           "nullius-lava-intake-1",
@@ -219,7 +219,7 @@ return {
       ingredients = {},
       outputs = {
         {
-          amount = 8250.0,
+          amount = 7875.0,
           name = "lava",
           type = "fluid",
         },
@@ -227,10 +227,10 @@ return {
       producer = "nullius-lava-pumping",
       product = "lava",
       ticks_per_cycle = 60,
-      total_ticks_single_executor = 3960,
+      total_ticks_single_executor = 3780,
     },
     {
-      cycles = 64,
+      cycles = 56,
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
@@ -254,24 +254,24 @@ return {
       fuel = {
         amount_per_cycle = 24.0,
         name = "nullius-compressed-volcanic-gas",
-        total_amount = 1536.0,
+        total_amount = 1344.0,
       },
       heat = nil,
       ingredients = {
         {
-          amount = 3200.0,
+          amount = 2800.0,
           name = "lava",
           type = "fluid",
         },
       },
       outputs = {
         {
-          amount = 3840.0,
+          amount = 3640.0,
           name = "nullius-compressed-volcanic-gas",
           type = "fluid",
         },
         {
-          amount = 192.0,
+          amount = 168.0,
           name = "stone",
           type = "item",
         },
@@ -279,7 +279,7 @@ return {
       producer = "nullius-lava-gas-extraction",
       product = "nullius-compressed-volcanic-gas",
       ticks_per_cycle = 120,
-      total_ticks_single_executor = 7680,
+      total_ticks_single_executor = 6720,
     },
     {
       cycles = 3,
@@ -1826,118 +1826,6 @@ return {
       cycles = 2,
       executor = {
         alternatives = {
-          "nullius-medium-furnace-1",
-          "nullius-medium-furnace-1-thermal",
-        },
-        crafting_speed = 1.0,
-        energy_source = {
-          effectivity = 1.0,
-          maximum_temperature = 250,
-          minimum_working_temperature = 100,
-          type = "heat",
-        },
-        energy_usage = "270kW",
-        explicit_override = true,
-        item = "nullius-medium-furnace-1",
-        kind = "machine",
-        name = "nullius-medium-furnace-1-thermal",
-        prototype_type = "assembling-machine",
-      },
-      fuel = nil,
-      heat = {
-        energy_per_cycle_joules = 1080000.0,
-        maximum_temperature = 250,
-        minimum_working_temperature = 100,
-      },
-      ingredients = {
-        {
-          amount = 6.0,
-          name = "nullius-silica",
-          type = "item",
-        },
-        {
-          amount = 2.0,
-          name = "nullius-aluminum-sheet",
-          type = "item",
-        },
-      },
-      outputs = {
-        {
-          amount = 4.0,
-          name = "nullius-silicon-insulation",
-          type = "item",
-        },
-      },
-      producer = "nullius-silicon-insulation",
-      product = "nullius-silicon-insulation",
-      ticks_per_cycle = 240,
-      total_ticks_single_executor = 480,
-    },
-    {
-      cycles = 1,
-      executor = {
-        alternatives = {
-          "nullius-small-assembler-1",
-          "nullius-small-assembler-1-pneumatic",
-        },
-        crafting_speed = 0.5,
-        energy_source = {
-          effectivity = 1.0,
-          maximum_temperature = nil,
-          minimum_working_temperature = nil,
-          type = "fluid",
-        },
-        energy_usage = "59kW",
-        explicit_override = true,
-        item = "nullius-small-assembler-1",
-        kind = "machine",
-        name = "nullius-small-assembler-1-pneumatic",
-        prototype_type = "assembling-machine",
-      },
-      fuel = {
-        amount_per_cycle = 29.5,
-        name = "nullius-compressed-volcanic-gas",
-        total_amount = 29.5,
-      },
-      heat = nil,
-      ingredients = {
-        {
-          amount = 3.0,
-          name = "nullius-silicon-insulation",
-          type = "item",
-        },
-        {
-          amount = 4.0,
-          name = "nullius-aluminum-wire",
-          type = "item",
-        },
-        {
-          amount = 2.0,
-          name = "nullius-polycrystalline-silicon",
-          type = "item",
-        },
-        {
-          amount = 1.0,
-          name = "nullius-graphite",
-          type = "item",
-        },
-      },
-      outputs = {
-        {
-          amount = 3.0,
-          name = "decider-combinator",
-          type = "item",
-        },
-      },
-      producer = "nullius-logic-circuit-vulcanus",
-      product = "decider-combinator",
-      ticks_per_cycle = 600,
-      total_ticks_single_executor = 600,
-    },
-    {
-      cycles = 2,
-      executor = {
-        alternatives = {
           "nullius-crusher-1",
           "nullius-crusher-1-thermal",
         },
@@ -1986,7 +1874,7 @@ return {
       total_ticks_single_executor = 360,
     },
     {
-      cycles = 2,
+      cycles = 4,
       executor = {
         alternatives = {
           "nullius-medium-furnace-1",
@@ -2014,19 +1902,19 @@ return {
       },
       ingredients = {
         {
-          amount = 6.0,
+          amount = 12.0,
           name = "nullius-silica",
           type = "item",
         },
         {
-          amount = 2.0,
+          amount = 4.0,
           name = "nullius-aluminum-sheet",
           type = "item",
         },
       },
       outputs = {
         {
-          amount = 4.0,
+          amount = 8.0,
           name = "nullius-silicon-insulation",
           type = "item",
         },
@@ -2034,7 +1922,7 @@ return {
       producer = "nullius-silicon-insulation",
       product = "nullius-silicon-insulation",
       ticks_per_cycle = 240,
-      total_ticks_single_executor = 480,
+      total_ticks_single_executor = 960,
     },
     {
       cycles = 1,
@@ -2142,6 +2030,67 @@ return {
       product = "copper-cable",
       ticks_per_cycle = 720,
       total_ticks_single_executor = 1440,
+    },
+    {
+      cycles = 1,
+      executor = {
+        alternatives = {
+          "nullius-small-assembler-1",
+          "nullius-small-assembler-1-pneumatic",
+        },
+        crafting_speed = 0.5,
+        energy_source = {
+          effectivity = 1.0,
+          maximum_temperature = nil,
+          minimum_working_temperature = nil,
+          type = "fluid",
+        },
+        energy_usage = "59kW",
+        explicit_override = true,
+        item = "nullius-small-assembler-1",
+        kind = "machine",
+        name = "nullius-small-assembler-1-pneumatic",
+        prototype_type = "assembling-machine",
+      },
+      fuel = {
+        amount_per_cycle = 29.5,
+        name = "nullius-compressed-volcanic-gas",
+        total_amount = 29.5,
+      },
+      heat = nil,
+      ingredients = {
+        {
+          amount = 3.0,
+          name = "nullius-silicon-insulation",
+          type = "item",
+        },
+        {
+          amount = 4.0,
+          name = "nullius-aluminum-wire",
+          type = "item",
+        },
+        {
+          amount = 2.0,
+          name = "nullius-polycrystalline-silicon",
+          type = "item",
+        },
+        {
+          amount = 1.0,
+          name = "nullius-graphite",
+          type = "item",
+        },
+      },
+      outputs = {
+        {
+          amount = 3.0,
+          name = "decider-combinator",
+          type = "item",
+        },
+      },
+      producer = "nullius-logic-circuit-vulcanus",
+      product = "decider-combinator",
+      ticks_per_cycle = 600,
+      total_ticks_single_executor = 600,
     },
     {
       cycles = 1,
@@ -2404,7 +2353,7 @@ return {
     barrel = 1.0,
     ["copper-cable"] = 3.0,
     ["decider-combinator"] = 2.0,
-    lava = 10.0,
+    lava = 35.0,
     ["nullius-aluminum-carbide"] = 28.0,
     ["nullius-aluminum-ingot"] = 1.0,
     ["nullius-aluminum-plate"] = 1.0,
@@ -2412,7 +2361,7 @@ return {
     ["nullius-aluminum-sheet"] = 4.0,
     ["nullius-carbon-dioxide"] = 460.0,
     ["nullius-chlorine"] = 25.0,
-    ["nullius-compressed-volcanic-gas"] = 35.44999999999982,
+    ["nullius-compressed-volcanic-gas"] = 27.449999999999818,
     ["nullius-crushed-limestone"] = 1.0,
     ["nullius-gravel"] = 5.0,
     ["nullius-green-wire"] = 3.0,
@@ -2431,7 +2380,7 @@ return {
     ["nullius-steel-sheet"] = 4.0,
     ["nullius-sulfur-dioxide"] = 30.0,
     pipe = 4.0,
-    stone = 625.0,
+    stone = 601.0,
     ["stone-brick"] = 4.0,
     sulfur = 6.0,
   },

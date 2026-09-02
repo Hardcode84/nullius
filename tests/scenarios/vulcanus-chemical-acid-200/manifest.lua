@@ -158,7 +158,7 @@ return {
     "nullius-wind-power-2",
   },
   fuel_consumption = {
-    ["nullius-compressed-volcanic-gas"] = 1344.0,
+    ["nullius-compressed-volcanic-gas"] = 1320.0,
   },
   initial_stock = {
     ["nullius-compressed-volcanic-gas"] = 30.0,
@@ -206,7 +206,7 @@ return {
       total_ticks_single_executor = 1080,
     },
     {
-      cycles = 16,
+      cycles = 15,
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
@@ -230,24 +230,24 @@ return {
       fuel = {
         amount_per_cycle = 24.0,
         name = "nullius-compressed-volcanic-gas",
-        total_amount = 384.0,
+        total_amount = 360.0,
       },
       heat = nil,
       ingredients = {
         {
-          amount = 800.0,
+          amount = 750.0,
           name = "lava",
           type = "fluid",
         },
       },
       outputs = {
         {
-          amount = 960.0,
+          amount = 975.0,
           name = "nullius-compressed-volcanic-gas",
           type = "fluid",
         },
         {
-          amount = 48.0,
+          amount = 45.0,
           name = "stone",
           type = "item",
         },
@@ -255,7 +255,7 @@ return {
       producer = "nullius-lava-gas-extraction",
       product = "nullius-compressed-volcanic-gas",
       ticks_per_cycle = 120,
-      total_ticks_single_executor = 1920,
+      total_ticks_single_executor = 1800,
     },
     {
       cycles = 24,
@@ -493,17 +493,18 @@ return {
     },
   },
   surplus = {
-    lava = 10.0,
+    lava = 60.0,
     ["nullius-chlorine"] = 180.0,
-    ["nullius-compressed-volcanic-gas"] = 6.0,
+    ["nullius-compressed-volcanic-gas"] = 35.0,
     ["nullius-oxygen"] = 30.0,
     ["nullius-rutile"] = 1.0,
     ["nullius-silica"] = 192.0,
     ["nullius-water"] = 20.0,
-    stone = 168.0,
+    stone = 165.0,
     sulfur = 4.0,
   },
   targets = {
     ["nullius-acid-sulfuric"] = 200.0,
+    ["nullius-compressed-volcanic-gas"] = 10.0,
   },
 }
