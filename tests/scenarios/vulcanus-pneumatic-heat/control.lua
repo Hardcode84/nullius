@@ -32,6 +32,27 @@ local cases = {
   },
 }
 
+local excluded_machines = {
+  {name = "nullius-pump-1-pneumatic", type = "pump"},
+  {name = "nullius-pump-2-pneumatic", type = "pump"},
+  {name = "pump-pneumatic", type = "pump"},
+  {name = "nullius-small-pump-1-pneumatic", type = "pump"},
+  {name = "nullius-small-pump-2-pneumatic", type = "pump"},
+  {name = "nullius-togglable-pump-1-pneumatic", type = "pump"},
+  {name = "nullius-togglable-pump-2-pneumatic", type = "pump"},
+  {name = "nullius-togglable-pump-3-pneumatic", type = "pump"},
+  {name = "nullius-togglable-small-pump-1-pneumatic", type = "pump"},
+  {name = "nullius-togglable-small-pump-2-pneumatic", type = "pump"},
+  {name = "nullius-boxer-pneumatic", type = "furnace"},
+}
+
+local heat_interfaces = {
+  "nullius-pneumatic-heat-small",
+  "nullius-pneumatic-heat-medium",
+  "nullius-pneumatic-heat-medium2",
+  "nullius-pneumatic-heat-large",
+}
+
 local assertions = 0
 local failures = {}
 local observations = {}
@@ -44,6 +65,14 @@ end
 local function entities_at(surface, name, position)
   return surface.find_entities_filtered{
     name = name,
+    position = position,
+    radius = 0.1,
+  }
+end
+
+local function heat_interfaces_at(surface, position)
+  return surface.find_entities_filtered{
+    name = heat_interfaces,
     position = position,
     radius = 0.1,
   }
@@ -178,6 +207,35 @@ local function setup()
         storage.machine_positions[test.size] = machine.position
         check(#entities_at(s, test.interface, machine.position) == 1,
           test.size .. " build did not create exactly one heat interface")
+      end
+    end
+  end
+
+  observations.excluded_machines = {}
+  for index, excluded in ipairs(excluded_machines) do
+    local name = excluded.name
+    local prototype = prototypes.entity[name]
+    check(prototype ~= nil, "missing excluded pneumatic machine " .. name)
+    if prototype then
+      check(prototype.type == excluded.type,
+        name .. " is not a " .. excluded.type)
+      local position = {-45 + (index - 1) * 10, 8}
+      local ghost = s.create_entity{
+        name = "entity-ghost",
+        inner_name = name,
+        position = position,
+        force = game.forces.player,
+        expires = false,
+      }
+      check(ghost ~= nil, "failed to create " .. name .. " ghost")
+      if ghost then
+        local _, machine = ghost.revive{raise_revive = true}
+        check(machine ~= nil, "failed to revive " .. name)
+        if machine then
+          check(#heat_interfaces_at(s, machine.position) == 0,
+            name .. " created a heat interface")
+          observations.excluded_machines[name] = machine.type
+        end
       end
     end
   end

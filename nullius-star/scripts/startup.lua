@@ -207,6 +207,7 @@ script.on_configuration_changed(
     if not storage.nullius_heat_buckets then
       vulcanus_heat.init()
     end
+    vulcanus_heat.remove_excluded_interfaces()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()
     end

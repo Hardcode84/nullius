@@ -8,6 +8,11 @@ local NUM_BUCKETS = 443  -- Same as Stirling engines. One bucket per tick.
 local MAX_HEAT = 500  -- Match heat pipe tier 2 max temperature.
 local HEAT_DIVISOR = 200  -- Scales energy (J/tick) to degrees per update.
 
+local function is_heat_producer(entity)
+  return entity.type ~= "inserter" and entity.type ~= "pump" and
+    entity.name ~= "nullius-boxer-pneumatic"
+end
+
 function vulcanus_heat.init()
   storage.nullius_heat_buckets = {}
   for i = 0, NUM_BUCKETS - 1 do
@@ -30,7 +35,7 @@ end
 -- Spawn heat interface for a pneumatic machine.
 function vulcanus_heat.add_heat_interface(entity)
   if not entity or not entity.valid then return end
-  if entity.type == "inserter" then return end
+  if not is_heat_producer(entity) then return end
   local surface = entity.surface
   if not surface.planet or surface.planet.name ~= "nullius-vulcanus" then return end
 
@@ -67,6 +72,31 @@ function vulcanus_heat.add_heat_interface(entity)
     script.register_on_object_destroyed(entity)
   end
   return heat
+end
+
+-- Remove interfaces created for entity types that no longer produce heat.
+-- This is needed when updating a save that already contains excluded machines.
+function vulcanus_heat.remove_excluded_interfaces()
+  if not storage.nullius_pneumatic_heat then return end
+
+  local excluded = {}
+  for unit_number, heat in pairs(storage.nullius_pneumatic_heat) do
+    local entry
+    if storage.nullius_heat_buckets then
+      local bucket = storage.nullius_heat_buckets[unit_number % NUM_BUCKETS]
+      entry = bucket and bucket[unit_number]
+    end
+    if entry and entry.machine.valid and
+        not is_heat_producer(entry.machine) then
+      excluded[#excluded + 1] = unit_number
+    elseif not heat.valid then
+      excluded[#excluded + 1] = unit_number
+    end
+  end
+
+  for _, unit_number in ipairs(excluded) do
+    vulcanus_heat.remove_heat_interface(unit_number)
+  end
 end
 
 -- Remove heat interface when machine is removed/toggled back.
