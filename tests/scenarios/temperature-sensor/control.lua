@@ -60,15 +60,21 @@ local function setup()
   local entity_prototype = prototypes.entity[SENSOR]
   local item_prototype = prototypes.item[SENSOR]
   local recipe = prototypes.recipe[SENSOR]
-  local boxed_recipe = prototypes.recipe["nullius-boxed-temperature-sensor"]
   local technology = prototypes.technology[PNEUMATIC]
   check(entity_prototype ~= nil, "missing temperature sensor entity")
   check(item_prototype ~= nil, "missing temperature sensor item")
   check(recipe ~= nil, "missing temperature sensor recipe")
-  check(boxed_recipe ~= nil, "missing boxed temperature sensor recipe")
+  check(prototypes.item["nullius-box-temperature-sensor"] == nil,
+    "temperature sensor unexpectedly has a boxed item")
+  check(prototypes.recipe["nullius-boxed-temperature-sensor"] == nil,
+    "temperature sensor unexpectedly has a boxed bulk recipe")
+  check(prototypes.recipe["nullius-box-temperature-sensor"] == nil,
+    "temperature sensor unexpectedly has a boxing recipe")
+  check(prototypes.recipe["nullius-unbox-temperature-sensor"] == nil,
+    "temperature sensor unexpectedly has an unboxing recipe")
   check(technology ~= nil, "missing pneumatic technology")
   if not entity_prototype or not item_prototype or not recipe or
-      not boxed_recipe or not technology then finish() return end
+      not technology then finish() return end
 
   check(entity_prototype.type == "reactor",
     "temperature sensor does not use native reactor circuit behavior")
@@ -81,17 +87,9 @@ local function setup()
   force.technologies[PNEUMATIC].researched = false
   check(not force.recipes[SENSOR].enabled,
     "temperature sensor recipe is enabled before pneumatic technology")
-  check(not force.recipes["nullius-boxed-temperature-sensor"].enabled,
-    "boxed temperature sensor recipe is enabled before pneumatic technology")
   force.technologies[PNEUMATIC].researched = true
   check(force.recipes[SENSOR].enabled,
     "pneumatic technology did not unlock the temperature sensor")
-  check(force.recipes["nullius-boxed-temperature-sensor"].enabled,
-    "pneumatic technology did not unlock the boxed temperature sensor")
-  check(force.recipes["nullius-box-temperature-sensor"].enabled,
-    "pneumatic technology did not unlock temperature sensor boxing")
-  check(force.recipes["nullius-unbox-temperature-sensor"].enabled,
-    "pneumatic technology did not unlock temperature sensor unboxing")
 
   local surface = game.surfaces[1]
   local source = surface.create_entity{

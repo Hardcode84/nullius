@@ -295,7 +295,6 @@ create_boxed_item("power-switch", "circuit", "g", "power-switch")
 
 create_boxed_item("heat-pipe-1", "heat-energy", "db")
 create_boxed_item("heat-pipe-2", "heat-energy", "dc")
-create_boxed_item("temperature-sensor", "heat-energy", "de")
 create_boxed_item("white-concrete", "concrete", "b")
 create_boxed_item("red-concrete", "concrete", "c")
 create_boxed_item("blue-concrete", "concrete", "d")

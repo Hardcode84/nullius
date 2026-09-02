@@ -2631,40 +2631,6 @@ data:extend({
       {type = "item", name = "nullius-temperature-sensor", amount = 1}
     }
   },
-  {
-    type = "recipe",
-    name = "nullius-boxed-temperature-sensor",
-    localised_name = {
-      "recipe-name.nullius-boxed",
-      {"entity-name.nullius-temperature-sensor"}
-    },
-    icons = {
-      {
-        icon = ICONPATH .. "crate.png",
-        icon_size = 64
-      },
-      {
-        icon = "__base__/graphics/icons/heat-interface.png",
-        icon_size = 64,
-        scale = 0.45
-      }
-    },
-    enabled = false,
-    always_show_made_in = true,
-    category = "large-assembly",
-    subgroup = "boxed-heat-energy",
-    order = "nullius-ce",
-    energy_required = 20,
-    ingredients = {
-      {type = "item", name = "nullius-box-heat-pipe-1", amount = 1},
-      {type = "item", name = "nullius-box-sensor-1", amount = 1},
-      {type = "item", name = "nullius-box-iron-wire", amount = 1},
-      {type = "item", name = "nullius-box-aluminum-wire", amount = 1}
-    },
-    results = {
-      {type = "item", name = "nullius-box-temperature-sensor", amount = 1}
-    }
-  },
 
   {
     type = "item",
