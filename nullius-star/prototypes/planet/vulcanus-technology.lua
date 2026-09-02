@@ -8,6 +8,10 @@ for _, recipe in ipairs({
     "nullius-vulcanus-barrel",
     "nullius-vulcanus-radiator-1",
     "nullius-vulcanus-radiator-2",
+    "nullius-temperature-sensor",
+    "nullius-boxed-temperature-sensor",
+    "nullius-box-temperature-sensor",
+    "nullius-unbox-temperature-sensor",
     "nullius-carbochlorination",
     "nullius-iron-chlorination",
 }) do

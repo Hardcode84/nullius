@@ -763,8 +763,9 @@ Vulcanus industry uses **compressed volcanic gas and process heat**, not electri
 
 **Pneumatic Technology**: Researched on Nauvis immediately after probe
 reactivation. Unlocks Vulcanus-only pneumatic machinery, both radiator tiers,
-carbochlorination, iron chlorination, and tier-1 thermal heavy industry on
-every surface. Boiling 1 unlocks iron-assisted sludge dehydration.
+the circuit-readable temperature sensor, carbochlorination, iron chlorination,
+and tier-1 thermal heavy industry on every surface. Boiling 1 unlocks
+iron-assisted sludge dehydration.
 
 **Same entities, two modes** (toggle via Ctrl+R on Vulcanus surface):
 - Electric mode: standard Nullius behavior, consumes electricity.

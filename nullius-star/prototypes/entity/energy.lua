@@ -2098,6 +2098,65 @@ data:extend({
   }
 })
 
+circuit_connector_definitions["nullius-temperature-sensor"] =
+    circuit_connector_definitions.create_single(
+  universal_connector_template,
+  {
+    variation = 26,
+    main_offset = util.by_pixel(0, 0),
+    shadow_offset = util.by_pixel(0, 4),
+    show_shadow = true
+  }
+)
+
+data:extend({
+  {
+    type = "reactor",
+    name = "nullius-temperature-sensor",
+    icon = "__base__/graphics/icons/heat-interface.png",
+    icon_size = 64,
+    flags = {"placeable-neutral", "player-creation"},
+    minable = {mining_time = 0.2, result = "nullius-temperature-sensor"},
+    max_health = 120,
+    corpse = "small-remnants",
+    collision_box = {{-0.35, -0.35}, {0.35, 0.35}},
+    selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+    damaged_trigger_effect =
+      data.raw.reactor["nuclear-reactor"].damaged_trigger_effect,
+    energy_source = {type = "void"},
+    consumption = "1W",
+    neighbour_bonus = 0,
+    heat_buffer = {
+      max_temperature = 1500,
+      specific_heat = "1kJ",
+      max_transfer = "200MW",
+      default_temperature = 15,
+      minimum_glow_temperature = 250,
+      connections = {
+        {position = {0, 0}, direction = defines.direction.north},
+        {position = {0, 0}, direction = defines.direction.east},
+        {position = {0, 0}, direction = defines.direction.south},
+        {position = {0, 0}, direction = defines.direction.west}
+      }
+    },
+    picture = {
+      filename = "__base__/graphics/icons/heat-interface.png",
+      width = 64,
+      height = 64,
+      scale = 0.5
+    },
+    impact_category = "metal",
+    open_sound =
+      data.raw["constant-combinator"]["constant-combinator"].open_sound,
+    close_sound =
+      data.raw["constant-combinator"]["constant-combinator"].close_sound,
+    default_temperature_signal = {type = "virtual", name = "signal-T"},
+    circuit_wire_max_distance = default_circuit_wire_max_distance,
+    circuit_connector =
+      circuit_connector_definitions["nullius-temperature-sensor"]
+  }
+})
+
 
 function make_heat_pipe_pictures(path, name_prefix, color, data)
   local all_pictures = {}
