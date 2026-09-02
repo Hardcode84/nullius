@@ -92,22 +92,33 @@ for _, electric in ipairs(pneumatic_families.boxers(prototypes.entity)) do
   end
   register_pneumatic_pair(electric, pneumatic)
 end
-register_pneumatic_pair("inserter", "inserter-pneumatic")
-register_pneumatic_pair("bob-turbo-inserter", "bob-turbo-inserter-pneumatic")
+for _, name in ipairs({
+    "inserter",
+    "bob-turbo-inserter",
+    "bulk-inserter",
+    "bob-express-bulk-inserter",
+}) do
+  register_pneumatic_pair(name, name .. "-pneumatic")
+end
 for i = 1, 3 do
   register_pneumatic_pair("nullius-hydro-plant-" .. i, "nullius-hydro-plant-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-distillery-" .. i, "nullius-distillery-" .. i .. "-pneumatic")
   register_pneumatic_pair("nullius-chemical-plant-" .. i, "nullius-chemical-plant-" .. i .. "-pneumatic")
   register_pneumatic_priority_cycle("compressor", i)
 end
-register_pneumatic_pair("nullius-flotation-cell-1",
-  "nullius-flotation-cell-1-pneumatic")
+for i = 1, 3 do
+  register_pneumatic_pair("nullius-flotation-cell-" .. i,
+    "nullius-flotation-cell-" .. i .. "-pneumatic")
+end
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
 for i = 1, 3 do
   register_pneumatic_pair("nullius-air-filter-" .. i, "nullius-air-filter-" .. i .. "-pneumatic")
 end
-register_pneumatic_pair("nullius-lab-1", "nullius-lab-1-pneumatic")
+for i = 1, 3 do
+  register_pneumatic_pair("nullius-lab-" .. i,
+    "nullius-lab-" .. i .. "-pneumatic")
+end
 
 for _, spec in ipairs(thermal_nanofabricators) do
   local base = spec.base

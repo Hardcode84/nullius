@@ -272,3 +272,7 @@ for _, module in pairs(data.raw.module) do
     module.hidden = true
   end
 end
+
+local variant_upgrades = require("shared.variant-upgrades")
+variant_upgrades.apply("-pneumatic")
+variant_upgrades.apply("-thermal")

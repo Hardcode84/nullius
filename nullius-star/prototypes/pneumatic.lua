@@ -55,9 +55,15 @@ for _, name in ipairs(pneumatic_families.boxers(
   register_pneumatic("furnace", name)
 end
 
--- Register inserter (Nullius reuses bob-turbo-inserter as inserter-2).
-register_pneumatic("inserter", "inserter")
-register_pneumatic("inserter", "bob-turbo-inserter")
+-- Register every inserter tier.
+for _, name in ipairs({
+    "inserter",
+    "bob-turbo-inserter",
+    "bulk-inserter",
+    "bob-express-bulk-inserter",
+}) do
+  register_pneumatic("inserter", name)
+end
 
 -- Register extractors (mining-drill type, for geysers).
 register_pneumatic("mining-drill", "nullius-extractor-1")
@@ -76,10 +82,15 @@ for i = 1, 3 do
   register_pneumatic("assembling-machine", "nullius-surge-compressor-" .. i)
   register_pneumatic("assembling-machine", "nullius-priority-compressor-" .. i)
 end
-register_pneumatic("assembling-machine", "nullius-flotation-cell-1", -0.5, 1.5)
+for i = 1, 3 do
+  register_pneumatic("assembling-machine",
+    "nullius-flotation-cell-" .. i, -0.5, 1.5)
+end
 
 -- Register labs.
-register_pneumatic("lab", "nullius-lab-1")
+for i = 1, 3 do
+  register_pneumatic("lab", "nullius-lab-" .. i)
+end
 
 -- Register pumps (gas-powered, no heat interface).
 register_pneumatic("pump", "nullius-pump-1")
@@ -227,7 +238,7 @@ for _, entry in pairs(pneumatic_machines) do
     -- Make sure the original also has the same group.
     original.fast_replaceable_group = pneumatic.fast_replaceable_group
 
-    -- Remove next_upgrade (pneumatic variant doesn't chain upgrades).
+    -- Assigned after every pneumatic target prototype exists.
     pneumatic.next_upgrade = nil
 
     -- Surface condition: pneumatic mode only on Vulcanus.

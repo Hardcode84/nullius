@@ -771,20 +771,22 @@ every surface. Boiling 1 unlocks iron-assisted sludge dehydration.
 - Vulcanus mode: depends on machine type:
   - **Gas-powered**: ordinary assemblers, boxer, barrel pumps, air filters,
     hydro plants, distilleries, chemical plants,
-    compressors, flotation cell 1, lab 1, extractors, pumps, and inserter tiers
-    1-2.
+    compressors, flotation cells 1-3, labs 1-3, extractors, pumps, and inserter
+    tiers 1-4.
   - **Heat-powered**: crushers, all furnace sizes, and foundries use global
     thermal variants with tier-specific innate productivity. Nanofabricators
     use separate higher-temperature thermal variants at twice the electric
     energy demand.
 - Entities in inventory are mode-neutral. Mode is set after placement.
 - The toggle swaps between two entity prototypes in the same `fast_replaceable_group`.
+- Upgrade planner targets follow the normal machine tier chain without changing
+  pneumatic or thermal mode.
 
 **Resolved building-family audit**:
 
 | Treatment | Families |
 |---|---|
-| Add gas mode | solid miners (all 8 size/tier variants); inserter tiers 3-4; chimney 3; flotation cells 2-3; labs 2-3 |
+| Add gas mode | solid miners (all 8 size/tier variants); chimney 3 |
 | Add global heat mode | crushers, every furnace size, and foundries; tier 1 with Pneumatic Technology, tiers 2-3 with Thermal Engineering |
 | Add heat mode on Vulcanus | nanofabricators 1-2 with the same recipes, speed, modules, and effects but 2x energy demand |
 | Keep electric | electrolyzers; biology lab; electric boilers; beacons; radar/sensors; lamps; laser turret; accumulators and grid infrastructure; rocket silo |
