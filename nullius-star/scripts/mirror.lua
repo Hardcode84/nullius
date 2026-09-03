@@ -7,7 +7,7 @@ rotate_right = {
 
 
 function update_build_statistics(entity, force, deconstruct)
-  force.get_entity_build_count_statistics("nauvis").on_flow(entity.name,
+  force.get_entity_build_count_statistics(entity.surface).on_flow(entity.name,
       ((deconstruct and -1) or 1))
 end
 
@@ -237,4 +237,3 @@ script.on_event(defines.events.on_player_pipette, pipette_event)
 --   local newname = ("nullius-" .. string.sub(name, 16, -1))
 --   replace_fluid_entity(entity, newname, force, nil)
 -- end
-

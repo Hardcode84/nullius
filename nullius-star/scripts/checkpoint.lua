@@ -204,7 +204,8 @@ function reset_checkpoints(force)
 	  end
 	  if (ok) then
 		checknum = checknum + 1
-		checkset[checknum] = {name=techname, category=CAT_TECH, reqs=check}
+		checkset[checknum] = {name=techname, category=CAT_TECH,
+		  reqs=table.deepcopy(check)}
 	  end
 	end
   end
@@ -267,29 +268,52 @@ function init_checkpoint_prereqs()
 end
 
 
-local function count_req_list(list, stats, calc)
+local function force_statistics(force, checkpoint_type)
+  local result = {}
+  for _, surface in pairs(game.surfaces) do
+    if checkpoint_type == CHK_ITEM then
+      result[#result + 1] = force.get_item_production_statistics(surface)
+    elseif checkpoint_type == CHK_FLUID then
+      result[#result + 1] = force.get_fluid_production_statistics(surface)
+    elseif checkpoint_type == CHK_BUILD then
+      result[#result + 1] = force.get_entity_build_count_statistics(surface)
+    else
+      error("Unsupported checkpoint statistics type " .. checkpoint_type)
+    end
+  end
+  return result
+end
+
+local function count_req_list(list, statistics, calc)
   local count = 0
   for _,item in pairs(list) do
     local itemname = item[1]
-	  local value = 0
-    if (calc == STT_PRODUCE) then
-      value = stats.get_input_count(itemname)
-    elseif (calc == STT_CONSUME) then
-      value = stats.get_output_count(itemname)
-    elseif (calc == STT_NET) then
-      value = stats.get_input_count(itemname) - stats.get_output_count(itemname)
-	    if (item[3] ~= nil) then
-	      if (value < item[3]) then
-		    item[3] = value
-		  else
-	        value = value - item[3]
-		  end
-	    elseif (value < 0) then
-	      item[3] = value
-	    end
+    local value = 0
+    for _, stats in pairs(statistics) do
+      if calc == STT_PRODUCE then
+        value = value + stats.get_input_count(itemname)
+      elseif calc == STT_CONSUME then
+        value = value + stats.get_output_count(itemname)
+      elseif calc == STT_NET then
+        value = value + stats.get_input_count(itemname) -
+          stats.get_output_count(itemname)
+      else
+        error("Unsupported checkpoint calculation " .. calc)
+      end
     end
-	if (item[2] ~= nil) then value = (value * item[2]) end
-	count = count + value
+    if calc == STT_NET then
+      if item[3] ~= nil then
+        if value < item[3] then
+          item[3] = value
+        else
+          value = value - item[3]
+        end
+      elseif value < 0 then
+        item[3] = value
+      end
+    end
+    if item[2] ~= nil then value = value * item[2] end
+    count = count + value
   end
   return count
 end
@@ -301,13 +325,13 @@ local function test_checkpoint_req(force, req)
   local ctyp = req[1]
   local calc = req[2]
   local list = req[4]
-  local stats = nil
+  local statistics = nil
   if (ctyp == CHK_ITEM) then
-    stats = force.get_item_production_statistics("nauvis")
+    statistics = force_statistics(force, CHK_ITEM)
   elseif (ctyp == CHK_FLUID) then
-    stats = force.get_fluid_production_statistics("nauvis")
+    statistics = force_statistics(force, CHK_FLUID)
   elseif (ctyp == CHK_BUILD) then
-    stats = force.get_entity_build_count_statistics("nauvis")
+    statistics = force_statistics(force, CHK_BUILD)
   elseif (ctyp == CHK_OBJECTIVE) then
     if (storage.nullius_mission_status == nil) then return 0 end
     if (storage.nullius_mission_complete) then return 1 end
@@ -321,9 +345,9 @@ local function test_checkpoint_req(force, req)
 	  return math.min(1, math.max(0, (count / goal)))
 	elseif (calc == 2) then
 	  local count = count_req_list(list[1],
-	          force.get_fluid_production_statistics("nauvis"), STT_CONSUME) +
+	          force_statistics(force, CHK_FLUID), STT_CONSUME) +
 		  count_req_list(list[2],
-	          force.get_item_production_statistics("nauvis"), STT_PRODUCE)
+	          force_statistics(force, CHK_ITEM), STT_PRODUCE)
       return math.min(math.max((count / goal), 0), 1)
     else
       return 0
@@ -332,8 +356,29 @@ local function test_checkpoint_req(force, req)
     return 0
   end
 
-  local count = count_req_list(list, stats, calc)
+  local count = count_req_list(list, statistics, calc)
   return math.min(math.max((count / goal), 0), 1)
+end
+
+if script.active_mods["factorio-test-support"] then
+  remote.add_interface("nullius-test-checkpoints", {
+    progress = function(force_name, checkpoint, requirement)
+      local force = game.forces[force_name]
+      if not force then error("Unknown force " .. force_name) end
+      local requirements = checkpoint_data[checkpoint]
+      if not requirements then error("Unknown checkpoint " .. checkpoint) end
+      local req = requirements[requirement or 1]
+      if not req then
+        error("Unknown requirement " .. tostring(requirement) ..
+          " for checkpoint " .. checkpoint)
+      end
+      return test_checkpoint_req(force, table.deepcopy(req))
+    end,
+    adjust_build_statistics = function(entity, deconstruct)
+      if not entity or not entity.valid then error("Invalid entity") end
+      update_build_statistics(entity, entity.force, deconstruct)
+    end,
+  })
 end
 
 local function update_checkpoint_force(force, tick)
