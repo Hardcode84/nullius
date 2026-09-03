@@ -89,8 +89,13 @@ data:extend({
     name = "nullius-checkpoint-iron-ore",
     localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-assay",
 	    {"item-name.iron-ore"}}},
-    localised_description = {"technology-description.nullius-produce",
-	    {"technology-description.nullius-item", tostring(400), "iron-ore", {"item-name.iron-ore"}}},
+    localised_description = {"technology-description.nullius-alternative",
+	    {"technology-description.nullius-produce",
+	      {"technology-description.nullius-item", tostring(400), "iron-ore",
+	        {"item-name.iron-ore"}}},
+	    {"technology-description.nullius-produce",
+	      {"technology-description.nullius-item", tostring(160), "nullius-molten-iron-bloom",
+	        {"item-name.nullius-molten-iron-bloom"}}}},
     order = "nullius-yb",
     icons = {
       {

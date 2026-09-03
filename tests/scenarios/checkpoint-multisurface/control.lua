@@ -63,6 +63,24 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "iron-ingot-2"), 1),
     "item consumption checkpoint did not aggregate surfaces")
 
+  split_statistic(nauvis_items, "iron-ore", 0, 0)
+  split_statistic(nauvis_items, "nullius-molten-iron-bloom", 159, 0)
+  check(progress(force, "iron-ore") < 1,
+    "iron ore assay completed before 160 molten iron blooms")
+  split_statistic(nauvis_items, "nullius-molten-iron-bloom", 160, 0)
+  check(close(progress(force, "iron-ore"), 1),
+    "iron ore assay did not accept 160 molten iron blooms")
+
+  split_statistic(nauvis_items, "iron-ore", 400, 0)
+  split_statistic(nauvis_items, "nullius-molten-iron-bloom", 0, 0)
+  check(close(progress(force, "iron-ore"), 1),
+    "iron ore assay did not accept 400 iron ore")
+
+  split_statistic(nauvis_items, "iron-ore", 200, 0)
+  split_statistic(nauvis_items, "nullius-molten-iron-bloom", 80, 0)
+  check(close(progress(force, "iron-ore"), 1),
+    "iron ore assay did not combine proportional alternatives")
+
   local nauvis_fluids = force.get_fluid_production_statistics(nauvis)
   local vulcanus_fluids = force.get_fluid_production_statistics(vulcanus)
   split_statistic(nauvis_fluids, "nullius-hydrogen", 400, 0)
