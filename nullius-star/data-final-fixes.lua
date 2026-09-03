@@ -48,10 +48,11 @@ for _, rname in pairs(nauvis_air_recipes) do
   end
 end
 
--- Block solar panels, wind turbines, and accumulators on Vulcanus.
+-- Block solar panels, wind turbines, accumulators, and water wells on Vulcanus.
 -- Solar: semiconductor junction failure at 200C ambient.
 -- Wind: corrosive atmosphere destroys exposed mechanical parts.
 -- Accumulators: thermal runaway at ambient temperature.
+-- Wells: no groundwater aquifer exists on Vulcanus.
 local cool_surface_only = {
   {property = "nullius-ambient-temperature", max = 50},
 }
@@ -59,6 +60,7 @@ local vulcanus_blocked_entities = {
   ["solar-panel"] = {},
   ["accumulator"] = {},
   ["electric-energy-interface"] = {},
+  ["assembling-machine"] = {},
 }
 for i = 1, 4 do
   table.insert(vulcanus_blocked_entities["solar-panel"],
@@ -71,6 +73,12 @@ for i = 1, 3 do
     "nullius-wind-build-" .. i)
   table.insert(vulcanus_blocked_entities["electric-energy-interface"],
     "nullius-wind-base-" .. i)
+end
+for i = 1, 2 do
+  table.insert(vulcanus_blocked_entities["assembling-machine"],
+    "nullius-well-" .. i)
+  table.insert(vulcanus_blocked_entities["assembling-machine"],
+    "nullius-legacy-well-" .. i)
 end
 for prototype_type, names in pairs(vulcanus_blocked_entities) do
   for _, name in pairs(names) do
