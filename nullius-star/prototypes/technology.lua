@@ -2853,7 +2853,7 @@ data:extend({
       },
       time = 30
     },
-    prerequisites = {"nullius-checkpoint-freshwater", "nullius-mineral-processing-2"}
+    prerequisites = {"nullius-hydrology-1", "nullius-mineral-processing-2"}
   },
   {
     type = "technology",
@@ -2955,7 +2955,7 @@ data:extend({
       },
       time = 30
     },
-    prerequisites = {"nullius-mineral-processing-2", "nullius-checkpoint-freshwater"}
+    prerequisites = {"nullius-mineral-processing-2", "nullius-hydrology-1"}
   },
   {
     type = "technology",

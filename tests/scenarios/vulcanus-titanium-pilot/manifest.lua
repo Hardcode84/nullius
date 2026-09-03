@@ -43,7 +43,6 @@ return {
     "nullius-checkpoint-explosive",
     "nullius-checkpoint-freight-logistics",
     "nullius-checkpoint-freight-transportation",
-    "nullius-checkpoint-freshwater",
     "nullius-checkpoint-furnace",
     "nullius-checkpoint-glass",
     "nullius-checkpoint-heat-pipe",

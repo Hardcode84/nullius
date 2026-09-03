@@ -771,8 +771,13 @@ data:extend({
     name = "nullius-checkpoint-limestone",
     localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-assay",
 	    {"item-name.nullius-limestone"}}},
-    localised_description = {"technology-description.nullius-produce",
-	    {"technology-description.nullius-item", tostring(500), "nullius-limestone", {"item-name.nullius-limestone"}}},
+    localised_description = {"technology-description.nullius-alternative",
+	    {"technology-description.nullius-produce",
+	      {"technology-description.nullius-item", tostring(500), "nullius-limestone",
+	        {"item-name.nullius-limestone"}}},
+	    {"technology-description.nullius-produce",
+	      {"technology-description.nullius-item", tostring(320), "nullius-crushed-limestone",
+	        {"item-name.nullius-crushed-limestone"}}}},
     order = "nullius-yd",
     icons = {
 	  data.raw.item["nullius-limestone"].icons[1],
@@ -841,33 +846,6 @@ data:extend({
       time = 1
     },
     prerequisites = {"nullius-energy-storage-2"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
-    name = "nullius-checkpoint-freshwater",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-utilization",
-	    {"fluid-name.nullius-freshwater"}}},
-    localised_description = {"technology-description.nullius-consume",
-	    {"technology-description.nullius-fluid", tostring(2000), "nullius-freshwater", {"fluid-name.nullius-freshwater"}}},
-    order = "nullius-yd",
-    icons = {
-      {
-        icon = ICONPATH .. "fluid/unbarrel.png",
-        icon_size = 64
-      },
-      {
-        icon = ICONPATH .. "fluid/freshwater.png",
-        icon_size = 64,
-		scale = 0.8
-      }
-    },
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-electrical-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-hydrology-1"},
     ignore_tech_cost_multiplier = true
   },
   {

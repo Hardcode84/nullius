@@ -390,6 +390,10 @@ def describe_consumers(data: Prototype, names: list[str]) -> list[Prototype]:
 
 def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
     technologies: dict[str, Prototype] = data.get("technology", {})
+    dependents: dict[str, list[str]] = defaultdict(list)
+    for candidate_name, candidate in technologies.items():
+        for prerequisite in candidate.get("prerequisites") or []:
+            dependents[prerequisite].append(candidate_name)
     descriptions = []
     for name in names:
         technology = technologies.get(name)
@@ -399,6 +403,7 @@ def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
             {
                 "name": name,
                 "prerequisites": sorted(technology.get("prerequisites") or []),
+                "dependents": sorted(dependents.get(name, [])),
                 "unit": technology.get("unit"),
                 "research_trigger": technology.get("research_trigger"),
                 "effects": technology.get("effects") or [],
@@ -1741,7 +1746,10 @@ def parse_arguments() -> argparse.Namespace:
         action="append",
         default=[],
         metavar="TECHNOLOGY",
-        help="describe a resolved technology's prerequisites, cost, trigger, and effects",
+        help=(
+            "describe a resolved technology's prerequisites, direct dependents, "
+            "cost, trigger, and effects"
+        ),
     )
     parser.add_argument(
         "--describe-placeable-prefix",
@@ -1826,6 +1834,8 @@ def main() -> int:
                     prerequisites = ", ".join(technology["prerequisites"])
                     print(f"{technology['name']}:")
                     print(f"  prerequisites: {prerequisites or 'none'}")
+                    dependents = ", ".join(technology["dependents"])
+                    print(f"  dependents: {dependents or 'none'}")
                     print(
                         "  unit: "
                         + json.dumps(technology["unit"], sort_keys=True)

@@ -805,7 +805,7 @@ data.raw.technology["advanced-underground-piping"].localised_name = {"",
   {"technology-name.advanced-underground-piping"}, " ", tostring(1)}
 data.raw.technology["advanced-underground-piping"].icon =
   "__underground-pipe-pack__/graphics/technology/advanced-underground-piping-t2.png"
-data.raw.technology["advanced-underground-piping"].prerequisites = {"nullius-checkpoint-freshwater"}
+data.raw.technology["advanced-underground-piping"].prerequisites = {"nullius-hydrology-1"}
 table.insert(data.raw.technology["nullius-volcanism-1"].prerequisites,"advanced-underground-piping")
 data.raw.technology["advanced-underground-piping"].order = "nullius-df"
 data.raw.technology["advanced-underground-piping"].unit = {

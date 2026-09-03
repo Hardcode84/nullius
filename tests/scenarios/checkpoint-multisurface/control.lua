@@ -74,6 +74,27 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "water"), 1),
     "fluid consumption checkpoint did not aggregate surfaces")
 
+  split_statistic(nauvis_items, "nullius-limestone", 0, 0)
+  split_statistic(nauvis_items, "nullius-crushed-limestone", 319, 0)
+  check(progress(force, "limestone") < 1,
+    "calcite checkpoint completed before 320 crushed calcite")
+  split_statistic(nauvis_items, "nullius-crushed-limestone", 320, 0)
+  check(close(progress(force, "limestone"), 1),
+    "calcite checkpoint did not accept 320 crushed calcite")
+
+  split_statistic(nauvis_items, "nullius-limestone", 500, 0)
+  split_statistic(nauvis_items, "nullius-crushed-limestone", 0, 0)
+  check(close(progress(force, "limestone"), 1),
+    "calcite checkpoint did not accept 500 calcite")
+
+  split_statistic(nauvis_items, "nullius-limestone", 250, 0)
+  split_statistic(nauvis_items, "nullius-crushed-limestone", 160, 0)
+  check(close(progress(force, "limestone"), 1),
+    "calcite checkpoint did not combine proportional alternatives")
+
+  check(force.technologies["nullius-checkpoint-freshwater"] == nil,
+    "obsolete freshwater checkpoint still exists")
+
   local nauvis_builds = force.get_entity_build_count_statistics(nauvis)
   local vulcanus_builds = force.get_entity_build_count_statistics(vulcanus)
   split_statistic(nauvis_builds, "nullius-small-furnace-1", 2, 0)

@@ -121,6 +121,9 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
     def test_describes_resolved_technology_contract(self) -> None:
         data = {
             "technology": {
+                "dependent-tech": {
+                    "prerequisites": ["target-tech"],
+                },
                 "target-tech": {
                     "prerequisites": ["z-tech", "a-tech"],
                     "unit": {"count": 20, "time": 5, "ingredients": []},
@@ -134,6 +137,7 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         descriptions = describe_technologies(data, ["target-tech"])
 
         self.assertEqual(descriptions[0]["prerequisites"], ["a-tech", "z-tech"])
+        self.assertEqual(descriptions[0]["dependents"], ["dependent-tech"])
         self.assertEqual(descriptions[0]["unit"]["count"], 20)
         self.assertIsNone(descriptions[0]["research_trigger"])
 
