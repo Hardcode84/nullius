@@ -1,11 +1,3 @@
-local function first_vulcanus_arrival()
-  return {
-    type = "change-surface",
-    surface = "nullius-vulcanus",
-    count = 1,
-  }
-end
-
 return {
   category = {
     name = "nullius-vulcanus",
@@ -19,23 +11,23 @@ return {
       is_title = true,
       trigger = {
         type = "research",
-        technology = "nullius-probe-vulcanus",
+        technology = "nullius-pneumatic-technology",
       },
-      skip_trigger = first_vulcanus_arrival(),
     },
     {
       name = "nullius-vulcanus-pneumatic-machinery",
       tag = "[fluid=nullius-compressed-volcanic-gas]",
       order = "b",
       indent = 1,
-      trigger = first_vulcanus_arrival(),
+      trigger = {type = "dependencies-met"},
+      dependencies = {"nullius-vulcanus-briefing"},
     },
     {
       name = "nullius-vulcanus-process-heat",
       tag = "[item=nullius-heat-pipe-1]",
       order = "c",
       indent = 1,
-      trigger = first_vulcanus_arrival(),
+      trigger = {type = "dependencies-met"},
       dependencies = {"nullius-vulcanus-pneumatic-machinery"},
     },
     {
@@ -43,7 +35,7 @@ return {
       tag = "[item=nullius-seawater-intake-1]",
       order = "d",
       indent = 1,
-      trigger = first_vulcanus_arrival(),
+      trigger = {type = "dependencies-met"},
       dependencies = {"nullius-vulcanus-process-heat"},
     },
     {
@@ -51,7 +43,7 @@ return {
       tag = "[item=nullius-small-furnace-1]",
       order = "e",
       indent = 1,
-      trigger = first_vulcanus_arrival(),
+      trigger = {type = "dependencies-met"},
       dependencies = {"nullius-vulcanus-gas-bootstrap"},
     },
   },

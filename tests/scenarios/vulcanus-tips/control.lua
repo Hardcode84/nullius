@@ -10,15 +10,6 @@ local function check(condition, message)
   if not condition then failures[#failures + 1] = message end
 end
 
-local function check_arrival_trigger(trigger, tip_name)
-  check(trigger.type == "change-surface",
-    tip_name .. " trigger is not change-surface")
-  check(trigger.surface == "nullius-vulcanus",
-    tip_name .. " trigger targets the wrong surface")
-  check(trigger.count == 1,
-    tip_name .. " trigger does not fire on first arrival")
-end
-
 local function run()
   script.on_nth_tick(1, nil)
 
@@ -27,8 +18,8 @@ local function run()
   check(category_history.created == "nullius-star",
     "Vulcanus tip category was not created by nullius-star")
   check(#contract.tips == 5, "Vulcanus tip chain does not contain five tips")
-  check(prototypes.technology["nullius-probe-vulcanus"] ~= nil,
-    "Vulcanus probe technology is missing")
+  check(prototypes.technology["nullius-pneumatic-technology"] ~= nil,
+    "Pneumatic technology is missing")
   check(game.planets["nullius-vulcanus"] ~= nil,
     "Vulcanus space location is missing")
 
@@ -41,21 +32,20 @@ local function run()
       check(tip.is_title == true, "Vulcanus briefing is not the category title")
       check(tip.trigger.type == "research",
         "Vulcanus briefing trigger is not research")
-      check(tip.trigger.technology == "nullius-probe-vulcanus",
+      check(tip.trigger.technology == "nullius-pneumatic-technology",
         "Vulcanus briefing targets the wrong technology")
-      check_arrival_trigger(tip.skip_trigger, tip.name .. " skip")
+      check(tip.skip_trigger == nil,
+        "Vulcanus briefing can be skipped before the tip chain starts")
+      check(tip.dependencies == nil,
+        "Vulcanus briefing is not the root of the tip chain")
     else
-      check_arrival_trigger(tip.trigger, tip.name)
-      if index == 2 then
-        check(tip.dependencies == nil,
-          tip.name .. " is not the root of the arrival chain")
-      else
-        check(tip.dependencies ~= nil and #tip.dependencies == 1,
-          tip.name .. " does not have exactly one dependency")
-        check(tip.dependencies ~= nil and
-            tip.dependencies[1] == contract.tips[index - 1].name,
-          tip.name .. " does not follow the preceding tip")
-      end
+      check(tip.trigger.type == "dependencies-met",
+        tip.name .. " does not activate when its dependency is read")
+      check(tip.dependencies ~= nil and #tip.dependencies == 1,
+        tip.name .. " does not have exactly one dependency")
+      check(tip.dependencies ~= nil and
+          tip.dependencies[1] == contract.tips[index - 1].name,
+        tip.name .. " does not follow the preceding tip")
     end
   end
 
