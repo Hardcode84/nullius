@@ -1,3 +1,2 @@
-# nullius
-Nullius overhaul mod for Factorio:
-https://mods.factorio.com/mod/nullius
+# nullius star
+Interplanetary Nullius overhaul mod for Factorio.
