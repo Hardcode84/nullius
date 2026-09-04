@@ -38,6 +38,23 @@ Lava is Vulcanus's equivalent of Nauvis's ores. Extracted by free lava intakes f
 | Lava silica extraction | 60 lava | 8 silica + 5 stone + 15 compressed-volcanic-gas + 10 SO2 | 3s | water-treatment (hydro-plant) |
 | **Lava gas extraction** | 50 lava | 65 compressed-volcanic-gas + 3 stone | 2s | water-treatment (hydro-plant) |
 
+```yaml
+mining_productivity:
+  modifier_source: nullius_mining_productivity_tiers
+  recipes:
+    nullius-lava-iron-separation: nullius-molten-iron-bloom
+    nullius-lava-aluminum-separation: nullius-molten-aluminum-bloom
+    nullius-lava-calcite-separation: nullius-crushed-limestone
+    nullius-lava-silica-extraction: nullius-silica
+  excluded_products:
+    - nullius-compressed-volcanic-gas
+    - nullius-sulfur-dioxide
+    - stone
+  excluded_recipes:
+    - nullius-lava-gas-extraction
+    - downstream_processing
+```
+
 Metal separation recipes are **net-negative on gas** (consume more than they produce). The dedicated gas extraction recipe is the primary gas source. Player must balance hydro-plants between metal production and gas production.
 
 ### 2.2 Molten Metals (Spoilage Cooldown)
