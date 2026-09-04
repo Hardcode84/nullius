@@ -6,6 +6,7 @@
 |---|---|
 | Mod identity | `info.json`, archive name, archive root, and portal entry agree |
 | Version | Numeric `major.minor.patch` |
+| Git tag | Annotated `v<version>` tag resolves to the commit recorded in the release manifest |
 | Maturity | Alpha, beta, or stable status is declared |
 | Playable endpoint | Last supported progression boundary is declared |
 | Save lineage | Supported and unsupported upgrade paths are declared |
@@ -69,13 +70,21 @@ python tools/build_release.py -n auto
 ```text
 run automated candidate gate
 review manifest and portal metadata
-tag validated commit
 upload exact ZIP
 download portal ZIP
 compare SHA-256
 create, save, reload, and advance a fresh map with downloaded ZIP
+create annotated v<version> tag on the commit recorded in the manifest
+verify the tag resolves to the manifest commit
+push the tag
 publish endpoint and save/multiplayer policy
 ```
+
+| Tag operation | Command |
+|---|---|
+| Create | `git tag --annotate "v<version>" "<manifest-commit>" --message "Release <version>"` |
+| Verify target | `test "$(git rev-parse "v<version>^{commit}")" = "<manifest-commit>"` |
+| Publish | `git push origin "v<version>"` |
 
 ## Upgrade gate
 
