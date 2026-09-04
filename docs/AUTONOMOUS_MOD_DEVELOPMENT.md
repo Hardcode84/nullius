@@ -1,145 +1,121 @@
-# Automated Testing for Factorio Mods
+# Automated testing for Factorio mods
 
-This document defines the two test layers needed to develop a Factorio mod
-without a person playing it. Mod-specific cases and campaign milestones belong
-in a separate test plan.
+## Authorities
 
-## What Factorio provides
+| Fact | Authority |
+|---|---|
+| Test architecture | This document |
+| Mod progression | Mod-specific progression document |
+| Prototype behavior and values | Factorio resolved prototypes |
+| Runtime fixture, actions, assertions | Scenario source |
+| Tick limit | Scenario `test.json` |
+| Reachability boundary | Checked-in prerequisite arguments |
+| Test inventory and result | Test runner discovery and output |
 
-Wube has an internal C++ test framework. Its integration tests create a small
-map, place objects, advance the game, and inspect the resulting state. That
-framework is not exposed by the production executable or the mod API.
+## Engine interface
 
-The production game does expose the pieces needed to reproduce that pattern:
+| Requirement | Production interface |
+|---|---|
+| Fixed simulation | Scenario and compiled save |
+| Bounded execution | `--load-game` with `--until-tick` |
+| Repeated execution | `--benchmark` |
+| State inspection | Runtime Lua API |
+| Machine-readable result | JSON written to `script-output` |
 
-- scenarios containing a map and `control.lua`;
-- `--scenario2map` for compiling a scenario;
-- `--load-game ... --until-tick ...` for a bounded run;
-- `--benchmark` for repeatedly running a fixed save quickly;
-- the runtime Lua API, events, saves, and `script-output`.
+The production executable does not expose Wube's internal C++ test framework.
 
-## Layer 1: feature tests
+## Feature tests
 
-A feature test starts from a small fixture, performs one operation, advances the
-real engine only as far as required, and checks observable state. This is the
-mod equivalent of Wube's integration tests, even though we call the layer unit
-tests because each test owns one feature or contract.
-
-Feature tests use the same protocol as campaign stages: a scenario performs Lua
-API checks and writes one final JSON result. The external runner requires a
-successful Factorio process and a passing result; a Lua error, timeout, missing
-result, or failed assertion fails the test. The runner uses no third-party test
-framework.
-
-A test definition contains:
-
-- the initial surface, force, entities, inventories, and researched technology;
-- one action through the same public event or API path used in play;
-- the event or sparse deadline at which the result is checked; and
-- assertions over entities, inventories, fluids, energy, technology, events,
-  or mod state.
-
-Direct state injection is allowed while constructing the fixture. It is not a
-valid substitute for the operation under test. For example, a placement test
-must use the production placement path, not create the final entity graph and
-declare success.
-
-Long-running behavior does not require a permanent `on_tick` dispatcher. Tests
-should prefer engine events, a one-shot delayed callback, or coarse
-`on_nth_tick` readiness checks. The Factorio process also has a hard tick and
-wall-clock deadline. A missing result is a failure.
-
-The first vertical slice is one deliberately tiny passing test plus deliberate
-assertion, timeout, and missing-result failures. That proves the runner before
-feature coverage grows.
-
-## Layer 2: campaign stages
-
-The campaign is split at logical progression boundaries, such as completing a
-technology or producing a required quantity of an item. Each stage is a small
-scenario on a fixed test map. Resource patches, water, cliffs, and starting
-positions are predefined, so failures are about the mod rather than map
-generation or player pathing.
-
-A stage does not replay the preceding base. Its setup script constructs the
-layout needed for this part of progression. The buildings, materials, and
-research supplied by the fixture are its assumed starting state. That assumption
-should be achievable at the preceding logical boundary, but the test runner does
-not enforce the relationship.
-
-Stages describe consecutive parts of progression but execute independently:
-
-```text
-stage 1: reach research A and report available buildings and materials
-stage 2: assume that starting state and produce 1,000 of item B
-stage 3: assume the next starting state and reach research C
+```yaml
+scope: one runtime or prototype contract
+fixture:
+  surface: explicit
+  force: explicit
+  research: explicit
+  entities: explicit
+  inventories: explicit
+action: production event or API path
+execution: Factorio simulation
+assertions: observable Lua API state
+result: one final JSON object
 ```
 
-Each result records the achieved research, available buildings and materials,
-items produced, and ticks spent. No result is an input to another test, so all
-stages can run in parallel. If useful, a separate offline check may compare a
-stage's result with the next stage's assumptions; it is not part of the main
-test system.
+- Fixture construction may inject state.
+- The operation under test must use its production path.
+- Prefer engine events, one-shot callbacks, or coarse `on_nth_tick` checks.
+- Lua errors, failed assertions, missing results, tick overruns, and wall-clock
+  overruns fail the test.
+- Use semantic state assertions; do not use state hashes.
 
-Scenario scripts may use editor entities such as infinity chests, infinity
-pipes, and electric-energy interfaces to represent supplies, sinks, or utilities
-outside the stage being tested. Every such boundary is declared in the result.
-Items supplied by an infinity entity are not counted as output achieved by the
-stage.
+### Prototype load
 
-Inside those boundaries, Factorio performs the full simulation: recipes consume
-their real inputs and time, inserters and belts move items, pipes carry fluids,
-machines consume energy, and laboratories research normally. Buildings may be
-created and configured through Lua because player placement is not part of this
-test.
+Load the complete mod set with `--check-unused-prototype-data`. Warnings that
+name an owned prototype fail unless their exact text is explicitly accepted.
 
-A stage passes when its logical goal is observed through the Lua API and written
-to the final JSON. Typical goals are:
+## Campaign stages
 
-- a named technology is researched;
-- at least a specified amount of an item or fluid was produced;
-- a production line sustains a minimum output over a stated interval; or
-- the expected buildings and materials exist at the stage boundary.
+```yaml
+boundary: research, production, construction, or sustained-operation goal
+map: fixed
+execution: independent
+save_inheritance: false
+parallel: true
+fixture: subset of prior attainable state plus declared external boundaries
+simulation: real recipes, entities, fluids, heat, spoilage, and logistics
+result: achieved boundary and completion tick
+```
 
-Checks use engine events or coarse intervals, plus a hard game-tick and
-wall-clock deadline. There is no permanent per-tick campaign dispatcher. The
-reported completion ticks provide pacing evidence; broad accepted ranges can
-flag stages that became unexpectedly short or long.
+- Each stage reconstructs its entrance state and runs independently.
+- Every injected item, fluid, technology, utility, or debug entity is declared.
+- Injected inputs are not counted as stage output.
+- Equipment used after construction closure must be reachable from the declared
+  boundary.
+- Stage duration belongs to its scenario; no shared stage-budget mechanism is
+  required.
+- Alternative paths use equivalent entrance boundaries and separate scenarios.
 
-Alternative progression paths start from the same declared fixture, run as
-separate scenarios, and compare completion ticks and remaining materials.
-Multiplayer-sensitive behavior is exercised by running the relevant feature or
-stage scenario on a server with the required clients; it does not require
-simulating an entire multiplayer campaign.
+## Multiplayer-sensitive behavior
 
-## Factorio updates
+Run the relevant feature or campaign scenario on a dedicated server with the
+required clients. Multiplayer validation does not require replaying the entire
+campaign.
 
-Every result records the Factorio version and loaded mod versions.
+## External runner
 
-To evaluate a new Factorio version:
+```yaml
+discovery: scenario metadata
+execution: parallel Factorio processes
+success:
+  process_exit: 0
+  result_status: pass
+  within_tick_limit: true
+  within_wall_limit: true
+report:
+  - test name
+  - status
+  - simulation ticks
+  - test duration
+  - suite wall time
+  - Factorio version
+  - loaded mod versions
+```
 
-1. diff the runtime API, prototype API, and effective prototype dump;
-2. run all feature tests on the candidate;
-3. run all campaign stages in parallel; and
-4. compare milestone success, resource ledgers, and tick ranges with the
-   accepted version.
+## Factorio version update
 
-The version is accepted only when both layers pass and every observed change is
-explained.
+```yaml
+candidate_check:
+  - diff runtime API
+  - diff prototype API
+  - diff resolved prototypes
+  - run feature tests
+  - run campaign stages in parallel
+  - compare milestone completion and pacing evidence
+acceptance:
+  all_tests_pass: true
+  every_observed_change_explained: true
+```
 
-## Implementation status
-
-| Contract | Status | Evidence |
-|---|---|---|
-| Dependency-free external runner | Implemented | `python3 tools/run_factorio_tests.py` |
-| Assertion, timeout, missing-result, and tick-cap failures | Implemented | Python runner tests |
-| Mod feature scenarios | Implemented | `tests/scenarios/*/test.json` |
-| Independent fixed-map campaign stages | Implemented | `docs/VULCANUS_PROGRESSION_PLAN.md` |
-| Parallel execution | Implemented | `python3 tools/run_factorio_tests.py -n auto` |
-| Resolved prerequisite and manifest generation | Implemented | `tools/analyze_factorio_prereqs.py`, `tools/generate_factorio_scenario_manifest.py` |
-| Factorio-version candidate comparison | Not implemented | Candidate-versus-supported comparison remains required |
-
-## Sources
+## References
 
 - [Wube integration tests](https://factorio.com/blog/post/fff-60)
 - [Factorio command-line parameters](https://wiki.factorio.com/Command_line_parameters)

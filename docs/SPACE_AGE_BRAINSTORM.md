@@ -103,7 +103,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Surviving Equipment | Why It Survived |
 |---|---|---|
-| **Vulcanus** | Furnaces, heat pipes, lava intake (toggles to free-gas vent), gas-powered inserters, pre-filled gas tank, gas pipes | Heat-resistant components survived. Electronics melted. No Stirling, no circuits. See PLANET_VULCANUS.md section 7. |
+| **Vulcanus** | Furnaces, heat pipes, lava intake (toggles to free-gas vent), gas-powered inserters, pre-filled gas tank, gas pipes | Heat-resistant components survived. Electronics melted. No Stirling, no circuits. See [PLANET_VULCANUS.md](PLANET_VULCANUS.md). |
 | **Fulgora** | Capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. |
 | **Gleba** | Basic lab, containment walls, bacterial harvester, water recycler | Probe landed in bacterial mat zone. Sterile equipment survived; biological seal held. Minimal power. |
 | **Aquilo** | Everything, but frozen -- must thaw | Cryogenic preservation kept equipment intact but inert |
@@ -114,7 +114,7 @@ Each planet needs enough local resources to get started without imports. The bro
 
 ### 3.1 Vulcanus (Pneumatic Hell)
 
-> **Detailed design**: See [PLANET_VULCANUS.md](PLANET_VULCANUS.md) for full production chains, recipes, component analysis, and numbers.
+> **Detailed design**: See [PLANET_VULCANUS.md](PLANET_VULCANUS.md) for the resource model, production constraints, and progression intent.
 
 **Tagline**: Gas-powered steampunk industry where lava processing IS the power source, and dual pipe routing (gas + heat) defines factory layout.
 
