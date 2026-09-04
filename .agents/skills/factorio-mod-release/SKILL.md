@@ -1,10 +1,20 @@
-# Release checklist
+---
+name: factorio-mod-release
+description: Build, validate, and locally tag a Factorio mod release ZIP from this repository. Use when preparing, cutting, or auditing a release artifact; do not use for ordinary feature validation or uploading releases.
+---
+
+# Factorio Mod Release
+
+Run from the repository root. Do not discard or overwrite user changes to make
+the checkout clean. Stop after producing the validated ZIP and manifest and
+creating the local tag. Do not upload the archive, publish a portal release, or
+push the tag.
 
 ## Release contract
 
 | Field | Assertion |
 |---|---|
-| Mod identity | `info.json`, archive name, archive root, and portal entry agree |
+| Mod identity | `info.json`, archive name, and archive root agree |
 | Version | Numeric `major.minor.patch` |
 | Git tag | Annotated `v<version>` tag resolves to the commit recorded in the release manifest |
 | Maturity | Alpha, beta, or stable status is declared |
@@ -13,11 +23,15 @@
 | Multiplayer | Support is declared only when server/client validation passes |
 | Factorio version | Declared version is included in the tested version matrix |
 
-## Automated candidate gate
+## Candidate gate
+
+Require a clean checkout, then run:
 
 ```bash
 python tools/build_release.py -n auto
 ```
+
+The command must pass every gate and produce a ZIP plus JSON manifest.
 
 | Gate | Assertion |
 |---|---|
@@ -38,7 +52,10 @@ python tools/build_release.py -n auto
 | Scenarios | Every independent Factorio scenario passes against packaged payload |
 | Output | ZIP and JSON manifest contain matching name, version, commit, size, and SHA-256 |
 
-## Correctness gate
+Stop on any failed gate. Report the exact command, failure, and generated
+artifact state. Do not tag or publish a failed candidate.
+
+## Correctness review
 
 | Area | Assertion |
 |---|---|
@@ -52,41 +69,21 @@ python tools/build_release.py -n auto
 | Upstream delta | Relevant upstream crash, migration, API, and compatibility changes are audited |
 | Performance | Declared tick, wall-time, and update-time limits pass |
 
-## Portal metadata
+## Release sequence
 
-| Field | Required content |
-|---|---|
-| Title | Mod name and release maturity |
-| Summary | Current playable endpoint |
-| Description | Scope, dependencies, incompatibilities, multiplayer status, and save policy |
-| License | Declared license matching packaged license text |
-| Attribution | Upstream authors and current contributors |
-| Source URL | Public source revision matching release commit |
-| Issue URL | Public bug-report location |
-| Thumbnail | Included and verified in portal preview |
-
-## Publish sequence
-
-```text
-run automated candidate gate
-review manifest and portal metadata
-upload exact ZIP
-download portal ZIP
-compare SHA-256
-create, save, reload, and advance a fresh map with downloaded ZIP
-create annotated v<version> tag on the commit recorded in the manifest
-verify the tag resolves to the manifest commit
-push the tag
-publish endpoint and save/multiplayer policy
-```
+1. Run the candidate gate.
+2. Review the generated ZIP and manifest.
+3. Create and verify the annotated tag on the manifest commit.
+4. Report the ZIP path, manifest path, SHA-256, commit, and local tag.
 
 | Tag operation | Command |
 |---|---|
 | Create | `git tag --annotate "v<version>" "<manifest-commit>" --message "Release <version>"` |
 | Verify target | `test "$(git rev-parse "v<version>^{commit}")" = "<manifest-commit>"` |
-| Publish | `git push origin "v<version>"` |
 
 ## Upgrade gate
+
+Apply this gate when the release declares compatibility with prior versions.
 
 | Gate | Assertion |
 |---|---|

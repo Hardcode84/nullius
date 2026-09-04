@@ -11,6 +11,7 @@
 | Test-support mod | `tests/factorio-test-support/` |
 | Python unit tests | `tests/test_*.py` |
 | Development commands and analyzers | `tools/` |
+| Repository skills | `.agents/skills/` |
 
 - Keep documentation, scenarios, fixtures, test support, and unit tests out of
   `nullius-star/`; that directory is packaged as the released mod.
