@@ -195,7 +195,7 @@ data:extend({
     effects = {
       {type = "unlock-recipe", recipe = "nullius-hot-iron-plate"},
       {type = "unlock-recipe", recipe = "nullius-hot-iron-rod"},
-      {type = "unlock-recipe", recipe = "nullius-hot-aluminum-sheet"},
+      {type = "unlock-recipe", recipe = "nullius-hot-aluminum-plate"},
       {type = "unlock-recipe", recipe = "nullius-hot-aluminum-rod"},
     },
     unit = {

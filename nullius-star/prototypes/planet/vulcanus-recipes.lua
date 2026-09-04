@@ -268,8 +268,8 @@ data:extend({
   },
   {
     type = "recipe",
-    name = "nullius-hot-aluminum-sheet",
-    localised_name = {"recipe-name.nullius-hot-aluminum-sheet"},
+    name = "nullius-hot-aluminum-plate",
+    localised_name = {"recipe-name.nullius-hot-aluminum-plate"},
     enabled = false,
     category = "machine-casting",
     subgroup = "aluminum-product",
@@ -279,9 +279,9 @@ data:extend({
       {type = "item", name = "nullius-molten-aluminum-bloom", amount = 4},
     },
     results = {
-      {type = "item", name = "nullius-aluminum-sheet", amount = 5},
+      {type = "item", name = "nullius-aluminum-plate", amount = 3},
     },
-    main_product = "nullius-aluminum-sheet",
+    main_product = "nullius-aluminum-plate",
     allow_productivity = true,
     surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
   },

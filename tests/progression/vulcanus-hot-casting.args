@@ -16,7 +16,7 @@ nullius-iron-plate=nullius-hot-iron-plate
 --recipe
 nullius-iron-rod=nullius-hot-iron-rod
 --recipe
-nullius-aluminum-sheet=nullius-hot-aluminum-sheet
+nullius-aluminum-plate=nullius-hot-aluminum-plate
 --recipe
 nullius-aluminum-rod=nullius-hot-aluminum-rod
 --executor
@@ -28,5 +28,5 @@ nullius-compressed-volcanic-gas
 --manifest
 nullius-iron-plate=3
 nullius-iron-rod=5
-nullius-aluminum-sheet=5
+nullius-aluminum-plate=3
 nullius-aluminum-rod=5
