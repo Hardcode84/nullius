@@ -64,7 +64,7 @@ end
 function entity_removed(entity, died)
   -- Clean up heat interface for any pneumatic machine (before prefix check).
   if string.sub(entity.name, -10) == "-pneumatic" then
-    vulcanus_heat.remove_heat_interface(entity.unit_number)
+    vulcanus_heat.remove_heat_interface(entity.unit_number, entity)
   end
   if string.sub(entity.name, -8) == "-gasvent" then
     vulcanus_gasvent.remove(entity.unit_number)
@@ -103,6 +103,13 @@ end
 function entity_raised(event)
   entity_added(event.entity, nil)
 end
+function entity_cloned(event)
+  local entity = event.destination
+  if entity and entity.valid and
+      string.sub(entity.name, -10) == "-pneumatic" then
+    vulcanus_heat.add_heat_interface(entity)
+  end
+end
 function entity_mined(event)
   entity_removed(event.entity, false)
 end
@@ -135,6 +142,7 @@ script.on_event(defines.events.on_built_entity, entity_hand_built)
 script.on_event(defines.events.on_robot_built_entity, entity_bot_built)
 script.on_event(defines.events.script_raised_built, entity_raised)
 script.on_event(defines.events.script_raised_revive, entity_raised)
+script.on_event(defines.events.on_entity_cloned, entity_cloned)
 
 script.on_event(defines.events.on_player_mined_entity, entity_mined)
 script.on_event(defines.events.on_robot_mined_entity, entity_mined)

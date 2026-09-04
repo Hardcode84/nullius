@@ -26,7 +26,7 @@ local function nanofabricator_unlocked(entity, force, base)
 end
 
 local function on_leave_pneumatic(entity)
-  vulcanus_heat.remove_heat_interface(entity.unit_number)
+  vulcanus_heat.remove_heat_interface(entity.unit_number, entity)
 end
 
 local function on_enter_pneumatic(entity)

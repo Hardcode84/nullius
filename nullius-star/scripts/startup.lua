@@ -204,10 +204,7 @@ script.on_configuration_changed(
   function(event)
     migrate_version(event)
     reset_config()
-    if not storage.nullius_heat_buckets then
-      vulcanus_heat.init()
-    end
-    vulcanus_heat.remove_excluded_interfaces()
+    vulcanus_heat.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()
     end
