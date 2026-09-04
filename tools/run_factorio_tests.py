@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import zipfile
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -73,7 +74,24 @@ def find_archive(mod_directory: Path, mod_name: str) -> Path:
     return matches[0].resolve()
 
 
-def stage_mod_under_test(run_mods: Path) -> None:
+def safe_archive_members(archive: zipfile.ZipFile, root_name: str) -> list[str]:
+    prefix = f"{root_name}/"
+    members: list[str] = []
+    for member in archive.namelist():
+        path = Path(member)
+        if (
+            path.is_absolute()
+            or ".." in path.parts
+            or (member != root_name and not member.startswith(prefix))
+        ):
+            raise TestFailure(f"mod archive entry is outside {root_name}/: {member!r}")
+        members.append(member)
+    if f"{root_name}/info.json" not in members:
+        raise TestFailure(f"mod archive has no {root_name}/info.json")
+    return members
+
+
+def stage_mod_under_test(run_mods: Path, mod_under_test: Path = MOD_UNDER_TEST) -> None:
     if not SCENARIOS.is_dir():
         raise TestFailure(f"scenario directory not found: {SCENARIOS}")
     if (MOD_UNDER_TEST / "scenarios").exists():
@@ -82,17 +100,28 @@ def stage_mod_under_test(run_mods: Path) -> None:
         )
 
     staged_mod = run_mods / "nullius-star"
-    staged_mod.mkdir()
-    for source in sorted(MOD_UNDER_TEST.iterdir()):
-        (staged_mod / source.name).symlink_to(
-            source.resolve(), target_is_directory=source.is_dir()
+    if mod_under_test.is_dir():
+        staged_mod.mkdir()
+        for source in sorted(mod_under_test.iterdir()):
+            (staged_mod / source.name).symlink_to(
+                source.resolve(), target_is_directory=source.is_dir()
+            )
+    elif mod_under_test.is_file() and mod_under_test.suffix == ".zip":
+        with zipfile.ZipFile(mod_under_test) as archive:
+            safe_archive_members(archive, "nullius-star")
+            archive.extractall(run_mods)
+    else:
+        raise TestFailure(
+            f"mod under test must be a directory or ZIP archive: {mod_under_test}"
         )
-    (staged_mod / "scenarios").symlink_to(
-        SCENARIOS.resolve(), target_is_directory=True
-    )
+    (staged_mod / "scenarios").symlink_to(SCENARIOS.resolve(), target_is_directory=True)
 
 
-def prepare_mods(run_mods: Path, dependency_mods: Path) -> None:
+def prepare_mods(
+    run_mods: Path,
+    dependency_mods: Path,
+    mod_under_test: Path = MOD_UNDER_TEST,
+) -> None:
     run_mods.mkdir(parents=True)
     enabled = [*BUILTIN_MODS]
     for mod_name in DEPENDENCY_MODS:
@@ -100,7 +129,7 @@ def prepare_mods(run_mods: Path, dependency_mods: Path) -> None:
         (run_mods / archive.name).symlink_to(archive)
         enabled.append(mod_name)
 
-    stage_mod_under_test(run_mods)
+    stage_mod_under_test(run_mods, mod_under_test)
     enabled.append("nullius-star")
     (run_mods / "factorio-test-support").symlink_to(
         TEST_SUPPORT_MOD, target_is_directory=True
@@ -206,7 +235,7 @@ def execute(
         (run_directory / directory).mkdir()
     config = prepare_config(run_directory, factorio)
     run_mods = run_directory / "mods"
-    prepare_mods(run_mods, dependency_mods)
+    prepare_mods(run_mods, dependency_mods, args.mod_under_test.expanduser().resolve())
 
     common = [
         str(factorio),
@@ -274,6 +303,12 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument(
+        "--mod-under-test",
+        type=Path,
+        default=MOD_UNDER_TEST,
+        help="distributable mod directory or release ZIP",
+    )
+    parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
     )
     parser.add_argument(
@@ -296,6 +331,11 @@ def parse_arguments() -> argparse.Namespace:
         dest="json_output",
         action="store_true",
         help="emit one machine-readable suite result instead of progress output",
+    )
+    parser.add_argument(
+        "--result-json",
+        type=Path,
+        help="write the machine-readable suite result while retaining progress output",
     )
     return parser.parse_args()
 
@@ -330,6 +370,16 @@ def parse_worker_count(value: str) -> int:
             "worker count must be a positive integer or 'auto'"
         )
     return workers
+
+
+def write_result_json(path: Path | None, result: dict[str, object]) -> None:
+    if path is None:
+        return
+    destination = path.expanduser().resolve()
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
@@ -393,16 +443,20 @@ def main() -> int:
         for case in cases:
             deadline_for(args, case)
     except (TestFailure, OSError) as error:
+        failure = {"status": "fail", "error": str(error)}
+        write_result_json(args.result_json, failure)
         if args.json_output:
-            print(json.dumps({"status": "fail", "error": str(error)}))
+            print(json.dumps(failure))
         else:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
     if not cases:
         error = "no scenario tests discovered"
+        failure = {"status": "fail", "error": error}
+        write_result_json(args.result_json, failure)
         if args.json_output:
-            print(json.dumps({"status": "fail", "error": error}))
+            print(json.dumps(failure))
         else:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
@@ -456,9 +510,7 @@ def main() -> int:
                 )
 
     completed_results = [result for result in results if result is not None]
-    passed = sum(
-        result.get("status") == "pass" for result in completed_results
-    )
+    passed = sum(result.get("status") == "pass" for result in completed_results)
     failed = total - passed
     suite = {
         "status": "pass" if failed == 0 else "fail",
@@ -474,6 +526,7 @@ def main() -> int:
             f"\nResult: {passed} passed, {failed} failed in "
             f"{format_duration(float(suite['wall_time_seconds']))}"
         )
+    write_result_json(args.result_json, suite)
     return 0 if failed == 0 else 1
 
 
