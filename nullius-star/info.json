@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "factorio_version": "2.0",
   "title": "Nullius*",
-  "author": "Anachrony",
-  "description": "Space Age expansion for Nullius. Alpha version. New games only; saves from upstream Nullius are not supported.",
+  "author": "Anachrony et al.",
+  "description": "Space Age expansion for Nullius.",
   "dependencies": [
     "base >= 2.0.73",
     "space-age >= 2.0.73",
