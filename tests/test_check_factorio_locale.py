@@ -14,12 +14,14 @@ from check_factorio_locale import (
     LocaleEntry,
     audit_locale,
     collect_locale_references,
+    collect_source_locale_references,
     default_locale_key,
     prototype_type_domains,
     parse_locale_catalog,
     recipe_uses_product_name,
     requires_resolved_name,
     resolved_prototype_tables,
+    strip_lua_comments,
     visible_in_ui,
 )
 
@@ -60,6 +62,38 @@ class CheckFactorioLocaleTest(unittest.TestCase):
                 "fluid-name.nullius-water",
             },
         )
+
+    def test_collects_source_references_but_not_comments(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "optional.lua").write_text(
+                '-- {"item-name.nullius-commented"}\n'
+                'local name = {"item-name.nullius-optional"}\n'
+                'local technology = "nullius-optional-2"\n'
+                '--[[ {"item-name.nullius-block-commented"} ]]\n',
+                encoding="utf-8",
+            )
+
+            references = collect_source_locale_references(
+                root,
+                {
+                    "item-name.nullius-optional",
+                    "technology-name.nullius-optional",
+                },
+            )
+
+        self.assertIn("item-name.nullius-optional", references)
+        self.assertIn("technology-name.nullius-optional", references)
+        self.assertNotIn("item-name.nullius-commented", references)
+        self.assertNotIn("item-name.nullius-block-commented", references)
+        self.assertTrue(references["item-name.nullius-optional"][0].endswith(":2"))
+
+    def test_comment_stripping_preserves_newlines_and_string_dashes(self) -> None:
+        source = 'local key = "item-name.nullius--active" -- comment\n--[[x\ny]]\n'
+        stripped = strip_lua_comments(source)
+
+        self.assertIn('"item-name.nullius--active"', stripped)
+        self.assertEqual(stripped.count("\n"), source.count("\n"))
 
     def test_discards_non_prototype_tables(self) -> None:
         tables = resolved_prototype_tables(
@@ -250,6 +284,7 @@ class CheckFactorioLocaleTest(unittest.TestCase):
             catalog,
             "nullius-",
             {"item": "item", "recipe": "recipe"},
+            {"item-name.nullius-unused": ["optional.lua:1"]},
         )
 
         self.assertEqual(
@@ -271,10 +306,7 @@ class CheckFactorioLocaleTest(unittest.TestCase):
             [entry["key"] for entry in report["missing_keys"]],
             ["item-name.nullius-missing-key", "nullius.missing-format"],
         )
-        self.assertEqual(
-            [entry["key"] for entry in report["unused_keys"]],
-            ["item-name.nullius-unused"],
-        )
+        self.assertEqual(report["unused_keys"], [])
 
 
 if __name__ == "__main__":

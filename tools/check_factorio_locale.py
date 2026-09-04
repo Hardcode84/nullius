@@ -31,6 +31,9 @@ from run_factorio_tests import (
 REPOSITORY = Path(__file__).resolve().parents[1]
 DEFAULT_MOD = REPOSITORY / "nullius-star"
 LOCALE_KEY = re.compile(r"^[a-z0-9][a-z0-9_-]*\.[^\s.][^\s]*$")
+QUOTED_VALUE = re.compile(
+    r"(?P<quote>['\"])(?P<value>[^\s'\"\\]+)(?P=quote)"
+)
 
 # Factorio's --dump-prototype-locale file stem and the corresponding locale
 # catalogue sections. Sections used only by scripted GUIs are deliberately not
@@ -247,6 +250,77 @@ def parse_locale_catalog(locale_directory: Path) -> dict[str, LocaleEntry]:
     return entries
 
 
+def strip_lua_comments(source: str) -> str:
+    """Remove Lua comments while preserving quoted strings and line numbers."""
+    output = []
+    index = 0
+    quote: str | None = None
+    while index < len(source):
+        char = source[index]
+        if quote is not None:
+            output.append(char)
+            if char == "\\" and index + 1 < len(source):
+                index += 1
+                output.append(source[index])
+            elif char == quote:
+                quote = None
+            index += 1
+            continue
+        if char in ("'", '"'):
+            quote = char
+            output.append(char)
+            index += 1
+            continue
+        if source.startswith("--[[", index):
+            end = source.find("]]", index + 4)
+            if end < 0:
+                output.extend("\n" for char in source[index:] if char == "\n")
+                break
+            output.extend("\n" for char in source[index : end + 2] if char == "\n")
+            index = end + 2
+            continue
+        if source.startswith("--", index):
+            end = source.find("\n", index + 2)
+            if end < 0:
+                break
+            output.append("\n")
+            index = end + 1
+            continue
+        output.append(char)
+        index += 1
+    return "".join(output)
+
+
+def collect_source_locale_references(
+    mod_directory: Path,
+    catalog_keys: set[str] | None = None,
+) -> dict[str, list[str]]:
+    """Collect potential locale use from inactive optional-mod data paths."""
+    references: dict[str, list[str]] = defaultdict(list)
+    for path in sorted(mod_directory.rglob("*.lua")):
+        source = strip_lua_comments(path.read_text(encoding="utf-8"))
+        for match in QUOTED_VALUE.finditer(source):
+            value = match.group("value")
+            line = source.count("\n", 0, match.start()) + 1
+            location = f"{path}:{line}"
+            if LOCALE_KEY.fullmatch(value) and (
+                value.partition(".")[0] in PROTOTYPE_SECTIONS
+            ):
+                references[value].append(location)
+            if not value.startswith("nullius-"):
+                continue
+            for section in PROTOTYPE_SECTIONS:
+                key = f"{section}.{value}"
+                if catalog_keys is None or key in catalog_keys:
+                    references[key].append(location)
+                if section.startswith("technology-"):
+                    base_name = re.sub(r"-\d+$", "", value.rstrip("-"))
+                    key = f"{section}.{base_name}"
+                    if catalog_keys is None or key in catalog_keys:
+                        references[key].append(location)
+    return dict(references)
+
+
 def resolved_prototype_tables(data_raw: dict[str, Any]) -> dict[str, dict[str, Any]]:
     result = {}
     for prototype_type, table in data_raw.items():
@@ -400,6 +474,7 @@ def audit_locale(
     catalog: dict[str, LocaleEntry],
     prototype_prefix: str,
     type_domains: dict[str, str],
+    source_references: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
     prototype_tables = resolved_prototype_tables(data_raw)
     applicable_domains = applicable_type_domains(prototype_tables, type_domains)
@@ -415,6 +490,8 @@ def audit_locale(
                 merge_references(visible_explicit_references, paths)
     used_references: dict[str, list[str]] = defaultdict(list)
     merge_references(used_references, explicit_references)
+    if source_references is not None:
+        merge_references(used_references, source_references)
 
     missing_prototypes = []
     for prototype_type, domain in sorted(applicable_domains.items()):
@@ -564,6 +641,7 @@ def main() -> int:
             catalog,
             args.prototype_prefix,
             type_domains,
+            collect_source_locale_references(mod_directory, set(catalog)),
         )
         report["factorio_version"] = factorio_version
         report["mod"] = str(mod_directory)
