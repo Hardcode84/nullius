@@ -46,11 +46,8 @@ local function nullius_vulcanus_map_gen()
       cliff_elevation_interval = 120,
       cliff_elevation_0 = 70
     },
-    -- No territory_settings (no demolishers).
-    no_enemies_mode = true,
-    -- Only use autoplace controls we explicitly list. Without this,
-    -- water, trees, and other Nauvis content bleeds into the planet.
-    default_enable_all_autoplace_controls = false,
+    -- No territory_settings (no demolishers). Each autoplace type below uses
+    -- treat_missing_as_default=false so only the explicit whitelist is placed.
     autoplace_controls =
     {
       ["sulfuric_acid_geyser"] = {},

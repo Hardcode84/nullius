@@ -182,6 +182,7 @@ script.on_init(
     init_geothermal()
     vulcanus_heat.init()
     vulcanus_gasvent.init()
+	  surface_config.configure_existing()
 	  reset_config()
     if (remote.interfaces["freeplay"] ~= nil) then
       remote.call("freeplay", "set_skip_intro", true)
@@ -204,6 +205,7 @@ script.on_configuration_changed(
   function(event)
     migrate_version(event)
     reset_config()
+    surface_config.configure_existing()
     vulcanus_heat.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()

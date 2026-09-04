@@ -14,6 +14,32 @@ end
 
 require("clutterpedia")
 
+-- Alien Biomes 0.7.4 still writes fields removed from Factorio 2.0. They are
+-- ignored by the engine; clear them so strict prototype validation is useful.
+if mods["alien-biomes"] then
+  local styles = data.raw["gui-style"]["default"]
+  local scroll = styles["alien-biomes-scroll-pane"]
+  if scroll then scroll.vertical_scroll_bar_spacing = nil end
+  local textbox = styles["alien-biomes-textbox"]
+  if textbox then
+    textbox.maximal_width = nil
+    textbox.single_line = nil
+  end
+  local label = styles["alien-biomes-label-multiline"]
+  if label then label.maximal_width = nil end
+
+  for _, color in pairs({
+      "tan", "red", "purple", "black", "white", "volcanic"}) do
+    local decorative = data.raw["optimized-decorative"][
+      "sand-decal-" .. color]
+    if decorative then
+      for _, picture in pairs(decorative.pictures or {}) do
+        picture.slice_y = nil
+      end
+    end
+  end
+end
+
 if settings.startup["nullius-hide-recipe-signals"].value then
     for _,recipe in pairs(data.raw.recipe) do
         --recipe.hide_from_signal_gui = true
@@ -99,10 +125,23 @@ end
 
 -- Gut SA's vanilla planet definitions. Cannot delete (refs break), so
 -- strip their map gen to prevent decorative errors and hide them.
+local disabled_planet_map_gen = {
+  property_expression_names = {},
+  autoplace_controls = {},
+  autoplace_settings = {
+    entity = {treat_missing_as_default = false, settings = {}},
+    tile = {
+      treat_missing_as_default = false,
+      settings = {["empty-space"] = {}},
+    },
+    decorative = {treat_missing_as_default = false, settings = {}},
+  },
+}
 for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
   if data.raw.planet[planet_name] then
     data.raw.planet[planet_name].hidden = true
-    data.raw.planet[planet_name].map_gen_settings = { no_enemies_mode = true }
+    data.raw.planet[planet_name].map_gen_settings =
+      table.deepcopy(disabled_planet_map_gen)
   end
 end
 

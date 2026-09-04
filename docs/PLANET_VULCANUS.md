@@ -42,6 +42,16 @@ post_cargo_exports:
 | High ambient temperature | Recipe availability is expressed through ambient-temperature surface conditions |
 | No electric bootstrap | Initial production uses pneumatic machines and thermal machinery |
 
+## Surface generation
+
+| Surface | Terrain and autoplace contract |
+|---|---|
+| Nauvis | Existing Nullius terrain; removed vanilla resources remain absent |
+| Nullius Vulcanus | Explicit volcanic tile, decorative, and entity whitelists; unspecified autoplace and natural enemies disabled |
+| Hidden Space Age planets | Hidden, non-walkable empty-space terrain, no decoratives, no autoplace entities, and no natural enemies |
+
+Executable contract: `tests/scenarios/surface-mapgen-contract/`.
+
 ## Resource model
 
 ### Lava
