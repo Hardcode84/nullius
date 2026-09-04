@@ -22,8 +22,10 @@ local checkpoint_data = {
   ["carbon-dioxide"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-carbon-dioxide"}} }},
   ["furnace"] = {{ CHK_BUILD, STT_NET, 4, {{"nullius-small-furnace-1"}} }},
 
-  ["sandstone"] = {{ CHK_ITEM, STT_PRODUCE, 1000, {{"nullius-sandstone"}} }},
-  ["bauxite"] = {{ CHK_ITEM, STT_PRODUCE, 2000, {{"nullius-bauxite"}} }},
+  ["sandstone"] = {{ CHK_ITEM, STT_PRODUCE, 1000,
+			{{"nullius-sandstone"}, {"nullius-sand", 1.25}} }},
+  ["bauxite"] = {{ CHK_ITEM, STT_PRODUCE, 2000,
+			{{"nullius-bauxite"}, {"nullius-molten-aluminum-bloom", 2.5}} }},
   ["water"] = {{ CHK_FLUID, STT_CONSUME, 10000, {{"nullius-water"}} }},
   ["caustic-solution"] = {{ CHK_FLUID, STT_CONSUME, 250, {{"nullius-caustic-solution"}} }},
   ["wind-power"] = {{ CHK_BUILD, STT_NET, 5, {{"nullius-wind-base-1"},{"nullius-wind-build-1"}} }},

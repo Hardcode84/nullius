@@ -110,6 +110,42 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "limestone"), 1),
     "calcite checkpoint did not combine proportional alternatives")
 
+  split_statistic(nauvis_items, "nullius-sandstone", 0, 0)
+  split_statistic(vulcanus_items, "nullius-sand", 799, 0)
+  check(progress(force, "sandstone") < 1,
+    "sandstone assay completed before 800 sand")
+  split_statistic(vulcanus_items, "nullius-sand", 800, 0)
+  check(close(progress(force, "sandstone"), 1),
+    "sandstone assay did not accept 800 sand")
+
+  split_statistic(nauvis_items, "nullius-sandstone", 1000, 0)
+  split_statistic(vulcanus_items, "nullius-sand", 0, 0)
+  check(close(progress(force, "sandstone"), 1),
+    "sandstone assay did not accept 1000 sandstone")
+
+  split_statistic(nauvis_items, "nullius-sandstone", 500, 0)
+  split_statistic(vulcanus_items, "nullius-sand", 400, 0)
+  check(close(progress(force, "sandstone"), 1),
+    "sandstone assay did not combine proportional alternatives")
+
+  split_statistic(nauvis_items, "nullius-bauxite", 0, 0)
+  split_statistic(vulcanus_items, "nullius-molten-aluminum-bloom", 799, 0)
+  check(progress(force, "bauxite") < 1,
+    "bauxite assay completed before 800 molten aluminum blooms")
+  split_statistic(vulcanus_items, "nullius-molten-aluminum-bloom", 800, 0)
+  check(close(progress(force, "bauxite"), 1),
+    "bauxite assay did not accept 800 molten aluminum blooms")
+
+  split_statistic(nauvis_items, "nullius-bauxite", 2000, 0)
+  split_statistic(vulcanus_items, "nullius-molten-aluminum-bloom", 0, 0)
+  check(close(progress(force, "bauxite"), 1),
+    "bauxite assay did not accept 2000 bauxite")
+
+  split_statistic(nauvis_items, "nullius-bauxite", 1000, 0)
+  split_statistic(vulcanus_items, "nullius-molten-aluminum-bloom", 400, 0)
+  check(close(progress(force, "bauxite"), 1),
+    "bauxite assay did not combine proportional alternatives")
+
   check(force.technologies["nullius-checkpoint-freshwater"] == nil,
     "obsolete freshwater checkpoint still exists")
 
