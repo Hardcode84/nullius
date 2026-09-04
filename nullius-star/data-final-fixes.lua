@@ -4,7 +4,6 @@ require("prototypes.override_mod_final")
 require("prototypes.item.module_limitation")
 require("prototypes.item.box_icons")
 require("prototypes.custom_tooltip_fields")
-require("legacyMirror")
 
 for _, recipe in pairs(data.raw.recipe) do
     if recipe.GCKI_ignore ~= nil then
@@ -16,26 +15,24 @@ require("clutterpedia")
 
 -- Alien Biomes 0.7.4 still writes fields removed from Factorio 2.0. They are
 -- ignored by the engine; clear them so strict prototype validation is useful.
-if mods["alien-biomes"] then
-  local styles = data.raw["gui-style"]["default"]
-  local scroll = styles["alien-biomes-scroll-pane"]
-  if scroll then scroll.vertical_scroll_bar_spacing = nil end
-  local textbox = styles["alien-biomes-textbox"]
-  if textbox then
-    textbox.maximal_width = nil
-    textbox.single_line = nil
-  end
-  local label = styles["alien-biomes-label-multiline"]
-  if label then label.maximal_width = nil end
+local styles = data.raw["gui-style"]["default"]
+local scroll = styles["alien-biomes-scroll-pane"]
+if scroll then scroll.vertical_scroll_bar_spacing = nil end
+local textbox = styles["alien-biomes-textbox"]
+if textbox then
+  textbox.maximal_width = nil
+  textbox.single_line = nil
+end
+local label = styles["alien-biomes-label-multiline"]
+if label then label.maximal_width = nil end
 
-  for _, color in pairs({
-      "tan", "red", "purple", "black", "white", "volcanic"}) do
-    local decorative = data.raw["optimized-decorative"][
-      "sand-decal-" .. color]
-    if decorative then
-      for _, picture in pairs(decorative.pictures or {}) do
-        picture.slice_y = nil
-      end
+for _, color in pairs({
+    "tan", "red", "purple", "black", "white", "volcanic"}) do
+  local decorative = data.raw["optimized-decorative"][
+    "sand-decal-" .. color]
+  if decorative then
+    for _, picture in pairs(decorative.pictures or {}) do
+      picture.slice_y = nil
     end
   end
 end

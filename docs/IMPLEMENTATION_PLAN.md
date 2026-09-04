@@ -1,7 +1,7 @@
 # Nullius* implementation status
 
 > **Status**: Active vertical slice
-> **Updated**: 2026-08-30
+> **Updated**: 2026-09-04
 
 ## Authority
 
@@ -29,16 +29,26 @@
 | Construction closure | The Vulcanus cell reproduces the buildings and logistics required to scale the implemented slice | Construction-closure scenario and manifest |
 | Thermal industry | Pneumatic technology unlocks global tier-1 heat-powered crushers, furnace sizes, and foundries; metallurgic research unlocks tiers 2-3; eligible recipes receive innate and repeatable productivity | Thermal and productivity scenarios |
 | Automated validation | Scenario runner supports selection, parallel workers, per-test timing, wall time, and tick ceilings; prerequisite checker consumes resolved prototypes | Full automated suite |
+| Release lineage | Version `0.0.1` starts a new-game-only lineage; upstream Nullius saves are rejected before configuration mutation | Save-lineage scenario and packaged release gate |
+
+## Release identity
+
+| Field | Value |
+|---|---|
+| Initial version | `0.0.1` |
+| Upstream Nullius saves | Unsupported; rejected on configuration change |
+| Nullius* prior versions | None |
+| Packaged migrations | None |
 
 ## Active hardening work
 
 | Required result | Status |
 |---|---|
-| Vulcanus surface properties and map-generation fields are accepted and exercised by Factorio | Open |
+| Vulcanus surface properties and map-generation fields are accepted and exercised by Factorio | Complete |
 | Probe activation, bodies, and late join are correct for every player | Open |
-| Pneumatic heat ownership cannot leave duplicate or orphan hidden interfaces | Open |
+| Pneumatic heat ownership cannot leave duplicate or orphan hidden interfaces | Complete |
 | Current upstream Nullius development changes are integrated and revalidated | Open |
-| Version, changelog, and save-migration policy are coherent | Open |
+| Version, changelog, and save-migration policy are coherent | Complete |
 | Required dependencies and supported optional mods have a tested matrix | Open |
 | The complete validation flow reproduces from a clean checkout | Open |
 | The runner orchestrates real multiplayer scenario tests | Open |

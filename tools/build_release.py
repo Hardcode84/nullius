@@ -124,6 +124,13 @@ def read_metadata() -> dict[str, object]:
         raise TestFailure(f"release version component exceeds 65535: {version}")
     if metadata.get("factorio_version") != "2.0":
         raise TestFailure("release factorio_version must be '2.0'")
+    dependencies = metadata.get("dependencies")
+    if not isinstance(dependencies, list) or "! nullius" not in dependencies:
+        raise TestFailure("release must declare upstream Nullius incompatible")
+    migrations = sorted((MOD_DIRECTORY / "migrations").glob("*"))
+    if version == "0.0.1" and migrations:
+        names = ", ".join(path.name for path in migrations)
+        raise TestFailure(f"initial release must not contain migrations: {names}")
     changelog = (MOD_DIRECTORY / "changelog.txt").read_text(encoding="utf-8")
     match = CHANGELOG_VERSION.search(changelog)
     if match is None:

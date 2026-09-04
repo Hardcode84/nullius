@@ -905,7 +905,6 @@ Players can continue playing after victory with infinite research tracks.
 ```
 data.lua
   +--> legacyAngels.lua       (Angel's mod icon utilities)
-  +--> legacyValves.lua        (1.1 --> 2.0 valve migration)
   +--> Core prototypes         (items, entities, recipes, tech)
 
 data-updates.lua
@@ -917,7 +916,6 @@ data-final-fixes.lua
   +--> override_final.lua      (final vanilla tweaks)
   +--> override_mod_final.lua  (final mod tweaks)
   +--> override_final_only.lua (phase-exclusive fixes)
-  +--> legacyMirror.lua        (building orientation migration)
   +--> clutterpedia.lua        (factoriopedia recipe renames)
 ```
 

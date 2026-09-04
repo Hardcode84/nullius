@@ -1,5 +1,4 @@
 require("legacyAngels")
-require("legacyValves")
 pipe_extents = {64, 144, 320, 672}
 
 -- Planet definitions.

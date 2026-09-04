@@ -136,7 +136,6 @@ local function init_tech(force)
 
   init_alignment_force(force)
   init_force_checkpoints(force)
-  init_legacy_recipes(force)
 end
 
 local function init_techs()
@@ -203,7 +202,7 @@ script.on_load(
 
 script.on_configuration_changed(
   function(event)
-    migrate_version(event)
+    save_lineage.validate(event)
     reset_config()
     surface_config.configure_existing()
     vulcanus_heat.rebuild()
