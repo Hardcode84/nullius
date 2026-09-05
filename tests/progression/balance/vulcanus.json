@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "entrance_technologies": [
+    "nullius-pneumatic-technology"
+  ],
+  "fuel": "nullius-compressed-volcanic-gas",
+  "prime_stock": {
+    "nullius-compressed-volcanic-gas": 24
+  },
+  "science_rates_per_minute": [
+    1,
+    5
+  ],
+  "wreck_machines": {
+    "nullius-seawater-intake-1": 2,
+    "nullius-hydro-plant-1": 4,
+    "nullius-small-furnace-1": 4,
+    "nullius-extractor-1": 2,
+    "nullius-air-filter-1": 2,
+    "nullius-distillery-1": 2,
+    "nullius-chemical-plant-1": 2,
+    "nullius-foundry-1": 4,
+    "nullius-small-assembler-1": 4,
+    "nullius-lab-1": 1
+  },
+  "stages": [
+    {
+      "name": "bootstrap-metallurgy",
+      "contract": "tests/progression/vulcanus-pack.args"
+    },
+    {
+      "name": "construction-cell",
+      "contract": "tests/progression/vulcanus-construction.args"
+    },
+    {
+      "name": "basic-science",
+      "contract": "tests/progression/vulcanus-basic-science.args"
+    },
+    {
+      "name": "chemical-science",
+      "contract": "tests/progression/vulcanus-chemical-science.args"
+    },
+    {
+      "name": "efficient-metallurgy",
+      "contract": "tests/progression/vulcanus-efficient-pack.args"
+    },
+    {
+      "name": "primitive-logistics",
+      "contract": "tests/progression/vulcanus-primitive-robotics.args"
+    },
+    {
+      "name": "hot-casting",
+      "contract": "tests/progression/vulcanus-hot-casting.args"
+    },
+    {
+      "name": "refractory",
+      "contract": "tests/progression/vulcanus-refractory-production.args"
+    },
+    {
+      "name": "titanium-pilot",
+      "contract": "tests/progression/vulcanus-titanium-pilot.args"
+    },
+    {
+      "name": "titanium-construction",
+      "contract": "tests/progression/vulcanus-titanium-construction.args"
+    },
+    {
+      "name": "physics",
+      "contract": "tests/progression/vulcanus-physics-production.args"
+    },
+    {
+      "name": "first-physics",
+      "contract": "tests/progression/vulcanus-physics-production.args",
+      "technology_roots": [
+        "nullius-physics",
+        "nullius-pneumatic-technology",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "targets": [
+        [
+          "nullius-physics-pack",
+          125
+        ]
+      ]
+    },
+    {
+      "name": "first-physics-strict",
+      "contract": "tests/progression/vulcanus-physics-production.args",
+      "technology_roots": [
+        "nullius-physics",
+        "nullius-pneumatic-technology",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "targets": [
+        [
+          "nullius-physics-pack",
+          125
+        ]
+      ],
+      "boundary_only": true
+    },
+    {
+      "name": "physics-inputs-strict",
+      "contract": "tests/progression/vulcanus-physics-production.args",
+      "technology_roots": [
+        "nullius-physics",
+        "nullius-pneumatic-technology",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "targets": [
+        [
+          "nullius-stirling-engine-2",
+          1
+        ],
+        [
+          "nullius-nanofabricator-1",
+          1
+        ],
+        [
+          "nullius-box-underground-belt-3",
+          1
+        ],
+        [
+          "nullius-lab-2",
+          1
+        ],
+        [
+          "nullius-combustion-chamber-3",
+          1
+        ],
+        [
+          "nullius-substation-2",
+          1
+        ],
+        [
+          "nullius-drone-launcher-1",
+          1
+        ],
+        [
+          "nullius-box-missile-1",
+          1
+        ],
+        [
+          "nullius-compressed-air",
+          1
+        ],
+        [
+          "nullius-sulfur-dioxide-barrel",
+          1
+        ],
+        [
+          "nullius-acrylonitrile-barrel",
+          1
+        ]
+      ],
+      "boundary_only": true
+    },
+    {
+      "name": "pre-physics-recipes",
+      "contract": "tests/progression/vulcanus-physics-production.args",
+      "technology_roots": [
+        "nullius-physics",
+        "nullius-pneumatic-technology",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "targets": [
+        [
+          "nullius-physics-pack",
+          125
+        ]
+      ],
+      "pre_physics": true,
+      "recipe_overrides": [
+        [
+          "nullius-air",
+          "nullius-air"
+        ]
+      ]
+    }
+  ],
+  "inspect_technologies": [
+    "nullius-physics",
+    "nullius-efficient-metallurgic-science",
+    "nullius-volcanic-titanium-metallurgy"
+  ],
+  "inspect_products": [
+    "nullius-physics-pack",
+    "nullius-metallurgic-pack",
+    "nullius-titanium-ingot",
+    "nullius-rutile",
+    "nullius-nanofabricator-1",
+    "nullius-box-physics-pack",
+    "nullius-box-titanium-ingot",
+    "nullius-compressed-air",
+    "nullius-compressed-residual-gas",
+    "nullius-acrylonitrile-barrel"
+  ],
+  "runtime_cases": [
+    "vulcanus-metallurgic-pack-10",
+    "vulcanus-basic-science-10",
+    "vulcanus-chemical-pack-10",
+    "vulcanus-construction-closure",
+    "vulcanus-titanium-pilot",
+    "vulcanus-titanium-construction",
+    "thermal-nanofabricators",
+    "vulcanus-efficient-metallurgic-science",
+    "vulcanus-gas-self-power"
+  ],
+  "research_boundaries": {
+    "physics-unlock": [
+      "nullius-physics"
+    ],
+    "physics-and-local-titanium": [
+      "nullius-physics",
+      "nullius-pneumatic-technology",
+      "nullius-volcanic-titanium-metallurgy",
+      "nullius-volcanic-alkali-processing"
+    ]
+  }
+}

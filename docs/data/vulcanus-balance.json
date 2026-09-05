@@ -1,0 +1,1150 @@
+{
+  "provenance": {
+    "config": "tests/progression/balance/vulcanus.json",
+    "dump_sha256": "ebe6d3c52a3cf5f2dcc153f7fe3c0458fcffe9de0557b174f933c43f72773032",
+    "factorio": "Version: 2.0.77 (build 84539, linux64, full)",
+    "generated_utc": "2026-09-05T22:35:00.959608+00:00",
+    "revision": "f45f665b965f3bcc425cc96df6b0f8afd4be8f36"
+  },
+  "report_type": "vulcanus-balance-summary",
+  "research_boundaries": {
+    "physics-and-local-titanium": {
+      "checkpoint_technologies": [
+        "nullius-checkpoint-aluminum-carbide",
+        "nullius-checkpoint-battery",
+        "nullius-checkpoint-bauxite",
+        "nullius-checkpoint-ceramic-powder",
+        "nullius-checkpoint-chemical-engineering",
+        "nullius-checkpoint-compressed-nitrogen",
+        "nullius-checkpoint-concrete",
+        "nullius-checkpoint-construction-robot",
+        "nullius-checkpoint-crushed-iron-ore",
+        "nullius-checkpoint-exploration",
+        "nullius-checkpoint-explosive",
+        "nullius-checkpoint-freight-logistics",
+        "nullius-checkpoint-freight-transportation",
+        "nullius-checkpoint-heat-pipe",
+        "nullius-checkpoint-iron-ore",
+        "nullius-checkpoint-lab-2",
+        "nullius-checkpoint-large-beacon",
+        "nullius-checkpoint-large-furnace",
+        "nullius-checkpoint-large-tank",
+        "nullius-checkpoint-limestone",
+        "nullius-checkpoint-logistic-robot",
+        "nullius-checkpoint-logistic-robot-2",
+        "nullius-checkpoint-logistics-2",
+        "nullius-checkpoint-monocrystalline-silicon",
+        "nullius-checkpoint-optimization",
+        "nullius-checkpoint-plumbing",
+        "nullius-checkpoint-productivity-module",
+        "nullius-checkpoint-propene",
+        "nullius-checkpoint-robotics",
+        "nullius-checkpoint-sandstone",
+        "nullius-checkpoint-sensor",
+        "nullius-checkpoint-soda-ash",
+        "nullius-checkpoint-stirling-engine",
+        "nullius-checkpoint-substation",
+        "nullius-checkpoint-titanium-ingot",
+        "nullius-checkpoint-truck",
+        "nullius-checkpoint-volcanic-gas"
+      ],
+      "checkpoint_tokens": {
+        "nullius-checkpoint": 37.0,
+        "nullius-requirement-build": 13.0,
+        "nullius-requirement-consume": 9.0
+      },
+      "lab_hours_at_speed_one": 532.9422222222222,
+      "packs": {
+        "nullius-chemical-pack": 47241.0,
+        "nullius-climatology-pack": 57154.0,
+        "nullius-electrical-pack": 50998.0,
+        "nullius-geology-pack": 58864.0,
+        "nullius-mechanical-pack": 56602.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "supply_hours": {
+        "1": 981.0666666666667,
+        "5": 196.2133333333333
+      }
+    },
+    "physics-unlock": {
+      "checkpoint_technologies": [
+        "nullius-checkpoint-aluminum-carbide",
+        "nullius-checkpoint-battery",
+        "nullius-checkpoint-bauxite",
+        "nullius-checkpoint-ceramic-powder",
+        "nullius-checkpoint-chemical-engineering",
+        "nullius-checkpoint-compressed-nitrogen",
+        "nullius-checkpoint-concrete",
+        "nullius-checkpoint-construction-robot",
+        "nullius-checkpoint-crushed-iron-ore",
+        "nullius-checkpoint-exploration",
+        "nullius-checkpoint-explosive",
+        "nullius-checkpoint-freight-logistics",
+        "nullius-checkpoint-freight-transportation",
+        "nullius-checkpoint-heat-pipe",
+        "nullius-checkpoint-iron-ore",
+        "nullius-checkpoint-lab-2",
+        "nullius-checkpoint-large-beacon",
+        "nullius-checkpoint-large-furnace",
+        "nullius-checkpoint-large-tank",
+        "nullius-checkpoint-limestone",
+        "nullius-checkpoint-logistic-robot",
+        "nullius-checkpoint-logistic-robot-2",
+        "nullius-checkpoint-logistics-2",
+        "nullius-checkpoint-monocrystalline-silicon",
+        "nullius-checkpoint-optimization",
+        "nullius-checkpoint-plumbing",
+        "nullius-checkpoint-productivity-module",
+        "nullius-checkpoint-propene",
+        "nullius-checkpoint-robotics",
+        "nullius-checkpoint-sandstone",
+        "nullius-checkpoint-sensor",
+        "nullius-checkpoint-soda-ash",
+        "nullius-checkpoint-stirling-engine",
+        "nullius-checkpoint-substation",
+        "nullius-checkpoint-titanium-ingot",
+        "nullius-checkpoint-truck",
+        "nullius-checkpoint-volcanic-gas"
+      ],
+      "checkpoint_tokens": {
+        "nullius-checkpoint": 37.0,
+        "nullius-requirement-build": 13.0,
+        "nullius-requirement-consume": 9.0
+      },
+      "lab_hours_at_speed_one": 532.1088888888889,
+      "packs": {
+        "nullius-chemical-pack": 47121.0,
+        "nullius-climatology-pack": 57104.0,
+        "nullius-electrical-pack": 50943.0,
+        "nullius-geology-pack": 58684.0,
+        "nullius-mechanical-pack": 56537.0
+      },
+      "supply_hours": {
+        "1": 978.0666666666667,
+        "5": 195.61333333333332
+      }
+    }
+  },
+  "runtime": [
+    {
+      "case": "vulcanus-metallurgic-pack-10",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 22632
+      },
+      "heat_mode": "fixture-network",
+      "minutes": 35.285,
+      "placed_items": {
+        "nullius-heat-pipe-1": 27,
+        "nullius-hydro-plant-1": 16,
+        "nullius-seawater-intake-1": 8,
+        "nullius-small-assembler-1": 2,
+        "nullius-small-furnace-1": 16,
+        "nullius-vulcanus-radiator-1": 1
+      },
+      "tick": 127026
+    },
+    {
+      "case": "vulcanus-basic-science-10",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 35255.399999999674
+      },
+      "heat_mode": "direct-high-temperature",
+      "minutes": 64.00055555555555,
+      "placed_items": {
+        "nullius-air-filter-1": 8,
+        "nullius-chemical-plant-1": 8,
+        "nullius-crusher-1": 1,
+        "nullius-distillery-1": 8,
+        "nullius-foundry-1": 8,
+        "nullius-heat-pipe-1": 25,
+        "nullius-hydro-plant-1": 8,
+        "nullius-seawater-intake-1": 8,
+        "nullius-small-assembler-1": 2,
+        "nullius-small-furnace-1": 5,
+        "nullius-vulcanus-radiator-1": 1,
+        "nullius-vulcanus-radiator-2": 1
+      },
+      "tick": 230402
+    },
+    {
+      "case": "vulcanus-chemical-pack-10",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 1440
+      },
+      "heat_mode": "disabled",
+      "minutes": 0.25055555555555553,
+      "placed_items": {
+        "nullius-chemical-plant-1": 10
+      },
+      "tick": 902
+    },
+    {
+      "case": "vulcanus-construction-closure",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 17018.399999999987
+      },
+      "heat_mode": "fixture-network",
+      "minutes": 49.315,
+      "placed_items": {
+        "nullius-chemical-plant-1": 2,
+        "nullius-foundry-1": 8,
+        "nullius-heat-pipe-1": 27,
+        "nullius-hydro-plant-1": 8,
+        "nullius-seawater-intake-1": 8,
+        "nullius-small-furnace-1": 8,
+        "nullius-vulcanus-radiator-1": 1
+      },
+      "tick": 177534
+    },
+    {
+      "case": "vulcanus-titanium-pilot",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 926.3999999999999
+      },
+      "heat_mode": "scripted-preheat-per-cycle",
+      "minutes": 0.6027777777777777,
+      "placed_items": {
+        "nullius-flotation-cell-1": 8,
+        "nullius-foundry-1": 1,
+        "nullius-medium-furnace-2": 2,
+        "nullius-vulcanus-radiator-2": 2
+      },
+      "tick": 2170
+    },
+    {
+      "case": "vulcanus-titanium-construction",
+      "fuel_consumed": {
+        "nullius-compressed-volcanic-gas": 223.2
+      },
+      "heat_mode": "disabled",
+      "minutes": 0.5177777777777778,
+      "placed_items": {
+        "nullius-medium-assembler-1": 1
+      },
+      "tick": 1864
+    },
+    {
+      "case": "thermal-nanofabricators",
+      "fuel_consumed": null,
+      "heat_mode": null,
+      "minutes": 0.6388888888888888,
+      "placed_items": {},
+      "tick": 2300
+    },
+    {
+      "case": "vulcanus-efficient-metallurgic-science",
+      "fuel_consumed": null,
+      "heat_mode": null,
+      "minutes": 0.2561111111111111,
+      "placed_items": {},
+      "tick": 922
+    },
+    {
+      "case": "vulcanus-gas-self-power",
+      "fuel_consumed": null,
+      "heat_mode": null,
+      "minutes": 0.08472222222222223,
+      "placed_items": {},
+      "tick": 305
+    }
+  ],
+  "schema": 1,
+  "stages": [
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.4419444444444444,
+          "name": "nullius-hydro-plant-1-pneumatic"
+        },
+        {
+          "hours": 0.3333333333333333,
+          "name": "nullius-small-assembler-1-pneumatic"
+        },
+        {
+          "hours": 0.3,
+          "name": "nullius-small-furnace-1-thermal"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-vulcanus-radiator-1"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 22632.0
+      },
+      "machine_hours": 1.196388888888889,
+      "machine_types": 5,
+      "manifest_error": null,
+      "name": "bootstrap-metallurgy",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {
+        "nullius-graphite": 135.0,
+        "nullius-rutile": 1.0
+      },
+      "recipes": 12,
+      "research_packs": {},
+      "targets": {
+        "nullius-metallurgic-pack": 10.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.4375,
+          "name": "character"
+        },
+        {
+          "hours": 0.36194444444444446,
+          "name": "nullius-hydro-plant-1-pneumatic"
+        },
+        {
+          "hours": 0.24444444444444444,
+          "name": "nullius-small-furnace-1-thermal"
+        }
+      ],
+      "extra_machine_items": [],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 17018.4
+      },
+      "machine_hours": 1.31,
+      "machine_types": 8,
+      "manifest_error": null,
+      "name": "construction-cell",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {
+        "nullius-graphite": 128.0,
+        "nullius-limestone": 100.0,
+        "nullius-rutile": 1.0
+      },
+      "recipes": 50,
+      "research_packs": {},
+      "targets": {
+        "inserter": 12.0,
+        "nullius-air-filter-1": 1.0,
+        "nullius-chemical-plant-1": 1.0,
+        "nullius-compressed-volcanic-gas": 60.0,
+        "nullius-distillery-1": 1.0,
+        "nullius-foundry-1": 1.0,
+        "nullius-heat-pipe-1": 30.0,
+        "nullius-hydro-plant-1": 5.0,
+        "nullius-medium-assembler-1": 1.0,
+        "nullius-seawater-intake-1": 1.0,
+        "nullius-small-assembler-1": 1.0,
+        "nullius-small-furnace-1": 1.0,
+        "nullius-vulcanus-radiator-1": 1.0,
+        "pipe": 50.0,
+        "pipe-to-ground": 10.0,
+        "storage-tank": 2.0,
+        "transport-belt": 50.0,
+        "wooden-chest": 4.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.5619444444444445,
+          "name": "nullius-hydro-plant-1-pneumatic"
+        },
+        {
+          "hours": 0.325,
+          "name": "character"
+        },
+        {
+          "hours": 0.27111111111111114,
+          "name": "nullius-small-furnace-1-thermal"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-medium-assembler-1",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 35255.4
+      },
+      "machine_hours": 1.925,
+      "machine_types": 11,
+      "manifest_error": null,
+      "name": "basic-science",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {
+        "nullius-hydrogen-chloride": 18615.0,
+        "nullius-limestone": 124.0,
+        "nullius-rutile": 1.0
+      },
+      "recipes": 45,
+      "research_packs": {},
+      "targets": {
+        "nullius-climatology-pack": 10.0,
+        "nullius-compressed-volcanic-gas": 15396.0,
+        "nullius-electrical-pack": 10.0,
+        "nullius-geology-pack": 10.0,
+        "nullius-hydrogen-chloride": 15.0,
+        "nullius-mechanical-pack": 10.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.5138888888888888,
+          "name": "nullius-hydro-plant-1-pneumatic"
+        },
+        {
+          "hours": 0.3194444444444444,
+          "name": "nullius-foundry-1-thermal"
+        },
+        {
+          "hours": 0.18916666666666668,
+          "name": "nullius-chemical-plant-1-pneumatic"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-1",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 32238.1
+      },
+      "machine_hours": 1.5391666666666666,
+      "machine_types": 13,
+      "manifest_error": null,
+      "name": "chemical-science",
+      "post_physics_research": [],
+      "rate_sizing": [
+        {
+          "batch": 10.0,
+          "dedicated_stations": 38,
+          "gross_raw_per_minute": {
+            "nullius-hydrogen-chloride": 1708.0,
+            "nullius-limestone": 0.4,
+            "nullius-rutile": 0.1
+          },
+          "interpretation": "Repeat the zero-productivity batch. Exclude station construction, logistics, heat loss and warmup. This is a capacity estimate, not a sustained runtime test.",
+          "machines": [
+            {
+              "average_mw": 0.74,
+              "dedicated_stations": 7,
+              "energy_type": "fluid",
+              "name": "nullius-hydro-plant-1-pneumatic",
+              "pooled_capacity": 3.0833333333333335
+            },
+            {
+              "average_mw": 0.2875,
+              "dedicated_stations": 6,
+              "energy_type": "heat",
+              "name": "nullius-foundry-1-thermal",
+              "pooled_capacity": 1.9166666666666667
+            },
+            {
+              "average_mw": 0.21792,
+              "dedicated_stations": 9,
+              "energy_type": "fluid",
+              "name": "nullius-chemical-plant-1-pneumatic",
+              "pooled_capacity": 1.135
+            },
+            {
+              "average_mw": 0.6633333333333333,
+              "dedicated_stations": 1,
+              "energy_type": "heat",
+              "name": "nullius-vulcanus-radiator-2",
+              "pooled_capacity": 0.6633333333333333
+            },
+            {
+              "average_mw": 0.49,
+              "dedicated_stations": 2,
+              "energy_type": "heat",
+              "name": "nullius-vulcanus-radiator-1",
+              "pooled_capacity": 0.49
+            },
+            {
+              "average_mw": 4.7333333333333334e-07,
+              "dedicated_stations": 1,
+              "energy_type": "void",
+              "name": "nullius-lava-intake-1",
+              "pooled_capacity": 0.47333333333333333
+            },
+            {
+              "average_mw": 0.10575,
+              "dedicated_stations": 4,
+              "energy_type": "heat",
+              "name": "nullius-medium-furnace-1-thermal",
+              "pooled_capacity": 0.39166666666666666
+            },
+            {
+              "average_mw": 0.04025,
+              "dedicated_stations": 1,
+              "energy_type": "fluid",
+              "name": "nullius-air-filter-1-pneumatic",
+              "pooled_capacity": 0.35
+            },
+            {
+              "average_mw": 0.025733333333333334,
+              "dedicated_stations": 1,
+              "energy_type": "fluid",
+              "name": "nullius-flotation-cell-1-pneumatic",
+              "pooled_capacity": 0.13333333333333333
+            },
+            {
+              "average_mw": 0.037333333333333336,
+              "dedicated_stations": 2,
+              "energy_type": "fluid",
+              "name": "nullius-distillery-1-pneumatic",
+              "pooled_capacity": 0.13333333333333333
+            },
+            {
+              "average_mw": 0.00679,
+              "dedicated_stations": 1,
+              "energy_type": "heat",
+              "name": "nullius-crusher-1-thermal",
+              "pooled_capacity": 0.07
+            },
+            {
+              "average_mw": 0.013266666666666666,
+              "dedicated_stations": 2,
+              "energy_type": "fluid",
+              "name": "nullius-surge-compressor-1-pneumatic",
+              "pooled_capacity": 0.013333333333333334
+            },
+            {
+              "average_mw": 0.0001,
+              "dedicated_stations": 1,
+              "energy_type": "fluid",
+              "name": "nullius-barrel-pump-1-pneumatic",
+              "pooled_capacity": 0.004166666666666667
+            }
+          ],
+          "manual_crafting_utilization": 0.3775,
+          "net_raw_per_minute": {
+            "nullius-hydrogen-chloride": 1708.0,
+            "nullius-limestone": 0.4,
+            "nullius-rutile": 0.0
+          },
+          "target_per_minute": 1
+        },
+        {
+          "batch": 10.0,
+          "dedicated_stations": 68,
+          "gross_raw_per_minute": {
+            "nullius-hydrogen-chloride": 8540.0,
+            "nullius-limestone": 2.0,
+            "nullius-rutile": 0.5
+          },
+          "interpretation": "Repeat the zero-productivity batch. Exclude station construction, logistics, heat loss and warmup. This is a capacity estimate, not a sustained runtime test.",
+          "machines": [
+            {
+              "average_mw": 3.7,
+              "dedicated_stations": 19,
+              "energy_type": "fluid",
+              "name": "nullius-hydro-plant-1-pneumatic",
+              "pooled_capacity": 15.416666666666666
+            },
+            {
+              "average_mw": 1.4375,
+              "dedicated_stations": 13,
+              "energy_type": "heat",
+              "name": "nullius-foundry-1-thermal",
+              "pooled_capacity": 9.583333333333334
+            },
+            {
+              "average_mw": 1.0896,
+              "dedicated_stations": 12,
+              "energy_type": "fluid",
+              "name": "nullius-chemical-plant-1-pneumatic",
+              "pooled_capacity": 5.675
+            },
+            {
+              "average_mw": 3.3166666666666664,
+              "dedicated_stations": 4,
+              "energy_type": "heat",
+              "name": "nullius-vulcanus-radiator-2",
+              "pooled_capacity": 3.316666666666667
+            },
+            {
+              "average_mw": 2.45,
+              "dedicated_stations": 4,
+              "energy_type": "heat",
+              "name": "nullius-vulcanus-radiator-1",
+              "pooled_capacity": 2.45
+            },
+            {
+              "average_mw": 2.3666666666666667e-06,
+              "dedicated_stations": 3,
+              "energy_type": "void",
+              "name": "nullius-lava-intake-1",
+              "pooled_capacity": 2.3666666666666667
+            },
+            {
+              "average_mw": 0.52875,
+              "dedicated_stations": 4,
+              "energy_type": "heat",
+              "name": "nullius-medium-furnace-1-thermal",
+              "pooled_capacity": 1.9583333333333333
+            },
+            {
+              "average_mw": 0.20125,
+              "dedicated_stations": 2,
+              "energy_type": "fluid",
+              "name": "nullius-air-filter-1-pneumatic",
+              "pooled_capacity": 1.75
+            },
+            {
+              "average_mw": 0.12866666666666668,
+              "dedicated_stations": 1,
+              "energy_type": "fluid",
+              "name": "nullius-flotation-cell-1-pneumatic",
+              "pooled_capacity": 0.6666666666666666
+            },
+            {
+              "average_mw": 0.18666666666666665,
+              "dedicated_stations": 2,
+              "energy_type": "fluid",
+              "name": "nullius-distillery-1-pneumatic",
+              "pooled_capacity": 0.6666666666666666
+            },
+            {
+              "average_mw": 0.03395,
+              "dedicated_stations": 1,
+              "energy_type": "heat",
+              "name": "nullius-crusher-1-thermal",
+              "pooled_capacity": 0.35
+            },
+            {
+              "average_mw": 0.06633333333333333,
+              "dedicated_stations": 2,
+              "energy_type": "fluid",
+              "name": "nullius-surge-compressor-1-pneumatic",
+              "pooled_capacity": 0.06666666666666667
+            },
+            {
+              "average_mw": 0.0005,
+              "dedicated_stations": 1,
+              "energy_type": "fluid",
+              "name": "nullius-barrel-pump-1-pneumatic",
+              "pooled_capacity": 0.020833333333333332
+            }
+          ],
+          "manual_crafting_utilization": 1.8875,
+          "net_raw_per_minute": {
+            "nullius-hydrogen-chloride": 8540.0,
+            "nullius-limestone": 2.0,
+            "nullius-rutile": 0.0
+          },
+          "target_per_minute": 5
+        }
+      ],
+      "raw_inputs": {
+        "nullius-hydrogen-chloride": 17080.0,
+        "nullius-limestone": 4.0,
+        "nullius-rutile": 1.0
+      },
+      "recipes": 50,
+      "research_packs": {
+        "nullius-climatology-pack": 5738.0,
+        "nullius-electrical-pack": 4773.0,
+        "nullius-geology-pack": 4748.0,
+        "nullius-mechanical-pack": 5042.0
+      },
+      "targets": {
+        "nullius-chemical-pack": 10.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-medium-assembler-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 7,
+      "manifest_error": "probabilistic amount is not an exact contract: barrel",
+      "name": "efficient-metallurgy",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 27,
+      "research_packs": {
+        "nullius-electrical-pack": 5.0,
+        "nullius-geology-pack": 10.0,
+        "nullius-mechanical-pack": 5.0,
+        "nullius-metallurgic-pack": 10.0
+      },
+      "targets": {
+        "nullius-metallurgic-pack": 5.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.5788888888888889,
+          "name": "nullius-hydro-plant-1-pneumatic"
+        },
+        {
+          "hours": 0.4022222222222222,
+          "name": "nullius-small-furnace-1-thermal"
+        },
+        {
+          "hours": 0.2025,
+          "name": "nullius-foundry-1-thermal"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-medium-assembler-1",
+        "nullius-vulcanus-radiator-1"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 26502.4
+      },
+      "machine_hours": 1.3922222222222222,
+      "machine_types": 8,
+      "manifest_error": null,
+      "name": "primitive-logistics",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {
+        "nullius-graphite": 175.0,
+        "nullius-hydrogen-chloride": 50.0,
+        "nullius-rutile": 1.0
+      },
+      "recipes": 32,
+      "research_packs": {
+        "nullius-climatology-pack": 58.0,
+        "nullius-electrical-pack": 343.0,
+        "nullius-geology-pack": 453.0,
+        "nullius-mechanical-pack": 431.0,
+        "nullius-metallurgic-pack": 35.0
+      },
+      "targets": {
+        "nullius-clockwork-logistic-robot": 4.0,
+        "nullius-clockwork-roboport": 6.0,
+        "nullius-primitive-demand-chest": 2.0,
+        "nullius-primitive-storage-chest": 1.0,
+        "nullius-primitive-supply-chest": 2.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.004166666666666667,
+          "name": "nullius-foundry-1-thermal"
+        }
+      ],
+      "extra_machine_items": [],
+      "fuel": {},
+      "machine_hours": 0.004166666666666667,
+      "machine_types": 1,
+      "manifest_error": null,
+      "name": "hot-casting",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {},
+      "recipes": 4,
+      "research_packs": {
+        "nullius-electrical-pack": 5.0,
+        "nullius-geology-pack": 10.0,
+        "nullius-mechanical-pack": 15.0,
+        "nullius-metallurgic-pack": 110.0
+      },
+      "targets": {
+        "nullius-aluminum-plate": 3.0,
+        "nullius-aluminum-rod": 5.0,
+        "nullius-iron-plate": 3.0,
+        "nullius-iron-rod": 5.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.008333333333333333,
+          "name": "nullius-small-furnace-2-thermal"
+        },
+        {
+          "hours": 0.006111111111111111,
+          "name": "nullius-medium-assembler-1-pneumatic"
+        },
+        {
+          "hours": 0.0016666666666666668,
+          "name": "nullius-foundry-1-thermal"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-medium-assembler-1",
+        "nullius-small-furnace-2"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 158.4
+      },
+      "machine_hours": 0.01611111111111111,
+      "machine_types": 3,
+      "manifest_error": null,
+      "name": "refractory",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {},
+      "recipes": 4,
+      "research_packs": {
+        "nullius-chemical-pack": 15940.0,
+        "nullius-climatology-pack": 23878.0,
+        "nullius-electrical-pack": 19038.0,
+        "nullius-geology-pack": 20828.0,
+        "nullius-mechanical-pack": 21977.0,
+        "nullius-metallurgic-pack": 510.0
+      },
+      "targets": {
+        "nullius-heat-pipe-2": 2.0,
+        "nullius-refractory-brick": 22.0,
+        "nullius-vulcanus-radiator-2": 1.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.02666666666666667,
+          "name": "nullius-flotation-cell-1-pneumatic"
+        },
+        {
+          "hours": 0.0077777777777777776,
+          "name": "nullius-vulcanus-radiator-2"
+        },
+        {
+          "hours": 0.002777777777777778,
+          "name": "nullius-medium-furnace-2-thermal"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-flotation-cell-1",
+        "nullius-medium-furnace-2",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 926.4
+      },
+      "machine_hours": 0.03861111111111111,
+      "machine_types": 4,
+      "manifest_error": null,
+      "name": "titanium-pilot",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {},
+      "recipes": 6,
+      "research_packs": {
+        "nullius-chemical-pack": 16020.0,
+        "nullius-climatology-pack": 23878.0,
+        "nullius-electrical-pack": 19038.0,
+        "nullius-geology-pack": 20908.0,
+        "nullius-mechanical-pack": 21977.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-hydrogen-chloride": 120.0,
+        "nullius-titanium-plate": 3.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [
+        {
+          "hours": 0.008611111111111111,
+          "name": "nullius-medium-assembler-1-pneumatic"
+        }
+      ],
+      "extra_machine_items": [
+        "nullius-medium-assembler-1"
+      ],
+      "fuel": {
+        "nullius-compressed-volcanic-gas": 223.2
+      },
+      "machine_hours": 0.008611111111111111,
+      "machine_types": 1,
+      "manifest_error": null,
+      "name": "titanium-construction",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": {},
+      "recipes": 2,
+      "research_packs": {
+        "nullius-chemical-pack": 16020.0,
+        "nullius-climatology-pack": 23878.0,
+        "nullius-electrical-pack": 19038.0,
+        "nullius-geology-pack": 20908.0,
+        "nullius-mechanical-pack": 21977.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-foundry-2": 1.0,
+        "nullius-hydro-plant-2": 1.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1-thermal",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 17,
+      "manifest_error": "quantified production manifest is not executable; blocked steps: nullius-unbox-physics-pack, nullius-physics-pack, nullius-stirling-engine-2, nullius-compressor-2, nullius-large-tank-2, nullius-combustion-chamber-3, nullius-medium-tank-3, nullius-missile-1, nullius-high-temperature-resin, nullius-thermite-explosive, nullius-sulfur-dioxide-barrel, nullius-acrylonitrile-barrel, nullius-pressure-residual-separation, nullius-residual-gas, nullius-compressed-air",
+      "name": "physics",
+      "post_physics_research": [
+        "nullius-actuation-4",
+        "nullius-air-filtration-3",
+        "nullius-air-separation-3",
+        "nullius-air-separation-4",
+        "nullius-artificial-intelligence-1",
+        "nullius-automation-3",
+        "nullius-barreling-4",
+        "nullius-battery-storage-3",
+        "nullius-calcium-production",
+        "nullius-checkpoint-automation",
+        "nullius-checkpoint-filter",
+        "nullius-checkpoint-helium",
+        "nullius-checkpoint-large-miner",
+        "nullius-checkpoint-logistics-3",
+        "nullius-checkpoint-pumping",
+        "nullius-chemical-engineering-3",
+        "nullius-composites-2",
+        "nullius-distillation-3",
+        "nullius-electrolysis-4",
+        "nullius-electromagnetism-3",
+        "nullius-energy-distribution-5",
+        "nullius-energy-storage-4",
+        "nullius-experimental-chemistry-2",
+        "nullius-filtration-2",
+        "nullius-flotation-3",
+        "nullius-inserter-capacity-3",
+        "nullius-isotope-separation",
+        "nullius-limestone-processing-4",
+        "nullius-lithium-production",
+        "nullius-locomotion-3",
+        "nullius-logistics-4",
+        "nullius-mechanical-engineering-2",
+        "nullius-metallurgy-4",
+        "nullius-metalworking-4",
+        "nullius-mineral-processing-3",
+        "nullius-mining-3",
+        "nullius-plumbing-6",
+        "nullius-pumping-3",
+        "nullius-reconnaissance-1",
+        "nullius-single-layer-materials",
+        "nullius-toolmaking-7",
+        "nullius-water-filtration-4",
+        "nullius-wind-power-3"
+      ],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 267,
+      "research_packs": {
+        "nullius-chemical-pack": 117842.0,
+        "nullius-climatology-pack": 126454.0,
+        "nullius-electrical-pack": 107098.0,
+        "nullius-geology-pack": 121164.0,
+        "nullius-mechanical-pack": 123602.0,
+        "nullius-metallurgic-pack": 1310.0,
+        "nullius-physics-pack": 59506.0
+      },
+      "targets": {
+        "nullius-combustion-chamber-3": 1.0,
+        "nullius-drone-launcher-1": 1.0,
+        "nullius-lab-2": 1.0,
+        "nullius-large-assembler-1": 1.0,
+        "nullius-missile-1": 15.0,
+        "nullius-nanofabricator-1": 1.0,
+        "nullius-physics-pack": 25.0,
+        "nullius-stirling-engine-2": 1.0,
+        "nullius-substation-2": 1.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1-thermal",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 17,
+      "manifest_error": "quantified production manifest is not executable; blocked steps: nullius-unbox-physics-pack, nullius-physics-pack, nullius-stirling-engine-2, nullius-compressor-2, nullius-large-tank-2, nullius-combustion-chamber-3, nullius-boxed-underground-belt-3, nullius-medium-tank-3, nullius-boxed-underground-pipe-3, nullius-pipe-3, nullius-boxed-pipe-3, nullius-box-missile-1, nullius-missile-1, nullius-high-temperature-resin, nullius-thermite-explosive, nullius-sulfur-dioxide-barrel, nullius-acrylonitrile-barrel, nullius-pressure-residual-separation, nullius-residual-gas, nullius-compressed-air",
+      "name": "first-physics",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 260,
+      "research_packs": {
+        "nullius-chemical-pack": 47241.0,
+        "nullius-climatology-pack": 57154.0,
+        "nullius-electrical-pack": 50998.0,
+        "nullius-geology-pack": 58864.0,
+        "nullius-mechanical-pack": 56602.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-physics-pack": 125.0
+      },
+      "unresolved": []
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1-thermal",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 2,
+      "manifest_error": "cannot quantify an unresolved prerequisite graph",
+      "name": "first-physics-strict",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 2,
+      "research_packs": {
+        "nullius-chemical-pack": 47241.0,
+        "nullius-climatology-pack": 57154.0,
+        "nullius-electrical-pack": 50998.0,
+        "nullius-geology-pack": 58864.0,
+        "nullius-mechanical-pack": 56602.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-physics-pack": 125.0
+      },
+      "unresolved": [
+        "nullius-physics-pack"
+      ]
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1-thermal",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 16,
+      "manifest_error": "cannot quantify an unresolved prerequisite graph",
+      "name": "physics-inputs-strict",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 201,
+      "research_packs": {
+        "nullius-chemical-pack": 47241.0,
+        "nullius-climatology-pack": 57154.0,
+        "nullius-electrical-pack": 50998.0,
+        "nullius-geology-pack": 58864.0,
+        "nullius-mechanical-pack": 56602.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-acrylonitrile-barrel": 1.0,
+        "nullius-box-missile-1": 1.0,
+        "nullius-box-underground-belt-3": 1.0,
+        "nullius-combustion-chamber-3": 1.0,
+        "nullius-compressed-air": 1.0,
+        "nullius-drone-launcher-1": 1.0,
+        "nullius-lab-2": 1.0,
+        "nullius-nanofabricator-1": 1.0,
+        "nullius-stirling-engine-2": 1.0,
+        "nullius-substation-2": 1.0,
+        "nullius-sulfur-dioxide-barrel": 1.0
+      },
+      "unresolved": [
+        "nullius-box-missile-1",
+        "nullius-lab-2",
+        "nullius-stirling-engine-2",
+        "nullius-substation-2"
+      ]
+    },
+    {
+      "bottlenecks": [],
+      "extra_machine_items": [
+        "nullius-barrel-pump-1",
+        "nullius-compressor-1",
+        "nullius-crusher-1",
+        "nullius-flotation-cell-1",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1-thermal",
+        "nullius-vulcanus-radiator-1",
+        "nullius-vulcanus-radiator-2"
+      ],
+      "fuel": null,
+      "machine_hours": null,
+      "machine_types": 2,
+      "manifest_error": "cannot quantify an unresolved prerequisite graph",
+      "name": "pre-physics-recipes",
+      "post_physics_research": [],
+      "rate_sizing": [],
+      "raw_inputs": null,
+      "recipes": 2,
+      "research_packs": {
+        "nullius-chemical-pack": 47241.0,
+        "nullius-climatology-pack": 57154.0,
+        "nullius-electrical-pack": 50998.0,
+        "nullius-geology-pack": 58864.0,
+        "nullius-mechanical-pack": 56602.0,
+        "nullius-metallurgic-pack": 1310.0
+      },
+      "targets": {
+        "nullius-physics-pack": 125.0
+      },
+      "unresolved": [
+        "nullius-physics-pack"
+      ]
+    }
+  ]
+}

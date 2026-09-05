@@ -718,6 +718,21 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         )
         report = analyze({}, args)
         self.assertEqual(report["unresolved"], ["missing"])
+        self.assertEqual(report["blocked_recipes"], [{"product": "missing", "recipe": None}])
+
+    def test_unresolved_diagnostics_trace_material_cycle(self) -> None:
+        args = SimpleNamespace(targets=["a"], technology=[], surface_property=[], available=[], raw=[])
+        data = {"character": {"character": {"crafting_categories": ["crafting"]}},
+                "recipe": {
+                    "make-a": {"enabled": True, "ingredients": [{"name": "b", "amount": 1}],
+                               "results": [{"name": "a", "amount": 1}]},
+                    "make-b": {"enabled": True, "ingredients": [{"name": "a", "amount": 1}],
+                               "results": [{"name": "b", "amount": 1}]}}}
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], ["a"])
+        self.assertEqual(report["blocked_recipes"], [
+            {"product": "a", "recipe": "make-a", "blocked_ingredients": ["b"], "missing_executor": False},
+            {"product": "b", "recipe": "make-b", "blocked_ingredients": ["a"], "missing_executor": False}])
 
     def test_recipe_requires_an_executor(self) -> None:
         data = {

@@ -10,6 +10,7 @@
 | Runtime deadline | `tests/scenarios/<name>/test.json` |
 | Reachability boundary | `tests/progression/<name>.args` |
 | Recipe, technology, and entity values | Factorio resolved prototypes |
+| Research cost, timing evidence, and first-physics blockers | `VULCANUS_BALANCE.md` |
 
 ## Flow
 
@@ -23,10 +24,10 @@ activation
   -> construction closure
   -> renewable graphite
   -> basic science
-  -> chemical science and thermite
   -> efficient metallurgy
   -> primitive logistics
   -> hot casting
+  -> chemical science and thermite
   -> tier-1 thermal industry
   -> industrial optimization
   -> refractory and titanium industry
@@ -57,7 +58,7 @@ activation
 | Refractory and titanium industry | Hot casting, local chemistry, and thermal storage are available | Refractory materials and pilot titanium equipment are produced locally | `vulcanus-boric-acid`, `carbothermic-sodium`, `vulcanus-refractory-production`, `vulcanus-titanium-pilot`, `vulcanus-titanium-construction` | `vulcanus-boric-acid.args`, `carbothermic-sodium.args`, `vulcanus-refractory-production.args`, `vulcanus-titanium-pilot.args`, `vulcanus-titanium-construction.args` |
 | Tier-2 thermal industry | Refractory and tier-2 base machines are available | Tier-2 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-2` | `nauvis-thermal-furnace-sizes.args` |
 | Tier-3 thermal industry | Tier-2 thermal industry and nuclear heat are available | Tier-3 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-3` | — |
-| Thermal nanofabrication and physics science | High-temperature industry and physics intermediates are available | Thermal nanofabricators operate and physics science is locally reachable without electric execution | `thermal-nanofabricators` | `vulcanus-physics-production.args`, `tests/test_vulcanus_physics_contract.py` |
+| Thermal nanofabrication and physics science | High-temperature industry and physics intermediates are available | Thermal nanofabricators operate; the broad physics contract passes with post-physics research supplied. First physics has an argon research cycle; see `VULCANUS_BALANCE.md` | `thermal-nanofabricators` | `vulcanus-physics-production.args`, `tests/test_vulcanus_physics_contract.py` |
 
 ## Cross-cutting contracts
 

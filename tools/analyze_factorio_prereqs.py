@@ -1117,6 +1117,26 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             }
         )
 
+    blocked_recipes = []
+    examined = set()
+    pending_blocked = list(unresolved)
+    while pending_blocked:
+        product = pending_blocked.pop()
+        if product in examined:
+            continue
+        examined.add(product)
+        candidates = sorted(producers.get(product, []))
+        if not candidates:
+            blocked_recipes.append({"product": product, "recipe": None})
+        for name in candidates:
+            recipe = recipes[name]
+            missing = sorted({ingredient["name"] for ingredient in recipe.get("ingredients", [])
+                              if ingredient["name"] not in production_state})
+            blocked_recipes.append({"product": product, "recipe": name,
+                                    "blocked_ingredients": missing,
+                                    "missing_executor": best_provider(recipe.get("category", "crafting"), production_state) is None})
+            pending_blocked.extend(missing)
+
     report = {
         "targets": args.targets,
         "assumed_technologies": sorted(assumed_technologies),
@@ -1140,6 +1160,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "raw_sources": raw_sources,
         "invalid_raw": invalid_raw,
         "unresolved": sorted(set(unresolved)),
+        "blocked_recipes": blocked_recipes,
     }
     report["electric_required_paths"] = find_electric_required_paths(
         args.targets, selected
@@ -1626,7 +1647,7 @@ def print_dependency_paths(report: Prototype) -> None:
                 )
 
 
-def parse_arguments() -> argparse.Namespace:
+def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Trace item prerequisites through resolved Factorio prototypes.",
         fromfile_prefix_chars="@",
@@ -1768,7 +1789,7 @@ def parse_arguments() -> argparse.Namespace:
             "using recipes available at the declared technology and surface boundary"
         ),
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main() -> int:
