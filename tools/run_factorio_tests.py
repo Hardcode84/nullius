@@ -201,11 +201,15 @@ def deadline_for(args: argparse.Namespace, case: str) -> int:
         raise TestFailure(
             f"invalid scenario metadata {metadata_path}: {error}"
         ) from error
-    if not isinstance(metadata, dict) or set(metadata) != {"schema", "until_tick"}:
+    if (not isinstance(metadata, dict) or
+            set(metadata) not in ({"schema", "until_tick"},
+                                 {"schema", "until_tick", "multiplayer"})):
         raise TestFailure(
-            f"scenario metadata must contain only schema and until_tick: "
+            f"scenario metadata must contain schema, until_tick, and optional multiplayer: "
             f"{metadata_path}"
         )
+    if "multiplayer" in metadata and metadata["multiplayer"] is not True:
+        raise TestFailure(f"multiplayer metadata must be true: {metadata_path}")
     if metadata["schema"] != 1:
         raise TestFailure(
             f"unsupported scenario metadata schema in {metadata_path}: "
@@ -237,6 +241,13 @@ def execute(
     run_mods = run_directory / "mods"
     prepare_mods(run_mods, dependency_mods, args.mod_under_test.expanduser().resolve())
 
+    until_tick = deadline_for(args, case)
+    metadata = json.loads((scenario / "test.json").read_text())
+    if str(REPOSITORY) not in sys.path:
+        sys.path.insert(0, str(REPOSITORY))
+    from tools.factorio_multiplayer import prepare_support_overlay
+    prepare_support_overlay(run_directory, scenario, until_tick, metadata.get("multiplayer", False))
+
     common = [
         str(factorio),
         "--config",
@@ -261,12 +272,19 @@ def execute(
         raise TestFailure(f"scenario compilation did not create {save}")
 
     run_log = run_directory / "run.log"
-    until_tick = deadline_for(args, case)
-    executed = run_factorio(
-        [*common, "--load-game", str(save), "--until-tick", str(until_tick)],
-        run_log,
-        args.timeout_seconds,
-    )
+    if metadata.get("multiplayer"):
+        from tools.factorio_multiplayer import execute_multiplayer
+        import copy
+        multiplayer_args = copy.copy(args)
+        multiplayer_args.multiplayer_until_tick = until_tick
+        execute_multiplayer(multiplayer_args, common, save, run_directory)
+        executed = subprocess.CompletedProcess(common, 0)
+    else:
+        executed = run_factorio(
+            [*common, "--load-game", str(save), "--until-tick", str(until_tick)],
+            run_log,
+            args.timeout_seconds,
+        )
 
     result_path = run_directory / "script-output" / "factorio-tests" / f"{case}.json"
     if not result_path.is_file():
@@ -531,4 +549,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    sys.modules["tools.run_factorio_tests"] = sys.modules[__name__]
     raise SystemExit(main())

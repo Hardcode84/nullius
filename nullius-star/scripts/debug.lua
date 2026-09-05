@@ -6,18 +6,14 @@ local PNEUMATIC_TECHNOLOGY = "nullius-pneumatic-technology"
 local VULCANUS_PROBE = "nullius-probe-vulcanus"
 local VULCANUS = "nullius-vulcanus"
 
-local function vulcanus_android(force)
-  local androids = storage.nullius_probe_androids
-  local android = androids and androids[VULCANUS]
-  if android and android.valid and android.force == force then
-    return android
-  end
-  return nil
-end
-
 function debug.quick_start_vulcanus(player)
   if not player or not player.valid then
     error("Vulcanus quick-start requires a valid player")
+  end
+
+  -- Alignment assigns the final force after its queued landing completes.
+  if storage.nullius_alignment and player.surface == storage.nullius_align_lobby then
+    return nil, {"nullius-probe.alignment-pending"}
   end
 
   local force = player.force
@@ -27,17 +23,20 @@ function debug.quick_start_vulcanus(player)
   end
 
   local completed = research.complete_with_prerequisites(pneumatic)
-  local android = vulcanus_android(force)
-  if not android then
+  local landing = probe.get_landing(force)
+  if not landing then
     probe.on_probe_researched(VULCANUS_PROBE, force)
-    android = vulcanus_android(force)
+    landing = probe.get_landing(force)
   end
-  if not android then
-    error("Vulcanus probe activation did not create an android")
+  local android = landing.android
+  if not android.valid or android.force ~= force or
+      android.surface.name ~= VULCANUS then
+    return nil, {"nullius-probe.body-unavailable"}
   end
   if android.player and android.player ~= player then
-    error("Vulcanus android is currently controlled by " .. android.player.name)
+    return nil, {"nullius-probe.body-occupied", android.player.name}
   end
+  probe.attach_player(player)
 
   if player.character ~= android then
     switch_body(player, android)
@@ -57,7 +56,11 @@ commands.add_command(
       error("/nullius-vulcanus must be run by a player")
     end
     local player = game.get_player(command.player_index)
-    local completed = debug.quick_start_vulcanus(player)
+    local completed, message = debug.quick_start_vulcanus(player)
+    if not completed then
+      player.print(message)
+      return
+    end
     player.print("Vulcanus quick-start complete (" .. completed ..
       " technologies researched).")
   end)

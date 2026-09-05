@@ -25,6 +25,9 @@ local function vulcanus_landing_site(surface, pos, force)
     position = wreck_pos,
     force = force,
   }
+  if not wreck or not wreck.valid then
+    error("Vulcanus probe could not create its supply wreck")
+  end
   if wreck and wreck.valid then
     -- Vulcanus probe supplies.
     -- Bootstrap sequence: no electricity. One free/void lava intake provides
@@ -120,88 +123,61 @@ local function spawn_android(surface, pos, force)
   return android
 end
 
--- Called when probe reactivation tech is completed.
-function probe.on_probe_researched(tech_name, force)
-  if tech_name == "nullius-probe-vulcanus" then
-    -- Create Vulcanus surface through the planet system.
-    -- This properly links the surface to the planet prototype and uses
-    -- its map_gen_settings, surface_properties, etc.
-    local planet = game.planets["nullius-vulcanus"]
-    if planet.surface == nil then
-      planet.create_surface()
-    end
-    local surface = planet.surface
+-- Landing stock belongs to a force. The body is shared by that force.
+function probe.get_landing(force)
+  local landings = storage.nullius_probe_landings
+  return landings and landings[force.index]
+end
 
-    -- Find a good landing position.
-    local pos = {x = 0, y = 0}
+function probe.attach_player(player)
+  local landing = probe.get_landing(player.force)
+  local android = landing and landing.android
+  if not android or not android.valid then return end
+  add_body_to_queue(player, android)
+  if not android.player then
+    android.associated_player = nil
+    add_chart_tag(player, android)
+  end
+end
 
-    -- Spawn probe wreckage with supplies.
-    vulcanus_landing_site(surface, pos, force)
+function probe.is_body(unit)
+  for _, landing in pairs(storage.nullius_probe_landings or {}) do
+    if landing.unit == unit then return true end
+  end
+  return false
+end
 
-    -- Spawn android offset from wreck so player isn't stuck inside it.
-    local android_pos = {x = pos.x + 5, y = pos.y + 5}
-    local android = spawn_android(surface, android_pos, force)
-    if android and android.valid then
-      -- Store reference so players can switch to it.
-      if storage.nullius_probe_androids == nil then
-        storage.nullius_probe_androids = {}
-      end
-      storage.nullius_probe_androids["nullius-vulcanus"] = android
-
-      -- Associate android with all players and add to body queue.
-      for _, player in pairs(force.players) do
-        player.associate_character(android)
-
-        -- Initialize the body cycle queue so Ctrl+U / Shift+U work.
-        local current = player.character
-        if current and current.valid then
-          if storage.nullius_body_queue == nil then
-            storage.nullius_body_queue = {}
-          end
-          local queue = storage.nullius_body_queue[player.index]
-          if queue == nil then
-            queue = { nodes = {} }
-            storage.nullius_body_queue[player.index] = queue
-          end
-
-          -- Add current body to queue if not there.
-          local node1 = queue.nodes[current.unit_number]
-          if node1 == nil then
-            node1 = { body = current, unit = current.unit_number }
-            node1.next = node1
-            node1.prev = node1
-            queue.nodes[current.unit_number] = node1
-          end
-
-          -- Add android to queue, linked after current body.
-          local node2 = { body = android, unit = android.unit_number }
-          queue.nodes[android.unit_number] = node2
-          local nn = node1.next
-          node2.next = nn
-          node2.prev = node1
-          nn.prev = node2
-          node1.next = node2
-          queue.last_index = current.unit_number
-        end
-
-        -- Tag the android on the map.
-        add_chart_tag(player, android)
-      end
-
-      -- Unlock the planet for this force so it shows in the planets list.
-      force.unlock_space_location("nullius-vulcanus")
-
-      -- Chart the area around the landing site.
-      force.chart(surface, {{pos.x - 64, pos.y - 64}, {pos.x + 64, pos.y + 64}})
-
-      -- Notify all players.
-      for _, player in pairs(force.players) do
-        player.print({"", "[color=yellow]", {"technology-name.nullius-probe-vulcanus"}, ": ",
-          "Probe activated. Dormant android located on surface. Consciousness transfer available.",
-          "[/color]"})
-      end
+function probe.replace_body(oldunit, newchar)
+  for _, landing in pairs(storage.nullius_probe_landings or {}) do
+    if landing.unit == oldunit then
+      landing.android = newchar
+      landing.unit = newchar.unit_number
     end
   end
+end
+
+-- Research activation is idempotent, including after loss of the body or wreck.
+function probe.on_probe_researched(tech_name, force)
+  if tech_name ~= "nullius-probe-vulcanus" then return end
+  if not probe.get_landing(force) then
+    local planet = game.planets["nullius-vulcanus"]
+    if not planet.surface then planet.create_surface() end
+    local surface = planet.surface
+    local pos = {x = 0, y = 0}
+    vulcanus_landing_site(surface, pos, force)
+    local android = spawn_android(surface, {x = 5, y = 5}, force)
+    if not android or not android.valid then
+      error("Vulcanus probe could not create its android")
+    end
+    storage.nullius_probe_landings = storage.nullius_probe_landings or {}
+    storage.nullius_probe_landings[force.index] = {
+      android = android, unit = android.unit_number,
+    }
+    force.chart(surface, {{-64, -64}, {64, 64}})
+    force.print({"nullius-probe.activated"})
+  end
+  force.unlock_space_location("nullius-vulcanus")
+  for _, player in pairs(force.players) do probe.attach_player(player) end
 end
 
 return probe

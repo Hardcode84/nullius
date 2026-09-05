@@ -107,9 +107,20 @@ This plants the seed early without spoiling anything. Players who pay attention 
 When Vulcanus probe recovery is researched:
 
 1. Vulcanus is unlocked for the force.
-2. The surface and landing wreck are created if absent.
-3. A new android body receives the probe equipment.
-4. Player control transfers to that body.
+2. The surface is created if absent. Each force receives one wreck and one idle android.
+3. The android receives the probe equipment. Research does not transfer a player.
+4. Any player in that force can transfer to the idle android. An occupied body cannot be taken.
+5. The `/nullius-vulcanus` command transfers its caller if the probe body is idle. A later caller receives an occupied-body message.
+6. Late joins receive access to the same body. Repeated activation and reconnects do not create more supplies.
+
+Body queues record access history. They do not assign exclusive ownership.
+A player can take another player's previous body when it is idle and belongs
+to the same force. The `vulcanus-shared-body` scenario checks this contract
+with two real clients, reconnect, death, and server save/load.
+
+In Alignment mode, quick-start waits until the faction landing is complete.
+The `vulcanus-probe-alignment` scenario checks the command before and after
+that landing.
 
 ---
 

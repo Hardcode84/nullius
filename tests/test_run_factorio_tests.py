@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
 import zipfile
 
 from tools.run_factorio_tests import (
@@ -13,6 +15,7 @@ from tools.run_factorio_tests import (
     SCENARIOS,
     TEST_SUPPORT_MOD,
     TestFailure,
+    deadline_for,
     format_duration,
     prepare_mods,
     print_case_result,
@@ -23,6 +26,27 @@ from tools.run_factorio_tests import (
 
 
 class FactorioTestRunnerTests(unittest.TestCase):
+    def test_multiplayer_metadata_and_deadline(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            scenarios = Path(temporary)
+            scenario = scenarios / "shared-body"
+            scenario.mkdir()
+            (scenario / "control.lua").write_text("-- scenario fixture\n")
+            metadata = scenario / "test.json"
+            metadata.write_text(json.dumps({
+                "schema": 1, "until_tick": 30000, "multiplayer": True,
+            }))
+            with patch("tools.run_factorio_tests.SCENARIOS", scenarios):
+                self.assertEqual(deadline_for(SimpleNamespace(until_tick=None), "shared-body"), 30000)
+                self.assertEqual(deadline_for(SimpleNamespace(until_tick=10), "shared-body"), 10)
+                with self.assertRaisesRegex(TestFailure, "maximum"):
+                    deadline_for(SimpleNamespace(until_tick=300001), "shared-body")
+                metadata.write_text(json.dumps({
+                    "schema": 1, "until_tick": 30000, "multiplayer": "true",
+                }))
+                with self.assertRaisesRegex(TestFailure, "multiplayer metadata"):
+                    deadline_for(SimpleNamespace(until_tick=None), "shared-body")
+
     def test_distributable_mod_excludes_repository_only_content(self) -> None:
         self.assertEqual(list(MOD_UNDER_TEST.glob("*.md")), [])
         self.assertFalse((MOD_UNDER_TEST / "scenarios").exists())

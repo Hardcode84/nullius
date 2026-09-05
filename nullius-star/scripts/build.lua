@@ -120,6 +120,7 @@ end
 function entity_destroyed(event)
   if (script_kill or (event.type ~= defines.target_type.entity)) then return end
   local unit_number = event.useful_id
+  remove_body_tag(unit_number)
   if (vulcanus_gasvent.destroyed(event)) then return end
   if (vulcanus_heat.remove_heat_interface(unit_number)) then return end
   if (destroyed_stirling_engine(unit_number)) then return end

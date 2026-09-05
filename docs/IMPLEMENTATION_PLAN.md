@@ -1,7 +1,7 @@
 # Nullius* implementation status
 
 > **Status**: Active vertical slice
-> **Updated**: 2026-09-04
+> **Updated**: 2026-09-05
 
 ## Authority
 
@@ -17,7 +17,7 @@
 | Area | Implemented contract | Evidence |
 |---|---|---|
 | Space Age load | Space Age is required; Quality loads transitively and its gameplay effects, modules, and recycling are disabled | Strict prototype load |
-| Planet access | Vulcanus probe research unlocks the planet, creates the surface and wreck, and transfers control to a new android body | Activation scenario |
+| Planet access | Vulcanus probe research unlocks the planet, creates the surface, one wreck per force, and a shared idle android; the quick-start command transfers its caller | Activation and shared-body scenarios |
 | Bootstrap | Free lava intake and diminishing-return gas vent prime a net-positive lava-gas loop | Vent-prime and gas-self-power scenarios |
 | Pneumatic factory | Eligible non-heavy-industry machines switch on Vulcanus through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, boric acid, and metallic sodium are reachable without seawater, organic chemistry, or electricity | Production scenarios and prerequisite manifests |
@@ -45,13 +45,13 @@
 | Required result | Status |
 |---|---|
 | Vulcanus surface properties and map-generation fields are accepted and exercised by Factorio | Complete |
-| Probe activation, bodies, and late join are correct for every player | Open |
+| Shared probe access, late join, reconnect, exact-body respawn, and save/load pass with real clients | Complete |
 | Pneumatic heat ownership cannot leave duplicate or orphan hidden interfaces | Complete |
 | Current upstream Nullius development changes are integrated and revalidated | Open |
 | Version, changelog, and save-migration policy are coherent | Complete |
 | Required dependencies and supported optional mods have a tested matrix | Open |
 | The complete validation flow reproduces from a clean checkout | Open |
-| The runner orchestrates real multiplayer scenario tests | Open |
+| The runner orchestrates real multiplayer scenario tests | Complete |
 | The harness compares the supported Factorio build with a candidate build | Open |
 
 ## Planned content boundary

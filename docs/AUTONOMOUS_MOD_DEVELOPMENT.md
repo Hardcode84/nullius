@@ -80,6 +80,25 @@ Run the relevant feature or campaign scenario on a dedicated server with the
 required clients. Multiplayer validation does not require replaying the entire
 campaign.
 
+Declare startup-setting changes in the scenario `settings-updates.lua`.
+The runner applies that file only in the temporary support mod for that case.
+
+Set `multiplayer: true` in the scenario `test.json`. The runner starts a
+loopback server and the first real client. The scenario requests a second
+client, disconnect, reconnect, or server save/load through numbered actions.
+The runner preserves each connection log. A client error, desync, server
+error, missing result, or deadline breach fails the test.
+
+The full Factorio executable and an X display are required for clients. Set
+`FACTORIO_CLIENT_DISPLAY` to an isolated X display, or use `DISPLAY`.
+A virtual display can run the clients without human input. The runner uses
+fresh client profiles and does not read account credentials.
+
+```bash
+python tools/run_factorio_tests.py vulcanus-shared-body --keep-run-directory
+python tools/run_factorio_tests.py -n auto
+```
+
 ## External runner
 
 ```yaml

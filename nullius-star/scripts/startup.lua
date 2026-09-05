@@ -150,6 +150,7 @@ script.on_event(defines.events.on_player_joined_game,
     local player = game.players[event.player_index]
     update_mission_player(player)
 	rematerialize_body(event)
+    probe.attach_player(player)
 	align_player_join(player)
   end
 )
@@ -306,6 +307,7 @@ script.on_event(defines.events.on_player_created,
 	  init_tech(player.force)
     update_mission_player(player)
 	  update_player_upgrades(player)
+    probe.attach_player(player)
   end
 )
 
@@ -334,4 +336,8 @@ commands.add_command("flip_valves", nil, function(command)
     v.rotate()
     v.rotate()
   end
+end)
+
+script.on_event(defines.events.on_player_changed_force, function(event)
+  probe.attach_player(game.get_player(event.player_index))
 end)

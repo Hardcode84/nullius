@@ -39,7 +39,7 @@ activation
 
 | Milestone | Entrance boundary | Completion boundary | Runtime witnesses | Reachability witnesses |
 |---|---|---|---|---|
-| Activation | Vulcanus probe research completes | Vulcanus surface, character, and wreck are available | `vulcanus-activation` | — |
+| Activation | Vulcanus probe research completes | Vulcanus surface, shared idle character, and one wreck per force are available | `vulcanus-activation`, `vulcanus-shared-body`, `vulcanus-probe-alignment` | — |
 | Pneumatic bootstrap | Wreck inventory is available | Free gas is extracted and usable | `vulcanus-vent-prime`, `vulcanus-gas-vent-smoke` | — |
 | Self-powered gas | Primed pneumatic equipment is available | Dedicated gas production sustains its own machinery | `vulcanus-gas-self-power` | — |
 | Lava materials | Self-powered gas production is available | Local iron, aluminum, calcite, silica, stone, and sulfur-bearing gas paths operate | `vulcanus-lava-separation-*`, `vulcanus-bloom-cooldown-*` | — |
