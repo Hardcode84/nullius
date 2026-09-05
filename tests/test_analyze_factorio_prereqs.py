@@ -29,6 +29,14 @@ from analyze_factorio_prereqs import (
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_omitted_enabled_uses_factorio_default(self):
+        data = {"recipe": {"vent": {"ingredients": [], "results": []},
+                           "locked": {"enabled": False, "ingredients": [], "results": []}},
+                "technology": {}}
+        rows = {row["name"]: row for row in describe_recipes(data, ["vent", "locked"])}
+        self.assertTrue(rows["vent"]["enabled"])
+        self.assertFalse(rows["locked"]["enabled"])
+
     def test_describes_resolved_placeable_entities(self) -> None:
         data = {
             "item": {

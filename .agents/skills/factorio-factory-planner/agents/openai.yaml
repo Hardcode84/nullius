@@ -1,0 +1,4 @@
+interface:
+  display_name: "Factorio Factory Planner"
+  short_description: "Plan industrial production, research, fuel, and heat"
+  default_prompt: "Use $factorio-factory-planner to size a factory from resolved Factorio recipes and explicit progression boundaries."

@@ -26,6 +26,9 @@ class ProgressionAuditTest(unittest.TestCase):
         technologies = {
             "physics-unlock": {"unit": {"ingredients": [["chemistry", 1]]}},
             "post-physics": {"unit": {"ingredients": [["nullius-physics-pack", 1]]}},
+            "hidden-vanilla": {"hidden": True},
+            "disabled": {"enabled": False},
+            "hidden-child": {"prerequisites": ["hidden-vanilla"]},
             "trigger": {"prerequisites": ["post-physics"]},
             "descendant": {"prerequisites": ["trigger"]}}
         self.assertEqual(pre_physics_technologies(technologies), {"physics-unlock"})

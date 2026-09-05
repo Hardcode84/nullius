@@ -56,7 +56,8 @@ def research_cost(data, roots, entrance):
 
 def pre_physics_technologies(technologies):
     blocked = {name for name, tech in technologies.items()
-               if any(i[0] == "nullius-physics-pack" for i in tech.get("unit", {}).get("ingredients", []))}
+               if tech.get("hidden") or not tech.get("enabled", True)
+               or any(i[0] == "nullius-physics-pack" for i in tech.get("unit", {}).get("ingredients", []))}
     while True:
         expanded = blocked | {name for name, tech in technologies.items()
                               if set(tech.get("prerequisites", [])) & blocked}
@@ -85,7 +86,7 @@ def contract_report(data, path, config, targets=None, technology=None, quantify=
         unlocked = {effect["recipe"] for name in closure for effect in data["technology"][name].get("effects", [])
                     if effect.get("type") == "unlock-recipe"}
         data = dict(data, recipe={name: recipe for name, recipe in data["recipe"].items()
-                                 if recipe.get("enabled") or name in unlocked})
+                                 if recipe.get("enabled", True) or name in unlocked})
         excluded_overrides = [pair for pair in args.recipe if pair[1] not in data["recipe"]]
         args.recipe = [pair for pair in args.recipe if pair[1] in data["recipe"]]
     report = prereqs.analyze(data, args)
@@ -105,7 +106,7 @@ def contract_report(data, path, config, targets=None, technology=None, quantify=
                                       "unlocks": row["unlock_technologies"]}
         for row in report["selected_recipes"] if row.get("unlock_technologies")
         and not set(row["unlock_technologies"]) & set(report["assumed_technologies"])
-        and not data["recipe"][row["producer"]].get("enabled")]
+        and not data["recipe"][row["producer"]].get("enabled", True)]
     result["machine_types"] = sorted({step["executor"]["name"] for step in report["selected_recipes"]
                                       if step.get("executor", {}).get("kind") == "machine"})
     result["assumed_extra_machine_items"] = sorted(set(args.available_machine) - set(config["wreck_machines"]))

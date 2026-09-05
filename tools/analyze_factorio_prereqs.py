@@ -209,7 +209,7 @@ def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
         descriptions.append(
             {
                 "name": name,
-                "enabled": bool(recipe.get("enabled")),
+                "enabled": bool(recipe.get("enabled", True)),
                 "category": recipe.get("category", "crafting"),
                 "subgroup": recipe.get("subgroup"),
                 "order": recipe.get("order"),
@@ -537,7 +537,7 @@ def find_dependency_paths(
 
     def available_at_boundary(recipe_name: str) -> bool:
         recipe = recipes[recipe_name]
-        if recipe.get("enabled"):
+        if recipe.get("enabled", True):
             return True
         return any(
             technology_closure(technologies, {technology_name})
@@ -736,7 +736,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
 
     def missing_technologies(recipe_name: str) -> set[str] | None:
         recipe = recipes[recipe_name]
-        if recipe.get("enabled"):
+        if recipe.get("enabled", True):
             return set()
         choices = [
             technology_closure(technologies, {technology_name})
@@ -985,7 +985,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         return (
             0 if recipe_overrides.get(product) == recipe_name else 1,
             0 if establishes_product else 1,
-            0 if recipe.get("enabled") else 1,
+            0 if recipe.get("enabled", True) else 1,
             state_key(candidate_state)[0]
             if candidate_state is not None
             else len(technologies) + 1,

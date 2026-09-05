@@ -1,5 +1,9 @@
 # Vulcanus balance audit
 
+The [generated factory plan](VULCANUS_FACTORY_PLAN.md) supersedes the rate and
+capacity estimates below. Use the [factory planner skill](../.agents/skills/factorio-factory-planner/SKILL.md)
+for new estimates. The historical batch audit below does not size an industrial factory.
+
 ## Result
 
 The local path to first physics science has an argon research cycle.
