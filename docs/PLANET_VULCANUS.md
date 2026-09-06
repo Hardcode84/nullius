@@ -318,7 +318,7 @@ range.
 | Efficient metallurgic science | Hot blooms, crucibles, and barreled chlorine/sulfur chemistry |
 | Basic science | Local alternatives only where unavailable raw inputs require them |
 | Chemical science | Closed through volcanic sodium, sulfur chemistry, lubricant, concrete, and inorganic barrels |
-| Physics science | Thermal execution is available. First physics has an argon research cycle; see `VULCANUS_BALANCE.md`. |
+| Physics science | Local residual-gas separation removes the argon research cycle. Pre-physics executor tests produce 125 physics packs; see `VULCANUS_BALANCE.md`. |
 
 | Research family | Role |
 |---|---|

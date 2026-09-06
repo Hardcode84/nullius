@@ -14,6 +14,8 @@
   productivity produces at least the guaranteed whole-cycle bonus. Finish before
   the generated fixture deadline and the `test.json` runner deadline.
 
+The shared runner also rejects every physics-consuming technology in the fixture.
+
 Regenerate `fixture.lua` with `tools/plan_factorio_factory.py --executor-fixture`.
 The test proves executor compatibility and output quantities. A connected
 campaign test must prove heat delivery, logistics, and continuous factory rates.

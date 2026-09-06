@@ -16,7 +16,16 @@
     "nullius-rutile": 1,
     "nullius-graphite": 135
   },
-  "solid_discard": ["stone", "sulfur", "nullius-boron", "nullius-calcium-chloride", "nullius-box-calcium-chloride", "nullius-iron-chloride", "nullius-mineral-dust", "nullius-silica"],
+  "solid_discard": [
+    "stone",
+    "sulfur",
+    "nullius-boron",
+    "nullius-calcium-chloride",
+    "nullius-box-calcium-chloride",
+    "nullius-iron-chloride",
+    "nullius-mineral-dust",
+    "nullius-silica"
+  ],
   "wreck_machines": {
     "nullius-seawater-intake-1": 2,
     "nullius-hydro-plant-1": 4,
@@ -59,6 +68,10 @@
       "research_roots": [
         "nullius-experimental-chemistry",
         "nullius-pneumatic-technology"
+      ],
+      "technologies": [
+        "nullius-pneumatic-technology",
+        "nullius-volcanism-1"
       ]
     },
     {
@@ -131,12 +144,35 @@
         "nullius-volcanic-alkali-processing"
       ],
       "extra_machines": [
+        "nullius-air-filter-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
         "nullius-chimney-1",
+        "nullius-crusher-2-thermal",
+        "nullius-distillery-2-pneumatic",
+        "nullius-flotation-cell-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-medium-furnace-2-thermal",
         "nullius-outfall-1"
       ],
       "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-metallurgic-pack": 1,
         "nullius-physics-pack": 1
-      }
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ]
     }
   ],
   "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
@@ -161,6 +197,7 @@
       "nullius-air-separation-2",
       "nullius-pressure-air-separation",
       "nullius-vulcanus-atmosphere-separation",
+      "nullius-vulcanus-residual-gas",
       "nullius-residual-gas"
     ]
   },

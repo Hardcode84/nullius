@@ -966,6 +966,33 @@ data:extend({
   },
 })
 
+-- Trace-gas separation trades the nitrogen fraction for residual gas.
+-- Three output fluids fit the first distillery. Ordinary air separation stays
+-- unavailable on Vulcanus; this route does not produce oxygen.
+data:extend({
+  {
+    type = "recipe",
+    name = "nullius-vulcanus-residual-gas",
+    localised_name = {"recipe-name.nullius-vulcanus-residual-gas"},
+    icons = data.raw.fluid["nullius-residual-gas"].icons,
+    enabled = false,
+    allow_decomposition = false,
+    allow_productivity = false,
+    category = "distillation",
+    subgroup = "air-filtration-recipe",
+    order = "nullius-vb",
+    energy_required = 1,
+    ingredients = {{type = "fluid", name = "nullius-air", amount = 150}},
+    results = {
+      {type = "fluid", name = "nullius-carbon-dioxide", amount = 120},
+      {type = "fluid", name = "nullius-sulfur-dioxide", amount = 10},
+      {type = "fluid", name = "nullius-residual-gas", amount = 3},
+    },
+    main_product = "nullius-residual-gas",
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  },
+})
+
 -- SO2 catalytic decomposition: the only way to get oxygen on Vulcanus.
 -- 40 SO2 --> 40 O2 + 1 sulfur (catalyzed by rutile/TiO2 at volcanic temperatures).
 -- SO2 comes from lava silica extraction and atmosphere separation.

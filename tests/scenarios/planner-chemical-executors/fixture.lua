@@ -327,7 +327,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
-  deadline = 14850,
+  deadline = 37350,
   executors = {
     {
       cycles = 5,
@@ -392,6 +392,72 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 28.875,
+      heat = false,
+      ingredients = {
+        {
+          amount = 4,
+          name = "nullius-acrylonitrile",
+          type = "fluid",
+        },
+        {
+          amount = 3,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2-pneumatic",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-acrylic-fiber",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-acrylic-fiber",
+      seconds_per_cycle = 1.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 9.6,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-propene",
+          type = "fluid",
+        },
+        {
+          amount = 30,
+          name = "nullius-oxygen",
+          type = "fluid",
+        },
+        {
+          amount = 20,
+          name = "nullius-ammonia",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-chemical-plant-2-pneumatic",
+      outputs = {
+        {
+          amount = 10,
+          name = "nullius-acrylonitrile",
+          type = "fluid",
+        },
+        {
+          amount = 12,
+          name = "nullius-wastewater",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-acrylonitrile",
+      seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 18.75,
       heat = false,
       ingredients = {},
@@ -406,6 +472,44 @@ return {
       productivity = 0,
       recipe = "nullius-air",
       seconds_per_cycle = 1.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 13.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 30,
+          name = "nullius-compressed-carbon-monoxide",
+          type = "fluid",
+        },
+        {
+          amount = 65,
+          name = "nullius-compressed-hydrogen",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 45,
+          name = "nullius-methane",
+          type = "fluid",
+        },
+        {
+          amount = 30,
+          name = "nullius-ethylene",
+          type = "fluid",
+        },
+        {
+          amount = 15,
+          name = "nullius-propene",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-alkene-synthesis-light",
+      seconds_per_cycle = 0.5,
     },
     {
       cycles = 5,
@@ -731,6 +835,44 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 13.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 10,
+          name = "nullius-benzene",
+          type = "fluid",
+        },
+        {
+          amount = 80,
+          name = "nullius-steam",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 120,
+          name = "nullius-hydrogen",
+          type = "fluid",
+        },
+        {
+          amount = 60,
+          name = "nullius-carbon-monoxide",
+          type = "fluid",
+        },
+        {
+          amount = 30,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-benzene-reforming",
+      seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -797,6 +939,29 @@ return {
       ingredients = {
         {
           amount = 20,
+          name = "nullius-aluminum-sheet",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-aluminum-sheet",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-aluminum-sheet",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 5.9,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
           name = "nullius-aluminum-wire",
           type = "item",
         },
@@ -834,6 +999,29 @@ return {
       },
       productivity = 0,
       recipe = "nullius-box-capacitor",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 5.9,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-carbon-fiber",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-carbon-fiber",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-carbon-fiber",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1050,29 +1238,6 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "small-lamp",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1-pneumatic",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-lamp-1",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-lamp-1",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 5.9,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
           name = "nullius-lime",
           type = "item",
         },
@@ -1133,6 +1298,29 @@ return {
       },
       productivity = 0,
       recipe = "nullius-box-polycrystalline-silicon",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 5.9,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-silica",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-silica",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-silica",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1274,6 +1462,54 @@ return {
       heat = true,
       ingredients = {
         {
+          amount = 12,
+          name = "nullius-box-silica",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-alumina",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-lime",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-soda-ash",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-sodium-sulfate",
+          type = "item",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 16,
+          name = "nullius-box-glass",
+          type = "item",
+        },
+        {
+          amount = 200,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-glass",
+      seconds_per_cycle = 112.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
           amount = 1,
           name = "nullius-box-stone",
           type = "item",
@@ -1379,6 +1615,39 @@ return {
       productivity = 0.4,
       recipe = "nullius-boxed-iron-plate",
       seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 487.5,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-carbon-fiber",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-glass",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-aluminum-sheet",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-box-lamp-1",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-lamp-1",
+      seconds_per_cycle = 15.0,
     },
     {
       cycles = 5,
@@ -1571,6 +1840,39 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 137.5,
+      heat = false,
+      ingredients = {
+        {
+          amount = 200,
+          name = "nullius-brine",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 3,
+          name = "nullius-box-salt",
+          type = "item",
+        },
+        {
+          amount = 200,
+          name = "nullius-steam",
+          type = "fluid",
+        },
+        {
+          amount = 75,
+          name = "nullius-saline",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-salt",
+      seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1596,6 +1898,98 @@ return {
       productivity = 0.4,
       recipe = "nullius-boxed-slag-reprocessing",
       seconds_per_cycle = 15.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 343.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 4,
+          name = "nullius-box-sodium-sulfate",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-graphite",
+          type = "item",
+        },
+        {
+          amount = 4,
+          name = "nullius-box-crushed-limestone",
+          type = "item",
+        },
+        {
+          amount = 400,
+          name = "nullius-acid-hydrochloric",
+          type = "fluid",
+        },
+        {
+          amount = 250,
+          name = "nullius-oxygen",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 7,
+          name = "nullius-box-soda-ash",
+          type = "item",
+        },
+        {
+          amount = 300,
+          name = "nullius-calcium-chloride-solution",
+          type = "fluid",
+        },
+        {
+          amount = 400,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+        {
+          amount = 50,
+          name = "nullius-sulfur-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-soda-ash",
+      seconds_per_cycle = 12.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 96.0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 75,
+          fluidbox_index = 1,
+          name = "nullius-acid-sulfuric",
+          type = "fluid",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-salt",
+          type = "item",
+        },
+      },
+      machine = "nullius-chemical-plant-2-pneumatic",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-sodium-sulfate",
+          type = "item",
+        },
+        {
+          amount = 50,
+          name = "nullius-acid-hydrochloric",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-sodium-sulfate-1",
+      seconds_per_cycle = 5.0,
     },
     {
       cycles = 5,
@@ -1634,6 +2028,39 @@ return {
       productivity = 0.4,
       recipe = "nullius-capacitor-vulcanus",
       seconds_per_cycle = 3.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 3,
+          name = "nullius-acrylic-fiber",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-argon",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-medium-furnace-2-thermal",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-carbon-fiber",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-ammonia",
+          type = "fluid",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-carbon-fiber",
+      seconds_per_cycle = 5.0,
     },
     {
       cycles = 5,
@@ -1952,6 +2379,29 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 49.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 200,
+          name = "nullius-residual-gas",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-surge-compressor-1-pneumatic",
+      outputs = {
+        {
+          amount = 50,
+          name = "nullius-compressed-residual-gas",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-compressed-residual-gas",
+      seconds_per_cycle = 1.0,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 192.5,
       heat = false,
       ingredients = {
@@ -2070,6 +2520,29 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 125,
+          name = "nullius-compressed-argon",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-barrel-pump-1-pneumatic",
+      outputs = {
+        {
+          amount = 500,
+          name = "nullius-argon",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-decompress-argon",
+      seconds_per_cycle = 1.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 1.2,
+      heat = false,
+      ingredients = {
+        {
           amount = 25,
           name = "nullius-compressed-volcanic-gas",
           type = "fluid",
@@ -2120,6 +2593,39 @@ return {
       productivity = 0,
       recipe = "nullius-dust-disposal-2",
       seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 55.0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 135,
+          name = "nullius-ethylene",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 50,
+          name = "nullius-methane",
+          type = "fluid",
+        },
+        {
+          amount = 25,
+          name = "nullius-propene",
+          type = "fluid",
+        },
+        {
+          amount = 4,
+          name = "nullius-benzene",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-ethylene-pyrolysis",
+      seconds_per_cycle = 2.0,
     },
     {
       cycles = 5,
@@ -2768,6 +3274,39 @@ return {
       productivity = 0,
       recipe = "nullius-pressure-monoxide-to-graphite",
       seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 137.5,
+      heat = false,
+      ingredients = {
+        {
+          amount = 50,
+          name = "nullius-compressed-residual-gas",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 20,
+          name = "nullius-compressed-argon",
+          type = "fluid",
+        },
+        {
+          amount = 2,
+          name = "nullius-compressed-trace-gas",
+          type = "fluid",
+        },
+        {
+          amount = 28,
+          name = "nullius-steam",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-pressure-residual-separation",
+      seconds_per_cycle = 5.0,
     },
     {
       cycles = 5,
@@ -3425,6 +3964,30 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 100,
+          name = "nullius-compressed-trace-gas",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-chimney-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-gas-void",
+          probability = 0,
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-void-compressed-trace-gas",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 200,
           name = "nullius-sulfur-dioxide",
           type = "fluid",
@@ -3663,6 +4226,39 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 13.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 150,
+          name = "nullius-air",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-distillery-2-pneumatic",
+      outputs = {
+        {
+          amount = 120,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+        {
+          amount = 10,
+          name = "nullius-sulfur-dioxide",
+          type = "fluid",
+        },
+        {
+          amount = 3,
+          name = "nullius-residual-gas",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-vulcanus-residual-gas",
+      seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 12.0,
       heat = false,
       ingredients = {
@@ -3742,39 +4338,6 @@ return {
     },
     {
       cycles = 5,
-      fuel_per_cycle = 35.625,
-      heat = false,
-      ingredients = {
-        {
-          amount = 2,
-          name = "nullius-graphite",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-glass",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-iron-sheet",
-          type = "item",
-        },
-      },
-      machine = "nullius-medium-assembler-2-pneumatic",
-      outputs = {
-        {
-          amount = 1,
-          name = "small-lamp",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "small-lamp",
-      seconds_per_cycle = 2.5,
-    },
-    {
-      cycles = 5,
       fuel_per_cycle = 48.75,
       heat = false,
       ingredients = {
@@ -3809,4 +4372,5 @@ return {
   },
   fuel = "nullius-compressed-volcanic-gas",
   schema = 1,
+  transfers = {},
 }

@@ -22,6 +22,11 @@ example. The schema version is `1`.
 Each stage names a prerequisite `contract` argument file and a `products` map.
 Each product amount multiplies the selected rate. A stage can supply
 `technologies`, `research_roots`, `extra_machines`, and `raw` overrides.
+`executor_cycles` overrides the five-cycle executor test default by recipe name.
+`executor_transfers` lists solid products that must come from measured outputs
+of other fixture machines, with no direct input supply. The first-physics fixture
+uses these fields to assemble and unpack one batch into 125 physics packs.
+
 `allow_all_pre_physics` opens the full research set that does not consume physics
 science. This is a capacity comparison boundary, not a chronological unlock
 schedule. The report includes the research required by selected recipes.

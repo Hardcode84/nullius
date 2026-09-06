@@ -466,6 +466,8 @@ def analyze_stage(data, config, stage):
     if research["unquantified"]:
         raise TestFailure(f"unquantified research: {research['unquantified']}")
     result = {"name": stage["name"], "boundary": boundary, "research": research,
+              "executor_cycles": stage.get("executor_cycles", {}),
+              "executor_transfers": stage.get("executor_transfers", []),
               "allowed_technologies": sorted(technologies), "eligible_recipe_executors": len(catalog), "excluded": excluded,
               "unreachable_targets": sorted(set(stage["products"]) - reachable),
               "blocked_inputs": blocked_inputs(catalog, stage["products"], reachable), "plans": []}
@@ -560,11 +562,12 @@ def write_executor_fixture(report, stage_name, path):
     for row in plan["flow"]["recipes"]:
         if not row["machine"] or row["recipe"].startswith("<"):
             continue
-        rows.append({"recipe": row["recipe"], "machine": row["machine"], "cycles": 5,
+        rows.append({"recipe": row["recipe"], "machine": row["machine"], "cycles": stage.get("executor_cycles", {}).get(row["recipe"], 5),
                      "seconds_per_cycle": row["seconds"], "ingredients": row["validation_ingredients"],
                      "outputs": row["validation_outputs"], "fuel_per_cycle": row["fuel"],
                      "heat": row["energy_type"] == "heat", "productivity": row["native_productivity"]})
     fixture = {"schema": 1, "fuel": stage["boundary"]["fuel"], "executors": rows,
+               "transfers": stage.get("executor_transfers", []),
                "boundary_technologies": stage["allowed_technologies"],
                "deadline": math.ceil(max(r["seconds_per_cycle"] * r["cycles"] for r in rows) * 60) + 3600}
     if not stage["boundary"]["allow_all_pre_physics"]:
@@ -603,6 +606,24 @@ def write_markdown(report, path):
                          f"{plan['machines'] or '—'} | {plan['labs'] or '—'} | "
                          f"{number(plan['research_hours'])} | {number(plan['scheduled_research_hours'])} | "
                          f"{plan['construction_status'] or '—'} |")
+    lines += ["", "## Fuel and heat", "",
+              "| Stage | Packs/min | Fuel units/min | Heat demand MW | Geyser extraction cycles/min |",
+              "|---|---:|---:|---:|---:|"]
+    for stage in overview(report):
+        for plan in stage["plans"]:
+            heat = sum(plan["heat_mw"].values()) if plan["heat_mw"] else None
+            raw = (plan["raw_per_minute"] or {}).get("@resource:sulfuric-acid-geyser")
+            lines.append(f"| {stage['name']} | {plan['rate']:g} | {number(plan['fuel_per_minute'])} | "
+                         f"{number(heat)} | {number(raw)} |")
+    lines += ["", "## Largest machine groups", "",
+              "Counts include station rounding. Each row lists the five largest groups.", "",
+              "| Stage | Packs/min | Machine counts |", "|---|---:|---|"]
+    for stage in report["stages"]:
+        for plan in stage["plans"]:
+            groups = sorted(plan["factory"].get("machines", {}).items(),
+                            key=lambda pair: (-pair[1]["count"], pair[0]))[:5]
+            entries = "; ".join(f"{name}: {row['count']}" for name, row in groups)
+            lines.append(f"| {stage['name']} | {plan['rate_per_minute']:g} | {entries or '—'} |")
     lines += ["", "## Construction failures", ""]
     failures = {(stage["name"], row["product"]) for stage in report["stages"]
                 for plan in stage["plans"]
@@ -625,14 +646,15 @@ def write_markdown(report, path):
               "Upstream ordinary air separation supplies residual gas before physics science.",
               "Fork commit `ecc2e04d7a947f0fc0bb6d9212b0d3f44c3af208` restricted that route",
               "on Vulcanus and added an atmosphere recipe without residual gas. The current restrictions",
-              "use ambient temperature. This is a Vulcanus progression failure, not an upstream cycle.", "",
+              "use ambient temperature. The local residual-gas recipe restores a pre-physics route",
+              "at air separation 2 without producing oxygen. Its three outputs fit the first distillery.", "",
               "| Recipe | Before physics | Surface 0 | Surface 200 |",
               "|---|---|---|---|"]
     for row in report["argon_comparison"]:
         surfaces = row["surface_availability"]
         lines.append(f"| {row['name']} | {row['available_before_physics']} | {surfaces.get('0')} | {surfaces.get('200')} |")
-    lines += ["", "A repair must supply residual gas or argon before physics on Vulcanus. Verify the",
-              "ordinary and boxed downstream routes with no imported argon or physics-consuming research.", "",
+    lines += ["", "The first-physics row includes all six earlier science lines at the same rate.",
+              "The basic-science row includes volcanism 1 to permit extractor construction.", "",
               "## Reproduce", "", "```bash",
               "python tools/plan_factorio_factory.py --overview --summary-output docs/data/vulcanus-factory-plan.json --markdown-output docs/VULCANUS_FACTORY_PLAN.md", "```", "",
               "Use the [factory planner skill](../.agents/skills/factorio-factory-planner/SKILL.md)",

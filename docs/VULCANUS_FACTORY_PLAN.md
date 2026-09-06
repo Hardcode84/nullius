@@ -7,25 +7,58 @@ Do not add their research times. A flow result does not prove a connected factor
 
 | Stage | Packs/min | Flow | Machines | Labs | Research supply h | Scheduled research h | Construction |
 |---|---:|---|---:|---:|---:|---:|---|
-| basic-science | 30 | optimal | 446 | 15 | 3.16 | 3.16 | infeasible |
-| basic-science | 60 | optimal | 870 | 30 | 1.58 | 1.58 | infeasible |
-| basic-science | 120 | optimal | 1716 | 60 | 0.79 | 0.79 | infeasible |
+| basic-science | 30 | optimal | 446 | 15 | 3.16 | 3.16 | optimal |
+| basic-science | 60 | optimal | 870 | 30 | 1.58 | 1.58 | optimal |
+| basic-science | 120 | optimal | 1716 | 60 | 0.79 | 0.79 | optimal |
 | chemical-industry | 30 | optimal | 792 | 20 | 32.70 | 32.84 | optimal |
 | chemical-industry | 60 | optimal | 1538 | 40 | 16.35 | 16.42 | optimal |
 | chemical-industry | 120 | optimal | 3037 | 80 | 8.18 | 8.21 | optimal |
-| pre-physics-industry | 30 | optimal | 368 | 20 | 32.70 | 32.84 | optimal |
-| pre-physics-industry | 60 | optimal | 646 | 40 | 16.35 | 16.42 | optimal |
-| pre-physics-industry | 120 | optimal | 1213 | 80 | 8.18 | 8.21 | optimal |
-| first-physics | 30 | infeasible | — | — | — | — | — |
-| first-physics | 60 | infeasible | — | — | — | — | — |
-| first-physics | 120 | infeasible | — | — | — | — | — |
+| pre-physics-industry | 30 | optimal | 369 | 20 | 32.98 | 33.08 | optimal |
+| pre-physics-industry | 60 | optimal | 631 | 40 | 16.49 | 16.54 | optimal |
+| pre-physics-industry | 120 | optimal | 1167 | 80 | 8.24 | 8.27 | optimal |
+| first-physics | 30 | optimal | 651 | 20 | 32.98 | 33.08 | optimal |
+| first-physics | 60 | optimal | 1026 | 40 | 16.49 | 16.54 | optimal |
+| first-physics | 120 | optimal | 1789 | 80 | 8.24 | 8.27 | optimal |
+
+## Fuel and heat
+
+| Stage | Packs/min | Fuel units/min | Heat demand MW | Geyser extraction cycles/min |
+|---|---:|---:|---:|---:|
+| basic-science | 30 | 207,879.82 | 58.97 | 3,137.82 |
+| basic-science | 60 | 415,759.65 | 117.94 | 6,275.64 |
+| basic-science | 120 | 831,519.29 | 235.87 | 12,551.27 |
+| chemical-industry | 30 | 381,263.00 | 113.89 | 5,997.34 |
+| chemical-industry | 60 | 762,525.99 | 227.77 | 11,994.67 |
+| chemical-industry | 120 | 1,525,051.99 | 455.54 | 23,989.35 |
+| pre-physics-industry | 30 | 220,781.42 | 38.13 | 364.61 |
+| pre-physics-industry | 60 | 441,562.84 | 76.26 | 729.21 |
+| pre-physics-industry | 120 | 883,125.67 | 152.51 | 1,458.43 |
+| first-physics | 30 | 311,750.31 | 57.74 | 436.51 |
+| first-physics | 60 | 623,500.62 | 115.49 | 873.02 |
+| first-physics | 120 | 1,247,001.24 | 230.98 | 1,746.03 |
+
+## Largest machine groups
+
+Counts include station rounding. Each row lists the five largest groups.
+
+| Stage | Packs/min | Machine counts |
+|---|---:|---|
+| basic-science | 30 | nullius-hydro-plant-1-pneumatic: 136; nullius-extractor-1-pneumatic: 53; nullius-vulcanus-radiator-2: 53; nullius-medium-assembler-1-pneumatic: 46; nullius-chemical-plant-1-pneumatic: 39 |
+| basic-science | 60 | nullius-hydro-plant-1-pneumatic: 270; nullius-extractor-1-pneumatic: 105; nullius-vulcanus-radiator-2: 105; nullius-medium-assembler-1-pneumatic: 89; nullius-chemical-plant-1-pneumatic: 77 |
+| basic-science | 120 | nullius-hydro-plant-1-pneumatic: 537; nullius-extractor-1-pneumatic: 210; nullius-vulcanus-radiator-2: 208; nullius-medium-assembler-1-pneumatic: 178; nullius-chemical-plant-1-pneumatic: 151 |
+| chemical-industry | 30 | nullius-hydro-plant-1-pneumatic: 265; nullius-extractor-1-pneumatic: 100; nullius-vulcanus-radiator-2: 89; nullius-foundry-1-thermal: 77; nullius-chemical-plant-1-pneumatic: 72 |
+| chemical-industry | 60 | nullius-hydro-plant-1-pneumatic: 526; nullius-extractor-1-pneumatic: 200; nullius-vulcanus-radiator-2: 177; nullius-foundry-1-thermal: 139; nullius-chemical-plant-1-pneumatic: 138 |
+| chemical-industry | 120 | nullius-hydro-plant-1-pneumatic: 1048; nullius-extractor-1-pneumatic: 400; nullius-vulcanus-radiator-2: 352; nullius-chemical-plant-1-pneumatic: 270; nullius-foundry-1-thermal: 269 |
+| pre-physics-industry | 30 | nullius-hydro-plant-2-pneumatic: 77; nullius-chemical-plant-2-pneumatic: 43; nullius-vulcanus-radiator-1: 35; nullius-distillery-2-pneumatic: 34; nullius-lava-intake-1: 27 |
+| pre-physics-industry | 60 | nullius-hydro-plant-2-pneumatic: 151; nullius-chemical-plant-2-pneumatic: 78; nullius-vulcanus-radiator-1: 68; nullius-distillery-2-pneumatic: 55; nullius-lava-intake-1: 53 |
+| pre-physics-industry | 120 | nullius-hydro-plant-2-pneumatic: 297; nullius-chemical-plant-2-pneumatic: 147; nullius-vulcanus-radiator-1: 135; nullius-lava-intake-1: 105; nullius-distillery-2-pneumatic: 99 |
+| first-physics | 30 | nullius-large-assembler-1-pneumatic: 112; nullius-hydro-plant-2-pneumatic: 106; nullius-small-assembler-1-pneumatic: 61; nullius-chemical-plant-2-pneumatic: 60; nullius-vulcanus-radiator-1: 49 |
+| first-physics | 60 | nullius-hydro-plant-2-pneumatic: 208; nullius-large-assembler-1-pneumatic: 120; nullius-chemical-plant-2-pneumatic: 103; nullius-vulcanus-radiator-1: 98; nullius-distillery-2-pneumatic: 80 |
+| first-physics | 120 | nullius-hydro-plant-2-pneumatic: 413; nullius-vulcanus-radiator-1: 195; nullius-chemical-plant-2-pneumatic: 187; nullius-distillery-2-pneumatic: 151; nullius-lava-intake-1: 150 |
 
 ## Construction failures
 
-- `basic-science` cannot produce `nullius-extractor-1` under its construction boundary.
-
-Open the required construction research or supply the missing equipment before
-using these rows as factory expansion contracts.
+No blocked construction inputs were reported. Check flow status for balance failures.
 
 ## Model boundary
 
@@ -51,17 +84,19 @@ Transport, storage, heat delivery, and manual construction time need a connected
 Upstream ordinary air separation supplies residual gas before physics science.
 Fork commit `ecc2e04d7a947f0fc0bb6d9212b0d3f44c3af208` restricted that route
 on Vulcanus and added an atmosphere recipe without residual gas. The current restrictions
-use ambient temperature. This is a Vulcanus progression failure, not an upstream cycle.
+use ambient temperature. The local residual-gas recipe restores a pre-physics route
+at air separation 2 without producing oxygen. Its three outputs fit the first distillery.
 
 | Recipe | Before physics | Surface 0 | Surface 200 |
 |---|---|---|---|
 | nullius-air-separation-2 | True | True | False |
 | nullius-pressure-air-separation | True | True | False |
 | nullius-vulcanus-atmosphere-separation | True | False | True |
+| nullius-vulcanus-residual-gas | True | False | True |
 | nullius-residual-gas | False | True | True |
 
-A repair must supply residual gas or argon before physics on Vulcanus. Verify the
-ordinary and boxed downstream routes with no imported argon or physics-consuming research.
+The first-physics row includes all six earlier science lines at the same rate.
+The basic-science row includes volcanism 1 to permit extractor construction.
 
 ## Reproduce
 
@@ -72,4 +107,4 @@ python tools/plan_factorio_factory.py --overview --summary-output docs/data/vulc
 Use the [factory planner skill](../.agents/skills/factorio-factory-planner/SKILL.md)
 for configuration, query commands, and executor validation.
 
-Prototype SHA256: `ebe6d3c52a3cf5f2dcc153f7fe3c0458fcffe9de0557b174f933c43f72773032`.
+Prototype SHA256: `9e31f2e16c20eff5bf08c5b1a0a7a6303e771b73c4c4d7cfba27d966b7c7f04c`.

@@ -340,3 +340,10 @@ data:extend({
     "nullius-metalworking-1",
     {"machine-casting"}),
 })
+
+local air_separation_2 = data.raw.technology["nullius-air-separation-2"]
+if not air_separation_2 then error("Missing nullius-air-separation-2") end
+air_separation_2.effects[#air_separation_2.effects + 1] = {
+  type = "unlock-recipe",
+  recipe = "nullius-vulcanus-residual-gas",
+}
