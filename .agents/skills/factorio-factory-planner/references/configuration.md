@@ -92,7 +92,9 @@ python tools/run_factorio_tests.py planner-chemical-executors -n auto
 ```
  The fixture
 supplies declared recipe inputs, finite fuel, and controlled heat to separate
-machines. It checks five base cycles and the guaranteed native-productivity
+machines. Perishable fixture stock is delivered one recipe batch at a time. Its total
+quantity remains finite. The fixture does not reset spoilage on inserted items.
+It checks five base cycles and the guaranteed native-productivity
 outputs. It does not connect the full material or heat network. Use a connected
 campaign scenario to measure factory throughput and elapsed progression time.
 
@@ -105,8 +107,8 @@ python tools/plan_factorio_factory.py \
   --comparison-output docs/VULCANUS_QUENCHING_PLAN.md --overview
 ```
 
-The optional `comparison` object names a `title`, one target `product`, and a
-`materials` list. `--comparison-output` reports the target rate, process machines,
+The optional `comparison` object names a `title` and a `materials` list. Each
+stage must have one target product, or `comparison.product` must select a target. `--comparison-output` reports the target rate, process machines,
 active machine equivalents, gross material input, fuel, heat, and construction
 status. Use this report for non-science products. Gross input includes material
 circulation; it is not net extraction. The solver minimizes active machine time,

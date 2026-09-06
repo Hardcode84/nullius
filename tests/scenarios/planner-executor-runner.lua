@@ -33,6 +33,12 @@ local function feed(row)
         input.amount = input.amount - inserted
       else
         local count = input.amount
+        -- Deliver fresh declared stock in batches. Do not preload several
+        -- spoilage windows of blooms into a slow bulk casting station.
+        if input.batch then
+          local inventory = machine.get_inventory(defines.inventory.assembling_machine_input)
+          count = math.min(count, math.max(0, input.batch - inventory.get_item_count(input.name)))
+        end
         if transferred[input.name] then count = math.min(count, storage.transfers[input.name] or 0) end
         local inserted = count > 0 and machine.insert{name=input.name, count=count} or 0
         input.amount = input.amount - inserted
@@ -119,6 +125,8 @@ script.on_nth_tick(30, function()
           if not check(pending.index ~= nil, spec.recipe .. " has no input box for " .. input.name) then
             finish() return
           end
+        elseif prototypes.item[input.name].get_spoil_ticks() > 0 and not transferred[input.name] then
+          pending.batch = input.amount
         end
         row.pending[#row.pending+1] = pending
       end

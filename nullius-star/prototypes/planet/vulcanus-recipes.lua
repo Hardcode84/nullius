@@ -308,29 +308,36 @@ data:extend({
 
 -- Quenching uses the same bloom rate as dry casting. Water leaves as vapor.
 for _, spec in ipairs({
-    {name = "nullius-quenched-iron-plate", scale = 1,
-      product = "nullius-iron-plate", subgroup = "iron-product"},
-    {name = "nullius-boxed-quenched-iron-plate", scale = 5,
-      product = "nullius-box-iron-plate", subgroup = "boxed-iron"},
+    {metal = "iron", shape = "plate", seconds = 3, amount = 4},
+    {metal = "iron", shape = "rod", seconds = 4, amount = 7},
+    {metal = "aluminum", shape = "plate", seconds = 4, amount = 4},
+    {metal = "aluminum", shape = "rod", seconds = 4, amount = 7},
 }) do
-  data:extend({{
-    type = "recipe",
-    name = spec.name,
-    localised_name = {"recipe-name." .. spec.name},
-    enabled = false,
-    category = "machine-casting",
-    subgroup = spec.subgroup,
-    order = "nullius-vc",
-    energy_required = 3 * spec.scale,
-    ingredients = {
-      {type = "item", name = "nullius-molten-iron-bloom", amount = 4 * spec.scale},
-      {type = "fluid", name = "nullius-water", amount = 2 * spec.scale},
-    },
-    results = {{type = "item", name = spec.product, amount = 4}},
-    main_product = spec.product,
-    allow_productivity = true,
-    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
-  }})
+  for _, scale in ipairs({1, 5}) do
+    local boxed = scale == 5
+    local suffix = spec.metal .. "-" .. spec.shape
+    local name = "nullius-" .. (boxed and "boxed-" or "") .. "quenched-" .. suffix
+    local product = "nullius-" .. (boxed and "box-" or "") .. suffix
+    data:extend({{
+      type = "recipe",
+      name = name,
+      localised_name = {"recipe-name." .. name},
+      enabled = false,
+      category = "machine-casting",
+      subgroup = boxed and data.raw.recipe["nullius-boxed-" .. suffix].subgroup
+        or (spec.metal .. "-product"),
+      order = "nullius-vc-" .. spec.shape,
+      energy_required = spec.seconds * scale,
+      ingredients = {
+        {type = "item", name = "nullius-molten-" .. spec.metal .. "-bloom", amount = 4 * scale},
+        {type = "fluid", name = "nullius-water", amount = 2 * scale},
+      },
+      results = {{type = "item", name = product, amount = spec.amount}},
+      main_product = product,
+      allow_productivity = true,
+      surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+    }})
+  end
 end
 
 -- Industrial refractory production consumes abundant Vulcanus mineral

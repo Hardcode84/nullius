@@ -39,20 +39,20 @@
   },
   "assumptions": {
     "objective": "Minimize active process-machine seconds with all eligible alternative recipes and co-products.",
-    "rates": "120 and 1200 iron plates per minute, with complete local material, fuel, and waste processing.",
+    "rates": "120 and 1200 units per minute of each target product in separate comparisons, with complete local material, fuel, and waste processing.",
     "raw": "Local HCl extraction at declared 100 percent geyser yield. Extractor count and fuel are included; site availability and depletion are not a supplied map witness.",
     "solid_waste": "Only listed solid residues may leave the model. Surplus rates are reported. Filled barrels cannot serve as fluid waste sinks. Fluid waste requires a real recipe.",
     "productivity": "Native machine effects included. No modules, beacons, or technology productivity bonus.",
     "uncertainty": "Guaranteed outputs only, never expected probabilistic returns.",
     "heat": "Conserve heat using resolved heat interfaces and runtime controller constants, at continuous duty with ideal delivery. Report temperature-class demands; geometry, sampled-duty aliasing and warmup require a runtime layout witness.",
     "construction": "Compute process-machine placement demand beyond wreck stock. Also produce one test-cell kit: one foundry, one water pipe, one heat pipe, two inserters, and two chests. This kit does not specify the full factory layout.",
-    "time": "No elapsed progression claim: science is not supplied by these iron-production targets.",
+    "time": "No elapsed progression claim: science is not supplied by these product targets.",
     "labs": "Size speed-1 pneumatic labs for the fastest supplied research cycle. Reserve full-load lab fuel in the flow; do not credit lab waste heat.",
-    "routes": "Dry and quenched exclude competing plate recipes. Unrestricted permits all pre-physics alternatives. The machine catalog is identical in each comparison."
+    "routes": "Dry and quenched exclude competing recipes for the target product. Unrestricted permits all pre-physics alternatives. Each comparison uses the same machine catalog."
   },
   "stages": [
     {
-      "name": "dry",
+      "name": "iron-plate-dry",
       "contract": "tests/progression/vulcanus-chemical-science.args",
       "extra_machines": [
         "nullius-chimney-1",
@@ -77,50 +77,11 @@
       "allow_all_pre_physics": true,
       "research_roots": [],
       "excluded_recipes": [
-        "nullius-quenched-iron-plate",
-        "nullius-boxed-quenched-iron-plate",
-        "nullius-iron-plate-2",
-        "nullius-unbox-iron-plate",
-        "nullius-iron-plate"
-      ],
-      "construction_items": {
-        "nullius-foundry-1": 1,
-        "pipe": 1,
-        "inserter": 2,
-        "iron-chest": 2,
-        "nullius-heat-pipe-1": 1
-      }
-    },
-    {
-      "name": "quenched",
-      "contract": "tests/progression/vulcanus-chemical-science.args",
-      "extra_machines": [
-        "nullius-chimney-1",
-        "nullius-outfall-1",
-        "nullius-hydro-plant-2-pneumatic",
-        "nullius-chemical-plant-2-pneumatic",
-        "nullius-distillery-2-pneumatic",
-        "nullius-air-filter-2-pneumatic",
-        "nullius-foundry-2-thermal",
-        "nullius-medium-furnace-2-thermal",
-        "nullius-medium-assembler-2-pneumatic",
-        "nullius-large-assembler-1-pneumatic",
-        "nullius-crusher-2-thermal",
-        "nullius-flotation-cell-2-pneumatic"
-      ],
-      "products": {
-        "nullius-iron-plate": 1
-      },
-      "technologies": [
-        "nullius-water-quenching"
-      ],
-      "allow_all_pre_physics": true,
-      "research_roots": [],
-      "excluded_recipes": [
-        "nullius-hot-iron-plate",
         "nullius-iron-plate",
         "nullius-iron-plate-2",
-        "nullius-unbox-iron-plate"
+        "nullius-unbox-iron-plate",
+        "nullius-quenched-iron-plate",
+        "nullius-boxed-quenched-iron-plate"
       ],
       "construction_items": {
         "nullius-foundry-1": 1,
@@ -131,7 +92,46 @@
       }
     },
     {
-      "name": "unrestricted",
+      "name": "iron-plate-quenched",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-iron-plate",
+        "nullius-iron-plate-2",
+        "nullius-unbox-iron-plate",
+        "nullius-hot-iron-plate"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "iron-plate-unrestricted",
       "contract": "tests/progression/vulcanus-chemical-science.args",
       "extra_machines": [
         "nullius-chimney-1",
@@ -163,6 +163,345 @@
         "iron-chest": 2,
         "nullius-heat-pipe-1": 1
       }
+    },
+    {
+      "name": "iron-rod-dry",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-iron-rod",
+        "nullius-iron-rod-2",
+        "nullius-unbox-iron-rod",
+        "nullius-quenched-iron-rod",
+        "nullius-boxed-quenched-iron-rod"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "iron-rod-quenched",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-iron-rod",
+        "nullius-iron-rod-2",
+        "nullius-unbox-iron-rod",
+        "nullius-hot-iron-rod"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "iron-rod-unrestricted",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-plate-dry",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-aluminum-plate",
+        "nullius-aluminum-plate-2",
+        "nullius-unbox-aluminum-plate",
+        "nullius-quenched-aluminum-plate",
+        "nullius-boxed-quenched-aluminum-plate"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-plate-quenched",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-aluminum-plate",
+        "nullius-aluminum-plate-2",
+        "nullius-unbox-aluminum-plate",
+        "nullius-hot-aluminum-plate"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-plate-unrestricted",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-rod-dry",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-aluminum-rod",
+        "nullius-aluminum-rod-2",
+        "nullius-unbox-aluminum-rod",
+        "nullius-quenched-aluminum-rod",
+        "nullius-boxed-quenched-aluminum-rod"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-rod-quenched",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-aluminum-rod",
+        "nullius-aluminum-rod-2",
+        "nullius-unbox-aluminum-rod",
+        "nullius-hot-aluminum-rod"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "aluminum-rod-unrestricted",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-aluminum-rod": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
     }
   ],
   "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
@@ -175,10 +514,10 @@
   },
   "lab": "nullius-lab-1-pneumatic",
   "comparison": {
-    "title": "Vulcanus iron quenching comparison",
-    "product": "nullius-iron-plate",
+    "title": "Vulcanus iron and aluminum quenching comparison",
     "materials": [
       "nullius-molten-iron-bloom",
+      "nullius-molten-aluminum-bloom",
       "nullius-water"
     ]
   }

@@ -1502,29 +1502,6 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-iron-rod",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1-pneumatic",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-iron-rod",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-iron-rod",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 5.9,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
           name = "nullius-iron-sheet",
           type = "item",
         },
@@ -3390,6 +3367,34 @@ return {
       productivity = 0.4,
       recipe = "nullius-boxed-quenched-iron-plate",
       seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 7,
+          name = "nullius-box-iron-rod",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-quenched-iron-rod",
+      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,
@@ -6097,29 +6102,6 @@ return {
     },
     {
       cycles = 5,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
-          amount = 4,
-          name = "nullius-molten-iron-bloom",
-          type = "item",
-        },
-      },
-      machine = "nullius-foundry-2-thermal",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-iron-rod",
-          type = "item",
-        },
-      },
-      productivity = 0.4,
-      recipe = "nullius-hot-iron-rod",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
       fuel_per_cycle = 81.25,
       heat = false,
       ingredients = {
@@ -7774,6 +7756,34 @@ return {
       productivity = 0.4,
       recipe = "nullius-quenched-iron-plate",
       seconds_per_cycle = 1.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 4,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 7,
+          name = "nullius-iron-rod",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-quenched-iron-rod",
+      seconds_per_cycle = 2.0,
     },
     {
       cycles = 5,

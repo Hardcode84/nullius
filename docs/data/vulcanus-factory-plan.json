@@ -249,9 +249,9 @@
   "provenance": {
     "config": "tests/progression/planner/vulcanus.json",
     "config_sha256": "9f219eb9a38f9ae36623800824f6cd028b8d5424b9fc80a81aba676c57f0dd38",
-    "dump_sha256": "4d9a410140a9a72d39126a118bda60be6a4d66dc5f83791b3acd6de45c5c0dd8",
-    "planner_sha256": "6ab2c3f6c28af9735e2c4700cf6971ada9b4177c5835d9deb65d981b1420c1e2",
-    "revision": "a0b80ab13b4368cc0e26245e93445c9d48797ca4",
+    "dump_sha256": "65210801ab5d703461b83f476bd0841c1f0e8fe2a937bb449b59ffe0d3ba8411",
+    "planner_sha256": "54284a714a4bdf34e887f8634448c8715e0d574f57a5ab8b1f197de0b3b0dcd0",
+    "revision": "108f0692e837a4eddf03b13b637d77dafcbd0db5",
     "snapshot_reused": false
   },
   "schema": 1,
@@ -3168,13 +3168,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 7390.805412015113,
+            "@heat:500": 7380.460125063774,
             "nullius-box-calcium-chloride": 4.121388815266366,
-            "stone": 11527.658483668372,
-            "sulfur": 212.07342778556594
+            "stone": 11492.093953137388,
+            "sulfur": 212.40532074683207
           },
           "factory": {
-            "fuel_per_minute": 220256.79475563823,
+            "fuel_per_minute": 220058.85591663816,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -3182,22 +3182,22 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 38.139459099956326
+              "200": 38.162942370815685
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 0.8699591273501223,
+                "active_equivalents": 0.867008967694423,
                 "count": 1,
                 "recipes": [
                   {
                     "count": 1,
-                    "cycles_per_minute": 52.19754764100733,
+                    "cycles_per_minute": 52.020538061665384,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 15.268374431276598,
+                "active_equivalents": 15.283125229555093,
                 "count": 20,
                 "recipes": [
                   {
@@ -3217,7 +3217,7 @@
                   },
                   {
                     "count": 16,
-                    "cycles_per_minute": 905.5938944480245,
+                    "cycles_per_minute": 906.4789423447342,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -3228,7 +3228,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 35.302275298611455,
+                "active_equivalents": 35.31702609688995,
                 "count": 43,
                 "recipes": [
                   {
@@ -3263,7 +3263,7 @@
                   },
                   {
                     "count": 7,
-                    "cycles_per_minute": 830.5254302589813,
+                    "cycles_per_minute": 831.4104781556908,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -3278,7 +3278,7 @@
                   },
                   {
                     "count": 5,
-                    "cycles_per_minute": 542.9407143806706,
+                    "cycles_per_minute": 543.8257622773802,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -3309,12 +3309,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 9.173081651359173,
+                "active_equivalents": 9.178244430756646,
                 "count": 11,
                 "recipes": [
                   {
                     "count": 8,
-                    "cycles_per_minute": 223.47373706606496,
+                    "cycles_per_minute": 223.60649425057142,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -3324,7 +3324,7 @@
                   },
                   {
                     "count": 2,
-                    "cycles_per_minute": 51.71764104613881,
+                    "cycles_per_minute": 51.73976724355655,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -3356,7 +3356,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 21.802797870965122,
+                "active_equivalents": 21.821236368813242,
                 "count": 34,
                 "recipes": [
                   {
@@ -3411,7 +3411,7 @@
                   },
                   {
                     "count": 19,
-                    "cycles_per_minute": 2263.6810432143275,
+                    "cycles_per_minute": 2265.8936629561017,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -3437,12 +3437,12 @@
                 ]
               },
               "nullius-extractor-1-pneumatic": {
-                "active_equivalents": 5.996632698552081,
+                "active_equivalents": 5.996632698552076,
                 "count": 6,
                 "recipes": [
                   {
                     "count": 6,
-                    "cycles_per_minute": 359.7979619131249,
+                    "cycles_per_minute": 359.79796191312454,
                     "name": "<mine:sulfuric-acid-geyser>"
                   }
                 ]
@@ -3484,8 +3484,8 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 5.214968444860939,
-                "count": 20,
+                "active_equivalents": 5.1087626972557745,
+                "count": 21,
                 "recipes": [
                   {
                     "count": 1,
@@ -3529,6 +3529,11 @@
                   },
                   {
                     "count": 1,
+                    "cycles_per_minute": 1.5431070387338608,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
+                    "count": 1,
                     "cycles_per_minute": 10.714285714285715,
                     "name": "nullius-capacitor-vulcanus"
                   },
@@ -3536,11 +3541,6 @@
                     "count": 1,
                     "cycles_per_minute": 0.5357142857142857,
                     "name": "nullius-crucible-2"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 11.151603498542274,
-                    "name": "nullius-hot-iron-rod"
                   },
                   {
                     "count": 1,
@@ -3556,6 +3556,11 @@
                     "count": 1,
                     "cycles_per_minute": 0.577016520894072,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 0.2498958767180341,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 2,
@@ -3585,7 +3590,7 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 73.49894173191001,
+                "active_equivalents": 73.34561340157337,
                 "count": 77,
                 "recipes": [
                   {
@@ -3600,12 +3605,12 @@
                   },
                   {
                     "count": 62,
-                    "cycles_per_minute": 3693.4581404691676,
+                    "cycles_per_minute": 3692.2238717193563,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
                     "count": 2,
-                    "cycles_per_minute": 37.429551096434686,
+                    "cycles_per_minute": 34.243378668279746,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -3698,12 +3703,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 26.028235726253502,
-                "count": 27,
+                "active_equivalents": 25.97752496887936,
+                "count": 26,
                 "recipes": [
                   {
-                    "count": 27,
-                    "cycles_per_minute": 1561.69414357521,
+                    "count": 26,
+                    "cycles_per_minute": 1558.6514981327616,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -3791,8 +3796,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 0.7359189016618223,
-                "count": 22,
+                "active_equivalents": 0.609898493498557,
+                "count": 21,
                 "recipes": [
                   {
                     "count": 1,
@@ -3848,11 +3853,6 @@
                     "count": 1,
                     "cycles_per_minute": 0.5344387755102041,
                     "name": "nullius-box-graphite"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 3.7806122448979593,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -3938,17 +3938,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 33.49108544441815,
+                "active_equivalents": 33.54271323839288,
                 "count": 35,
                 "recipes": [
                   {
                     "count": 16,
-                    "cycles_per_minute": 228.39592447593685,
+                    "cycles_per_minute": 228.727817437203,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
                     "count": 19,
-                    "cycles_per_minute": 547.9407143806707,
+                    "cycles_per_minute": 548.8257622773802,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -3964,17 +3964,17 @@
               "nullius-distillery-2": 34,
               "nullius-extractor-1": 6,
               "nullius-flotation-cell-2": 7,
-              "nullius-foundry-2": 20,
+              "nullius-foundry-2": 21,
               "nullius-hydro-plant-2": 77,
               "nullius-lab-1": 20,
               "nullius-large-assembler-1": 13,
               "nullius-medium-assembler-2": 8,
               "nullius-medium-furnace-2": 13,
-              "nullius-seawater-intake-1": 27,
-              "nullius-small-assembler-1": 22,
+              "nullius-seawater-intake-1": 26,
+              "nullius-small-assembler-1": 21,
               "nullius-vulcanus-radiator-1": 35
             },
-            "process_machines": 367,
+            "process_machines": 366,
             "spoilage_buffers": [
               {
                 "items_in_transit": 2.5447192968538235,
@@ -3988,7 +3988,7 @@
           },
           "rate_per_minute": 30,
           "raw_per_minute": {
-            "@resource:sulfuric-acid-geyser": 359.7979619131249
+            "@resource:sulfuric-acid-geyser": 359.79796191312454
           },
           "research_schedule": {
             "hours": 33.08418055555556,
@@ -4005,13 +4005,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 14781.610824030226,
+            "@heat:500": 14760.920250127549,
             "nullius-box-calcium-chloride": 8.242777630532732,
-            "stone": 23055.316967336745,
-            "sulfur": 424.1468555711319
+            "stone": 22984.187906274776,
+            "sulfur": 424.81064149366415
           },
           "factory": {
-            "fuel_per_minute": 440513.58951127646,
+            "fuel_per_minute": 440117.7118332763,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -4019,22 +4019,22 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 76.27891819991265
+              "200": 76.32588474163137
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 1.7399182547002445,
+                "active_equivalents": 1.734017935388846,
                 "count": 2,
                 "recipes": [
                   {
                     "count": 2,
-                    "cycles_per_minute": 104.39509528201467,
+                    "cycles_per_minute": 104.04107612333077,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 30.536748862553196,
+                "active_equivalents": 30.566250459110186,
                 "count": 35,
                 "recipes": [
                   {
@@ -4054,7 +4054,7 @@
                   },
                   {
                     "count": 31,
-                    "cycles_per_minute": 1811.187788896049,
+                    "cycles_per_minute": 1812.9578846894683,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -4065,7 +4065,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 70.60455059722291,
+                "active_equivalents": 70.6340521937799,
                 "count": 78,
                 "recipes": [
                   {
@@ -4100,7 +4100,7 @@
                   },
                   {
                     "count": 14,
-                    "cycles_per_minute": 1661.0508605179625,
+                    "cycles_per_minute": 1662.8209563113817,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -4115,7 +4115,7 @@
                   },
                   {
                     "count": 10,
-                    "cycles_per_minute": 1085.881428761341,
+                    "cycles_per_minute": 1087.6515245547605,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -4146,12 +4146,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 18.346163302718345,
+                "active_equivalents": 18.35648886151329,
                 "count": 20,
                 "recipes": [
                   {
                     "count": 15,
-                    "cycles_per_minute": 446.9474741321299,
+                    "cycles_per_minute": 447.21298850114283,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -4161,7 +4161,7 @@
                   },
                   {
                     "count": 4,
-                    "cycles_per_minute": 103.43528209227762,
+                    "cycles_per_minute": 103.4795344871131,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -4193,7 +4193,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 43.605595741930244,
+                "active_equivalents": 43.642472737626484,
                 "count": 55,
                 "recipes": [
                   {
@@ -4248,7 +4248,7 @@
                   },
                   {
                     "count": 38,
-                    "cycles_per_minute": 4527.362086428655,
+                    "cycles_per_minute": 4531.787325912203,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -4274,12 +4274,12 @@
                 ]
               },
               "nullius-extractor-1-pneumatic": {
-                "active_equivalents": 11.993265397104162,
+                "active_equivalents": 11.993265397104151,
                 "count": 12,
                 "recipes": [
                   {
                     "count": 12,
-                    "cycles_per_minute": 719.5959238262498,
+                    "cycles_per_minute": 719.5959238262491,
                     "name": "<mine:sulfuric-acid-geyser>"
                   }
                 ]
@@ -4321,8 +4321,8 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 10.429936889721878,
-                "count": 24,
+                "active_equivalents": 10.217525394511549,
+                "count": 25,
                 "recipes": [
                   {
                     "count": 1,
@@ -4365,6 +4365,11 @@
                     "name": "nullius-boxed-quenched-iron-plate"
                   },
                   {
+                    "count": 1,
+                    "cycles_per_minute": 3.0862140774677216,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
                     "count": 2,
                     "cycles_per_minute": 21.42857142857143,
                     "name": "nullius-capacitor-vulcanus"
@@ -4373,11 +4378,6 @@
                     "count": 1,
                     "cycles_per_minute": 1.0714285714285714,
                     "name": "nullius-crucible-2"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 22.303206997084548,
-                    "name": "nullius-hot-iron-rod"
                   },
                   {
                     "count": 1,
@@ -4393,6 +4393,11 @@
                     "count": 1,
                     "cycles_per_minute": 1.154033041788144,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 0.4997917534360682,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 4,
@@ -4422,8 +4427,8 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 146.99788346382002,
-                "count": 151,
+                "active_equivalents": 146.69122680314675,
+                "count": 150,
                 "recipes": [
                   {
                     "count": 4,
@@ -4437,12 +4442,12 @@
                   },
                   {
                     "count": 124,
-                    "cycles_per_minute": 7386.916280938335,
+                    "cycles_per_minute": 7384.447743438713,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
-                    "count": 4,
-                    "cycles_per_minute": 74.85910219286937,
+                    "count": 3,
+                    "cycles_per_minute": 68.48675733655949,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -4535,12 +4540,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 52.056471452507004,
-                "count": 53,
+                "active_equivalents": 51.95504993775872,
+                "count": 52,
                 "recipes": [
                   {
-                    "count": 53,
-                    "cycles_per_minute": 3123.38828715042,
+                    "count": 52,
+                    "cycles_per_minute": 3117.3029962655232,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -4628,8 +4633,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 1.4718378033236446,
-                "count": 22,
+                "active_equivalents": 1.219796986997114,
+                "count": 21,
                 "recipes": [
                   {
                     "count": 1,
@@ -4685,11 +4690,6 @@
                     "count": 1,
                     "cycles_per_minute": 1.0688775510204083,
                     "name": "nullius-box-graphite"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 7.561224489795919,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -4775,17 +4775,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 66.9821708888363,
+                "active_equivalents": 67.08542647678576,
                 "count": 68,
                 "recipes": [
                   {
                     "count": 31,
-                    "cycles_per_minute": 456.7918489518737,
+                    "cycles_per_minute": 457.455634874406,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
                     "count": 37,
-                    "cycles_per_minute": 1095.8814287613413,
+                    "cycles_per_minute": 1097.6515245547605,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -4801,17 +4801,17 @@
               "nullius-distillery-2": 55,
               "nullius-extractor-1": 12,
               "nullius-flotation-cell-2": 9,
-              "nullius-foundry-2": 24,
-              "nullius-hydro-plant-2": 151,
+              "nullius-foundry-2": 25,
+              "nullius-hydro-plant-2": 150,
               "nullius-lab-1": 40,
               "nullius-large-assembler-1": 19,
               "nullius-medium-assembler-2": 13,
               "nullius-medium-furnace-2": 18,
-              "nullius-seawater-intake-1": 53,
-              "nullius-small-assembler-1": 22,
+              "nullius-seawater-intake-1": 52,
+              "nullius-small-assembler-1": 21,
               "nullius-vulcanus-radiator-1": 68
             },
-            "process_machines": 630,
+            "process_machines": 628,
             "spoilage_buffers": [
               {
                 "items_in_transit": 5.089438593707647,
@@ -4825,7 +4825,7 @@
           },
           "rate_per_minute": 60,
           "raw_per_minute": {
-            "@resource:sulfuric-acid-geyser": 719.5959238262498
+            "@resource:sulfuric-acid-geyser": 719.5959238262491
           },
           "research_schedule": {
             "hours": 16.54209027777778,
@@ -4842,13 +4842,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 29563.22164806045,
+            "@heat:500": 29521.840500255097,
             "nullius-box-calcium-chloride": 16.485555261065464,
-            "stone": 46110.63393467349,
-            "sulfur": 848.2937111422638
+            "stone": 45968.37581254955,
+            "sulfur": 849.6212829873283
           },
           "factory": {
-            "fuel_per_minute": 881027.1790225529,
+            "fuel_per_minute": 880235.4236665526,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -4856,22 +4856,22 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 152.5578363998253
+              "200": 152.65176948326274
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 3.479836509400489,
+                "active_equivalents": 3.468035870777692,
                 "count": 4,
                 "recipes": [
                   {
                     "count": 4,
-                    "cycles_per_minute": 208.79019056402933,
+                    "cycles_per_minute": 208.08215224666154,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 61.07349772510639,
+                "active_equivalents": 61.13250091822037,
                 "count": 65,
                 "recipes": [
                   {
@@ -4891,7 +4891,7 @@
                   },
                   {
                     "count": 61,
-                    "cycles_per_minute": 3622.375577792098,
+                    "cycles_per_minute": 3625.9157693789366,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -4902,7 +4902,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 141.20910119444582,
+                "active_equivalents": 141.2681043875598,
                 "count": 147,
                 "recipes": [
                   {
@@ -4937,7 +4937,7 @@
                   },
                   {
                     "count": 28,
-                    "cycles_per_minute": 3322.101721035925,
+                    "cycles_per_minute": 3325.6419126227634,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -4952,7 +4952,7 @@
                   },
                   {
                     "count": 19,
-                    "cycles_per_minute": 2171.762857522682,
+                    "cycles_per_minute": 2175.303049109521,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -4983,12 +4983,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 36.69232660543669,
+                "active_equivalents": 36.71297772302658,
                 "count": 38,
                 "recipes": [
                   {
                     "count": 30,
-                    "cycles_per_minute": 893.8949482642598,
+                    "cycles_per_minute": 894.4259770022857,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -4998,7 +4998,7 @@
                   },
                   {
                     "count": 7,
-                    "cycles_per_minute": 206.87056418455523,
+                    "cycles_per_minute": 206.9590689742262,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -5030,7 +5030,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 87.21119148386049,
+                "active_equivalents": 87.28494547525297,
                 "count": 99,
                 "recipes": [
                   {
@@ -5085,7 +5085,7 @@
                   },
                   {
                     "count": 76,
-                    "cycles_per_minute": 9054.72417285731,
+                    "cycles_per_minute": 9063.574651824407,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -5111,12 +5111,12 @@
                 ]
               },
               "nullius-extractor-1-pneumatic": {
-                "active_equivalents": 23.986530794208324,
+                "active_equivalents": 23.986530794208303,
                 "count": 24,
                 "recipes": [
                   {
                     "count": 24,
-                    "cycles_per_minute": 1439.1918476524995,
+                    "cycles_per_minute": 1439.1918476524982,
                     "name": "<mine:sulfuric-acid-geyser>"
                   }
                 ]
@@ -5158,8 +5158,8 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 20.859873779443756,
-                "count": 35,
+                "active_equivalents": 20.435050789023098,
+                "count": 36,
                 "recipes": [
                   {
                     "count": 2,
@@ -5202,6 +5202,11 @@
                     "name": "nullius-boxed-quenched-iron-plate"
                   },
                   {
+                    "count": 2,
+                    "cycles_per_minute": 6.172428154935443,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
                     "count": 3,
                     "cycles_per_minute": 42.85714285714286,
                     "name": "nullius-capacitor-vulcanus"
@@ -5210,11 +5215,6 @@
                     "count": 2,
                     "cycles_per_minute": 2.142857142857143,
                     "name": "nullius-crucible-2"
-                  },
-                  {
-                    "count": 2,
-                    "cycles_per_minute": 44.606413994169095,
-                    "name": "nullius-hot-iron-rod"
                   },
                   {
                     "count": 1,
@@ -5230,6 +5230,11 @@
                     "count": 1,
                     "cycles_per_minute": 2.308066083576288,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 0.9995835068721364,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 7,
@@ -5259,8 +5264,8 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 293.99576692764003,
-                "count": 297,
+                "active_equivalents": 293.3824536062935,
+                "count": 296,
                 "recipes": [
                   {
                     "count": 7,
@@ -5274,12 +5279,12 @@
                   },
                   {
                     "count": 247,
-                    "cycles_per_minute": 14773.83256187667,
+                    "cycles_per_minute": 14768.895486877425,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
-                    "count": 7,
-                    "cycles_per_minute": 149.71820438573874,
+                    "count": 6,
+                    "cycles_per_minute": 136.97351467311898,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -5372,12 +5377,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 104.11294290501401,
-                "count": 105,
+                "active_equivalents": 103.91009987551745,
+                "count": 104,
                 "recipes": [
                   {
-                    "count": 105,
-                    "cycles_per_minute": 6246.77657430084,
+                    "count": 104,
+                    "cycles_per_minute": 6234.6059925310465,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -5465,8 +5470,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 2.943675606647289,
-                "count": 22,
+                "active_equivalents": 2.439593973994228,
+                "count": 21,
                 "recipes": [
                   {
                     "count": 1,
@@ -5522,11 +5527,6 @@
                     "count": 1,
                     "cycles_per_minute": 2.1377551020408165,
                     "name": "nullius-box-graphite"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 15.122448979591837,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -5612,17 +5612,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 133.9643417776726,
+                "active_equivalents": 134.1708529535715,
                 "count": 135,
                 "recipes": [
                   {
                     "count": 61,
-                    "cycles_per_minute": 913.5836979037474,
+                    "cycles_per_minute": 914.911269748812,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
                     "count": 74,
-                    "cycles_per_minute": 2191.7628575226827,
+                    "cycles_per_minute": 2195.303049109521,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -5638,17 +5638,17 @@
               "nullius-distillery-2": 99,
               "nullius-extractor-1": 24,
               "nullius-flotation-cell-2": 15,
-              "nullius-foundry-2": 35,
-              "nullius-hydro-plant-2": 297,
+              "nullius-foundry-2": 36,
+              "nullius-hydro-plant-2": 296,
               "nullius-lab-1": 80,
               "nullius-large-assembler-1": 32,
               "nullius-medium-assembler-2": 25,
               "nullius-medium-furnace-2": 29,
-              "nullius-seawater-intake-1": 105,
-              "nullius-small-assembler-1": 22,
+              "nullius-seawater-intake-1": 104,
+              "nullius-small-assembler-1": 21,
               "nullius-vulcanus-radiator-1": 135
             },
-            "process_machines": 1166,
+            "process_machines": 1164,
             "spoilage_buffers": [
               {
                 "items_in_transit": 10.178877187415294,
@@ -5662,7 +5662,7 @@
           },
           "rate_per_minute": 120,
           "raw_per_minute": {
-            "@resource:sulfuric-acid-geyser": 1439.1918476524995
+            "@resource:sulfuric-acid-geyser": 1439.1918476524982
           },
           "research_schedule": {
             "hours": 8.27104513888889,
@@ -5685,13 +5685,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 10307.025998317245,
+            "@heat:500": 10291.984953681944,
             "nullius-box-calcium-chloride": 4.859162066310755,
-            "stone": 16807.21864157092,
-            "sulfur": 343.29445190728256
+            "stone": 16754.313826698042,
+            "sulfur": 343.79289624553786
           },
           "factory": {
-            "fuel_per_minute": 311072.28022102686,
+            "fuel_per_minute": 310785.99186371756,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -5699,23 +5699,23 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 57.39924563009727,
+              "200": 57.434513336164045,
               "450": 0.36
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 4.63764982628178,
+                "active_equivalents": 4.633219209941733,
                 "count": 5,
                 "recipes": [
                   {
                     "count": 5,
-                    "cycles_per_minute": 278.2589895769068,
+                    "cycles_per_minute": 277.993152596504,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 23.032883604796698,
+                "active_equivalents": 23.05503668649693,
                 "count": 28,
                 "recipes": [
                   {
@@ -5740,7 +5740,7 @@
                   },
                   {
                     "count": 23,
-                    "cycles_per_minute": 1369.2217448592303,
+                    "cycles_per_minute": 1370.5509297612443,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -5751,7 +5751,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 43.81190527062612,
+                "active_equivalents": 43.83405835232636,
                 "count": 61,
                 "recipes": [
                   {
@@ -5811,7 +5811,7 @@
                   },
                   {
                     "count": 11,
-                    "cycles_per_minute": 1217.0674059605337,
+                    "cycles_per_minute": 1218.3965908625478,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -5841,7 +5841,7 @@
                   },
                   {
                     "count": 7,
-                    "cycles_per_minute": 729.3233680533137,
+                    "cycles_per_minute": 730.6525529553278,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -5882,12 +5882,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 18.842230410190357,
+                "active_equivalents": 18.84998398878544,
                 "count": 20,
                 "recipes": [
                   {
                     "count": 16,
-                    "cycles_per_minute": 477.1641220169451,
+                    "cycles_per_minute": 477.3634997522472,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -5897,7 +5897,7 @@
                   },
                   {
                     "count": 3,
-                    "cycles_per_minute": 88.03681886019422,
+                    "cycles_per_minute": 88.07004848274457,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -5934,7 +5934,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 34.942357529103155,
+                "active_equivalents": 34.97004888122845,
                 "count": 46,
                 "recipes": [
                   {
@@ -5989,7 +5989,7 @@
                   },
                   {
                     "count": 29,
-                    "cycles_per_minute": 3420.2565244415646,
+                    "cycles_per_minute": 3423.5794866966,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -6087,8 +6087,8 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 8.830957302569653,
-                "count": 34,
+                "active_equivalents": 8.671455114327982,
+                "count": 35,
                 "recipes": [
                   {
                     "count": 1,
@@ -6162,6 +6162,11 @@
                   },
                   {
                     "count": 1,
+                    "cycles_per_minute": 1.838312756589516,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
+                    "count": 1,
                     "cycles_per_minute": 0.5058928571428573,
                     "name": "nullius-boxed-steel-plate"
                   },
@@ -6192,11 +6197,6 @@
                   },
                   {
                     "count": 1,
-                    "cycles_per_minute": 16.747729765375542,
-                    "name": "nullius-hot-iron-rod"
-                  },
-                  {
-                    "count": 1,
                     "cycles_per_minute": 3.024214447683835,
                     "name": "nullius-iron-sheet"
                   },
@@ -6219,6 +6219,11 @@
                     "count": 1,
                     "cycles_per_minute": 4.428252695636077,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 2.7711003351778025,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 2,
@@ -6258,8 +6263,8 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 102.46922157566472,
-                "count": 106,
+                "active_equivalents": 102.24176518258277,
+                "count": 105,
                 "recipes": [
                   {
                     "count": 3,
@@ -6273,12 +6278,12 @@
                   },
                   {
                     "count": 88,
-                    "cycles_per_minute": 5236.574451185499,
+                    "cycles_per_minute": 5234.8897317187075,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
-                    "count": 4,
-                    "cycles_per_minute": 72.17301424136745,
+                    "count": 3,
+                    "cycles_per_minute": 67.38794859411729,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -6871,12 +6876,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 37.344960044833236,
+                "active_equivalents": 37.26992770642462,
                 "count": 38,
                 "recipes": [
                   {
                     "count": 38,
-                    "cycles_per_minute": 2240.6976026899943,
+                    "cycles_per_minute": 2236.195662385477,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -7045,8 +7050,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 1.2123909082049587,
-                "count": 61,
+                "active_equivalents": 1.062262033083481,
+                "count": 60,
                 "recipes": [
                   {
                     "count": 1,
@@ -7127,11 +7132,6 @@
                     "count": 1,
                     "cycles_per_minute": 0.012,
                     "name": "nullius-box-heat-pipe-1"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 4.503866253644316,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -7392,17 +7392,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 48.34156684110437,
+                "active_equivalents": 48.41910262705519,
                 "count": 49,
                 "recipes": [
                   {
                     "count": 24,
-                    "cycles_per_minute": 357.74332900657527,
+                    "cycles_per_minute": 358.24177334483056,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
                     "count": 25,
-                    "cycles_per_minute": 734.7603472199804,
+                    "cycles_per_minute": 736.0895321219945,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -7429,19 +7429,19 @@
               "nullius-distillery-2": 46,
               "nullius-extractor-1": 8,
               "nullius-flotation-cell-2": 12,
-              "nullius-foundry-2": 34,
-              "nullius-hydro-plant-2": 106,
+              "nullius-foundry-2": 35,
+              "nullius-hydro-plant-2": 105,
               "nullius-lab-1": 20,
               "nullius-large-assembler-1": 113,
               "nullius-medium-assembler-2": 18,
               "nullius-medium-furnace-2": 19,
               "nullius-nanofabricator-1": 2,
               "nullius-seawater-intake-1": 38,
-              "nullius-small-assembler-1": 61,
+              "nullius-small-assembler-1": 60,
               "nullius-vulcanus-radiator-1": 49,
               "nullius-vulcanus-radiator-2": 1
             },
-            "process_machines": 653,
+            "process_machines": 652,
             "spoilage_buffers": [
               {
                 "items_in_transit": 47.26430165594976,
@@ -7472,13 +7472,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 20614.05199663449,
+            "@heat:500": 20583.969907363888,
             "nullius-box-calcium-chloride": 9.71832413262151,
-            "stone": 33614.43728314184,
-            "sulfur": 686.5889038145651
+            "stone": 33508.627653396084,
+            "sulfur": 687.5857924910757
           },
           "factory": {
-            "fuel_per_minute": 622144.5604420537,
+            "fuel_per_minute": 621571.9837274351,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -7486,23 +7486,23 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 114.79849126019454,
+              "200": 114.86902667232809,
               "450": 0.72
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 9.27529965256356,
+                "active_equivalents": 9.266438419883466,
                 "count": 10,
                 "recipes": [
                   {
                     "count": 10,
-                    "cycles_per_minute": 556.5179791538136,
+                    "cycles_per_minute": 555.986305193008,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 46.065767209593396,
+                "active_equivalents": 46.11007337299386,
                 "count": 51,
                 "recipes": [
                   {
@@ -7527,7 +7527,7 @@
                   },
                   {
                     "count": 46,
-                    "cycles_per_minute": 2738.4434897184606,
+                    "cycles_per_minute": 2741.1018595224887,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -7538,7 +7538,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 87.62381054125224,
+                "active_equivalents": 87.66811670465272,
                 "count": 104,
                 "recipes": [
                   {
@@ -7598,7 +7598,7 @@
                   },
                   {
                     "count": 21,
-                    "cycles_per_minute": 2434.1348119210675,
+                    "cycles_per_minute": 2436.7931817250956,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -7628,7 +7628,7 @@
                   },
                   {
                     "count": 13,
-                    "cycles_per_minute": 1458.6467361066275,
+                    "cycles_per_minute": 1461.3051059106556,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -7669,12 +7669,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 37.684460820380714,
+                "active_equivalents": 37.69996797757088,
                 "count": 39,
                 "recipes": [
                   {
                     "count": 32,
-                    "cycles_per_minute": 954.3282440338902,
+                    "cycles_per_minute": 954.7269995044944,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -7684,7 +7684,7 @@
                   },
                   {
                     "count": 6,
-                    "cycles_per_minute": 176.07363772038843,
+                    "cycles_per_minute": 176.14009696548914,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -7721,7 +7721,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 69.88471505820631,
+                "active_equivalents": 69.9400977624569,
                 "count": 80,
                 "recipes": [
                   {
@@ -7776,7 +7776,7 @@
                   },
                   {
                     "count": 58,
-                    "cycles_per_minute": 6840.513048883129,
+                    "cycles_per_minute": 6847.1589733932,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -7874,7 +7874,7 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 17.661914605139305,
+                "active_equivalents": 17.342910228655963,
                 "count": 42,
                 "recipes": [
                   {
@@ -7949,6 +7949,11 @@
                   },
                   {
                     "count": 1,
+                    "cycles_per_minute": 3.676625513179032,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
+                    "count": 1,
                     "cycles_per_minute": 1.0117857142857145,
                     "name": "nullius-boxed-steel-plate"
                   },
@@ -7978,11 +7983,6 @@
                     "name": "nullius-heat-pipe-2-vulcanus"
                   },
                   {
-                    "count": 2,
-                    "cycles_per_minute": 33.495459530751084,
-                    "name": "nullius-hot-iron-rod"
-                  },
-                  {
                     "count": 1,
                     "cycles_per_minute": 6.04842889536767,
                     "name": "nullius-iron-sheet"
@@ -8006,6 +8006,11 @@
                     "count": 1,
                     "cycles_per_minute": 8.856505391272155,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 5.542200670355605,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 4,
@@ -8045,8 +8050,8 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 204.93844315132944,
-                "count": 208,
+                "active_equivalents": 204.48353036516554,
+                "count": 207,
                 "recipes": [
                   {
                     "count": 6,
@@ -8060,12 +8065,12 @@
                   },
                   {
                     "count": 175,
-                    "cycles_per_minute": 10473.148902370998,
+                    "cycles_per_minute": 10469.779463437415,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
-                    "count": 7,
-                    "cycles_per_minute": 144.3460284827349,
+                    "count": 6,
+                    "cycles_per_minute": 134.77589718823458,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -8658,12 +8663,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 74.68992008966647,
+                "active_equivalents": 74.53985541284923,
                 "count": 75,
                 "recipes": [
                   {
                     "count": 75,
-                    "cycles_per_minute": 4481.3952053799885,
+                    "cycles_per_minute": 4472.391324770954,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -8832,8 +8837,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 2.4247818164099173,
-                "count": 61,
+                "active_equivalents": 2.124524066166962,
+                "count": 60,
                 "recipes": [
                   {
                     "count": 1,
@@ -8914,11 +8919,6 @@
                     "count": 1,
                     "cycles_per_minute": 0.024,
                     "name": "nullius-box-heat-pipe-1"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 9.007732507288631,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -9179,17 +9179,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 96.68313368220873,
-                "count": 97,
+                "active_equivalents": 96.83820525411038,
+                "count": 98,
                 "recipes": [
                   {
                     "count": 48,
-                    "cycles_per_minute": 715.4866580131505,
+                    "cycles_per_minute": 716.4835466896611,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
-                    "count": 49,
-                    "cycles_per_minute": 1469.5206944399608,
+                    "count": 50,
+                    "cycles_per_minute": 1472.179064243989,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -9217,18 +9217,18 @@
               "nullius-extractor-1": 15,
               "nullius-flotation-cell-2": 15,
               "nullius-foundry-2": 42,
-              "nullius-hydro-plant-2": 208,
+              "nullius-hydro-plant-2": 207,
               "nullius-lab-1": 40,
               "nullius-large-assembler-1": 121,
               "nullius-medium-assembler-2": 24,
               "nullius-medium-furnace-2": 30,
               "nullius-nanofabricator-1": 2,
               "nullius-seawater-intake-1": 75,
-              "nullius-small-assembler-1": 61,
-              "nullius-vulcanus-radiator-1": 97,
+              "nullius-small-assembler-1": 60,
+              "nullius-vulcanus-radiator-1": 98,
               "nullius-vulcanus-radiator-2": 1
             },
-            "process_machines": 1028,
+            "process_machines": 1027,
             "spoilage_buffers": [
               {
                 "items_in_transit": 94.52860331189952,
@@ -9259,13 +9259,13 @@
           "construction_blocked_inputs": [],
           "construction_status": "optimal",
           "discard_per_minute": {
-            "@heat:500": 41228.10399326898,
+            "@heat:500": 41167.939814727775,
             "nullius-box-calcium-chloride": 19.43664826524302,
-            "stone": 67228.87456628367,
-            "sulfur": 1373.1778076291303
+            "stone": 67017.25530679217,
+            "sulfur": 1375.1715849821514
           },
           "factory": {
-            "fuel_per_minute": 1244289.1208841074,
+            "fuel_per_minute": 1243143.9674548702,
             "guaranteed_output_recipes": [
               "nullius-metallurgic-pack-efficient",
               "nullius-void-carbon-dioxide",
@@ -9273,23 +9273,23 @@
               "nullius-void-sulfur-dioxide"
             ],
             "heat_demand_mw_by_minimum_temperature": {
-              "200": 229.59698252038908,
+              "200": 229.73805334465618,
               "450": 1.44
             },
             "machines": {
               "nullius-air-filter-2-pneumatic": {
-                "active_equivalents": 18.55059930512712,
+                "active_equivalents": 18.53287683976693,
                 "count": 19,
                 "recipes": [
                   {
                     "count": 19,
-                    "cycles_per_minute": 1113.0359583076272,
+                    "cycles_per_minute": 1111.972610386016,
                     "name": "nullius-air"
                   }
                 ]
               },
               "nullius-barrel-pump-1-pneumatic": {
-                "active_equivalents": 92.13153441918679,
+                "active_equivalents": 92.22014674598772,
                 "count": 97,
                 "recipes": [
                   {
@@ -9314,7 +9314,7 @@
                   },
                   {
                     "count": 92,
-                    "cycles_per_minute": 5476.886979436921,
+                    "cycles_per_minute": 5482.203719044977,
                     "name": "nullius-decompress-volcanic-gas"
                   },
                   {
@@ -9325,7 +9325,7 @@
                 ]
               },
               "nullius-chemical-plant-2-pneumatic": {
-                "active_equivalents": 175.24762108250448,
+                "active_equivalents": 175.33623340930544,
                 "count": 188,
                 "recipes": [
                   {
@@ -9385,7 +9385,7 @@
                   },
                   {
                     "count": 41,
-                    "cycles_per_minute": 4868.269623842135,
+                    "cycles_per_minute": 4873.586363450191,
                     "name": "nullius-carbon-monoxide-to-dioxide"
                   },
                   {
@@ -9415,7 +9415,7 @@
                   },
                   {
                     "count": 25,
-                    "cycles_per_minute": 2917.293472213255,
+                    "cycles_per_minute": 2922.610211821311,
                     "name": "nullius-hydrogen-chloride"
                   },
                   {
@@ -9456,12 +9456,12 @@
                 ]
               },
               "nullius-chimney-1": {
-                "active_equivalents": 75.36892164076143,
+                "active_equivalents": 75.39993595514176,
                 "count": 77,
                 "recipes": [
                   {
                     "count": 64,
-                    "cycles_per_minute": 1908.6564880677804,
+                    "cycles_per_minute": 1909.4539990089888,
                     "name": "nullius-void-carbon-dioxide"
                   },
                   {
@@ -9471,7 +9471,7 @@
                   },
                   {
                     "count": 12,
-                    "cycles_per_minute": 352.14727544077687,
+                    "cycles_per_minute": 352.28019393097827,
                     "name": "nullius-void-sulfur-dioxide"
                   }
                 ]
@@ -9508,7 +9508,7 @@
                 ]
               },
               "nullius-distillery-2-pneumatic": {
-                "active_equivalents": 139.76943011641262,
+                "active_equivalents": 139.8801955249138,
                 "count": 151,
                 "recipes": [
                   {
@@ -9563,7 +9563,7 @@
                   },
                   {
                     "count": 115,
-                    "cycles_per_minute": 13681.026097766258,
+                    "cycles_per_minute": 13694.3179467864,
                     "name": "nullius-volcanic-separation-1"
                   },
                   {
@@ -9661,7 +9661,7 @@
                 ]
               },
               "nullius-foundry-2-thermal": {
-                "active_equivalents": 35.32382921027861,
+                "active_equivalents": 34.68582045731193,
                 "count": 56,
                 "recipes": [
                   {
@@ -9735,6 +9735,11 @@
                     "name": "nullius-boxed-quenched-iron-plate"
                   },
                   {
+                    "count": 2,
+                    "cycles_per_minute": 7.353251026358064,
+                    "name": "nullius-boxed-quenched-iron-rod"
+                  },
+                  {
                     "count": 1,
                     "cycles_per_minute": 2.023571428571429,
                     "name": "nullius-boxed-steel-plate"
@@ -9765,11 +9770,6 @@
                     "name": "nullius-heat-pipe-2-vulcanus"
                   },
                   {
-                    "count": 3,
-                    "cycles_per_minute": 66.99091906150217,
-                    "name": "nullius-hot-iron-rod"
-                  },
-                  {
                     "count": 1,
                     "cycles_per_minute": 12.09685779073534,
                     "name": "nullius-iron-sheet"
@@ -9793,6 +9793,11 @@
                     "count": 1,
                     "cycles_per_minute": 17.71301078254431,
                     "name": "nullius-quenched-iron-plate"
+                  },
+                  {
+                    "count": 1,
+                    "cycles_per_minute": 11.08440134071121,
+                    "name": "nullius-quenched-iron-rod"
                   },
                   {
                     "count": 7,
@@ -9832,8 +9837,8 @@
                 ]
               },
               "nullius-hydro-plant-2-pneumatic": {
-                "active_equivalents": 409.8768863026589,
-                "count": 413,
+                "active_equivalents": 408.96706073033107,
+                "count": 411,
                 "recipes": [
                   {
                     "count": 11,
@@ -9846,13 +9851,13 @@
                     "name": "nullius-lava-calcite-separation"
                   },
                   {
-                    "count": 350,
-                    "cycles_per_minute": 20946.297804741997,
+                    "count": 349,
+                    "cycles_per_minute": 20939.55892687483,
                     "name": "nullius-lava-gas-extraction"
                   },
                   {
-                    "count": 13,
-                    "cycles_per_minute": 288.6920569654698,
+                    "count": 12,
+                    "cycles_per_minute": 269.55179437646916,
                     "name": "nullius-lava-iron-separation"
                   },
                   {
@@ -10445,12 +10450,12 @@
                 ]
               },
               "nullius-lava-intake-1": {
-                "active_equivalents": 149.37984017933294,
+                "active_equivalents": 149.07971082569847,
                 "count": 150,
                 "recipes": [
                   {
                     "count": 150,
-                    "cycles_per_minute": 8962.790410759977,
+                    "cycles_per_minute": 8944.782649541909,
                     "name": "nullius-lava-pumping"
                   }
                 ]
@@ -10619,8 +10624,8 @@
                 ]
               },
               "nullius-small-assembler-1-pneumatic": {
-                "active_equivalents": 4.849563632819835,
-                "count": 62,
+                "active_equivalents": 4.249048132333924,
+                "count": 61,
                 "recipes": [
                   {
                     "count": 1,
@@ -10701,11 +10706,6 @@
                     "count": 1,
                     "cycles_per_minute": 0.048,
                     "name": "nullius-box-heat-pipe-1"
-                  },
-                  {
-                    "count": 1,
-                    "cycles_per_minute": 18.015465014577263,
-                    "name": "nullius-box-iron-rod"
                   },
                   {
                     "count": 1,
@@ -10966,17 +10966,17 @@
                 ]
               },
               "nullius-vulcanus-radiator-1": {
-                "active_equivalents": 193.36626736441747,
-                "count": 194,
+                "active_equivalents": 193.67641050822075,
+                "count": 195,
                 "recipes": [
                   {
                     "count": 96,
-                    "cycles_per_minute": 1430.973316026301,
+                    "cycles_per_minute": 1432.9670933793223,
                     "name": "nullius-so2-catalytic-decomposition"
                   },
                   {
-                    "count": 98,
-                    "cycles_per_minute": 2939.0413888799217,
+                    "count": 99,
+                    "cycles_per_minute": 2944.358128487978,
                     "name": "nullius-vulcanus-deacon"
                   }
                 ]
@@ -11004,18 +11004,18 @@
               "nullius-extractor-1": 29,
               "nullius-flotation-cell-2": 22,
               "nullius-foundry-2": 56,
-              "nullius-hydro-plant-2": 413,
+              "nullius-hydro-plant-2": 411,
               "nullius-lab-1": 80,
               "nullius-large-assembler-1": 139,
               "nullius-medium-assembler-2": 35,
               "nullius-medium-furnace-2": 55,
               "nullius-nanofabricator-1": 3,
               "nullius-seawater-intake-1": 150,
-              "nullius-small-assembler-1": 62,
-              "nullius-vulcanus-radiator-1": 194,
+              "nullius-small-assembler-1": 61,
+              "nullius-vulcanus-radiator-1": 195,
               "nullius-vulcanus-radiator-2": 2
             },
-            "process_machines": 1791,
+            "process_machines": 1789,
             "spoilage_buffers": [
               {
                 "items_in_transit": 189.05720662379903,

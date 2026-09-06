@@ -8,6 +8,8 @@ nullius-ambient-temperature=200
 --available
 nullius-molten-iron-bloom
 --available
+nullius-molten-aluminum-bloom
+--available
 nullius-water
 --available-machine
 nullius-foundry-1
@@ -15,6 +17,18 @@ nullius-foundry-1
 nullius-iron-plate=nullius-quenched-iron-plate
 --recipe
 nullius-box-iron-plate=nullius-boxed-quenched-iron-plate
+--recipe
+nullius-iron-rod=nullius-quenched-iron-rod
+--recipe
+nullius-box-iron-rod=nullius-boxed-quenched-iron-rod
+--recipe
+nullius-aluminum-plate=nullius-quenched-aluminum-plate
+--recipe
+nullius-box-aluminum-plate=nullius-boxed-quenched-aluminum-plate
+--recipe
+nullius-aluminum-rod=nullius-quenched-aluminum-rod
+--recipe
+nullius-box-aluminum-rod=nullius-boxed-quenched-aluminum-rod
 --executor
 machine-casting=nullius-foundry-1-thermal
 --machine-category
@@ -22,3 +36,9 @@ machine-casting
 --manifest
 nullius-iron-plate=4
 nullius-box-iron-plate=4
+nullius-iron-rod=7
+nullius-box-iron-rod=7
+nullius-aluminum-plate=4
+nullius-box-aluminum-plate=4
+nullius-aluminum-rod=7
+nullius-box-aluminum-rod=7

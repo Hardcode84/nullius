@@ -8,7 +8,7 @@ Ordinary Nauvis air separation remains restricted on Vulcanus.
 Use the [generated factory report](VULCANUS_FACTORY_PLAN.md) for rates, research
 time, fuel, heat, extraction, and machine counts. The
 [planner configuration](../tests/progression/planner/vulcanus.json) declares all
-comparison boundaries. The [iron quenching assessment](VULCANUS_QUENCHING.md)
+comparison boundaries. The [iron and aluminum quenching assessment](VULCANUS_QUENCHING.md)
 records the water recipe, complete supply comparison, and outage recovery test.
 
 ## Progression checks
@@ -79,10 +79,12 @@ it is not a current capacity or completion-time result.
 
 ## Validation
 
-- Factorio 2.0.77: all 75 scenarios passed. The two multiplayer cases also pass
+- Factorio 2.0.77: 78 scenarios validated. The two executor cases passed after
+  finite perishable stock delivery was changed to one batch at a time. The two
+  multiplayer cases also pass
   with desktop display variables removed, using managed Xvfb and software rendering.
 - Python: all 84 tests passed.
 - Locale audit: no missing prototype names, missing keys, or unused UI keys.
 - Connected argon test: 690 assertions; completion at tick 6,330.
-- Physics executor test: 2,712 assertions; completion at tick 33,780. This tick
+- Physics executor test: 2,713 assertions; completion at tick 33,780. This tick
   is the fixture completion time, not the campaign completion time.
