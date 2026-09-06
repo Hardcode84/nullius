@@ -78,8 +78,8 @@ it is not a current capacity or completion-time result.
 
 ## Validation
 
-- Factorio 2.0.77: all 74 scenarios passed. The two multiplayer cases were rerun
-  with a configured local display after the first run could not launch clients.
+- Factorio 2.0.77: all 74 scenarios passed. The two multiplayer cases also pass
+  with desktop display variables removed, using managed Xvfb and software rendering.
 - Python: all 75 tests passed.
 - Locale audit: no missing prototype names, missing keys, or unused UI keys.
 - Connected argon test: 690 assertions; completion at tick 6,330.

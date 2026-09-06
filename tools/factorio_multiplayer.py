@@ -3,12 +3,107 @@
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 import os
 from pathlib import Path
+import secrets
+import select
+import shutil
 import signal
 import socket
 import subprocess
 import time
+
+
+def stop_process(process) -> None:
+    if process.poll() is None:
+        process.send_signal(signal.SIGINT)
+        try:
+            process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+
+def client_environment(display: str, authority: Path) -> dict[str, str]:
+    """Use only the private X server and Mesa software rendering."""
+    environment = dict(os.environ)
+    for key in ("DISPLAY", "WAYLAND_DISPLAY", "FACTORIO_CLIENT_DISPLAY", "XAUTHORITY",
+                "DRI_PRIME", "LIBGL_ALWAYS_INDIRECT", "MESA_LOADER_DRIVER_OVERRIDE"):
+        environment.pop(key, None)
+    environment.update(DISPLAY=display, XAUTHORITY=str(authority),
+                       SDL_VIDEODRIVER="x11", LIBGL_ALWAYS_SOFTWARE="1",
+                       GALLIUM_DRIVER="llvmpipe", __GLX_VENDOR_LIBRARY_NAME="mesa")
+    return environment
+
+
+def validate_client_log(log: Path) -> None:
+    from tools.run_factorio_tests import TestFailure, tail
+
+    contents = log.read_text()
+    if "InGame" not in contents or "Desync" in contents or "Error " in contents:
+        raise TestFailure(f"multiplayer client did not run cleanly: {log}\n{tail(log)}")
+    if not any("Initialised OpenGL:" in line and "llvmpipe" in line
+               for line in contents.splitlines()):
+        raise TestFailure(f"multiplayer client did not use Mesa software rendering: {log}")
+
+
+@contextmanager
+def virtual_display(run_directory: Path, timeout_seconds: float):
+    """Own a software-only display for one scenario, including all its peers."""
+    from tools.run_factorio_tests import TestFailure, tail
+
+    xvfb, xauth = shutil.which("Xvfb"), shutil.which("xauth")
+    if not xvfb or not xauth:
+        raise TestFailure("multiplayer tests require Xvfb and xauth on PATH; install xvfb and xauth")
+    authority = run_directory / "Xauthority"
+    authority.touch(mode=0o600)
+    cookie = secrets.token_hex(16)
+
+    def authorize(display):
+        result = subprocess.run([xauth, "-f", str(authority)],
+                                input=f"add {display} MIT-MAGIC-COOKIE-1 {cookie}\n",
+                                text=True, capture_output=True, timeout=timeout_seconds)
+        if result.returncode:
+            raise TestFailure("could not create private X display authorization")
+
+    # Xvfb reads the cookie independently of the display number. After it
+    # allocates a free number, add that address for Xlib clients too.
+    read_fd, write_fd = os.pipe()
+    process = None
+    log = run_directory / "xvfb.log"
+    try:
+        authorize(":0")
+        with log.open("w") as output:
+            process = subprocess.Popen([
+                xvfb, "-displayfd", str(write_fd), "-screen", "0", "640x480x24",
+                "-nolisten", "tcp", "-auth", str(authority), "-noreset",
+            ], stdout=output, stderr=subprocess.STDOUT, pass_fds=(write_fd,))
+            os.close(write_fd)
+            write_fd = None
+            deadline = time.monotonic() + timeout_seconds
+            response = b""
+            while b"\n" not in response:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0 or not select.select([read_fd], [], [], max(0, remaining))[0]:
+                    raise TestFailure("private X display startup deadline exceeded")
+                data = os.read(read_fd, 32)
+                if not data or len(response) + len(data) > 32:
+                    raise TestFailure("private X display failed to start:\n" + tail(log))
+                response += data
+            number = response.strip()
+            if not number.isdigit():
+                raise TestFailure(f"invalid Xvfb display number: {response!r}")
+            display = ":" + number.decode("ascii")
+            authorize(display)
+            yield process, client_environment(display, authority)
+    finally:
+        if process is not None:
+            stop_process(process)
+        os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+        authority.unlink(missing_ok=True)
 
 
 def prepare_support_overlay(run_directory: Path, scenario: Path, until_tick: int,
@@ -43,12 +138,14 @@ def prepare_support_overlay(run_directory: Path, scenario: Path, until_tick: int
 
 
 def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path) -> None:
+    with virtual_display(run_directory, min(20, args.timeout_seconds)) as (display, environment):
+        _execute_multiplayer(args, common, save, run_directory, display, environment)
+
+
+def _execute_multiplayer(args, common, save, run_directory, display, environment) -> None:
     # Imported here because the scenario runner imports this executor on demand.
     from tools.run_factorio_tests import TestFailure, prepare_config, tail
 
-    display = os.environ.get("FACTORIO_CLIENT_DISPLAY", os.environ.get("DISPLAY"))
-    if not display:
-        raise TestFailure("real multiplayer clients require DISPLAY or FACTORIO_CLIENT_DISPLAY")
     settings = run_directory / "server-settings.json"
     server_settings = json.loads((Path(common[0]).resolve().parents[2] /
                                 "data/server-settings.example.json").read_text())
@@ -77,15 +174,6 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
         processes.append(process)
         return process
 
-    def stop(process):
-        if process.poll() is None:
-            process.send_signal(signal.SIGINT)
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-
     def start_server(source):
         return launch([
             *common, "--start-server", str(source), "--bind", f"127.0.0.1:{port}",
@@ -100,7 +188,6 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
             (client_dir / "player-data.json").write_text(json.dumps({"service-username": name}))
         client_attempts[name] = client_attempts.get(name, 0) + 1
         client_logs[name] = run_directory / f"{name}-{client_attempts[name]}.log"
-        environment = dict(os.environ, DISPLAY=display, SDL_VIDEODRIVER="x11")
         clients[name] = launch([
             common[0], "--config", str(client_dir / "config.ini"),
             "--mod-directory", str(run_directory / "mods"), "--disable-audio",
@@ -110,6 +197,8 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
 
     def wait_for(predicate, label):
         while not predicate():
+            if display.poll() is not None:
+                raise TestFailure("private X display exited:\n" + tail(run_directory / "xvfb.log"))
             if server.poll() is not None:
                 raise TestFailure(f"multiplayer server exited while {label}:\n" +
                                   tail(run_directory / f"server-{generation}.log"))
@@ -162,16 +251,16 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
                 name = action["player"]
                 if name not in clients:
                     raise TestFailure(f"multiplayer client is not running: {name}")
-                stop(clients.pop(name))
+                stop_process(clients.pop(name))
             elif operation == "reload":
                 resumed = run_directory / "saves" / "multiplayer-resume.zip"
                 server.stdin.write("/server-save multiplayer-resume\n")
                 server.stdin.flush()
                 wait_for(resumed.is_file, "saving scenario")
                 for client in clients.values():
-                    stop(client)
+                    stop_process(client)
                 clients.clear()
-                stop(server)
+                stop_process(server)
                 generation += 1
                 server = start_server(resumed)
                 wait_for(ready, "reloading server")
@@ -199,12 +288,10 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
         # The server owns the authoritative result. Each client's log must also
         # show that it joined without a desync or simulation failure.
         for log in run_directory.glob("nullius-test-*.log"):
-            contents = log.read_text()
-            if "InGame" not in contents or "Desync" in contents or "Error " in contents:
-                raise TestFailure(f"multiplayer client did not run cleanly: {log}\n{tail(log)}")
+            validate_client_log(log)
     finally:
         for process in reversed(processes):
-            stop(process)
+            stop_process(process)
         for process in processes:
             if process.stdin is not None:
                 process.stdin.close()

@@ -89,13 +89,25 @@ client, disconnect, reconnect, or server save/load through numbered actions.
 The runner preserves each connection log. A client error, desync, server
 error, missing result, or deadline breach fails the test.
 
-The full Factorio executable and an X display are required for clients. Set
-`FACTORIO_CLIENT_DISPLAY` to an isolated X display, or use `DISPLAY`.
-A virtual display can run the clients without human input. The runner uses
-fresh client profiles and does not read account credentials.
+Clients use the full Factorio executable. The runner creates a private Xvfb
+display for each scenario and uses Mesa llvmpipe software rendering. No desktop
+session, configured display, or GPU is required. Install `Xvfb`, `xauth`, and the
+Mesa software OpenGL driver. On Debian or Ubuntu, install the `xvfb`, `xauth`,
+`libgl1-mesa-dri`, and `libglx-mesa0` packages.
+
+The runner ignores desktop display variables and hardware-driver selections.
+It disables X TCP listening, uses a private authorization cookie, and removes
+the display process and cookie on success or failure. `xvfb.log` and all client
+logs remain in retained test artifacts. Each client log must confirm llvmpipe
+rendering and a clean multiplayer join. Fresh profiles contain no account
+credentials.
+
+This runs real clients in a headless environment. It still uses Factorio's
+graphics code. The dedicated headless executable in Factorio 2.0.77 rejects
+`--mp-connect`, so it cannot replace these clients.
 
 ```bash
-python tools/run_factorio_tests.py vulcanus-shared-body --keep-run-directory
+env -u DISPLAY -u WAYLAND_DISPLAY -u XAUTHORITY -u FACTORIO_CLIENT_DISPLAY python tools/run_factorio_tests.py vulcanus-shared-body --keep-run-directory
 python tools/run_factorio_tests.py -n auto
 ```
 
