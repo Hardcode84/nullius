@@ -92,6 +92,37 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "water"), 1),
     "fluid consumption checkpoint did not aggregate surfaces")
 
+  local gas = "nullius-volcanic-gas"
+  local compressed = "nullius-compressed-volcanic-gas"
+  split_statistic(nauvis_fluids, gas, 0, 0)
+  split_statistic(vulcanus_fluids, gas, 0, 0)
+  split_statistic(nauvis_fluids, compressed, 0, 9000)
+  split_statistic(vulcanus_fluids, compressed, 0, 9000)
+  check(close(progress(force, "volcanic-gas"), 0),
+    "volcanic gas analysis counted consumption as production")
+  split_statistic(vulcanus_fluids, compressed, 1249, 9000)
+  check(close(progress(force, "volcanic-gas"), 4996 / 5000),
+    "volcanic gas analysis has the wrong compressed-gas weight")
+  split_statistic(vulcanus_fluids, compressed, 1250, 9000)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "volcanic gas analysis did not accept 1250 compressed gas")
+  split_statistic(vulcanus_fluids, compressed, 0, 0)
+  split_statistic(nauvis_fluids, gas, 4999, 0)
+  check(progress(force, "volcanic-gas") < 1,
+    "volcanic gas analysis completed before 5000 ordinary gas")
+  split_statistic(nauvis_fluids, gas, 5000, 0)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "volcanic gas analysis rejected 5000 ordinary gas")
+  split_statistic(nauvis_fluids, gas, 2500, 0)
+  split_statistic(vulcanus_fluids, compressed, 625, 0)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "volcanic gas analysis did not combine gas forms across surfaces")
+  split_statistic(nauvis_fluids, gas, 0, 0)
+  split_statistic(nauvis_fluids, compressed, 500, 0)
+  split_statistic(vulcanus_fluids, compressed, 750, 0)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "volcanic gas analysis did not aggregate compressed gas across surfaces")
+
   split_statistic(nauvis_items, "nullius-limestone", 0, 0)
   split_statistic(nauvis_items, "nullius-crushed-limestone", 319, 0)
   check(progress(force, "limestone") < 1,
