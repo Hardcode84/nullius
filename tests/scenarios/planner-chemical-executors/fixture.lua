@@ -322,6 +322,7 @@ return {
     "nullius-water-filtration-1",
     "nullius-water-filtration-2",
     "nullius-water-filtration-3",
+    "nullius-water-quenching",
     "nullius-weaving-1",
     "nullius-weaving-2",
     "nullius-wind-power-1",
@@ -1169,29 +1170,6 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-iron-ingot",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1-pneumatic",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-iron-ingot",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-iron-ingot",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 5.9,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
           name = "nullius-iron-rod",
           type = "item",
         },
@@ -1585,39 +1563,6 @@ return {
     },
     {
       cycles = 5,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
-          amount = 6,
-          name = "nullius-box-iron-ingot",
-          type = "item",
-        },
-        {
-          amount = 15,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-foundry-2-thermal",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-box-iron-plate",
-          type = "item",
-        },
-        {
-          amount = 5,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-      },
-      productivity = 0.4,
-      recipe = "nullius-boxed-iron-plate",
-      seconds_per_cycle = 7.5,
-    },
-    {
-      cycles = 5,
       fuel_per_cycle = 487.5,
       heat = false,
       ingredients = {
@@ -1836,6 +1781,34 @@ return {
       },
       productivity = 0.4,
       recipe = "nullius-boxed-pipe-iron",
+      seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-iron-plate",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-quenched-iron-plate",
       seconds_per_cycle = 7.5,
     },
     {
@@ -2745,39 +2718,6 @@ return {
       heat = true,
       ingredients = {
         {
-          amount = 6,
-          name = "nullius-iron-ingot",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-foundry-2-thermal",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-iron-plate",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-      },
-      productivity = 0.4,
-      recipe = "nullius-iron-plate-2",
-      seconds_per_cycle = 1.5,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-iron-plate",
           type = "item",
@@ -3307,6 +3247,34 @@ return {
       productivity = 0,
       recipe = "nullius-pressure-residual-separation",
       seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 4,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-iron-plate",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-quenched-iron-plate",
+      seconds_per_cycle = 1.5,
     },
     {
       cycles = 5,

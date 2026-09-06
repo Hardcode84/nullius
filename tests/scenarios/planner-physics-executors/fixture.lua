@@ -322,6 +322,7 @@ return {
     "nullius-water-filtration-1",
     "nullius-water-filtration-2",
     "nullius-water-filtration-3",
+    "nullius-water-quenching",
     "nullius-weaving-1",
     "nullius-weaving-2",
     "nullius-wind-power-1",
@@ -1478,7 +1479,7 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-iron-ingot",
+          name = "nullius-heat-pipe-1",
           type = "item",
         },
       },
@@ -1486,12 +1487,12 @@ return {
       outputs = {
         {
           amount = 4,
-          name = "nullius-box-iron-ingot",
+          name = "nullius-box-heat-pipe-1",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-box-iron-ingot",
+      recipe = "nullius-box-heat-pipe-1",
       seconds_per_cycle = 2.0,
     },
     {
@@ -2740,39 +2741,6 @@ return {
     },
     {
       cycles = 5,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
-          amount = 6,
-          name = "nullius-box-iron-ingot",
-          type = "item",
-        },
-        {
-          amount = 15,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-foundry-2-thermal",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-box-iron-plate",
-          type = "item",
-        },
-        {
-          amount = 5,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-      },
-      productivity = 0.4,
-      recipe = "nullius-boxed-iron-plate",
-      seconds_per_cycle = 7.5,
-    },
-    {
-      cycles = 5,
       fuel_per_cycle = 487.5,
       heat = false,
       ingredients = {
@@ -3397,6 +3365,34 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-iron-plate",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-quenched-iron-plate",
+      seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 325.0,
       heat = false,
       ingredients = {
@@ -3837,6 +3833,49 @@ return {
     },
     {
       cycles = 5,
+      fuel_per_cycle = 406.25,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-pylon-1",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-2",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-power-switch",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-concrete",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-transformer",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 5,
+          name = "substation",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-substation-1",
+      seconds_per_cycle = 12.5,
+    },
+    {
+      cycles = 5,
       fuel_per_cycle = 1421.875,
       heat = false,
       ingredients = {
@@ -3910,6 +3949,44 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-thermite-explosive",
       seconds_per_cycle = 75.0,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 243.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-box-iron-plate",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-heat-pipe-1",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-insulated-wire",
+          type = "item",
+        },
+        {
+          amount = 5,
+          name = "nullius-silicon-insulation",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-transformer",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-transformer-vulcanus",
+      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -6212,39 +6289,6 @@ return {
       heat = true,
       ingredients = {
         {
-          amount = 6,
-          name = "nullius-iron-ingot",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-foundry-2-thermal",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-iron-plate",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-      },
-      productivity = 0.4,
-      recipe = "nullius-iron-plate-2",
-      seconds_per_cycle = 1.5,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-iron-plate",
           type = "item",
@@ -7701,6 +7745,34 @@ return {
       },
       productivity = 0,
       recipe = "nullius-pylon-2",
+      seconds_per_cycle = 1.5,
+    },
+    {
+      cycles = 5,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 4,
+          name = "nullius-molten-iron-bloom",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-foundry-2-thermal",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-iron-plate",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-quenched-iron-plate",
       seconds_per_cycle = 1.5,
     },
     {
@@ -10462,49 +10534,6 @@ return {
       productivity = 0,
       recipe = "storage-tank",
       seconds_per_cycle = 1.5,
-    },
-    {
-      cycles = 5,
-      fuel_per_cycle = 81.25,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "big-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "medium-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "power-switch",
-          type = "item",
-        },
-        {
-          amount = 6,
-          name = "concrete",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-transformer",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1-pneumatic",
-      outputs = {
-        {
-          amount = 1,
-          name = "substation",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "substation",
-      seconds_per_cycle = 2.5,
     },
     {
       cycles = 5,

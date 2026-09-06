@@ -42,6 +42,9 @@ def validate_config(config):
         if not stage.get("products"):
             raise TestFailure("each stage needs production targets")
         quantities.extend(stage["products"].values())
+        construction = stage.get("construction_items", {})
+        if any(isinstance(n, bool) or not isinstance(n, int) or n <= 0 for n in construction.values()):
+            raise TestFailure("construction_items requires positive integer counts")
     if any(isinstance(value, bool) or not isinstance(value, (float, int))
            or not math.isfinite(value) or value <= 0 for value in quantities):
         raise TestFailure("production rates and target multipliers must be finite and positive")
@@ -152,6 +155,10 @@ def heat_output(data, machine, seconds, contract):
 
 def recipe_catalog(data, boundary):
     """Compile the cold planning path; never add hand-crafting executors."""
+    excluded_names = set(boundary.get("excluded_recipes", []))
+    unknown = excluded_names - data["recipe"].keys()
+    if unknown:
+        raise TestFailure("unknown excluded recipes: " + ", ".join(sorted(unknown)))
     technologies = set(boundary["technologies"])
     if boundary.get("allow_all_pre_physics"):
         technologies = pre_physics_technologies(data["technology"])
@@ -172,6 +179,9 @@ def recipe_catalog(data, boundary):
     fuel_name = boundary["fuel"]
     fuel_value = prereqs.parse_energy(data["fluid"][fuel_name]["fuel_value"], "J")
     for name, recipe in sorted(data["recipe"].items()):
+        if name in excluded_names:
+            excluded["configured"].append(name)
+            continue
         if recipe.get("hidden") or recipe.get("category", "crafting") in boundary["forbid_categories"]:
             continue
         if not recipe.get("enabled", True) and name not in unlocked:
@@ -415,9 +425,17 @@ def boundary_from_config(data, config, stage):
             "surface": stage.get("surface", dict(args.surface_property)),
             "fuel": config["fuel"], "machines": sorted(machines),
             "forbid_categories": args.forbid_category,
+            "excluded_recipes": stage.get("excluded_recipes", []),
             "uncertain_outputs": config["uncertain_outputs"],
             "heat_contract": read_heat_contract(ROOT / config["heat_controller"]),
             "extractors": config["extractors"]}
+
+
+def research_supply_hours(packs, supplies):
+    """Supply bound only when every required science has a declared rate."""
+    if any(count > 0 and supplies.get(name, 0) <= 0 for name, count in packs.items()):
+        return None
+    return max((count / supplies[name] / 60 for name, count in packs.items() if count > 0), default=0)
 
 
 def research_schedule(data, cost, supplies, lab_name):
@@ -507,6 +525,8 @@ def analyze_stage(data, config, stage):
                 machine_items = plan["factory"]["placement_items"]
                 build = {name: max(0, count - config["wreck_machines"].get(name, 0))
                          for name, count in machine_items.items()}
+                for name, count in stage.get("construction_items", {}).items():
+                    build[name] = build.get(name, 0) + count
                 build = {name: count for name, count in build.items() if count}
                 construction = solve_flow(catalog, build, raw, discard)
                 plan["construction"] = {"items": build, "flow": construction,
@@ -519,7 +539,7 @@ def analyze_stage(data, config, stage):
                         used_technologies.update(min(choices, key=lambda s: (len(s), sorted(s))))
                 plan["research"] = research_cost(data, list(used_technologies), config["entrance_technologies"])
                 packs = plan["research"]["packs"]
-                plan["base_research_supply_hours"] = max(packs.values(), default=0) / rate / 60
+                plan["base_research_supply_hours"] = research_supply_hours(packs, demands)
                 plan["startup_unreachable_recipe_inputs"] = sorted({p for r in solution["recipes"] for p in r["inputs"] if p not in reachable})
             if solution["status"] != "optimal" or used_technologies <= research_roots:
                 break
@@ -590,6 +610,42 @@ def compact(report):
                     "research_schedule": {k: v for k, v in plan.get("research_schedule", {}).items() if k != "schedule"},
                     "startup_unreachable_recipe_inputs": plan.get("startup_unreachable_recipe_inputs")}
                     for plan in stage["plans"]]} for stage in report["stages"]]}
+
+
+def material_consumption(plan, product):
+    """Gross recipe input, including circulating material, at the solved rate."""
+    return sum(row["inputs"].get(product, 0) * row["cycles_per_minute"]
+               for row in plan["flow"].get("recipes", []))
+
+
+def write_comparison(report, path):
+    spec = report.get("comparison")
+    if not spec:
+        raise TestFailure("--comparison-output requires a comparison configuration")
+    product = spec["product"]
+    materials = spec["materials"]
+    lines = ["# " + spec["title"], "",
+             "Generated by `tools/plan_factorio_factory.py`.", "",
+             "| Route | " + product + "/min | Flow | Construction | Machines | Active machine equivalents | "
+             + " | ".join(name + " input/min" for name in materials) + " | Fuel/min | Heat MW |",
+             "|---|---:|---|---|---:|---:|" + "---:|" * (len(materials) + 2)]
+    for stage in report["stages"]:
+        for plan in stage["plans"]:
+            if plan["flow"]["status"] != "optimal":
+                raise TestFailure("comparison requires optimal flows: " + stage["name"])
+            factory = plan["factory"]
+            numbers = [sum(m["active_equivalents"] for m in factory["machines"].values()),
+                       *[material_consumption(plan, name) for name in materials], factory["fuel_per_minute"],
+                       sum(factory["heat_demand_mw_by_minimum_temperature"].values())]
+            lines.append(f"| {stage['name']} | {plan['demands_per_minute'][product]:g} | optimal | "
+                         f"{plan['construction']['flow']['status']} | {factory['process_machines']} | "
+                         + " | ".join(f"{n:,.2f}" for n in numbers) + " |")
+    lines += ["", "Material input includes all selected recipes. It is a gross flow, not net extraction.",
+              "Machine counts exclude pipes, inserters, storage, and heat delivery.",
+              "Active machine equivalents exclude station rounding.", ""]
+    lines += [f"- **{name}:** {value}" for name, value in report["assumptions"].items()]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n")
 
 
 def write_markdown(report, path):
@@ -680,6 +736,7 @@ def main():
     parser.add_argument("--summary-output", type=Path)
     parser.add_argument("--markdown-output", type=Path)
     parser.add_argument("--executor-fixture", type=Path)
+    parser.add_argument("--comparison-output", type=Path)
     args = parser.parse_args()
     if args.read_plan:
         report = json.loads(args.read_plan.read_text())
@@ -707,8 +764,9 @@ def main():
                 "config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
                 "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "dump_sha256": hashlib.sha256(dump_path.read_bytes()).hexdigest(),
-                "config": str(args.config.relative_to(ROOT)), "snapshot_reused": bool(args.data_raw)},
-                "assumptions": config["assumptions"], "argon_comparison": compare_argon(data, config["argon_comparison"]), "stages": []}
+                "config": str(args.config.resolve().relative_to(ROOT)), "snapshot_reused": bool(args.data_raw)},
+                "comparison": config.get("comparison"),
+                "assumptions": config["assumptions"], "argon_comparison": compare_argon(data, config["argon_comparison"]) if "argon_comparison" in config else [], "stages": []}
             for stage in config["stages"]:
                 if args.stage and stage["name"] != args.stage:
                     continue
@@ -723,6 +781,8 @@ def main():
         if not args.stage:
             raise TestFailure("--executor-fixture requires --stage")
         write_executor_fixture(report, args.stage, args.executor_fixture)
+    if args.comparison_output:
+        write_comparison(report, args.comparison_output)
     if args.markdown_output:
         write_markdown(report, args.markdown_output)
     if args.summary_output:

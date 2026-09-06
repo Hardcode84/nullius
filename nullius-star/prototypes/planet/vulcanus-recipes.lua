@@ -306,6 +306,33 @@ data:extend({
   },
 })
 
+-- Quenching uses the same bloom rate as dry casting. Water leaves as vapor.
+for _, spec in ipairs({
+    {name = "nullius-quenched-iron-plate", scale = 1,
+      product = "nullius-iron-plate", subgroup = "iron-product"},
+    {name = "nullius-boxed-quenched-iron-plate", scale = 5,
+      product = "nullius-box-iron-plate", subgroup = "boxed-iron"},
+}) do
+  data:extend({{
+    type = "recipe",
+    name = spec.name,
+    localised_name = {"recipe-name." .. spec.name},
+    enabled = false,
+    category = "machine-casting",
+    subgroup = spec.subgroup,
+    order = "nullius-vc",
+    energy_required = 3 * spec.scale,
+    ingredients = {
+      {type = "item", name = "nullius-molten-iron-bloom", amount = 4 * spec.scale},
+      {type = "fluid", name = "nullius-water", amount = 2 * spec.scale},
+    },
+    results = {{type = "item", name = spec.product, amount = 4}},
+    main_product = spec.product,
+    allow_productivity = true,
+    surface_conditions = {{property = "nullius-ambient-temperature", min = 100}},
+  }})
+end
+
 -- Industrial refractory production consumes abundant Vulcanus mineral
 -- byproducts and avoids the wet, organic ceramic route.
 data:extend({

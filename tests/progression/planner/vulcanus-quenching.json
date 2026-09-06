@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "entrance_technologies": [
+    "nullius-pneumatic-technology"
+  ],
+  "science_rates_per_minute": [
+    120,
+    1200
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [],
+  "prime_stock": {
+    "nullius-compressed-volcanic-gas": 24,
+    "nullius-rutile": 1,
+    "nullius-graphite": 135
+  },
+  "solid_discard": [
+    "stone",
+    "sulfur",
+    "nullius-boron",
+    "nullius-calcium-chloride",
+    "nullius-box-calcium-chloride",
+    "nullius-iron-chloride",
+    "nullius-mineral-dust",
+    "nullius-silica"
+  ],
+  "wreck_machines": {
+    "nullius-seawater-intake-1": 2,
+    "nullius-hydro-plant-1": 4,
+    "nullius-small-furnace-1": 4,
+    "nullius-extractor-1": 2,
+    "nullius-air-filter-1": 2,
+    "nullius-distillery-1": 2,
+    "nullius-chemical-plant-1": 2,
+    "nullius-foundry-1": 4,
+    "nullius-small-assembler-1": 4,
+    "nullius-lab-1": 1
+  },
+  "assumptions": {
+    "objective": "Minimize active process-machine seconds with all eligible alternative recipes and co-products.",
+    "rates": "120 and 1200 iron plates per minute, with complete local material, fuel, and waste processing.",
+    "raw": "Local HCl extraction at declared 100 percent geyser yield. Extractor count and fuel are included; site availability and depletion are not a supplied map witness.",
+    "solid_waste": "Only listed solid residues may leave the model. Surplus rates are reported. Filled barrels cannot serve as fluid waste sinks. Fluid waste requires a real recipe.",
+    "productivity": "Native machine effects included. No modules, beacons, or technology productivity bonus.",
+    "uncertainty": "Guaranteed outputs only, never expected probabilistic returns.",
+    "heat": "Conserve heat using resolved heat interfaces and runtime controller constants, at continuous duty with ideal delivery. Report temperature-class demands; geometry, sampled-duty aliasing and warmup require a runtime layout witness.",
+    "construction": "Compute process-machine placement demand beyond wreck stock. Also produce one test-cell kit: one foundry, one water pipe, one heat pipe, two inserters, and two chests. This kit does not specify the full factory layout.",
+    "time": "No elapsed progression claim: science is not supplied by these iron-production targets.",
+    "labs": "Size speed-1 pneumatic labs for the fastest supplied research cycle. Reserve full-load lab fuel in the flow; do not credit lab waste heat.",
+    "routes": "Dry and quenched exclude competing plate recipes. Unrestricted permits all pre-physics alternatives. The machine catalog is identical in each comparison."
+  },
+  "stages": [
+    {
+      "name": "dry",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-quenched-iron-plate",
+        "nullius-boxed-quenched-iron-plate",
+        "nullius-iron-plate-2",
+        "nullius-unbox-iron-plate",
+        "nullius-iron-plate"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "quenched",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-hot-iron-plate",
+        "nullius-iron-plate",
+        "nullius-iron-plate-2",
+        "nullius-unbox-iron-plate"
+      ],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    },
+    {
+      "name": "unrestricted",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-iron-plate": 1
+      },
+      "technologies": [
+        "nullius-water-quenching"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [],
+      "construction_items": {
+        "nullius-foundry-1": 1,
+        "pipe": 1,
+        "inserter": 2,
+        "iron-chest": 2,
+        "nullius-heat-pipe-1": 1
+      }
+    }
+  ],
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "extractors": {
+    "nullius-hydrogen-chloride": {
+      "machine": "nullius-extractor-1-pneumatic",
+      "resource": "sulfuric-acid-geyser",
+      "yield_fraction": 1.0
+    }
+  },
+  "lab": "nullius-lab-1-pneumatic",
+  "comparison": {
+    "title": "Vulcanus iron quenching comparison",
+    "product": "nullius-iron-plate",
+    "materials": [
+      "nullius-molten-iron-bloom",
+      "nullius-water"
+    ]
+  }
+}

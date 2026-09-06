@@ -23,7 +23,7 @@
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, boric acid, and metallic sodium are reachable without seawater, organic chemistry, or electricity | Production scenarios and prerequisite manifests |
 | Local science | Geology, climatology, mechanical, electrical, chemical, bootstrap metallurgic, and efficient metallurgic packs are producible | Science-production scenarios |
 | Thermite explosives | Inorganic chlorine, sulfur dioxide, aluminum powder, circuitry, and a disposable miner produce stable cliff explosives without electricity or organic chemistry | Thermite scenario and prerequisite manifest |
-| Hot casting | Hot Metalworking unlocks direct pneumatic casting of iron and aluminum blooms before spoilage | Hot-casting scenario and prerequisite manifest |
+| Hot casting | Hot metalworking unlocks thermal casting of iron and aluminum blooms before spoilage. Water quenching increases iron plate yield. | Hot-casting and water-quenching scenarios, prerequisite manifests, and planner comparison |
 | Refractory production | Local mineral byproducts become refractory mix and bricks for organic-free tier-2 heat pipes and improved high-temperature radiators | Refractory-production scenario and prerequisite manifest |
 | Titanium pilot | Synthetic rutile and TiCl4 feed aluminothermic reduction; chloride recovery and three titanium plates close refractory hydro-plant-2 and foundry-2 construction | Titanium pilot and construction scenarios and manifests |
 | Construction closure | The Vulcanus cell reproduces the buildings and logistics required to scale the implemented slice | Construction-closure scenario and manifest |

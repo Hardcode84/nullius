@@ -7,7 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory,
                                   startup_reachability, fluid_ports_fit, read_heat_contract,
-                                  research_schedule, validate_config)
+                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours)
 
 
 def recipe(name, flows, seconds=1, inputs=None, **kwargs):
@@ -17,6 +17,38 @@ def recipe(name, flows, seconds=1, inputs=None, **kwargs):
 
 
 class FactoryPlannerTest(unittest.TestCase):
+    def test_exclusion_changes_the_available_production_route(self):
+        data = {"technology": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},
+                "assembling-machine": {"m": {"name": "m", "type": "assembling-machine",
+                    "crafting_speed": 1, "crafting_categories": ["casting"],
+                    "energy_source": {"type": "void"}, "minable": {"result": "m"}}},
+                "recipe": {name: {"name": name, "category": "casting",
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "plate", "amount": count}]}
+                    for name, count in (("dry", 1), ("wet", 2))}}
+        boundary = {"technologies": [], "surface": {}, "fuel": "gas", "machines": ["m"],
+                    "forbid_categories": [], "uncertain_outputs": "exact",
+                    "heat_contract": {"MAX_HEAT": 500}, "extractors": {}, "excluded_recipes": ["wet"]}
+        catalog, excluded, _ = recipe_catalog(data, boundary)
+        result = solve_flow(catalog, {"plate": 60}, ["ore"], [])
+        self.assertEqual(result["raw_per_minute"], {"ore": 60})
+        self.assertEqual(excluded["configured"], ["wet"])
+        boundary["excluded_recipes"] = []
+        catalog, _, _ = recipe_catalog(data, boundary)
+        self.assertEqual(solve_flow(catalog, {"plate": 60}, ["ore"], [])["raw_per_minute"], {"ore": 30})
+        boundary["excluded_recipes"] = ["typo"]
+        with self.assertRaisesRegex(TestFailure, "unknown excluded recipes"):
+            recipe_catalog(data, boundary)
+
+    def test_comparison_reports_gross_circulation(self):
+        plan = {"flow": {"recipes": [dict(recipe("loop", {"water": -1}, inputs={"water": 10}),
+                                         cycles_per_minute=2)]}}
+        self.assertEqual(material_consumption(plan, "water"), 20)
+
+    def test_research_bound_requires_actual_science_supply(self):
+        self.assertIsNone(research_supply_hours({"pack": 60}, {"plate": 60}))
+        self.assertEqual(research_supply_hours({"a": 60, "b": 120}, {"a": 60, "b": 30}), 4 / 60)
+
     def test_research_schedule_uses_supply_and_labs(self):
         data = {"lab": {"lab": {"researching_speed": 1}}, "technology": {
             "a": {"unit": {"time": 60, "ingredients": [["pack", 1]]}},

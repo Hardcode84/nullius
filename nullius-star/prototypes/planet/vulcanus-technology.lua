@@ -1,3 +1,9 @@
+local mass_production_4 = data.raw.technology["nullius-mass-production-4"]
+if not mass_production_4 then error("Missing nullius-mass-production-4") end
+table.insert(mass_production_4.effects, {
+  type = "unlock-recipe", recipe = "nullius-boxed-quenched-iron-plate",
+})
+
 local recipe_productivity = require("prototypes.recipe-productivity")
 
 local pneumatic = data.raw.technology["nullius-pneumatic-technology"]
@@ -210,6 +216,24 @@ data:extend({
       "nullius-efficient-metallurgic-science",
       "nullius-aluminum-working-1",
     },
+  },
+  {
+    type = "technology",
+    name = "nullius-water-quenching",
+    order = "nullius-df-zab",
+    icon = "__base__/graphics/technology/advanced-material-processing-2.png",
+    icon_size = 256,
+    effects = {{type = "unlock-recipe", recipe = "nullius-quenched-iron-plate"}},
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-metallurgic-pack", 10},
+        {"nullius-mechanical-pack", 1},
+        {"nullius-chemical-pack", 1},
+      },
+      time = 30,
+    },
+    prerequisites = {"nullius-hot-metalworking", "nullius-experimental-chemistry"},
   },
   {
     type = "technology",

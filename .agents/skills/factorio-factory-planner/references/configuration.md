@@ -22,6 +22,11 @@ example. The schema version is `1`.
 Each stage names a prerequisite `contract` argument file and a `products` map.
 Each product amount multiplies the selected rate. A stage can supply
 `technologies`, `research_roots`, `extra_machines`, and `raw` overrides.
+`excluded_recipes` removes named recipes from both operating and construction
+flows. Unknown names fail. Use this field to compare alternative production paths
+under the same boundary. `construction_items` adds positive integer item counts
+to the construction demand, for example the pipes and inserters of a test cell.
+These counts are fixed; the production rate does not multiply them.
 `executor_cycles` overrides the five-cycle executor test default by recipe name.
 `executor_transfers` lists solid products that must come from measured outputs
 of other fixture machines, with no direct input supply. The first-physics fixture
@@ -90,3 +95,19 @@ supplies declared recipe inputs, finite fuel, and controlled heat to separate
 machines. It checks five base cycles and the guaranteed native-productivity
 outputs. It does not connect the full material or heat network. Use a connected
 campaign scenario to measure factory throughput and elapsed progression time.
+
+## Compare production paths
+
+```bash
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/vulcanus-quenching.json \
+  --output /tmp/vulcanus-quenching.json \
+  --comparison-output docs/VULCANUS_QUENCHING_PLAN.md --overview
+```
+
+The optional `comparison` object names a `title`, one target `product`, and a
+`materials` list. `--comparison-output` reports the target rate, process machines,
+active machine equivalents, gross material input, fuel, heat, and construction
+status. Use this report for non-science products. Gross input includes material
+circulation; it is not net extraction. The solver minimizes active machine time,
+so a selected route can have more rounded stations than another route.
