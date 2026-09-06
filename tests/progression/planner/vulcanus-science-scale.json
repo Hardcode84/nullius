@@ -1,0 +1,252 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "entrance_technologies": [
+    "nullius-pneumatic-technology"
+  ],
+  "science_rates_per_minute": [
+    60,
+    120,
+    240
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [],
+  "prime_stock": {
+    "nullius-compressed-volcanic-gas": 24,
+    "nullius-rutile": 1,
+    "nullius-graphite": 135
+  },
+  "solid_discard": [
+    "stone",
+    "sulfur",
+    "nullius-boron",
+    "nullius-calcium-chloride",
+    "nullius-box-calcium-chloride",
+    "nullius-iron-chloride",
+    "nullius-mineral-dust",
+    "nullius-silica"
+  ],
+  "wreck_machines": {
+    "nullius-seawater-intake-1": 2,
+    "nullius-hydro-plant-1": 4,
+    "nullius-small-furnace-1": 4,
+    "nullius-extractor-1": 2,
+    "nullius-air-filter-1": 2,
+    "nullius-distillery-1": 2,
+    "nullius-chemical-plant-1": 2,
+    "nullius-foundry-1": 4,
+    "nullius-small-assembler-1": 4,
+    "nullius-lab-1": 1
+  },
+  "assumptions": {
+    "objective": "Minimize active process-machine seconds with all eligible alternative recipes and co-products.",
+    "rates": "Configured industrial comparison points, not an assertion of optimal player targets.",
+    "raw": "Local HCl extraction at declared 100 percent geyser yield. Extractor count and fuel are included; site availability and depletion are not a supplied map witness.",
+    "solid_waste": "Only listed solid residues may leave the model. Surplus rates are reported. Filled barrels cannot serve as fluid waste sinks. Fluid waste requires a real recipe.",
+    "productivity": "Native machine effects included. No modules, beacons, or technology productivity bonus.",
+    "uncertainty": "Guaranteed outputs only, never expected probabilistic returns.",
+    "heat": "Conserve heat using resolved heat interfaces and runtime controller constants, at continuous duty with ideal delivery. Report temperature-class demands; geometry, sampled-duty aliasing and warmup require a runtime layout witness.",
+    "construction": "Compute placement-item demand beyond wreck stock and its production flow. Supplied machine catalog is not a timed startup sequence.",
+    "time": "Base research supply bound at the configured simultaneous pack rates, not human construction time. Checkpoints are separate.",
+    "labs": "Size speed-1 pneumatic labs for the fastest supplied research cycle. Reserve full-load lab fuel in the flow; do not credit lab waste heat.",
+    "standalone": "Starter and industrial single-pack rows are independent full supply networks without labs; shared factory co-products can change these costs. Industrial rows allow all pre-physics recipes and the declared second-tier machine catalog."
+  },
+  "stages": [
+    {
+      "name": "first-physics",
+      "contract": "tests/progression/vulcanus-physics-production.args",
+      "allow_all_pre_physics": true,
+      "technologies": [
+        "nullius-physics",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "extra_machines": [
+        "nullius-air-filter-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-chimney-1",
+        "nullius-crusher-2-thermal",
+        "nullius-distillery-2-pneumatic",
+        "nullius-flotation-cell-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-outfall-1"
+      ],
+      "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-metallurgic-pack": 1,
+        "nullius-physics-pack": 1
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ]
+    },
+    {
+      "name": "starter-geology",
+      "contract": "tests/progression/vulcanus-basic-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-crusher-1-thermal"
+      ],
+      "products": {
+        "nullius-geology-pack": 1
+      },
+      "research_roots": [],
+      "technologies": [
+        "nullius-pneumatic-technology",
+        "nullius-volcanism-1"
+      ]
+    },
+    {
+      "name": "starter-climatology",
+      "contract": "tests/progression/vulcanus-basic-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-crusher-1-thermal"
+      ],
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "research_roots": [],
+      "technologies": [
+        "nullius-pneumatic-technology",
+        "nullius-volcanism-1"
+      ]
+    },
+    {
+      "name": "industrial-geology",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-geology-pack": 1
+      },
+      "technologies": [
+        "nullius-physics",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": []
+    },
+    {
+      "name": "industrial-climatology",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "technologies": [
+        "nullius-physics",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": []
+    },
+    {
+      "name": "industrial-climatology-upstream",
+      "contract": "tests/progression/vulcanus-chemical-science.args",
+      "extra_machines": [
+        "nullius-chimney-1",
+        "nullius-outfall-1",
+        "nullius-hydro-plant-2-pneumatic",
+        "nullius-chemical-plant-2-pneumatic",
+        "nullius-distillery-2-pneumatic",
+        "nullius-air-filter-2-pneumatic",
+        "nullius-foundry-2-thermal",
+        "nullius-medium-furnace-2-thermal",
+        "nullius-medium-assembler-2-pneumatic",
+        "nullius-large-assembler-1-pneumatic",
+        "nullius-crusher-2-thermal",
+        "nullius-flotation-cell-2-pneumatic"
+      ],
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "technologies": [
+        "nullius-physics",
+        "nullius-volcanic-titanium-metallurgy",
+        "nullius-volcanic-alkali-processing"
+      ],
+      "allow_all_pre_physics": true,
+      "research_roots": [],
+      "excluded_recipes": [
+        "nullius-climatology-pack-vulcanus"
+      ]
+    }
+  ],
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "extractors": {
+    "nullius-hydrogen-chloride": {
+      "machine": "nullius-extractor-1-pneumatic",
+      "resource": "sulfuric-acid-geyser",
+      "yield_fraction": 1.0
+    }
+  },
+  "lab": "nullius-lab-1-pneumatic",
+  "science_analysis": {
+    "packs": [
+      "nullius-geology-pack",
+      "nullius-climatology-pack"
+    ],
+    "rates": [
+      30,
+      60,
+      120,
+      240
+    ],
+    "hours": [
+      4,
+      8,
+      12,
+      16
+    ],
+    "research_roots": {
+      "physics-unlock": [
+        "nullius-physics"
+      ]
+    },
+    "factory_stages": [
+      "first-physics"
+    ]
+  }
+}

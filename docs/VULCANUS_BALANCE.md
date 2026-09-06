@@ -22,6 +22,10 @@ records the water recipe, complete supply comparison, and outage recovery test.
 | First physics | All seven science flows and their machine construction flows are feasible under the pre-physics boundary. | First-physics flow |
 | Physics recipe execution | Selected recipes execute under research that consumes no physics packs. The physics assembler produces one batch; its measured boxed output supplies the unpacking machine and produces 125 packs. | `planner-physics-executors` |
 
+See the [geology and climatology scale report](VULCANUS_SCIENCE_SCALE.md) for
+pack totals, rate targets, starter and industrial capacity, and the upstream
+climatology recipe comparison.
+
 ## Balance assessment
 
 Use the second-tier comparison as the industrial capacity reference. The early

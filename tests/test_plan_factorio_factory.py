@@ -7,7 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory,
                                   startup_reachability, fluid_ports_fit, read_heat_contract,
-                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours)
+                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale)
 
 
 def recipe(name, flows, seconds=1, inputs=None, **kwargs):
@@ -44,6 +44,20 @@ class FactoryPlannerTest(unittest.TestCase):
         plan = {"flow": {"recipes": [dict(recipe("loop", {"water": -1}, inputs={"water": 10}),
                                          cycles_per_minute=2)]}}
         self.assertEqual(material_consumption(plan, "water"), 20)
+
+    def test_science_scale_counts_entrance_and_converts_time(self):
+        data = {"technology": {
+            "entrance": {"unit": {"count": 1000, "time": 1, "ingredients": [["geo", 1]]}},
+            "physics": {"prerequisites": ["entrance"], "unit": {
+                "count": 240, "time": 1, "ingredients": [["geo", 1], ["climate", 2]]}}}}
+        spec = {"research_roots": {"unlock": ["physics"]}, "factory_stages": [],
+                "packs": ["geo", "climate"], "rates": [60, 120], "hours": [4, 8]}
+        result = analyze_science_scale(data, {"stages": []}, spec, ["entrance"])
+        packs = result["budgets"][0]["packs"]
+        self.assertEqual(packs["geo"]["total"], 240)
+        self.assertEqual(packs["climate"]["supply_hours"]["60"], 8 / 60)
+        self.assertEqual(packs["climate"]["required_rate_per_minute"]["8"], 1)
+        self.assertEqual(packs["geo"]["top_technologies"], [{"technology": "physics", "packs": 240}])
 
     def test_research_bound_requires_actual_science_supply(self):
         self.assertIsNone(research_supply_hours({"pack": 60}, {"plate": 60}))

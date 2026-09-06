@@ -113,3 +113,26 @@ active machine equivalents, gross material input, fuel, heat, and construction
 status. Use this report for non-science products. Gross input includes material
 circulation; it is not net extraction. The solver minimizes active machine time,
 so a selected route can have more rounded stations than another route.
+
+## Size research supply by science type
+
+```bash
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/vulcanus-science-scale.json \
+  --output /tmp/vulcanus-science-scale.json \
+  --science-output docs/VULCANUS_SCIENCE_SCALE.md --overview
+python tools/plan_factorio_factory.py \
+  --read-plan /tmp/vulcanus-science-scale.json --field science_analysis.budgets
+python tools/plan_factorio_factory.py \
+  --read-plan /tmp/vulcanus-science-scale.json --field science_analysis.production_lines
+```
+
+`science_analysis` declares `research_roots` by boundary name, `factory_stages`,
+`packs`, comparison `rates`, and supply-window `hours`. The query separates direct
+research closure from the research needed by selected production and construction
+recipes. It reports totals, supply times, required rates, and the ten largest
+technology costs per pack. Production rows include boxed producers and unpackers.
+The Markdown report uses rates 60 and 120 and supply windows 4 and 8 hours; include
+these comparison points in the configuration when using `--science-output`.
+Standalone pack factories omit labs when they cannot supply the required research.
+Do not add their station counts to estimate a factory that shares co-products.
