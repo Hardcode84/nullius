@@ -223,3 +223,14 @@ pneumatic_reservoir.fluid_box.pipe_connections = {}
 pneumatic_reservoir.hidden_in_factoriopedia = true
 
 data:extend({pneumatic_roboport, pneumatic_reservoir})
+
+-- Supply the declared external grid as generation. A tertiary accumulator
+-- cannot supply tertiary surge machines.
+local planner_grid = table.deepcopy(data.raw["electric-energy-interface"]["electric-energy-interface"])
+planner_grid.name = "factorio-test-planner-grid"
+planner_grid.localised_name = "Planner external grid"
+planner_grid.minable = nil
+planner_grid.energy_source.usage_priority = "primary-output"
+planner_grid.energy_source.input_flow_limit = "0W"
+planner_grid.energy_usage = "0W"
+data:extend({planner_grid})

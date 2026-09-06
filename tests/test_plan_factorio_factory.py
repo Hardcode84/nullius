@@ -7,7 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory,
                                   startup_reachability, fluid_ports_fit, read_heat_contract,
-                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale)
+                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale, write_executor_fixture)
 
 
 def recipe(name, flows, seconds=1, inputs=None, **kwargs):
@@ -17,6 +17,62 @@ def recipe(name, flows, seconds=1, inputs=None, **kwargs):
 
 
 class FactoryPlannerTest(unittest.TestCase):
+    def test_fixture_keeps_entrance_prerequisites(self):
+        row = dict(recipe("make", {"pack": 1}), validation_ingredients=[], validation_outputs=[],
+                   native_productivity=0)
+        stage = {"name": "restricted", "allowed_technologies": ["entrance-parent", "root"],
+                 "boundary": {"fuel": "gas", "surface": {"nullius-ambient-temperature": 200},
+                              "allow_all_pre_physics": False, "technologies": ["root"]},
+                 "plans": [{"flow": {"status": "optimal", "recipes": [row]},
+                            "research": {"technologies": [{"name": "root"}]}}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "fixture.lua"
+            write_executor_fixture({"stages": [stage]}, "restricted", output)
+            self.assertIn('"entrance-parent"', output.read_text())
+
+    def test_electric_grid_is_explicit_and_counts_installed_drain(self):
+        data = {"technology": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},
+                "assembling-machine": {"m": {"name": "m", "type": "assembling-machine",
+                    "crafting_speed": 1, "crafting_categories": ["crafting"],
+                    "energy_usage": "1MW", "energy_source": {"type": "electric", "drain": "10kW"},
+                    "minable": {"result": "m"}}},
+                "recipe": {"plate": {"name": "plate", "energy_required": 1,
+                    "ingredients": [{"name": "ore", "amount": 1}],
+                    "results": [{"name": "plate", "amount": 1}]}}}
+        boundary = {"technologies": [], "surface": {}, "fuel": "gas", "machines": ["m"],
+                    "forbid_categories": [], "uncertain_outputs": "exact",
+                    "heat_contract": {"MAX_HEAT": 500}, "extractors": {}}
+        with self.assertRaisesRegex(TestFailure, "explicit supplied electric_grid"):
+            recipe_catalog(data, boundary)
+        boundary["electric_grid"] = True
+        rows, _, _ = recipe_catalog(data, boundary)
+        result = solve_flow(rows, {"plate": 90}, ["ore"], [])
+        sized = size_factory(result)
+        self.assertEqual(sized["process_machines"], 2)
+        self.assertAlmostEqual(sized["electric_grid_mw"], 1.52)
+        self.assertEqual(sized["fuel_per_minute"], 0)
+        self.assertEqual(result["raw_per_minute"], {"ore": 90})
+
+    def test_electric_extractor_counts_actual_mining_time(self):
+        data = {"technology": {}, "recipe": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},
+                "mining-drill": {"miner": {"name": "miner", "type": "mining-drill",
+                    "resource_categories": ["basic-solid"], "mining_speed": .5,
+                    "energy_usage": "100kW", "energy_source": {"type": "electric"},
+                    "minable": {"result": "miner"}}},
+                "resource": {"ore": {"minable": {"mining_time": 2, "result": "ore"}}}}
+        boundary = {"technologies": [], "surface": {}, "fuel": "gas", "machines": [],
+                    "forbid_categories": [], "uncertain_outputs": "exact", "electric_grid": True,
+                    "heat_contract": {"MAX_HEAT": 500},
+                    "extractors": {"ore": {"resource": "ore", "machine": "miner", "yield_fraction": 1}}}
+        rows, _, _ = recipe_catalog(data, boundary)
+        sized = size_factory(solve_flow(rows, {"ore": 90}, ["@resource:ore"], []))
+        self.assertEqual(sized["process_machines"], 6)
+        self.assertAlmostEqual(sized["electric_grid_mw"], .6)
+        self.assertEqual(sized["fuel_per_minute"], 0)
+        data["resource"]["ore"]["minable"]["required_fluid"] = "acid"
+        with self.assertRaisesRegex(TestFailure, "mining fluid"):
+            recipe_catalog(data, boundary)
+
     def test_exclusion_changes_the_available_production_route(self):
         data = {"technology": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},
                 "assembling-machine": {"m": {"name": "m", "type": "assembling-machine",

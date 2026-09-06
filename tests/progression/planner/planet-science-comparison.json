@@ -1,0 +1,29 @@
+{
+  "title": "Nauvis and Vulcanus physics science capacity",
+  "planets": [
+    "Nauvis",
+    "Vulcanus"
+  ],
+  "stages": [
+    "industrial-geology",
+    "industrial-climatology",
+    "first-physics"
+  ],
+  "rates": [
+    60,
+    120,
+    240
+  ],
+  "research_stage": "first-physics",
+  "detail_rate": 120,
+  "notes": [
+    "Both plans start after the same pneumatic technology prerequisite closure. This is a matched remaining-research comparison, not a new-game Nauvis schedule.",
+    "Nauvis supplies six science types at the stated rate, including physics. Vulcanus also supplies its local metallurgic science at that rate.",
+    "Each single-pack stage is an independent supply chain without labs. Do not add these station counts to the full factory.",
+    "Nauvis includes ore miners and gas extraction, but receives electricity from an external grid. Its station count excludes generation, storage and power distribution. Vulcanus includes its fluid-fuel production network; process heat demand is internal heat delivery, not extra fuel demand.",
+    "Both plans exclude transport, storage and a placed factory layout. No modules, beacons or mining productivity bonuses are applied. Each recipe has separate rounded stations. Rates assume continuous duty.",
+    "Nauvis climatology uses natural volcanic gas, nitrogen from air separation, and wastewater from seawater filtration. Geology uses boxed recipes and obtains crushed iron from bauxite disposal. These are complete independent chains; a shared factory can use different co-products.",
+    "Equal science rates give almost equal research supply times. The main difference is the production network and its energy supply. Scheduled times assume all lines and labs are available at time zero and all triggers are satisfied. They do not measure player completion time.",
+    "Electric MW is continuous average demand plus installed drain. It is not a measured peak load. The planner minimizes active station time, not electricity use or total construction cost."
+  ]
+}

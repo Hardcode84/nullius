@@ -205,8 +205,10 @@ def recipe_catalog(data, boundary):
         for kind, machine in candidates:
             source = machine.get("energy_source", {})
             source_type = source.get("type")
-            if source_type not in ("void", "fluid", "heat"):
+            if source_type not in ("void", "fluid", "heat", "electric"):
                 raise TestFailure(f"unsupported energy source {source_type}: {machine['name']}")
+            if source_type == "electric" and not boundary.get("electric_grid"):
+                raise TestFailure("electric executor requires an explicit supplied electric_grid")
             effects = machine.get("effect_receiver", {}).get("base_effect", {})
             speed = machine["crafting_speed"] * (1 + effects.get("speed", 0))
             seconds = recipe.get("energy_required", 0.5) / speed
@@ -235,7 +237,7 @@ def recipe_catalog(data, boundary):
                 flows[fuel_name] -= fuel
                 inputs[fuel_name] = inputs.get(fuel_name, 0) + fuel
             drain = prereqs.parse_energy(source.get("drain", "0W"), "W")
-            if drain:
+            if drain and source_type != "electric":
                 raise TestFailure(f"idle drain needs installed-count model: {machine['name']}")
             generated_heat = heat_output(data, machine, seconds, heat_contract)
             if generated_heat:
@@ -246,7 +248,7 @@ def recipe_catalog(data, boundary):
                             "category": category, "seconds": seconds, "flows": dict(flows), "inputs": inputs,
                             "validation_ingredients": recipe.get("ingredients", []),
                             "validation_outputs": prereqs.recipe_results(recipe),
-                            "joules": joules, "energy_type": source_type, "fuel": fuel,
+                            "joules": joules, "energy_type": source_type, "fuel": fuel, "drain_watts": drain,
                             "heat_minimum": source.get("min_working_temperature") if source_type == "heat" else None,
                             "generated_heat_mj": generated_heat, "native_productivity": productivity, "uncertain_outputs": uncertain,
                             "unlock_technologies": [] if recipe.get("enabled", True) else sorted(t for t in technologies if any(
@@ -263,9 +265,18 @@ def recipe_catalog(data, boundary):
         seconds = resource["minable"]["mining_time"] / machine["mining_speed"]
         joules = seconds * prereqs.parse_energy(machine["energy_usage"], "W")
         source = machine["energy_source"]
-        if source["type"] != "fluid" or not source.get("burns_fluid"):
-            raise TestFailure("extractor needs the declared fluid-fuel model")
-        fuel = joules / source.get("effectivity", 1) / fuel_value
+        if source["type"] == "electric":
+            if not boundary.get("electric_grid"):
+                raise TestFailure("electric extractor requires an explicit supplied electric_grid")
+            fuel = 0
+        elif source["type"] == "fluid" and source.get("burns_fluid"):
+            if source.get("fluid_box", {}).get("filter", fuel_name) != fuel_name:
+                raise TestFailure("extractor rejects the declared fluid fuel")
+            fuel = joules / source.get("effectivity", 1) / fuel_value
+        else:
+            raise TestFailure("unsupported extractor energy source")
+        if resource["minable"].get("required_fluid"):
+            raise TestFailure("extractor mining fluid needs an explicit input model")
         natural = "@resource:" + spec["resource"]
         flows = {natural: -1, fuel_name: -fuel}
         products = prereqs.minable_results(resource)
@@ -277,7 +288,8 @@ def recipe_catalog(data, boundary):
         flows["@heat:" + str(heat_contract["MAX_HEAT"])] = generated_heat
         catalog.append({"recipe": "<mine:" + spec["resource"] + ">", "machine": machine["name"],
                         "item": place_item(data, machine), "seconds": seconds, "flows": flows,
-                        "inputs": {natural: 1}, "joules": joules, "energy_type": "fluid", "fuel": fuel,
+                        "inputs": {natural: 1}, "joules": joules, "energy_type": source["type"], "fuel": fuel,
+                        "drain_watts": prereqs.parse_energy(source.get("drain", "0W"), "W"),
                         "generated_heat_mj": generated_heat, "native_productivity": 0,
                         "uncertain_outputs": [], "unlock_technologies": []})
     heat_names = {name for recipe in catalog for name in recipe["flows"] if name.startswith("@heat:")}
@@ -353,6 +365,7 @@ def size_factory(solution):
     machines = defaultdict(lambda: {"count": 0, "active_equivalents": 0, "recipes": []})
     heat = defaultdict(float)
     gas = 0
+    electric_active = electric_drain = 0
     items = defaultdict(int)
     uncertain = []
     spoilage = []
@@ -371,12 +384,17 @@ def size_factory(solution):
                                    "cycles_per_minute": row["cycles_per_minute"]})
         items[row["item"]] += count
         gas += row["fuel"] * row["cycles_per_minute"]
+        if row["energy_type"] == "electric":
+            electric_active += row["joules"] * row["cycles_per_minute"] / 60 / 1e6
+            electric_drain += count * row.get("drain_watts", 0) / 1e6
         if row["energy_type"] == "heat":
             heat[str(row["heat_minimum"])] += row["joules"] * row["cycles_per_minute"] / 60 / 1e6
         if row["uncertain_outputs"]:
             uncertain.append(row["recipe"])
     return {"process_machines": sum(m["count"] for m in machines.values()),
             "machines": dict(machines), "placement_items": dict(items), "fuel_per_minute": gas,
+            "electric_active_mw": electric_active, "electric_drain_mw": electric_drain,
+            "electric_grid_mw": electric_active + electric_drain,
             "heat_demand_mw_by_minimum_temperature": dict(heat),
             "guaranteed_output_recipes": sorted(set(uncertain)), "spoilage_buffers": spoilage}
 
@@ -423,7 +441,8 @@ def boundary_from_config(data, config, stage):
     return {"technologies": stage.get("technologies", args.technology),
             "allow_all_pre_physics": stage.get("allow_all_pre_physics", False),
             "surface": stage.get("surface", dict(args.surface_property)),
-            "fuel": config["fuel"], "machines": sorted(machines),
+            "fuel": config["fuel"], "machines": sorted(stage.get("machines", machines)),
+            "electric_grid": config.get("electric_grid", False),
             "forbid_categories": args.forbid_category,
             "excluded_recipes": stage.get("excluded_recipes", []),
             "uncertain_outputs": config["uncertain_outputs"],
@@ -509,10 +528,17 @@ def analyze_stage(data, config, stage):
                 lab = data["lab"][config["lab"]]
                 count = schedule["lab_count"]
                 joules = prereqs.parse_energy(lab["energy_usage"], "W") * 60 * count
-                fuel = joules / prereqs.parse_energy(data["fluid"][config["fuel"]]["fuel_value"], "J")
+                source = lab["energy_source"]
+                if source["type"] == "electric" and boundary["electric_grid"]:
+                    fuel = 0
+                elif source["type"] == "fluid" and source.get("burns_fluid"):
+                    fuel = joules / source.get("effectivity", 1) / prereqs.parse_energy(data["fluid"][config["fuel"]]["fuel_value"], "J")
+                else:
+                    raise TestFailure("lab requires a declared electric grid or fluid fuel")
                 solve_catalog.append({"recipe": "<research-power>", "machine": config["lab"],
                     "item": place_item(data, lab), "seconds": 60 * count, "flows": {"@research-power": 1, config["fuel"]: -fuel},
-                    "inputs": {}, "joules": joules, "energy_type": "fluid", "fuel": fuel,
+                    "inputs": {}, "joules": joules, "energy_type": source["type"], "fuel": fuel,
+                    "drain_watts": prereqs.parse_energy(source.get("drain", "0W"), "W"),
                     "native_productivity": 0, "uncertain_outputs": [], "unlock_technologies": []})
                 solve_demands["@research-power"] = 1
             solution = solve_flow(solve_catalog, solve_demands, raw, discard)
@@ -553,6 +579,7 @@ def overview(report):
              "plans": [{"rate": plan["rate_per_minute"], "status": plan["flow"]["status"],
                         "machines": plan["factory"].get("process_machines"),
                         "fuel_per_minute": plan["factory"].get("fuel_per_minute"),
+                        "electric_grid_mw": plan["factory"].get("electric_grid_mw"),
                         "heat_mw": plan["factory"].get("heat_demand_mw_by_minimum_temperature"),
                         "raw_per_minute": plan["flow"].get("raw_per_minute"),
                         "research_hours": plan.get("base_research_supply_hours"),
@@ -585,14 +612,14 @@ def write_executor_fixture(report, stage_name, path):
         rows.append({"recipe": row["recipe"], "machine": row["machine"], "cycles": stage.get("executor_cycles", {}).get(row["recipe"], 5),
                      "seconds_per_cycle": row["seconds"], "ingredients": row["validation_ingredients"],
                      "outputs": row["validation_outputs"], "fuel_per_cycle": row["fuel"],
+                     "electric": row["energy_type"] == "electric",
                      "heat": row["energy_type"] == "heat", "productivity": row["native_productivity"]})
     fixture = {"schema": 1, "fuel": stage["boundary"]["fuel"], "executors": rows,
                "transfers": stage.get("executor_transfers", []),
+               "surface_temperature": stage["boundary"]["surface"]["nullius-ambient-temperature"],
+               "electric_grid_watts_per_executor": 1000000000 if stage["boundary"].get("electric_grid") else 0,
                "boundary_technologies": stage["allowed_technologies"],
                "deadline": math.ceil(max(r["seconds_per_cycle"] * r["cycles"] for r in rows) * 60) + 3600}
-    if not stage["boundary"]["allow_all_pre_physics"]:
-        fixture["boundary_technologies"] = sorted(set(stage["boundary"]["technologies"]) |
-            {r["name"] for r in plan["research"]["technologies"]})
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("-- Generated by tools/plan_factorio_factory.py.\nreturn " + lua(fixture) + "\n")
 

@@ -329,9 +329,11 @@ return {
     "nullius-wind-power-2",
   },
   deadline = 37350,
+  electric_grid_watts_per_executor = 0,
   executors = {
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -360,6 +362,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -393,6 +396,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 28.875,
       heat = false,
       ingredients = {
@@ -421,6 +425,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -459,6 +464,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 18.75,
       heat = false,
       ingredients = {},
@@ -476,6 +482,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -514,6 +521,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -547,6 +555,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 38.4,
       heat = false,
       ingredients = {
@@ -581,6 +590,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -614,6 +624,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -637,6 +648,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -660,6 +672,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -683,6 +696,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -706,6 +720,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -734,6 +749,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
       ingredients = {
@@ -765,6 +781,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -793,6 +810,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 192.5,
       heat = false,
       ingredients = {
@@ -836,6 +854,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -874,6 +893,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -912,6 +932,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -935,6 +956,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -958,6 +980,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -981,6 +1004,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1004,6 +1028,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1027,6 +1052,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1050,6 +1076,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1073,6 +1100,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1096,6 +1124,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1119,6 +1148,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1142,6 +1172,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1165,6 +1196,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1188,6 +1220,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1211,6 +1244,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1234,6 +1268,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1257,6 +1292,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1280,6 +1316,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
       ingredients = {
@@ -1303,6 +1340,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
       ingredients = {
@@ -1332,6 +1370,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 487.5,
       heat = false,
       ingredients = {
@@ -1370,6 +1409,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 325.0,
       heat = false,
       ingredients = {
@@ -1413,6 +1453,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1461,6 +1502,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1484,6 +1526,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 243.75,
       heat = false,
       ingredients = {
@@ -1512,6 +1555,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 162.5,
       heat = false,
       ingredients = {
@@ -1540,6 +1584,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 487.5,
       heat = false,
       ingredients = {
@@ -1573,6 +1618,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 178.125,
       heat = false,
       ingredients = {
@@ -1611,6 +1657,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 609.375,
       heat = false,
       ingredients = {
@@ -1639,6 +1686,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 144.375,
       heat = false,
       ingredients = {
@@ -1678,6 +1726,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 243.75,
       heat = false,
       ingredients = {
@@ -1711,6 +1760,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 142.5,
       heat = false,
       ingredients = {
@@ -1739,6 +1789,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1762,6 +1813,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1790,6 +1842,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1818,6 +1871,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 137.5,
       heat = false,
       ingredients = {
@@ -1851,6 +1905,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -1879,6 +1934,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 343.75,
       heat = false,
       ingredients = {
@@ -1937,6 +1993,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 96.0,
       heat = false,
       ingredients = {
@@ -1971,6 +2028,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2009,6 +2067,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2042,6 +2101,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -2077,6 +2137,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2110,6 +2171,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2153,6 +2215,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 144.0,
       heat = false,
       ingredients = {
@@ -2201,6 +2264,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
       ingredients = {
@@ -2232,6 +2296,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 480.0,
       heat = false,
       ingredients = {
@@ -2265,6 +2330,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
       ingredients = {
@@ -2288,6 +2354,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
       ingredients = {
@@ -2311,6 +2378,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
       ingredients = {
@@ -2334,6 +2402,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
       ingredients = {
@@ -2357,6 +2426,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
       ingredients = {
@@ -2380,6 +2450,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 192.5,
       heat = false,
       ingredients = {
@@ -2423,6 +2494,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 6.875,
       heat = false,
       ingredients = {
@@ -2446,6 +2518,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2494,6 +2567,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.2,
       heat = false,
       ingredients = {
@@ -2517,6 +2591,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.2,
       heat = false,
       ingredients = {
@@ -2540,6 +2615,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.625,
       heat = false,
       ingredients = {
@@ -2574,6 +2650,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 55.0,
       heat = false,
       ingredients = {
@@ -2607,6 +2684,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 285.0,
       heat = false,
       ingredients = {
@@ -2645,6 +2723,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2668,6 +2747,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -2696,6 +2776,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2719,6 +2800,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 60.0,
       heat = false,
       ingredients = {
@@ -2754,6 +2836,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 48.0,
       heat = false,
       ingredients = {
@@ -2783,6 +2866,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 24.0,
       heat = false,
       ingredients = {
@@ -2811,6 +2895,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 60.0,
       heat = false,
       ingredients = {
@@ -2846,6 +2931,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = false,
       ingredients = {},
@@ -2863,6 +2949,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 36.0,
       heat = false,
       ingredients = {
@@ -2904,6 +2991,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -2932,6 +3020,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 57.6,
       heat = false,
       ingredients = {
@@ -2971,6 +3060,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 81.25,
       heat = false,
       ingredients = {
@@ -3014,6 +3104,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 121.875,
       heat = false,
       ingredients = {
@@ -3070,6 +3161,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3093,6 +3185,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 57.6,
       heat = false,
       ingredients = {
@@ -3138,6 +3231,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3166,6 +3260,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
       ingredients = {
@@ -3199,6 +3294,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 137.5,
       heat = false,
       ingredients = {
@@ -3232,6 +3328,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3260,6 +3357,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3288,6 +3386,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 27.5,
       heat = false,
       ingredients = {
@@ -3321,6 +3420,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 192.5,
       heat = false,
       ingredients = {
@@ -3364,6 +3464,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3402,6 +3503,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3430,6 +3532,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3458,6 +3561,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 40.625,
       heat = false,
       ingredients = {
@@ -3481,6 +3585,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3519,6 +3624,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
       ingredients = {
@@ -3577,6 +3683,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3625,6 +3732,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 19.2,
       heat = false,
       ingredients = {
@@ -3659,6 +3767,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3702,6 +3811,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3735,6 +3845,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3768,6 +3879,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -3791,6 +3903,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
       ingredients = {
@@ -3822,6 +3935,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
       ingredients = {
@@ -3845,6 +3959,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
       ingredients = {
@@ -3868,6 +3983,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
       ingredients = {
@@ -3891,6 +4007,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
       ingredients = {
@@ -3914,6 +4031,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = false,
       ingredients = {
@@ -3938,6 +4056,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = false,
       ingredients = {
@@ -3962,6 +4081,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = false,
       ingredients = {
@@ -3986,6 +4106,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 360.0,
       heat = false,
       ingredients = {
@@ -4024,6 +4145,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 76.8,
       heat = false,
       ingredients = {
@@ -4067,6 +4189,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -4100,6 +4223,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 41.25,
       heat = false,
       ingredients = {
@@ -4138,6 +4262,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -4171,6 +4296,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -4204,6 +4330,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -4237,6 +4364,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 12.0,
       heat = false,
       ingredients = {
@@ -4265,6 +4393,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
       ingredients = {
@@ -4293,6 +4422,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 0,
       heat = true,
       ingredients = {
@@ -4316,6 +4446,7 @@ return {
     },
     {
       cycles = 5,
+      electric = false,
       fuel_per_cycle = 48.75,
       heat = false,
       ingredients = {
@@ -4350,5 +4481,6 @@ return {
   },
   fuel = "nullius-compressed-volcanic-gas",
   schema = 1,
+  surface_temperature = 200.0,
   transfers = {},
 }

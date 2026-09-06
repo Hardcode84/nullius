@@ -75,7 +75,8 @@ in generated output; do not replace the solver with hand calculations.
 
 ## Validate selected executors
 
-Export the first configured rate for the named stage:
+Export the first configured rate for the named stage. The fixture retains the
+full declared technology closure, including entrance prerequisites:
 
 ```bash
 python tools/plan_factorio_factory.py \
@@ -136,3 +137,43 @@ The Markdown report uses rates 60 and 120 and supply windows 4 and 8 hours; incl
 these comparison points in the configuration when using `--science-output`.
 Standalone pack factories omit labs when they cannot supply the required research.
 Do not add their station counts to estimate a factory that shares co-products.
+
+## Nauvis and Vulcanus comparison
+
+Use `tests/progression/planner/nauvis-science-scale.json` for the Nauvis
+boundary. Set `electric_grid: true` to declare externally supplied electricity.
+The planner reports active electric demand and drain for rounded installed
+stations. It does not count generation, storage, or distribution. This is a
+continuous average load model; it does not resolve synchronized machine peaks.
+Electric labs and ore miners use resolved energy and speed values. Mining that
+requires fluid fails until a fluid-input contract is implemented. A stage can
+set `machines` to replace the contract executor catalog.
+
+Both planet configurations subtract the same pneumatic technology prerequisite
+closure. The comparison therefore measures the same remaining research. It does
+not measure Nauvis progression from a new game.
+
+```bash
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/nauvis-science-scale.json \
+  --output /tmp/nauvis-science-scale.json --overview
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/vulcanus-science-scale.json \
+  --output /tmp/vulcanus-science-scale.json --overview
+python tools/compare_factorio_factory_plans.py \
+  --config tests/progression/planner/planet-science-comparison.json \
+  --first-plan /tmp/nauvis-science-scale.json \
+  --second-plan /tmp/vulcanus-science-scale.json \
+  --output /tmp/planet-science-comparison.json \
+  --markdown-output docs/PLANET_SCIENCE_COMPARISON.md
+python tools/plan_factorio_factory.py \
+  --read-plan /tmp/nauvis-science-scale.json --stage first-physics \
+  --executor-fixture tests/scenarios/planner-nauvis-physics-executors/fixture.lua \
+  --field name
+python tools/run_factorio_tests.py planner-nauvis-physics-executors -n auto
+```
+
+The Nauvis executor fixture supplies a declared electric generator interface.
+The base game's tertiary electric interface cannot supply surge machines.
+This test checks recipe execution, not connected factory throughput or electric
+peak demand.

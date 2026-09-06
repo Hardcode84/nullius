@@ -24,7 +24,9 @@ records the water recipe, complete supply comparison, and outage recovery test.
 
 See the [geology and climatology scale report](VULCANUS_SCIENCE_SCALE.md) for
 pack totals, rate targets, starter and industrial capacity, and the upstream
-climatology recipe comparison.
+climatology recipe comparison. The
+[Nauvis comparison](PLANET_SCIENCE_COMPARISON.md) uses the same remaining
+research boundary and reports electric demand for the Nauvis factory.
 
 ## Balance assessment
 

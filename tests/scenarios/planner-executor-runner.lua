@@ -15,7 +15,7 @@ local function finish()
     failure_count=#failures, failures=failures,
     observations={executors=#fixture.executors, completed=storage.completed,
       transfers=storage.transfers,
-      fixture="Declared cycles per selected recipe; declared intermediates, fuel and scripted heat"}}
+      fixture="Declared cycles, intermediates, fuel, scripted heat and explicit electric grid"}}
   helpers.write_file("factorio-tests/" .. CASE .. ".json", helpers.table_to_json(result), false)
   if #failures > 0 then error(helpers.table_to_json(result)) end
 end
@@ -93,8 +93,15 @@ script.on_nth_tick(30, function()
       end
       force.technologies[name].researched = true
     end
-    local planet = game.planets["nullius-vulcanus"]
-    local surface = planet.surface or planet.create_surface()
+    local surface
+    if fixture.surface_temperature == 15 then
+      surface = game.surfaces.nauvis
+    elseif fixture.surface_temperature == 200 then
+      local planet = game.planets["nullius-vulcanus"]
+      surface = planet.surface or planet.create_surface()
+    else
+      error("unsupported planner fixture surface temperature")
+    end
     surface.request_to_generate_chunks({0,0}, 8)
     surface.force_generate_chunk_requests()
     storage.rows = {}
@@ -104,7 +111,7 @@ script.on_nth_tick(30, function()
       local x, y = (index % 12) * 20 - 120, math.floor(index / 12) * 20 - 100
       local tiles = {}
       for dx=-6,6 do for dy=-6,6 do
-        tiles[#tiles+1] = {name="volcanic-soil-dark", position={x+dx,y+dy}}
+        tiles[#tiles+1] = {name=fixture.surface_temperature == 15 and "grass-1" or "volcanic-soil-dark", position={x+dx,y+dy}}
       end end
       surface.set_tiles(tiles, true, false, false, false)
       for _, obstruction in ipairs(surface.find_entities_filtered{area={{x-7,y-7},{x+7,y+7}}}) do
@@ -112,6 +119,14 @@ script.on_nth_tick(30, function()
       end
       local machine = surface.create_entity{name=spec.machine, position={x,y}, force=force}
       if not check(machine ~= nil, "cannot place " .. spec.machine) then finish() return end
+      if spec.electric then
+        local power = surface.create_entity{name="factorio-test-planner-grid", position={x+6,y}, force=force}
+        local pole = surface.create_entity{name="substation", position={x+3,y+4}, force=force}
+        if not check(power and pole and fixture.electric_grid_watts_per_executor > 0,
+            "electric executor needs declared grid") then finish() return end
+        power.power_production = fixture.electric_grid_watts_per_executor
+        power.electric_buffer_size = fixture.electric_grid_watts_per_executor
+      end
       if machine.type ~= "furnace" then
         check(machine.set_recipe(spec.recipe), spec.machine .. " cannot select " .. spec.recipe)
       end
