@@ -32,8 +32,8 @@
     "comparison": "Same post-pneumatic research entrance as the Vulcanus comparison. Comparable first/second-tier processing machines. All pre-physics recipes are eligible. No modules or beacons. Guaranteed outputs only.",
     "waste": "Only listed solid waste is removed. Fluid disposal uses real recipes.",
     "time": "All science lines and labs are available at time zero. Research triggers are assumed satisfied. Times exclude construction, checkpoints and exploration.",
-    "experiment": "Independent and combined tier 2 science capacity. All pre-physics recipes are eligible for supply and construction. Ordinary and boxed tier 2 routes are included. No labs, modules, beacons or technology productivity bonus. Construction has no free placement stock.",
-    "recipe_boundary": "Only ordinary Nauvis tier 2 science recipes and their boxed equivalents are eligible."
+    "recipe_boundary": "Only ordinary Nauvis tier 2 science recipes and their boxed equivalents are eligible.",
+    "capacity": "Independent and combined tier 2 science capacity. All pre-physics recipes are eligible for supply and construction. Ordinary and boxed tier 2 routes are included. No labs, modules, beacons or technology productivity bonus. Construction has no free placement stock."
   },
   "stages": [
     {

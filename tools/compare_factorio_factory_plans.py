@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from plan_factorio_factory import TestFailure, material_consumption
+from plan_factorio_factory import TestFailure, material_consumption, update_markdown_section
 
 
 def compare_plans(reports, spec):
@@ -131,6 +131,16 @@ def markdown(comparison, spec):
     return '\n'.join(lines).rstrip()
 
 
+def update_vulcanus_capacity(comparison, path):
+    lines = ["", "| Line | Packs/min each | Nauvis stations | Vulcanus stations | Nauvis electric MW | Vulcanus fuel gas/min | Vulcanus heat MW |",
+             "|---|---:|---:|---:|---:|---:|---:|"]
+    for row in comparison["rows"]:
+        nauvis, vulcanus = row["planets"]
+        lines.append(f"| {row['stage']} | {row['rate']} | {nauvis['machines']} | {vulcanus['machines']} | "
+                     f"{nauvis['electric_grid_mw']:.2f} | {vulcanus['fuel_per_minute']:,.0f} | {vulcanus['heat_mw']:.2f} |")
+    update_markdown_section(path, "tier2-capacity", "\n".join(lines))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
@@ -138,6 +148,7 @@ def main():
     parser.add_argument('--second-plan', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--markdown-output', type=Path)
+    parser.add_argument('--update-vulcanus-doc', type=Path)
     args = parser.parse_args()
     spec = json.loads(args.config.read_text())
     reports = {label: json.loads(path.read_text()) for label, path in
@@ -146,6 +157,8 @@ def main():
         raise TestFailure('comparison requires two distinct planet labels')
     result = compare_plans(reports, spec)
     args.output.write_text(json.dumps(result, indent=2) + '\n')
+    if args.update_vulcanus_doc:
+        update_vulcanus_capacity(result, args.update_vulcanus_doc)
     if args.markdown_output:
         args.markdown_output.write_text(markdown(result, spec) + '\n')
     print(json.dumps(result['rows'], indent=2))

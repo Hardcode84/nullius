@@ -105,7 +105,7 @@ campaign scenario to measure factory throughput and elapsed progression time.
 python tools/plan_factorio_factory.py \
   --config tests/progression/planner/vulcanus-quenching.json \
   --output /tmp/vulcanus-quenching.json \
-  --comparison-output docs/VULCANUS_QUENCHING_PLAN.md --overview
+  --comparison-output /tmp/vulcanus_quenching_plan.md --overview
 ```
 
 The optional `comparison` object names a `title` and a `materials` list. Each
@@ -121,7 +121,7 @@ so a selected route can have more rounded stations than another route.
 python tools/plan_factorio_factory.py \
   --config tests/progression/planner/vulcanus-science-scale.json \
   --output /tmp/vulcanus-science-scale.json \
-  --science-output docs/VULCANUS_SCIENCE_SCALE.md --overview
+  --science-output /tmp/vulcanus_science_scale.md --overview
 python tools/plan_factorio_factory.py \
   --read-plan /tmp/vulcanus-science-scale.json --field science_analysis.budgets
 python tools/plan_factorio_factory.py \
@@ -165,7 +165,7 @@ python tools/compare_factorio_factory_plans.py \
   --first-plan /tmp/nauvis-science-scale.json \
   --second-plan /tmp/vulcanus-science-scale.json \
   --output /tmp/planet-science-comparison.json \
-  --markdown-output docs/PLANET_SCIENCE_COMPARISON.md
+  --markdown-output /tmp/planet_science_comparison.md
 python tools/plan_factorio_factory.py \
   --read-plan /tmp/nauvis-science-scale.json --stage first-physics \
   --executor-fixture tests/scenarios/planner-nauvis-physics-executors/fixture.lua \
@@ -179,7 +179,7 @@ This test checks recipe execution, not connected factory throughput or electric
 peak demand.
 
 
-## Hypothetical science recipes
+## Local tier 2 science
 
 Set `prototype_overlay` to a repository JSON file to add candidate prototypes.
 The planner uses the prerequisite checker's additive overlay loader. It refuses
@@ -188,10 +188,12 @@ Candidate recipes are assumed available. An overlay does not prove technology
 unlock timing or Factorio runtime execution. Executor export rejects overlay
 plans so that a hypothetical recipe cannot be presented as a shipping test.
 
-The tier 2 experiment includes ordinary and boxed candidates. It forces the
-candidate science routes on Vulcanus and ordinary tier 2 routes on Nauvis.
-Supply and construction use the declared pre-physics catalog. The second Nauvis
-configuration changes solid extraction to small miner 2.
+The local tier 2 recipes are shipping prototypes. Their inspection contract
+checks ordinary and boxed recipes. The capacity configurations force local tier 2
+science on Vulcanus and ordinary tier 2 science on Nauvis. Supply and construction
+use the declared pre-physics catalog. The second Nauvis configuration changes
+solid extraction to small miner 2. The additive overlay interface remains
+available for separate hypothetical experiments.
 
 ```bash
 python tools/analyze_factorio_prereqs.py \
@@ -209,12 +211,12 @@ python tools/compare_factorio_factory_plans.py \
   --config tests/progression/planner/science-tier2-comparison.json \
   --first-plan /tmp/nauvis-tier2.json --second-plan /tmp/vulcanus-tier2.json \
   --output /tmp/tier2-comparison.json \
-  --markdown-output docs/SCIENCE_TIER2_EXPERIMENT.md
+  --markdown-output /tmp/science_tier2_experiment.md
 python tools/compare_factorio_factory_plans.py \
   --config tests/progression/planner/science-tier2-miners-comparison.json \
   --first-plan /tmp/nauvis-tier2-miners.json --second-plan /tmp/vulcanus-tier2.json \
   --output /tmp/tier2-miners-comparison.json \
-  --markdown-output docs/SCIENCE_TIER2_MINERS.md
+  --markdown-output /tmp/science_tier2_miners.md
 ```
 
 Comparison reports can omit `research_stage` for capacity experiments.
@@ -223,3 +225,11 @@ Comparison reports can omit `research_stage` for capacity experiments.
 `independent_stages` compare a shared flow with the sum of separate lines.
 A shared flow can have more rounded stations because the solver minimizes
 active machine time. Do not describe either count as the integer minimum.
+
+
+`docs/PLANET_VULCANUS.md` is the maintained design and balance reference.
+Use `--update-vulcanus-doc docs/PLANET_VULCANUS.md` with the tier 2 comparison
+command to replace its marked capacity table. Use the same option with the
+factory planner and `vulcanus-science-scale.json` to refresh the marked physics
+tables. Each updater requires one ordered marker pair and preserves other text.
+Full JSON and detailed Markdown reports are disposable build outputs.

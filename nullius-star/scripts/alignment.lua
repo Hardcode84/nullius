@@ -64,6 +64,7 @@ function init_alignment()
 end
 
 function init_alignment_force(force)
+  init_alignment()
   for i = 1, 7 do
     local tech = force.technologies["nullius-alignment-" .. i]
 	if ((tech ~= nil) and tech.valid) then

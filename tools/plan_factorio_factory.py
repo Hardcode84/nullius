@@ -831,12 +831,44 @@ def write_markdown(report, path):
     lines += ["", "The first-physics row includes all six earlier science lines at the same rate.",
               "The basic-science row includes volcanism 1 to permit extractor construction.", "",
               "## Reproduce", "", "```bash",
-              "python tools/plan_factorio_factory.py --overview --summary-output docs/data/vulcanus-factory-plan.json --markdown-output docs/VULCANUS_FACTORY_PLAN.md", "```", "",
+              "python tools/plan_factorio_factory.py --overview --summary-output docs/data/vulcanus-factory-plan.json --markdown-output /tmp/vulcanus-factory-plan.md", "```", "",
               "Use the [factory planner skill](../.agents/skills/factorio-factory-planner/SKILL.md)",
               "for configuration, query commands, and executor validation.", "",
               f"Prototype SHA256: `{report['provenance']['dump_sha256']}`.", ""]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines))
+
+
+def update_markdown_section(path, name, body):
+    start, end = f"<!-- {name}:start -->", f"<!-- {name}:end -->"
+    source = path.read_text()
+    if source.count(start) != 1 or source.count(end) != 1 or source.index(start) >= source.index(end):
+        raise TestFailure("document requires one ordered marker pair: " + name)
+    before, rest = source.split(start)
+    _, after = rest.split(end)
+    path.write_text(before + start + "\n" + body.rstrip() + "\n" + end + after)
+
+
+def update_vulcanus_physics(report, path):
+    stage = next(s for s in report["stages"] if s["name"] == "first-physics")
+    lines = ["", "| Packs/min each | Stations | Labs | Fuel gas/min | Process heat MW | Supply hours | Scheduled hours |",
+             "|---:|---:|---:|---:|---:|---:|---:|"]
+    for p in stage["plans"]:
+        if p["flow"]["status"] != "optimal" or p["construction"]["flow"]["status"] != "optimal":
+            raise TestFailure("physics documentation requires feasible production and construction")
+        f = p["factory"]
+        lines.append(f"| {p['rate_per_minute']} | {f['process_machines']} | {p['research_schedule']['lab_count']} | "
+                     f"{f['fuel_per_minute']:,.0f} | {sum(f['heat_demand_mw_by_minimum_temperature'].values()):.2f} | "
+                     f"{p['base_research_supply_hours']:.3f} | {p['research_schedule']['hours']:.3f} |")
+    research = next(p for p in stage["plans"] if p["rate_per_minute"] == 120)["research"]
+    lines += ["", "Research for the 120/min factory, including selected recipe and construction unlocks:", "",
+              "| Science | Required packs |", "|---|---:|"]
+    lines += [f"| {pack} | {count:,.0f} |" for pack, count in sorted(research["packs"].items())]
+    lines += ["", "Largest geology and climatology research costs:", "", "| Science | Technology | Packs |", "|---|---|---:|"]
+    for pack in ("nullius-geology-pack", "nullius-climatology-pack"):
+        drivers = sorted(research["technologies"], key=lambda t: (-t["packs"].get(pack, 0), t["name"]))[:3]
+        lines += [f"| {pack} | {t['name']} | {t['packs'].get(pack, 0):,.0f} |" for t in drivers]
+    update_markdown_section(path, "physics-capacity", "\n".join(lines))
 
 
 def main():
@@ -857,6 +889,7 @@ def main():
     parser.add_argument("--executor-fixture", type=Path)
     parser.add_argument("--comparison-output", type=Path)
     parser.add_argument("--science-output", type=Path)
+    parser.add_argument("--update-vulcanus-doc", type=Path)
     args = parser.parse_args()
     if args.read_plan:
         report = json.loads(args.read_plan.read_text())
@@ -906,6 +939,8 @@ def main():
         if not args.stage:
             raise TestFailure("--executor-fixture requires --stage")
         write_executor_fixture(report, args.stage, args.executor_fixture)
+    if args.update_vulcanus_doc:
+        update_vulcanus_physics(report, args.update_vulcanus_doc)
     if args.science_output:
         write_science_scale(report, args.science_output)
     if args.comparison_output:

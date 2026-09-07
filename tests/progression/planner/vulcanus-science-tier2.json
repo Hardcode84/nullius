@@ -38,8 +38,8 @@
     "time": "Base research supply bound at the configured simultaneous pack rates, not human construction time. Checkpoints are separate.",
     "labs": "Size speed-1 pneumatic labs for the fastest supplied research cycle. Reserve full-load lab fuel in the flow; do not credit lab waste heat.",
     "standalone": "Starter and industrial single-pack rows are independent full supply networks without labs; shared factory co-products can change these costs. Industrial rows allow all pre-physics recipes and the declared second-tier machine catalog.",
-    "experiment": "Independent and combined tier 2 science capacity. All pre-physics recipes are eligible for supply and construction. Ordinary and boxed tier 2 routes are included. No labs, modules, beacons or technology productivity bonus. Construction has no free placement stock.",
-    "recipe_boundary": "Only the declared candidate final science recipes are eligible. Candidates are hypothetical and assumed unlocked; research timing is not modeled."
+    "recipe_boundary": "Only the declared local tier 2 final science recipes are eligible. Local recipes unlock with geology 2 and climatology 2; bulk recipes unlock with mass production 7. The model compares pre-physics capacity, not startup timing.",
+    "capacity": "Independent and combined tier 2 science capacity. All pre-physics recipes are eligible for supply and construction. Ordinary and boxed tier 2 routes are included. No labs, modules, beacons or technology productivity bonus. Construction has no free placement stock."
   },
   "stages": [
     {
@@ -182,6 +182,5 @@
     ],
     "research_roots": {},
     "factory_stages": []
-  },
-  "prototype_overlay": "tests/progression/planner/vulcanus-science-tier2-overlay.json"
+  }
 }

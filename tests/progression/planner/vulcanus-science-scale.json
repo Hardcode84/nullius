@@ -210,7 +210,9 @@
       "allow_all_pre_physics": true,
       "research_roots": [],
       "excluded_recipes": [
-        "nullius-climatology-pack-vulcanus"
+        "nullius-climatology-pack-vulcanus",
+        "nullius-climatology-pack-vulcanus-2",
+        "nullius-boxed-climatology-pack-vulcanus-2"
       ]
     }
   ],

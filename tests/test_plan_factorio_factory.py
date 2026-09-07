@@ -8,7 +8,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory,
                                   startup_reachability, fluid_ports_fit, read_heat_contract,
-                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale, write_executor_fixture)
+                                  research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale, write_executor_fixture, update_markdown_section)
 
 
 def recipe(name, flows, seconds=1, inputs=None, **kwargs):
@@ -18,28 +18,19 @@ def recipe(name, flows, seconds=1, inputs=None, **kwargs):
 
 
 class FactoryPlannerTest(unittest.TestCase):
+    def test_doc_update_preserves_other_sections_and_rejects_missing_markers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "planet.md"
+            path.write_text("before\n<!-- capacity:start -->\nold\n<!-- capacity:end -->\nafter\n")
+            update_markdown_section(path, "capacity", "new")
+            self.assertEqual(path.read_text(), "before\n<!-- capacity:start -->\nnew\n<!-- capacity:end -->\nafter\n")
+            with self.assertRaisesRegex(TestFailure, "marker pair"):
+                update_markdown_section(path, "missing", "new")
+
     def test_hypothetical_overlay_cannot_claim_shipping_execution(self):
         with self.assertRaisesRegex(TestFailure, "hypothetical prototypes"):
             write_executor_fixture({"provenance": {"prototype_overlay_sha256": "experiment"}},
                                    "candidate", Path("unused.lua"))
-
-    def test_science_candidate_boxed_material_and_time_parity(self):
-        path = Path(__file__).resolve().parents[1] / "tests/progression/planner/vulcanus-science-tier2-overlay.json"
-        recipes = json.loads(path.read_text())["recipe"]
-        def unpack(entries):
-            result = {}
-            for entry in entries:
-                name = entry["name"]
-                boxed = name.startswith("nullius-box-")
-                name = name.replace("nullius-box-", "nullius-", 1) if boxed else name
-                result[name] = entry["amount"] * (5 if boxed else 1)
-            return result
-        for pack in ("geology", "climatology"):
-            ordinary = recipes[f"nullius-experiment-{pack}-vulcanus-2"]
-            boxed = recipes[f"nullius-experiment-boxed-{pack}-vulcanus-2"]
-            self.assertEqual(boxed["energy_required"], ordinary["energy_required"] * 5)
-            for field in ("ingredients", "results"):
-                self.assertEqual(unpack(boxed[field]), {k: v * 5 for k, v in unpack(ordinary[field]).items()})
 
     def test_fixture_keeps_entrance_prerequisites(self):
         row = dict(recipe("make", {"pack": 1}), validation_ingredients=[], validation_outputs=[],

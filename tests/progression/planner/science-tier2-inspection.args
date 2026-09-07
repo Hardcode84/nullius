@@ -1,13 +1,11 @@
---prototype-overlay
-tests/progression/planner/vulcanus-science-tier2-overlay.json
 --describe-recipe
-nullius-experiment-geology-vulcanus-2
+nullius-geology-pack-vulcanus-2
 --describe-recipe
-nullius-experiment-boxed-geology-vulcanus-2
+nullius-boxed-geology-pack-vulcanus-2
 --describe-recipe
-nullius-experiment-climatology-vulcanus-2
+nullius-climatology-pack-vulcanus-2
 --describe-recipe
-nullius-experiment-boxed-climatology-vulcanus-2
+nullius-boxed-climatology-pack-vulcanus-2
 --describe-recipe
 nullius-geology-pack-2
 --describe-recipe

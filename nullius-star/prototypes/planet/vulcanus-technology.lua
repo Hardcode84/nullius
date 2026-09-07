@@ -378,3 +378,9 @@ air_separation_2.effects[#air_separation_2.effects + 1] = {
   type = "unlock-recipe",
   recipe = "nullius-vulcanus-residual-gas",
 }
+
+-- Keep local alternatives on the ordinary science and bulk-science unlocks.
+table.insert(data.raw.technology["nullius-geology-2"].effects, {type = "unlock-recipe", recipe = "nullius-geology-pack-vulcanus-2"})
+table.insert(data.raw.technology["nullius-mass-production-7"].effects, {type = "unlock-recipe", recipe = "nullius-boxed-geology-pack-vulcanus-2"})
+table.insert(data.raw.technology["nullius-climatology-2"].effects, {type = "unlock-recipe", recipe = "nullius-climatology-pack-vulcanus-2"})
+table.insert(data.raw.technology["nullius-mass-production-7"].effects, {type = "unlock-recipe", recipe = "nullius-boxed-climatology-pack-vulcanus-2"})

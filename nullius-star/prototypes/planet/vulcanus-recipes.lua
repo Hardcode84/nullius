@@ -1610,3 +1610,215 @@ data:extend({
     },
   },
 })
+
+-- Process local materials before the second science tier.
+data:extend({
+  {
+    allow_decomposition = false,
+    allow_productivity = true,
+    always_show_made_in = true,
+    always_show_products = true,
+    category = "small-crafting",
+    enabled = false,
+    energy_required = 10,
+    icons = {
+      {
+        icon = "__base__/graphics/icons/utility-science-pack.png",
+        icon_size = 64,
+      },
+    },
+    ingredients = {
+      {
+        amount = 1,
+        name = "nullius-glass",
+        type = "item",
+      },
+      {
+        amount = 1,
+        name = "nullius-lime",
+        type = "item",
+      },
+      {
+        amount = 2,
+        name = "nullius-mineral-dust",
+        type = "item",
+      },
+    },
+    localised_name = {
+      "recipe-name.nullius-geology-pack-vulcanus-2",
+    },
+    name = "nullius-geology-pack-vulcanus-2",
+    order = "nullius-vb2",
+    results = {
+      {
+        amount = 2,
+        name = "nullius-geology-pack",
+        type = "item",
+      },
+    },
+    subgroup = "research-pack-2",
+    surface_conditions = {
+      {
+        min = 100,
+        property = "nullius-ambient-temperature",
+      },
+    },
+    type = "recipe",
+  },
+  {
+    allow_decomposition = false,
+    allow_productivity = true,
+    always_show_made_in = true,
+    always_show_products = true,
+    category = "large-assembly",
+    enabled = false,
+    energy_required = 50,
+    icons = {
+      {
+        icon = "__base__/graphics/icons/utility-science-pack.png",
+        icon_size = 64,
+      },
+    },
+    ingredients = {
+      {
+        amount = 1,
+        name = "nullius-box-glass",
+        type = "item",
+      },
+      {
+        amount = 1,
+        name = "nullius-box-lime",
+        type = "item",
+      },
+      {
+        amount = 2,
+        name = "nullius-box-mineral-dust",
+        type = "item",
+      },
+    },
+    localised_name = {
+      "recipe-name.nullius-boxed-geology-pack-vulcanus-2",
+    },
+    name = "nullius-boxed-geology-pack-vulcanus-2",
+    order = "nullius-vb2",
+    results = {
+      {
+        amount = 2,
+        name = "nullius-box-geology-pack",
+        type = "item",
+      },
+    },
+    subgroup = "boxed-science",
+    surface_conditions = {
+      {
+        min = 100,
+        property = "nullius-ambient-temperature",
+      },
+    },
+    type = "recipe",
+  },
+  {
+    allow_decomposition = false,
+    allow_productivity = true,
+    always_show_made_in = true,
+    always_show_products = true,
+    category = "basic-chemistry",
+    enabled = false,
+    energy_required = 10,
+    icons = {
+      {
+        icon = "__base__/graphics/icons/chemical-science-pack.png",
+        icon_size = 64,
+      },
+    },
+    ingredients = {
+      {
+        amount = 100,
+        name = "nullius-compressed-carbon-dioxide",
+        type = "fluid",
+      },
+      {
+        amount = 10,
+        name = "nullius-compressed-nitrogen",
+        type = "fluid",
+      },
+      {
+        amount = 5,
+        name = "nullius-acid-sulfuric",
+        type = "fluid",
+      },
+    },
+    localised_name = {
+      "recipe-name.nullius-climatology-pack-vulcanus-2",
+    },
+    name = "nullius-climatology-pack-vulcanus-2",
+    order = "nullius-vc2",
+    results = {
+      {
+        amount = 2,
+        name = "nullius-climatology-pack",
+        type = "item",
+      },
+    },
+    subgroup = "research-pack-2",
+    surface_conditions = {
+      {
+        min = 100,
+        property = "nullius-ambient-temperature",
+      },
+    },
+    type = "recipe",
+  },
+  {
+    allow_decomposition = false,
+    allow_productivity = true,
+    always_show_made_in = true,
+    always_show_products = true,
+    category = "basic-chemistry",
+    enabled = false,
+    energy_required = 50,
+    icons = {
+      {
+        icon = "__base__/graphics/icons/chemical-science-pack.png",
+        icon_size = 64,
+      },
+    },
+    ingredients = {
+      {
+        amount = 500,
+        name = "nullius-compressed-carbon-dioxide",
+        type = "fluid",
+      },
+      {
+        amount = 50,
+        name = "nullius-compressed-nitrogen",
+        type = "fluid",
+      },
+      {
+        amount = 25,
+        name = "nullius-acid-sulfuric",
+        type = "fluid",
+      },
+    },
+    localised_name = {
+      "recipe-name.nullius-boxed-climatology-pack-vulcanus-2",
+    },
+    name = "nullius-boxed-climatology-pack-vulcanus-2",
+    order = "nullius-vc2",
+    results = {
+      {
+        amount = 2,
+        name = "nullius-box-climatology-pack",
+        type = "item",
+      },
+    },
+    subgroup = "boxed-science",
+    surface_conditions = {
+      {
+        min = 100,
+        property = "nullius-ambient-temperature",
+      },
+    },
+    type = "recipe",
+  },
+})

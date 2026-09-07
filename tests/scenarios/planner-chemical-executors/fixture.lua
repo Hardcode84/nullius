@@ -1130,30 +1130,6 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-crushed-iron-ore",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1-pneumatic",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-crushed-iron-ore",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-crushed-iron-ore",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 5.9,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
           name = "nullius-crushed-limestone",
           type = "item",
         },
@@ -1341,6 +1317,30 @@ return {
     {
       cycles = 5,
       electric = false,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 5,
+          name = "nullius-box-crushed-bauxite",
+          type = "item",
+        },
+      },
+      machine = "nullius-crusher-2-thermal",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-mineral-dust",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-bauxite-disposal",
+      seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
+      electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
       ingredients = {
@@ -1410,31 +1410,21 @@ return {
     {
       cycles = 5,
       electric = false,
-      fuel_per_cycle = 325.0,
+      fuel_per_cycle = 406.25,
       heat = false,
       ingredients = {
         {
           amount = 1,
-          name = "nullius-box-crushed-iron-ore",
+          name = "nullius-box-glass",
           type = "item",
         },
         {
           amount = 1,
-          name = "nullius-box-crushed-bauxite",
+          name = "nullius-box-lime",
           type = "item",
         },
         {
-          amount = 1,
-          name = "nullius-box-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-        {
-          amount = 4,
+          amount = 2,
           name = "nullius-box-mineral-dust",
           type = "item",
         },
@@ -1442,14 +1432,14 @@ return {
       machine = "nullius-large-assembler-1-pneumatic",
       outputs = {
         {
-          amount = 1,
+          amount = 2,
           name = "nullius-box-geology-pack",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-boxed-geology-pack",
-      seconds_per_cycle = 10.0,
+      recipe = "nullius-boxed-geology-pack-vulcanus-2",
+      seconds_per_cycle = 12.5,
     },
     {
       cycles = 5,
@@ -2297,36 +2287,60 @@ return {
     {
       cycles = 5,
       electric = false,
-      fuel_per_cycle = 480.0,
+      fuel_per_cycle = 96.0,
       heat = false,
       ingredients = {
         {
-          amount = 400,
-          name = "nullius-carbon-dioxide",
-          type = "fluid",
-        },
-        {
-          amount = 30,
-          name = "nullius-nitrogen",
+          amount = 100,
+          name = "nullius-compressed-carbon-dioxide",
           type = "fluid",
         },
         {
           amount = 10,
-          name = "nullius-sulfur-dioxide",
+          name = "nullius-compressed-nitrogen",
+          type = "fluid",
+        },
+        {
+          amount = 5,
+          name = "nullius-acid-sulfuric",
           type = "fluid",
         },
       },
       machine = "nullius-chemical-plant-2-pneumatic",
       outputs = {
         {
-          amount = 1,
+          amount = 2,
           name = "nullius-climatology-pack",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-climatology-pack-vulcanus",
-      seconds_per_cycle = 25.0,
+      recipe = "nullius-climatology-pack-vulcanus-2",
+      seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
+      electric = false,
+      fuel_per_cycle = 49.75,
+      heat = false,
+      ingredients = {
+        {
+          amount = 320,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-surge-compressor-1-pneumatic",
+      outputs = {
+        {
+          amount = 80,
+          name = "nullius-compressed-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-compressed-carbon-dioxide",
+      seconds_per_cycle = 1.0,
     },
     {
       cycles = 5,
@@ -2616,41 +2630,6 @@ return {
     {
       cycles = 5,
       electric = false,
-      fuel_per_cycle = 9.625,
-      heat = false,
-      ingredients = {
-        {
-          amount = 3,
-          name = "nullius-mineral-dust",
-          type = "item",
-        },
-        {
-          amount = 8,
-          fluidbox_index = 1,
-          name = "nullius-acid-sulfuric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-flotation-cell-2-pneumatic",
-      outputs = {
-        {
-          amount = 20,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-        {
-          amount = 18,
-          name = "nullius-carbon-dioxide",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-dust-disposal-2",
-      seconds_per_cycle = 0.5,
-    },
-    {
-      cycles = 5,
-      electric = false,
       fuel_per_cycle = 55.0,
       heat = false,
       ingredients = {
@@ -2681,45 +2660,6 @@ return {
       productivity = 0,
       recipe = "nullius-ethylene-pyrolysis",
       seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 285.0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 2,
-          name = "nullius-mineral-dust",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-silica",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "sulfur",
-          type = "item",
-        },
-      },
-      machine = "nullius-medium-assembler-2-pneumatic",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-geology-pack",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-geology-pack-vulcanus",
-      seconds_per_cycle = 20.0,
     },
     {
       cycles = 5,
@@ -3417,50 +3357,6 @@ return {
       productivity = 0,
       recipe = "nullius-salt",
       seconds_per_cycle = 1.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 192.5,
-      heat = false,
-      ingredients = {
-        {
-          amount = 200,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-        {
-          amount = 180,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-flotation-cell-2-pneumatic",
-      outputs = {
-        {
-          amount = 8,
-          name = "nullius-sand",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-crushed-iron-ore",
-          type = "item",
-        },
-        {
-          amount = 150,
-          name = "nullius-wastewater",
-          type = "fluid",
-        },
-        {
-          amount = 100,
-          name = "nullius-carbon-dioxide",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-sand-recovery",
-      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,
