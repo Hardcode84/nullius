@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from plan_factorio_factory import TestFailure
+from plan_factorio_factory import TestFailure, material_consumption
 
 
 def compare_plans(reports, spec):
@@ -25,6 +25,8 @@ def compare_plans(reports, spec):
                 factory = plan['factory']
                 pair.append({'planet': label, 'machines': factory['process_machines'],
                     'electric_grid_mw': factory['electric_grid_mw'],
+                    'machines_by_type': factory['machines'],
+                    'active_machine_equivalents': sum(m['active_equivalents'] for m in factory['machines'].values()),
                     'fuel_per_minute': factory['fuel_per_minute'],
                     'heat_mw': sum(factory['heat_demand_mw_by_minimum_temperature'].values()),
                     'demands_per_minute': plan['demands_per_minute'],
@@ -32,9 +34,19 @@ def compare_plans(reports, spec):
                     'supply_hours': plan['base_research_supply_hours'],
                     'scheduled_hours': plan['research_schedule'].get('hours'),
                     'labs': plan['research_schedule'].get('lab_count'),
+                    'material_input_per_minute': {p: material_consumption(plan, p) for p in spec.get('materials', [])},
                     'raw_per_minute': plan['flow']['raw_per_minute']})
             rows.append({'stage': stage_name, 'rate': rate, 'planets': pair,
                          'machine_ratio_second_to_first': pair[1]['machines'] / pair[0]['machines']})
+    if spec.get('combined_stage'):
+        for row in rows:
+            if row['stage'] != spec['combined_stage']:
+                continue
+            for planet in row['planets']:
+                parts = [r for r in rows if r['stage'] in spec['independent_stages'] and r['rate'] == row['rate']]
+                if len(parts) != len(spec['independent_stages']):
+                    raise TestFailure('combined comparison requires every independent stage')
+                planet['separate_line_station_sum'] = sum(p['machines'] for r in parts for p in r['planets'] if p['planet'] == planet['planet'])
     return {'schema': 1, 'rows': rows, 'provenance': {k: r['provenance'] for k, r in reports.items()},
             'assumptions': {k: r['assumptions'] for k, r in reports.items()},
             'science_analysis': {k: r.get('science_analysis') for k, r in reports.items()}}
@@ -52,24 +64,25 @@ def markdown(comparison, spec):
             lines.append(f"| {row['stage']} | {row['rate']} | {planet['planet']} | {planet['machines']} | "
                 f"{planet['electric_grid_mw']:.2f} | {planet['fuel_per_minute']:,.0f} | {planet['heat_mw']:.2f} | "
                 f"{time(planet['supply_hours'])} | {time(planet['scheduled_hours'])} |")
-    lines += ['', '## Research budget', '',
-              'Research includes the selected recipe and construction unlocks.', '',
-              '| Planet | Rate | Pack | Required count |', '|---|---:|---|---:|']
-    for row in comparison['rows']:
-        if row['stage'] != spec['research_stage'] or row['rate'] != spec['detail_rate']:
-            continue
-        for planet in row['planets']:
-            for pack, count in planet['research_packs'].items():
-                lines.append(f"| {planet['planet']} | {row['rate']} | {pack} | {count:,.0f} |")
-    lines += ['', '## Physics unlock alone', '',
-              '| Planet | Pack | Required count |', '|---|---|---:|']
-    for label, analysis in comparison['science_analysis'].items():
-        if analysis is None:
-            raise TestFailure('science comparison requires science_analysis: ' + label)
-        for budget in analysis['budgets']:
-            if budget['boundary'] == 'physics-unlock':
-                for pack, row in budget['packs'].items():
-                    lines.append(f"| {label} | {pack} | {row['total']:,.0f} |")
+    if spec.get("research_stage"):
+        lines += ['', '## Research budget', '',
+                  'Research includes the selected recipe and construction unlocks.', '',
+                  '| Planet | Rate | Pack | Required count |', '|---|---:|---|---:|']
+        for row in comparison['rows']:
+            if row['stage'] != spec['research_stage'] or row['rate'] != spec['detail_rate']:
+                continue
+            for planet in row['planets']:
+                for pack, count in planet['research_packs'].items():
+                    lines.append(f"| {planet['planet']} | {row['rate']} | {pack} | {count:,.0f} |")
+        lines += ['', '## Physics unlock alone', '',
+                  '| Planet | Pack | Required count |', '|---|---|---:|']
+        for label, analysis in comparison['science_analysis'].items():
+            if analysis is None:
+                raise TestFailure('science comparison requires science_analysis: ' + label)
+            for budget in analysis['budgets']:
+                if budget['boundary'] == 'physics-unlock':
+                    for pack, row in budget['packs'].items():
+                        lines.append(f"| {label} | {pack} | {row['total']:,.0f} |")
     lines += ['', '## Final science stations', '',
               'Box recipes output boxes. Unpack recipes output individual packs.', '',
               '| Planet | Stage | Rate | Recipe | Machine | Count | Output/min |',
@@ -81,6 +94,35 @@ def markdown(comparison, spec):
             for p in row['producers']:
                 lines.append(f"| {label} | {row['stage']} | {row['rate']} | {p['recipe']} | "
                              f"{p['machine']} | {p['count']} | {p['output_per_minute']:.2f} |")
+    if spec.get('combined_stage'):
+        lines += ['', '## Combined and independent lines', '',
+                  'The solver minimizes active time. Rounding a different route can increase the station count.',
+                  'Separate lines remain a feasible station-count alternative; neither result proves the integer minimum.', '',
+                  '| Planet | Rate per pack | Joint plan stations | Separate line station sum | Active equivalents in joint plan |',
+                  '|---|---:|---:|---:|---:|']
+        for row in comparison['rows']:
+            if row['stage'] == spec['combined_stage']:
+                for p in row['planets']:
+                    lines.append(f"| {p['planet']} | {row['rate']} | {p['machines']} | {p['separate_line_station_sum']} | {p['active_machine_equivalents']:.2f} |")
+    if spec.get('materials'):
+        lines += ['', '## Gross material inputs', '',
+                  'These are summed recipe inputs. They include internal circulation, not only net extraction.', '',
+                  '| Planet | Stage | Rate | Material | Input/min |', '|---|---|---:|---|---:|']
+        for row in comparison['rows']:
+            if row['rate'] != spec['detail_rate']:
+                continue
+            for p in row['planets']:
+                for material, amount in p['material_input_per_minute'].items():
+                    lines.append(f"| {p['planet']} | {row['stage']} | {row['rate']} | {material} | {amount:.2f} |")
+    if spec.get('machine_detail_stage'):
+        lines += ['', '## Installed machines', '',
+                  '| Planet | Machine | Count | Active equivalents |', '|---|---|---:|---:|']
+        for row in comparison['rows']:
+            if row['stage'] != spec['machine_detail_stage'] or row['rate'] != spec['detail_rate']:
+                continue
+            for planet in row['planets']:
+                for name, machine in sorted(planet['machines_by_type'].items()):
+                    lines.append(f"| {planet['planet']} | {name} | {machine['count']} | {machine['active_equivalents']:.2f} |")
     lines += ['', '## Declared boundaries', '']
     for label, assumptions in comparison['assumptions'].items():
         lines += ['### ' + label, '']

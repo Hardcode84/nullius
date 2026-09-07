@@ -1,0 +1,39 @@
+{
+  "title": "Processed-input Vulcanus tier 2 science experiment",
+  "planets": [
+    "Nauvis tier 2",
+    "Vulcanus candidate"
+  ],
+  "stages": [
+    "geology",
+    "climatology",
+    "combined"
+  ],
+  "rates": [
+    120,
+    240
+  ],
+  "research_stage": null,
+  "detail_rate": 120,
+  "notes": [
+    "This is a hypothetical recipe experiment. No gameplay recipes are changed. All eligible supply routes use the declared pre-physics machine catalog. This does not prove ingredient availability at the initial science tier 2 unlock.",
+    "Geology candidate: 1 glass, 1 lime and 2 mineral dust produce 2 packs in 10 seconds. The boxed recipe scales material and output quantities by five and takes 50 seconds.",
+    "Climatology candidate: 100 compressed carbon dioxide, 10 compressed nitrogen and 5 sulfuric acid produce 2 packs in 10 seconds. Its boxed recipe scales quantities and time by five.",
+    "Nauvis is restricted to geology 2 and climatology 2, including their boxed equivalents. Vulcanus is restricted to the candidate recipes. Both support factories use all eligible alternative recipes.",
+    "Combined means each science type is produced at the stated rate. Independent chains are separate factories. Compare the combined row to measure shared co-products.",
+    "Counts include process machines and extraction. Nauvis receives external electricity; generation and distribution are excluded. Vulcanus fuel production is included. Both exclude transport, storage and heat delivery. Electric MW is average load plus installed drain.",
+    "The solver minimizes active machine time. It does not minimize rounded station counts or construction costs. Construction flows must be feasible. Native machine productivity is included; research productivity, modules and beacons are excluded."
+  ],
+  "machine_detail_stage": "combined",
+  "materials": [
+    "nullius-water",
+    "nullius-wastewater",
+    "nullius-nitrogen",
+    "nullius-acid-sulfuric"
+  ],
+  "combined_stage": "combined",
+  "independent_stages": [
+    "geology",
+    "climatology"
+  ]
+}

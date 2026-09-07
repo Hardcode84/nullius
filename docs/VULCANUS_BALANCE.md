@@ -28,6 +28,11 @@ climatology recipe comparison. The
 [Nauvis comparison](PLANET_SCIENCE_COMPARISON.md) uses the same remaining
 research boundary and reports electric demand for the Nauvis factory.
 
+The [processed-input tier 2 experiment](SCIENCE_TIER2_MINERS.md) compares
+hypothetical local science recipes with Nauvis using second-tier miners.
+The [first-tier miner reference](SCIENCE_TIER2_EXPERIMENT.md) retains the
+previous Nauvis extraction boundary. Neither experiment changes gameplay.
+
 ## Balance assessment
 
 Use the second-tier comparison as the industrial capacity reference. The early

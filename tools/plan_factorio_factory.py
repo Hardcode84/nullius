@@ -601,6 +601,8 @@ def compare_argon(data, spec):
 
 def write_executor_fixture(report, stage_name, path):
     from generate_factorio_scenario_manifest import lua
+    if report.get("provenance", {}).get("prototype_overlay_sha256"):
+        raise TestFailure("hypothetical prototypes cannot be exported as a shipping executor fixture")
     stage = next(s for s in report["stages"] if s["name"] == stage_name)
     plan = stage["plans"][0]
     if plan["flow"]["status"] != "optimal":
@@ -877,7 +879,10 @@ def main():
                     if key in ("name", "energy_source", "energy_usage", "crafting_speed", "fluid_boxes", "crafting_categories", "minable", "placeable_by", "heat_buffer", "infinite", "normal", "minimum", "mining_speed", "resource_categories", "category")}
                     for name in args.inspect_entity}, indent=2))
                 return
+            overlay_path = ROOT / config["prototype_overlay"] if config.get("prototype_overlay") else None
+            prereqs.merge_prototype_overlay(data, overlay_path)
             report = {"schema": 1, "provenance": {
+                "prototype_overlay_sha256": hashlib.sha256(overlay_path.read_bytes()).hexdigest() if overlay_path else None,
                 "planner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 "config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
                 "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),

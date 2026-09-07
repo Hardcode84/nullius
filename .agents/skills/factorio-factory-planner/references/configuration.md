@@ -40,7 +40,7 @@ The planner includes native machine productivity, speed, fluid fuel, extraction,
 spoilage, and co-products. It does not apply modules, beacons, or technology
 productivity bonuses. Temperature-constrained fluid ingredients are excluded
 and listed in `excluded.unsupported_fluid_temperature`. Supported process energy
-sources are fluid, heat, and void. Extend the model and its tests before making
+sources are fluid, heat, void, and electric with a declared external grid. Extend the model and its tests before making
 claims that need other energy sources or excluded recipes.
 
 ## Inspect a saved plan
@@ -177,3 +177,49 @@ The Nauvis executor fixture supplies a declared electric generator interface.
 The base game's tertiary electric interface cannot supply surge machines.
 This test checks recipe execution, not connected factory throughput or electric
 peak demand.
+
+
+## Hypothetical science recipes
+
+Set `prototype_overlay` to a repository JSON file to add candidate prototypes.
+The planner uses the prerequisite checker's additive overlay loader. It refuses
+to replace resolved prototypes and records the overlay hash in plan provenance.
+Candidate recipes are assumed available. An overlay does not prove technology
+unlock timing or Factorio runtime execution. Executor export rejects overlay
+plans so that a hypothetical recipe cannot be presented as a shipping test.
+
+The tier 2 experiment includes ordinary and boxed candidates. It forces the
+candidate science routes on Vulcanus and ordinary tier 2 routes on Nauvis.
+Supply and construction use the declared pre-physics catalog. The second Nauvis
+configuration changes solid extraction to small miner 2.
+
+```bash
+python tools/analyze_factorio_prereqs.py \
+  @tests/progression/planner/science-tier2-inspection.args
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/vulcanus-science-tier2.json \
+  --output /tmp/vulcanus-tier2.json --overview
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/nauvis-science-tier2.json \
+  --output /tmp/nauvis-tier2.json --overview
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/nauvis-science-tier2-miners.json \
+  --output /tmp/nauvis-tier2-miners.json --overview
+python tools/compare_factorio_factory_plans.py \
+  --config tests/progression/planner/science-tier2-comparison.json \
+  --first-plan /tmp/nauvis-tier2.json --second-plan /tmp/vulcanus-tier2.json \
+  --output /tmp/tier2-comparison.json \
+  --markdown-output docs/SCIENCE_TIER2_EXPERIMENT.md
+python tools/compare_factorio_factory_plans.py \
+  --config tests/progression/planner/science-tier2-miners-comparison.json \
+  --first-plan /tmp/nauvis-tier2-miners.json --second-plan /tmp/vulcanus-tier2.json \
+  --output /tmp/tier2-miners-comparison.json \
+  --markdown-output docs/SCIENCE_TIER2_MINERS.md
+```
+
+Comparison reports can omit `research_stage` for capacity experiments.
+`machine_detail_stage` selects installed machine counts at `detail_rate`.
+`materials` selects gross recipe-input rates. `combined_stage` and
+`independent_stages` compare a shared flow with the sum of separate lines.
+A shared flow can have more rounded stations because the solver minimizes
+active machine time. Do not describe either count as the integer minimum.

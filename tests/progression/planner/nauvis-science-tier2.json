@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "entrance_technologies": [
+    "nullius-pneumatic-technology"
+  ],
+  "science_rates_per_minute": [
+    120,
+    240
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [],
+  "prime_stock": {
+    "nullius-rutile": 1,
+    "nullius-graphite": 135
+  },
+  "solid_discard": [
+    "stone",
+    "sulfur",
+    "nullius-boron",
+    "nullius-calcium-chloride",
+    "nullius-box-calcium-chloride",
+    "nullius-iron-chloride",
+    "nullius-mineral-dust",
+    "nullius-silica"
+  ],
+  "wreck_machines": {},
+  "assumptions": {
+    "electricity": "External continuous electric grid. Report active demand and drain for rounded installed stations. Generation, storage and power distribution are not counted.",
+    "resources": "Iron ore, bauxite, sandstone, limestone patches and a fumarole at 100 percent yield. Mining machines are counted. No ore imports. No mining productivity bonus.",
+    "construction": "All process placement items are produced. Continuous fractional construction flow is not a startup schedule. Rutile and graphite seed stock is declared separately.",
+    "comparison": "Same post-pneumatic research entrance as the Vulcanus comparison. Comparable first/second-tier processing machines. All pre-physics recipes are eligible. No modules or beacons. Guaranteed outputs only.",
+    "waste": "Only listed solid waste is removed. Fluid disposal uses real recipes.",
+    "time": "All science lines and labs are available at time zero. Research triggers are assumed satisfied. Times exclude construction, checkpoints and exploration.",
+    "experiment": "Independent and combined tier 2 science capacity. All pre-physics recipes are eligible for supply and construction. Ordinary and boxed tier 2 routes are included. No labs, modules, beacons or technology productivity bonus. Construction has no free placement stock.",
+    "recipe_boundary": "Only ordinary Nauvis tier 2 science recipes and their boxed equivalents are eligible."
+  },
+  "stages": [
+    {
+      "name": "geology",
+      "products": {
+        "nullius-geology-pack": 1
+      },
+      "research_roots": [],
+      "contract": "tests/progression/nauvis-factory.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-outfall-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-seawater-intake-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1"
+      ],
+      "excluded_recipes": [
+        "nullius-geology-pack",
+        "nullius-geology-pack-vulcanus",
+        "nullius-climatology-pack",
+        "nullius-climatology-pack-vulcanus"
+      ]
+    },
+    {
+      "name": "climatology",
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "research_roots": [],
+      "contract": "tests/progression/nauvis-factory.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-outfall-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-seawater-intake-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1"
+      ],
+      "excluded_recipes": [
+        "nullius-geology-pack",
+        "nullius-geology-pack-vulcanus",
+        "nullius-climatology-pack",
+        "nullius-climatology-pack-vulcanus"
+      ]
+    },
+    {
+      "name": "combined",
+      "products": {
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1
+      },
+      "research_roots": [],
+      "contract": "tests/progression/nauvis-factory.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-outfall-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-seawater-intake-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1"
+      ],
+      "excluded_recipes": [
+        "nullius-geology-pack",
+        "nullius-geology-pack-vulcanus",
+        "nullius-climatology-pack",
+        "nullius-climatology-pack-vulcanus"
+      ]
+    }
+  ],
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "extractors": {
+    "iron-ore": {
+      "machine": "nullius-small-miner-1",
+      "resource": "iron-ore",
+      "yield_fraction": 1
+    },
+    "nullius-bauxite": {
+      "machine": "nullius-small-miner-1",
+      "resource": "nullius-bauxite",
+      "yield_fraction": 1
+    },
+    "nullius-sandstone": {
+      "machine": "nullius-small-miner-1",
+      "resource": "nullius-sandstone",
+      "yield_fraction": 1
+    },
+    "nullius-limestone": {
+      "machine": "nullius-small-miner-1",
+      "resource": "nullius-limestone",
+      "yield_fraction": 1
+    },
+    "nullius-volcanic-gas": {
+      "machine": "nullius-extractor-1",
+      "resource": "nullius-fumarole",
+      "yield_fraction": 1
+    }
+  },
+  "lab": "nullius-lab-1",
+  "science_analysis": {
+    "packs": [
+      "nullius-geology-pack",
+      "nullius-climatology-pack"
+    ],
+    "rates": [
+      120,
+      240
+    ],
+    "hours": [
+      4,
+      8
+    ],
+    "research_roots": {},
+    "factory_stages": []
+  },
+  "electric_grid": true
+}
