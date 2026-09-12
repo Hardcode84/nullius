@@ -7,5 +7,5 @@
 script.on_init(function() remote.call("release-upgrade", "seed") end)
 script.on_nth_tick(1, function()
   remote.call("release-upgrade", "verify")
-  script.on_nth_tick(1, nil)
+  if game.tick == 1 then game.auto_save("release-upgraded") end
 end)

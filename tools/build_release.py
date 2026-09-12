@@ -385,7 +385,10 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
         scenario_suite = json.loads(scenario_result.read_text(encoding="utf-8"))
         if scenario_suite.get("status") != "pass":
             raise TestFailure(f"invalid passing scenario result: {scenario_suite!r}")
-    from tools.check_factorio_upgrade import check_upgrade
+    if __package__:
+        from .check_factorio_upgrade import check_upgrade
+    else:
+        from check_factorio_upgrade import check_upgrade
     upgrade = check_upgrade(archive, factorio, dependencies, args.timeout_seconds)
     return {
         "upgrade": upgrade,

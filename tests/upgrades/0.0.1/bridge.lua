@@ -3,7 +3,7 @@ remote.add_interface("release-upgrade", {
   seed = function()
     local force = game.forces.player
     for _, name in ipairs({"nullius-probe-vulcanus", "nullius-geology-2",
-        "nullius-climatology-2", "nullius-air-separation-2"}) do
+        "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7"}) do
       force.technologies[name].researched = true
     end
     probe.on_probe_researched("nullius-probe-vulcanus", force)
@@ -33,7 +33,8 @@ remote.add_interface("release-upgrade", {
       "marker reverse lookup was not converted")
     assert(storage.nullius_tag_android[fixture.tag.tag_number] == nil, "old marker key remains")
     for _, name in ipairs({"nullius-geology-pack-vulcanus-2",
-        "nullius-climatology-pack-vulcanus-2", "nullius-vulcanus-residual-gas"}) do
+        "nullius-climatology-pack-vulcanus-2", "nullius-vulcanus-residual-gas",
+        "nullius-boxed-geology-pack-vulcanus-2", "nullius-boxed-climatology-pack-vulcanus-2"}) do
       assert(force.recipes[name].enabled, "researched recipe remains locked: " .. name)
     end
     probe.on_probe_researched("nullius-probe-vulcanus", force)

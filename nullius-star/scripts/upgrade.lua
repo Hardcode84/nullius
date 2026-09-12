@@ -39,8 +39,14 @@ function upgrade.from_0_0_1(event)
   end
 
   storage.nullius_tag_android = {}
+  local bodies = {}
+  for _, surface in pairs(game.surfaces) do
+    for _, body in pairs(surface.find_entities_filtered{type = "character"}) do
+      bodies[body.unit_number] = body
+    end
+  end
   for unit, tag in pairs(storage.nullius_android_tag or {}) do
-    local body = game.get_entity_by_unit_number(unit)
+    local body = bodies[unit]
     if tag.valid and body and body.valid and not body.player then
       storage.nullius_tag_android[tag.force.index .. ":" .. tag.tag_number] = body
       script.register_on_object_destroyed(body)
