@@ -36,8 +36,10 @@
 | Field | Value |
 |---|---|
 | Initial version | `0.0.1` |
+| Current version | `0.0.2` alpha |
+| Playable endpoint | Local Vulcanus production through physics science |
 | Upstream Nullius saves | Unsupported; rejected on configuration change |
-| Nullius* prior versions | None |
+| Nullius* prior versions | Start a new game. Version `0.0.1` body queues, probe records, and map-tag keys have no migration to `0.0.2`. |
 | Packaged migrations | None |
 
 ## Active hardening work
