@@ -38,6 +38,8 @@ Include only changes that players can observe in the released mod in
   behavior. Do not add the implementation or validation work as separate entries.
 - Do not copy the commit list into the changelog. Omit changes with no effect
   on players. Keep validation results in the release report or manifest.
+- Mention save compatibility in release notes only when a breaking change
+  affects existing saves. Do not announce routine compatible upgrades.
 
 Review each entry before the candidate gate. The version check does not check
 whether an entry belongs in the changelog.

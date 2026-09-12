@@ -204,6 +204,7 @@ script.on_load(
 script.on_configuration_changed(
   function(event)
     save_lineage.validate(event)
+    require("scripts.upgrade").from_0_0_1(event)
     reset_config()
     surface_config.configure_existing()
     vulcanus_heat.rebuild()

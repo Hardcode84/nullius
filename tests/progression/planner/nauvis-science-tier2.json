@@ -42,7 +42,7 @@
         "nullius-geology-pack": 1
       },
       "research_roots": [],
-      "contract": "tests/progression/nauvis-factory.args",
+      "contract": "tests/progression/planner/nauvis-factory.args",
       "technologies": [
         "nullius-physics"
       ],
@@ -88,7 +88,7 @@
         "nullius-climatology-pack": 1
       },
       "research_roots": [],
-      "contract": "tests/progression/nauvis-factory.args",
+      "contract": "tests/progression/planner/nauvis-factory.args",
       "technologies": [
         "nullius-physics"
       ],
@@ -135,7 +135,7 @@
         "nullius-climatology-pack": 1
       },
       "research_roots": [],
-      "contract": "tests/progression/nauvis-factory.args",
+      "contract": "tests/progression/planner/nauvis-factory.args",
       "technologies": [
         "nullius-physics"
       ],

@@ -9,7 +9,6 @@ Date: 13.09.2026
     - Players can use a shared probe body after another player leaves it. Occupied bodies cannot be taken over.
     - The /nullius-vulcanus command switches the caller to the probe body if it is idle and reports when another player occupies it.
     - Volcanic gas analysis now accepts compressed volcanic gas.
-    - This alpha release requires a new game. Upgrades from 0.0.1 and upstream Nullius saves are not supported.
   Bugfixes:
     - Added local residual-gas separation so Vulcanus can produce argon before physics research.
     - Fixed body selection and map markers after body changes, respawn, and player removal in multiplayer.

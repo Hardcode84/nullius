@@ -29,7 +29,7 @@ function debug.quick_start_vulcanus(player)
     landing = probe.get_landing(force)
   end
   local android = landing.android
-  if not android.valid or android.force ~= force or
+  if not android or not android.valid or android.force ~= force or
       android.surface.name ~= VULCANUS then
     return nil, {"nullius-probe.body-unavailable"}
   end
