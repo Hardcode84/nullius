@@ -23,6 +23,25 @@ push the tag.
 | Multiplayer | Support is declared only when server/client validation passes |
 | Factorio version | Declared version is included in the tested version matrix |
 
+## Changelog policy
+
+Include only changes that players can observe in the released mod in
+`nullius-star/changelog.txt`.
+
+- Include gameplay features, balance changes, bug fixes, graphics, interface
+  changes, translations, and changes to performance or supported saves and mods.
+- Describe the effect on the player. For a fix, name the affected action and
+  the corrected behavior.
+- Exclude tests, test results, documentation, development tools, build and
+  release scripts, code cleanup, and internal refactoring.
+- If an internal change also changes player behavior, describe only that
+  behavior. Do not add the implementation or validation work as separate entries.
+- Do not copy the commit list into the changelog. Omit changes with no effect
+  on players. Keep validation results in the release report or manifest.
+
+Review each entry before the candidate gate. The version check does not check
+whether an entry belongs in the changelog.
+
 ## Candidate gate
 
 Require a clean checkout, then run:
@@ -71,10 +90,11 @@ artifact state. Do not tag or publish a failed candidate.
 
 ## Release sequence
 
-1. Run the candidate gate.
-2. Review the generated ZIP and manifest.
-3. Create and verify the annotated tag on the manifest commit.
-4. Report the ZIP path, manifest path, SHA-256, commit, and local tag.
+1. Review the changelog against the changelog policy.
+2. Run the candidate gate.
+3. Review the generated ZIP and manifest.
+4. Create and verify the annotated tag on the manifest commit.
+5. Report the ZIP path, manifest path, SHA-256, commit, and local tag.
 
 | Tag operation | Command |
 |---|---|
