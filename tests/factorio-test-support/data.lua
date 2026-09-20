@@ -252,3 +252,5 @@ require("lightning-poles")
 require("network-trip")
 
 require("fluid-preservation")
+
+require("drone-mining")

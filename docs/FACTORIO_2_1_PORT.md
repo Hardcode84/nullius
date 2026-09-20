@@ -14,7 +14,7 @@ planner schema witness. Full gameplay has not been ported.
 | Entity prototypes | Generator pictures, chest robot doors, mining-drill graphics, vehicle braking/friction, and crafting symmetry changed | Port each entity family; check graphics, fluid port geometry, and vehicle behavior |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
 | Runtime mining flags | Four helper creation paths use `minable_flag` on both engines | 45 assertions per engine verify protection and cleanup; full Nullius heat and gas-vent scenarios pass 160 assertions |
-| Runtime activity flags | Two writes in `scripts/drone.lua` | Replace entity `active` writes with `disabled_by_script` |
+| Mining drone refresh | Uses `update_connections()` without activation writes | 18 assertions pass per engine and in full Nullius 2.0: ore pickup, disabled-state preservation, and mining after explicit re-enable |
 | Runtime initialization | `scripts/startup.lua:131` reads removed `recipe.category` | Filter the category set; otherwise initialization fails after prototype loading is fixed |
 | Test code | 121 fluidbox-reference lines across 20 files; 52 candidate active/minable-write lines across 19 files | Port fluid reads/writes, capacities, filters, and connection queries. Preserve actual fluid and heat assertions |
 | Recipe productivity families | Matcher accepts both category schemas | Verified on 2.0.77 and 2.1.19: three sorted effects, no duplicates, zero-cap exclusion, and +1% research bonuses |

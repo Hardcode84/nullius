@@ -263,10 +263,9 @@ function miner_effect(event, ore, size, richness, goal_ind, goal_amount)
   local entities = s.find_entities(a)
   for _, e in pairs(entities) do
     if (e.valid and (e.type == "mining-drill")) then
-    e.active = false
-      e.active = true
+      -- Refresh ore selection without changing the drill's disabled state.
       e.update_connections()
-  end
+    end
   end
 
   if ((goal_ind ~= nil) and (event.source_entity ~= nil) and
