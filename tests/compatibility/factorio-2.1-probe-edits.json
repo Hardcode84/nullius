@@ -1,0 +1,8 @@
+[
+  {
+    "path": "nullius-star/prototypes/entity/assembler.lua",
+    "old": "assembler2pipepictures()",
+    "new": "util.table.deepcopy(require(\"__base__/prototypes/entity/assembler-pictures\").assembler2pipepictures)",
+    "count": 4
+  }
+]

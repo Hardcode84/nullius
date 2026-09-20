@@ -1,0 +1,19 @@
+{
+  "description": "Lexical source hits for documented 2.1 changes; not an AST migration or a resolved prototype count.",
+  "rules": {
+    "runtime_fluidbox": {"roots": ["nullius-star/scripts"], "pattern": "\\.fluidbox\\b"},
+    "test_fluidbox": {"roots": ["tests/scenarios"], "pattern": "\\.fluidbox\\b"},
+    "runtime_readonly_writes": {"roots": ["nullius-star/scripts"], "pattern": "\\.(?:active|minable)\\s*="},
+    "test_readonly_writes": {"roots": ["tests/scenarios"], "pattern": "\\.(?:active|minable)\\s*="},
+    "recipe_category_definitions": {"roots": ["nullius-star/prototypes/item", "nullius-star/prototypes/planet"], "pattern": "\\bcategory\\s*="},
+    "category_access": {"roots": ["nullius-star", "tools"], "pattern": "\\.category\\b|\\.get\\([\"']category[\"']"},
+    "product_probability": {"roots": ["nullius-star", "tools"], "pattern": "\\bprobability\\s*=|\\.probability\\b|\\.get\\([\"']probability[\"']"},
+    "quality_effects": {"roots": ["nullius-star"], "pattern": "quality\\s*=|next_probability"},
+    "moved_graphics": {"roots": ["nullius-star"], "pattern": "horizontal_animation|vertical_animation|base_picture|robot_animation|landing_location_offset|assembler3pipepictures|assembler3pipecovers|circuit_connector_layer"},
+    "removed_recipe_fields": {"roots": ["nullius-star"], "pattern": "always_show_products|show_amount_in_title|result_is_always_fresh|reset_freshness_on_craft"},
+    "removed_vehicle_fields": {"roots": ["nullius-star"], "pattern": "braking_power|\\bfriction\\s*="},
+    "old_science_prototypes": {"roots": ["nullius-star"], "pattern": "type\\s*=\\s*[\"']tool[\"']|\\[[\"']tool[\"']\\]"},
+    "quickbar_api": {"roots": ["nullius-star", "tests/scenarios"], "pattern": "get_quick_bar_slot|set_quick_bar_slot"},
+    "tool_version_pins": {"roots": ["tools"], "pattern": "factorio_version.*2\\.0|factorio_version.*!=|release factorio_version"}
+  }
+}

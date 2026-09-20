@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "candidate-schema-witness": {
+      "name": "candidate-schema-witness",
+      "categories": ["chemistry"],
+      "ingredients": [],
+      "results": [{"type": "item", "name": "witness-product", "amount": 2, "independent_probability": 0.5}]
+    }
+  }
+}

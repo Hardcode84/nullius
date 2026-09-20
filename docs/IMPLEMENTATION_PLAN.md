@@ -11,6 +11,7 @@
 | Implemented mechanics | Resolved prototypes and runtime scenario results |
 | Proposed mechanics | Planet design documents |
 | Other planets and endgame | Space Age brainstorming document |
+| Factorio 2.1 migration | [Port assessment](FACTORIO_2_1_PORT.md) |
 
 ## Implemented vertical slice
 

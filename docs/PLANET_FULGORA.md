@@ -216,9 +216,8 @@ across the three electrical scenarios. Use
 pre-transfer value, 0.89 MJ. Collector buffers still do not appear in storage
 statistics. The 1 TW sink and native lightning capture tests pass on 2.1.
 
-Full-mod loading stops at version checks: Nullius and all installed dependency
-mods declare 2.0. Port these manifests and their prototypes/runtime calls before
-claiming 2.1 gameplay support. Fixture changes needed for 2.1: lightning damage
+Full-mod loading requires the [2.1 port](FACTORIO_2_1_PORT.md), including dependency
+upgrades and prototype/runtime changes. Fixture changes needed for 2.1: lightning damage
 uses `{amount=0,type="electric"}`; disable entities with `disabled_by_script`
 because `active` is read-only.
 
