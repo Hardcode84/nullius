@@ -236,3 +236,4 @@ planner_grid.energy_usage = "0W"
 data:extend({planner_grid})
 
 require("lightning-poles")
+require("network-trip")

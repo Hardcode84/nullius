@@ -88,18 +88,24 @@ Lightning must interrupt production without destroying the factory.
 ```text
 lightning -> pole collector -> electrical network
   -> sufficient absorption: store energy or consume it
-  -> overload: drain accumulators and temporarily disable consumers
-  -> timed recovery, with protection against repeated EMP shutdowns
+  -> overload: switch the network offline
+  -> manual reset from any pole in the affected network
 ```
 
 | Protection | Role | Cost or constraint |
 |---|---|---|
 | Surge sink | Consume excess electricity as waste heat | Tertiary priority; spaced like wind turbines |
 | Priority sink | Maintain storage headroom through steady consumption | Secondary priority; can cause calm-period shortages |
-| Recovery interval | Prevent repeated overloads from blocking all progress | Candidate: EMP grace period or temporary storm suppression |
+| Reset grace period | Prevent immediate repeat trips | Clear the measurement window when the player resets the network |
 
 Absorption must account for both available capacity and charge rate. Too few
 sinks cause overloads; excessive consumption leaves insufficient stored power.
+
+Check each network every 30 ticks. The proposed threshold is incoming energy
+greater than twice absorbed energy in the same window. Native production totals
+cannot supply the incoming value: they count delivered energy, not surplus.
+Count captured strike energy separately. Include storage charging and sinks in
+absorption; define the storage credit before balance tests.
 
 ## Energy storage
 
@@ -193,6 +199,32 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 
 ## Engine candidates and validation questions
 
+`experiment-network-trip`: Factorio 2.0.77, 16 assertions, tick 450.
+Test fixtures only; reset is scripted, not a tested player click.
+
+| Case | Measured result |
+|---|---|
+| 1 MW source, 100 kW load, 30 ticks | Production and consumption both 50 kJ |
+| Same source with 600 kW storage charging | Production and consumption both 350 kJ |
+| 1 MJ strike, 50% collection | 48.33 kJ delivered; 451.67 kJ remains in the collector |
+| Pole or collector `active=false` | Electricity still flows |
+| Replace connected poles with zero-area variants | Wires remain; adjacent loads lose power until reset |
+| Load built while offline | Remains unpowered outside the pole centre |
+| Source and load overlap the pole centre | Still powered; zero area does not isolate hidden helpers |
+
+Candidate implementation: replace all poles in the affected component with
+zero-area variants, handle overlapping helpers, and clear consumer buffers once
+if shutdown must be immediate. Restore the original variants on reset.
+The API provides `on_gui_opened`, `electric_network_gui` relative GUI anchoring,
+and `on_gui_click` for a reset button at any pole.
+
+Before gameplay integration, prove helper isolation and preservation of pole
+quality, health, settings, and wires. Offline state must survive save/load and
+network splits. An offline component must keep merged or newly built poles
+offline. Resolve the current component when a player clicks reset; network IDs
+alone are not persistent ownership. Separate live networks with overlapping
+supply areas can still power the same building.
+
 | Area | Inherited candidate | Required check |
 |---|---|---|
 | Pole collectors | Native hidden attractor; see experiment above | Validate remaining ownership events before gameplay integration |
@@ -200,9 +232,9 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 | Lightning tuning | `lightnings_per_chunk_per_tick`, day/night multipliers, targeting priorities, exemptions, search radius | Confirm current fields and targeting behavior |
 | Strike effects | Separate ordinary and attracted callbacks confirmed by the pole experiment | Use the attractor callback for collector-side overload logic |
 | No destruction | Zero damage preserves ordinary and collector-backed poles in the experiment | Check other building families when adding storms |
-| Overload detection | Prefer known strike energy versus network absorption; alternative is `electric_network_statistics` and `LuaFlowStatistics` | Test charge-rate limits, spare capacity, and statistics resolution |
+| Overload detection | Captured strike energy versus absorption; delivered production does not expose surplus | Test charge-rate limits, spare capacity, and the threshold |
 | Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
-| EMP | Set consumer `active=false`, drain storage with `energy=0`, restore consumers after a timer | Poles do not gate distribution through `active`; test recovery and repeated strikes |
+| Offline network | Zero-area pole variants with manual reset; see experiment above | Prove helper isolation, topology changes, and the reset interface |
 | Super-capacitors | `AccumulatorPrototype` with high `input_flow_limit`, low `buffer_capacity`, and energy-source `drain` | Verify charging, leakage, and transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
 | Trace extraction | Probabilistic recipe products | Set yields and prove a complete local bootstrap |
