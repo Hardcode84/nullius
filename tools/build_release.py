@@ -389,7 +389,8 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
         from .check_factorio_upgrade import check_upgrade
     else:
         from check_factorio_upgrade import check_upgrade
-    upgrade = check_upgrade(archive, factorio, dependencies, args.timeout_seconds)
+    upgrade = [check_upgrade(archive, factorio, dependencies, args.timeout_seconds, version)
+               for version in ("0.0.1", "0.0.2")]
     return {
         "upgrade": upgrade,
         "progression_contracts": contract_count,

@@ -20,8 +20,12 @@ else:
     from run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, prepare_config
 
 
-def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int) -> dict:
-    fixture = REPOSITORY / "tests/upgrades/0.0.1"
+def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int, previous_version: str = "0.0.1") -> dict:
+    fixture = REPOSITORY / "tests/upgrades" / previous_version
+    if not fixture.is_dir():
+        raise ValueError(f"No upgrade fixture for {previous_version}")
+    with zipfile.ZipFile(candidate) as archive:
+        candidate_version = json.loads(archive.read("nullius-star/info.json"))["version"]
     with tempfile.TemporaryDirectory(prefix="nullius-upgrade-") as temporary:
         root = Path(temporary)
         for name in ("saves", "script-output", "temp"):
@@ -31,7 +35,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         prepare_release_mods(mods, dependencies, candidate)
         (mods / candidate.name).unlink()
         previous = subprocess.run(
-            ["git", "archive", "--format=zip", "v0.0.1", "nullius-star"],
+            ["git", "archive", "--format=zip", f"v{previous_version}", "nullius-star"],
             cwd=REPOSITORY, check=True, stdout=subprocess.PIPE,
         ).stdout
         with zipfile.ZipFile(io.BytesIO(previous)) as archive:
@@ -40,7 +44,8 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         def install_fixture() -> None:
             mod = mods / "nullius-star"
             with (mod / "control.lua").open("a") as control:
-                control.write("\n" + (fixture / "bridge.lua").read_text())
+                control.write("\nlocal candidate_version = " + json.dumps(candidate_version) + "\n"
+                              + (fixture / "bridge.lua").read_text())
             scenario = mod / "scenarios/release-upgrade"
             scenario.mkdir(parents=True)
             shutil.copyfile(fixture / "control.lua", scenario / "control.lua")
@@ -48,7 +53,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         install_fixture()
         common = [str(factorio), "--config", str(config), "--mod-directory", str(mods), "--disable-audio"]
         run_checked([*common, "--scenario2map", "nullius-star/release-upgrade"],
-                    "0.0.1 upgrade fixture", timeout)
+                    f"{previous_version} upgrade fixture", timeout)
         save = root / "saves/nullius-star/release-upgrade.zip"
         shutil.rmtree(mods / "nullius-star")
         with zipfile.ZipFile(candidate) as archive:
@@ -90,7 +95,8 @@ if __name__ == "__main__":
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument("--dependencies", type=Path, default=default_dependency_mods())
+    parser.add_argument("--from-version", default="0.0.1")
     parser.add_argument("--timeout", type=int, default=300)
     args = parser.parse_args()
     print(json.dumps(check_upgrade(args.candidate.resolve(), args.factorio.resolve(),
-                                   args.dependencies.resolve(), args.timeout), indent=2))
+                                   args.dependencies.resolve(), args.timeout, args.from_version), indent=2))

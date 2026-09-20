@@ -3,11 +3,11 @@ remote.add_interface("release-upgrade", {
   seed = function()
     local force = game.forces.player
     for _, name in ipairs({"nullius-probe-vulcanus", "nullius-geology-2",
-        "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7"}) do
+        "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7", "nullius-primitive-robotics", "nullius-explosives-2", "nullius-mass-production-6"}) do
       force.technologies[name].researched = true
     end
     probe.on_probe_researched("nullius-probe-vulcanus", force)
-    local body = storage.nullius_probe_androids["nullius-vulcanus"]
+    local body = probe.get_landing(force).android
     body.insert{name = "nullius-iron-plate", count = 17}
     local tag = force.add_chart_tag(body.surface, {
       position = body.position, text = "Upgrade body",
@@ -15,7 +15,7 @@ remote.add_interface("release-upgrade", {
     })
     assert(tag, "fixture map marker was not created")
     storage.nullius_android_tag = {[body.unit_number] = tag}
-    storage.nullius_tag_android = {[tag.tag_number] = body}
+    storage.nullius_tag_android = {[force.index .. ":" .. tag.tag_number] = body}
     storage.release_upgrade_fixture = {body = body, unit = body.unit_number, tag = tag}
   end,
   verify = function()
@@ -34,15 +34,16 @@ remote.add_interface("release-upgrade", {
     assert(storage.nullius_tag_android[fixture.tag.tag_number] == nil, "old marker key remains")
     for _, name in ipairs({"nullius-geology-pack-vulcanus-2",
         "nullius-climatology-pack-vulcanus-2", "nullius-vulcanus-residual-gas",
-        "nullius-boxed-geology-pack-vulcanus-2", "nullius-boxed-climatology-pack-vulcanus-2"}) do
+        "nullius-boxed-geology-pack-vulcanus-2", "nullius-boxed-climatology-pack-vulcanus-2", "nullius-anfo-explosive", "nullius-boxed-anfo-explosive"}) do
       assert(force.recipes[name].enabled, "researched recipe remains locked: " .. name)
     end
+    assert(force.character_logistic_requests, "primitive robotics did not enable personal logistics")
     probe.on_probe_researched("nullius-probe-vulcanus", force)
     assert(body.surface.count_entities_filtered{name = "nullius-landing-main", force = force} == 1,
       "upgrade duplicated landing supplies")
     assert(probe.get_landing(force).android == body, "reactivation replaced the body")
     helpers.write_file("upgrade-result.json", helpers.table_to_json{
-      status = "pass", from = "0.0.1", to = script.active_mods["nullius-star"],
+      status = "pass", from = "0.0.2", to = script.active_mods["nullius-star"],
       factorio_version = script.active_mods.base, tick = game.tick,
     }, false)
   end,
