@@ -44,7 +44,8 @@ local bolt = table.deepcopy(data.raw.lightning.lightning)
 bolt.name = "factorio-test-lightning"
 bolt.localised_name = "Lightning experiment strike"
 bolt.energy = "1MJ"
-bolt.damage = 0
+-- 2.1 changed lightning damage from a number to DamagePrototype.
+bolt.damage = mods.base:match("^2%.1%.") and {amount=0,type="electric"} or 0
 bolt.time_to_damage = 1
 bolt.created_effect = nil
 local function event(id)

@@ -101,11 +101,11 @@ lightning -> pole collector -> electrical network
 Absorption must account for both available capacity and charge rate. Too few
 sinks cause overloads; excessive consumption leaves insufficient stored power.
 
-Check each network every 30 ticks. The proposed threshold is incoming energy
-greater than twice absorbed energy in the same window. Native production totals
-cannot supply the incoming value: they count delivered energy, not surplus.
-Count captured strike energy separately. Include storage charging and sinks in
-absorption; define the storage credit before balance tests.
+Check each network every 30 ticks. On 2.1, compare offered primary, secondary,
+and solar energy against twice the requested energy across all input priorities.
+Exclude accumulator discharge from the offered sum. This uses the latest tick,
+not the whole 30-tick interval. On 2.0, production statistics count delivered
+energy and cannot implement this check without additional measurements.
 
 ## Energy storage
 
@@ -199,6 +199,35 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 
 ## Engine candidates and validation questions
 
+### Factorio 2.1 API experiment
+
+Isolated Space Age fixtures, not the full Nullius mod: 2.1.19, 81 assertions
+across the three electrical scenarios. Use
+`pole.electric_network.parent_network.flow_last_tick`.
+
+| Fixture at tick 90 | Offered primary energy | Requested secondary / tertiary energy |
+|---|---|---|
+| 1 MW generator, 100 kW load | 16.667 kJ | 1.667 / 0 kJ |
+| Same with accumulator charging | 16.667 kJ | 1.667 / 10 kJ |
+| Charged lightning collector, 100 kW load | 453.333 kJ | 1.667 / 0 kJ |
+
+`get_accumulators_energy{}` returns current energy and capacity: 0.9 MJ and
+10 MJ in the charging fixture. `flow_last_tick.accumulator_energy` is the
+pre-transfer value, 0.89 MJ. Collector buffers still do not appear in storage
+statistics. The 1 TW sink and native lightning capture tests pass on 2.1.
+
+Full-mod loading stops at version checks: Nullius and all installed dependency
+mods declare 2.0. Port these manifests and their prototypes/runtime calls before
+claiming 2.1 gameplay support. Fixture changes needed for 2.1: lightning damage
+uses `{amount=0,type="electric"}`; disable entities with `disabled_by_script`
+because `active` is read-only.
+
+```bash
+python tools/test_factorio_network_api.py --factorio "$HOME/factorio-2.1.19/bin/x64/factorio"
+```
+
+### Factorio 2.0 API experiments
+
 `experiment-network-trip`: Factorio 2.0.77, 22 assertions, tick 450.
 Test fixtures only; reset is scripted, not a tested player click.
 
@@ -252,7 +281,7 @@ supply areas because a helper can connect to more than one network.
 | Lightning tuning | `lightnings_per_chunk_per_tick`, day/night multipliers, targeting priorities, exemptions, search radius | Confirm current fields and targeting behavior |
 | Strike effects | Separate ordinary and attracted callbacks confirmed by the pole experiment | Use the attractor callback for collector-side overload logic |
 | No destruction | Zero damage preserves ordinary and collector-backed poles in the experiment | Check other building families when adding storms |
-| Overload detection | Captured strike energy versus absorption; delivered production does not expose surplus | Test charge-rate limits, spare capacity, and the threshold |
+| Overload detection | 2.1 aggregate offered energy versus requested energy | Test short surges between samples and tune the threshold |
 | Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
 | Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |
 | Super-capacitors | `AccumulatorPrototype` with high `input_flow_limit`, low `buffer_capacity`, and energy-source `drain` | Verify charging, leakage, and transfer to other storage |

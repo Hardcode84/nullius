@@ -66,6 +66,26 @@ script.on_nth_tick(30,function()
     storage.surface.execute_lightning{name="factorio-test-lightning",position={202,2}}
     storage.surface.execute_lightning{name="factorio-test-lightning",position={402,2}}
   elseif tick==90 then
+    -- Compare the new 2.1 API against the same physical 2.0 fixtures.
+    if script.active_mods.base:match("^2%.1%.") then
+      storage.observations.network_api={}
+      for label,row in pairs({ordinary=rows[1],charging=rows[2],lightning=lightning}) do
+        local network=row.pole.electric_network.parent_network
+        local flow=network.flow_last_tick
+        local accumulators=network.get_accumulators_energy{}
+        storage.observations.network_api[label]={flow=flow,accumulators=accumulators}
+        check(flow.primary_output>flow.total_transfer,"2.1 exposes offered surplus: "..label)
+        if label~="charging" then
+          check(flow.primary_output>2*flow.secondary_demand,"2.1 detects supply above twice demand: "..label)
+        else
+          check(flow.tertiary_demand>0,"2.1 exposes storage charging demand")
+          check(flow.primary_output<2*(flow.secondary_demand+flow.tertiary_demand),
+            "2.1 includes charging headroom in the overload comparison")
+          check(math.abs(accumulators.energy-row.battery.energy)<1,"2.1 aggregates current accumulator energy")
+          check(accumulators.capacity==10000000,"2.1 aggregates accumulator capacity")
+        end
+      end
+    end
     for i,row in ipairs(rows) do storage.observations["window_"..i]=window(row.pole,row.before) end
     storage.observations.lightning=window(lightning.pole,lightning.before)
     storage.observations.collector_buffer=lightning.collector.energy
@@ -88,9 +108,9 @@ script.on_nth_tick(30,function()
       local sample=storage.observations["window_"..i]
       check(math.abs(sample.produced-sample.consumed)<1,"delivered production matches consumption, case "..i)
     end
-    cut.pole.active=false;cut.remote.active=false
+    cut.pole.disabled_by_script=true;cut.remote.disabled_by_script=true
     cut.load.energy=0
-    lightning.collector.active=false
+    lightning.collector.disabled_by_script=true
     lightning.load.energy=0
   elseif tick==120 then
     storage.observations.inactive_pole_load_energy=cut.load.energy
