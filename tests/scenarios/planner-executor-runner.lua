@@ -1,3 +1,4 @@
+local fluids = require("__nullius-star__/scenarios/fluid-api")
 return function(CASE, fixture)
 local failures = {}
 local transferred = {}
@@ -25,11 +26,11 @@ local function feed(row)
   for _, input in ipairs(row.pending) do
     if input.amount > 0 then
       if input.type == "fluid" then
-        local current = machine.fluidbox[input.index]
+        local current = fluids.get(machine, input.index)
         local before = current and current.amount or 0
-        local inserted = math.min(input.amount, machine.fluidbox.get_capacity(input.index) - before)
-        machine.fluidbox[input.index] = {name=input.name, amount=before+inserted,
-          temperature=prototypes.fluid[input.name].default_temperature}
+        local inserted = math.min(input.amount, fluids.capacity(machine, input.index) - before)
+        fluids.set(machine, input.index, {name=input.name, amount=before+inserted,
+          temperature=prototypes.fluid[input.name].default_temperature})
         input.amount = input.amount - inserted
       else
         local count = input.amount
@@ -48,15 +49,15 @@ local function feed(row)
   end
 end
 local function drain(row)
-  for index=1,#row.machine.fluidbox do
-    local proto = row.machine.fluidbox.get_prototype(index)
-    local fluid = row.machine.fluidbox[index]
-    local filter = row.machine.fluidbox.get_filter(index)
+  for index=1,fluids.count(row.machine) do
+    local proto = fluids.prototype(row.machine, index)
+    local fluid = fluids.get(row.machine, index)
+    local filter = fluids.filter(row.machine, index)
     local output_name = false
     for _, output in ipairs(row.spec.outputs) do if fluid and output.name == fluid.name then output_name = true end end
     if fluid and filter and output_name and proto.production_type ~= "input" then
       row.produced[fluid.name] = (row.produced[fluid.name] or 0) + fluid.amount
-      row.machine.fluidbox[index] = nil
+      fluids.set(row.machine, index, nil)
     end
   end
   local inventory = row.machine.get_output_inventory()
@@ -73,9 +74,9 @@ local function drain(row)
   end
 end
 local function input_box(machine, name, fuel)
-  for index=1,#machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
-    local proto = machine.fluidbox.get_prototype(index)
+  for index=1,fluids.count(machine) do
+    local filter = fluids.filter(machine, index)
+    local proto = fluids.prototype(machine, index)
     if fuel and not filter then return index end
     if not fuel and ((filter and filter.name == name and proto.production_type ~= "output") or
         (not filter and proto.production_type == "input")) then
@@ -128,7 +129,10 @@ script.on_nth_tick(30, function()
         power.electric_buffer_size = fixture.electric_grid_watts_per_executor
       end
       if machine.type ~= "furnace" then
-        check(machine.set_recipe(spec.recipe), spec.machine .. " cannot select " .. spec.recipe)
+        machine.set_recipe(spec.recipe)
+        local selected = machine.get_recipe()
+        if not check(selected and selected.name == spec.recipe,
+            spec.machine .. " cannot select " .. spec.recipe) then finish() return end
       end
       local row = {machine=machine, spec=spec, pending={}, produced={}, start=game.tick,
         finished=machine.products_finished}
@@ -137,7 +141,7 @@ script.on_nth_tick(30, function()
           amount=input.amount * spec.cycles}
         if pending.type == "fluid" then
           pending.index = input_box(machine, input.name, false)
-          if not check(pending.index ~= nil, spec.recipe .. " has no input box for " .. input.name) then
+          if not check(pending.index ~= nil, spec.recipe .. " has no input box for " .. input.name .. "; stores=" .. fluids.count(machine)) then
             finish() return
           end
         elseif prototypes.item[input.name].get_spoil_ticks() > 0 and not transferred[input.name] then
@@ -161,7 +165,9 @@ script.on_nth_tick(30, function()
       feed(row)
       local expected = {}
       for _, output in ipairs(row.spec.outputs) do
-        if (output.probability or 1) == 1 then
+        local shared = output.shared_probability or {min=0, max=1}
+        if (output.independent_probability or output.probability or 1) == 1
+            and shared.min == 0 and shared.max == 1 then
           local quantity = output.amount or output.amount_min
           local bonus_cycles = math.floor(row.spec.cycles * row.spec.productivity + 0.000001)
           local bonus = math.max(0, quantity - (output.ignored_by_productivity or 0)) * bonus_cycles
@@ -175,7 +181,7 @@ script.on_nth_tick(30, function()
       if ready then
         check(true, row.spec.recipe .. " produced its guaranteed output")
         row.done = true
-        row.machine.active = false
+        row.machine.disabled_by_script = true
         storage.completed = storage.completed + 1
       elseif game.tick >= fixture.deadline then
         check(false, row.spec.machine .. ": " .. row.spec.recipe .. " completed " ..

@@ -72,8 +72,10 @@ class FactorioTestRunnerTests(unittest.TestCase):
             )
             self.assertEqual((staged_mod / "scenarios").resolve(), SCENARIOS.resolve())
             support_link = run_mods / "factorio-test-support"
-            self.assertTrue(support_link.is_symlink())
-            self.assertEqual(support_link.resolve(), TEST_SUPPORT_MOD.resolve())
+            self.assertFalse(support_link.is_symlink())
+            metadata = json.loads((support_link / "info.json").read_text())
+            self.assertEqual(metadata["factorio_version"], "2.0")
+            self.assertEqual((support_link / "data.lua").resolve(), (TEST_SUPPORT_MOD / "data.lua").resolve())
             mod_list = json.loads((run_mods / "mod-list.json").read_text())
             enabled = [entry["name"] for entry in mod_list["mods"]]
             self.assertEqual(enabled[-2:], ["nullius-star", "factorio-test-support"])
@@ -87,11 +89,15 @@ class FactorioTestRunnerTests(unittest.TestCase):
                 (dependencies / f"{name}_1.0.0.zip").touch()
             release = root / "nullius-star_1.2.3.zip"
             with zipfile.ZipFile(release, "w") as archive:
-                archive.writestr("nullius-star/info.json", "{}")
+                archive.writestr("nullius-star/info.json", json.dumps({"factorio_version": "2.1", "version": "1.2.3"}))
                 archive.writestr("nullius-star/data.lua", "")
 
             run_mods = root / "mods"
             prepare_mods(run_mods, dependencies, release)
+
+            metadata = json.loads((run_mods / "factorio-test-support/info.json").read_text())
+            self.assertEqual(metadata["factorio_version"], "2.1")
+            self.assertEqual(metadata["dependencies"], ["nullius-star = 1.2.3"])
 
             self.assertEqual((run_mods / "nullius-star" / "data.lua").read_text(), "")
             self.assertEqual(

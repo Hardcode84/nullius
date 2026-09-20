@@ -117,6 +117,12 @@ def stage_mod_under_test(run_mods: Path, mod_under_test: Path = MOD_UNDER_TEST) 
     (staged_mod / "scenarios").symlink_to(SCENARIOS.resolve(), target_is_directory=True)
 
 
+def supported_factorio_version(version: str) -> str:
+    if version not in {"2.0", "2.1"}:
+        raise TestFailure(f"unsupported Factorio version: {version!r}; expected 2.0 or 2.1")
+    return version
+
+
 def prepare_mods(
     run_mods: Path,
     dependency_mods: Path,
@@ -131,9 +137,17 @@ def prepare_mods(
 
     stage_mod_under_test(run_mods, mod_under_test)
     enabled.append("nullius-star")
-    (run_mods / "factorio-test-support").symlink_to(
-        TEST_SUPPORT_MOD, target_is_directory=True
-    )
+    subject = json.loads((run_mods / "nullius-star" / "info.json").read_text())
+    version = supported_factorio_version(subject["factorio_version"])
+    support = run_mods / "factorio-test-support"
+    support.mkdir()
+    for source in TEST_SUPPORT_MOD.iterdir():
+        if source.name != "info.json":
+            (support / source.name).symlink_to(source.resolve(), target_is_directory=source.is_dir())
+    metadata = json.loads((TEST_SUPPORT_MOD / "info.json").read_text())
+    metadata["factorio_version"] = version
+    metadata["dependencies"] = [f"nullius-star = {subject['version']}"]
+    (support / "info.json").write_text(json.dumps(metadata, indent=2) + "\n")
     enabled.append("factorio-test-support")
     mod_list = {"mods": [{"name": name, "enabled": True} for name in enabled]}
     (run_mods / "mod-list.json").write_text(

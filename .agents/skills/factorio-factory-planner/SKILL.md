@@ -21,6 +21,14 @@ dump. Install the tested dependencies with
 `python -m pip install -r tools/requirements-planner.txt`. The planner records the dump hash and source
 revision in the report.
 
+The tools accept Factorio 2.0 and 2.1 schemas. Select a matching installation
+and mod set with `--factorio`, `--mod-under-test`, and
+`--dependency-mod-directory`. A schema check does not prove that the full mod
+loads on that engine. For schema or executor changes, run
+`tools/test_factorio_tool_compatibility.py --factorio PATH` on both versions.
+Recipe categories are alternatives; exact quantities reject both independent
+and shared probability.
+
 Read [the configuration and query guide](references/configuration.md) when
 changing a boundary, inspecting a result, or exporting a runtime fixture.
 Keep repeatable boundaries in checked-in configuration files. The Vulcanus

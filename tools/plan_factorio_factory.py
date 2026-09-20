@@ -52,8 +52,7 @@ def validate_config(config):
 
 def amount(entry, policy):
     """Use exact output or an explicitly requested guaranteed-output bound."""
-    probability = entry.get("probability", 1)
-    if probability != 1:
+    if not prereqs.deterministic_product(entry):
         if policy != "guaranteed":
             raise TestFailure(f"probabilistic output: {entry['name']}")
         return 0.0
@@ -111,10 +110,18 @@ def fluid_ports_fit(recipe, machine):
                 continue
             if fluid.get("fluidbox_index") and fluid["fluidbox_index"] != local_index:
                 continue
-            used.add(port_index)
+            reserved = {port_index}
+            if fluid.get("fluidbox_index"):
+                extras = set(fluid.get("optional_fluidbox_indexes", []))
+                reserved.update(i for n, (i, _) in enumerate(available, 1) if n in extras)
+            if reserved.intersection(used) or any(
+                ports[i].get("filter", fluid["name"]) != fluid["name"] for i in reserved
+            ):
+                continue
+            used.update(reserved)
             if match(index + 1):
                 return True
-            used.remove(port_index)
+            used.difference_update(reserved)
         return False
 
     return match(0)
@@ -182,27 +189,26 @@ def recipe_catalog(data, boundary):
         if name in excluded_names:
             excluded["configured"].append(name)
             continue
-        if recipe.get("hidden") or recipe.get("category", "crafting") in boundary["forbid_categories"]:
+        categories = set(prereqs.recipe_categories(recipe)) - set(boundary["forbid_categories"]) - prereqs.IGNORED_RECIPE_CATEGORIES
+        if recipe.get("hidden") or not categories:
             continue
         if not recipe.get("enabled", True) and name not in unlocked:
             continue
         if not prereqs.allowed_on_surface(recipe, boundary["surface"]):
             excluded["surface"].append(name)
             continue
-        category = recipe.get("category", "crafting")
-        if category in prereqs.IGNORED_RECIPE_CATEGORIES:
-            continue
         if any(any(key in ingredient for key in ("temperature", "minimum_temperature", "maximum_temperature"))
                for ingredient in recipe.get("ingredients", [])):
             excluded["unsupported_fluid_temperature"].append(name)
             continue
         candidates = [(kind, machine) for kind, machine in machines
-                      if category in machine.get("crafting_categories", [])
+                      if categories.intersection(machine.get("crafting_categories", []))
                       and fluid_ports_fit(recipe, machine)]
         if not candidates:
             excluded["executor"].append(name)
             continue
         for kind, machine in candidates:
+            category = sorted(categories.intersection(machine["crafting_categories"]))[0]
             source = machine.get("energy_source", {})
             source_type = source.get("type")
             if source_type not in ("void", "fluid", "heat", "electric"):
@@ -225,7 +231,7 @@ def recipe_catalog(data, boundary):
             uncertain = []
             for product in prereqs.recipe_results(recipe):
                 quantity = amount(product, boundary["uncertain_outputs"])
-                if product.get("probability", 1) != 1 or "amount_min" in product:
+                if not prereqs.deterministic_product(product) or "amount_min" in product:
                     uncertain.append(product)
                 bonus = max(0, quantity - product.get("ignored_by_productivity", 0)) * productivity
                 flows[product["name"]] += quantity + bonus
@@ -876,6 +882,9 @@ def main():
     parser.add_argument("--config", type=Path, default=ROOT / "tests/progression/planner/vulcanus.json")
     parser.add_argument("--output", type=Path, default=Path("/tmp/vulcanus-factory-plan.json"))
     parser.add_argument("--data-raw", type=Path, help="Reuse a matching prototype snapshot")
+    parser.add_argument("--factorio", type=Path, default=prereqs.default_factorio())
+    parser.add_argument("--dependency-mod-directory", type=Path, default=prereqs.default_dependency_mods())
+    parser.add_argument("--mod-under-test", type=Path, default=ROOT / "nullius-star")
     parser.add_argument("--read-plan", type=Path)
     parser.add_argument("--stage")
     parser.add_argument("--inspect-entity", action="append", default=[])
@@ -899,6 +908,9 @@ def main():
         if args.stage and args.stage not in {s["name"] for s in config["stages"]}:
             raise TestFailure(f"unknown stage: {args.stage}")
         dump_args = prereqs.parse_arguments([])
+        dump_args.factorio = args.factorio
+        dump_args.dependency_mod_directory = args.dependency_mod_directory
+        dump_args.mod_under_test = args.mod_under_test
         directory = None
         try:
             if args.data_raw:

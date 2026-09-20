@@ -8,7 +8,7 @@ planner schema witness. No gameplay port is applied.
 
 | Area | Evidence | Required work |
 |---|---|---|
-| Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe mutation, startup filtering, UI audit, and planner selection |
+| Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe mutation and startup filtering; tool category handling passes |
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | 75 probability-related lines across 13 files | Port products to `independent_probability`; preserve yields, rocket returns, and recycling calculations. Loot has a separate schema change |
 | Entity prototypes | Generator pictures, chest robot doors, mining-drill graphics, vehicle braking/friction, and crafting symmetry changed | Port each entity family; check graphics, fluid port geometry, and vehicle behavior |
@@ -16,11 +16,40 @@ planner schema witness. No gameplay port is applied.
 | Runtime flags | Six writes across five script files | Replace entity `active` writes with `disabled_by_script`; replace entity `minable` writes with `minable_flag`. Affects drones, beacons, geothermal plants, Vulcanus heat, and gas vents |
 | Runtime initialization | `scripts/startup.lua:131` reads removed `recipe.category` | Filter the category set; otherwise initialization fails after prototype loading is fixed |
 | Test code | 121 fluidbox-reference lines across 20 files; 52 candidate active/minable-write lines across 19 files | Port fluid reads/writes, capacities, filters, and connection queries. Preserve actual fluid and heat assertions |
-| Analysis and release tools | Single-category model, old probability key, 2.0 release check and UI-helper manifest | Update input contracts before using 2.1 factory estimates; change release checks when the port is accepted |
+| Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Supported on 2.0 and 2.1; see tool checks below |
 
 Counts are lexical source matches, not resolved prototype counts or an edit
 budget. Comments and non-entity fields can match. In particular, a logistic
 section's `active` field must not receive the entity API conversion.
+
+## Tool checks
+
+| Check | Result |
+|---|---|
+| Python tool tests | 98 pass |
+| Fresh Nullius 2.0 Vulcanus plan | Completes; regenerated executor fixture is unchanged |
+| Nullius 2.0 chemical executors | 1,927 assertions pass |
+| Nullius 2.0 manifest executors | Three scenarios; 1,705 assertions pass |
+| Nullius 2.0 productivity fixtures | Two scenarios; 51 assertions pass |
+| Isolated 2.0.77 and 2.1.19 tool fixtures | Both pass: fresh dump, category selection, exact/guaranteed yields, native item/fluid crafting, and recipe UI audit |
+
+Use `--factorio`, `--mod-under-test`, and `--dependency-mod-directory`
+with the planner or prerequisite analyzer to select a matching installation
+and mod set. Test-support manifests follow the subject mod version. Release
+metadata checks accept 2.0 and 2.1.
+
+The planners treat categories as alternatives. A forbidden category removes
+that executor path. Exact amounts reject independent and shared probability.
+Guaranteed amounts omit uncertain products. The fluid matcher reserves
+additional ports; shared executor helpers use each engine's native fluid API.
+
+These checks use isolated fixtures on 2.1. Full Nullius 2.1 plans require the
+prototype and dependency repairs listed above.
+
+```bash
+python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.0
+python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.1
+```
 
 ## Published dependencies
 
@@ -48,14 +77,14 @@ new release. A published release does not prove integration compatibility.
 | Retarget only installed manifests to 2.1 | Bob's Logistics 2.0.6 fails at `entity/inserter.lua:97`: removed global `assembler3pipepictures` |
 | Use Bob library 3.0.0 and logistics 3.0.1 source | Nullius fails at `entity/assembler.lua:111`: removed global `assembler2pipepictures` |
 | Replace four assembler picture calls in the staged copy | Lua data stages complete; prototype validation rejects `nullius-asteroid-miner-1.rocket_launch_products[0].probability` |
-| Feed a declared 2.1 recipe to the current planner | `categories=["chemistry"]` becomes `crafting`; a 50% product with amount 2 is accepted as an exact amount of 2 |
+| Feed a declared 2.1 recipe to the planner | Preserves `categories=["chemistry"]`; rejects the 50% product as an exact amount |
 
 Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
 `41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
 manifest-retargeted installed versions in that probe. Full 2.1 prototype,
 runtime, and campaign validation has not passed; the probe stops at the concrete
-product-schema error above. The planner witness exits 1 to expose its mismatch.
+product-schema error above. The planner schema witness now passes.
 
 Bob's 3.0.1 also reports two missing `bob-tungsten-processing` prerequisites.
 Its robot and repair-pack updates detect Space Age's `tungsten-carbide` item,

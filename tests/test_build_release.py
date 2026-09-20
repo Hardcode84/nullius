@@ -1,13 +1,30 @@
 import hashlib
+import json
 from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+from unittest.mock import patch
 
-from tools.build_release import build_archive
+from tools.build_release import build_archive, read_metadata, TestFailure
 
 
 class ReleaseBuilderTests(unittest.TestCase):
+    def test_release_metadata_supports_both_engine_versions(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            mod = Path(temporary)
+            (mod / "changelog.txt").write_text("Version: 1.0.0\n")
+            metadata = {"name": "nullius-star", "version": "1.0.0", "dependencies": ["! nullius"]}
+            with patch("tools.build_release.MOD_DIRECTORY", mod):
+                for version in ("2.0", "2.1", "2.2"):
+                    metadata["factorio_version"] = version
+                    (mod / "info.json").write_text(json.dumps(metadata))
+                    if version == "2.2":
+                        with self.assertRaisesRegex(TestFailure, "factorio_version"):
+                            read_metadata()
+                    else:
+                        self.assertEqual(read_metadata()["factorio_version"], version)
+
     def test_archive_contains_only_distributable_root(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             archive_path = build_archive(Path(temporary), {"version": "0.0.1"})

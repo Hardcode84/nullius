@@ -25,6 +25,8 @@ from run_factorio_tests import (
 )
 
 
+from factorio_schema import recipe_categories, deterministic_product
+
 Prototype = dict[str, Any]
 IGNORED_RECIPE_CATEGORIES = {"recycling", "recycling-or-hand-crafting"}
 NATURAL_MINABLE_PROTOTYPE_TYPES = {
@@ -75,8 +77,7 @@ def parse_energy(value: str | None, expected_unit: str) -> float | None:
 
 
 def deterministic_amount(entry: Prototype) -> float:
-    probability = float(entry.get("probability", 1))
-    if probability != 1:
+    if not deterministic_product(entry):
         raise TestFailure(
             f"probabilistic amount is not an exact contract: {entry['name']}"
         )
@@ -139,7 +140,7 @@ def dump_resolved_data(args: argparse.Namespace) -> tuple[Prototype, Path | None
             (run_directory / directory).mkdir(parents=True)
         config = prepare_config(run_directory, factorio)
         run_mods = run_directory / "mods"
-        prepare_mods(run_mods, dependency_mods)
+        prepare_mods(run_mods, dependency_mods, args.mod_under_test)
         log_path = run_directory / "dump.log"
         completed = run_factorio(
             [
@@ -206,11 +207,13 @@ def describe_recipes(data: Prototype, names: list[str]) -> list[Prototype]:
         recipe = recipes.get(name)
         if recipe is None:
             raise TestFailure(f"recipe prototype not found: {name}")
+        categories = recipe_categories(recipe)
         descriptions.append(
             {
                 "name": name,
                 "enabled": bool(recipe.get("enabled", True)),
-                "category": recipe.get("category", "crafting"),
+                "category": categories[0] if len(categories) == 1 else None,
+                "categories": list(categories),
                 "subgroup": recipe.get("subgroup"),
                 "order": recipe.get("order"),
                 "energy_required": float(recipe.get("energy_required", 0.5)),
@@ -373,9 +376,9 @@ def describe_consumers(data: Prototype, names: list[str]) -> list[Prototype]:
             recipe["input_amount"] = input_amount
             recipe["returned_amount"] = returned_amount
             recipe["net_consumption"] = input_amount - returned_amount
-            recipe["executors"] = describe_category_executors(
-                data, recipe["category"]
-            )
+            recipe["executors"] = list({(row["prototype_type"], row["name"]): row
+                for category in recipe["categories"]
+                for row in describe_category_executors(data, category)}.values())
             recipe["electricity_required"] = (
                 all(
                     executor["energy_source_type"] == "electric"
@@ -517,11 +520,11 @@ def find_dependency_paths(
     )
     surface_properties = dict(args.surface_property)
     forbidden_categories = set(getattr(args, "forbid_category", []))
-    recipe_categories = {
-        recipe.get("category", "crafting") for recipe in recipes.values()
+    known_recipe_categories = {
+        category for recipe in recipes.values() for category in recipe_categories(recipe)
     }
     unknown_forbidden_categories = sorted(
-        forbidden_categories - recipe_categories
+        forbidden_categories - known_recipe_categories
     )
     if unknown_forbidden_categories:
         raise TestFailure(
@@ -555,10 +558,9 @@ def find_dependency_paths(
             known_products.add(ingredient["name"])
         for result in recipe_results(recipe):
             known_products.add(result["name"])
-        category = recipe.get("category", "crafting")
+        allowed_categories = set(recipe_categories(recipe)) - IGNORED_RECIPE_CATEGORIES - forbidden_categories
         if (
-            category in IGNORED_RECIPE_CATEGORIES
-            or category in forbidden_categories
+            not allowed_categories
             or recipe.get("hidden")
             or not allowed_on_surface(recipe, surface_properties)
             or not available_at_boundary(recipe_name)
@@ -678,11 +680,11 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     )
     surface_properties = dict(args.surface_property)
     forbidden_categories = set(getattr(args, "forbid_category", []))
-    recipe_categories = {
-        recipe.get("category", "crafting") for recipe in recipes.values()
+    known_recipe_categories = {
+        category for recipe in recipes.values() for category in recipe_categories(recipe)
     }
     unknown_forbidden_categories = sorted(
-        forbidden_categories - recipe_categories
+        forbidden_categories - known_recipe_categories
     )
     if unknown_forbidden_categories:
         raise TestFailure(
@@ -700,11 +702,8 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     )
 
     for recipe_name, recipe in recipes.items():
-        category = recipe.get("category", "crafting")
-        if (
-            category in IGNORED_RECIPE_CATEGORIES
-            or category in forbidden_categories
-        ):
+        allowed_categories = set(recipe_categories(recipe)) - IGNORED_RECIPE_CATEGORIES - forbidden_categories
+        if not allowed_categories:
             continue
         if recipe.get("hidden") or not allowed_on_surface(recipe, surface_properties):
             continue
@@ -880,7 +879,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         technologies_needed, depth = state
         return len(technologies_needed), depth, sorted(technologies_needed)
 
-    def best_provider(
+    def provider_for_category(
         category: str,
         states: dict[str, tuple[frozenset[str], int]],
     ) -> tuple[str, tuple[frozenset[str], int]] | None:
@@ -898,6 +897,16 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         if not candidates:
             return None
         return min(candidates, key=lambda candidate: state_key(candidate[1]))
+
+    def best_provider(category_choices, states):
+        candidates = []
+        for category in category_choices:
+            if category in forbidden_categories or category in IGNORED_RECIPE_CATEGORIES:
+                continue
+            provider = provider_for_category(category, states)
+            if provider is not None:
+                candidates.append((*provider, category))
+        return min(candidates, key=lambda candidate: state_key(candidate[1])) if candidates else None
 
     changed = True
     while changed:
@@ -925,7 +934,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             ):
                 continue
             provider = best_provider(
-                recipe.get("category", "crafting"), production_state
+                recipe_categories(recipe), production_state
             )
             if provider is None:
                 continue
@@ -961,7 +970,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             production_state.get(ingredient["name"])
             for ingredient in recipe.get("ingredients") or []
         ]
-        provider = best_provider(recipe.get("category", "crafting"), production_state)
+        provider = best_provider(recipe_categories(recipe), production_state)
         if technology_requirements is not None and all(
             state is not None for state in ingredient_states
         ) and provider is not None:
@@ -1057,13 +1066,13 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
 
         recipe_name = candidates[0]
         recipe = recipes[recipe_name]
-        provider = best_provider(recipe.get("category", "crafting"), production_state)
+        provider = best_provider(recipe_categories(recipe), production_state)
         if provider is None:
             unresolved.append(product)
             continue
         selected_recipes[product] = recipe_name
         alternatives[product] = candidates
-        categories.add(recipe.get("category", "crafting"))
+        categories.add(provider[2])
         for ingredient in recipe.get("ingredients") or []:
             pending.append(ingredient["name"])
         provider_name = provider[0]
@@ -1096,17 +1105,17 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             )
             continue
         recipe = recipes[recipe_name]
-        provider_name = best_provider(
-            recipe.get("category", "crafting"), production_state
-        )[0]
+        provider = best_provider(recipe_categories(recipe), production_state)
+        provider_name, _, selected_category = provider
         selected.append(
             {
                 "product": product,
                 "producer": recipe_name,
-                "category": recipe.get("category", "crafting"),
+                "category": selected_category,
+                "categories": list(recipe_categories(recipe)),
                 "provider": provider_name,
                 "executor": executor_contract(
-                    recipe.get("category", "crafting"), provider_name
+                    selected_category, provider_name
                 ),
                 "ingredients": recipe.get("ingredients") or [],
                 "results": recipe_results(recipe),
@@ -1134,7 +1143,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                               if ingredient["name"] not in production_state})
             blocked_recipes.append({"product": product, "recipe": name,
                                     "blocked_ingredients": missing,
-                                    "missing_executor": best_provider(recipe.get("category", "crafting"), production_state) is None})
+                                    "missing_executor": best_provider(recipe_categories(recipe), production_state) is None})
             pending_blocked.extend(missing)
 
     report = {
@@ -1656,6 +1665,7 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         "targets", nargs="*", metavar="ITEM[=COUNT]", type=parse_target
     )
     parser.add_argument("--data-raw", type=Path)
+    parser.add_argument("--mod-under-test", type=Path, default=Path(__file__).resolve().parents[1] / "nullius-star")
     parser.add_argument(
         "--prototype-overlay",
         type=Path,
@@ -1881,7 +1891,7 @@ def main() -> int:
                     for recipe in recipes:
                         print(
                             f"  {recipe['name']}: {recipe['energy_required']:g}s "
-                            f"[{recipe['category']}]"
+                            f"[{','.join(recipe['categories'])}]"
                         )
                         if args.describe_consumers:
                             print(
@@ -1923,7 +1933,7 @@ def main() -> int:
                 for recipe in descriptions:
                     print(
                         f"{recipe['name']}: {recipe['energy_required']:g}s "
-                        f"[{recipe['category']}]"
+                        f"[{','.join(recipe['categories'])}]"
                     )
                     print(
                         "  inputs: "

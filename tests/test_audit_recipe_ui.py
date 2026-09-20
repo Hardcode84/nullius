@@ -6,10 +6,12 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
-from audit_recipe_ui import boxed_counterpart, compare_recipe_sets, ui_neighbors
+from audit_recipe_ui import boxed_counterpart, compare_recipe_sets, ui_neighbors, render_recipe_detail
 
 
 def recipe(
@@ -39,6 +41,21 @@ def recipe(
 
 
 class AuditRecipeUiTest(unittest.TestCase):
+    def test_compare_and_render_old_and_new_category_schemas(self):
+        old = recipe("nullius-old", products=("resin",))
+        old["additional_categories"] = ["advanced-chemistry"]
+        new = recipe("nullius-new", products=("resin",))
+        del new["category"]
+        del new["additional_categories"]
+        new["categories"] = ["chemistry", "advanced-chemistry"]
+        report = compare_recipe_sets({"nullius-old": old}, {"nullius-old": old, "nullius-new": new})
+        added = report["added_recipes"][0]
+        self.assertEqual(added["existing_crafting_categories"], ["advanced-chemistry", "chemistry"])
+        output = StringIO()
+        with redirect_stdout(output):
+            render_recipe_detail(added)
+        self.assertIn("craft=chemistry,advanced-chemistry", output.getvalue())
+
     def test_pairs_boxed_and_unboxed_recipes(self) -> None:
         recipes = {
             "nullius-resin": recipe("nullius-resin"),

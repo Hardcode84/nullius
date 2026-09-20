@@ -15,6 +15,8 @@ import tarfile
 import tempfile
 from typing import Any
 
+from factorio_schema import recipe_categories
+
 from run_factorio_tests import (
     BUILTIN_MODS,
     DEPENDENCY_MODS,
@@ -23,6 +25,7 @@ from run_factorio_tests import (
     default_factorio,
     find_archive,
     prepare_config,
+    supported_factorio_version,
     run_factorio,
     tail,
 )
@@ -39,6 +42,15 @@ RecipeMap = dict[str, Recipe]
 
 AUDIT_CONTROL = r'''
 local RESULT = "recipe-ui-audit.json"
+local modern = string.match(script.active_mods.base, "^2%.1%.") ~= nil
+local function categories_of(recipe)
+  if modern then return recipe.categories end
+  local categories = {recipe.category}
+  for _, name in pairs(recipe.additional_categories or {}) do
+    categories[#categories + 1] = name
+  end
+  return categories
+end
 
 local function product_list(recipe)
   local result = {}
@@ -80,8 +92,7 @@ script.on_nth_tick(1, function()
       group = recipe.group.name,
       subgroup = recipe.subgroup.name,
       order = recipe.order,
-      category = recipe.category,
-      additional_categories = recipe.additional_categories,
+      categories = categories_of(recipe),
       products = product_list(recipe),
       main_product = recipe.main_product and recipe.main_product.name or nil,
       enabled = recipe.enabled,
@@ -166,7 +177,8 @@ def read_mod_name(mod_directory: Path) -> str:
     return name
 
 
-def write_audit_support(mods: Path, subject_mod: str) -> None:
+def write_audit_support(mods: Path, subject_mod: str, factorio_version: str = "2.0") -> None:
+    supported_factorio_version(factorio_version)
     support = mods / AUDIT_MOD_NAME
     scenario = support / "scenarios" / "audit"
     scenario.mkdir(parents=True)
@@ -175,10 +187,10 @@ def write_audit_support(mods: Path, subject_mod: str) -> None:
             {
                 "name": AUDIT_MOD_NAME,
                 "version": "1.0.0",
-                "factorio_version": "2.0",
+                "factorio_version": factorio_version,
                 "title": "Recipe UI audit support",
                 "author": "Nullius Star test harness",
-                "dependencies": ["base >= 2.0.73", subject_mod],
+                "dependencies": [f"base >= {factorio_version}.0", subject_mod],
             },
             indent=2,
         )
@@ -201,7 +213,8 @@ def prepare_audit_mods(
     subject_name = read_mod_name(subject_directory)
     (mods / subject_name).symlink_to(subject_directory.resolve(), target_is_directory=True)
     enabled.append(subject_name)
-    write_audit_support(mods, subject_name)
+    metadata = json.loads((subject_directory / "info.json").read_text())
+    write_audit_support(mods, subject_name, supported_factorio_version(metadata["factorio_version"]))
     enabled.append(AUDIT_MOD_NAME)
     (mods / "mod-list.json").write_text(
         json.dumps(
@@ -296,17 +309,9 @@ def reference_products(recipe: Recipe) -> set[str]:
 
 
 def compact_recipe(recipe: Recipe) -> Recipe:
-    return {
-        key: recipe[key]
-        for key in (
-            "name",
-            "group",
-            "subgroup",
-            "order",
-            "category",
-            "products",
-        )
-    }
+    result = {key: recipe[key] for key in ("name", "group", "subgroup", "order", "products")}
+    result["categories"] = list(recipe_categories(recipe))
+    return result
 
 
 def ui_neighbors(recipe: Recipe, existing: RecipeMap, radius: int = 2) -> list[Recipe]:
@@ -367,7 +372,7 @@ def compare_recipe_sets(
             }
         )
         expected_categories = sorted(
-            {candidate["category"] for candidate in reference_routes}
+            {category for candidate in reference_routes for category in recipe_categories(candidate)}
         )
         record = dict(recipe)
         record["boxed_counterpart"] = boxed_counterpart(name, head)
@@ -417,7 +422,7 @@ def render_recipe_detail(recipe: Recipe) -> None:
     print(f"\nDetail: {recipe['name']}")
     print(
         f"  placement: {recipe['group']}/{recipe['subgroup']} "
-        f"order={recipe['order']} craft={recipe['category']}"
+        f"order={recipe['order']} craft={','.join(recipe_categories(recipe))}"
     )
     print(f"  reference products: {','.join(recipe['reference_products']) or '-'}")
     print("  existing product routes:")
@@ -427,7 +432,7 @@ def render_recipe_detail(recipe: Recipe) -> None:
         print(
             f"    {candidate['name']} | "
             f"{candidate['group']}/{candidate['subgroup']} | "
-            f"order={candidate['order']} | craft={candidate['category']}"
+            f"order={candidate['order']} | craft={','.join(recipe_categories(candidate))}"
         )
     print("  resolved UI neighbors:")
     if not recipe["ui_neighbors"]:
@@ -435,7 +440,7 @@ def render_recipe_detail(recipe: Recipe) -> None:
     for candidate in recipe["ui_neighbors"]:
         print(
             f"    {candidate['name']} | order={candidate['order']} | "
-            f"craft={candidate['category']}"
+            f"craft={','.join(recipe_categories(candidate))}"
         )
 
 
@@ -461,7 +466,7 @@ def render_human(
             products = ",".join(product["name"] for product in recipe["products"])
             print(
                 f"  {recipe['name']} | {recipe['group']}/{recipe['subgroup']} | "
-                f"order={recipe['order']} | craft={recipe['category']} | "
+                f"order={recipe['order']} | craft={','.join(recipe_categories(recipe))} | "
                 f"products={products or '-'} | unlock={unlocks}"
             )
     mismatches = [

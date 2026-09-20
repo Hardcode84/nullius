@@ -20,7 +20,7 @@ machine.allowed_effects = {"productivity"}
 machine.effect_receiver = {base_effect = {productivity = 0.5}}
 machine.hidden_in_factoriopedia = true
 
-data:extend({
+local fixtures = {
   {
     type = "item",
     name = input,
@@ -156,7 +156,20 @@ data:extend({
       time = 1,
     },
   },
-})
+}
+if string.match(mods.base, "^2%.1%.") then
+  for _, prototype in ipairs(fixtures) do
+    if prototype.type == "recipe" then
+      prototype.categories = {prototype.category}
+      for _, category_name in ipairs(prototype.additional_categories or {}) do
+        prototype.categories[#prototype.categories + 1] = category_name
+      end
+      prototype.category = nil
+      prototype.additional_categories = nil
+    end
+  end
+end
+data:extend(fixtures)
 
 local family_generator =
   require("__nullius-star__/prototypes/recipe-productivity")

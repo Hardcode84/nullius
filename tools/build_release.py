@@ -122,8 +122,8 @@ def read_metadata() -> dict[str, object]:
         raise TestFailure(f"invalid release version: {version!r}")
     if any(int(component) > 65535 for component in version.split(".")):
         raise TestFailure(f"release version component exceeds 65535: {version}")
-    if metadata.get("factorio_version") != "2.0":
-        raise TestFailure("release factorio_version must be '2.0'")
+    if metadata.get("factorio_version") not in {"2.0", "2.1"}:
+        raise TestFailure("release factorio_version must be '2.0' or '2.1'")
     dependencies = metadata.get("dependencies")
     if not isinstance(dependencies, list) or "! nullius" not in dependencies:
         raise TestFailure("release must declare upstream Nullius incompatible")

@@ -1,3 +1,4 @@
+local fluids = require("__nullius-star__/scenarios/fluid-api")
 return function(CONFIG)
 local CASE = CONFIG.case
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -178,7 +179,7 @@ end
 local function register_machine(entity)
   storage.machines[entity.name] = storage.machines[entity.name] or {}
   storage.machines[entity.name][#storage.machines[entity.name] + 1] = entity
-  entity.active = false
+  entity.disabled_by_script = true
 end
 
 local function build_executor(item, name, position)
@@ -287,14 +288,14 @@ end
 local function fluid_box(machine, name, role)
   local fallback = nil
   if role == "fuel" then
-    for index = 1, #machine.fluidbox do
-      local filter = machine.fluidbox.get_filter(index)
+    for index = 1, fluids.count(machine) do
+      local filter = fluids.filter(machine, index)
       if not filter then return index end
     end
   end
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
-    local prototype = machine.fluidbox.get_prototype(index)
+  for index = 1, fluids.count(machine) do
+    local filter = fluids.filter(machine, index)
+    local prototype = fluids.prototype(machine, index)
     local production_type = prototype and prototype.production_type or "none"
     if filter and filter.name == name then
       if role == "input" and production_type ~= "output" then return index end
@@ -307,10 +308,10 @@ end
 
 local function fluid_box_state(machine)
   local state = {}
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
-    local prototype = machine.fluidbox.get_prototype(index)
-    local contents = machine.fluidbox[index]
+  for index = 1, fluids.count(machine) do
+    local filter = fluids.filter(machine, index)
+    local prototype = fluids.prototype(machine, index)
+    local contents = fluids.get(machine, index)
     state[index] = {
       filter = filter and filter.name or nil,
       production_type = prototype and prototype.production_type or nil,
@@ -325,14 +326,14 @@ local function insert_machine_fluid(machine, name, amount, role)
   local index = fluid_box(machine, name, role)
   if not check(index ~= nil,
       machine.name .. " has no " .. role .. " fluid box for " .. name) then return nil end
-  local current = machine.fluidbox[index]
+  local current = fluids.get(machine, index)
   local current_amount = current and current.amount or 0
-  machine.fluidbox[index] = {
+  fluids.set(machine, index, {
     name = name,
     amount = current_amount + amount,
     temperature = prototypes.fluid[name].default_temperature,
-  }
-  local stored = machine.fluidbox[index]
+  })
+  local stored = fluids.get(machine, index)
   if not check(stored and close(stored.amount, current_amount + amount),
       machine.name .. " failed to store " .. amount .. " " .. name ..
       " in " .. role .. " box " .. index) then return nil end
@@ -353,15 +354,15 @@ local function collect_machine_fluid(machine, name, amount)
   if not check(index ~= nil, machine.name .. " has no output fluid box for " .. name) then
     return 0
   end
-  local contents = machine.fluidbox[index]
+  local contents = fluids.get(machine, index)
   local available = contents and contents.name == name and contents.amount or 0
   local removed = math.min(available, amount)
   local remaining = available - removed
-  machine.fluidbox[index] = (remaining > 0) and {
+  fluids.set(machine, index, (remaining > 0) and {
     name = name,
     amount = remaining,
     temperature = contents.temperature,
-  } or nil
+  } or nil)
   check(close(removed, amount),
     machine.name .. " produced " .. removed .. "/" .. amount .. " " .. name)
   return removed
@@ -373,9 +374,9 @@ local start_background_gas
 local function fill_pending_fuel(active)
   if not active.fuel_box or active.fuel_pending <= 0 then return end
   local machine = active.machine
-  local contents = machine.fluidbox[active.fuel_box]
+  local contents = fluids.get(machine, active.fuel_box)
   local current = contents and contents.amount or 0
-  local capacity = machine.fluidbox.get_capacity(active.fuel_box)
+  local capacity = fluids.capacity(machine, active.fuel_box)
   local amount = math.min(active.fuel_pending, capacity - current)
   if amount > 0 then
     local stored = insert_machine_fluid(machine, active.step.fuel.name, amount, "fuel")
@@ -444,18 +445,18 @@ local function machine_cycle_complete()
 
   for _, execution in ipairs(active.executions) do
     local machine = execution.machine
-    machine.active = false
+    machine.disabled_by_script = true
     record_outputs(step, step.cycles, function(name, amount, kind)
       if kind == "fluid" then return collect_machine_fluid(machine, name, amount) end
       return collect_machine_item(machine, name, amount)
     end)
     if step.fuel then
       local box = execution.fuel_box
-      local contents = box and machine.fluidbox[box]
+      local contents = box and fluids.get(machine, box)
       local returned = contents and contents.name == step.fuel.name and
         contents.amount or 0
       if returned > 0 then
-        machine.fluidbox[box] = nil
+        fluids.set(machine, box, nil)
         add(storage.ledger, step.fuel.name, returned)
         add(storage.fuel_consumed, step.fuel.name, -returned)
       end
@@ -485,15 +486,15 @@ local function background_gas_complete()
   end
   for _, background in ipairs(backgrounds) do
     local machine = background.machine
-    machine.active = false
+    machine.disabled_by_script = true
     record_outputs(step, step.cycles, function(name, amount, kind)
       if kind == "fluid" then return collect_machine_fluid(machine, name, amount) end
       return collect_machine_item(machine, name, amount)
     end)
-    local contents = machine.fluidbox[background.fuel_box]
+    local contents = fluids.get(machine, background.fuel_box)
     local returned = contents and contents.name == step.fuel.name and contents.amount or 0
     if returned > 0 then
-      machine.fluidbox[background.fuel_box] = nil
+      fluids.set(machine, background.fuel_box, nil)
       add(storage.ledger, step.fuel.name, returned)
       add(storage.fuel_consumed, step.fuel.name, -returned)
     end
@@ -546,7 +547,7 @@ start_background_gas = function()
       products_finished = machine.products_finished,
       fuel_box = fuel_box,
     }
-    machine.active = true
+    machine.disabled_by_script = false
   end
   if #backgrounds == 0 then return end
   storage.background_gas = backgrounds
@@ -623,7 +624,7 @@ local function start_machine_batch(step)
         finish() return
       end
       execution.fuel_pending = amount
-      local capacity = machine.fluidbox.get_capacity(execution.fuel_box)
+      local capacity = fluids.capacity(machine, execution.fuel_box)
       active.poll_ticks = math.max(active.poll_ticks,
         math.floor(step.ticks_per_cycle * capacity / amount * 0.75))
       fill_pending_fuel(execution)
@@ -632,7 +633,7 @@ local function start_machine_batch(step)
       execution.fuel_pending = 0
     end
     execution.products_finished = machine.products_finished
-    machine.active = true
+    machine.disabled_by_script = false
     active.executions[#active.executions + 1] = execution
   end
   if not check(#active.executions > 0,
