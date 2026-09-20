@@ -207,7 +207,7 @@ function vulcanus_gasvent.register(shell)
     return
   end
   drill.destructible = false
-  drill.minable = false
+  drill.minable_flag = false
 
   local entry = {
     shell = shell,

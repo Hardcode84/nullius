@@ -97,7 +97,7 @@ function create_collision_box(surface, pos, force, box_name,
   local collision = surface.create_entity{name = box_name, force = force,
       position = pos, create_build_effect_smoke = false}
   collision.destructible = false
-  collision.minable = false
+  collision.minable_flag = false
   return collision
 end
 

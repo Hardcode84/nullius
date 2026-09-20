@@ -67,8 +67,8 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\n')
-    for filename in ("tool-fixture.lua", "productivity-fixture.lua"):
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\n')
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "prototypes").mkdir()
@@ -77,7 +77,10 @@ def run(factorio):
     (mod / "scenarios/recipe-productivity-family").symlink_to(
         ROOT / "tests/scenarios/recipe-productivity-family", target_is_directory=True)
     (mod / "scripts").mkdir()
-    (mod / "scripts/mirror.lua").symlink_to(ROOT / "nullius-star/scripts/mirror.lua")
+    for filename in ("mirror.lua", "beacon.lua", "geothermal.lua", "vulcanus_heat.lua", "vulcanus_gasvent.lua"):
+        (mod / "scripts" / filename).symlink_to(ROOT / "nullius-star/scripts" / filename)
+    (mod / "scenarios/helper-mining").symlink_to(
+        ROOT / "tests/compatibility/helper-mining", target_is_directory=True)
     (mod / "scenarios/fluid-preservation").symlink_to(
         ROOT / "tests/scenarios/fluid-preservation", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
@@ -105,6 +108,7 @@ def run(factorio):
     for namespace, name in (("nullius-star", "tool-compat"),
                             ("nullius-star", "recipe-productivity-family"),
                             ("nullius-star", "fluid-preservation"),
+                            ("nullius-star", "helper-mining"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -115,12 +119,15 @@ def run(factorio):
     assert productivity["status"] == "pass", productivity
     preservation = json.loads((work / "script-output/factorio-tests/fluid-preservation.json").read_text())
     assert preservation["status"] == "pass", preservation
+    mining = json.loads((work / "script-output/factorio-tests/helper-mining.json").read_text())
+    assert mining["status"] == "pass", mining
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
             "executor_assertions": result["assertions"],
             "productivity_assertions": productivity["assertions"],
-            "fluid_assertions": preservation["assertions"], "status": "pass"}
+            "fluid_assertions": preservation["assertions"],
+            "helper_mining_assertions": mining["assertions"], "status": "pass"}
 
 
 def main():

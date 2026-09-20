@@ -88,7 +88,7 @@ local function create_interface(entity, name)
   }
   if heat and heat.valid then
     heat.destructible = false
-    heat.minable = false
+    heat.minable_flag = false
   end
   return heat
 end
