@@ -212,13 +212,13 @@ Test fixtures only; reset is scripted, not a tested player click.
 | Load built while offline | Remains unpowered outside the pole centre |
 | Source and load overlap the pole centre | Still powered; zero area does not isolate hidden helpers |
 
-`experiment-network-sink`: Factorio 2.0.77, 17 assertions, tick 450.
+`experiment-network-sink`: Factorio 2.0.77, 19 assertions, tick 450.
 One hidden 1 TW `primary-input` consumer per network; no repeated energy writes.
 
 | Supply during shutdown | Ordinary 100 kW load | Primary 100 kW load | Sink |
 |---|---|---|---|
 | 1 MW generator | 0 W | Approximately 0.1 W | Approximately 1 MW |
-| Generator plus 600 kW accumulator discharge | 0 W | Approximately 0.16 W | Approximately 1.6 MW |
+| Generator plus two 600 kW accumulator discharges | 0 W | Approximately 0.22 W | Approximately 2.2 MW |
 
 Use the hidden consumer for shutdown; remove it on manual reset. Both load
 priorities recover, and poles, wires, and network identity remain unchanged.
@@ -226,6 +226,13 @@ Existing consumer buffers can run down; accumulators discharge at their output
 limit. This causes power starvation, not complete isolation of primary loads.
 The 1 TW demand must exceed the network supply. Zero-area pole replacement is
 not required for this design.
+
+Read aggregate accumulator charge with `get_flow_count`: `category="storage"`,
+`precision_index=defines.flow_precision_index.five_seconds`, `sample_index=1`,
+and the accumulator prototype name. The latest sample matches the sum of two
+accumulator charges in joules. Sum prototype types, not individual entities.
+`get_storage_count` accumulates history; it is not current charge. This read does
+not provide total capacity or include the hidden collectors' buffers.
 
 The API provides `on_gui_opened`, `electric_network_gui` relative GUI anchoring,
 and `on_gui_click` for a reset button at any pole.

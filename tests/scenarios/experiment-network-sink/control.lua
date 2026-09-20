@@ -1,5 +1,5 @@
 -- given: each isolated network has a 1 MW source, two 100 kW loads
--- (primary and secondary), and optionally a 10 MJ battery charged to 5 MJ.
+-- (primary and secondary), and optionally two 10 MJ batteries charged to 5 MJ each.
 -- place: one hidden 1 TW primary-input sink at the pole when tripped.
 -- connect: native copper networks and normal pole supply areas.
 -- act: spawn the sink at tick 60; remove it at tick 240 to reset.
@@ -32,7 +32,10 @@ script.on_init(function()
   for i,x in ipairs({0,100}) do
     local row={x=x,pole=build("pole",x,0),source=build("source",x+1,0),
       load=build("load",x+1,1),primary=build("primary-load",x-1,1)}
-    if i==2 then row.battery=build("battery",x+1,2);row.battery.energy=5000000 end
+    if i==2 then
+      row.battery=build("battery",x+1,2);row.battery.energy=5000000
+      row.second_battery=build("battery",x-1,2);row.second_battery.energy=5000000
+    end
     storage.rows[i]=row
     storage.observations[i]={}
   end
@@ -45,7 +48,7 @@ script.on_nth_tick(30,function()
       check(row.load.energy>0 and row.primary.energy>0,"both priorities powered before trip: "..i)
       row.sink=build("sink",row.x,0)
       row.network_id=row.pole.electric_network_id
-      if row.battery then o.battery_before=row.battery.energy end
+      if row.battery then o.battery_before=row.battery.energy+row.second_battery.energy end
     elseif tick==120 then
       row.before={load=consumed(row,"load"),primary=consumed(row,"primary-load"),sink=consumed(row,"sink")}
     elseif tick==180 then
@@ -54,7 +57,18 @@ script.on_nth_tick(30,function()
       o.sink_joules=consumed(row,"sink")-row.before.sink
       o.secondary_buffer=row.load.energy
       o.primary_buffer=row.primary.energy
-      if row.battery then o.battery_after=row.battery.energy end
+      if row.battery then
+        o.battery_after=row.battery.energy+row.second_battery.energy
+        local stats=row.pole.electric_network_statistics
+        o.storage_total=stats.get_storage_count(PREFIX.."battery")
+        o.storage_samples={}
+        for index=1,5 do
+          o.storage_samples[index]=stats.get_flow_count{name=PREFIX.."battery",category="storage",
+            precision_index=defines.flow_precision_index.five_seconds,sample_index=index}
+        end
+        check(math.abs(o.storage_samples[1]-o.battery_after)<1,"latest storage sample sums both accumulator charges")
+        check(o.storage_total>o.battery_after,"storage total is historical, not current charge")
+      end
       check(o.secondary_joules==0,"secondary consumption stops: "..i)
       check(o.primary_joules>0 and o.primary_joules<1,"primary consumption below 1 J per second but nonzero: "..i)
       check(o.sink_joules>999000,"sink consumes available generation: "..i)
