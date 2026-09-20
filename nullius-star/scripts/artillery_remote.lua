@@ -318,6 +318,7 @@ end
 script.on_event(
   defines.events.on_lua_shortcut,
   function(event_data)
+    autocraft.on_shortcut(event_data)
     if event_data.prototype_name == "nullius-remote-gui" then
       handle_remote_gui_shortcut(event_data)
     end

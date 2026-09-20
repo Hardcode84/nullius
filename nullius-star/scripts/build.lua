@@ -153,6 +153,7 @@ script.on_event(defines.events.on_player_rotated_entity, entity_rotated)
 
 
 function update_tick()
+  autocraft.update_tick()
   update_wind()
   update_geothermal()
   update_solar()

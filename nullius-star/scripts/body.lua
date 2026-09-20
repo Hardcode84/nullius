@@ -347,6 +347,7 @@ script.on_event(defines.events.on_player_respawned, function(event)
 end)
 
 script.on_event(defines.events.on_player_removed, function(event)
+  autocraft.remove_player(event.player_index)
   if storage.nullius_body_queue then
     storage.nullius_body_queue[event.player_index] = nil
   end

@@ -443,6 +443,7 @@ script.on_event(defines.events.on_pre_player_crafted_item,
 
 script.on_event(defines.events.on_player_crafted_item,
   function(event)
+    autocraft.on_crafted(event)
     if ((storage.nullius_broken_status ~= nil) and
         (string.sub(event.recipe.name, 1, 15) == "nullius-broken-")) then
       broken_crafted(event.recipe.name)

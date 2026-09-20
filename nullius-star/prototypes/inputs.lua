@@ -3,6 +3,15 @@ local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 data:extend({
   {
+    type = "shortcut",
+    name = "nullius-autocraft",
+    action = "lua",
+    toggleable = true,
+    icon = "__base__/graphics/icons/assembling-machine-1.png",
+    small_icon = "__base__/graphics/icons/assembling-machine-1.png",
+    order = "nullius-icg",
+  },
+  {
     type = "custom-input",
     name = "nullius-prioritize",
     order = "nullius-ibb",
