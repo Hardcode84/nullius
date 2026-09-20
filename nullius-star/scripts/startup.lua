@@ -1,3 +1,4 @@
+local recipe_filter = require("scripts.recipe_filter")
 
 artillery_remote = require("scripts.artillery_remote")
 
@@ -13,12 +14,7 @@ function fuel_companion_drones(surface)
 end
 
 
-function broken_disabled(name)
-  if (storage.nullius_broken_status == nil) then return true end
-  local count = storage.nullius_broken_status[name]
-  if ((count == nil) or (count < 1)) then return true end
-  return false
-end
+broken_disabled = recipe_filter.broken_disabled
 
 -- function check_fixing_machines()
 --   if storage.fixing_machines == nil then return end
@@ -119,20 +115,7 @@ local function init_tech(force)
     storage.nullius_broken_status = nil
   end
 
-  for _, recipe in pairs(force.recipes) do
-    if (string.sub(recipe.name, 1, 8) == "nullius-") then
-      if ((string.sub(recipe.name, 9, 15) == "broken-") and
-          broken_disabled(recipe.name)) then
-        recipe.enabled = false
-      end
-    elseif ((string.sub(recipe.order, 1, 8) ~= "nullius-") and
-        (string.sub(recipe.name, 1, 13) ~= "fill-nullius-") and
-        (string.sub(recipe.name, 1, 14) ~= "empty-nullius-") and
-		(recipe.category ~= "ee-testing-tool") and
-	    (string.sub(recipe.name, 1, 5) ~= "bpsb-")) then
-      recipe.enabled = false
-    end
-  end
+  recipe_filter.apply(force)
 
   init_alignment_force(force)
   init_force_checkpoints(force)

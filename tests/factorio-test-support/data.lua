@@ -254,3 +254,5 @@ require("network-trip")
 require("fluid-preservation")
 
 require("drone-mining")
+
+require("recipe-filter")

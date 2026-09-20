@@ -67,18 +67,19 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "drone-mining.lua").symlink_to(ROOT / "tests/factorio-test-support/drone-mining.lua")
+    (mod / "recipe-filter.lua").symlink_to(ROOT / "tests/factorio-test-support/recipe-filter.lua")
     (mod / "prototypes").mkdir()
     (mod / "prototypes/recipe-productivity.lua").symlink_to(
         ROOT / "nullius-star/prototypes/recipe-productivity.lua")
     (mod / "scenarios/recipe-productivity-family").symlink_to(
         ROOT / "tests/scenarios/recipe-productivity-family", target_is_directory=True)
     (mod / "scripts").mkdir()
-    for filename in ("mirror.lua", "beacon.lua", "geothermal.lua", "vulcanus_heat.lua", "vulcanus_gasvent.lua", "drone.lua"):
+    for filename in ("mirror.lua", "beacon.lua", "geothermal.lua", "vulcanus_heat.lua", "vulcanus_gasvent.lua", "drone.lua", "recipe_filter.lua"):
         (mod / "scripts" / filename).symlink_to(ROOT / "nullius-star/scripts" / filename)
     (mod / "scenarios/helper-mining").symlink_to(
         ROOT / "tests/compatibility/helper-mining", target_is_directory=True)
@@ -86,6 +87,7 @@ def run(factorio):
         ROOT / "tests/scenarios/fluid-preservation", target_is_directory=True)
     (mod / "scenarios/drone-mining").symlink_to(
         ROOT / "tests/scenarios/drone-mining", target_is_directory=True)
+    (mod / "scenarios/startup-recipe-filter").symlink_to(ROOT / "tests/scenarios/startup-recipe-filter", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -113,6 +115,7 @@ def run(factorio):
                             ("nullius-star", "fluid-preservation"),
                             ("nullius-star", "helper-mining"),
                             ("nullius-star", "drone-mining"),
+                            ("nullius-star", "startup-recipe-filter"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -127,6 +130,8 @@ def run(factorio):
     assert mining["status"] == "pass", mining
     drones = json.loads((work / "script-output/factorio-tests/drone-mining.json").read_text())
     assert drones["status"] == "pass", drones
+    filtering = json.loads((work / "script-output/factorio-tests/startup-recipe-filter.json").read_text())
+    assert filtering["status"] == "pass", filtering
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -134,7 +139,8 @@ def run(factorio):
             "productivity_assertions": productivity["assertions"],
             "fluid_assertions": preservation["assertions"],
             "helper_mining_assertions": mining["assertions"],
-            "drone_mining_assertions": drones["assertions"], "status": "pass"}
+            "drone_mining_assertions": drones["assertions"],
+            "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 
 def main():

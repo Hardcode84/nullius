@@ -8,14 +8,14 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
-| Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe mutation and startup filtering; tool category handling passes |
+| Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe mutation and both recipe filters in `prototypes/hidden.lua`; runtime and tool category handling pass |
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | 75 probability-related lines across 13 files | Port products to `independent_probability`; preserve yields, rocket returns, and recycling calculations. Loot has a separate schema change |
 | Entity prototypes | Generator pictures, chest robot doors, mining-drill graphics, vehicle braking/friction, and crafting symmetry changed | Port each entity family; check graphics, fluid port geometry, and vehicle behavior |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
 | Runtime mining flags | Four helper creation paths use `minable_flag` on both engines | 45 assertions per engine verify protection and cleanup; full Nullius heat and gas-vent scenarios pass 160 assertions |
 | Mining drone refresh | Uses `update_connections()` without activation writes | 18 assertions pass per engine and in full Nullius 2.0: ore pickup, disabled-state preservation, and mining after explicit re-enable |
-| Runtime initialization | `scripts/startup.lua:131` reads removed `recipe.category` | Filter the category set; otherwise initialization fails after prototype loading is fixed |
+| Runtime recipe filtering | Startup uses the dual-version `scripts/recipe_filter.lua` | 129 assertions per engine cover exemptions, locked recipes, broken counts, and repeated filtering; full-mod force creation also passes |
 | Test code | 121 fluidbox-reference lines across 20 files; 52 candidate active/minable-write lines across 19 files | Port fluid reads/writes, capacities, filters, and connection queries. Preserve actual fluid and heat assertions |
 | Recipe productivity families | Matcher accepts both category schemas | Verified on 2.0.77 and 2.1.19: three sorted effects, no duplicates, zero-cap exclusion, and +1% research bonuses |
 | Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Supported on 2.0 and 2.1; see tool checks below |
