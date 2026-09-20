@@ -6,11 +6,30 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.factorio_multiplayer import client_environment, validate_client_log, virtual_display
+from tools.factorio_multiplayer import client_environment, prepare_client_mods, validate_client_log, virtual_display
 from tools.run_factorio_tests import TestFailure
 
 
 class MultiplayerDisplayTests(unittest.TestCase):
+    def test_clients_have_independent_writable_mod_settings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "server"
+            source.mkdir()
+            (source / "mod-settings.dat").write_bytes(b"initial")
+            (source / "mod-list.json").write_text('{"mods": []}')
+            (source / "payload.zip").write_bytes(b"immutable payload")
+            first, second = root / "first", root / "second"
+            prepare_client_mods(source, first)
+            prepare_client_mods(source, second)
+            (first / "mod-settings.tmp.dat").write_bytes(b"client settings")
+            (first / "mod-settings.tmp.dat").replace(first / "mod-settings.dat")
+            (first / "mod-list.json").write_text('{"mods": ["changed"]}')
+            for untouched in (source, second):
+                self.assertEqual((untouched / "mod-settings.dat").read_bytes(), b"initial")
+                self.assertEqual((untouched / "mod-list.json").read_text(), '{"mods": []}')
+            self.assertEqual((first / "payload.zip").resolve(), source / "payload.zip")
+
     def test_hardware_renderer_cannot_pass_a_software_test(self):
         with tempfile.TemporaryDirectory() as directory:
             log = Path(directory) / "client.log"

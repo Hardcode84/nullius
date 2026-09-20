@@ -31,6 +31,17 @@
 - Do not use `known limitation`, `pre-existing`, `unrelated`, or equivalent
   language to dismiss a problem.
 
+## Changelog
+
+- Write short, plain-language entries for players. State the feature or benefit.
+- Never include implementation details, internal names, timing rules, control
+  behavior, recipe quantities, or lists of research unlocks.
+- Do not turn entries into instructions. Keep usage details in in-game help.
+- Combine small interface and help additions with their main feature.
+- Exclude tests, documentation, tools, refactoring, and validation results.
+- Mention save compatibility only for breaking changes.
+- These rules take precedence over the technical-detail guidance above.
+
 ## Data access
 
 - Use repository scripts, Factorio's Lua API, or resolved-prototype tools.

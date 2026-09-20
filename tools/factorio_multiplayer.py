@@ -137,6 +137,17 @@ def prepare_support_overlay(run_directory: Path, scenario: Path, until_tick: int
         )
 
 
+def prepare_client_mods(source: Path, destination: Path) -> None:
+    """Share mod payloads while isolating each process's writable settings."""
+    destination.mkdir()
+    for entry in source.iterdir():
+        target = destination / entry.name
+        if entry.name in {"mod-list.json", "mod-settings.dat"}:
+            shutil.copyfile(entry, target)
+        else:
+            target.symlink_to(entry.resolve(), target_is_directory=entry.is_dir())
+
+
 def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path) -> None:
     with virtual_display(run_directory, min(20, args.timeout_seconds)) as (display, environment):
         _execute_multiplayer(args, common, save, run_directory, display, environment)
@@ -185,12 +196,13 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
         if not client_dir.exists():
             client_dir.mkdir()
             prepare_config(client_dir, Path(common[0]))
+            prepare_client_mods(run_directory / "mods", client_dir / "mods")
             (client_dir / "player-data.json").write_text(json.dumps({"service-username": name}))
         client_attempts[name] = client_attempts.get(name, 0) + 1
         client_logs[name] = run_directory / f"{name}-{client_attempts[name]}.log"
         clients[name] = launch([
             common[0], "--config", str(client_dir / "config.ini"),
-            "--mod-directory", str(run_directory / "mods"), "--disable-audio",
+            "--mod-directory", str(client_dir / "mods"), "--disable-audio",
             "--force-graphics-preset", "very-low", "--window-size", "640x480",
             "--mp-connect", f"127.0.0.1:{port}",
         ], client_logs[name], env=environment)
