@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 20.09.2026
+  Features:
+    - Primitive robotics now enables personal logistic requests.
+    - Added optional auto-crafting for missing personal logistic requests, with a shortcut and checkbox. Auto-crafting waits until the crafting queue is empty and stops when a craft is cancelled.
+    - Added a tip when personal auto-crafting becomes available.
+    - Added ANFO cliff explosives at Explosives 2 and a boxed bulk recipe at Mass Production 6, using inorganic ingredients available on Vulcanus.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.2
 Date: 13.09.2026
   Features:
