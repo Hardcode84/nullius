@@ -356,7 +356,7 @@ range.
 |---|---|
 | Pneumatic technology | Vulcanus machinery, radiators, sensing, chloride chemistry, and first-tier thermal industry |
 | Efficient metallurgy | Improved metallurgic science and fluid barreling |
-| Primitive robotics | Low-throughput clockwork logistics |
+| Primitive robotics | Low-throughput clockwork logistics and personal logistic requests |
 | Hot metalworking | Direct bloom casting |
 | Refractory engineering | Higher-temperature materials and equipment |
 | Volcanic titanium metallurgy | Pilot local titanium and higher-tier construction |

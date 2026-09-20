@@ -122,11 +122,17 @@ local function check_prototypes(surface)
       ["nullius-weaving-1"] = 1,
     }, "Primitive Robotics prerequisites")
     technology.researched = false
+    check(not force.technologies["nullius-logistic-robot-1"].researched,
+      "fixture already has advanced personal logistics research")
+    check(not force.character_logistic_requests,
+      "personal logistics were enabled before Primitive Robotics")
     for _, name in ipairs({PORT, ROBOT, STORAGE, SUPPLY, DEMAND}) do
       check(force.recipes[name] and not force.recipes[name].enabled,
         name .. " was enabled before Primitive Robotics")
     end
     technology.researched = true
+    check(force.character_logistic_requests,
+      "Primitive Robotics did not enable personal logistics")
     for _, name in ipairs({PORT, ROBOT, STORAGE, SUPPLY, DEMAND}) do
       check(force.recipes[name] and force.recipes[name].enabled,
         "Primitive Robotics did not unlock " .. name)

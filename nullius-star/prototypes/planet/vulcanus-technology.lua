@@ -179,6 +179,7 @@ data:extend({
       {type = "unlock-recipe", recipe = "nullius-primitive-storage-chest"},
       {type = "unlock-recipe", recipe = "nullius-primitive-supply-chest"},
       {type = "unlock-recipe", recipe = "nullius-primitive-demand-chest"},
+      {type = "character-logistic-requests", modifier = true},
     },
     unit = {
       count = 5,
