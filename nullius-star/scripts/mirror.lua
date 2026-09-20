@@ -11,23 +11,39 @@ function update_build_statistics(entity, force, deconstruct)
       ((deconstruct and -1) or 1))
 end
 
+-- Cold path: preserve indexed fluid stores across entity replacement.
+local fluid_count, read_fluid, write_fluid
+if string.match(script.active_mods.base, "^2%.1%.") then
+  fluid_count = function(entity) return entity.fluids_count end
+  read_fluid = function(entity, index) return entity.get_fluid(index) end
+  write_fluid = function(entity, index, fluid)
+    if fluid then entity.set_fluid(index, fluid) else entity.clear_fluid(index) end
+  end
+else
+  fluid_count = function(entity) return #entity.fluidbox end
+  read_fluid = function(entity, index) return entity.fluidbox[index] end
+  write_fluid = function(entity, index, fluid) entity.fluidbox[index] = fluid end
+end
+
 function save_fluid_contents(entity)
-  local ret = { }
-  if ((entity ~= nil) and entity.valid and (entity.fluidbox ~= nil)) then
-    for i = 1, #entity.fluidbox do
-	  ret[i] = entity.fluidbox[i]
+  local contents = {count = 0}
+  if entity and entity.valid then
+    contents.count = fluid_count(entity)
+    for index = 1, contents.count do
+      contents[index] = read_fluid(entity, index)
     end
   end
-  return ret
+  return contents
 end
 
 function restore_fluid_contents(entity, contents)
-  if ((entity ~= nil) and entity.valid and (contents ~= nil)
-      and (entity.fluidbox ~= nil)) then
-    local count = math.min(#contents, #entity.fluidbox)
-    for i = 1, count do
-      entity.fluidbox[i] = contents[i]
-    end
+  if not (entity and entity.valid and contents) then return end
+  local count = fluid_count(entity)
+  for index = count + 1, contents.count do
+    assert(contents[index] == nil, "replacement has no fluid slot " .. index)
+  end
+  for index = 1, math.min(contents.count, count) do
+    write_fluid(entity, index, contents[index])
   end
 end
 

@@ -67,14 +67,19 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
+    (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "prototypes").mkdir()
     (mod / "prototypes/recipe-productivity.lua").symlink_to(
         ROOT / "nullius-star/prototypes/recipe-productivity.lua")
     (mod / "scenarios/recipe-productivity-family").symlink_to(
         ROOT / "tests/scenarios/recipe-productivity-family", target_is_directory=True)
+    (mod / "scripts").mkdir()
+    (mod / "scripts/mirror.lua").symlink_to(ROOT / "nullius-star/scripts/mirror.lua")
+    (mod / "scenarios/fluid-preservation").symlink_to(
+        ROOT / "tests/scenarios/fluid-preservation", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -99,6 +104,7 @@ def run(factorio):
     planner.write_executor_fixture(report, "compat", scenario / "fixture.lua")
     for namespace, name in (("nullius-star", "tool-compat"),
                             ("nullius-star", "recipe-productivity-family"),
+                            ("nullius-star", "fluid-preservation"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -107,11 +113,14 @@ def run(factorio):
     assert result["status"] == "pass", result
     productivity = json.loads((work / "script-output/factorio-tests/recipe-productivity-family.json").read_text())
     assert productivity["status"] == "pass", productivity
+    preservation = json.loads((work / "script-output/factorio-tests/fluid-preservation.json").read_text())
+    assert preservation["status"] == "pass", preservation
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
             "executor_assertions": result["assertions"],
-            "productivity_assertions": productivity["assertions"], "status": "pass"}
+            "productivity_assertions": productivity["assertions"],
+            "fluid_assertions": preservation["assertions"], "status": "pass"}
 
 
 def main():
