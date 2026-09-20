@@ -234,3 +234,5 @@ planner_grid.energy_source.usage_priority = "primary-output"
 planner_grid.energy_source.input_flow_limit = "0W"
 planner_grid.energy_usage = "0W"
 data:extend({planner_grid})
+
+require("lightning-poles")
