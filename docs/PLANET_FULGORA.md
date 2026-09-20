@@ -212,18 +212,30 @@ Test fixtures only; reset is scripted, not a tested player click.
 | Load built while offline | Remains unpowered outside the pole centre |
 | Source and load overlap the pole centre | Still powered; zero area does not isolate hidden helpers |
 
-Candidate implementation: replace all poles in the affected component with
-zero-area variants, handle overlapping helpers, and clear consumer buffers once
-if shutdown must be immediate. Restore the original variants on reset.
+`experiment-network-sink`: Factorio 2.0.77, 17 assertions, tick 450.
+One hidden 1 TW `primary-input` consumer per network; no repeated energy writes.
+
+| Supply during shutdown | Ordinary 100 kW load | Primary 100 kW load | Sink |
+|---|---|---|---|
+| 1 MW generator | 0 W | Approximately 0.1 W | Approximately 1 MW |
+| Generator plus 600 kW accumulator discharge | 0 W | Approximately 0.16 W | Approximately 1.6 MW |
+
+Use the hidden consumer for shutdown; remove it on manual reset. Both load
+priorities recover, and poles, wires, and network identity remain unchanged.
+Existing consumer buffers can run down; accumulators discharge at their output
+limit. This causes power starvation, not complete isolation of primary loads.
+The 1 TW demand must exceed the network supply. Zero-area pole replacement is
+not required for this design.
+
 The API provides `on_gui_opened`, `electric_network_gui` relative GUI anchoring,
 and `on_gui_click` for a reset button at any pole.
 
-Before gameplay integration, prove helper isolation and preservation of pole
-quality, health, settings, and wires. Offline state must survive save/load and
-network splits. An offline component must keep merged or newly built poles
-offline. Resolve the current component when a player clicks reset; network IDs
-alone are not persistent ownership. Separate live networks with overlapping
-supply areas can still power the same building.
+Before gameplay integration, prove one connected sink per offline component
+after save/load, pole removal, network splits, and merges. Restore the sink if
+its anchor pole is removed. Resolve the current component when a player clicks
+reset; network IDs alone are not persistent ownership. Exclude sink consumption
+from overload measurements and clear the window on reset. Test overlapping
+supply areas because a helper can connect to more than one network.
 
 | Area | Inherited candidate | Required check |
 |---|---|---|
@@ -234,7 +246,7 @@ supply areas can still power the same building.
 | No destruction | Zero damage preserves ordinary and collector-backed poles in the experiment | Check other building families when adding storms |
 | Overload detection | Captured strike energy versus absorption; delivered production does not expose surplus | Test charge-rate limits, spare capacity, and the threshold |
 | Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
-| Offline network | Zero-area pole variants with manual reset; see experiment above | Prove helper isolation, topology changes, and the reset interface |
+| Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |
 | Super-capacitors | `AccumulatorPrototype` with high `input_flow_limit`, low `buffer_capacity`, and energy-source `drain` | Verify charging, leakage, and transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
 | Trace extraction | Probabilistic recipe products | Set yields and prove a complete local bootstrap |

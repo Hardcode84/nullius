@@ -31,4 +31,20 @@ for _,offline in ipairs({false,true}) do
   pole.supply_area_distance=offline and 0 or 3
   poles[#poles+1]=pole
 end
-data:extend({source,load,battery,poles[1],poles[2]})
+local primary_load=table.deepcopy(load)
+primary_load.name="factorio-test-trip-primary-load"
+primary_load.localised_name="Primary network trip load"
+primary_load.energy_source.usage_priority="primary-input"
+local sink=table.deepcopy(load)
+sink.name="factorio-test-trip-sink"
+sink.localised_name="Network trip sink"
+sink.flags={"not-on-map","not-blueprintable","not-deconstructable"}
+sink.hidden=true
+sink.selectable_in_game=false
+sink.collision_box={{0,0},{0,0}}
+sink.selection_box={{0,0},{0,0}}
+sink.picture={filename="__core__/graphics/empty.png",width=1,height=1}
+sink.energy_source={type="electric",buffer_capacity="1TJ",usage_priority="primary-input",
+  input_flow_limit="1TW",output_flow_limit="0W",drain="0W"}
+sink.energy_usage="1TW"
+data:extend({source,load,primary_load,sink,battery,poles[1],poles[2]})

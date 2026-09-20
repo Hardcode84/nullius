@@ -27,7 +27,7 @@ local function counts(pole)
 end
 local function window(pole,old)
   local now=counts(pole)
-  return {produced=now.input-old.input,consumed=now.output-old.output,storage=now.storage}
+  return {produced=now.output-old.output,consumed=now.input-old.input,storage=now.storage}
 end
 local function replace(old,name)
   local position=old.position
