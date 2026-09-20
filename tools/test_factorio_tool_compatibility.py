@@ -68,12 +68,14 @@ def run(factorio):
         "dependencies": [f"base >= {version}.0"],
     }))
     (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\n')
-    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua"):
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "drone-mining.lua").symlink_to(ROOT / "tests/factorio-test-support/drone-mining.lua")
     (mod / "recipe-filter.lua").symlink_to(ROOT / "tests/factorio-test-support/recipe-filter.lua")
+    (mod / "data-updates.lua").write_text('require("recipe-visibility")\n')
     (mod / "prototypes").mkdir()
+    (mod / "prototypes/recipe-visibility.lua").symlink_to(ROOT / "nullius-star/prototypes/recipe-visibility.lua")
     (mod / "prototypes/recipe-productivity.lua").symlink_to(
         ROOT / "nullius-star/prototypes/recipe-productivity.lua")
     (mod / "scenarios/recipe-productivity-family").symlink_to(

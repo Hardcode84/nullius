@@ -1,3 +1,4 @@
+local recipe_visibility = require("prototypes.recipe-visibility")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -91,19 +92,6 @@ local function table_contains(lst, target)
   return false
 end
 
-local function remove_table(lst, target)
-  if (lst == nil) then
-    return false
-  end
-  for ind,elem in pairs(lst) do
-    if (elem == target) then
-      lst[ind] = nil
-      return true
-    end
-  end
-  return false
-end
-
 for _,type in pairs(item_types_list) do
   for _,item in pairs(data.raw[type] or {}) do
     if ((string.sub(item.name, 1, 8) ~= "nullius-") and
@@ -122,33 +110,12 @@ for _,type in pairs(item_types_list) do
 end
 
 for _, recipe in pairs(data.raw.recipe) do
-  if ((string.sub(recipe.name, 1, 8) ~= "nullius-") and
-      ((recipe.order == nil) or (string.sub(recipe.order, 1, 8) ~= "nullius-")) and
-      (string.sub(recipe.name, 1, 13) ~= "fill-nullius-") and
-      (string.sub(recipe.name, 1, 14) ~= "empty-nullius-") and
-	  (recipe.category ~= "ee-testing-tool") and
-	  (string.sub(recipe.name, 1, 5) ~= "bpsb-")) then
-    recipe.hidden = true
-    recipe.enabled = false
-  else
-    if (recipe.results) then
-      for _, product in pairs(recipe.results) do
-        if (product.name ~= nil) then
-          if (product.type ~= "fluid") then
-            local item = data.raw[product.type][product.name]
-            if (item ~= nil) then
-              remove_table(item.flags, "temphidden")
-            end
-          end
-        end
-      end
-    end
-  end
+  recipe_visibility.hide(recipe, data.raw)
 end
 
 for _,type in pairs(item_types_list) do
   for _,item in pairs(data.raw[type] or {}) do
-    if remove_table(item.flags, "temphidden") then
+    if recipe_visibility.unmark(item) then
       item.flags["temphidden"] = nil
       item.hidden = true
 	    item.subgroup = "hidden"
@@ -220,20 +187,7 @@ for _, tech in pairs(data.raw.technology) do
 end
 
 for _, recipe in pairs(data.raw.recipe) do
-  if (string.sub(recipe.name, 1, 8) ~= "nullius-") then
-    if ((string.sub(recipe.name, 1, 13) == "fill-nullius-") or 
-        (string.sub(recipe.name, 1, 14) == "empty-nullius-")) then
-	  recipe.GCKI_ignore = true
-	elseif (((recipe.order == nil) or
-	    (string.sub(recipe.order, 1, 8) ~= "nullius-")) and
-        (recipe.category ~= "ee-testing-tool") and
-	    (string.sub(recipe.name, 1, 5) ~= "bpsb-")) then
-      recipe.enabled = false
-	  recipe.allow_as_intermediate = false
-	  recipe.allow_decomposition = false
-	  if (recipe.order == nil) then recipe.order = "zzz-hidden" end
-	end
-  end
+  recipe_visibility.restrict(recipe)
 end
 
 data.raw.recipe["pipe"].results[1].name = "bob-stone-pipe"

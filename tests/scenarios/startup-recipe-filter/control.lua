@@ -18,6 +18,15 @@ end
 script.on_nth_tick(1, function()
   script.on_nth_tick(1, nil)
   local force = game.forces.player
+  for name, exempt in pairs(cases) do
+    local recipe = prototypes.recipe[name]
+    check(recipe.hidden == not exempt, name .. " resolved visibility")
+    check(recipe.enabled == exempt, name .. " resolved enabled default")
+    check(recipe.allow_as_intermediate == exempt, name .. " intermediate selection")
+    check(recipe.allow_decomposition == exempt, name .. " decomposition")
+    local product = prototypes.item["factorio-test-product-" .. name]
+    check(product.hidden == not exempt, name .. " product visibility")
+  end
   for _, remaining in ipairs({-1, 0, 1, 2}) do
     storage.nullius_broken_status = remaining >= 0 and {["nullius-broken-filter"]=remaining} or nil
     local broken = force.recipes["nullius-broken-filter"]

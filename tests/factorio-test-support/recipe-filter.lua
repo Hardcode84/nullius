@@ -15,9 +15,12 @@ local fixtures = {
   {"nullius-broken-filter"},
 }
 for _, fixture in ipairs(fixtures) do
+  local product = "factorio-test-product-" .. fixture[1]
+  data:extend({{type="item", name=product, stack_size=100,
+    icon="__base__/graphics/icons/copper-plate.png"}})
   local recipe = {type="recipe", name=fixture[1], order=fixture.order or "test",
     enabled=true, ingredients={{type="item", name="iron-plate", amount=1}},
-    results={{type="item", name="copper-plate", amount=1}}}
+    results={{type="item", name=product, amount=1}}}
   local categories = fixture.categories or {"crafting"}
   if modern then recipe.categories = categories
   else
@@ -26,3 +29,5 @@ for _, fixture in ipairs(fixtures) do
   end
   data:extend({recipe})
 end
+
+return fixtures
