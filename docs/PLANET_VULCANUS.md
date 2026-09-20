@@ -228,71 +228,16 @@ explosive spoilage is not part of this design.
 
 ### Proposed ANFO industrial explosives
 
-Status: design proposal, not an implemented recipe. Restore the industrial
-alternative recorded in commit `222e605`. Keep thermite for early production.
-Both routes produce the existing stable `cliff-explosives` item.
+Not implemented. Category: `basic-chemistry`. Output: stable cliff explosives.
 
-These quantities are game recipe units. The ordinary recipe uses
-`basic-chemistry` and has a proposed base time of 4 seconds.
+| Recipe | Inputs | Outputs | Time | Proposed unlock |
+|---|---|---|---|---|
+| Ordinary | 30 ammonia + 20 nitric acid + 20 SO2 + 4 aluminum powder + 2 iron oxide + 1 red wire | 1 explosive + 16 wastewater | 4 s | Explosives 2 |
+| Bulk | 150 ammonia + 100 nitric acid + 100 SO2 + 4 boxes aluminum powder + 2 boxes iron oxide + 1 box red wire | 1 box of 5 explosives + 80 wastewater | 20 s | Mass production 6 |
 
-| Ingredient or product | Ordinary recipe | Bulk recipe |
-|---|---:|---:|
-| Ammonia input | 30 | 150 |
-| Nitric acid input | 20 | 100 |
-| Sulfur dioxide input | 20 | 100 |
-| Aluminum powder input | 4 | 4 boxes |
-| Iron oxide input | 2 | 2 boxes |
-| Red wire input | 1 | 1 box |
-| Explosive output | 1 | 1 box of 5 |
-| Wastewater output | 16 | 80 |
-| Base recipe time | 4 s | 20 s |
-
-Proposed unlocks are `nullius-explosives-2` for the ordinary recipe and
-`nullius-mass-production-6` for the bulk recipe. The bulk route must have its
-own production recipe; packaging ordinary explosives does not replace it.
-
-Fresh resolved-prototype checks pass for both routes at ambient temperature
-200, with seawater pumping forbidden and no electric production steps. The
-checked-in overlay adds only the two proposed recipes. It assumes that these
-recipes are enabled at the declared research boundaries; it does not add them
-to the mod or validate actual research effects.
-
-| Supply | Local production path |
-|---|---|
-| Ammonia | Compress hydrogen from thermal HCl cracking and nitrogen from atmospheric separation; combine them in a pneumatic chemical plant |
-| Nitric acid | Existing Nitrogen Chemistry 2 recipe; ammonia and oxygen in a pneumatic chemical plant |
-| Aluminum powder | Aluminum wire and nitrogen in a thermal crusher |
-| Iron oxide | Existing Steelmaking 2 recipe; 11 iron wire, 20 water and 40 oxygen produce 2 iron oxide in a pneumatic flotation cell |
-| Red wire | Existing wire recipe with local insulated wire and inorganic logic circuits |
-| Water and oxygen | Deacon water production and catalytic sulfur-dioxide decomposition |
-
-The chemical plant has three process-fluid inputs and two outputs. The proposal
-uses all three inputs and one output. The pneumatic variant supplies fuel
-through a separate connection. Construction checks also include three chemical
-plants, two compressors, one flotation cell, one crusher, one small assembler,
-30 pipes, ten belts, six inserters and two chests. These quantities define a
-construction witness, not a capacity estimate or a placed factory.
-
-The boundary supplies the established tier-1 pneumatic and thermal workshop
-and both radiator tiers. Raw inputs are geyser HCl and rock-derived graphite
-and rutile. Lava supplies metals, silica, stone and fuel gas. No limestone ore
-deposit is assumed. A finite stock of 24 compressed volcanic gas primes fuel
-production. The contracts account for fuel consumption and report heat demand;
-they do not simulate heat delivery, fluid routing or waste disposal.
-
-ANFO removes the miner, green wire and filled barrels consumed by thermite.
-It adds compression, nitric acid, iron oxidation and a wastewater output. Iron
-oxide is the main added material-processing burden on Vulcanus. The proposal
-is reachable at the industrial boundary, but its 4-second time is a design
-value, not a measured full-factory throughput or balance result.
-
-Reproduce the inspection and both production manifests:
-
-```bash
-python tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-anfo-inspection.args
-python tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-anfo-ordinary.args
-python tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-anfo-bulk.args
-```
+Both prerequisite manifests pass with local inputs and no electricity, including
+machine construction and fuel. Contracts: `tests/progression/vulcanus-anfo-*.args`.
+Iron oxide adds wire, water, oxygen and flotation costs. Factory throughput is untested.
 
 ### High-temperature resin
 
