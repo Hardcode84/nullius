@@ -1,3 +1,4 @@
+local asteroid_products = require("prototypes.item.asteroid-miner-products")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -656,14 +657,7 @@ data:extend({
     stack_size = 1,
     weight = 1000000,
     send_to_orbit_mode = "automated",
-    rocket_launch_products = {
-      {type = "item", name="nullius-guide-drone-iron-1", amount=1, probability=0.3},
-      {type = "item", name="nullius-guide-drone-sandstone-1", amount=1, probability=0.2},
-      {type = "item", name="nullius-guide-drone-bauxite-1", amount=1, probability=0.2},
-      {type = "item", name="nullius-guide-drone-limestone-1", amount=1, probability=0.1},
-      {type = "item", name="nullius-guide-drone-copper-1", amount=1, probability=0.1},
-      {type = "item", name="nullius-guide-drone-uranium-1", amount=1, probability=0.1}
-    }
+    rocket_launch_products = asteroid_products[1]
   },
   {
     type = "recipe",
@@ -699,14 +693,7 @@ data:extend({
     stack_size = 1,
     weight = 1000000,
     send_to_orbit_mode = "automated",
-    rocket_launch_products = {
-      {type = "item", name="nullius-guide-drone-iron-1", amount=1, probability=0.9},
-      {type = "item", name="nullius-guide-drone-sandstone-1", amount=1, probability=0.8},
-      {type = "item", name="nullius-guide-drone-bauxite-1", amount=1, probability=0.7},
-      {type = "item", name="nullius-guide-drone-limestone-1", amount=1, probability=0.5},
-      {type = "item", name="nullius-guide-drone-copper-1", amount=1, probability=0.4},
-      {type = "item", name="nullius-guide-drone-uranium-1", amount=1, probability=0.3}
-    }
+    rocket_launch_products = asteroid_products[2]
   },
   {
     type = "recipe",
