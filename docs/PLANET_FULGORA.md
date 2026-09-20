@@ -199,7 +199,7 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 
 ## Engine candidates and validation questions
 
-`experiment-network-trip`: Factorio 2.0.77, 16 assertions, tick 450.
+`experiment-network-trip`: Factorio 2.0.77, 22 assertions, tick 450.
 Test fixtures only; reset is scripted, not a tested player click.
 
 | Case | Measured result |
@@ -207,6 +207,7 @@ Test fixtures only; reset is scripted, not a tested player click.
 | 1 MW source, 100 kW load, 30 ticks | Production and consumption both 50 kJ |
 | Same source with 600 kW storage charging | Production and consumption both 350 kJ |
 | 1 MJ strike, 50% collection | 48.33 kJ delivered; 451.67 kJ remains in the collector |
+| Collector buffer statistics, primary-output and tertiary | Both retain 451.67 kJ; storage totals and latest storage samples both return zero |
 | Pole or collector `active=false` | Electricity still flows |
 | Replace connected poles with zero-area variants | Wires remain; adjacent loads lose power until reset |
 | Load built while offline | Remains unpowered outside the pole centre |

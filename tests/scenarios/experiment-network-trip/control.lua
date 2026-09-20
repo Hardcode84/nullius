@@ -1,5 +1,6 @@
 -- given: 1 MW sources, 100 kW loads, optional 600 kW charging; fixed 1 MJ strikes.
 -- place: independent ordinary, charging, lightning, and switched-pole grids.
+-- Lightning grids compare primary-output and tertiary collector buffers.
 -- connect: native copper networks, with no global network.
 -- act: sample 30-tick flows; disable poles/collectors; replace poles with zero-area variants.
 -- run: 450 ticks; clear consumer buffers once on entering offline mode.
@@ -40,11 +41,11 @@ script.on_init(function()
   storage.assertions=0;storage.failures={};storage.observations={}
   storage.surface=game.planets["factorio-test-lightning-planet"].create_surface()
   local s=storage.surface
-  for _,x in ipairs({0,100,200,300}) do s.request_to_generate_chunks({x,0},2) end
+  for _,x in ipairs({0,100,200,300,400}) do s.request_to_generate_chunks({x,0},2) end
   s.force_generate_chunk_requests()
   for _,e in pairs(s.find_entities()) do e.destroy() end
   local tiles={}
-  for x=-10,330 do for y=-8,8 do tiles[#tiles+1]={name="grass-1",position={x,y}} end end
+  for x=-10,410 do for y=-8,8 do tiles[#tiles+1]={name="grass-1",position={x,y}} end end
   s.set_tiles(tiles,true,false,false,false)
   storage.rows={}
   for _,x in ipairs({0,100}) do
@@ -53,6 +54,7 @@ script.on_init(function()
     storage.rows[#storage.rows+1]=row
   end
   storage.lightning={pole=build(POLE,200,0),collector=build(COLLECTOR,200,0),load=build(LOAD,201,1)}
+  storage.tertiary={pole=build(POLE,400,0),collector=build(COLLECTOR.."-tertiary",400,0),load=build(LOAD,401,1)}
   storage.cut={pole=build(POLE,300,0),remote=build(POLE,308,0),source=build(SOURCE,301,0),load=build(LOAD,309,1)}
 end)
 script.on_nth_tick(30,function()
@@ -62,10 +64,25 @@ script.on_nth_tick(30,function()
     for _,row in ipairs(rows) do row.before=counts(row.pole) end
     lightning.before=counts(lightning.pole)
     storage.surface.execute_lightning{name="factorio-test-lightning",position={202,2}}
+    storage.surface.execute_lightning{name="factorio-test-lightning",position={402,2}}
   elseif tick==90 then
     for i,row in ipairs(rows) do storage.observations["window_"..i]=window(row.pole,row.before) end
     storage.observations.lightning=window(lightning.pole,lightning.before)
     storage.observations.collector_buffer=lightning.collector.energy
+    storage.observations.collector_storage={}
+    for _,row in ipairs({lightning,storage.tertiary}) do
+      local stats=row.pole.electric_network_statistics
+      storage.observations.collector_storage[row.collector.name]={
+        energy=row.collector.energy,
+        total=stats.get_storage_count(row.collector.name),
+        latest=stats.get_flow_count{name=row.collector.name,category="storage",
+          precision_index=defines.flow_precision_index.five_seconds,sample_index=1},
+      }
+      local sample=storage.observations.collector_storage[row.collector.name]
+      check(sample.energy>450000,"collector retains strike energy: "..row.collector.name)
+      check(sample.total==0,"collector buffer absent from storage totals: "..row.collector.name)
+      check(sample.latest==0,"collector buffer absent from latest storage sample: "..row.collector.name)
+    end
     check(storage.observations.window_1.produced>0 and storage.observations.window_1.consumed>0,"live network statistics")
     for i=1,2 do
       local sample=storage.observations["window_"..i]

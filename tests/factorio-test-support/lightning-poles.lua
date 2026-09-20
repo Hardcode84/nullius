@@ -70,4 +70,7 @@ planet.lightning_properties = {
   },
   exemption_rules={{type="prototype",string="electric-energy-interface"}},
 }
-data:extend({pole,collector,receiver,bolt,planet})
+local tertiary_collector=table.deepcopy(collector)
+tertiary_collector.name="factorio-test-pole-collector-tertiary"
+tertiary_collector.energy_source.usage_priority="tertiary"
+data:extend({pole,collector,tertiary_collector,receiver,bolt,planet})
