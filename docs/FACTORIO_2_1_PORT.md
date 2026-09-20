@@ -2,7 +2,7 @@
 
 Assessed 2026-09-21: Nullius* `8ca5de2`, Factorio 2.0.77 → 2.1.19.
 Scope: dependency inventory, isolated loading probes, source/API audit, and
-planner schema witness. No gameplay port is applied.
+planner schema witness. Full gameplay has not been ported.
 
 ## Required changes
 
@@ -16,6 +16,7 @@ planner schema witness. No gameplay port is applied.
 | Runtime flags | Six writes across five script files | Replace entity `active` writes with `disabled_by_script`; replace entity `minable` writes with `minable_flag`. Affects drones, beacons, geothermal plants, Vulcanus heat, and gas vents |
 | Runtime initialization | `scripts/startup.lua:131` reads removed `recipe.category` | Filter the category set; otherwise initialization fails after prototype loading is fixed |
 | Test code | 121 fluidbox-reference lines across 20 files; 52 candidate active/minable-write lines across 19 files | Port fluid reads/writes, capacities, filters, and connection queries. Preserve actual fluid and heat assertions |
+| Recipe productivity families | Matcher accepts both category schemas | Verified on 2.0.77 and 2.1.19: three sorted effects, no duplicates, zero-cap exclusion, and +1% research bonuses |
 | Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Supported on 2.0 and 2.1; see tool checks below |
 
 Counts are lexical source matches, not resolved prototype counts or an edit

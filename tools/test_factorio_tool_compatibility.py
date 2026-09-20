@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check planners, UI audit and native crafting with isolated 2.0/2.1 fixtures."""
+"""Check planners, UI audit, crafting and productivity with isolated 2.0/2.1 fixtures."""
 
 import argparse
 import json
@@ -67,7 +67,14 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").symlink_to(ROOT / "tests/compatibility/tool-fixture.lua")
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\n')
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua"):
+        (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
+    (mod / "prototypes").mkdir()
+    (mod / "prototypes/recipe-productivity.lua").symlink_to(
+        ROOT / "nullius-star/prototypes/recipe-productivity.lua")
+    (mod / "scenarios/recipe-productivity-family").symlink_to(
+        ROOT / "tests/scenarios/recipe-productivity-family", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -90,16 +97,21 @@ def run(factorio):
     data = json.loads((work / "script-output/data-raw-dump.json").read_text())
     report = check_data(data)
     planner.write_executor_fixture(report, "compat", scenario / "fixture.lua")
-    for namespace, name in (("nullius-star", "tool-compat"), ("recipe-ui-audit-support", "audit")):
+    for namespace, name in (("nullius-star", "tool-compat"),
+                            ("nullius-star", "recipe-productivity-family"),
+                            ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
                                "--until-tick", "4000"])
     result = json.loads((work / "script-output/factorio-tests/tool-compat.json").read_text())
     assert result["status"] == "pass", result
+    productivity = json.loads((work / "script-output/factorio-tests/recipe-productivity-family.json").read_text())
+    assert productivity["status"] == "pass", productivity
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
-            "executor_assertions": result["assertions"], "status": "pass"}
+            "executor_assertions": result["assertions"],
+            "productivity_assertions": productivity["assertions"], "status": "pass"}
 
 
 def main():

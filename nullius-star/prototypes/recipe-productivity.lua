@@ -13,9 +13,13 @@ local function category_set(categories)
 end
 
 local function matches_category(recipe, categories)
-  if categories[recipe.category or "crafting"] then return true end
+  local candidates = recipe.categories
+  if not candidates then
+    if categories[recipe.category or "crafting"] then return true end
+    candidates = recipe.additional_categories or {}
+  end
 
-  for _, category in ipairs(recipe.additional_categories or {}) do
+  for _, category in ipairs(candidates) do
     if categories[category] then return true end
   end
   return false
