@@ -1611,6 +1611,29 @@ data:extend({
   },
 })
 
+-- Industrial inorganic explosives, with matching five-unit bulk production.
+for _, bulk in ipairs({false, true}) do
+  local recipe = table.deepcopy(data.raw.recipe[
+    bulk and "nullius-boxed-explosive" or "nullius-explosive"])
+  recipe.name = bulk and "nullius-boxed-anfo-explosive" or "nullius-anfo-explosive"
+  recipe.localised_name = bulk and
+    {"recipe-name.nullius-boxed", {"recipe-name.nullius-anfo-explosive"}} or
+    {"recipe-name.nullius-anfo-explosive"}
+  recipe.order = recipe.order .. "-anfo"
+  local scale = bulk and 5 or 1
+  local prefix = bulk and "nullius-box-" or "nullius-"
+  recipe.ingredients = {
+    {type="fluid", name="nullius-ammonia", amount=30 * scale},
+    {type="fluid", name="nullius-acid-nitric", amount=20 * scale},
+    {type="fluid", name="nullius-sulfur-dioxide", amount=20 * scale},
+    {type="item", name=prefix .. "aluminum-powder", amount=4},
+    {type="item", name=prefix .. "iron-oxide", amount=2},
+    {type="item", name=prefix .. "red-wire", amount=1},
+  }
+  recipe.crafting_machine_tint.secondary = data.raw.fluid["nullius-ammonia"].flow_color
+  data:extend({recipe})
+end
+
 -- Process local materials before the second science tier.
 data:extend({
   {

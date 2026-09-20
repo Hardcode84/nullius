@@ -1,4 +1,4 @@
 --recipe
-cliff-explosives=nullius-proposed-anfo-explosive
+cliff-explosives=nullius-anfo-explosive
 @tests/progression/vulcanus-anfo-common.args
 cliff-explosives=1

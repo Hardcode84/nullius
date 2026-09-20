@@ -120,8 +120,6 @@ nullius-compressed-volcanic-gas
 nullius-compressed-volcanic-gas=24
 --technology
 nullius-explosives-2
---prototype-overlay
-tests/progression/vulcanus-anfo-proposal.json
 --recipe
 nullius-compressed-hydrogen=nullius-compressed-hydrogen
 --recipe

@@ -1,3 +1,10 @@
+table.insert(data.raw.technology["nullius-explosives-2"].effects, {
+  type = "unlock-recipe", recipe = "nullius-anfo-explosive",
+})
+table.insert(data.raw.technology["nullius-mass-production-6"].effects, {
+  type = "unlock-recipe", recipe = "nullius-boxed-anfo-explosive",
+})
+
 local mass_production_4 = data.raw.technology["nullius-mass-production-4"]
 if not mass_production_4 then error("Missing nullius-mass-production-4") end
 for _, product in ipairs({"iron-plate", "iron-rod", "aluminum-plate", "aluminum-rod"}) do

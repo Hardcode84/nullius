@@ -1,6 +1,6 @@
 --technology
 nullius-mass-production-6
 --recipe
-nullius-box-explosive=nullius-proposed-boxed-anfo-explosive
+nullius-box-explosive=nullius-boxed-anfo-explosive
 @tests/progression/vulcanus-anfo-common.args
 nullius-box-explosive=1

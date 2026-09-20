@@ -226,18 +226,19 @@ Thermite cliff explosives replace the ordinary organic explosive route. They
 tie aluminum powder to barreled chlorine and sulfur chemistry; unstable
 explosive spoilage is not part of this design.
 
-### Proposed ANFO industrial explosives
+### ANFO industrial explosives
 
-Not implemented. Category: `basic-chemistry`. Output: stable cliff explosives.
+Category: `basic-chemistry`. Output: stable cliff explosives.
 
-| Recipe | Inputs | Outputs | Time | Proposed unlock |
+| Recipe | Inputs | Outputs | Time | Unlock |
 |---|---|---|---|---|
 | Ordinary | 30 ammonia + 20 nitric acid + 20 SO2 + 4 aluminum powder + 2 iron oxide + 1 red wire | 1 explosive + 16 wastewater | 4 s | Explosives 2 |
 | Bulk | 150 ammonia + 100 nitric acid + 100 SO2 + 4 boxes aluminum powder + 2 boxes iron oxide + 1 box red wire | 1 box of 5 explosives + 80 wastewater | 20 s | Mass production 6 |
 
 Both prerequisite manifests pass with local inputs and no electricity, including
 machine construction and fuel. Contracts: `tests/progression/vulcanus-anfo-*.args`.
-Iron oxide adds wire, water, oxygen and flotation costs. Factory throughput is untested.
+Iron oxide adds wire, water, oxygen and flotation costs.
+Runtime: `vulcanus-anfo` checks both unlocks and one pipe-fed craft per recipe.
 
 ### High-temperature resin
 
