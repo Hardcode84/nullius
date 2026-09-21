@@ -17,7 +17,10 @@ data:extend({
       },
     },
     
-    research_trigger = {
+    research_trigger = require("factorio-version").is_2_1 and {
+      type = "mine-entity",
+      entities = {"nullius-landing-lab"}
+    } or {
       type = "mine-entity",
       entity = "nullius-landing-lab"
     },

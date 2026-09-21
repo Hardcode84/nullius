@@ -114,6 +114,21 @@ def stage_chest_graphics(mods, version, dependency_mod_directory):
             target.write_bytes(archive.read(members[0]))
 
 
+def stage_salvage_research(mod):
+    source = (ROOT / "nullius-star/prototypes/technology.lua").read_text()
+    end = source.index('  {\n    type = "technology",\n    name = "nullius-iron-smelting-1",')
+    if source[:end].count('type = "technology"') != 2:
+        raise TestFailure("Expected salvage and geology technologies")
+    (mod / "salvage-technologies.lua").write_text(source[:end] + '})\n')
+    source = (ROOT / "nullius-star/prototypes/entity/landing.lua").read_text()
+    header = source[:source.index('data:extend({')]
+    start = source.index('  {\n    type = "simple-entity-with-owner",\n    name = "nullius-landing-lab",')
+    end = source.index('  {\n    type = "simple-entity-with-owner",\n    name = "nullius-landing-pylon",', start)
+    (mod / "salvage-wreckage.lua").write_text(header + 'data:extend({\n' + source[start:end] + '})\n')
+    (mod / "salvage-research.lua").symlink_to(ROOT / "tests/compatibility/salvage-research.lua")
+    (mod / "scenarios/salvage-research").symlink_to(ROOT / "tests/scenarios/salvage-research", target_is_directory=True)
+
+
 def stage_pump_wagons(mod):
     source = (ROOT / "nullius-star/prototypes/entity/plumbing.lua").read_text()
     start = source.index('  {\n    type = "pump",\n    name = "nullius-pump-1",')
@@ -268,7 +283,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -295,6 +310,7 @@ def run(factorio, dependency_mod_directory):
     stage_extractor_pictures(mod)
     stage_well_pictures(mod, version)
     stage_pump_wagons(mod)
+    stage_salvage_research(mod)
     (mod / "prototypes/entity/chest.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/chest.lua")
     (mod / "graphics").symlink_to(ROOT / "nullius-star/graphics", target_is_directory=True)
     (mod / "prototypes/entity/turbine.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/turbine.lua")
@@ -359,6 +375,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "extractor-pictures"),
                             ("nullius-star", "well-pictures"),
                             ("nullius-star", "pump-wagons"),
+                            ("nullius-star", "salvage-research"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -398,6 +415,8 @@ def run(factorio, dependency_mod_directory):
     assert wells["status"] == "pass" and wells["wells"] == 16, wells
     pumps = json.loads((work / "script-output/factorio-tests/pump-wagons.json").read_text())
     assert pumps["status"] == "pass" and pumps["cases"] == 16, pumps
+    salvage = json.loads((work / "script-output/factorio-tests/salvage-research.json").read_text())
+    assert salvage["status"] == "pass", salvage
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -418,6 +437,7 @@ def run(factorio, dependency_mod_directory):
             "extractor_assertions": extractors["assertions"],
             "well_assertions": wells["assertions"],
             "pump_assertions": pumps["assertions"],
+            "salvage_assertions": salvage["assertions"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 
