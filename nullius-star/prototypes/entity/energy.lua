@@ -3512,6 +3512,15 @@ circuit_connector_definitions["nullius-solar-collector"] = circuit_connector_def
 )
 
 
+local reactor_neighbours
+if require("factorio-version").is_2_1 then
+  reactor_neighbours = table.deepcopy(data.raw.reactor["nuclear-reactor"].neighbour_connectable)
+  for _, connection in ipairs(reactor_neighbours.connections) do
+    connection.category = "nullius-reactor"
+    connection.neighbour_category = {"nullius-reactor"}
+  end
+end
+
 data:extend({
   stirling2h,
   stirling2v,
@@ -3531,6 +3540,7 @@ data:extend({
     dying_explosion = "nuclear-reactor-explosion",
     consumption = "50MW",
     neighbour_bonus = 0.5,
+    neighbour_connectable = reactor_neighbours,
     collision_box = {{-2.2, -2.2}, {2.2, 2.2}},
     selection_box = {{-2.5, -2.5}, {2.5, 2.5}},
     damaged_trigger_effect = data.raw.reactor["nuclear-reactor"].damaged_trigger_effect,

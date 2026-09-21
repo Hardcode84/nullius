@@ -270,3 +270,5 @@ require("extractor-pictures")
 require("well-pictures")
 
 require("pump-wagons")
+
+require("reactor-neighbours")

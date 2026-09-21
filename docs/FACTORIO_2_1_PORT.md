@@ -25,6 +25,7 @@ planner schema witness. Full gameplay has not been ported.
 | Water-well shadows | Both tiers and their legacy copies select the engine shadow frames and origin | Checks cover all 16 directional shadows and native water output. Scales, animation timing, and well speeds stay unchanged |
 | Lab-wreck salvage research | The mining trigger selects `entity` on 2.0 and `entities` on 2.1 | Native character mining checks reject another entity, retain all salvage items, complete salvage research, and permit geology research |
 | Pump wagon connectors | Five full-size pumps select the engine connector graphics field | Checks cover all five definitions and 16 native loading/unloading cases across both normal tiers and four directions |
+| Nuclear-reactor neighbours | The 2.1 connection points use a private Nullius category | 32 layouts check bonuses, heat output, rotation, gaps, mixed prototypes, and neighbour removal. Different reactor prototypes give no bonus, as on 2.0 |
 | Entity prototypes | Other mining-drill graphics and crafting symmetry changed | Port each entity family; check graphics and fluid port geometry |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
 | Runtime mining flags | Four helper creation paths use `minable_flag` on both engines | 45 assertions per engine verify protection and cleanup; full Nullius heat and gas-vent scenarios pass 160 assertions |
