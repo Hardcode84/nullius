@@ -1,10 +1,24 @@
+local modern = require("factorio-version").is_2_1
+
+local function extend_landfill_prototypes(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 local transitions = require("__alien-biomes__/prototypes/tile/tile-transitions-static")
 
-data:extend({
+extend_landfill_prototypes({
   {
     type = "item",
     name = "nullius-land-fill-gravel",
@@ -83,7 +97,7 @@ data:extend({
     order = "nullius-dbb",
     energy_required = 2,
     enabled = false,
-    category = "hand-crushing",
+    categories = {"hand-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -105,7 +119,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     ingredients = {
       {type = "item", name = "nullius-box-gravel", amount = 5},
@@ -122,7 +136,7 @@ data:extend({
     order = "nullius-dcb",
     energy_required = 2,
     enabled = false,
-    category = "hand-crushing",
+    categories = {"hand-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -144,7 +158,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     ingredients = {
       {type = "item", name = "nullius-box-sand", amount = 5},
@@ -161,7 +175,7 @@ data:extend({
     order = "nullius-ddb",
     energy_required = 6,
     enabled = false,
-    category = "hand-crushing",
+    categories = {"hand-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -182,7 +196,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     ingredients = {
       {type = "item", name = "nullius-crushed-iron-ore", amount = 4},
       {type = "item", name = "nullius-sand", amount = 1}
@@ -200,7 +214,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     ingredients = {
       {type = "item", name = "nullius-crushed-limestone", amount = 25}
     },
@@ -229,7 +243,7 @@ data:extend({
     order = "nullius-dbc",
     energy_required = 8,
     enabled = false,
-    category = "hand-crushing",
+    categories = {"hand-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -268,7 +282,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     energy_required = 16,
     ingredients = {
@@ -300,7 +314,7 @@ data:extend({
     order = "nullius-dcc",
     energy_required = 6,
     enabled = false,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -339,7 +353,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     energy_required = 6,
     ingredients = {
@@ -371,7 +385,7 @@ data:extend({
     order = "nullius-ddc",
     energy_required = 4,
     enabled = false,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
@@ -390,7 +404,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     order = "nullius-db",
     energy_required = 40,
@@ -425,7 +439,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     ingredients = {
       {type = "item", name = "nullius-crushed-iron-ore", amount = 4},
       {type = "item", name = "nullius-red-concrete", amount = 5}
@@ -440,7 +454,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     order = "nullius-eb",
     energy_required = 40,
@@ -475,7 +489,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     ingredients = {
       {type = "item", name = "nullius-crushed-limestone", amount = 5},
       {type = "item", name = "refined-concrete", amount = 4}
@@ -490,7 +504,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
     order = "nullius-fb",
     energy_required = 20,
@@ -522,7 +536,7 @@ data:extend({
     subgroup = "masonry",
     order = "nullius-as",
     energy_required = 2,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     enabled = false,
     always_show_made_in = true,
     show_amount_in_title = false,
@@ -561,7 +575,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-land-fill",
 	order = "nullius-dc",
     energy_required = 20,
@@ -600,7 +614,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-fd",
     energy_required = 30,
@@ -640,7 +654,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-fb",
     energy_required = 20,
@@ -674,7 +688,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "biology-material",
     order = "nullius-fd",
     energy_required = 5,
@@ -715,7 +729,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
 	subgroup = "boxed-dumping",
     order = "nullius-gb",
     energy_required = 25,
@@ -751,7 +765,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "biology-material",
     order = "nullius-mc",
     energy_required = 20,
@@ -793,7 +807,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "boxed-dumping",
     order = "nullius-gc",
     energy_required = 100,
@@ -836,7 +850,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  no_productivity = true,
-    category = "bulk-smelting",
+    categories = {"bulk-smelting"},
     subgroup = "boxed-dumping",
     order = "nullius-fc",
     energy_required = 12,
@@ -877,7 +891,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  no_productivity = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-h",
     energy_required = 10,
@@ -913,7 +927,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-db",
     energy_required = 720,
@@ -950,7 +964,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-dd",
     energy_required = 720,
@@ -987,7 +1001,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "ore-crushing",
+    categories = {"ore-crushing"},
     subgroup = "boxed-dumping",
     order = "nullius-dc",
     energy_required = 720,

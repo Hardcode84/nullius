@@ -288,3 +288,5 @@ require("terrain-drone-recipes")
 require("drone-recipes")
 
 require("weapon-recipes")
+
+require("landfill-recipes")
