@@ -292,3 +292,5 @@ require("weapon-recipes")
 require("landfill-recipes")
 
 require("general-recipes")
+
+require("plumbing-recipes")
