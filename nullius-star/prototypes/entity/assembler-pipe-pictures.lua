@@ -1,5 +1,5 @@
 local pictures
-if string.match(mods.base, "^2%.1%.") then
+if require("factorio-version").is_2_1 then
   pictures = require("__base__/prototypes/entity/assembler-pictures").assembler2pipepictures
 else
   pictures = assembler2pipepictures()

@@ -1,4 +1,4 @@
-local probability = string.match(mods.base, "^2%.1%.") and "independent_probability" or "probability"
+local probability = require("factorio-version").is_2_1 and "independent_probability" or "probability"
 
 return {
   [1] = {

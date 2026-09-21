@@ -1,4 +1,4 @@
-local modern = string.match(mods.base, "^2%.1%.") ~= nil
+local modern = require("factorio-version").is_2_1
 local storage_chest = data.raw["logistic-container"]["storage-chest"]
 local storage_door = storage_chest
 if modern then storage_door = storage_chest.robot_door end

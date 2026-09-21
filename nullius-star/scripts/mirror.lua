@@ -13,7 +13,7 @@ end
 
 -- Cold path: preserve indexed fluid stores across entity replacement.
 local fluid_count, read_fluid, write_fluid
-if string.match(script.active_mods.base, "^2%.1%.") then
+if require("factorio-version").is_2_1 then
   fluid_count = function(entity) return entity.fluids_count end
   read_fluid = function(entity, index) return entity.get_fluid(index) end
   write_fluid = function(entity, index, fluid)

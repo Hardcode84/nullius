@@ -110,7 +110,7 @@ end
 local function set_generator_animation(proto, overlay, tint)
   local horizontal = turbine_animation(false, overlay, tint)
   local vertical = turbine_animation(true, overlay, tint)
-  if string.match(mods.base, "^2%.1%.") then
+  if require("factorio-version").is_2_1 then
     proto.pictures = {
       north = {animation = vertical},
       east = {animation = horizontal},

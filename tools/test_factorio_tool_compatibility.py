@@ -131,6 +131,7 @@ def run(factorio, dependency_mod_directory):
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
+    (mod / "factorio-version.lua").symlink_to(ROOT / "nullius-star/factorio-version.lua")
     stage_chest_graphics(mods, version, dependency_mod_directory)
     (mod / "chest-test-port.lua").symlink_to(ROOT / "tests/factorio-test-support/chest-doors.lua")
     stage_car_prototypes(mod)

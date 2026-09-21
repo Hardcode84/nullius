@@ -1,5 +1,5 @@
 local recipe_filter = {}
-local category_lists = string.match(script.active_mods.base, "^2%.1%.") ~= nil
+local category_lists = require("factorio-version").is_2_1
 
 -- Cold path: force initialization and configuration changes.
 local function is_testing_tool(recipe)

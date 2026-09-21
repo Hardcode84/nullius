@@ -1,5 +1,5 @@
 local products = {}
-local modern = string.match(mods.base, "^2%.1%.") ~= nil
+local modern = require("factorio-version").is_2_1
 products.probability = modern and "independent_probability" or "probability"
 
 -- Use explicit integer bounds on both engines. The old loot schema samples
