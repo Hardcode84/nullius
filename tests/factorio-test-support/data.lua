@@ -286,3 +286,5 @@ require("alignment-recipes")
 require("terrain-drone-recipes")
 
 require("drone-recipes")
+
+require("weapon-recipes")

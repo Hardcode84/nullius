@@ -1,7 +1,21 @@
+local modern = require("factorio-version").is_2_1
+
+local function extend_weapon_prototypes(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
-data:extend({
+extend_weapon_prototypes({
   {
     type = "gun",
     name = "nullius-drone-cannon",
@@ -301,7 +315,7 @@ data:extend({
   }
 })
 
-data:extend({
+extend_weapon_prototypes({
   {
     type = "gun",
     name = "nullius-mecha-drone-launcher-1",
@@ -384,7 +398,7 @@ data:extend({
     type = "recipe",
     name = "nullius-gun",
     enabled = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     always_show_made_in = true,
     energy_required = 10,
     ingredients = {
@@ -432,7 +446,7 @@ data:extend({
     name = "nullius-rifle",
     enabled = false,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 30,
     ingredients = {
       {type = "item", name = "nullius-gun", amount = 2},
@@ -469,7 +483,7 @@ data:extend({
     type = "recipe",
     name = "nullius-missile-launcher",
     enabled = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     always_show_made_in = true,
     energy_required = 5,
     ingredients = {
@@ -514,7 +528,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     always_show_made_in = true,
     energy_required = 3,
     ingredients = {
@@ -535,7 +549,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "large-assembly",
+    categories = {"large-assembly"},
     subgroup = "boxed-demolition",
     always_show_made_in = true,
     energy_required = 15,
@@ -585,7 +599,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-missile-1", amount = 3},
@@ -605,7 +619,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     always_show_made_in = true,
-    category = "medium-only-assembly",
+    categories = {"medium-only-assembly"},
     subgroup = "boxed-demolition",
     energy_required = 10,
     ingredients = {
@@ -737,7 +751,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "hand-casting",
+    categories = {"hand-casting"},
     energy_required = 5,
     ingredients = {
       {type = "item", name = "cliff-explosives", amount = 1},
@@ -754,7 +768,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "boxed-demolition",
     energy_required = 25,
     ingredients = {
@@ -772,7 +786,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "hand-casting",
+    categories = {"hand-casting"},
     energy_required = 8,
     ingredients = {
       {type = "item", name = "nullius-box-magazine", amount = 2},
@@ -807,7 +821,7 @@ data:extend({
     always_show_made_in = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "hand-crafting",
+    categories = {"hand-crafting"},
     energy_required = 30,
     ingredients = {
       {type="item", name="nullius-chlorine-barrel", amount=1},
@@ -827,7 +841,7 @@ data:extend({
     order = "nullius-xc",
     enabled = false,
     always_show_made_in = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-acid-nitric"].flow_color,
       secondary = data.raw.fluid["nullius-glycerol"].flow_color
@@ -853,7 +867,7 @@ data:extend({
   	localised_name = {"recipe-name.nullius-boxed",
 	    {"", {"item-name.nullius-explosive"}, " ", tostring(1)}},
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-demolition",
 	  order = "nullius-cb",
     crafting_machine_tint = {
@@ -897,7 +911,7 @@ data:extend({
     order = "nullius-xd",
     enabled = false,
     always_show_made_in = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-glycerol"].flow_color,
       secondary = data.raw.fluid["nullius-acid-nitric"].flow_color
@@ -944,7 +958,7 @@ data:extend({
 	  },
     enabled = false,
     always_show_made_in = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	subgroup = "boxed-demolition",
 	order = "nullius-cc",
     crafting_machine_tint = {
@@ -984,7 +998,7 @@ data:extend({
     type = "recipe",
     name = "nullius-turret",
     enabled = false,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 30,
     ingredients = {
       {type="item", name="nullius-box-lamp-2", amount=2},
@@ -1035,7 +1049,7 @@ data:extend({
     always_show_made_in = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 10,
     ingredients = {
       {type="item", name="nullius-car-1", amount=1},
