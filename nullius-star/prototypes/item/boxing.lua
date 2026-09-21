@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -46,7 +48,7 @@ local function create_boxed_item(base_name, group, box_order,
     localname = {"equipment-name."..item.place_as_equipment_result}
   end
 
-  data:extend({
+  local prototypes = {
     {
       type = "item",
       name = "nullius-box-"..base_name,
@@ -59,7 +61,7 @@ local function create_boxed_item(base_name, group, box_order,
       type = "recipe",
       name = "nullius-box-"..base_name,
       localised_name = {"recipe-name.nullius-boxing", localname},
-      category = "packaging",
+      categories = {"packaging"},
       enabled = false,
       always_show_made_in = true,
       show_amount_in_title = false,
@@ -80,7 +82,7 @@ local function create_boxed_item(base_name, group, box_order,
       type = "recipe",
       name = "nullius-unbox-"..base_name,
       localised_name = {"recipe-name.nullius-unbox", localname},
-      category = "packaging",
+      categories = {"packaging"},
       subgroup = "unboxing-"..group,
       order = "nullius-"..box_order,
       enabled = false,
@@ -101,7 +103,16 @@ local function create_boxed_item(base_name, group, box_order,
 			  {type="item", name=full_name, amount = ratio}
 		  }
     }
-  })
+  }
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
 end
 
 

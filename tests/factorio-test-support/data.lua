@@ -276,3 +276,5 @@ require("reactor-neighbours")
 require("turbine-recipes")
 
 require("broken-recipes")
+
+require("boxing-recipes")
