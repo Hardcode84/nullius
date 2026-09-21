@@ -306,3 +306,5 @@ require("fluid-recipes")
 require("intermediate-recipes")
 
 require("primitive-recipes")
+
+require("vulcanus-entity-recipes")

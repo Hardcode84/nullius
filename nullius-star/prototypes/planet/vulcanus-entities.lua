@@ -1,7 +1,21 @@
+local modern = require("factorio-version").is_2_1
+
+local function extend_vulcanus_entities(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 -- Vulcanus-specific entities: lava intake variant of seawater intake.
 -- Same item as seawater intake. Script swaps on placement when on Vulcanus.
 
-data:extend({
+extend_vulcanus_entities({
   {
     type = "recipe-category",
     name = "nullius-lava-pumping",
@@ -12,7 +26,7 @@ data:extend({
     localised_name = {"recipe-name.nullius-lava-pumping"},
     enabled = true,
     hide_from_player_crafting = true,
-    category = "nullius-lava-pumping",
+    categories = {"nullius-lava-pumping"},
     energy_required = 1,
     ingredients = {},
     results = {
@@ -136,7 +150,7 @@ high_temp.crafting_categories = {"nullius-low-temp-radiator", "nullius-high-temp
 high_temp.energy_source.min_working_temperature = 450
 high_temp.energy_source.max_temperature = 500
 
-data:extend({
+extend_vulcanus_entities({
   low_temp,
   high_temp,
   -- Recipe categories.
@@ -173,7 +187,7 @@ data:extend({
     icon_size = 64,
     enabled = true,
     hide_from_player_crafting = true,
-    category = "nullius-low-temp-radiator",
+    categories = {"nullius-low-temp-radiator"},
     energy_required = 2,
     ingredients = {
       {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
@@ -194,7 +208,7 @@ data:extend({
     icon_size = 64,
     enabled = true,
     hide_from_player_crafting = true,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     energy_required = 2,
     ingredients = {
       {type = "fluid", name = "nullius-hydrogen-chloride", amount = 60},
@@ -211,7 +225,7 @@ data:extend({
     name = "nullius-vulcanus-radiator-1",
     localised_name = {"item-name.nullius-vulcanus-radiator-1"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-iron-plate", amount = 8},
@@ -229,7 +243,7 @@ data:extend({
     name = "nullius-vulcanus-radiator-2",
     localised_name = {"item-name.nullius-vulcanus-radiator-2"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     energy_required = 15,
     ingredients = {
       {type = "item", name = "nullius-vulcanus-radiator-1", amount = 1},
