@@ -6,7 +6,8 @@
 -- expect: five crafts each, all fluid consumed, and no output items
 local cases = require("__nullius-star__/scenarios/void-products/fixture")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
-local probability = require("__nullius-star__/factorio-version").is_2_1 and "independent_probability" or "probability"
+local modern = require("__nullius-star__/factorio-version").is_2_1
+local probability = modern and "independent_probability" or "probability"
 local assertions = 0
 local function check(ok, message)
   assertions = assertions + 1
@@ -21,6 +22,8 @@ script.on_nth_tick(1, function()
   storage.rows = {}
   for i, case in ipairs(cases) do
     local recipe = prototypes.recipe[case.name]
+    local categories=modern and recipe.categories or {recipe.category}
+    check(#categories==1 and categories[1]==case.product,case.name .. " exact category")
     check(recipe.energy == case.seconds, case.name .. " craft time")
     check(#recipe.ingredients == 1 and recipe.ingredients[1].name == case.fluid
       and recipe.ingredients[1].amount == case.amount, case.name .. " input")

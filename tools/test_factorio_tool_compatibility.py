@@ -252,36 +252,10 @@ def stage_metallurgic_products(mod, version):
     (mod / "scenarios/metallurgic-products").symlink_to(ROOT / "tests/scenarios/metallurgic-products", target_is_directory=True)
 
 
-def stage_void_products(mod, version):
-    source = (ROOT / "nullius-star/prototypes/item/void.lua").read_text()
-    blocks = re.findall(r'type = "recipe",(.*?)\n  }', source, re.S)
-    if len(blocks) != 42:
-        raise TestFailure(f"Expected 42 void recipes, got {len(blocks)}")
-    code = [source.splitlines()[0]]
-    for block in blocks:
-        def field(pattern):
-            matches = re.findall(pattern, block)
-            if len(matches) != 1:
-                raise TestFailure(f"Ambiguous void recipe field: {pattern}")
-            return matches[0]
-        name = field(r'^\s*name = "([^\"]+)"')
-        category = field(r'category = "([^\"]+)"')
-        duration = field(r'energy_required = ([\d.]+)')
-        ingredients = field(r'ingredients = (\{\{[^\n]+\}\})')
-        results = field(r'results = (\{\{[^\n]+\}\})')
-        code.extend([
-            'do local ingredients=' + ingredients + '; local results=' + results + ';',
-            'local fluid=ingredients[1].name;',
-            'if not data.raw.fluid[fluid] then local f=table.deepcopy(data.raw.fluid.water); f.name=fluid; data:extend({f}); end',
-            'local item=results[1].name;',
-            'if not data.raw.item[item] then data:extend({{type="item",name=item,stack_size=100,icon="__base__/graphics/icons/iron-plate.png"}}); end',
-            f'if not data.raw["recipe-category"]["{category}"] then data:extend({{{{type="recipe-category",name="{category}"}}}}); end',
-            f'local recipe={{type="recipe",name="{name}",energy_required={duration},ingredients=ingredients,results=results}};',
-            f'recipe.categories={{"{category}"}};' if version == "2.1" else f'recipe.category="{category}";',
-            'data:extend({recipe}); end',
-        ])
-    # Isolate the product port from the pending recipe presentation/category port.
-    (mod / "void-recipe-fixture.lua").write_text("\n".join(code) + "\n")
+def stage_void_products(mod):
+    (mod / "legacyAngels.lua").symlink_to(ROOT / "nullius-star/legacyAngels.lua")
+    (mod / "void-recipes.lua").symlink_to(ROOT / "nullius-star/prototypes/item/void.lua")
+    (mod / "void-recipe-fixture.lua").symlink_to(ROOT / "tests/compatibility/void-categories.lua")
     (mod / "void-products.lua").symlink_to(ROOT / "tests/factorio-test-support/void-products.lua")
     (mod / "scenarios/void-products").symlink_to(ROOT / "tests/scenarios/void-products", target_is_directory=True)
 
@@ -323,7 +297,7 @@ def run(factorio, dependency_mod_directory):
     (mod / "chest-test-port.lua").symlink_to(ROOT / "tests/factorio-test-support/chest-doors.lua")
     stage_car_prototypes(mod)
     stage_miner_connectors(mod)
-    stage_void_products(mod, version)
+    stage_void_products(mod)
     stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
