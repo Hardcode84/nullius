@@ -114,6 +114,21 @@ def stage_chest_graphics(mods, version, dependency_mod_directory):
             target.write_bytes(archive.read(members[0]))
 
 
+def stage_miner_connectors(mod):
+    source = (ROOT / "nullius-star/prototypes/entity/furnace.lua").read_text()
+    start = source.index("local function scale_wire_position(")
+    end = source.index("local floatpipepics =", start)
+    (mod / "miner-connector-scaling.lua").write_text(source[start:end])
+    miner = ROOT / "nullius-star/prototypes/entity/miner.lua"
+    (mod / "miner-prototypes.lua").symlink_to(miner)
+    # Run the actual optional reskin branch and inspect its tables before restoring
+    # normal prototypes. This does not load or validate the optional image assets.
+    (mod / "miner-reskin-prototypes.lua").write_text(
+        'local mods = setmetatable({["reskins-bobs"] = true}, {__index = mods})\n'
+        + miner.read_text())
+    (mod / "miner-connectors.lua").symlink_to(ROOT / "tests/compatibility/miner-connectors.lua")
+
+
 def run(factorio, dependency_mod_directory):
     work = Path(tempfile.mkdtemp(prefix="factorio-tool-compat-"))
     metadata = json.loads((factorio.resolve().parents[2] / "data/base/info.json").read_text())
@@ -127,7 +142,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -135,6 +150,7 @@ def run(factorio, dependency_mod_directory):
     stage_chest_graphics(mods, version, dependency_mod_directory)
     (mod / "chest-test-port.lua").symlink_to(ROOT / "tests/factorio-test-support/chest-doors.lua")
     stage_car_prototypes(mod)
+    stage_miner_connectors(mod)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
     (mod / "fluid-resource-products.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-resource-products.lua")

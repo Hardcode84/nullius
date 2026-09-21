@@ -2783,3 +2783,21 @@ large_miner.working_visualisations[6].east_animation.layers[2].tint = {118, 149,
 data.raw["mining-drill"]["nullius-large-miner-2"].graphics_set = large_miner
 
 end
+
+-- Apply after reskins replace the graphics sets. Keep base connectors unchanged.
+if require("factorio-version").is_2_1 then
+  for _, name in ipairs({
+    "nullius-small-miner-2", "nullius-small-miner-3",
+    "nullius-medium-miner-2", "nullius-medium-miner-3",
+    "nullius-large-miner-1", "nullius-large-miner-2"
+  }) do
+    local miner = data.raw["mining-drill"][name]
+    miner.circuit_connector = table.deepcopy(miner.circuit_connector)
+    for i, connector in ipairs(miner.circuit_connector) do
+      connector.sprites.render_layer = "object"
+      connector.sprites.secondary_draw_order = (i == 1) and 14 or 30
+    end
+    miner.graphics_set.circuit_connector_layer = nil
+    miner.graphics_set.circuit_connector_secondary_draw_order = nil
+  end
+end
