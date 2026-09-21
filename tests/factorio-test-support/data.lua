@@ -294,3 +294,5 @@ require("landfill-recipes")
 require("general-recipes")
 
 require("plumbing-recipes")
+
+require("building-recipes")
