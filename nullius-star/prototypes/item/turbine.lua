@@ -1,3 +1,17 @@
+local modern = require("factorio-version").is_2_1
+
+local function extend_turbine_prototypes(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local function create_turbine_recipe(fluidname, exhaust, energy, counto, countc, countr)
   local fullfluid = "nullius-" .. fluidname
   local fluid = data.raw.fluid[fullfluid]
@@ -15,7 +29,7 @@ local function create_turbine_recipe(fluidname, exhaust, energy, counto, countc,
 	  -- icon = fluid.icon,
     -- icon_size = fluid.icon_size,
 	  crafting_machine_tint = { primary = fluid.flow_color },
-    category = "turbine-open",
+    categories = {"turbine-open"},
     subgroup = "turbine-open",
     hide_from_player_crafting = true,
 	  hide_from_stats = true,
@@ -27,12 +41,12 @@ local function create_turbine_recipe(fluidname, exhaust, energy, counto, countc,
   local closed = util.table.deepcopy(open)
   closed.name = "nullius-burn-closed-" .. fluidname
   closed.localised_name = {"recipe-name.nullius-turbine-burn-closed", {"fluid-name."..fullfluid}}
-  closed.category = "turbine-closed"
+  closed.categories = {"turbine-closed"}
   closed.subgroup = "turbine-closed"
   closed.ingredients[1].amount = countc
   closed.results[1].amount = energycountc
   closed.results[2] = {type="fluid", name="nullius-" .. exhaust, amount=countr}
-  data:extend({ open, closed })
+  extend_turbine_prototypes({ open, closed })
 end
 
 
@@ -58,7 +72,7 @@ data.raw.recipe["nullius-burn-closed-pressure-steam"].hide_from_stats = false
 data.raw.recipe["nullius-burn-closed-compressed-nitrogen"].hide_from_stats = false
 
 
-data:extend({
+extend_turbine_prototypes({
   {
     type = "item",
     name = "nullius-turbine-open-1",
@@ -193,7 +207,7 @@ data:extend({
     type = "recipe",
     name = "nullius-turbine-open-1",
     enabled = false,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     always_show_made_in = true,
     energy_required = 8,
     ingredients = {
@@ -210,7 +224,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-turbine-open-1",
     enabled = false,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     always_show_made_in = true,
     energy_required = 40,
@@ -229,7 +243,7 @@ data:extend({
     name = "nullius-turbine-closed-1",
     enabled = false,
     always_show_made_in = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 4,
     ingredients = {
       {type = "item", name = "nullius-turbine-open-1", amount = 1},
@@ -245,7 +259,7 @@ data:extend({
     name = "nullius-boxed-turbine-closed-1",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     energy_required = 20,
     ingredients = {
@@ -262,7 +276,7 @@ data:extend({
     name = "nullius-turbine-open-2",
     enabled = false,
     always_show_made_in = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 16,
     ingredients = {
       {type = "item", name = "nullius-turbine-open-1", amount = 2},
@@ -280,7 +294,7 @@ data:extend({
     name = "nullius-boxed-turbine-open-2",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     energy_required = 80,
     ingredients = {
@@ -299,7 +313,7 @@ data:extend({
     name = "nullius-turbine-closed-2",
     enabled = false,
     always_show_made_in = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-turbine-open-2", amount = 1},
@@ -315,7 +329,7 @@ data:extend({
     name = "nullius-boxed-turbine-closed-2",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     energy_required = 50,
     ingredients = {
@@ -332,7 +346,7 @@ data:extend({
     name = "nullius-turbine-open-3",
     enabled = false,
     always_show_made_in = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 40,
     ingredients = {
       {type = "item", name = "nullius-turbine-open-2", amount = 2},
@@ -350,7 +364,7 @@ data:extend({
     name = "nullius-boxed-turbine-open-3",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     energy_required = 200,
     ingredients = {
@@ -369,7 +383,7 @@ data:extend({
     name = "nullius-turbine-closed-3",
     enabled = false,
     always_show_made_in = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 20,
     ingredients = {
       {type = "item", name = "nullius-turbine-open-3", amount = 1},
@@ -386,7 +400,7 @@ data:extend({
     name = "nullius-boxed-turbine-closed-3",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-assembly",
+    categories = {"huge-assembly"},
     subgroup = "boxed-fluid-energy",
     energy_required = 100,
     ingredients = {

@@ -272,3 +272,5 @@ require("well-pictures")
 require("pump-wagons")
 
 require("reactor-neighbours")
+
+require("turbine-recipes")

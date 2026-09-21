@@ -57,3 +57,11 @@ for category,recipe in pairs(probes) do
     assert(#recipe.icons==1 and recipe.localised_name==nil,"other category unchanged")
   end
 end
+for _,case in ipairs(require("scenarios/turbine-recipes/fixture")) do
+  local recipe=data.raw.recipe[case.name]
+  if case.category=="turbine-open" then
+    assert(#recipe.icons==3 and recipe.icons[2].icon==energy and recipe.icons[3].icon==cross,case.name.." open icons")
+  elseif case.category=="turbine-closed" then
+    assert(#recipe.icons==2 and recipe.icons[2].icon==energy,case.name.." closed icons")
+  end
+end
