@@ -308,3 +308,5 @@ require("intermediate-recipes")
 require("primitive-recipes")
 
 require("vulcanus-entity-recipes")
+
+require("barrel-recipes")

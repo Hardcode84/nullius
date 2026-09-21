@@ -12,6 +12,7 @@ planner schema witness. Full gameplay has not been ported.
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
 | Industrial metallurgic science | The second barrel return uses the engine-specific 90% probability field | Both engines retain five science packs, one guaranteed barrel, and one 90% barrel return. Native tests verify that productivity doubles science but does not duplicate barrels |
+| Generated barrel recipe categories | Fill and empty overrides select the native schema and replace the generated category | Both engines and full Nullius 2.0 pass 141 assertions for water, fuel, steam, and cold gas. Native fill/empty cycles preserve quantities, temperatures, barrel returns, enabled states, and exclusive machine categories |
 | Vulcanus entity recipe categories | All five recipes select the native schema; entity and resource definitions stay unchanged | Both engines and full Nullius 2.0 pass 117 assertions for costs, yields, times, categories, and enabled states. Circuit selection rejects radiator recipes at temperature 99 and accepts them at 100; thermal-machine and gas-vent scenarios pass |
 | Primitive robotics recipe categories | The generator selects the native schema for all five recipes; item definitions and crafting categories stay unchanged | Both engines and full Nullius 2.0 craft all five with exact costs, times, and outputs. The full-mod primitive robotics scenario also passes |
 | Intermediate recipe categories | All 293 ordinary, boxed, and alternative recipes select the native schema; items and recipe quantities stay unchanged | Both engines and full Nullius 2.0 craft all 293 with exact inputs, outputs, times, temperatures, catalyst balances, and category rejection |
@@ -88,6 +89,8 @@ python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.
 python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_barrel_recipe_compatibility.py --factorio /path/to/factorio-2.0
+python tools/test_barrel_recipe_compatibility.py --factorio /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```
 

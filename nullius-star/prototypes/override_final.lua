@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
@@ -320,7 +322,11 @@ for _,fluid in pairs(data.raw.fluid) do
     data.raw.recipe[fill_name].hide_from_player_crafting = true
     data.raw.recipe[fill_name].hide_from_stats = true
     data.raw.recipe[fill_name].enabled = true
-    data.raw.recipe[fill_name].category = "nullius-barrel"
+    if modern then
+      data.raw.recipe[fill_name].categories = {"nullius-barrel"}
+    else
+      data.raw.recipe[fill_name].category = "nullius-barrel"
+    end
     data.raw.recipe[fill_name].energy_required = 0.25
 	data.raw.recipe[fill_name].requester_paste_multiplier = 5
     data.raw.recipe[empty_name].subgroup = "empty-" .. subgroup
@@ -328,7 +334,11 @@ for _,fluid in pairs(data.raw.fluid) do
     data.raw.recipe[empty_name].hide_from_player_crafting = true
     data.raw.recipe[empty_name].hide_from_stats = true
     data.raw.recipe[empty_name].enabled = true
-    data.raw.recipe[empty_name].category = "nullius-unbarrel"
+    if modern then
+      data.raw.recipe[empty_name].categories = {"nullius-unbarrel"}
+    else
+      data.raw.recipe[empty_name].category = "nullius-unbarrel"
+    end
     data.raw.recipe[empty_name].energy_required = 0.25
 	data.raw.recipe[empty_name].requester_paste_multiplier = 5
 
