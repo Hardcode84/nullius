@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local function item(name, template, subgroup, order, stack_size)
   return {
     type = "item",
@@ -13,17 +15,22 @@ local function item(name, template, subgroup, order, stack_size)
 end
 
 local function recipe(name, category, energy_required, ingredients)
-  return {
+  local prototype = {
     type = "recipe",
     name = name,
     localised_name = {"entity-name." .. name},
     enabled = false,
     always_show_made_in = true,
-    category = category,
+    categories = {category},
     energy_required = energy_required,
     ingredients = ingredients,
     results = {{type = "item", name = name, amount = 1}},
   }
+  if not modern then
+    prototype.category = category
+    prototype.categories = nil
+  end
+  return prototype
 end
 
 data:extend({

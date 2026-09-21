@@ -304,3 +304,5 @@ require("biology-recipes")
 require("fluid-recipes")
 
 require("intermediate-recipes")
+
+require("primitive-recipes")
