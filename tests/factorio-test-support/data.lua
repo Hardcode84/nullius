@@ -258,3 +258,5 @@ require("drone-mining")
 require("recipe-filter")
 
 require("fluid-resource-products")
+
+require("turbine-generator")

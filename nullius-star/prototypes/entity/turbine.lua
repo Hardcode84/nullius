@@ -108,8 +108,20 @@ local function set_furnace_idle(proto, overlay, tint)
 end
 
 local function set_generator_animation(proto, overlay, tint)
-  proto.horizontal_animation = turbine_animation(false, overlay, tint)
-  proto.vertical_animation = turbine_animation(true, overlay, tint)
+  local horizontal = turbine_animation(false, overlay, tint)
+  local vertical = turbine_animation(true, overlay, tint)
+  if string.match(mods.base, "^2%.1%.") then
+    proto.pictures = {
+      north = {animation = vertical},
+      east = {animation = horizontal},
+      south = {animation = vertical},
+      west = {animation = horizontal}
+    }
+    proto.two_direction_only = true
+  else
+    proto.horizontal_animation = horizontal
+    proto.vertical_animation = vertical
+  end
 end
 
 local function finish_furnace(furnace, generator, overlay,
@@ -315,8 +327,6 @@ local generator1ob = {
     performance_to_activity_rate = 0.5
   },
   
-  horizontal_animation = generator_horizontal,
-  vertical_animation = generator_vertical,
   fluid_box = {
     filter = "nullius-energy",
     production_type = "input",
