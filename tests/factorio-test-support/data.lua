@@ -262,3 +262,5 @@ require("fluid-resource-products")
 require("turbine-generator")
 
 require("vehicle-forces")
+
+require("chest-doors")

@@ -1,8 +1,13 @@
+local modern = string.match(mods.base, "^2%.1%.") ~= nil
+local storage_chest = data.raw["logistic-container"]["storage-chest"]
+local storage_door = storage_chest
+if modern then storage_door = storage_chest.robot_door end
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
 
-data:extend({
+local chests = {
   {
     type = "container",
     name = "nullius-large-chest-1",
@@ -116,9 +121,9 @@ data:extend({
     logistic_mode = "storage",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -194,9 +199,9 @@ data:extend({
     logistic_mode = "storage",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -273,9 +278,9 @@ data:extend({
     logistic_mode = "storage",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     animation = {
@@ -326,9 +331,9 @@ data:extend({
     logistic_mode = "passive-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -403,9 +408,9 @@ data:extend({
     logistic_mode = "passive-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -481,9 +486,9 @@ data:extend({
     logistic_mode = "passive-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     animation = {
@@ -537,9 +542,9 @@ data:extend({
     logistic_mode = "requester",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -617,9 +622,9 @@ data:extend({
     logistic_mode = "requester",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -698,9 +703,9 @@ data:extend({
     logistic_mode = "requester",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     animation = {
@@ -754,9 +759,9 @@ data:extend({
     logistic_mode = "buffer",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -834,9 +839,9 @@ data:extend({
     logistic_mode = "buffer",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -915,9 +920,9 @@ data:extend({
     logistic_mode = "buffer",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     animation = {
@@ -968,9 +973,9 @@ data:extend({
     logistic_mode = "active-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -1045,9 +1050,9 @@ data:extend({
     logistic_mode = "active-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
 
@@ -1123,9 +1128,9 @@ data:extend({
     logistic_mode = "active-provider",
     open_sound = data.raw["logistic-container"]["storage-chest"].open_sound,
     close_sound = data.raw["logistic-container"]["storage-chest"].close_sound,
-    animation_sound = data.raw["logistic-container"]["storage-chest"].animation_sound,
+    animation_sound = storage_door.animation_sound,
     impact_category = data.raw["logistic-container"]["storage-chest"].impact_category,
-    opened_duration = data.raw["logistic-container"]["storage-chest"].opened_duration,
+    opened_duration = storage_door.opened_duration,
     circuit_connector = circuit_connector_definitions["chest"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     animation = {
@@ -1152,4 +1157,20 @@ data:extend({
       }
     }
   }
-})
+}
+
+if modern then
+  for _, chest in ipairs(chests) do
+    if chest.type == "logistic-container" then
+      chest.robot_door = {
+        animation = chest.animation,
+        animation_sound = chest.animation_sound,
+        opened_duration = chest.opened_duration
+      }
+      chest.animation = nil
+      chest.animation_sound = nil
+      chest.opened_duration = nil
+    end
+  end
+end
+data:extend(chests)

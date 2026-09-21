@@ -6,12 +6,13 @@ import json
 import re
 from pathlib import Path
 import tempfile
+import zipfile
 from types import SimpleNamespace
 
 import analyze_factorio_prereqs as prereqs
 import plan_factorio_factory as planner
 from audit_recipe_ui import write_audit_support
-from run_factorio_tests import prepare_config, run_factorio, supported_factorio_version, TestFailure
+from run_factorio_tests import prepare_config, run_factorio, supported_factorio_version, TestFailure, default_dependency_mods, find_archive
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -92,7 +93,28 @@ def stage_car_prototypes(mod):
     (mod / "car-prototypes.lua").write_text(cars + "})\n")
 
 
-def run(factorio):
+def stage_chest_graphics(mods, version, dependency_mod_directory):
+    graphics_mod = mods / "boblogistics"
+    graphics_mod.mkdir()
+    (graphics_mod / "info.json").write_text(json.dumps({
+        "name": "boblogistics", "version": "0.0.1", "factorio_version": version,
+        "title": "Bob chest graphics fixture", "author": "tests", "dependencies": ["base"],
+    }))
+    source = (ROOT / "nullius-star/prototypes/entity/chest.lua").read_text()
+    files = set(re.findall(r'"__boblogistics__/([^"\n]+)"', source))
+    if not files:
+        raise TestFailure("No Bob chest graphics found")
+    with zipfile.ZipFile(find_archive(dependency_mod_directory, "boblogistics")) as archive:
+        for filename in files:
+            members = [name for name in archive.namelist() if name.endswith("/" + filename)]
+            if len(members) != 1:
+                raise TestFailure(f"Expected one Bob graphic: {filename}")
+            target = graphics_mod / filename
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(archive.read(members[0]))
+
+
+def run(factorio, dependency_mod_directory):
     work = Path(tempfile.mkdtemp(prefix="factorio-tool-compat-"))
     metadata = json.loads((factorio.resolve().parents[2] / "data/base/info.json").read_text())
     version = supported_factorio_version(".".join(metadata["version"].split(".")[:2]))
@@ -103,12 +125,14 @@ def run(factorio):
     (mod / "info.json").write_text(json.dumps({
         "name": "nullius-star", "version": "0.0.3", "factorio_version": version,
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
-        "dependencies": [f"base >= {version}.0"],
+        "dependencies": [f"base >= {version}.0", "boblogistics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\n')
-    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua"):
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\n')
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
+    stage_chest_graphics(mods, version, dependency_mod_directory)
+    (mod / "chest-test-port.lua").symlink_to(ROOT / "tests/factorio-test-support/chest-doors.lua")
     stage_car_prototypes(mod)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
@@ -123,6 +147,7 @@ def run(factorio):
     (mod / "prototypes/item").mkdir()
     (mod / "prototypes/item/asteroid-miner-products.lua").symlink_to(ROOT / "nullius-star/prototypes/item/asteroid-miner-products.lua")
     (mod / "prototypes/entity").mkdir()
+    (mod / "prototypes/entity/chest.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/chest.lua")
     (mod / "graphics").symlink_to(ROOT / "nullius-star/graphics", target_is_directory=True)
     (mod / "prototypes/entity/turbine.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/turbine.lua")
     (mod / "prototypes/entity/assembler-pipe-pictures.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/assembler-pipe-pictures.lua")
@@ -146,6 +171,7 @@ def run(factorio):
     (mod / "scenarios/fluid-resource-products").symlink_to(ROOT / "tests/scenarios/fluid-resource-products", target_is_directory=True)
     (mod / "scenarios/turbine-generator").symlink_to(ROOT / "tests/scenarios/turbine-generator", target_is_directory=True)
     (mod / "scenarios/vehicle-forces").symlink_to(ROOT / "tests/scenarios/vehicle-forces", target_is_directory=True)
+    (mod / "scenarios/chest-doors").symlink_to(ROOT / "tests/scenarios/chest-doors", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -153,8 +179,8 @@ def run(factorio):
         '("tool-compat", require("fixture"))\n')
     write_audit_support(mods, "nullius-star", version)
     (mods / "mod-list.json").write_text(json.dumps({"mods": [
-        {"name": name, "enabled": name in {"base", "nullius-star", "recipe-ui-audit-support"}}
-        for name in ("base", "space-age", "quality", "elevated-rails", "nullius-star", "recipe-ui-audit-support")
+        {"name": name, "enabled": name in {"base", "nullius-star", "recipe-ui-audit-support", "boblogistics"}}
+        for name in ("base", "space-age", "quality", "elevated-rails", "nullius-star", "recipe-ui-audit-support", "boblogistics")
     ]}))
     config = prepare_config(work, factorio)
     common = [str(factorio), "--config", str(config), "--mod-directory", str(mods), "--disable-audio"]
@@ -179,6 +205,7 @@ def run(factorio):
                             ("nullius-star", "fluid-resource-products"),
                             ("nullius-star", "turbine-generator"),
                             ("nullius-star", "vehicle-forces"),
+                            ("nullius-star", "chest-doors"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -206,6 +233,8 @@ def run(factorio):
     assert turbines["status"] == "pass" and turbines["variants"] == 18, turbines
     vehicles = json.loads((work / "script-output/factorio-tests/vehicle-forces.json").read_text())
     assert vehicles["status"] == "pass" and vehicles["vehicles"] == 5, vehicles
+    chests = json.loads((work / "script-output/factorio-tests/chest-doors.json").read_text())
+    assert chests["status"] == "pass" and chests["chests"] == 17, chests
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -220,14 +249,16 @@ def run(factorio):
             "fluid_resource_assertions": resources["assertions"],
             "turbine_assertions": turbines["assertions"],
             "vehicle_assertions": vehicles["assertions"],
+            "chest_assertions": chests["assertions"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--factorio", type=Path, required=True)
+    parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
     args = parser.parse_args()
-    print(json.dumps(run(args.factorio.expanduser().resolve()), indent=2))
+    print(json.dumps(run(args.factorio.expanduser().resolve(), args.dependency_mod_directory.expanduser().resolve()), indent=2))
 
 
 if __name__ == "__main__":
