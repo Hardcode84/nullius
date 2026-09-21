@@ -1,5 +1,10 @@
 local modern = require("factorio-version").is_2_1
 
+local function set_recipe_category(recipe, category)
+  recipe.category = not modern and category or nil
+  recipe.categories = modern and {category} or nil
+end
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -1102,8 +1107,7 @@ data.raw.item["induction-coil"].stack_size = 50
 data.raw.recipe["induction-coil"].order = "nullius-ib"
 data.raw.recipe["induction-coil"].always_show_made_in = true
 data.raw.recipe["induction-coil"].energy_required = 5
-data.raw.recipe["induction-coil"].categories = modern and {"small-crafting"} or nil
-data.raw.recipe["induction-coil"].category = not modern and "small-crafting" or nil
+set_recipe_category(data.raw.recipe["induction-coil"], "small-crafting")
 data.raw.recipe["induction-coil"].ingredients = {
   {type = "item", name = "nullius-capacitor", amount = 5},
   {type = "item", name = "decider-combinator", amount = 3},
@@ -1321,9 +1325,11 @@ data.raw.item["road"].order = "nullius-b"
 data.raw.item["road"].stack_size = 500
 data.raw.recipe["road"].order = "nullius-b"
 data.raw.recipe["road"].always_show_made_in = true
-data.raw.recipe["road"].show_amount_in_title = false
-data.raw.recipe["road"].always_show_products = true
-data.raw.recipe["road"].category = "hand-casting"
+if not modern then
+  data.raw.recipe["road"].show_amount_in_title = false
+  data.raw.recipe["road"].always_show_products = true
+end
+set_recipe_category(data.raw.recipe["road"], "hand-casting")
 data.raw.recipe["road"].energy_required = 3
 data.raw.recipe["road"].results[1].amount = 4
 data.raw.recipe["road"].ingredients = {
@@ -1335,9 +1341,11 @@ data.raw.item["transport-drone"].order = "nullius-c"
 data.raw.item["transport-drone"].stack_size = 20
 data.raw.recipe["transport-drone"].order = "nullius-c"
 data.raw.recipe["transport-drone"].always_show_made_in = true
-data.raw.recipe["transport-drone"].show_amount_in_title = false
-data.raw.recipe["transport-drone"].always_show_products = true
-data.raw.recipe["transport-drone"].category = "medium-crafting"
+if not modern then
+  data.raw.recipe["transport-drone"].show_amount_in_title = false
+  data.raw.recipe["transport-drone"].always_show_products = true
+end
+set_recipe_category(data.raw.recipe["transport-drone"], "medium-crafting")
 data.raw.recipe["transport-drone"].energy_required = 10
 data.raw.recipe["transport-drone"].results[1].amount = 3
 data.raw.recipe["transport-drone"].ingredients = {
@@ -1351,7 +1359,7 @@ data.raw.item["supply-depot"].order = "nullius-d"
 data.raw.item["supply-depot"].stack_size = 20
 data.raw.recipe["supply-depot"].order = "nullius-d"
 data.raw.recipe["supply-depot"].always_show_made_in = true
-data.raw.recipe["supply-depot"].category = "large-crafting"
+set_recipe_category(data.raw.recipe["supply-depot"], "large-crafting")
 data.raw.recipe["supply-depot"].energy_required = 12
 data.raw.recipe["supply-depot"].ingredients = {
   {type = "item", name = "nullius-large-chest-1", amount = 1},
@@ -1363,7 +1371,7 @@ data.raw.item["request-depot"].order = "nullius-e"
 data.raw.item["request-depot"].stack_size = 20
 data.raw.recipe["request-depot"].order = "nullius-e"
 data.raw.recipe["request-depot"].always_show_made_in = true
-data.raw.recipe["request-depot"].category = "large-crafting"
+set_recipe_category(data.raw.recipe["request-depot"], "large-crafting")
 data.raw.recipe["request-depot"].energy_required = 6
 data.raw.recipe["request-depot"].ingredients = {
   {type = "item", name = "fluid-depot", amount = 1},
@@ -1374,7 +1382,7 @@ data.raw.item["buffer-depot"].stack_size = 20
 data.raw.recipe["buffer-depot"].order = "nullius-f"
 data.raw.recipe["buffer-depot"].always_show_made_in = true
 data.raw.recipe["buffer-depot"].no_productivity = true
-data.raw.recipe["buffer-depot"].category = "large-crafting"
+set_recipe_category(data.raw.recipe["buffer-depot"], "large-crafting")
 data.raw.recipe["buffer-depot"].energy_required = 4
 data.raw.recipe["buffer-depot"].ingredients = {
   {type = "item", name = "request-depot", amount = 1},
@@ -1384,7 +1392,7 @@ data.raw.item["fluid-depot"].order = "nullius-g"
 data.raw.item["fluid-depot"].stack_size = 20
 data.raw.recipe["fluid-depot"].order = "nullius-g"
 data.raw.recipe["fluid-depot"].always_show_made_in = true
-data.raw.recipe["fluid-depot"].category = "large-crafting"
+set_recipe_category(data.raw.recipe["fluid-depot"], "large-crafting")
 data.raw.recipe["fluid-depot"].energy_required = 4
 data.raw.recipe["fluid-depot"].ingredients = {
   {type = "item", name = "supply-depot", amount = 1},
@@ -1395,7 +1403,7 @@ data.raw.item["fuel-depot"].order = "nullius-h"
 data.raw.item["fuel-depot"].stack_size = 20
 data.raw.recipe["fuel-depot"].order = "nullius-h"
 data.raw.recipe["fuel-depot"].always_show_made_in = true
-data.raw.recipe["fuel-depot"].category = "large-crafting"
+set_recipe_category(data.raw.recipe["fuel-depot"], "large-crafting")
 data.raw.recipe["fuel-depot"].energy_required = 4
 data.raw.recipe["fuel-depot"].ingredients = {
   {type = "item", name = "buffer-depot", amount = 1},
@@ -1406,7 +1414,7 @@ data.raw.item["road-network-reader"].order = "nullius-i"
 data.raw.item["road-network-reader"].stack_size = 50
 data.raw.recipe["road-network-reader"].order = "nullius-i"
 data.raw.recipe["road-network-reader"].always_show_made_in = true
-data.raw.recipe["road-network-reader"].category = "small-crafting"
+set_recipe_category(data.raw.recipe["road-network-reader"], "small-crafting")
 data.raw.recipe["road-network-reader"].energy_required = 5
 data.raw.recipe["road-network-reader"].ingredients = {
   {type = "item", name = "rail-chain-signal", amount = 1},
@@ -1417,7 +1425,7 @@ data.raw.item["transport-depot-reader"].order = "nullius-j"
 data.raw.item["transport-depot-reader"].stack_size = 50
 data.raw.recipe["transport-depot-reader"].order = "nullius-j"
 data.raw.recipe["transport-depot-reader"].always_show_made_in = true
-data.raw.recipe["transport-depot-reader"].category = "small-crafting"
+set_recipe_category(data.raw.recipe["transport-depot-reader"], "small-crafting")
 data.raw.recipe["transport-depot-reader"].energy_required = 2
 data.raw.recipe["transport-depot-reader"].ingredients = {
   {type = "item", name = "road-network-reader", amount = 1},
@@ -1427,21 +1435,12 @@ data.raw.item["transport-depot-writer"].order = "nullius-k"
 data.raw.item["transport-depot-writer"].stack_size = 50
 data.raw.recipe["transport-depot-writer"].order = "nullius-k"
 data.raw.recipe["transport-depot-writer"].always_show_made_in = true
-data.raw.recipe["transport-depot-writer"].category = "small-crafting"
+set_recipe_category(data.raw.recipe["transport-depot-writer"], "small-crafting")
 data.raw.recipe["transport-depot-writer"].energy_required = 3
 data.raw.recipe["transport-depot-writer"].ingredients = {
   {type = "item", name = "road-network-reader", amount = 1},
   {type = "item", name = "nullius-green-wire", amount = 3}
 }
-
-data.raw["assembling-machine"]["request-depot"].fluid_boxes[2].base_level = 6
-data.raw["assembling-machine"]["buffer-depot"].fluid_boxes[2].base_level = 6
-data.raw["assembling-machine"]["fuel-depot"].fluid_boxes[2].base_level = -3
-data.raw["assembling-machine"]["fuel-depot"].fluid_boxes[2].height = 8
-data.raw["assembling-machine"]["fuel-depot"].fluid_boxes[2].base_area = 250
-data.raw["furnace"]["fluid-depot"].fluid_boxes[2].base_level = -3
-data.raw["furnace"]["fluid-depot"].fluid_boxes[2].height = 8
-data.raw["furnace"]["fluid-depot"].fluid_boxes[2].base_area = 125
 
 data.raw.item["fast-road"].stack_size = 500
 data.raw.item["fast-road"].subgroup = "concrete"
@@ -1456,9 +1455,11 @@ data.raw.recipe["fast-road"].icons = data.raw.item["fast-road"].icons
 data.raw.recipe["fast-road"].subgroup = "concrete"
 data.raw.recipe["fast-road"].order = "nullius-cr"
 data.raw.recipe["fast-road"].always_show_made_in = true
-data.raw.recipe["fast-road"].show_amount_in_title = false
-data.raw.recipe["fast-road"].always_show_products = true
-data.raw.recipe["fast-road"].category = "large-crafting"
+if not modern then
+  data.raw.recipe["fast-road"].show_amount_in_title = false
+  data.raw.recipe["fast-road"].always_show_products = true
+end
+set_recipe_category(data.raw.recipe["fast-road"], "large-crafting")
 data.raw.recipe["fast-road"].energy_required = 30
 data.raw.recipe["fast-road"].results[1].amount = 8
 data.raw.recipe["fast-road"].ingredients = {
@@ -1488,7 +1489,7 @@ for _, recipe in pairs(data.raw.recipe) do
     local newmaterial = textplatematerial[material]
     if (newmaterial ~= nil) then
       recipe.energy_required = 1
-      recipe.category = "medium-crafting"
+      set_recipe_category(recipe, "medium-crafting")
       recipe.enabled = false
 	  recipe.always_show_made_in = true
 
@@ -2121,7 +2122,7 @@ if mods["cargo-ships"] then
 
   data.raw["item-with-entity-data"]["boat"].order = "nullius-h"
   data.raw.recipe["boat"].order = "nullius-h"
-  data.raw.recipe["boat"].category = "large-crafting"
+  set_recipe_category(data.raw.recipe["boat"], "large-crafting")
   data.raw.recipe["boat"].always_show_made_in = true
   data.raw.recipe["boat"].energy_required = 10
   data.raw.recipe["boat"].ingredients = {
@@ -2134,7 +2135,7 @@ if mods["cargo-ships"] then
 
   data.raw["item-with-entity-data"]["cargo_ship"].order = "nullius-j"
   data.raw.recipe["cargo_ship"].order = "nullius-j"
-  data.raw.recipe["cargo_ship"].category = "huge-crafting"
+  set_recipe_category(data.raw.recipe["cargo_ship"], "huge-crafting")
   data.raw.recipe["cargo_ship"].always_show_made_in = true
   data.raw.recipe["cargo_ship"].energy_required = 30
   data.raw.recipe["cargo_ship"].ingredients = {
@@ -2146,7 +2147,7 @@ if mods["cargo-ships"] then
 
   data.raw["item-with-entity-data"]["oil_tanker"].order = "nullius-k"
   data.raw.recipe["oil_tanker"].order = "nullius-k"
-  data.raw.recipe["oil_tanker"].category = "huge-crafting"
+  set_recipe_category(data.raw.recipe["oil_tanker"], "huge-crafting")
   data.raw.recipe["oil_tanker"].always_show_made_in = true
   data.raw.recipe["oil_tanker"].energy_required = 20
   data.raw.recipe["oil_tanker"].ingredients = {
@@ -2157,7 +2158,7 @@ if mods["cargo-ships"] then
 
   data.raw.item["port"].order = "nullius-c"
   data.raw.recipe["port"].order = "nullius-c"
-  data.raw.recipe["port"].category = "large-fluid-assembly"
+  set_recipe_category(data.raw.recipe["port"], "large-fluid-assembly")
   data.raw.recipe["port"].always_show_made_in = true
   data.raw.recipe["port"].energy_required = 15
   data.raw.recipe["port"].ingredients = {
@@ -2170,7 +2171,7 @@ if mods["cargo-ships"] then
 
   data.raw.item["buoy"].order = "nullius-d"
   data.raw.recipe["buoy"].order = "nullius-d"
-  data.raw.recipe["buoy"].category = "small-fluid-assembly"
+  set_recipe_category(data.raw.recipe["buoy"], "small-fluid-assembly")
   data.raw.recipe["buoy"].always_show_made_in = true
   data.raw.recipe["buoy"].energy_required = 5
   data.raw.recipe["buoy"].ingredients = {
@@ -2183,7 +2184,7 @@ if mods["cargo-ships"] then
 
   data.raw.item["chain_buoy"].order = "nullius-e"
   data.raw.recipe["chain_buoy"].order = "nullius-e"
-  data.raw.recipe["chain_buoy"].category = "small-crafting"
+  set_recipe_category(data.raw.recipe["chain_buoy"], "small-crafting")
   data.raw.recipe["chain_buoy"].always_show_made_in = true
   data.raw.recipe["chain_buoy"].energy_required = 3
   data.raw.recipe["chain_buoy"].ingredients = {
@@ -2194,7 +2195,7 @@ if mods["cargo-ships"] then
   data.raw.item["floating-electric-pole"].subgroup = "water_transport"
   data.raw.item["floating-electric-pole"].order = "nullius-f"
   data.raw.recipe["floating-electric-pole"].order = "nullius-f"
-  data.raw.recipe["floating-electric-pole"].category = "large-crafting"
+  set_recipe_category(data.raw.recipe["floating-electric-pole"], "large-crafting")
   data.raw.recipe["floating-electric-pole"].always_show_made_in = true
   data.raw.recipe["floating-electric-pole"].energy_required = 8
   data.raw.recipe["floating-electric-pole"].ingredients = {
@@ -2204,7 +2205,7 @@ if mods["cargo-ships"] then
 
   data.raw.item["bridge_base"].order = "nullius-g"
   data.raw.recipe["bridge_base"].order = "nullius-g"
-  data.raw.recipe["bridge_base"].category = "small-crafting"
+  set_recipe_category(data.raw.recipe["bridge_base"], "small-crafting")
   data.raw.recipe["bridge_base"].always_show_made_in = true
   data.raw.recipe["bridge_base"].energy_required = 50
   data.raw.recipe["bridge_base"].ingredients = {
@@ -2233,7 +2234,7 @@ if mods["cargo-ships"] then
     data.raw.item["oil_rig"].subgroup = "water-intake"
     data.raw.item["oil_rig"].order = "nullius-dr"
 	  data.raw.recipe["oil_rig"].order = "nullius-dr"
-    data.raw.recipe["oil_rig"].category = "huge-crafting"
+    set_recipe_category(data.raw.recipe["oil_rig"], "huge-crafting")
     data.raw.recipe["oil_rig"].always_show_made_in = true
     data.raw.recipe["oil_rig"].energy_required = 60
     data.raw.recipe["oil_rig"].ingredients = {
@@ -2514,7 +2515,7 @@ tech.unit = {
 }
 table.insert(data.raw.technology["nullius-exploration-2"].prerequisites, "cargo-drones")
 data.raw.recipe["cargo-drone"].order = "nullius-a"
-data.raw.recipe["cargo-drone"].category = "huge-crafting"
+set_recipe_category(data.raw.recipe["cargo-drone"], "huge-crafting")
 data.raw.recipe["cargo-drone"].ingredients = {
   {type="item", name="nullius-logistic-bot-2", amount=5},
   {type="item", name="nullius-portable-generator-2", amount=1},
@@ -2530,7 +2531,7 @@ data.raw.recipe["cargo-drone"].always_show_made_in = true
 
 local recipe = data.raw.recipe["cargo-drone-mooring-constant-combinator-refueler"]
 recipe.order = "nullius-b"
-recipe.category = "large-crafting"
+set_recipe_category(recipe, "large-crafting")
 recipe.ingredients = {
   {type="item", name="nullius-pylon-2", amount=2},
   {type="item", name="nullius-relay-2", amount=1},
@@ -2542,7 +2543,7 @@ recipe.always_show_made_in = true
 
 local recipe = data.raw.recipe["cargo-drone-mooring-constant-combinator-provider"]
 recipe.order = "nullius-c"
-recipe.category = "large-crafting"
+set_recipe_category(recipe, "large-crafting")
 recipe.ingredients = {
   {type="item", name="cargo-drone-mooring-constant-combinator-refueler", amount=1},
   {type="item", name="nullius-small-supply-chest-1", amount=1}
@@ -2552,7 +2553,7 @@ recipe.always_show_made_in = true
 
 local recipe = data.raw.recipe["cargo-drone-mooring-constant-combinator-requester"]
 recipe.order = "nullius-d"
-recipe.category = "large-crafting"
+set_recipe_category(recipe, "large-crafting")
 recipe.ingredients = {
   {type="item", name="cargo-drone-mooring-constant-combinator-refueler", amount=1},
   {type="item", name="nullius-small-demand-chest-1", amount=1}
@@ -2562,7 +2563,7 @@ recipe.always_show_made_in = true
 
 local recipe = data.raw.recipe["cargo-drone-depot-constant-combinator"]
 recipe.order = "nullius-e"
-recipe.category = "large-crafting"
+set_recipe_category(recipe, "large-crafting")
 recipe.ingredients = {
   {type="item", name="nullius-iron-plate", amount=2},
   {type="item", name="train-stop", amount=1},
@@ -2578,7 +2579,8 @@ data.raw["item-with-entity-data"]["cargo-drone"].subgroup = "cargo-drone"
 data.raw.car["cargo-drone"].energy_source.fuel_categories = {"vehicle"}
 data.raw.car["cargo-drone"].energy_source.effectivity = 0.65
 data.raw.car["cargo-drone"].consumption = "65kW"
-data.raw.car["cargo-drone"].friction = 0.0041
+data.raw.car["cargo-drone"].friction = nil
+data.raw.car["cargo-drone"].friction_force = 0.0041
 
 data.raw.item["cargo-drone-mooring-constant-combinator-refueler"].order = "nullius-b"
 data.raw.item["cargo-drone-mooring-constant-combinator-refueler"].stack_size = 10

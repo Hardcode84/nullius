@@ -1,0 +1,21 @@
+-- Declared prototype dependencies for the three optional transport integrations.
+return {
+  ["assembling-machine"]={"buffer-depot","fuel-depot","request-depot"},
+  ["car"]={"cargo-drone","indep-boat"},
+  ["electric-energy-interface"]={"or_power_electric"},
+  ["electric-pole"]={"floating-electric-pole"},
+  ["furnace"]={"fluid-depot"},
+  ["generator"]={"or_power"},
+  ["item"]={"bridge_base","buffer-depot","buoy","cargo-drone-depot-constant-combinator","cargo-drone-mooring-constant-combinator-provider","cargo-drone-mooring-constant-combinator-refueler","cargo-drone-mooring-constant-combinator-requester","chain_buoy","fast-road","floating-electric-pole","fluid-depot","fuel-depot","nullius-black-concrete","oil_rig","port","request-depot","road","road-network-reader","supply-depot","transport-depot-reader","transport-depot-writer","transport-drone"},
+  ["item-subgroup"]={"transport-drones","water_transport"},
+  ["item-with-entity-data"]={"boat","boat_engine","cargo-drone","cargo_ship","cargo_ship_engine","oil_tanker"},
+  ["locomotive"]={"boat_engine","cargo_ship_engine"},
+  ["mining-drill"]={"oil_rig"},
+  ["radar"]={"or_radar"},
+  ["rail-planner"]={"waterway"},
+  ["recipe"]={"boat","bridge_base","buffer-depot","buoy","cargo-drone","cargo-drone-depot-constant-combinator","cargo-drone-mooring-constant-combinator-provider","cargo-drone-mooring-constant-combinator-refueler","cargo-drone-mooring-constant-combinator-requester","cargo_ship","chain_buoy","fast-road","floating-electric-pole","fluid-depot","fuel-depot","oil_rig","oil_tanker","port","request-depot","road","road-network-reader","supply-depot","transport-depot-reader","transport-depot-writer","transport-drone"},
+  ["shortcut"]={"give-waterway"},
+  ["technology"]={"automated_bridges","automated_water_transport","bob-long-inserters-1","cargo-drones","cargo_ships","deep_sea_oil_extraction","nullius-braking-1","nullius-braking-2","nullius-braking-3","nullius-braking-4","nullius-braking-5","nullius-braking-6","nullius-braking-7","nullius-braking-8","nullius-broadcasting-1","nullius-checkpoint-ceramic-powder","nullius-checkpoint-compressed-nitrogen","nullius-checkpoint-plumbing","nullius-checkpoint-sensor","nullius-checkpoint-truck","nullius-concrete-1","nullius-electromagnetism-1","nullius-electromagnetism-2","nullius-electromagnetism-3","nullius-energy-distribution-1","nullius-energy-distribution-2","nullius-energy-distribution-3","nullius-exploration-1","nullius-exploration-2","nullius-freight-logistics","nullius-inserter-capacity-1","nullius-inserter-capacity-2","nullius-inserter-capacity-3","nullius-inserter-capacity-4","nullius-inserter-capacity-5","nullius-inserter-capacity-6","nullius-inserter-capacity-7","nullius-inserter-capacity-8","nullius-locomotion-1","nullius-locomotion-2","nullius-locomotion-3","nullius-locomotion-4","nullius-locomotion-5","nullius-lubrication","nullius-mass-production-1","nullius-mechanical-engineering-1","nullius-mechanical-engineering-2","nullius-packaging-1","nullius-packaging-2","nullius-packaging-3","nullius-packaging-4","nullius-packaging-5","nullius-packaging-6","nullius-personal-transportation-1","nullius-personal-transportation-2","nullius-personal-transportation-3","nullius-plumbing-1","nullius-plumbing-2","nullius-plumbing-3","nullius-plumbing-4","nullius-pumping-1","nullius-pumping-2","nullius-robot-cargo-1","nullius-robot-speed-1","nullius-robot-speed-2","nullius-robot-speed-3","nullius-robot-speed-4","nullius-robot-speed-5","nullius-robotics-1","nullius-sensors-1","nullius-sensors-2","nullius-sulfur-processing-1","nullius-sulfur-processing-2","nullius-toolmaking-1","nullius-toolmaking-2","nullius-toolmaking-3","nullius-toolmaking-4","nullius-water-filtration-1","nullius-water-filtration-2","nullius-water-filtration-3","nullius-weaving-1","oversea-energy-distribution","tank_ship","transport-depot-circuits","transport-drone-capacity-1","transport-drone-capacity-2","transport-drone-capacity-3","transport-drone-capacity-4","transport-drone-capacity-5","transport-drone-speed-1","transport-drone-speed-2","transport-drone-speed-3","transport-drone-speed-4","transport-drone-speed-5","transport-system","water_transport"},
+  ["tile"]={"black-refined-concrete","transport-drone-road-better"},
+  ["utility-constants"]={"default"},
+}

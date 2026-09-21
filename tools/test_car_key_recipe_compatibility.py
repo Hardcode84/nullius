@@ -32,7 +32,7 @@ def run(factorio, mode):
     source = (ROOT / "nullius-star/prototypes/override_mod.lua").read_text()
     start = source.index('if (mods["GCKI"] and (data.raw.item["car-key"] ~= nil)) then')
     end = source.index('if mods["UPSFriendlyNixieTubeDisplay"] then', start)
-    (mod / "integration.lua").write_text(source.splitlines()[0] + "\n" + source[start:end])
+    (mod / "integration.lua").write_text(source.split('local ICONPATH =', 1)[0] + source[start:end])
     for target, source_path in (
         ("factorio-version.lua", "nullius-star/factorio-version.lua"),
         ("fixture.lua", "tests/compatibility/car-key-recipe.lua"),
