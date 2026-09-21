@@ -265,3 +265,4 @@ require("vehicle-forces")
 
 require("chest-doors")
 require("void-products")
+require("metallurgic-products")

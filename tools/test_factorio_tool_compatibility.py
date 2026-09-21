@@ -114,6 +114,36 @@ def stage_chest_graphics(mods, version, dependency_mod_directory):
             target.write_bytes(archive.read(members[0]))
 
 
+def stage_metallurgic_products(mod, version):
+    source = (ROOT / "nullius-star/prototypes/planet/vulcanus-recipes.lua").read_text()
+    marker = '    name = "nullius-metallurgic-pack-efficient",'
+    if source.count(marker) != 1:
+        raise TestFailure("Expected one industrial metallurgic science recipe")
+    body = source.split(marker, 1)[1].split('    main_product =', 1)[0]
+    ingredients = body.split('    ingredients = ', 1)[1].split('    results = ', 1)[0].strip().rstrip(',')
+    results = body.split('    results = ', 1)[1].strip().rstrip(',')
+    duration = re.search(r'energy_required = ([\d.]+)', body)[1]
+    probability = re.findall(r'^local probability = .*$', source, re.M)
+    if len(probability) != 1:
+        raise TestFailure("Expected one product probability selector")
+    code = probability + [
+        'data:extend({{type="surface-property",name="nullius-ambient-temperature",default_value=15}})',
+        'local ingredients=' + ingredients,
+        'local results=' + results,
+        'for _, list in ipairs({ingredients,results}) do for _, item in ipairs(list) do',
+        'if not data.raw.item[item.name] then data:extend({{type="item",name=item.name,stack_size=100,icon="__base__/graphics/icons/iron-plate.png"}}); end',
+        'end; end',
+        'if not data.raw["recipe-category"]["medium-crafting"] then data:extend({{type="recipe-category",name="medium-crafting"}}); end',
+        'local recipe={type="recipe",name="nullius-metallurgic-pack-efficient",ingredients=ingredients,results=results,',
+        f'energy_required={duration},main_product="nullius-metallurgic-pack",allow_productivity=true}}',
+        'recipe.categories={"medium-crafting"}' if version == "2.1" else 'recipe.category="medium-crafting"',
+        'data:extend({recipe})',
+    ]
+    (mod / "metallurgic-recipe-fixture.lua").write_text("\n".join(code) + "\n")
+    (mod / "metallurgic-products.lua").symlink_to(ROOT / "tests/factorio-test-support/metallurgic-products.lua")
+    (mod / "scenarios/metallurgic-products").symlink_to(ROOT / "tests/scenarios/metallurgic-products", target_is_directory=True)
+
+
 def stage_void_products(mod, version):
     source = (ROOT / "nullius-star/prototypes/item/void.lua").read_text()
     blocks = re.findall(r'type = "recipe",(.*?)\n  }', source, re.S)
@@ -176,7 +206,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("void-recipe-fixture")\nrequire("void-products")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -186,6 +216,7 @@ def run(factorio, dependency_mod_directory):
     stage_car_prototypes(mod)
     stage_miner_connectors(mod)
     stage_void_products(mod, version)
+    stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
     (mod / "fluid-resource-products.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-resource-products.lua")
@@ -259,6 +290,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "vehicle-forces"),
                             ("nullius-star", "chest-doors"),
                             ("nullius-star", "void-products"),
+                            ("nullius-star", "metallurgic-products"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -290,6 +322,8 @@ def run(factorio, dependency_mod_directory):
     assert chests["status"] == "pass" and chests["chests"] == 17, chests
     voids = json.loads((work / "script-output/factorio-tests/void-products.json").read_text())
     assert voids["status"] == "pass" and voids["recipes"] == 42 and voids["crafts"] == 210, voids
+    metallurgy = json.loads((work / "script-output/factorio-tests/metallurgic-products.json").read_text())
+    assert metallurgy["status"] == "pass" and metallurgy["science"] == 20, metallurgy
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -306,6 +340,7 @@ def run(factorio, dependency_mod_directory):
             "vehicle_assertions": vehicles["assertions"],
             "chest_assertions": chests["assertions"],
             "void_assertions": voids["assertions"],
+            "metallurgic_assertions": metallurgy["assertions"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 

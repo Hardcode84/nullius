@@ -1,3 +1,4 @@
+local probability = require("__nullius-star__/factorio-version").is_2_1 and "independent_probability" or "probability"
 local CASE = "vulcanus-efficient-metallurgic-science"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-efficient-metallurgic-science"
@@ -65,7 +66,7 @@ local function expected_item_amount(entries, name)
   local result = 0
   for _, entry in pairs(entries) do
     if entry.name == name then
-      result = result + entry.amount * (entry.probability or 1)
+      result = result + entry.amount * (entry[probability] or 1)
     end
   end
   return result
@@ -76,7 +77,7 @@ local function expected_ignored_productivity(entries, name)
   for _, entry in pairs(entries) do
     if entry.name == name then
       result = result + (entry.ignored_by_productivity or 0) *
-        (entry.probability or 1)
+        (entry[probability] or 1)
     end
   end
   return result

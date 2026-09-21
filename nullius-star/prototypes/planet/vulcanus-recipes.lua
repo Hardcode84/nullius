@@ -8,6 +8,7 @@ local vulcanus_only = {
   {property = "nullius-ambient-temperature", min = 100},
 }
 
+local probability = require("factorio-version").is_2_1 and "independent_probability" or "probability"
 local recipe_util = require("prototypes.recipe-util")
 
 local function vulcanus_substitute_recipe(source_name, name, substitutions,
@@ -828,7 +829,7 @@ data:extend({
         type = "item",
         name = "barrel",
         amount = 1,
-        probability = 0.9,
+        [probability] = 0.9,
         ignored_by_productivity = 1,
       },
     },
