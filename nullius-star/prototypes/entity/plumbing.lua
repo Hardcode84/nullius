@@ -2,6 +2,8 @@ local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
+local wagon_connector_graphics = require("factorio-version").is_2_1
+  and "wagon_connection_graphics" or "fluid_wagon_connector_graphics"
 
 require("pipe_graphics")
 collision_mask_util = require("collision-mask-util")
@@ -2896,7 +2898,7 @@ data:extend({
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
     fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
-    fluid_wagon_connector_graphics = data.raw.pump["pump"].fluid_wagon_connector_graphics,
+    [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
     circuit_connector = circuit_connector_definitions["pump"],
@@ -3086,7 +3088,7 @@ data:extend({
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
     fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
-    fluid_wagon_connector_graphics = data.raw.pump["pump"].fluid_wagon_connector_graphics,
+    [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
     circuit_connector = circuit_connector_definitions["pump"],
@@ -3271,7 +3273,7 @@ data:extend({
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
     fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
-    fluid_wagon_connector_graphics = data.raw.pump["pump"].fluid_wagon_connector_graphics,
+    [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
     circuit_connector = circuit_connector_definitions["pump"],
@@ -3454,7 +3456,7 @@ data:extend({
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
     fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
-    fluid_wagon_connector_graphics = data.raw.pump["pump"].fluid_wagon_connector_graphics,
+    [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
     circuit_connector = circuit_connector_definitions["pump"],
@@ -3638,7 +3640,7 @@ data:extend({
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
     fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
-    fluid_wagon_connector_graphics = data.raw.pump["pump"].fluid_wagon_connector_graphics,
+    [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
     circuit_connector = circuit_connector_definitions["pump"],

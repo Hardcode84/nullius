@@ -268,3 +268,5 @@ require("void-products")
 require("metallurgic-products")
 require("extractor-pictures")
 require("well-pictures")
+
+require("pump-wagons")
