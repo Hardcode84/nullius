@@ -282,3 +282,5 @@ require("boxing-recipes")
 require("module-recipes")
 
 require("alignment-recipes")
+
+require("terrain-drone-recipes")

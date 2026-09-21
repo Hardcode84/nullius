@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local asteroid_products = require("prototypes.item.asteroid-miner-products")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
@@ -93,15 +95,25 @@ local function create_drone(base_name, group, suborder, base_suffix, stack, tech
 end
 
 
+local function extend_terrain_recipes(recipes)
+  if not modern then
+    for _, recipe in ipairs(recipes) do
+      recipe.category = recipe.categories[1]
+      recipe.categories = nil
+    end
+  end
+  data:extend(recipes)
+end
+
 local function create_terraform(suffix, tile, suborder, tech)
   create_drone("terraforming", "drone", "d"..suborder, suffix, 5, tech)
-  data:extend({
+  extend_terrain_recipes({
     {
       type = "recipe",
       name = "nullius-terraforming-drone-"..suffix,
       enabled = false,
       always_show_made_in = true,
-      category = "huge-crafting",
+      categories = {"huge-crafting"},
       energy_required = 60,
       ingredients = {
         {type = "item", name = "nullius-shallow-excavation-drone", amount = 1},
@@ -121,13 +133,13 @@ local function create_paving(suffix, landfill, suborder, tech, tile)
     tile = suffix
   end
   create_drone("paving", "paving", "b"..suborder, suffix, 5, tech)
-  data:extend({
+  extend_terrain_recipes({
     {
       type = "recipe",
       name = "nullius-paving-drone-"..suffix,
       enabled = false,
       always_show_made_in = true,
-      category = "huge-crafting",
+      categories = {"huge-crafting"},
       energy_required = 25,
       ingredients = {
         {type = "item", name = "nullius-terraforming-drone-"..landfill, amount = 1},
