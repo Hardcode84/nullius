@@ -3512,6 +3512,23 @@ circuit_connector_definitions["nullius-solar-collector"] = circuit_connector_def
 )
 
 
+local function solar_neighbours(tier)
+  if not require("factorio-version").is_2_1 then return nil end
+  -- Preserve the 2.0 rule: only collectors of the same tier give a bonus.
+  local category = "nullius-solar-collector-" .. tier
+  local directions = {defines.direction.north, defines.direction.east,
+    defines.direction.south, defines.direction.west}
+  local connections = {}
+  for i, position in ipairs({{0, -2}, {2.5, 0}, {0, 2}, {-2.5, 0}}) do
+    connections[i] = {
+      location = {position = position, direction = directions[i]},
+      category = category,
+      neighbour_category = {category}
+    }
+  end
+  return {connections = connections}
+end
+
 local reactor_neighbours
 if require("factorio-version").is_2_1 then
   reactor_neighbours = table.deepcopy(data.raw.reactor["nuclear-reactor"].neighbour_connectable)
@@ -3601,6 +3618,7 @@ data:extend({
     consumption = "150W",
     energy_source = { type = "void" },
     neighbour_bonus = 0.1,
+    neighbour_connectable = solar_neighbours(1),
     --neighbour_collision_increase = 0.1,
     -- circuit_connector = circuit_connector_definitions["nullius-solar-collector"], -- we decided not to have circuit connections for this building
     -- circuit_wire_max_distance = reactor_circuit_wire_max_distance,
@@ -3681,6 +3699,7 @@ data:extend({
     consumption = "300W",
     energy_source = { type = "void" },
     neighbour_bonus = 0.1,
+    neighbour_connectable = solar_neighbours(2),
     --neighbour_collision_increase = 0.1,
     -- circuit_connector = circuit_connector_definitions["nullius-solar-collector"],
     -- circuit_wire_max_distance = reactor_circuit_wire_max_distance,
@@ -3760,6 +3779,7 @@ data:extend({
     consumption = "600W",
     energy_source = { type = "void" },
     neighbour_bonus = 0.1,
+    neighbour_connectable = solar_neighbours(3),
     --neighbour_collision_increase = 0.1,
     -- circuit_connector = circuit_connector_definitions["nullius-solar-collector"],
     -- circuit_wire_max_distance = reactor_circuit_wire_max_distance,
