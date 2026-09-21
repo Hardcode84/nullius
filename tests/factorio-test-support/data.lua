@@ -264,3 +264,4 @@ require("turbine-generator")
 require("vehicle-forces")
 
 require("chest-doors")
+require("void-products")

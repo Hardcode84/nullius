@@ -114,6 +114,40 @@ def stage_chest_graphics(mods, version, dependency_mod_directory):
             target.write_bytes(archive.read(members[0]))
 
 
+def stage_void_products(mod, version):
+    source = (ROOT / "nullius-star/prototypes/item/void.lua").read_text()
+    blocks = re.findall(r'type = "recipe",(.*?)\n  }', source, re.S)
+    if len(blocks) != 42:
+        raise TestFailure(f"Expected 42 void recipes, got {len(blocks)}")
+    code = [source.splitlines()[0]]
+    for block in blocks:
+        def field(pattern):
+            matches = re.findall(pattern, block)
+            if len(matches) != 1:
+                raise TestFailure(f"Ambiguous void recipe field: {pattern}")
+            return matches[0]
+        name = field(r'^\s*name = "([^\"]+)"')
+        category = field(r'category = "([^\"]+)"')
+        duration = field(r'energy_required = ([\d.]+)')
+        ingredients = field(r'ingredients = (\{\{[^\n]+\}\})')
+        results = field(r'results = (\{\{[^\n]+\}\})')
+        code.extend([
+            'do local ingredients=' + ingredients + '; local results=' + results + ';',
+            'local fluid=ingredients[1].name;',
+            'if not data.raw.fluid[fluid] then local f=table.deepcopy(data.raw.fluid.water); f.name=fluid; data:extend({f}); end',
+            'local item=results[1].name;',
+            'if not data.raw.item[item] then data:extend({{type="item",name=item,stack_size=100,icon="__base__/graphics/icons/iron-plate.png"}}); end',
+            f'if not data.raw["recipe-category"]["{category}"] then data:extend({{{{type="recipe-category",name="{category}"}}}}); end',
+            f'local recipe={{type="recipe",name="{name}",energy_required={duration},ingredients=ingredients,results=results}};',
+            f'recipe.categories={{"{category}"}};' if version == "2.1" else f'recipe.category="{category}";',
+            'data:extend({recipe}); end',
+        ])
+    # Isolate the product port from the pending recipe presentation/category port.
+    (mod / "void-recipe-fixture.lua").write_text("\n".join(code) + "\n")
+    (mod / "void-products.lua").symlink_to(ROOT / "tests/factorio-test-support/void-products.lua")
+    (mod / "scenarios/void-products").symlink_to(ROOT / "tests/scenarios/void-products", target_is_directory=True)
+
+
 def stage_miner_connectors(mod):
     source = (ROOT / "nullius-star/prototypes/entity/furnace.lua").read_text()
     start = source.index("local function scale_wire_position(")
@@ -142,7 +176,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("void-recipe-fixture")\nrequire("void-products")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -151,6 +185,7 @@ def run(factorio, dependency_mod_directory):
     (mod / "chest-test-port.lua").symlink_to(ROOT / "tests/factorio-test-support/chest-doors.lua")
     stage_car_prototypes(mod)
     stage_miner_connectors(mod)
+    stage_void_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
     (mod / "fluid-resource-products.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-resource-products.lua")
@@ -223,6 +258,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "turbine-generator"),
                             ("nullius-star", "vehicle-forces"),
                             ("nullius-star", "chest-doors"),
+                            ("nullius-star", "void-products"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -252,6 +288,8 @@ def run(factorio, dependency_mod_directory):
     assert vehicles["status"] == "pass" and vehicles["vehicles"] == 5, vehicles
     chests = json.loads((work / "script-output/factorio-tests/chest-doors.json").read_text())
     assert chests["status"] == "pass" and chests["chests"] == 17, chests
+    voids = json.loads((work / "script-output/factorio-tests/void-products.json").read_text())
+    assert voids["status"] == "pass" and voids["recipes"] == 42 and voids["crafts"] == 210, voids
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -267,6 +305,7 @@ def run(factorio, dependency_mod_directory):
             "turbine_assertions": turbines["assertions"],
             "vehicle_assertions": vehicles["assertions"],
             "chest_assertions": chests["assertions"],
+            "void_assertions": voids["assertions"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 

@@ -1,3 +1,4 @@
+local probability = require("factorio-version").is_2_1 and "independent_probability" or "probability"
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -54,7 +55,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-seawater", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -69,7 +70,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-freshwater", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -87,7 +88,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-wastewater", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -102,7 +103,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-brine", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -115,7 +116,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-caustic-solution", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -128,7 +129,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-calcium-chloride-solution", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -146,7 +147,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-saline", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -164,7 +165,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-water", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -177,7 +178,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-heavy-water", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -190,7 +191,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-methanol", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -203,7 +204,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-amino-acids", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -216,7 +217,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-nucleotides", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -229,7 +230,7 @@ data:extend({
 	  hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-protocell", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -242,7 +243,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-bacteria", amount=200}},
-    results = {{type="item", name="nullius-liquid-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-liquid-void", amount=1, [probability]=0}}
   },
 
   {
@@ -256,7 +257,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-air", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -269,7 +270,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-air", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -282,7 +283,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-nitrogen", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -295,7 +296,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-nitrogen", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -308,7 +309,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-hydrogen", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -321,7 +322,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-deuterium", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -334,7 +335,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-hydrogen", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -347,7 +348,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-volcanic-gas", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -360,7 +361,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-argon", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -373,7 +374,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-argon", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -386,7 +387,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-helium", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -399,7 +400,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-helium", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -417,7 +418,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-steam", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -430,7 +431,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-residual-gas", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -443,7 +444,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-residual-gas", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -456,7 +457,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-trace-gas", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -469,7 +470,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-trace-gas", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -482,7 +483,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-oxygen", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -495,7 +496,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-oxygen", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -508,7 +509,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-carbon-dioxide", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -521,7 +522,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-carbon-dioxide", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -534,7 +535,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-carbon-monoxide", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -547,7 +548,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-carbon-monoxide", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -560,7 +561,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-sulfur-dioxide", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -573,7 +574,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-methane", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -586,7 +587,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-methane", amount=100}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
   {
     type = "recipe",
@@ -599,7 +600,7 @@ data:extend({
 	hide_from_stats = true,
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-ammonia", amount=200}},
-    results = {{type="item", name="nullius-gas-void", amount=1, probability=0}}
+    results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
   },
 
   {
@@ -614,7 +615,7 @@ data:extend({
 	  hidden = true,
     energy_required = 2.5,
     ingredients = {{type="fluid", name="nullius-energy", amount=150}},
-    results = {{type="item", name="nullius-power-sink", amount=1, probability=0}}
+    results = {{type="item", name="nullius-power-sink", amount=1, [probability]=0}}
   }
 })
 
