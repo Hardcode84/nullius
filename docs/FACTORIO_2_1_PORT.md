@@ -10,8 +10,9 @@ planner schema witness. Full gameplay has not been ported.
 |---|---|---|
 | Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe definitions and mutation; prototype filters, runtime filters, and tool category handling pass |
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
-| Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Loot has a separate schema change |
+| Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
 | Asteroid-miner returns | Both return tables select the engine's probability field | All twelve products retain their amounts and probabilities. Resolved checks pass: 62 assertions on 2.0, 74 on 2.1, and 62 in full Nullius 2.0; 2.1 checks confirm independent rolls |
+| Rock drops | Both engines use their native loot and mining probability fields | Checks cover all 38 mineable rock types: base, Alien Biomes, crystal, Vulcanus, and Fulgora. Mining yields stay unchanged. Generated destruction bounds round down to integers on both engines; some destruction yields decrease. Vulcanus has no destruction loot. Rock rewrites exclude shells |
 | Assembler pipe pictures | Four calls use `prototypes/entity/assembler-pipe-pictures.lua` | Both engines load the fixture geometry; directional sprite data matches each engine and copies are independent |
 | Entity prototypes | Generator pictures, chest robot doors, mining-drill graphics, vehicle braking/friction, and crafting symmetry changed | Port each entity family; check graphics, fluid port geometry, and vehicle behavior |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
@@ -54,6 +55,7 @@ prototype and dependency repairs listed above.
 ```bash
 python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.1
+python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```
 
 ## Published dependencies

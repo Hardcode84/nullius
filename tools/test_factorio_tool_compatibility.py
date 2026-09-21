@@ -67,14 +67,16 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\n')
-    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua"):
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\n')
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "drone-mining.lua").symlink_to(ROOT / "tests/factorio-test-support/drone-mining.lua")
     (mod / "recipe-filter.lua").symlink_to(ROOT / "tests/factorio-test-support/recipe-filter.lua")
     (mod / "data-updates.lua").write_text('require("recipe-visibility")\n')
     (mod / "prototypes").mkdir()
+    for filename in ("rock.lua", "rock-products.lua", "vulcanus-rocks.lua"):
+        (mod / "prototypes" / filename).symlink_to(ROOT / "nullius-star/prototypes" / filename)
     (mod / "prototypes/item").mkdir()
     (mod / "prototypes/item/asteroid-miner-products.lua").symlink_to(ROOT / "nullius-star/prototypes/item/asteroid-miner-products.lua")
     (mod / "prototypes/entity").mkdir()
@@ -95,6 +97,7 @@ def run(factorio):
         ROOT / "tests/scenarios/drone-mining", target_is_directory=True)
     (mod / "scenarios/startup-recipe-filter").symlink_to(ROOT / "tests/scenarios/startup-recipe-filter", target_is_directory=True)
     (mod / "scenarios/asteroid-miner-products").symlink_to(ROOT / "tests/scenarios/asteroid-miner-products", target_is_directory=True)
+    (mod / "scenarios/rock-drops").symlink_to(ROOT / "tests/scenarios/rock-drops", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -124,6 +127,7 @@ def run(factorio):
                             ("nullius-star", "drone-mining"),
                             ("nullius-star", "startup-recipe-filter"),
                             ("nullius-star", "asteroid-miner-products"),
+                            ("nullius-star", "rock-drops"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -142,6 +146,8 @@ def run(factorio):
     assert filtering["status"] == "pass", filtering
     asteroid = json.loads((work / "script-output/factorio-tests/asteroid-miner-products.json").read_text())
     assert asteroid["status"] == "pass", asteroid
+    rocks = json.loads((work / "script-output/factorio-tests/rock-drops.json").read_text())
+    assert rocks["status"] == "pass", rocks
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -151,6 +157,8 @@ def run(factorio):
             "helper_mining_assertions": mining["assertions"],
             "drone_mining_assertions": drones["assertions"],
             "asteroid_return_assertions": asteroid["assertions"],
+            "rock_drop_assertions": rocks["assertions"],
+            "rock_types": rocks["rocks"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 

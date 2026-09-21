@@ -1,3 +1,4 @@
+local crystal = require("prototypes.rock-products").crystal
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -278,15 +279,9 @@ data:extend({
     minable = {
       mining_particle = "stone-particle",
       mining_time = 8,
-      results = {
-        {type="item", name="nullius-silica", amount=16},
-        {type="item", name="nullius-alumina", amount=8}
-      }
+      results = crystal.mining
     },
-    loot = {
-      {item = "nullius-silica", probability = 1, count_min = 4, count_max = 12},
-      {item = "nullius-alumina", probability = 1, count_min = 2, count_max = 6}
-    },
+    loot = crystal.loot,
     count_as_rock_for_filtered_deconstruction = true,
     mined_sound = { filename = "__base__/sound/deconstruct-bricks.ogg" },
     render_layer = "object",

@@ -260,20 +260,7 @@ for _, ename in pairs(strip_entity_names) do
 end
 
 -- Override Vulcanus rock drops: stone, graphite, rutile (no vanilla ores).
-if data.raw["simple-entity"]["huge-volcanic-rock"] then
-  data.raw["simple-entity"]["huge-volcanic-rock"].minable.results = {
-    {type = "item", name = "stone", amount_min = 10, amount_max = 25},
-    {type = "item", name = "nullius-graphite", amount_min = 3, amount_max = 8},
-    {type = "item", name = "nullius-rutile", amount_min = 1, amount_max = 3},
-  }
-end
-if data.raw["simple-entity"]["big-volcanic-rock"] then
-  data.raw["simple-entity"]["big-volcanic-rock"].minable.results = {
-    {type = "item", name = "stone", amount_min = 5, amount_max = 15},
-    {type = "item", name = "nullius-graphite", amount_min = 2, amount_max = 5},
-    {type = "item", name = "nullius-rutile", amount_min = 0, amount_max = 2, probability = 0.5},
-  }
-end
+require("prototypes.vulcanus-rocks")
 
 -- Override sulfuric acid geyser to produce HCl on Vulcanus.
 -- The geyser entity is shared across surfaces, so we change it globally.

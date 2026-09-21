@@ -1,3 +1,4 @@
+local products = require("prototypes.rock-products")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -18,9 +19,10 @@ for _,rock in pairs(data.raw["simple-entity"]) do
   local secondary = "stone"
   local tertiary = "nullius-mineral-dust"
   local locale_name = nil
+  local rockColor
   
   local tmp = split(rock.name, "-")
-  if #tmp == 3 then -- regular rock
+  if #tmp == 3 and tmp[2] == "rock" then -- regular rock
     rockColor = tmp[3]
     if rockColor ~= "rock" then
     if (rockColor == "brown") or (rockColor == "red") or (rockColor == "dustyrose") then
@@ -47,7 +49,7 @@ for _,rock in pairs(data.raw["simple-entity"]) do
 	    locale_name = "ironstone"
     end
     end
-  elseif #tmp == 4 then -- sand rock
+  elseif #tmp == 4 and tmp[1] == "sand" and tmp[3] == "rock" then -- sand rock
     rockColor = tmp[4]
     primary = "nullius-sandstone"
     tertiary = "nullius-sand"
@@ -63,7 +65,7 @@ for _,rock in pairs(data.raw["simple-entity"]) do
     end
   end
 
-  if (primary ~= nil) then
+  if rock.count_as_rock_for_filtered_deconstruction and (primary ~= nil) then
     if (locale_name ~= nil) then
       rock.localised_name = { "entity-name.nullius-rock-" .. locale_name }
 	end
@@ -105,10 +107,10 @@ for _,rock in pairs(data.raw["simple-entity"]) do
         for _,minres in pairs(rock.minable.results) do
           local loot_min = (minres.amount_min or minres.amount or 0) * 0.5
           local loot_max = ((minres.amount_max or minres.amount or 0) * 0.8) + 0.2
-          table.insert(rock.loot, {item=minres.name, count_min=loot_min, count_max=loot_max})
+          table.insert(rock.loot, products.loot(minres.name, loot_min, loot_max))
         end
         if (total > 4) then
-          table.insert(rock.loot, {item=tertiary, count_min=0, count_max=(total / 5)})
+          table.insert(rock.loot, products.loot(tertiary, 0, total / 5))
         end
       elseif (rock.minable.result ~= nil) then
         rock.minable.count = rock.minable.count * 0.25
@@ -117,10 +119,10 @@ for _,rock in pairs(data.raw["simple-entity"]) do
         elseif rock.minable.result == "coal" then
           rock.minable.result = secondary
         end
-        rock.loot = {{item=rock.minable.result, count_min=rock.minable.count*0.6,
-          count_max=(rock.minable.count*0.8)+0.2}}
+        rock.loot = {products.loot(rock.minable.result, rock.minable.count*0.6,
+          (rock.minable.count*0.8)+0.2)}
         if (rock.minable.count > 2) then
-          table.insert(rock.loot, {item=tertiary, count_min=0, count_max=(rock.minable.count/2.5)})
+          table.insert(rock.loot, products.loot(tertiary, 0, rock.minable.count/2.5))
         end
       else
         rock.loot = nil
@@ -134,6 +136,6 @@ end
 -- From Alien Biomes
 if (data.raw["simple-entity"]["sand-big-rock-white"] ~= nil) then
   table.insert(data.raw["simple-entity"]["sand-big-rock-white"].minable.results,
-    {type="item", name="nullius-soda-ash", probability=0.1, amount_min=1, amount_max=2}
+    {type="item", name="nullius-soda-ash", [products.probability]=0.1, amount_min=1, amount_max=2}
   )
 end
