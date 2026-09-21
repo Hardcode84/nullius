@@ -310,3 +310,5 @@ require("primitive-recipes")
 require("vulcanus-entity-recipes")
 
 require("barrel-recipes")
+
+require("car-key-recipe")

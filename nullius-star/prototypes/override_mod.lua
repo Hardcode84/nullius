@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -1627,7 +1629,8 @@ if (mods["GCKI"] and (data.raw.item["car-key"] ~= nil)) then
       name = "nullius-car-key",
       enabled = false,
       always_show_made_in = true,
-      category = "small-crafting",
+      category = not modern and "small-crafting" or nil,
+      categories = modern and {"small-crafting"} or nil,
       energy_required = 3,
       ingredients = {
         {type = "item", name = "programmable-speaker", amount = 1},
