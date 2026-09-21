@@ -1102,8 +1102,8 @@ data.raw.item["induction-coil"].stack_size = 50
 data.raw.recipe["induction-coil"].order = "nullius-ib"
 data.raw.recipe["induction-coil"].always_show_made_in = true
 data.raw.recipe["induction-coil"].energy_required = 5
-data.raw.recipe["induction-coil"].categories = nil
-data.raw.recipe["induction-coil"].category = "small-crafting"
+data.raw.recipe["induction-coil"].categories = modern and {"small-crafting"} or nil
+data.raw.recipe["induction-coil"].category = not modern and "small-crafting" or nil
 data.raw.recipe["induction-coil"].ingredients = {
   {type = "item", name = "nullius-capacitor", amount = 5},
   {type = "item", name = "decider-combinator", amount = 3},
