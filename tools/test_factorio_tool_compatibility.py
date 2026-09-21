@@ -252,6 +252,16 @@ def stage_metallurgic_products(mod, version):
     (mod / "scenarios/metallurgic-products").symlink_to(ROOT / "tests/scenarios/metallurgic-products", target_is_directory=True)
 
 
+def stage_module_recipes(mod):
+    for target, source in (
+        ("module-recipes-source.lua", "nullius-star/prototypes/item/module.lua"),
+        ("module-recipes.lua", "tests/compatibility/module-recipes.lua"),
+        ("module-recipe-executor.lua", "tests/factorio-test-support/module-recipes.lua"),
+        ("scenarios/module-recipes", "tests/scenarios/module-recipes"),
+    ):
+        (mod / target).symlink_to(ROOT / source, target_is_directory=(ROOT / source).is_dir())
+
+
 def stage_boxing_recipes(mod):
     source = (ROOT / "nullius-star/prototypes/item/boxing.lua").read_text()
     marker = '\ndata.raw["capsule"]["cliff-explosives"].localised_name'
@@ -333,7 +343,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -345,6 +355,7 @@ def run(factorio, dependency_mod_directory):
     stage_void_products(mod)
     stage_turbine_recipes(mod)
     stage_boxing_recipes(mod)
+    stage_module_recipes(mod)
     stage_broken_recipes(mod, mods, version, dependency_mod_directory)
     stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
@@ -426,6 +437,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "turbine-recipes"),
                             ("nullius-star", "broken-recipes"),
                             ("nullius-star", "boxing-recipes"),
+                            ("nullius-star", "module-recipes"),
                             ("nullius-star", "vehicle-forces"),
                             ("nullius-star", "chest-doors"),
                             ("nullius-star", "void-products"),
@@ -481,6 +493,8 @@ def run(factorio, dependency_mod_directory):
     assert reactors["status"] == "pass" and reactors["layouts"] == 32, reactors
     solar = json.loads((work / "script-output/factorio-tests/solar-neighbours.json").read_text())
     assert solar["status"] == "pass" and solar["layouts"] == 144, solar
+    module_recipes = json.loads((work / "script-output/factorio-tests/module-recipes.json").read_text())
+    assert module_recipes["status"] == "pass" and module_recipes["recipes"] == 46, module_recipes
     boxing = json.loads((work / "script-output/factorio-tests/boxing-recipes.json").read_text())
     assert boxing["status"] == "pass" and boxing["pairs"] == 16, boxing
     repairs = json.loads((work / "script-output/factorio-tests/broken-recipes.json").read_text())
@@ -503,6 +517,7 @@ def run(factorio, dependency_mod_directory):
             "turbine_recipe_assertions": turbine_recipes["assertions"],
             "repair_assertions": repairs["assertions"],
             "boxing_assertions": boxing["assertions"],
+            "module_recipe_assertions": module_recipes["assertions"],
             "vehicle_assertions": vehicles["assertions"],
             "chest_assertions": chests["assertions"],
             "void_assertions": voids["assertions"],

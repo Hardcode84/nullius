@@ -1,0 +1,21 @@
+-- Frozen module categories and effects from the 2.0 definitions.
+return {
+  {name="nullius-efficiency-module-1",category="efficiency",tier=1,effect={ consumption = -0.5 }},
+  {name="nullius-efficiency-module-2",category="efficiency",tier=2,effect={ consumption = -0.8 }},
+  {name="nullius-efficiency-module-3",category="efficiency",tier=3,effect={ consumption = -1.2 }},
+  {name="nullius-haste-module-1",category="haste",tier=0,effect={ speed = 0.2, consumption = 0.25 }},
+  {name="nullius-haste-module-2",category="haste",tier=1,effect={ speed = 0.3, consumption = 0.4 }},
+  {name="nullius-haste-module-3",category="haste",tier=2,effect={ speed = 0.4, consumption = 0.6 }},
+  {name="nullius-haste-module-4",category="haste",tier=3,effect={ speed = 0.5, consumption = 0.8 }},
+  {name="nullius-speed-module-1",category="speed",tier=0,effect={ speed = 0.15 }},
+  {name="nullius-speed-module-2",category="speed",tier=1,effect={ speed = 0.2 }},
+  {name="nullius-speed-module-3",category="speed",tier=2,effect={ speed = 0.3, consumption = 0.05 }},
+  {name="nullius-speed-module-4",category="speed",tier=3,effect={ speed = 0.4, consumption = 0.1 }},
+  {name="nullius-yield-module-1",category="yield",tier=0,effect={ productivity = 0.03, speed = -0.05, consumption = 0.1 }},
+  {name="nullius-yield-module-2",category="yield",tier=1,effect={ productivity = 0.05, speed = -0.15, consumption = 0.4 }},
+  {name="nullius-yield-module-3",category="yield",tier=2,effect={ productivity = 0.07, speed = -0.25, consumption = 0.7 }},
+  {name="nullius-yield-module-4",category="yield",tier=3,effect={ productivity = 0.08, speed = -0.4, consumption = 1 }},
+  {name="nullius-productivity-module-1",category="productivity",tier=1,effect={ productivity = 0.04 }},
+  {name="nullius-productivity-module-2",category="productivity",tier=2,effect={ productivity = 0.06, consumption = 0.05 }},
+  {name="nullius-productivity-module-3",category="productivity",tier=3,effect={ productivity = 0.07, consumption = 0.1 }},
+}

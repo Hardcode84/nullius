@@ -278,3 +278,5 @@ require("turbine-recipes")
 require("broken-recipes")
 
 require("boxing-recipes")
+
+require("module-recipes")
