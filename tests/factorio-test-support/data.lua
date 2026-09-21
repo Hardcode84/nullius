@@ -280,3 +280,5 @@ require("broken-recipes")
 require("boxing-recipes")
 
 require("module-recipes")
+
+require("alignment-recipes")

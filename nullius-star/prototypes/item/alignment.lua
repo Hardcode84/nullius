@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local sounds = require ("__base__/prototypes/entity/sounds")
 
 if (settings.startup["nullius-alignment"].value) then
@@ -258,7 +260,7 @@ data:extend({
   }
 })
 
-data:extend({
+local recipes = {
   {
     type = "recipe",
     name = "nullius-broken-align-transponder",
@@ -271,7 +273,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     subgroup = "alignment",
     order = "nullius-dc",
     energy_required = 3,
@@ -290,7 +292,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "tiny-crafting",
+    categories = {"tiny-crafting"},
     energy_required = 8,
     ingredients = {
       {type = "item", name = "nullius-steel-sheet", amount = 1},
@@ -306,7 +308,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "tiny-crafting",
+    categories = {"tiny-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-align-identification-card", amount = 1},
@@ -323,7 +325,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 12,
     ingredients = {
 	  {type = "item", name = "nullius-align-identification-card", amount = 1},
@@ -342,7 +344,7 @@ data:extend({
     no_productivity = true,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-align-invitation-card", amount = 1},
@@ -359,7 +361,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 20,
     ingredients = {
       {type = "item", name = "power-switch", amount = 1},
@@ -376,7 +378,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     energy_required = 30,
     ingredients = {
       {type = "item", name = "nullius-align-conscription-ray", amount = 2},
@@ -396,7 +398,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     energy_required = 60,
     ingredients = {
       {type = "item", name = "nullius-align-conscription-turret", amount = 3},
@@ -413,7 +415,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
     no_productivity = true,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     energy_required = 300,
     ingredients = {
       {type = "item", name = "nullius-align-concordance-transmitter", amount = 3},
@@ -424,7 +426,14 @@ data:extend({
 			{type="item", name="nullius-align-concordance-satellite", amount = 1}
 		}
   }
-})
+}
+if not modern then
+  for _, recipe in ipairs(recipes) do
+    recipe.category = recipe.categories[1]
+    recipe.categories = nil
+  end
+end
+data:extend(recipes)
 
 
 local function alignment_tech(num, item, typ, cnt, tm, pack, ignore, item2)

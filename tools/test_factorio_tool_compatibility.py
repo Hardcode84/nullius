@@ -252,6 +252,18 @@ def stage_metallurgic_products(mod, version):
     (mod / "scenarios/metallurgic-products").symlink_to(ROOT / "tests/scenarios/metallurgic-products", target_is_directory=True)
 
 
+def stage_alignment_recipes(mod):
+    for target, source in (
+        ("alignment-recipes-source.lua", "nullius-star/prototypes/item/alignment.lua"),
+        ("alignment-recipes.lua", "tests/compatibility/alignment-recipes.lua"),
+        ("alignment-recipe-executor.lua", "tests/factorio-test-support/alignment-recipes.lua"),
+        ("scenarios/alignment-recipes", "tests/scenarios/alignment-recipes"),
+    ):
+        (mod / target).symlink_to(ROOT / source, target_is_directory=(ROOT / source).is_dir())
+    (mod / "alignment-setting-expected.lua").write_text("return true\n")
+    (mod / "settings.lua").write_text('data:extend({{type="bool-setting",name="nullius-alignment",setting_type="startup",default_value=true}})\n')
+
+
 def stage_module_recipes(mod):
     for target, source in (
         ("module-recipes-source.lua", "nullius-star/prototypes/item/module.lua"),
@@ -343,7 +355,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -356,6 +368,7 @@ def run(factorio, dependency_mod_directory):
     stage_turbine_recipes(mod)
     stage_boxing_recipes(mod)
     stage_module_recipes(mod)
+    stage_alignment_recipes(mod)
     stage_broken_recipes(mod, mods, version, dependency_mod_directory)
     stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
@@ -438,6 +451,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "broken-recipes"),
                             ("nullius-star", "boxing-recipes"),
                             ("nullius-star", "module-recipes"),
+                            ("nullius-star", "alignment-recipes"),
                             ("nullius-star", "vehicle-forces"),
                             ("nullius-star", "chest-doors"),
                             ("nullius-star", "void-products"),
@@ -493,6 +507,17 @@ def run(factorio, dependency_mod_directory):
     assert reactors["status"] == "pass" and reactors["layouts"] == 32, reactors
     solar = json.loads((work / "script-output/factorio-tests/solar-neighbours.json").read_text())
     assert solar["status"] == "pass" and solar["layouts"] == 144, solar
+    alignment = json.loads((work / "script-output/factorio-tests/alignment-recipes.json").read_text())
+    assert alignment["status"] == "pass" and alignment["recipes"] == 9, alignment
+    (mod / "settings.lua").write_text((mod / "settings.lua").read_text().replace("default_value=true", "default_value=false"))
+    (mod / "alignment-setting-expected.lua").write_text("return false\n")
+    (mods / "mod-settings.dat").unlink(missing_ok=True)
+    prototype_dump = work / "script-output/data-raw-dump.json"
+    enabled_dump = work / "script-output/alignment-enabled-dump.json"
+    prototype_dump.rename(enabled_dump)
+    execute("alignment-disabled", ["--dump-data"])
+    prototype_dump.rename(work / "script-output/alignment-disabled-dump.json")
+    enabled_dump.rename(prototype_dump)
     module_recipes = json.loads((work / "script-output/factorio-tests/module-recipes.json").read_text())
     assert module_recipes["status"] == "pass" and module_recipes["recipes"] == 46, module_recipes
     boxing = json.loads((work / "script-output/factorio-tests/boxing-recipes.json").read_text())
@@ -518,6 +543,7 @@ def run(factorio, dependency_mod_directory):
             "repair_assertions": repairs["assertions"],
             "boxing_assertions": boxing["assertions"],
             "module_recipe_assertions": module_recipes["assertions"],
+            "alignment_assertions": alignment["assertions"],
             "vehicle_assertions": vehicles["assertions"],
             "chest_assertions": chests["assertions"],
             "void_assertions": voids["assertions"],
