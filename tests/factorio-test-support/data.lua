@@ -274,3 +274,5 @@ require("pump-wagons")
 require("reactor-neighbours")
 
 require("turbine-recipes")
+
+require("broken-recipes")

@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
@@ -158,7 +160,7 @@ table.insert(data.raw.item["nullius-broken-sensor-node"].icons,
 end
 
 
-data:extend({
+local recipes = {
   {
     type = "recipe",
     name = "nullius-broken-air-filter",
@@ -171,7 +173,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-c",
     energy_required = 3,
@@ -195,7 +197,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-e",
     energy_required = 4,
@@ -219,7 +221,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-g",
     energy_required = 6,
@@ -243,7 +245,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-i",
     energy_required = 5,
@@ -267,7 +269,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-k",
     energy_required = 4,
@@ -291,7 +293,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-m",
     energy_required = 3,
@@ -315,7 +317,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-o",
     energy_required = 2,
@@ -339,7 +341,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "hand-casting",
+    categories = {"hand-casting"},
     subgroup = "broken",
     order = "nullius-q",
     energy_required = 8,
@@ -363,7 +365,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-s",
     energy_required = 6,
@@ -387,7 +389,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     no_productivity = true,
-    category = "large-crafting",
+    categories = {"large-crafting"},
     subgroup = "broken",
     order = "nullius-u",
     energy_required = 10,
@@ -400,4 +402,12 @@ data:extend({
 			{type="item", name="radar", amount = 1}
 		}
   }
-})
+}
+
+if not modern then
+  for _, recipe in ipairs(recipes) do
+    recipe.category = recipe.categories[1]
+    recipe.categories = nil
+  end
+end
+data:extend(recipes)
