@@ -1,3 +1,17 @@
+local modern = require("factorio-version").is_2_1
+
+local function extend_fluid_prototypes(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local FLUIDPATH = ICONPATH .. "fluid/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
@@ -29,7 +43,7 @@ element_tint = {
   ["solvent"] = { 194, 193, 178 }
 }
 
-data:extend({
+extend_fluid_prototypes({
   {
     type = "fluid",
     name = "nullius-water",
@@ -1088,7 +1102,7 @@ data:extend({
 })
 
 
-data:extend({
+extend_fluid_prototypes({
   {
     type = "tool",
     name = "nullius-climatology-pack",
@@ -1123,7 +1137,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  allow_decomposition = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     energy_required = 60,
     ingredients = {
       {type="fluid", name="nullius-air", amount=5000},
@@ -1156,7 +1170,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "research-pack-2",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-wastewater"].flow_color,
@@ -1179,7 +1193,7 @@ data:extend({
     always_show_products = true,
     enabled = false,
 	  allow_decomposition = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-science",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-wastewater"].flow_color,
@@ -1214,7 +1228,7 @@ data:extend({
     name = "nullius-chemical-pack",
     localised_name = {"", {"item-name.nullius-chemical-pack"}, " ", tostring(1)},
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     show_amount_in_title = false,
     always_show_products = true,
     crafting_machine_tint = {
@@ -1241,7 +1255,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-science",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ammonia"].flow_color,
@@ -1288,7 +1302,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "research-pack-2",
     order = "nullius-fd",
     crafting_machine_tint = {
@@ -1325,7 +1339,7 @@ data:extend({
       {{FLUIDPATH .. "brine.png", 64 }}
     ),
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "inorganic-chemistry",
     order = "nullius-bb",
     show_amount_in_title = false,
@@ -1351,7 +1365,7 @@ data:extend({
       {{FLUIDPATH .. "purewater.png", 64 }}
     ),
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "inorganic-chemistry",
     order = "nullius-bc",
     show_amount_in_title = false,
@@ -1383,7 +1397,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "boxed-fluid",
     order = "nullius-cb",
     show_amount_in_title = false,
@@ -1403,7 +1417,7 @@ data:extend({
     name = "nullius-hydrogen-chloride",
     icons = add_recipe_gear_icon(data.raw.fluid["nullius-hydrogen-chloride"].icons),
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "chlorine-chemistry",
     order = "nullius-b",
     crafting_machine_tint = {
@@ -1434,7 +1448,7 @@ data:extend({
       nil
     ),
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "chlorine-chemistry",
     order = "nullius-c",
     crafting_machine_tint = {
@@ -1457,7 +1471,7 @@ data:extend({
     name = "nullius-acid-hydrochloric",
     icons = add_recipe_gear_icon(data.raw.fluid["nullius-acid-hydrochloric"].icons),
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "chlorine-chemistry",
     order = "nullius-d",
     crafting_machine_tint = {
@@ -1502,7 +1516,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "inorganic-chemistry",
     order = "nullius-cb",
     energy_required = 1,
@@ -1543,7 +1557,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "inorganic-chemistry",
     order = "nullius-cc",
     energy_required = 1,
@@ -1562,7 +1576,7 @@ data:extend({
     type = "recipe",
     name = "nullius-acid-sulfuric",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "inorganic-chemistry",
     order = "nullius-f",
     crafting_machine_tint = {
@@ -1586,7 +1600,7 @@ data:extend({
     type = "recipe",
     name = "nullius-ammonia",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "inorganic-chemistry",
     order = "nullius-h",
     crafting_machine_tint = {
@@ -1609,7 +1623,7 @@ data:extend({
     type = "recipe",
     name = "nullius-acid-nitric",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "inorganic-chemistry",
     order = "nullius-i",
     crafting_machine_tint = {
@@ -1652,7 +1666,7 @@ data:extend({
     name = "nullius-soda-ash",
     localised_name = {"recipe-name.nullius-soda-ash-1"},
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-fb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-carbon-dioxide"].flow_color,
@@ -1687,7 +1701,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     order = "nullius-fc",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color },
@@ -1711,7 +1725,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-soda-ash",
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-sodium",
     order = "nullius-f",
     crafting_machine_tint = {
@@ -1750,7 +1764,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-eb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-acid-sulfuric"].flow_color,
@@ -1789,7 +1803,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-sodium",
     order = "nullius-eb",
     crafting_machine_tint = {
@@ -1825,7 +1839,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-ec",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-acid-sulfuric"].flow_color,
@@ -1864,7 +1878,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-sodium",
     order = "nullius-ec",
     crafting_machine_tint = {
@@ -1889,7 +1903,7 @@ data:extend({
     localised_name = {"fluid-name.nullius-air"},
     enabled = true,
     hide_from_player_crafting = true,
-    category = "air-filtration",
+    categories = {"air-filtration"},
     subgroup = "air-filtration-recipe",
     order = "nullius-bb",
     energy_required = 3,
@@ -1904,7 +1918,7 @@ data:extend({
     name = "nullius-freshwater",
     enabled = true,
     hide_from_player_crafting = true,
-    category = "water-pumping",
+    categories = {"water-pumping"},
     subgroup = "nullius-water-treatment",
     energy_required = 2,
     ingredients = {},
@@ -1920,7 +1934,7 @@ data:extend({
     hide_from_player_crafting = true,
 	  crafting_machine_tint = { primary =
 	    data.raw.fluid["nullius-seawater"].flow_color },
-    category = "seawater-pumping",
+    categories = {"seawater-pumping"},
     subgroup = "nullius-water-treatment",
     energy_required = 2,
     ingredients = {},
@@ -1942,7 +1956,7 @@ data:extend({
     order = "nullius-b",
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "nullius-water-treatment",
     energy_required = 1,
     ingredients = {
@@ -1967,7 +1981,7 @@ data:extend({
     order = "nullius-c",
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "nullius-water-treatment",
     energy_required = 1,
     ingredients = {
@@ -1992,7 +2006,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "waste-management",
     order = "nullius-eb",
     energy_required = 1,
@@ -2010,7 +2024,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "waste-management",
     order = "nullius-ecb",
     energy_required = 5,
@@ -2044,7 +2058,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "waste-management",
     order = "nullius-ea",
     energy_required = 1,
@@ -2069,7 +2083,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "nullius-water-treatment",
     order = "nullius-ebb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-saline"].flow_color },
@@ -2095,7 +2109,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "nullius-water-treatment",
     order = "nullius-ebc",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-seawater"].flow_color },
@@ -2122,7 +2136,7 @@ data:extend({
       {{FLUIDPATH .. "steam2.png", 64}}
     ),
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "nullius-water-treatment",
     order = "nullius-ebd",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-seawater"].flow_color },
@@ -2150,7 +2164,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-i",
     energy_required = 1,
@@ -2175,7 +2189,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-hb",
     energy_required = 1,
@@ -2198,7 +2212,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-hd",
     energy_required = 1,
@@ -2222,7 +2236,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-hc",
     energy_required = 1,
@@ -2247,7 +2261,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-he",
     energy_required = 1,
@@ -2271,7 +2285,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-hf",
     energy_required = 1,
@@ -2295,7 +2309,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "nullius-electrolysis",
     order = "nullius-j",
     energy_required = 1,
@@ -2313,7 +2327,7 @@ data:extend({
     name = "nullius-boxed-brine-electrolysis",
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-brine-electrolysis"}},
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "boxed-sodium",
     order = "nullius-cb",
     energy_required = 5,
@@ -2331,7 +2345,7 @@ data:extend({
     type = "recipe",
     name = "nullius-deuterium",
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
 	  subgroup = "waste-management",
     order = "nullius-ecc",
     energy_required = 8,
@@ -2368,7 +2382,7 @@ data:extend({
     type = "recipe",
     name = "nullius-salt",
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     crafting_machine_tint = { primary = data.raw.fluid["nullius-brine"].flow_color },
     energy_required = 2,
     ingredients = {
@@ -2385,7 +2399,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-salt",
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-sodium",
     order = "nullius-bb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-brine"].flow_color },
@@ -2424,7 +2438,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     order = "nullius-ec",
     energy_required = 1,
     ingredients = {
@@ -2456,7 +2470,7 @@ data:extend({
     always_show_products = true,
     allow_as_intermediate = false,
     allow_decomposition = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "boxed-fluid",
     order = "nullius-d",
     energy_required = 1,
@@ -2487,7 +2501,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     order = "nullius-db",
     energy_required = 2,
     ingredients = {
@@ -2521,7 +2535,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "boxed-sodium",
     order = "nullius-db",
     energy_required = 10,
@@ -2552,7 +2566,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     order = "nullius-dc",
     energy_required = 2,
     ingredients = {
@@ -2587,7 +2601,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "boxed-sodium",
     order = "nullius-dc",
     energy_required = 10,
@@ -2627,7 +2641,7 @@ data:extend({
     type = "recipe",
     name = "nullius-lithium-chloride",
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     crafting_machine_tint = { primary = {0.9, 0.75, 1} },
     energy_required = 32,
     ingredients = {
@@ -2646,7 +2660,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-lithium-chloride",
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "boxed-sodium",
     order = "nullius-bc",
     crafting_machine_tint = { primary = {0.95, 0.8, 1} },
@@ -2670,7 +2684,7 @@ data:extend({
 	  hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     crafting_machine_tint = { primary = {0.9, 0.75, 1} },
     energy_required = 32,
     ingredients = {
@@ -2691,7 +2705,7 @@ data:extend({
 	  hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "boxed-sodium",
     order = "nullius-bc",
     crafting_machine_tint = { primary = {0.95, 0.8, 1} },
@@ -2711,7 +2725,7 @@ data:extend({
     type = "recipe",
     name = "nullius-lithium",
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     energy_required = 2,
     ingredients = {
       {type="item", name="nullius-lithium-chloride", amount=2}
@@ -2726,7 +2740,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-lithium",
     enabled = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "boxed-sodium",
     energy_required = 10,
     ingredients = {
@@ -2751,7 +2765,7 @@ data:extend({
     enabled = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-cb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-air"].flow_color },
@@ -2776,7 +2790,7 @@ data:extend({
     enabled = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-cc",
     crafting_machine_tint = { primary = {r = 62, g = 154, b = 247} },
@@ -2802,7 +2816,7 @@ data:extend({
     enabled = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-cd",
     crafting_machine_tint = { primary = {r = 62, g = 154, b = 247} },
@@ -2828,7 +2842,7 @@ data:extend({
     enabled = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-cob",
 	  crafting_machine_tint = { primary = data.raw.fluid["nullius-nitrogen"].flow_color },
@@ -2854,7 +2868,7 @@ data:extend({
     enabled = false,
     hide_from_signal_gui = false,
     allow_decomposition = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-coc",
 	  crafting_machine_tint = { primary = data.raw.fluid["nullius-compressed-nitrogen"].flow_color },
@@ -2880,7 +2894,7 @@ data:extend({
 	  allow_decomposition = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-cr",
     crafting_machine_tint = { primary = {r = 77, g = 160, b = 244} },
@@ -2907,7 +2921,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-db",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-residual-gas"].flow_color },
@@ -2933,7 +2947,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-dc",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-residual-gas"].flow_color },
@@ -2959,7 +2973,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-eb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-trace-gas"].flow_color },
@@ -2985,7 +2999,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-ec",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-trace-gas"].flow_color },
@@ -3012,7 +3026,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "inorganic-chemistry",
     order = "nullius-eb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-volcanic-gas"].flow_color },
@@ -3039,7 +3053,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "inorganic-chemistry",
     order = "nullius-ec",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-volcanic-gas"].flow_color },
@@ -3061,7 +3075,7 @@ data:extend({
 	    {"recipe-name.nullius-volcanic-separation"}}, " ", tostring(1)},
     enabled = false,
 	  allow_decomposition = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-fluid",
     order = "nullius-bb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-volcanic-gas"].flow_color },
@@ -3090,7 +3104,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "inorganic-chemistry",
     order = "nullius-ed",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-volcanic-gas"].flow_color },
@@ -3131,7 +3145,7 @@ data:extend({
     },
     enabled = false,
 	  allow_decomposition = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-fluid",
     order = "nullius-bc",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-volcanic-gas"].flow_color },
@@ -3159,7 +3173,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "carbon",
     order = "nullius-bb",
     crafting_machine_tint = {
@@ -3187,7 +3201,7 @@ data:extend({
     ),
     enabled = false,
     --hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "carbon",
     order = "nullius-bc",
     crafting_machine_tint = {
@@ -3216,7 +3230,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "carbon",
     order = "nullius-db",
     crafting_machine_tint = {
@@ -3245,7 +3259,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "carbon",
     order = "nullius-dc",
     crafting_machine_tint = {
@@ -3280,7 +3294,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "organic-material-1",
     order = "nullius-bb",
     crafting_machine_tint = {
@@ -3316,7 +3330,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "organic-material-1",
     order = "nullius-bc",
     crafting_machine_tint = {
@@ -3345,7 +3359,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "carbon",
     order = "nullius-cb",
     crafting_machine_tint = {
@@ -3374,7 +3388,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "carbon",
     order = "nullius-cc",
     crafting_machine_tint = {
@@ -3393,7 +3407,7 @@ data:extend({
   }
 })
 
-data:extend({
+extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-carbon-gasification-1",
@@ -3413,7 +3427,7 @@ data:extend({
     },
     enabled = false,
     allow_as_intermediate = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-organic-1",
     order = "nullius-db",
     crafting_machine_tint = {
@@ -3449,7 +3463,7 @@ data:extend({
     },
     enabled = false,
     allow_as_intermediate = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boxed-organic-1",
     order = "nullius-dc",
     crafting_machine_tint = {
@@ -3478,7 +3492,7 @@ data:extend({
     hidden = true,
     allow_as_intermediate = false,
     allow_decomposition = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "carbon",
     order = "nullius-d",
     crafting_machine_tint = {
@@ -3514,7 +3528,7 @@ data:extend({
     hidden = true,
     allow_as_intermediate = false,
     allow_decomposition = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-1",
     order = "nullius-bm",
     crafting_machine_tint = {
@@ -3543,7 +3557,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "nullius-electrolysis",
+    categories = {"nullius-electrolysis"},
     subgroup = "carbon",
     order = "nullius-bd",
     energy_required = 1,
@@ -3569,7 +3583,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "hydrocarbon",
     order = "nullius-i",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-carbon-monoxide"].flow_color },
@@ -3597,7 +3611,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "hydrocarbon",
     order = "nullius-fb",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-carbon-monoxide"].flow_color },
@@ -3625,7 +3639,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "hydrocarbon",
     order = "nullius-fc",
     crafting_machine_tint = { primary = {r = 0.75, g = 0.3, b = 0.3} },
@@ -3651,7 +3665,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "hydrocarbon",
     order = "nullius-f",
     crafting_machine_tint = {
@@ -3679,7 +3693,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "hydrocarbon",
     order = "nullius-d",
     crafting_machine_tint = {
@@ -3706,7 +3720,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "hydrocarbon",
     order = "nullius-h",
     crafting_machine_tint = {
@@ -3735,7 +3749,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "hydrocarbon",
     order = "nullius-e",
     crafting_machine_tint = {
@@ -3765,7 +3779,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     --hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	  order = "nullius-bb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-oxygen"].flow_color,
@@ -3794,7 +3808,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "organic-chemistry",
     order = "nullius-bc",
     crafting_machine_tint = {
@@ -3817,7 +3831,7 @@ data:extend({
     name = "nullius-butadiene",
     enabled = false,
     allow_as_intermediate = false,
-    category = "distillation",
+    categories = {"distillation"},
     crafting_machine_tint = { primary = data.raw.fluid["nullius-ethylene"].flow_color },
     energy_required = 1,
     ingredients = {
@@ -3841,7 +3855,7 @@ data:extend({
 	  enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
 	  order = "nullius-cc",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-ethylene"].flow_color },
     energy_required = 1,
@@ -3860,7 +3874,7 @@ data:extend({
     name = "nullius-styrene",
     enabled = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-benzene"].flow_color,
       secondary = data.raw.fluid["nullius-ethylene"].flow_color
@@ -3880,7 +3894,7 @@ data:extend({
     type = "recipe",
     name = "nullius-acrylonitrile",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-propene"].flow_color,
       secondary = data.raw.fluid["nullius-ammonia"].flow_color
@@ -3914,7 +3928,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     order = "nullius-cb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-butadiene"].flow_color,
@@ -3949,7 +3963,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-cc",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-butadiene"].flow_color,
@@ -3972,7 +3986,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-2",
     order = "nullius-c",
     crafting_machine_tint = {
@@ -4013,7 +4027,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-b",
     energy_required = 1,
@@ -4046,7 +4060,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-b",
     energy_required = 3,
@@ -4081,7 +4095,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-cb",
     energy_required = 1,
@@ -4115,7 +4129,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-c",
     energy_required = 3,
@@ -4149,7 +4163,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-cc",
     energy_required = 1,
@@ -4183,7 +4197,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-d",
     energy_required = 3,
@@ -4217,7 +4231,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-d",
     energy_required = 1,
@@ -4252,7 +4266,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-e",
     energy_required = 3,
@@ -4285,7 +4299,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-e",
     energy_required = 1,
@@ -4320,7 +4334,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-f",
     energy_required = 3,
@@ -4355,7 +4369,7 @@ data:extend({
     enabled = false,
 	  allow_decomposition = false,
 	  hide_from_signal_gui = false,
-    category = "boiling",
+    categories = {"boiling"},
     subgroup = "boiling",
     order = "nullius-f",
     energy_required = 1,
@@ -4389,7 +4403,7 @@ data:extend({
     always_show_products = true,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "pressure-boiling",
+    categories = {"pressure-boiling"},
     subgroup = "pressure-boiling",
     order = "nullius-g",
     energy_required = 3,
@@ -4422,7 +4436,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "boiling",
     order = "nullius-m",
     energy_required = 0.5,
@@ -4458,7 +4472,7 @@ data:extend({
     allow_as_intermediate = false,
 	  hide_from_stats = true,
 	  hide_from_signal_gui = false,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "pressure-boiling",
     order = "nullius-i",
     energy_required = 0.5,
@@ -4477,7 +4491,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     subgroup = "pressure-boiling",
     order = "nullius-h",
     energy_required = 1,
@@ -4507,7 +4521,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-db",
     show_amount_in_title = false,
@@ -4540,7 +4554,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-dc",
     show_amount_in_title = false,
@@ -4574,7 +4588,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-dd",
     show_amount_in_title = false,
@@ -4611,7 +4625,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-eb",
     energy_required = 1,
@@ -4645,7 +4659,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-ec",
     energy_required = 1,
@@ -4679,7 +4693,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-fb",
     energy_required = 1,
@@ -4713,7 +4727,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-fc",
     energy_required = 1,
@@ -4747,7 +4761,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-fd",
     energy_required = 1,
@@ -4781,7 +4795,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-fe",
     energy_required = 1,
@@ -4815,7 +4829,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "combustion",
     order = "nullius-ff",
     energy_required = 1,
@@ -4850,7 +4864,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "combustion",
+    categories = {"combustion"},
 	  subgroup = "boiling",
     order = "nullius-g",
     energy_required = 1,
@@ -4889,7 +4903,7 @@ data:extend({
     },
     enabled = false,
     allow_as_intermediate = false,
-    category = "combustion",
+    categories = {"combustion"},
 	  subgroup = "boxed-organic-1",
     order = "nullius-dg",
     energy_required = 5,
@@ -4927,7 +4941,7 @@ data:extend({
 	    }
     },
     enabled = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "alumina",
     order = "nullius-dd",
     show_amount_in_title = false,
@@ -4974,7 +4988,7 @@ data:extend({
 	    }
     },
     enabled = false,
-    category = "combustion",
+    categories = {"combustion"},
     subgroup = "boxed-aluminum-1",
     order = "nullius-kb",
     show_amount_in_title = false,
@@ -5011,7 +5025,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "wet-smelting",
+    categories = {"wet-smelting"},
     subgroup = "organic-material-1",
     order = "nullius-bd",
     energy_required = 1,
@@ -5041,7 +5055,7 @@ data:extend({
     },
     enabled = false,
     allow_as_intermediate = false,
-    category = "wet-smelting",
+    categories = {"wet-smelting"},
     subgroup = "organic-material-1",
     order = "nullius-be",
     energy_required = 1,
@@ -5074,7 +5088,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "bulk-smelting",
+    categories = {"bulk-smelting"},
     subgroup = "boxed-organic-1",
     order = "nullius-bd",
     energy_required = 1,
@@ -5110,7 +5124,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "bulk-smelting",
+    categories = {"bulk-smelting"},
     subgroup = "boxed-organic-1",
     order = "nullius-be",
     energy_required = 1,
@@ -5146,7 +5160,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "compression",
+    categories = {"compression"},
     subgroup = "boxed-organic-1",
     order = "nullius-bf",
     energy_required = 1,
@@ -5173,7 +5187,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "reforming",
     order = "nullius-pb",
     energy_required = 4,
@@ -5201,7 +5215,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "reforming",
     order = "nullius-pc",
     energy_required = 4,
@@ -5228,7 +5242,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "reforming",
     order = "nullius-g",
     energy_required = 1,
@@ -5256,7 +5270,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "reforming",
     order = "nullius-qb",
     energy_required = 1,
@@ -5286,7 +5300,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "reforming",
     order = "nullius-qc",
     energy_required = 1,
@@ -5316,7 +5330,7 @@ data.raw.item["processed-fuel"].fuel_top_speed_multiplier = 1.2
 data.raw.item["processed-fuel"].burnt_result = "nullius-canister"
 data.raw.item["processed-fuel"].stack_size = 50
 else
-data:extend({
+extend_fluid_prototypes({
   {
     type = "item",
     name = "processed-fuel",
@@ -5335,7 +5349,7 @@ data:extend({
 })
 end
 
-data:extend({
+extend_fluid_prototypes({
   {
     type = "item",
     name = "nullius-hydrogen-canister",
@@ -5381,7 +5395,7 @@ data:extend({
 	  enabled = false,
 	  no_productivity = true,
 	  hide_from_signal_gui = false, -- maybe remove it
-	  category = "nullius-unbarrel",
+	  categories = {"nullius-unbarrel"},
 	  subgroup = "canister-emptying",
     order = "nullius-e",
     energy_required = 0.2,
@@ -5410,7 +5424,7 @@ data:extend({
     },
     enabled = false,
 	  no_productivity = true,
-    category = "nullius-unbarrel",
+    categories = {"nullius-unbarrel"},
     subgroup = "boxed-canister",
     order = "nullius-h",
     energy_required = 1,
@@ -5442,7 +5456,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-db",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-hydrogen"].flow_color,
@@ -5482,7 +5496,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     order = "nullius-db",
     crafting_machine_tint = {
@@ -5520,7 +5534,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-dc",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-hydrogen"].flow_color,
@@ -5562,7 +5576,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     order = "nullius-dc",
     crafting_machine_tint = {
@@ -5600,7 +5614,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-eb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-methanol"].flow_color,
@@ -5641,7 +5655,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     order = "nullius-eb",
     crafting_machine_tint = {
@@ -5680,7 +5694,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-ec",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-methanol"].flow_color,
@@ -5722,7 +5736,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     order = "nullius-ec",
     crafting_machine_tint = {
@@ -5748,7 +5762,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     no_productivity = true,
-    category = "small-fluid-assembly",
+    categories = {"small-fluid-assembly"},
     order = "nullius-fc",
     energy_required = 1,
     ingredients = {
@@ -5767,7 +5781,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     no_productivity = true,
-    category = "small-fluid-assembly",
+    categories = {"small-fluid-assembly"},
     subgroup = "boxed-canister",
     order = "nullius-fc",
     energy_required = 5,
@@ -5801,7 +5815,7 @@ data:extend({
     enabled = false,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "nullius-unbarrel",
+    categories = {"nullius-unbarrel"},
     subgroup = "canister-emptying",
     order = "nullius-fb",
     energy_required = 1,
@@ -5832,7 +5846,7 @@ data:extend({
     },
     enabled = false,
 	  no_productivity = true,
-    category = "nullius-unbarrel",
+    categories = {"nullius-unbarrel"},
     subgroup = "canister-emptying",
     order = "nullius-fc",
     energy_required = 1,
@@ -5865,7 +5879,7 @@ data:extend({
     enabled = false,
 	  no_productivity = true,
 	  hide_from_signal_gui = false,
-    category = "nullius-unbarrel",
+    categories = {"nullius-unbarrel"},
     subgroup = "canister-emptying",
     order = "nullius-fd",
     energy_required = 1,
@@ -5885,7 +5899,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ammonia"].flow_color,
       secondary = data.raw.fluid["nullius-acid-hydrochloric"].flow_color
@@ -5914,7 +5928,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ammonia"].flow_color,
@@ -5947,7 +5961,7 @@ data:extend({
 	hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ammonia"].flow_color,
       secondary = data.raw.fluid["nullius-acid-hydrochloric"].flow_color
@@ -5979,7 +5993,7 @@ data:extend({
 	hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-canister",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ammonia"].flow_color,
@@ -6011,7 +6025,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-air", amount=260}
@@ -6028,7 +6042,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-residual-gas", amount=200}
@@ -6045,7 +6059,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-trace-gas", amount=120}
@@ -6062,7 +6076,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-nitrogen", amount=208}
@@ -6079,7 +6093,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-argon", amount=160}
@@ -6096,7 +6110,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-helium", amount=75}
@@ -6113,7 +6127,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-hydrogen", amount=960}
@@ -6130,7 +6144,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-oxygen", amount=960}
@@ -6147,7 +6161,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
   	hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-carbon-dioxide", amount=320}
@@ -6164,7 +6178,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-carbon-monoxide", amount=480}
@@ -6181,7 +6195,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
 	  hide_from_stats = true,
-    category = "compression",
+    categories = {"compression"},
     energy_required = 1,
     ingredients = {
       {type="fluid", name="nullius-methane", amount=640}
@@ -6206,7 +6220,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-bb",
     energy_required = 1,
@@ -6233,7 +6247,7 @@ data:extend({
     allow_as_intermediate = false,
 	  hide_from_stats = true,
 	  hide_from_signal_gui = false,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-c",
     energy_required = 1,
@@ -6259,7 +6273,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-d",
     energy_required = 1,
@@ -6285,7 +6299,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-e",
     energy_required = 1,
@@ -6312,7 +6326,7 @@ data:extend({
     allow_as_intermediate = false,
 	  hide_from_stats = true,
 	  hide_from_signal_gui = false,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-f",
     energy_required = 1,
@@ -6338,7 +6352,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-g",
     energy_required = 1,
@@ -6364,7 +6378,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
 	  subgroup = "compression",
     order = "nullius-pb",
     energy_required = 1,
@@ -6390,7 +6404,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "compression",
     order = "nullius-pc",
     energy_required = 1,
@@ -6416,7 +6430,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
   	hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
 	  subgroup = "compression",
     order = "nullius-pd",
     energy_required = 1,
@@ -6443,7 +6457,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-bc",
     energy_required = 1,
@@ -6469,7 +6483,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
 	  hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-bd",
     energy_required = 1,
@@ -6504,7 +6518,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "waste-management",
     order = "nullius-cb",
     energy_required = 1,
@@ -6538,7 +6552,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "waste-management",
     order = "nullius-cc",
     energy_required = 1,
@@ -6572,7 +6586,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "waste-management",
     order = "nullius-d",
     energy_required = 1,
@@ -6604,7 +6618,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "waste-management",
     order = "nullius-bb",
     energy_required = 1,
@@ -6640,7 +6654,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "boxed-fluid",
     order = "nullius-sb",
     energy_required = 5,
@@ -6672,7 +6686,7 @@ data:extend({
     },
     enabled = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "waste-management",
     order = "nullius-bc",
     energy_required = 1,
@@ -6708,7 +6722,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "boxed-fluid",
     order = "nullius-sc",
     energy_required = 5,
@@ -6751,7 +6765,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-bb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ethylene"].flow_color,
@@ -6788,7 +6802,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     enabled = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     order = "nullius-bc",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-propene"].flow_color,
@@ -6824,7 +6838,7 @@ data:extend({
     always_show_products = true,
     hide_from_signal_gui = false,
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-be",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-acrylonitrile"].flow_color,
@@ -6865,7 +6879,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-2",
     order = "nullius-bb",
     crafting_machine_tint = {
@@ -6904,7 +6918,7 @@ data:extend({
     always_show_products = true,
     hide_from_signal_gui = false,
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-bd",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ethylene"].flow_color,
@@ -6947,7 +6961,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-2",
     order = "nullius-bc",
     crafting_machine_tint = {
@@ -6990,7 +7004,7 @@ data:extend({
 	hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-bd",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ethylene"].flow_color,
@@ -7037,7 +7051,7 @@ data:extend({
 	hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-2",
     order = "nullius-bc",
     crafting_machine_tint = {
@@ -7062,7 +7076,7 @@ data:extend({
     type = "recipe",
     name = "nullius-lubricant",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "chlorine-chemistry",
     order = "nullius-g",
     crafting_machine_tint = {
@@ -7097,7 +7111,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-fluid",
     order = "nullius-e",
     crafting_machine_tint = {
@@ -7121,7 +7135,7 @@ data:extend({
     type = "recipe",
     name = "nullius-solvent",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-methane"].flow_color,
       secondary = data.raw.fluid["nullius-oxygen"].flow_color
@@ -7148,7 +7162,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	  subgroup = "organic-chemistry",
     order = "nullius-ic",
     crafting_machine_tint = {
@@ -7185,7 +7199,7 @@ data:extend({
     name = "nullius-bpa",
     enabled = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     order = "nullius-cb",
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-benzene"].flow_color,
@@ -7223,7 +7237,7 @@ data:extend({
     enabled = false,
     allow_as_intermediate = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "organic-material-1",
     order = "nullius-cc",
     crafting_machine_tint = {
@@ -7247,7 +7261,7 @@ data:extend({
     name = "nullius-boxed-bpa",
     enabled = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-1",
     order = "nullius-cb",
     crafting_machine_tint = {
@@ -7291,7 +7305,7 @@ data:extend({
     },
     enabled = false,
     allow_as_intermediate = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-1",
     order = "nullius-cc",
     crafting_machine_tint = {
@@ -7316,7 +7330,7 @@ data:extend({
     name = "nullius-ech",
     localised_name = {"", {"fluid-name.nullius-ech"}, " ", tostring(1)},
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	  subgroup = "chlorine-chemistry",
     order = "nullius-hb",
     crafting_machine_tint = {
@@ -7339,7 +7353,7 @@ data:extend({
     type = "recipe",
     name = "nullius-glycerol",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	  subgroup = "chlorine-chemistry",
     order = "nullius-i",
     crafting_machine_tint = {
@@ -7374,7 +7388,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-biology",
     order = "nullius-ff",
     crafting_machine_tint = {
@@ -7404,7 +7418,7 @@ data:extend({
     ),
     enabled = false,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
 	  subgroup = "chlorine-chemistry",
     order = "nullius-hc",
     crafting_machine_tint = {
@@ -7428,7 +7442,7 @@ data:extend({
     type = "recipe",
     name = "nullius-epoxy",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-ech"].flow_color,
       secondary = data.raw.fluid["nullius-solvent"].flow_color
@@ -7461,7 +7475,7 @@ data:extend({
       }
     },
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-organic-1",
     order = "nullius-e",
     crafting_machine_tint = {
@@ -7501,7 +7515,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
 	  subgroup = "ore-recovery",
     order = "nullius-oe",
     energy_required = 20,
@@ -7537,7 +7551,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
     subgroup = "ore-recovery",
     order = "nullius-ob",
     energy_required = 20,
@@ -7573,7 +7587,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
 	  subgroup = "ore-recovery",
     order = "nullius-oc",
     energy_required = 20,
@@ -7609,7 +7623,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
 	  subgroup = "ore-recovery",
     order = "nullius-od",
     energy_required = 20,
@@ -7646,7 +7660,7 @@ data:extend({
     allow_as_intermediate = false,
     allow_decomposition = false,
     hide_from_signal_gui = false,
-    category = "ore-flotation",
+    categories = {"ore-flotation"},
 	  subgroup = "ore-recovery",
     order = "nullius-of",
     energy_required = 30,
@@ -7678,7 +7692,7 @@ data:extend({
     type = "recipe",
     name = "nullius-eutectic-salt",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-acid-nitric"].flow_color,
       secondary = data.raw.fluid["nullius-carbon-dioxide"].flow_color
@@ -7700,7 +7714,7 @@ data:extend({
     type = "recipe",
     name = "nullius-boxed-eutectic-salt",
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "boxed-sodium",
     order = "nullius-g",
     crafting_machine_tint = {
@@ -7790,7 +7804,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "nullius-barrel",
+    categories = {"nullius-barrel"},
     energy_required = 15,
     ingredients = {
       {type="item", name="nullius-canister", amount=1},
@@ -7807,7 +7821,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     crafting_machine_tint = {
       primary = data.raw.fluid["nullius-deuterium"].flow_color,
       secondary = data.raw.fluid["nullius-tritium"].flow_color
@@ -7835,7 +7849,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "nuclear",
     order = "nullius-cc",
     crafting_machine_tint = {
@@ -7859,7 +7873,7 @@ data:extend({
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 10,
     ingredients = {
       {type="item", name="nullius-fusion-cell", amount=1},
@@ -7886,7 +7900,7 @@ data:extend({
     show_amount_in_title = false,
     always_show_products = true,
     hide_from_signal_gui = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "nuclear",
     order = "nullius-dc",
     crafting_machine_tint = { primary = data.raw.fluid["nullius-tritium"].flow_color },

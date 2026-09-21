@@ -300,3 +300,5 @@ require("building-recipes")
 require("equipment-recipes")
 
 require("biology-recipes")
+
+require("fluid-recipes")
