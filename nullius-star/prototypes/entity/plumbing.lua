@@ -4414,3 +4414,7 @@ data:extend({
     disabled_visualization = data.raw["pipe-to-ground"]["pipe-to-ground"].disabled_visualization,
   }
 })
+
+local extractor_pictures = require("prototypes.entity.extractor-pictures")
+extractor_pictures(data.raw["mining-drill"]["nullius-extractor-1"])
+extractor_pictures(data.raw["mining-drill"]["nullius-extractor-2"])
