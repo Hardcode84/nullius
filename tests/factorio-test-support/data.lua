@@ -260,3 +260,5 @@ require("recipe-filter")
 require("fluid-resource-products")
 
 require("turbine-generator")
+
+require("vehicle-forces")
