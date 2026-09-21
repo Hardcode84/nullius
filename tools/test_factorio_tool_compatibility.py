@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import re
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -54,6 +55,32 @@ def check_data(data):
                         "allowed_technologies": [], "plans": [{"flow": flow}]}]}
 
 
+def stage_fluid_resource_products(mod):
+    # Copy the exact product literals, not a second implementation of their fields.
+    # Reject missing/ambiguous source matches so the witness cannot silently drift.
+    specifications = (
+        ("nullius-fumarole", "prototypes/resource.lua", "nullius-volcanic-gas"),
+        ("offshore-oil", "prototypes/resource_override.lua", "nullius-volcanic-gas"),
+        ("sulfuric-acid-geyser", "data-final-fixes.lua", "nullius-hydrogen-chloride"),
+    )
+    code = ['for _, name in ipairs({"nullius-volcanic-gas", "nullius-hydrogen-chloride"}) do',
+            'local fluid=table.deepcopy(data.raw.fluid.water); fluid.name=name;',
+            'fluid.max_temperature=1000; data:extend({fluid}); end']
+    for name, path, fluid in specifications:
+        source = (ROOT / "nullius-star" / path).read_text()
+        pattern = r'\{\s*type\s*=\s*"fluid",\s*name\s*=\s*"' + re.escape(fluid) + r'"[^}]*\}'
+        matches = re.findall(pattern, source)
+        if len(matches) != 1:
+            raise TestFailure(f"Expected one {fluid} resource product in {path}, got {len(matches)}")
+        code.extend([
+            'do local resource=table.deepcopy(data.raw.resource["crude-oil"]);',
+            f'resource.name="{name}"; resource.autoplace=nil;',
+            'resource.minable={mining_time=1, results={' + matches[0] + '}};',
+            'data:extend({resource}); end',
+        ])
+    (mod / "fluid-resource-fixture.lua").write_text("\n".join(code) + "\n")
+
+
 def run(factorio):
     work = Path(tempfile.mkdtemp(prefix="factorio-tool-compat-"))
     metadata = json.loads((factorio.resolve().parents[2] / "data/base/info.json").read_text())
@@ -67,9 +94,11 @@ def run(factorio):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
+    stage_fluid_resource_products(mod)
+    (mod / "fluid-resource-products.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-resource-products.lua")
     (mod / "fluid-preservation.lua").symlink_to(ROOT / "tests/factorio-test-support/fluid-preservation.lua")
     (mod / "drone-mining.lua").symlink_to(ROOT / "tests/factorio-test-support/drone-mining.lua")
     (mod / "recipe-filter.lua").symlink_to(ROOT / "tests/factorio-test-support/recipe-filter.lua")
@@ -98,6 +127,7 @@ def run(factorio):
     (mod / "scenarios/startup-recipe-filter").symlink_to(ROOT / "tests/scenarios/startup-recipe-filter", target_is_directory=True)
     (mod / "scenarios/asteroid-miner-products").symlink_to(ROOT / "tests/scenarios/asteroid-miner-products", target_is_directory=True)
     (mod / "scenarios/rock-drops").symlink_to(ROOT / "tests/scenarios/rock-drops", target_is_directory=True)
+    (mod / "scenarios/fluid-resource-products").symlink_to(ROOT / "tests/scenarios/fluid-resource-products", target_is_directory=True)
     for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
@@ -128,6 +158,7 @@ def run(factorio):
                             ("nullius-star", "startup-recipe-filter"),
                             ("nullius-star", "asteroid-miner-products"),
                             ("nullius-star", "rock-drops"),
+                            ("nullius-star", "fluid-resource-products"),
                             ("recipe-ui-audit-support", "audit")):
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
@@ -148,6 +179,9 @@ def run(factorio):
     assert asteroid["status"] == "pass", asteroid
     rocks = json.loads((work / "script-output/factorio-tests/rock-drops.json").read_text())
     assert rocks["status"] == "pass", rocks
+    resources = json.loads((work / "script-output/factorio-tests/fluid-resource-products.json").read_text())
+    assert resources["status"] == "pass", resources
+    assert resources["resources"] == 3, resources
     audit = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
     assert set(audit["recipes"]["compat-recipe"]["categories"]) == {"compat-primary", "compat-secondary"}
     return {"factorio_version": result["factorio_version"], "artifacts": str(work),
@@ -159,6 +193,7 @@ def run(factorio):
             "asteroid_return_assertions": asteroid["assertions"],
             "rock_drop_assertions": rocks["assertions"],
             "rock_types": rocks["rocks"],
+            "fluid_resource_assertions": resources["assertions"],
             "recipe_filter_assertions": filtering["assertions"], "status": "pass"}
 
 

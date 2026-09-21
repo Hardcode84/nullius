@@ -256,3 +256,5 @@ require("fluid-preservation")
 require("drone-mining")
 
 require("recipe-filter")
+
+require("fluid-resource-products")

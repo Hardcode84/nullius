@@ -267,7 +267,7 @@ require("prototypes.vulcanus-rocks")
 -- On Nauvis there are no sulfuric acid geysers, so this only affects Vulcanus.
 if data.raw.resource["sulfuric-acid-geyser"] then
   data.raw.resource["sulfuric-acid-geyser"].minable.results = {
-    {type = "fluid", name = "nullius-hydrogen-chloride", amount_min = 10, amount_max = 10, probability = 1},
+    {type = "fluid", name = "nullius-hydrogen-chloride", amount_min = 10, amount_max = 10},
   }
   data.raw.resource["sulfuric-acid-geyser"].localised_name = {"entity-name.nullius-hcl-geyser"}
 end
