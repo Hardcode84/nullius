@@ -252,6 +252,36 @@ def stage_metallurgic_products(mod, version):
     (mod / "scenarios/metallurgic-products").symlink_to(ROOT / "tests/scenarios/metallurgic-products", target_is_directory=True)
 
 
+def stage_drone_recipes(mod, mods, version, dependency_mod_directory):
+    for target, source in (
+        ("drone-source.lua", "nullius-star/prototypes/item/drone.lua"),
+        ("drone-reskin.lua", "nullius-star/prototypes/reskin.lua"),
+        ("drone-recipes.lua", "tests/compatibility/drone-recipes.lua"),
+        ("drone-recipe-executor.lua", "tests/factorio-test-support/drone-recipes.lua"),
+        ("scenarios/drone-recipes", "tests/scenarios/drone-recipes"),
+    ):
+        (mod / target).symlink_to(ROOT / source, target_is_directory=(ROOT / source).is_dir())
+    source = (ROOT / "nullius-star/prototypes/item/drone.lua").read_text()
+    for name in ("angelsrefininggraphics", "angelssmeltinggraphics"):
+        graphics = mods / name
+        graphics.mkdir()
+        (graphics / "info.json").write_text(json.dumps({
+            "name": name, "version": "0.0.1", "factorio_version": version,
+            "title": "Drone graphics fixture", "author": "tests", "dependencies": ["base"],
+        }))
+        files = set(re.findall(r'"__' + name + r'__/([^"\n]+)"', source))
+        if not files:
+            raise TestFailure(f"No drone graphics for {name}")
+        with zipfile.ZipFile(find_archive(dependency_mod_directory, name)) as archive:
+            for filename in files:
+                members = [member for member in archive.namelist() if member.endswith("/" + filename)]
+                if len(members) != 1:
+                    raise TestFailure(f"Expected one drone graphic: {filename}")
+                target = graphics / filename
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(archive.read(members[0]))
+
+
 def stage_terrain_drone_recipes(mod):
     source = (ROOT / "nullius-star/prototypes/item/drone.lua").read_text()
     marker = "local function create_miner("
@@ -370,9 +400,9 @@ def run(factorio, dependency_mod_directory):
     (mod / "info.json").write_text(json.dumps({
         "name": "nullius-star", "version": "0.0.3", "factorio_version": version,
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
-        "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics"],
+        "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics", "angelsrefininggraphics", "angelssmeltinggraphics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("drone-recipes")\nrequire("drone-recipe-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -387,6 +417,7 @@ def run(factorio, dependency_mod_directory):
     stage_module_recipes(mod)
     stage_alignment_recipes(mod)
     stage_terrain_drone_recipes(mod)
+    stage_drone_recipes(mod, mods, version, dependency_mod_directory)
     stage_broken_recipes(mod, mods, version, dependency_mod_directory)
     stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
@@ -471,6 +502,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "module-recipes"),
                             ("nullius-star", "alignment-recipes"),
                             ("nullius-star", "terrain-drone-recipes"),
+                            ("nullius-star", "drone-recipes"),
                             ("nullius-star", "vehicle-forces"),
                             ("nullius-star", "chest-doors"),
                             ("nullius-star", "void-products"),
@@ -526,6 +558,8 @@ def run(factorio, dependency_mod_directory):
     assert reactors["status"] == "pass" and reactors["layouts"] == 32, reactors
     solar = json.loads((work / "script-output/factorio-tests/solar-neighbours.json").read_text())
     assert solar["status"] == "pass" and solar["layouts"] == 144, solar
+    drone_recipes = json.loads((work / "script-output/factorio-tests/drone-recipes.json").read_text())
+    assert drone_recipes["status"] == "pass" and drone_recipes["recipes"] == 50, drone_recipes
     terrain = json.loads((work / "script-output/factorio-tests/terrain-drone-recipes.json").read_text())
     assert terrain["status"] == "pass" and terrain["recipes"] == 15, terrain
     alignment = json.loads((work / "script-output/factorio-tests/alignment-recipes.json").read_text())
@@ -566,6 +600,7 @@ def run(factorio, dependency_mod_directory):
             "module_recipe_assertions": module_recipes["assertions"],
             "alignment_assertions": alignment["assertions"],
             "terrain_drone_assertions": terrain["assertions"],
+            "drone_recipe_assertions": drone_recipes["assertions"],
             "vehicle_assertions": vehicles["assertions"],
             "chest_assertions": chests["assertions"],
             "void_assertions": voids["assertions"],

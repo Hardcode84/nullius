@@ -6,6 +6,18 @@ local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 local item_sounds = require("__base__.prototypes.item_sounds")
 
+local function extend_drone_prototypes(prototypes)
+  if not modern then
+    for _, prototype in ipairs(prototypes) do
+      if prototype.type == "recipe" then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local function create_drone(base_name, group, suborder, base_suffix, stack, tech, flare, drone_icons, remote_icons, number)
   local prefix = "nullius-"..base_name
   local suffix = ""
@@ -36,7 +48,7 @@ local function create_drone(base_name, group, suborder, base_suffix, stack, tech
 
   if (flare == nil) then
     flare = drone_name
-    data:extend({
+    extend_drone_prototypes({
       {
         type = "capsule",
         name = prefix.."-remote"..suffix,
@@ -63,7 +75,7 @@ local function create_drone(base_name, group, suborder, base_suffix, stack, tech
     lname = {"", {"item-name."..prefix.."-drone"..suffix1}, " ", tostring(number)}
   end
 
-  data:extend({
+  extend_drone_prototypes({
     {
       type = "ammo",
       name = drone_name,
@@ -95,19 +107,9 @@ local function create_drone(base_name, group, suborder, base_suffix, stack, tech
 end
 
 
-local function extend_terrain_recipes(recipes)
-  if not modern then
-    for _, recipe in ipairs(recipes) do
-      recipe.category = recipe.categories[1]
-      recipe.categories = nil
-    end
-  end
-  data:extend(recipes)
-end
-
 local function create_terraform(suffix, tile, suborder, tech)
   create_drone("terraforming", "drone", "d"..suborder, suffix, 5, tech)
-  extend_terrain_recipes({
+  extend_drone_prototypes({
     {
       type = "recipe",
       name = "nullius-terraforming-drone-"..suffix,
@@ -133,7 +135,7 @@ local function create_paving(suffix, landfill, suborder, tech, tile)
     tile = suffix
   end
   create_drone("paving", "paving", "b"..suborder, suffix, 5, tech)
-  extend_terrain_recipes({
+  extend_drone_prototypes({
     {
       type = "recipe",
       name = "nullius-paving-drone-"..suffix,
@@ -197,7 +199,7 @@ local function create_miner(mineral, suborder, group, tech, iname, isize, itint)
   local sg = "asteroid-"..group
   create_drone("guide", sg, suborder.."b", mineral, 10, tech, "nullius-guide-drone-"..mineral, drone_icons1, remote_icons, 1)
   create_drone("guide", sg, suborder.."c", mineral, 5, tech, "nullius-guide-drone-"..mineral, drone_icons2, remote_icons, 2)
-  data:extend({
+  extend_drone_prototypes({
     {
       type = "capsule",
       name = "nullius-guide-remote-"..mineral,
@@ -238,7 +240,7 @@ local function create_miner(mineral, suborder, group, tech, iname, isize, itint)
       allow_as_intermediate = false,
       allow_decomposition = false,
       no_productivity = true,
-      category = "huge-crafting",
+      categories = {"huge-crafting"},
       subgroup = sg,
       order = "nullius-"..suborder.."d",
       energy_required = 20,
@@ -256,7 +258,7 @@ local function create_miner(mineral, suborder, group, tech, iname, isize, itint)
       enabled = false,
       always_show_made_in = true,
       always_show_products = true,
-      category = "huge-crafting",
+      categories = {"huge-crafting"},
       energy_required = 30,
       ingredients = {
         {type = "item", name = "nullius-guide-drone-"..mineral.."-1", amount = 40},
@@ -302,13 +304,13 @@ end
 local function create_farmer(base, suborder, species, spore, spore_count,
     tech, iname, drone_tier, bot_tier, cost1, cost2, cost3, cost4)
   create_bio_drone(base, "b"..suborder, iname, tech)
-  data:extend({
+  extend_drone_prototypes({
     {
       type = "recipe",
       name = "nullius-"..base.."-drone",
       enabled = false,
       always_show_made_in = true,
-      category = "huge-crafting",
+      categories = {"huge-crafting"},
       energy_required = 60,
       ingredients = {
         {type = "item", name = "nullius-scout-drone-" .. drone_tier, amount = 1},
@@ -391,13 +393,13 @@ create_bio_drone("sequestration-coal", "cb", "__base__/graphics/icons/coal-1.png
 create_bio_drone("sequestration-petroleum", "cc", "__base__/graphics/icons/fluid/crude-oil.png", "nullius-carbon-sequestration-4")
 
 
-data:extend({
+extend_drone_prototypes({
   {
     type = "recipe",
     name = "nullius-scout-drone-1",
     enabled = false,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 4,
     ingredients = {
       {type = "item", name = "nullius-robot-frame-1", amount = 1},
@@ -414,7 +416,7 @@ data:extend({
     name = "nullius-scout-drone-2",
     enabled = false,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 5,
     ingredients = {
       {type = "item", name = "nullius-scout-drone-1", amount = 2},
@@ -450,7 +452,7 @@ data:extend({
     name = "nullius-demolition-drone",
     enabled = false,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-scout-drone-2", amount = 1},
@@ -470,7 +472,7 @@ data:extend({
 	  hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-scout-drone-2", amount = 1},
@@ -487,7 +489,7 @@ data:extend({
     name = "nullius-shallow-excavation-drone",
     enabled = false,
     always_show_made_in = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-demolition-drone", amount = 1},
@@ -505,7 +507,7 @@ data:extend({
     enabled = false,
     always_show_made_in = true,
 	  no_productivity = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 4,
     ingredients = {
       {type = "item", name = "nullius-shallow-excavation-drone", amount = 1},
@@ -523,7 +525,7 @@ data:extend({
 	  hidden = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     energy_required = 10,
     ingredients = {
       {type = "item", name = "nullius-demolition-drone", amount = 1},
@@ -551,7 +553,7 @@ data:extend({
     type = "recipe",
     name = "nullius-drone-launcher-1",
     enabled = false,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     always_show_made_in = true,
     energy_required = 20,
     ingredients = {
@@ -585,7 +587,7 @@ data:extend({
     name = "nullius-drone-launcher-2",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     energy_required = 30,
     ingredients = {
       {type = "item", name = "nullius-drone-launcher-1", amount = 2},
@@ -615,7 +617,7 @@ data:extend({
     type = "recipe",
     name = "nullius-drone-carrier-1",
     enabled = false,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     always_show_made_in = true,
     energy_required = 12,
     ingredients = {
@@ -645,7 +647,7 @@ data:extend({
     name = "nullius-drone-carrier-2",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     energy_required = 20,
     ingredients = {
       {type = "item", name = "nullius-drone-carrier-1", amount = 1},
@@ -676,7 +678,7 @@ data:extend({
     name = "nullius-asteroid-miner-1",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     energy_required = 120,
     ingredients = {
       {type = "item", name = "nullius-satellite", amount = 1},
@@ -712,7 +714,7 @@ data:extend({
     name = "nullius-asteroid-miner-2",
     enabled = false,
     always_show_made_in = true,
-    category = "huge-crafting",
+    categories = {"huge-crafting"},
     energy_required = 240,
     ingredients = {
       {type = "item", name = "nullius-asteroid-miner-1", amount = 2},
@@ -761,7 +763,7 @@ data:extend({
     name = "nullius-android-1",
     enabled = false,
     always_show_made_in = true,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 250,
     ingredients = {
       {type = "item", name = "nullius-chassis-3", amount = 1},
@@ -786,7 +788,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     always_show_made_in = true,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 250,
     ingredients = {
       {type = "item", name = "nullius-chassis-3", amount = 1},
@@ -809,7 +811,7 @@ data:extend({
     name = "nullius-android-2",
     enabled = false,
     always_show_made_in = true,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 400,
     ingredients = {
       --{type = "item", name = "nullius-android-1", amount = 1},
@@ -833,7 +835,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     always_show_made_in = true,
-    category = "nanotechnology",
+    categories = {"nanotechnology"},
     energy_required = 400,
     ingredients = {
       --{type = "item", name = "nullius-android-1", amount = 1},
