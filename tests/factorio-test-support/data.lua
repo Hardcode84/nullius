@@ -302,3 +302,5 @@ require("equipment-recipes")
 require("biology-recipes")
 
 require("fluid-recipes")
+
+require("intermediate-recipes")
