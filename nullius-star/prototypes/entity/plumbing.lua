@@ -1061,6 +1061,20 @@ data:extend({
   }
 })
 
+-- Correct the 2.1 shadow sheet before the legacy wells copy these graphics.
+if require("factorio-version").is_2_1 then
+  for tier=1,2 do
+    local animation = data.raw["assembling-machine"]["nullius-well-" .. tier].graphics_set.animation
+    for i,direction in ipairs({"north", "east", "south", "west"}) do
+      local shadow = animation[direction].layers[2]
+      shadow.width = 261
+      shadow.height = 273
+      shadow.x = (i-1) * 261
+      shadow.shift = util.by_pixel(-2, -5)
+    end
+  end
+end
+
 local lw1 = util.table.deepcopy(data.raw["assembling-machine"]["nullius-well-1"])
 lw1.name = "nullius-legacy-well-1"
 lw1.localised_name = {"entity-name.nullius-legacy", {"entity-name.nullius-well-1"}}

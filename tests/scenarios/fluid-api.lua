@@ -2,6 +2,10 @@
 local api = {}
 if string.match(script.active_mods.base, "^2%.1%.") then
   function api.count(entity) return entity.fluids_count end
+  function api.segment_contents(entity, index)
+    local fluid = entity.get_fluid_segment_fluid(index)
+    return fluid and {[fluid.name]=fluid.amount} or {}
+  end
   function api.get(entity, index) return entity.get_fluid(index) end
   function api.set(entity, index, fluid)
     if fluid then entity.set_fluid(index, fluid) else entity.clear_fluid(index) end
@@ -30,6 +34,9 @@ if string.match(script.active_mods.base, "^2%.1%.") then
 else
   assert(string.match(script.active_mods.base, "^2%.0%."), "unsupported Factorio version")
   function api.count(entity) return #entity.fluidbox end
+  function api.segment_contents(entity, index)
+    return entity.fluidbox.get_fluid_segment_contents(index)
+  end
   function api.get(entity, index) return entity.fluidbox[index] end
   function api.set(entity, index, fluid) entity.fluidbox[index] = fluid end
   function api.capacity(entity, index) return entity.fluidbox.get_capacity(index) end
