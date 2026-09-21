@@ -298,3 +298,5 @@ require("plumbing-recipes")
 require("building-recipes")
 
 require("equipment-recipes")
+
+require("biology-recipes")

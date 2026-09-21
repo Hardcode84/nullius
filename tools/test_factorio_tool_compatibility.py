@@ -330,6 +330,44 @@ def stage_equipment_recipes(mod, mods, dependency_mod_directory):
                 target.write_bytes(archive.read(members[0]))
 
 
+def stage_biology_recipes(mod, mods, dependency_mod_directory):
+    source = (ROOT / "nullius-star/prototypes/item/biology.lua").read_text()
+    blocks = re.findall(r'^  \{\n    type = "recipe",.*?^  \}', source, re.M | re.S)
+    if len(blocks) != 152:
+        raise TestFailure("Expected 152 biology recipe records")
+    header = source.split("extend_biology_prototypes({", 1)[0]
+    (mod / "biology-source.lua").write_text(header + "extend_biology_prototypes({\n" + ",\n".join(blocks) + "\n})\n")
+    source = "\n".join(blocks)
+    fluid_source = (ROOT / "nullius-star/prototypes/item/fluid.lua").read_text()
+    names = set(re.findall(r'data\.raw\.fluid\["([^"\n]+)"\]', source))
+    fluid_blocks = re.findall(r'^  \{\n    type = "fluid",.*?^  \}', fluid_source, re.M | re.S)
+    selected = [block for block in fluid_blocks if re.search(r'name = "([^"\n]+)"', block).group(1) in names]
+    if len(selected) != len(names):
+        raise TestFailure("Missing biology fluid icon dependency")
+    groups = sorted(set(re.findall(r'subgroup = "([^"\n]+)"', "\n".join(selected))))
+    prelude = "\n".join('if not data.raw["item-subgroup"]["' + group + '"] then data:extend({{type="item-subgroup",name="' + group + '",group="production",order="z"}}) end' for group in groups)
+    header = fluid_source.split("data:extend({", 1)[0]
+    (mod / "biology-fluids.lua").write_text(prelude + "\n" + header + "data:extend({\n" + ",\n".join(selected) + "\n})\n")
+    source += "\n" + "\n".join(selected) + (ROOT / "nullius-star/legacyAngels.lua").read_text()
+
+    for target, source_path in (
+        ("biology-recipes.lua", "tests/compatibility/biology-recipes.lua"),
+        ("biology-recipe-executor.lua", "tests/factorio-test-support/biology-recipes.lua"),
+        ("scenarios/biology-recipes", "tests/scenarios/biology-recipes"),
+    ):
+        (mod / target).symlink_to(ROOT / source_path, target_is_directory=(ROOT / source_path).is_dir())
+    for name in ("angelsrefininggraphics", "angelssmeltinggraphics", "boblogistics", "angelspetrochemgraphics"):
+        files = set(re.findall(r'"__' + name + r'__/([^"\n]+)"', source))
+        with zipfile.ZipFile(find_archive(dependency_mod_directory, name)) as archive:
+            for filename in files:
+                members = [member for member in archive.namelist() if member.endswith("/" + filename)]
+                if len(members) != 1:
+                    raise TestFailure(f"Expected one biology recipe graphic: {filename}")
+                target = mods / name / filename
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(archive.read(members[0]))
+
+
 def stage_general_recipes(mod, mods, dependency_mod_directory):
     source = (ROOT / "nullius-star/prototypes/item/recipe.lua").read_text()
     marker = 'if settings.startup["bobmods-logistics-inserteroverhaul"].value == false then'
@@ -540,7 +578,7 @@ def run(factorio, dependency_mod_directory):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics", "angelsrefininggraphics", "angelssmeltinggraphics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("drone-recipes")\nrequire("drone-recipe-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\nrequire("weapon-recipes")\nrequire("weapon-recipe-executor")\nrequire("landfill-recipes")\nrequire("landfill-recipe-executor")\nrequire("general-recipes")\nrequire("general-recipe-executor")\nrequire("equipment-recipes")\nrequire("equipment-recipe-executor")\nrequire("building-recipes")\nrequire("building-recipe-executor")\nrequire("plumbing-recipes")\nrequire("plumbing-recipe-executor")\n')
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("drone-recipes")\nrequire("drone-recipe-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\nrequire("weapon-recipes")\nrequire("weapon-recipe-executor")\nrequire("landfill-recipes")\nrequire("landfill-recipe-executor")\nrequire("general-recipes")\nrequire("general-recipe-executor")\nrequire("biology-recipes")\nrequire("biology-recipe-executor")\nrequire("equipment-recipes")\nrequire("equipment-recipe-executor")\nrequire("building-recipes")\nrequire("building-recipe-executor")\nrequire("plumbing-recipes")\nrequire("plumbing-recipe-executor")\n')
     for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
@@ -563,6 +601,7 @@ def run(factorio, dependency_mod_directory):
     stage_plumbing_recipes(mod, mods, dependency_mod_directory)
     stage_building_recipes(mod, mods, dependency_mod_directory)
     stage_equipment_recipes(mod, mods, dependency_mod_directory)
+    stage_biology_recipes(mod, mods, dependency_mod_directory)
     stage_metallurgic_products(mod, version)
     (mod / "vehicle-forces.lua").symlink_to(ROOT / "tests/factorio-test-support/vehicle-forces.lua")
     stage_fluid_resource_products(mod)
@@ -650,6 +689,7 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "weapon-recipes"),
                             ("nullius-star", "landfill-recipes"),
                             ("nullius-star", "general-recipes"),
+                            ("nullius-star", "biology-recipes"),
                             ("nullius-star", "equipment-recipes"),
                             ("nullius-star", "building-recipes"),
                             ("nullius-star", "plumbing-recipes"),
@@ -714,6 +754,8 @@ def run(factorio, dependency_mod_directory):
     assert building["status"] == "pass" and building["recipes"] == 137, building
     equipment = json.loads((work / "script-output/factorio-tests/equipment-recipes.json").read_text())
     assert equipment["status"] == "pass" and equipment["recipes"] == 157, equipment
+    biology = json.loads((work / "script-output/factorio-tests/biology-recipes.json").read_text())
+    assert biology["status"] == "pass" and biology["recipes"] == 152, biology
     general = json.loads((work / "script-output/factorio-tests/general-recipes.json").read_text())
     assert general["status"] == "pass" and general["recipes"] == 66, general
     landfill = json.loads((work / "script-output/factorio-tests/landfill-recipes.json").read_text())
@@ -766,6 +808,7 @@ def run(factorio, dependency_mod_directory):
             "weapon_recipe_assertions": weapons["assertions"],
             "landfill_recipe_assertions": landfill["assertions"],
             "general_recipe_assertions": general["assertions"],
+            "biology_recipe_assertions": biology["assertions"],
             "equipment_recipe_assertions": equipment["assertions"],
             "building_recipe_assertions": building["assertions"],
             "plumbing_recipe_assertions": plumbing["assertions"],
