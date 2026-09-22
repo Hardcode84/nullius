@@ -284,8 +284,14 @@ for name, recipe in pairs(data.raw.recipe) do
 end
 
 -- Disable quality on all recipes.
+local modern = require("factorio-version").is_2_1
 for _, recipe in pairs(data.raw.recipe) do
   recipe.allow_quality = false
+  -- Cold compatibility path: 2.1 removed these recipe display settings.
+  if modern then
+    recipe.always_show_products = nil
+    recipe.show_amount_in_title = nil
+  end
 end
 
 -- Flatten all quality tiers.

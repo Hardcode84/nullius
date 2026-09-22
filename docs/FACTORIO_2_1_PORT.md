@@ -76,11 +76,12 @@ the next tick. The 2.0 values are 1/1 in both ticks. This confirms a test
 timing error, not lost build counts. Other failures can hide later assertions;
 the full suite must run again after the test APIs are ported.
 
-The fresh strict check reports 2,118 ignored recipe fields:
-`always_show_products` on 1,071 recipes and `show_amount_in_title` on 1,047.
-Pump connector frame counts are set only on 2.0. The three geothermal drills
-have no base picture; their unused base layer fields are removed on both
-engines. Recipe categories already use the native schema.
+Fresh strict checks report no ignored Nullius prototype fields on either
+engine. The final recipe pass clears the two removed display fields on 2.1.
+All 3,091 recipes on 2.0 match the baseline; all 3,084 recipes on 2.1 differ
+only by those removals. Pump connector frame counts are set only on 2.0.
+The three geothermal drills have no base picture; their unused base layer
+fields are removed on both engines.
 
 ## Required changes
 
@@ -96,7 +97,7 @@ engines. Recipe categories already use the native schema.
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
 | Recipe categories | Full staged 2.1 data loads and native recipe execution checks pass | Two scenario category reads still use the removed runtime field |
-| Recipe presentation | Strict checking finds 2,118 ignored display fields | Remove obsolete flags on 2.1 and check the intended recipe UI |
+| Recipe presentation | The final recipe pass clears obsolete display flags on 2.1, including generated boxed recipes | Full recipe comparisons preserve every other field, including names, icons, products, and costs. The 2.0 display flags are unchanged |
 | Product amounts | Full staged 2.1 validation and native recipe checks pass | Add the two new hot-rock contracts to complete the full-mod rock test |
 | Industrial metallurgic science | The second barrel return uses the engine-specific 90% probability field | Both engines retain five science packs, one guaranteed barrel, and one 90% barrel return. Native tests verify that productivity doubles science but does not duplicate barrels |
 | Pump wagon reach | Five pump definitions use the native arm reach on 2.1; alignment tolerances and the Mini Trains override apply only on 2.0 | Headless tests cover 64 aligned, offset, and out-of-reach placements per engine. Tests check inherited pneumatic settings and the Mini Trains override branch. Actual Mini Trains wagon tests require its archive; authenticated downloads returned HTTP 403 |
@@ -204,6 +205,7 @@ python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2
 python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2.1 --staged-full-mod --dependency-mod-directory /path/to/staged/mods
 python tools/test_assembler_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_distillery_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
+python tools/test_recipe_display_compatibility.py --factorio /path/to/factorio --dependency-mod-directory /path/to/dependency/mods
 python tools/test_geothermal_graphics_compatibility.py --factorio /path/to/factorio --dependency-mod-directory /path/to/dependency/mods
 python tools/test_pumpjack_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_chemical_plant_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
