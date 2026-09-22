@@ -51,7 +51,7 @@ All five tests pass 208 assertions on each engine.
 | Fresh full-mod plans | Vulcanus progression through physics, plus Nauvis and Vulcanus tier-2 science plans complete |
 | Locale, both engines | No missing prototype names, missing keys, or unused UI keys |
 | Strict 2.1 prototype check | 2,131 ignored fields on Nullius prototypes; see below |
-| Release metadata | The shipping manifest still selects 2.0 |
+| Release metadata | The package now targets 2.1 and requires engine 2.1.19, Bob library 3.0.0, Bob logistics 3.0.1, and Configurable Valves 2.0.2 |
 | Published 2.1 dependencies | Download retry returns HTTP 403; the full published set is not tested |
 
 The full suites use the same source and 126 scenario contracts. The 2.1 set
