@@ -76,10 +76,10 @@ the next tick. The 2.0 values are 1/1 in both ticks. This confirms a test
 timing error, not lost build counts. Other failures can hide later assertions;
 the full suite must run again after the test APIs are ported.
 
-The strict check reports `always_show_products` on 1,071 recipes,
-`show_amount_in_title` on 1,047 recipes, `base_render_layer` on three
-geothermal build drills, and `fluid_wagon_connector_frame_count` on ten pumps.
-These fields are ignored on 2.1. Recipe categories already use the native
+The fresh strict check reports 2,121 ignored fields: `always_show_products`
+on 1,071 recipes, `show_amount_in_title` on 1,047 recipes, and
+`base_render_layer` on three geothermal build drills. The ten pump connector
+frame-count warnings are removed; that field is now set only on 2.0. Recipe categories already use the native
 schema; their display flags still need cleanup.
 
 ## Required changes
@@ -138,10 +138,10 @@ schema; their display flags still need cleanup.
 | Extractor foundations | Both tiers use directional working visualisations on 2.1 | Checks preserve the foundation scale, placement, and layer; shadow frames use the 2.1 dimensions and origin. Eight native extraction cases retain tier rates. The gas-vent drill remains invisible |
 | Water-well shadows | Both tiers and their legacy copies select the engine shadow frames and origin | Checks cover all 16 directional shadows and native water output. Scales, animation timing, and well speeds stay unchanged |
 | Lab-wreck salvage research | The mining trigger selects `entity` on 2.0 and `entities` on 2.1 | Native character mining checks reject another entity, retain all salvage items, complete salvage research, and permit geology research |
-| Pump wagon connectors | Five full-size pumps select the engine connector graphics field | Checks cover all five definitions and 16 native loading/unloading cases across both normal tiers and four directions |
+| Pump wagon connectors | Five definitions select native connector graphics; only 2.0 sets the legacy frame count | Checks cover all ten normal and pneumatic pumps, plus 64 wagon placements per engine. Wagon transfer and pneumatic heat pass 1,230 assertions on 2.0 and 1,262 on 2.1 |
 | Nuclear-reactor neighbours | The 2.1 connection points use a private Nullius category | 32 layouts check bonuses, heat output, rotation, gaps, mixed prototypes, and neighbour removal. Different reactor prototypes give no bonus, as on 2.0 |
 | Solar-collector neighbours | Each tier has four 2.1 connection points around its 5×4 footprint and a separate category | 144 layouts check same-tier bonuses, mixed-tier exclusion, gaps, offsets, neighbour removal, and native plus scripted heat in daylight and darkness |
-| Entity prototypes | All enabled sprites load; strict checking finds 13 ignored drill/pump fields | Remove or port those fields and retain layer and connector behavior |
+| Entity prototypes | All enabled sprites load; strict checking finds three ignored drill layer fields | Port the geothermal drill layer fields |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
 | Runtime mining flags | Four helper creation paths use `minable_flag` on both engines | 45 assertions per engine verify protection and cleanup; full Nullius heat and gas-vent scenarios pass 160 assertions |
 | Mining drone refresh | Uses `update_connections()` without activation writes | 18 assertions pass per engine and in full Nullius 2.0: ore pickup, disabled-state preservation, and mining after explicit re-enable |
