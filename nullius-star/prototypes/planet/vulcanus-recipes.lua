@@ -1,5 +1,22 @@
 -- Vulcanus lava processing recipes and molten bloom items.
 
+local modern = require("factorio-version").is_2_1
+
+local function extend_vulcanus_prototypes(prototypes)
+  for _, prototype in ipairs(prototypes) do
+    if prototype.type == "recipe" then
+      if modern then
+        prototype.show_amount_in_title = nil
+        prototype.always_show_products = nil
+      elseif prototype.categories then
+        prototype.category = prototype.categories[1]
+        prototype.categories = nil
+      end
+    end
+  end
+  data:extend(prototypes)
+end
+
 local cool_environment_only = {
   {property = "nullius-ambient-temperature", max = 50},
 }
@@ -76,7 +93,7 @@ for _, name in ipairs{
 end
 
 -- Molten bloom items: spoil into ingots after cooling.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "item",
     name = "nullius-molten-iron-bloom",
@@ -158,13 +175,13 @@ data:extend({
   },
 })
 
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-high-temperature-resin",
     localised_name = {"recipe-name.nullius-high-temperature-resin"},
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "organic-chemistry",
     order = "nullius-jv",
     always_show_made_in = true,
@@ -228,13 +245,13 @@ data:extend({
 -- Shape reactive blooms before they cool.  Iron retains the ordinary ingot
 -- casting ratios; aluminum avoids oxidation and the subsequent graphite
 -- reduction step.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-hot-iron-plate",
     localised_name = {"recipe-name.nullius-hot-iron-plate"},
     enabled = false,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "iron-product",
     order = "nullius-va",
     energy_required = 3,
@@ -253,7 +270,7 @@ data:extend({
     name = "nullius-hot-iron-rod",
     localised_name = {"recipe-name.nullius-hot-iron-rod"},
     enabled = false,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "iron-product",
     order = "nullius-vb",
     energy_required = 4,
@@ -272,7 +289,7 @@ data:extend({
     name = "nullius-hot-aluminum-plate",
     localised_name = {"recipe-name.nullius-hot-aluminum-plate"},
     enabled = false,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "aluminum-product",
     order = "nullius-va",
     energy_required = 4,
@@ -291,7 +308,7 @@ data:extend({
     name = "nullius-hot-aluminum-rod",
     localised_name = {"recipe-name.nullius-hot-aluminum-rod"},
     enabled = false,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "aluminum-product",
     order = "nullius-vb",
     energy_required = 4,
@@ -319,12 +336,12 @@ for _, spec in ipairs({
     local suffix = spec.metal .. "-" .. spec.shape
     local name = "nullius-" .. (boxed and "boxed-" or "") .. "quenched-" .. suffix
     local product = "nullius-" .. (boxed and "box-" or "") .. suffix
-    data:extend({{
+    extend_vulcanus_prototypes({{
       type = "recipe",
       name = name,
       localised_name = {"recipe-name." .. name},
       enabled = false,
-      category = "machine-casting",
+      categories = {"machine-casting"},
       subgroup = boxed and data.raw.recipe["nullius-boxed-" .. suffix].subgroup
         or (spec.metal .. "-product"),
       order = "nullius-vc-" .. spec.shape,
@@ -343,13 +360,13 @@ end
 
 -- Industrial refractory production consumes abundant Vulcanus mineral
 -- byproducts and avoids the wet, organic ceramic route.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-refractory-mix-vulcanus",
     localised_name = {"recipe-name.nullius-refractory-mix-vulcanus"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     subgroup = "masonry",
     order = "nullius-vc",
     energy_required = 12,
@@ -369,7 +386,7 @@ data:extend({
     name = "nullius-refractory-brick-vulcanus",
     localised_name = {"recipe-name.nullius-refractory-brick-vulcanus"},
     enabled = false,
-    category = "dry-smelting",
+    categories = {"dry-smelting"},
     subgroup = "masonry",
     order = "nullius-vd",
     energy_required = 15,
@@ -388,7 +405,7 @@ data:extend({
     name = "nullius-heat-pipe-2-vulcanus",
     localised_name = {"recipe-name.nullius-heat-pipe-2-vulcanus"},
     enabled = false,
-    category = "machine-casting",
+    categories = {"machine-casting"},
     subgroup = "heat-energy",
     order = "nullius-vc",
     energy_required = 6,
@@ -412,7 +429,7 @@ data:extend({
     name = "nullius-vulcanus-radiator-2-refractory",
     localised_name = {"recipe-name.nullius-vulcanus-radiator-2-refractory"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     subgroup = "energy",
     order = "nullius-vc",
     energy_required = 10,
@@ -434,13 +451,13 @@ data:extend({
 -- Pilot titanium metallurgy substitutes local aluminum for sodium and argon.
 -- Aluminum chloride is recoverable only as a small alumina fraction, keeping
 -- the route useful for construction without closing an aluminum loop.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-titanium-ingot-vulcanus",
     localised_name = {"recipe-name.nullius-titanium-ingot-vulcanus"},
     enabled = false,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     subgroup = "titanium-product",
     order = "nullius-vc",
     energy_required = 8,
@@ -466,7 +483,7 @@ data:extend({
     name = "nullius-aluminum-chloride-recovery",
     localised_name = {"recipe-name.nullius-aluminum-chloride-recovery"},
     enabled = false,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     subgroup = "aluminum-ingot",
     order = "nullius-vd",
     energy_required = 6,
@@ -489,7 +506,7 @@ data:extend({
     name = "nullius-hydro-plant-2-vulcanus",
     localised_name = {"recipe-name.nullius-hydro-plant-2-vulcanus"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     subgroup = "water-treatment",
     order = "nullius-vc",
     energy_required = 16,
@@ -512,7 +529,7 @@ data:extend({
     name = "nullius-foundry-2-vulcanus",
     localised_name = {"recipe-name.nullius-foundry-2-vulcanus"},
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     subgroup = "ore-processing",
     order = "nullius-vd",
     energy_required = 15,
@@ -533,7 +550,7 @@ data:extend({
 
 -- Lava processing recipes. Category: nullius-water-treatment (hydro-plant).
 -- All produce compressed volcanic gas as byproduct.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-lava-iron-separation",
@@ -543,7 +560,7 @@ data:extend({
       icon_size = 64,
     }},
     enabled = true,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "iron-ingot",
     order = "nullius-vb",
     energy_required = 5,
@@ -570,7 +587,7 @@ data:extend({
       icon_size = 64,
     }},
     enabled = true,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "aluminum-ingot",
     order = "nullius-vb",
     energy_required = 5,
@@ -597,7 +614,7 @@ data:extend({
       icon_size = 64,
     }},
     enabled = true,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "calcium-product",
     order = "nullius-vb",
     energy_required = 4,
@@ -623,7 +640,7 @@ data:extend({
       tint = {220, 200, 160},
     }},
     enabled = true,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "silicon-product",
     order = "nullius-vb",
     energy_required = 3,
@@ -646,7 +663,7 @@ data:extend({
 })
 
 -- Restore ordinary volcanic gas pressure for the existing separation chain.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-decompress-volcanic-gas",
@@ -658,7 +675,7 @@ data:extend({
     allow_decomposition = false,
     allow_as_intermediate = false,
     hide_from_stats = true,
-    category = "decompression",
+    categories = {"decompression"},
     subgroup = "decompression",
     order = "nullius-z",
     energy_required = 1,
@@ -678,13 +695,13 @@ data:extend({
 -- Obsolete but electricity-free sodium production by carbothermic reduction
 -- and immediate condensation of sodium vapor.  Its poor yield and refractory
 -- wear keep electrolysis preferable wherever power is available.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-carbothermic-sodium",
     localised_name = {"recipe-name.nullius-carbothermic-sodium"},
     enabled = false,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     subgroup = "sodium-product",
     order = "nullius-vc",
     always_show_products = true,
@@ -707,7 +724,7 @@ data:extend({
 -- Inefficient alkali recovery from sodium-bearing volcanic silicates.  These
 -- recipes are globally usable: their poor yields are the constraint, while
 -- Vulcanus supplies renewable gravel, hydrogen chloride, and pneumatic power.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-volcanic-saline",
@@ -715,7 +732,7 @@ data:extend({
     icon = data.raw.fluid["nullius-saline"].icon,
     icon_size = data.raw.fluid["nullius-saline"].icon_size,
     enabled = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "nullius-water-treatment",
     order = "nullius-vs",
     show_amount_in_title = false,
@@ -742,7 +759,7 @@ data:extend({
     icon = data.raw.item["nullius-sodium-hydroxide"].icon,
     icon_size = data.raw.item["nullius-sodium-hydroxide"].icon_size,
     enabled = false,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "sodium-product",
     order = "nullius-vc",
     always_show_products = true,
@@ -763,14 +780,14 @@ data:extend({
 })
 
 -- Vulcanus-local crafting and science recipes.
-data:extend({
+extend_vulcanus_prototypes({
   vulcanus_plastic_recipe("nullius-barrel-1", "nullius-vulcanus-barrel", {
     {type = "item", name = "nullius-aluminum-sheet", amount = 2},
     {type = "item", name = "nullius-glass", amount = 1},
   }, {
     localised_name = {"recipe-name.nullius-vulcanus-barrel"},
     enabled = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     subgroup = "canisters",
     order = "nullius-ba",
     always_show_made_in = true,
@@ -783,7 +800,7 @@ data:extend({
     name = "nullius-metallurgic-pack",
     localised_name = {"recipe-name.nullius-metallurgic-pack-bootstrap"},
     enabled = false,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     subgroup = "research-pack-2",
     order = "nullius-va",
     energy_required = 60,
@@ -806,7 +823,7 @@ data:extend({
     icon = "__space-age__/graphics/icons/metallurgic-science-pack.png",
     icon_size = 64,
     enabled = false,
-    category = "medium-crafting",
+    categories = {"medium-crafting"},
     subgroup = "research-pack-2",
     order = "nullius-vb",
     energy_required = 15,
@@ -859,7 +876,7 @@ data:extend({
     always_show_made_in = true,
     hide_from_signal_gui = false,
     enabled = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     subgroup = "research-pack-2",
     order = "nullius-vb",
     energy_required = 40,
@@ -896,7 +913,7 @@ data:extend({
     hide_from_signal_gui = false,
     enabled = true,
     allow_decomposition = false,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "research-pack-2",
     order = "nullius-vc",
     crafting_machine_tint = {
@@ -917,13 +934,13 @@ data:extend({
 })
 
 -- Vulcanus logistics alt recipes: replace unavailable materials.
-data:extend({
+extend_vulcanus_prototypes({
   vulcanus_plastic_recipe("nullius-splitter-1", "nullius-splitter-1-vulcanus", {
     {type = "item", name = "nullius-silicon-insulation", amount = 2},
   }, {
     localised_name = {"recipe-name.nullius-splitter-vulcanus"},
     enabled = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     subgroup = "splitter",
     order = "nullius-vc",
     always_show_made_in = true,
@@ -937,7 +954,7 @@ data:extend({
     }, {
       localised_name = {"recipe-name.nullius-underground-pipe-vulcanus"},
       enabled = true,
-      category = "small-crafting",
+      categories = {"small-crafting"},
       subgroup = "pipes",
       order = "nullius-vc",
       always_show_made_in = true,
@@ -955,7 +972,7 @@ data:extend({
       tint = {1, 0.8, 0.5},
     }},
     enabled = true,
-    category = "nullius-water-treatment",
+    categories = {"nullius-water-treatment"},
     subgroup = "compressed-air",
     order = "nullius-vb",
     energy_required = 2,
@@ -975,7 +992,7 @@ data:extend({
 -- Vulcanus atmosphere separation: CO2-dominated with trace N2 and SO2.
 -- Uses same input (nullius-air from air filter) but different output ratios.
 -- Replaces Nauvis air-separation recipes on Vulcanus.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-vulcanus-atmosphere-separation",
@@ -984,7 +1001,7 @@ data:extend({
     icon_size = 72,
     enabled = true,
     allow_decomposition = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-va",
     energy_required = 1,
@@ -1004,7 +1021,7 @@ data:extend({
 -- Trace-gas separation trades the nitrogen fraction for residual gas.
 -- Three output fluids fit the first distillery. Ordinary air separation stays
 -- unavailable on Vulcanus; this route does not produce oxygen.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-vulcanus-residual-gas",
@@ -1013,7 +1030,7 @@ data:extend({
     enabled = false,
     allow_decomposition = false,
     allow_productivity = false,
-    category = "distillation",
+    categories = {"distillation"},
     subgroup = "air-filtration-recipe",
     order = "nullius-vb",
     energy_required = 1,
@@ -1032,7 +1049,7 @@ data:extend({
 -- 40 SO2 --> 40 O2 + 1 sulfur (catalyzed by rutile/TiO2 at volcanic temperatures).
 -- SO2 comes from lava silica extraction and atmosphere separation.
 -- Rutile catalyst: 1 in, 1 out (not consumed). Productivity disabled.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-so2-catalytic-decomposition",
@@ -1040,7 +1057,7 @@ data:extend({
     icon = "__angelspetrochemgraphics__/graphics/icons/molecules/oxygen.png",
     icon_size = 72,
     enabled = true,
-    category = "nullius-low-temp-radiator",
+    categories = {"nullius-low-temp-radiator"},
     subgroup = "air-filtration-recipe",
     order = "nullius-vc",
     allow_productivity = false,
@@ -1063,13 +1080,13 @@ data:extend({
 -- Lubricant alt: graphite-based high-temperature lubricant.
 -- Replaces methanol (organic) with graphite (inorganic).
 -- Silicon-graphite colloidal suspension in HCl.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-lubricant-vulcanus",
     localised_name = {"recipe-name.nullius-lubricant-vulcanus"},
     enabled = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     subgroup = "chlorine-chemistry",
     order = "nullius-vc",
     crafting_machine_tint = {
@@ -1092,7 +1109,7 @@ data:extend({
 })
 
 -- Heat pipe alt: no water needed (Vulcanus has almost no water).
-data:extend({
+extend_vulcanus_prototypes({
   vulcanus_substitute_recipe("nullius-heat-pipe-1",
     "nullius-heat-pipe-1-vulcanus", {
       ["nullius-water"] = {
@@ -1102,7 +1119,7 @@ data:extend({
     }, {
       localised_name = {"recipe-name.nullius-heat-pipe-vulcanus"},
       enabled = true,
-      category = "small-crafting",
+      categories = {"small-crafting"},
       order = "nullius-vc",
       show_amount_in_title = false,
       always_show_products = true,
@@ -1113,7 +1130,7 @@ data:extend({
 -- Vulcanus alternative recipes: replace organic materials (plastic, rubber)
 -- with silicon/silica-based substitutes.
 
-data:extend({
+extend_vulcanus_prototypes({
   -- Silicon insulation item (replaces rubber for insulated wire).
   {
     type = "item",
@@ -1135,7 +1152,7 @@ data:extend({
     name = "nullius-silicon-insulation",
     localised_name = {"recipe-name.nullius-silicon-insulation"},
     enabled = true,
-    category = "dry-smelting",
+    categories = {"dry-smelting"},
     subgroup = "silicon-product",
     order = "nullius-vc",
     energy_required = 4,
@@ -1184,7 +1201,7 @@ data:extend({
     }, {
       localised_name = {"recipe-name.nullius-motor-2-vulcanus"},
       enabled = true,
-      category = "medium-crafting",
+      categories = {"medium-crafting"},
       order = "nullius-vc",
       energy_required = 10,
     }),
@@ -1262,7 +1279,7 @@ data:extend({
         fluidbox_index = 1},
     }, {
       enabled = true,
-      category = "large-fluid-assembly",
+      categories = {"large-fluid-assembly"},
     }),
   vulcanus_plastic_recipe("nullius-transformer",
     "nullius-transformer-vulcanus", {
@@ -1333,7 +1350,7 @@ data:extend({
     name = "nullius-carbochlorination",
     localised_name = {"recipe-name.nullius-carbochlorination"},
     enabled = false,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     main_product = "nullius-aluminum-chloride",
     subgroup = "aluminum-ingot",
     order = "nullius-vc",
@@ -1357,7 +1374,7 @@ data:extend({
     name = "nullius-iron-chlorination",
     localised_name = {"recipe-name.nullius-iron-chlorination"},
     enabled = false,
-    category = "nullius-high-temp-radiator",
+    categories = {"nullius-high-temp-radiator"},
     main_product = "nullius-iron-chloride",
     subgroup = "iron-ingot",
     order = "nullius-vc",
@@ -1379,7 +1396,7 @@ data:extend({
       "recipe-name.nullius-iron-assisted-sludge-dehydration",
     },
     enabled = false,
-    category = "boiling",
+    categories = {"boiling"},
     main_product = "nullius-mineral-dust",
     subgroup = "waste-management",
     order = "nullius-eb",
@@ -1408,7 +1425,7 @@ if data.raw.recipe["nullius-align-identification-card"] then
     "nullius-align-identification-card-vulcanus", {
       {type = "item", name = "nullius-aluminum-sheet", amount = 1},
     }, {enabled = false})
-  data:extend({identification_card})
+  extend_vulcanus_prototypes({identification_card})
 
   local technology = data.raw.technology["nullius-alignment-1"]
   if not technology then
@@ -1441,7 +1458,7 @@ end
 -- Bulk counterparts for every Vulcanus polymer-free product whose existing
 -- boxed recipe still consumes boxed plastic or rubber.  Five unboxed units
 -- equal one boxed unit; intermediates without boxed prototypes are scaled by 5.
-data:extend({
+extend_vulcanus_prototypes({
   vulcanus_boxed_plastic_recipe("nullius-boxed-barrel-1",
     "nullius-boxed-barrel-vulcanus", {
       {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},
@@ -1547,7 +1564,7 @@ data:extend({
     "nullius-boxed-solar-panel-1-vulcanus", {
       {type = "fluid", name = "nullius-epoxy", amount = 50,
         fluidbox_index = 1},
-    }, {category = "huge-fluid-assembly"}),
+    }, {categories = {"huge-fluid-assembly"}}),
   vulcanus_boxed_plastic_recipe("nullius-boxed-transformer",
     "nullius-boxed-transformer-vulcanus", {
       {type = "item", name = "nullius-silicon-insulation", amount = 5},
@@ -1573,7 +1590,7 @@ data:extend({
 -- Thermite explosive: aluminum-sulfur thermite in a chlorine barrel.
 -- Alt to improvised explosive that avoids methanol (organic).
 -- Hand-craftable like the original. No surface condition.
-data:extend({
+extend_vulcanus_prototypes({
   {
     type = "recipe",
     name = "nullius-thermite-explosive",
@@ -1596,7 +1613,7 @@ data:extend({
     always_show_made_in = true,
     allow_decomposition = false,
     allow_as_intermediate = false,
-    category = "hand-crafting",
+    categories = {"hand-crafting"},
     energy_required = 30,
     ingredients = {
       {type = "item", name = "nullius-chlorine-barrel", amount = 1},
@@ -1632,17 +1649,17 @@ for _, bulk in ipairs({false, true}) do
     {type="item", name=prefix .. "red-wire", amount=1},
   }
   recipe.crafting_machine_tint.secondary = data.raw.fluid["nullius-ammonia"].flow_color
-  data:extend({recipe})
+  extend_vulcanus_prototypes({recipe})
 end
 
 -- Process local materials before the second science tier.
-data:extend({
+extend_vulcanus_prototypes({
   {
     allow_decomposition = false,
     allow_productivity = true,
     always_show_made_in = true,
     always_show_products = true,
-    category = "small-crafting",
+    categories = {"small-crafting"},
     enabled = false,
     energy_required = 10,
     icons = {
@@ -1694,7 +1711,7 @@ data:extend({
     allow_productivity = true,
     always_show_made_in = true,
     always_show_products = true,
-    category = "large-assembly",
+    categories = {"large-assembly"},
     enabled = false,
     energy_required = 50,
     icons = {
@@ -1746,7 +1763,7 @@ data:extend({
     allow_productivity = true,
     always_show_made_in = true,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     enabled = false,
     energy_required = 10,
     icons = {
@@ -1798,7 +1815,7 @@ data:extend({
     allow_productivity = true,
     always_show_made_in = true,
     always_show_products = true,
-    category = "basic-chemistry",
+    categories = {"basic-chemistry"},
     enabled = false,
     energy_required = 50,
     icons = {

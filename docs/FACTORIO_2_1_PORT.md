@@ -16,6 +16,7 @@ planner schema witness. Full gameplay has not been ported.
 | Induction Charging recipe category | The override replaces inherited categories with the native small-crafting field | Both engines pass 93 assertions for crafting, inherited output/unlock, five research definitions, item properties, and the absent-mod guard. External prototypes are declared fixtures; full Nullius 2.0 passes the absent-mod case |
 | GCKI car-key recipe category | The optional recipe selects the native schema | Both engines pass 28 assertions with declared external prototypes: crafting, broadcasting unlock, exact costs and time, category rejection, and both guards. Full Nullius 2.0 passes the GCKI-absent guard; the external GCKI mod is not included in this test |
 | Generated barrel recipe categories | Fill and empty overrides select the native schema and replace the generated category | Both engines and full Nullius 2.0 pass 141 assertions for water, fuel, steam, and cold gas. Native fill/empty cycles preserve quantities, temperatures, barrel returns, enabled states, and exclusive machine categories |
+| Vulcanus processing recipes | The complete file selects native recipe categories and removes obsolete presentation fields on 2.1 | Both engines match 136 recipe contracts and six items from a fresh full-mod 2.0 capture, and craft all 108 generated recipes. Tests include boxed variants, fluid temperatures, catalysts, and both alignment settings |
 | Vulcanus entity recipe categories | All five recipes select the native schema; entity and resource definitions stay unchanged | Both engines and full Nullius 2.0 pass 117 assertions for costs, yields, times, categories, and enabled states. Circuit selection rejects radiator recipes at temperature 99 and accepts them at 100; thermal-machine and gas-vent scenarios pass |
 | Primitive robotics recipe categories | The generator selects the native schema for all five recipes; item definitions and crafting categories stay unchanged | Both engines and full Nullius 2.0 craft all five with exact costs, times, and outputs. The full-mod primitive robotics scenario also passes |
 | Intermediate recipe categories | All 293 ordinary, boxed, and alternative recipes select the native schema; items and recipe quantities stay unchanged | Both engines and full Nullius 2.0 craft all 293 with exact inputs, outputs, times, temperatures, catalyst balances, and category rejection |
@@ -92,6 +93,7 @@ python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.
 python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_vulcanus_processing_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/test_barrel_recipe_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_barrel_recipe_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_car_key_recipe_compatibility.py --factorio /path/to/factorio-2.0
