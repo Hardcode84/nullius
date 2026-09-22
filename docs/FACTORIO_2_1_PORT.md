@@ -56,9 +56,9 @@ All five tests pass 208 assertions on each engine.
 
 The full suites use the same source and 126 scenario contracts. The 2.1 set
 uses Bob library 3.0.0 and logistics 3.0.1, plus six installed dependencies
-with changed manifests. The locale check must use a real source copy:
-its source scanner skips staged directory links and otherwise reports 74
-false unused keys.
+with changed manifests. The locale scanner now follows staged directory
+links and visits each physical directory once. This removes 74 false unused
+keys. Fresh audits pass on 2.0 and the linked 2.1 subject; 12 unit tests pass.
 
 | First 2.1 failure | Scenarios | Required correction |
 |---|---:|---|

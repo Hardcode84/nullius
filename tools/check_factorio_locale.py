@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -291,13 +292,34 @@ def strip_lua_comments(source: str) -> str:
     return "".join(output)
 
 
+def lua_source_paths(mod_directory: Path) -> Iterable[Path]:
+    """Follow staged directory links; visit each physical directory once."""
+    pending = [mod_directory]
+    visited: set[tuple[int, int]] = set()
+    while pending:
+        directory = pending.pop()
+        metadata = directory.stat()
+        identity = (metadata.st_dev, metadata.st_ino)
+        if identity in visited:
+            continue
+        visited.add(identity)
+        directories = []
+        for path in sorted(directory.iterdir()):
+            mode = path.stat().st_mode
+            if stat.S_ISDIR(mode):
+                directories.append(path)
+            elif stat.S_ISREG(mode) and path.suffix == ".lua":
+                yield path
+        pending.extend(reversed(directories))
+
+
 def collect_source_locale_references(
     mod_directory: Path,
     catalog_keys: set[str] | None = None,
 ) -> dict[str, list[str]]:
     """Collect potential locale use from inactive optional-mod data paths."""
     references: dict[str, list[str]] = defaultdict(list)
-    for path in sorted(mod_directory.rglob("*.lua")):
+    for path in sorted(lua_source_paths(mod_directory)):
         source = strip_lua_comments(path.read_text(encoding="utf-8"))
         for match in QUOTED_VALUE.finditer(source):
             value = match.group("value")

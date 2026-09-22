@@ -95,6 +95,38 @@ class CheckFactorioLocaleTest(unittest.TestCase):
         self.assertIn('"item-name.nullius--active"', stripped)
         self.assertEqual(stripped.count("\n"), source.count("\n"))
 
+    def test_source_directory_links_and_cycles(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            staged = root / "staged"
+            staged.mkdir()
+            source = root / "source"
+            (source / "nested").mkdir(parents=True)
+            (source / "nested/optional.lua").write_text(
+                'local name = {"item-name.nullius-optional"}\n', encoding="utf-8"
+            )
+            (staged / "prototypes").symlink_to(source, target_is_directory=True)
+            (staged / "repeated").symlink_to(source, target_is_directory=True)
+            (source / "nested/back").symlink_to(staged, target_is_directory=True)
+            (staged / "data.lua").symlink_to(root / "entry.lua")
+            (root / "entry.lua").write_text(
+                'local name = {"recipe-name.nullius-entry"}\n', encoding="utf-8"
+            )
+
+            references = collect_source_locale_references(staged)
+
+            self.assertEqual(references, {
+                "item-name.nullius-optional": [str(staged / "prototypes/nested/optional.lua") + ":1"],
+                "recipe-name.nullius-entry": [str(staged / "data.lua") + ":1"],
+            })
+
+    def test_source_broken_link_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "prototypes").symlink_to(root / "missing", target_is_directory=True)
+            with self.assertRaises(FileNotFoundError):
+                collect_source_locale_references(root)
+
     def test_discards_non_prototype_tables(self) -> None:
         tables = resolved_prototype_tables(
             {
