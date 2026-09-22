@@ -1,7 +1,10 @@
 -- Test executor access to native fluid storage in Factorio 2.0 and 2.1.
 local api = {}
-if string.match(script.active_mods.base, "^2%.1%.") then
+if require("__nullius-star__/factorio-version").is_2_1 then
   function api.count(entity) return entity.fluids_count end
+  function api.connections(entity, index)
+    return assert(entity.get_fluid_box_pipe_connections(index), "fluid storage has no pipe connections")
+  end
   function api.segment_contents(entity, index)
     local fluid = entity.get_fluid_segment_fluid(index)
     return fluid and {[fluid.name]=fluid.amount} or {}
@@ -34,6 +37,13 @@ if string.match(script.active_mods.base, "^2%.1%.") then
 else
   assert(string.match(script.active_mods.base, "^2%.0%."), "unsupported Factorio version")
   function api.count(entity) return #entity.fluidbox end
+  function api.connections(entity, index)
+    local connections = entity.fluidbox.get_pipe_connections(index)
+    for _, connection in ipairs(connections) do
+      if connection.target then connection.target = connection.target.owner end
+    end
+    return connections
+  end
   function api.segment_contents(entity, index)
     return entity.fluidbox.get_fluid_segment_contents(index)
   end

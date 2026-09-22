@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-pneumatic-heat-production"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -318,7 +319,7 @@ local function setup()
     storage.gas_entities[#storage.gas_entities + 1] = gas_tank
     local tank_target = nil
     local tank_distance = nil
-    for _, connection in pairs(gas_tank.fluidbox.get_pipe_connections(1)) do
+    for _, connection in pairs(fluid_api.connections(gas_tank, 1)) do
       local target = connection.target_position
       local distance = math.abs(target.x - gas_endpoint[1]) +
         math.abs(target.y - gas_endpoint[2])
@@ -342,26 +343,26 @@ local function setup()
     end
 
     local gas_box = nil
-    for index = 1, #hydro.fluidbox do
-      local filter = hydro.fluidbox.get_filter(index)
+    for index = 1, fluid_api.count(hydro) do
+      local filter = fluid_api.filter(hydro, index)
       if filter and filter.name == GAS then gas_box = gas_box or index end
     end
     check(gas_box ~= nil, "hydro has no compressed-gas fluid box")
     if not gas_box then finish() return end
-    hydro.fluidbox[gas_box] = {
+    fluid_api.set(hydro, gas_box, {
       name = GAS,
       amount = 24,
       temperature = prototypes.fluid[GAS].default_temperature,
-    }
+    })
 
     local lava_box = nil
-    for index = 1, #hydro.fluidbox do
-      local filter = hydro.fluidbox.get_filter(index)
+    for index = 1, fluid_api.count(hydro) do
+      local filter = fluid_api.filter(hydro, index)
       if filter and filter.name == "lava" then lava_box = index end
     end
     check(lava_box ~= nil, "hydro has no lava fluid box")
     if not lava_box then finish() return end
-    local connections = hydro.fluidbox.get_pipe_connections(lava_box)
+    local connections = fluid_api.connections(hydro, lava_box)
     local selected = nil
     for _, connection in pairs(connections) do
       if not selected or
@@ -424,16 +425,16 @@ local function setup()
 
   local so2_box = nil
   local oxygen_box = nil
-  for index = 1, #storage.radiator.fluidbox do
-    local filter = storage.radiator.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(storage.radiator) do
+    local filter = fluid_api.filter(storage.radiator, index)
     if filter and filter.name == SO2 then so2_box = index end
     if filter and filter.name == OXYGEN then oxygen_box = index end
   end
   check(so2_box ~= nil, "radiator has no sulfur-dioxide fluid box")
   check(oxygen_box ~= nil, "radiator has no oxygen fluid box")
   if not so2_box or not oxygen_box then finish() return end
-  local so2_connection = storage.radiator.fluidbox.get_pipe_connections(so2_box)[1]
-  local oxygen_connection = storage.radiator.fluidbox.get_pipe_connections(oxygen_box)[1]
+  local so2_connection = fluid_api.connections(storage.radiator, so2_box)[1]
+  local oxygen_connection = fluid_api.connections(storage.radiator, oxygen_box)[1]
   check(so2_connection ~= nil, "radiator sulfur-dioxide box has no connection")
   check(oxygen_connection ~= nil, "radiator oxygen box has no connection")
   if not so2_connection or not oxygen_connection then finish() return end

@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-inorganic-barrel"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -148,14 +149,14 @@ local function setup()
     "inorganic barrel recipe output is not three barrels")
 
   local gas_box = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     if filter and filter.name == GAS then gas_box = index end
   end
-  if not gas_box and #machine.fluidbox == 1 then gas_box = 1 end
+  if not gas_box and fluid_api.count(machine) == 1 then gas_box = 1 end
   check(gas_box ~= nil, "pneumatic assembler has no gas energy box")
   if not gas_box then finish() return end
-  local connection = machine.fluidbox.get_pipe_connections(gas_box)[1]
+  local connection = fluid_api.connections(machine, gas_box)[1]
   check(connection ~= nil, "gas energy box has no pipe connection")
   if not connection then finish() return end
   local pipe = surface.create_entity{

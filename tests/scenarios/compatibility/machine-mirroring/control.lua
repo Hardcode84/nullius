@@ -77,10 +77,8 @@ script.on_init(function()
             for _=1,entity.direction/4 do x,y=-y,x end
             local pipe=assert(game.surfaces[1].create_entity{name="pipe",
               position={entity.position.x+x,entity.position.y+y}, force="player"})
-            if not modern then
-              local c=entity.fluidbox.get_pipe_connections(index)[1]
-              assert(c.target and c.target.owner == pipe, contract.name .. " missing pipe connection " .. index)
-            end
+            local c=fluid.connections(entity, index)[1]
+            assert(c.target == pipe, contract.name .. " missing pipe connection " .. index)
             local output=box.production_type == "output"
             local source=output and entity or pipe
             fluid.set(source, output and index or 1,

@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "vulcanus-gas-self-power"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local MACHINE = "nullius-hydro-plant-1-pneumatic"
@@ -81,6 +82,9 @@ local function check_terminal()
     crafting_speed = storage.machine.crafting_speed,
     recipe_energy = storage.machine.get_recipe().energy,
     status = storage.machine.status,
+    fuel_buffer = fluid_api.get(storage.machine, 1),
+    lava_buffer = fluid_api.get(storage.machine, 2),
+    gas_output_buffer = fluid_api.get(storage.machine, 3),
   }
 
   check(cycles == 2, "terminal completed an unexpected number of recipe cycles")
@@ -203,11 +207,11 @@ local function setup()
   storage.inserter = inserter
 
   local inserted_lava = lava_tank.insert_fluid{name = "lava", amount = 100}
-  storage.machine.fluidbox[1] = {
+  fluid_api.set(storage.machine, 1, {
     name = GAS,
     amount = 24,
     temperature = prototypes.fluid[GAS].default_temperature,
-  }
+  })
   check(close(inserted_lava, 100), "failed to seed exactly 100 lava")
   check(close(fluid_total("lava", storage.lava_entities), 100),
     "lava fixture did not contain exactly 100 fluid")

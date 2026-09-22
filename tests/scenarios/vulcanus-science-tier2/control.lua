@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 -- given: exact ingredients for one craft per recipe and 5000 gas per machine.
 -- place: four independent pneumatic science machines on Vulcanus.
 -- connect: deliver declared fluid stock to each machine's matching fluid box.
@@ -64,18 +65,18 @@ script.on_nth_tick(30,function()
       for _,input in ipairs(spec.inputs) do
         if prototypes.fluid[input[1]] then
           local assigned=false
-          for index=1,#machine.fluidbox do
-            local filter=machine.fluidbox.get_filter(index)
+          for index=1,fluid_api.count(machine) do
+            local filter=fluid_api.filter(machine, index)
             if filter and filter.name==input[1] then
-              machine.fluidbox[index]={name=input[1],amount=input[2]};assigned=true
+              fluid_api.set(machine, index, {name=input[1],amount=input[2]});assigned=true
             end
           end
           check(assigned,"fluid port: "..input[1])
         else check(machine.insert{name=input[1],count=input[2]}==input[2],"insert: "..input[1]) end
       end
       local fuel_index
-      for index=1,#machine.fluidbox do
-        if not machine.fluidbox.get_filter(index) then
+      for index=1,fluid_api.count(machine) do
+        if not fluid_api.filter(machine, index) then
           fuel_index=index
         end
       end
@@ -84,10 +85,10 @@ script.on_nth_tick(30,function()
     end
   end
   for _,row in ipairs(storage.rows) do
-    local fluid=row.machine.fluidbox[row.fuel_index]
+    local fluid=fluid_api.get(row.machine, row.fuel_index)
     local amount=fluid and fluid.amount or 0
-    local added=math.min(row.fuel_left,row.machine.fluidbox.get_capacity(row.fuel_index)-amount)
-    row.machine.fluidbox[row.fuel_index]={name="nullius-compressed-volcanic-gas",amount=amount+added}
+    local added=math.min(row.fuel_left,fluid_api.capacity(row.machine, row.fuel_index)-amount)
+    fluid_api.set(row.machine, row.fuel_index, {name="nullius-compressed-volcanic-gas",amount=amount+added})
     row.fuel_left=row.fuel_left-added
   end
   if game.tick>=2400 then

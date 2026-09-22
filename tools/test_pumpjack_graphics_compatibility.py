@@ -39,6 +39,7 @@ def render(engine, data, major):
     mod = work / "mods/nullius-star"
     scenario = mod / "scenarios/pumpjack-graphics"
     scenario.mkdir(parents=True)
+    (mod / "factorio-version.lua").symlink_to(ROOT / "nullius-star/factorio-version.lua")
     (mod / "scenarios/fluid-api.lua").symlink_to(ROOT / "tests/scenarios/fluid-api.lua")
     (mod / "graphics").symlink_to(ROOT / "nullius-star/graphics", target_is_directory=True)
     (mod / "info.json").write_text(json.dumps(dict(name="nullius-star", version="0.0.3",

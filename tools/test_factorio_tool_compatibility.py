@@ -721,7 +721,7 @@ def run(factorio, dependency_mod_directory):
     (mod / "scenarios/turbine-generator").symlink_to(ROOT / "tests/scenarios/turbine-generator", target_is_directory=True)
     (mod / "scenarios/vehicle-forces").symlink_to(ROOT / "tests/scenarios/vehicle-forces", target_is_directory=True)
     (mod / "scenarios/chest-doors").symlink_to(ROOT / "tests/scenarios/chest-doors", target_is_directory=True)
-    for filename in ("planner-executor-runner.lua", "fluid-api.lua"):
+    for filename in ("planner-executor-runner.lua", "fluid-api.lua", "inventory-api.lua"):
         (mod / "scenarios" / filename).symlink_to(ROOT / "tests/scenarios" / filename)
     (scenario / "control.lua").write_text(
         'require("__nullius-star__/scenarios/planner-executor-runner")'

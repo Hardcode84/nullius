@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "vulcanus-pneumatic-compressor"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local RECIPE = "nullius-compressed-nitrogen"
@@ -70,13 +71,13 @@ end
 
 local function fluid_box(machine, name, role)
   if role == "fuel" then
-    for index = 1, #machine.fluidbox do
-      if not machine.fluidbox.get_filter(index) then return index end
+    for index = 1, fluid_api.count(machine) do
+      if not fluid_api.filter(machine, index) then return index end
     end
   end
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
-    local prototype = machine.fluidbox.get_prototype(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
+    local prototype = fluid_api.prototype(machine, index)
     local production_type = prototype and prototype.production_type or "none"
     if filter and filter.name == name then
       if role == "input" and production_type ~= "output" then return index end
@@ -91,12 +92,12 @@ local function set_fluid(machine, name, amount, role)
   check(index ~= nil,
     machine.name .. " has no " .. role .. " box for " .. name)
   if not index then return nil end
-  machine.fluidbox[index] = {
+  fluid_api.set(machine, index, {
     name = name,
     amount = amount,
     temperature = prototypes.fluid[name].default_temperature,
-  }
-  local stored = machine.fluidbox[index]
+  })
+  local stored = fluid_api.get(machine, index)
   check(stored and close(stored.amount, amount),
     machine.name .. " did not accept " .. amount .. " " .. name)
   return index
@@ -151,9 +152,9 @@ local function check_terminal()
   script.on_nth_tick(TERMINAL_TICK, nil)
   local machine = storage.machine
   local output = machine and machine.valid and
-      machine.fluidbox[storage.output_box] or nil
+      fluid_api.get(machine, storage.output_box) or nil
   local fuel = machine and machine.valid and
-      machine.fluidbox[storage.fuel_box] or nil
+      fluid_api.get(machine, storage.fuel_box) or nil
   observations.production = {
     products_finished = machine and machine.valid and machine.products_finished or 0,
     output = output and output.amount or 0,

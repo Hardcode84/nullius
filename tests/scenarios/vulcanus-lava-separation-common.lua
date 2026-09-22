@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local GAS = "nullius-compressed-volcanic-gas"
 local MACHINE = "nullius-hydro-plant-1-pneumatic"
 local VENT_PARTS = {
@@ -39,7 +40,7 @@ local function run(spec)
   end
 
   local function box_amount(index, fluid)
-    local contents = storage.machine.fluidbox[index]
+    local contents = fluid_api.get(storage.machine, index)
     if contents and contents.name == fluid then return contents.amount end
     return 0
   end
@@ -96,6 +97,8 @@ local function run(spec)
       outputs = outputs,
       crafting_progress = storage.machine.crafting_progress,
       status = storage.machine.status,
+      fuel_buffer = fluid_api.get(storage.machine, 1),
+      lava_buffer = fluid_api.get(storage.machine, 2),
     }
 
     check(storage.machine.products_finished == 1,
@@ -152,6 +155,10 @@ local function run(spec)
       check(close(amount, 0), "fixture contains fluid output: " .. name)
     end
 
+    observations.start = {
+      fuel_buffer = fluid_api.get(storage.machine, 1),
+      lava_buffer = fluid_api.get(storage.machine, 2),
+    }
     storage.machine.disabled_by_script = false
     storage.started_tick = game.tick
     storage.before_tick = 60 + spec.recipe_ticks
@@ -264,11 +271,11 @@ local function run(spec)
     storage.inserter = inserter
 
     local inserted_lava = lava_tank.insert_fluid{name = "lava", amount = spec.lava}
-    machine.fluidbox[1] = {
+    fluid_api.set(machine, 1, {
       name = GAS,
       amount = spec.fuel_gas,
       temperature = prototypes.fluid[GAS].default_temperature,
-    }
+    })
     check(close(inserted_lava, spec.lava), "failed to seed exact lava input")
     check(close(gas_total(), spec.fuel_gas),
       "fuel fixture does not contain the declared gas input")

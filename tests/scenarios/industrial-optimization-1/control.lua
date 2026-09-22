@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "industrial-optimization-1"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local LAB = "nullius-lab-1-pneumatic"
@@ -199,14 +200,14 @@ local function setup()
       storage.lab_inventories[#storage.lab_inventories + 1] = inventory
 
       local gas_box = nil
-      for index = 1, #lab.fluidbox do
-        local filter = lab.fluidbox.get_filter(index)
+      for index = 1, fluid_api.count(lab) do
+        local filter = fluid_api.filter(lab, index)
         if filter and filter.name == GAS then gas_box = index end
       end
-      if not gas_box and #lab.fluidbox == 1 then gas_box = 1 end
+      if not gas_box and fluid_api.count(lab) == 1 then gas_box = 1 end
       check(gas_box ~= nil, "pneumatic lab has no compressed-gas input")
       if not gas_box then finish() return end
-      local connection = lab.fluidbox.get_pipe_connections(gas_box)[1]
+      local connection = fluid_api.connections(lab, gas_box)[1]
       check(connection ~= nil,
         "pneumatic lab compressed-gas input has no connection")
       if not connection then finish() return end

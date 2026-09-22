@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 return function(CASE, spec)
 local BLOOM = "nullius-molten-" .. spec.metal .. "-bloom"
@@ -55,7 +56,7 @@ local function foundry(x, recipe, blooms, water)
   return {machine = machine, pipe = pipe}
 end
 local function fuel(inserter)
-  inserter.fluidbox[1] = {name = "nullius-compressed-volcanic-gas", amount = 200, temperature = 200}
+  fluid_api.set(inserter, 1, {name = "nullius-compressed-volcanic-gas", amount = 200, temperature = 200})
 end
 local function snapshot(cell)
   return {cycles = cell.machine.products_finished,
@@ -119,7 +120,7 @@ script.on_nth_tick(2700, function()
   observations.outage = snapshot(storage.outage)
   observations.outage.inserter = {pickup = storage.output_inserter.pickup_position,
     drop = storage.output_inserter.drop_position, status = storage.output_inserter.status,
-    energy = storage.output_inserter.energy, fuel = storage.output_inserter.fluidbox[1]}
+    energy = storage.output_inserter.energy, fuel = fluid_api.get(storage.output_inserter, 1)}
   observations.outage.recovered_items = storage.sink.get_item_count(COOLED)
   check(storage.outage.machine.products_finished == 0, "Dry outage produced quenched products")
   check(observations.outage.recovered_items == 4, "Inserter did not remove four cooled blooms")

@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-refractory-production"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -94,15 +95,15 @@ end
 
 local function fuel(surface, machine, amount)
   local gas_box = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     if filter and filter.name == GAS then gas_box = index end
     if not filter and not gas_box then gas_box = index end
   end
   if not check(gas_box ~= nil, machine.name .. " has no gas box") then
     return false
   end
-  local connection = machine.fluidbox.get_pipe_connections(gas_box)[1]
+  local connection = fluid_api.connections(machine, gas_box)[1]
   if not check(connection ~= nil, machine.name .. " gas box is disconnected") then
     return false
   end

@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-high-temperature-resin"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -55,13 +56,13 @@ end
 
 local function fluid_box(machine, fluid, role)
   if role == "fuel" then
-    for index = 1, #machine.fluidbox do
-      if not machine.fluidbox.get_filter(index) then return index end
+    for index = 1, fluid_api.count(machine) do
+      if not fluid_api.filter(machine, index) then return index end
     end
     return nil
   end
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     if filter and filter.name == fluid then return index end
   end
   return nil
@@ -71,12 +72,12 @@ local function set_fluid(machine, fluid, amount, role)
   local index = fluid_box(machine, fluid, role)
   check(index ~= nil, machine.name .. " has no fluid box for " .. fluid)
   if not index then return end
-  machine.fluidbox[index] = {
+  fluid_api.set(machine, index, {
     name = fluid,
     amount = amount,
     temperature = prototypes.fluid[fluid].default_temperature,
-  }
-  local stored = machine.fluidbox[index]
+  })
+  local stored = fluid_api.get(machine, index)
   check(stored and stored.name == fluid and close(stored.amount, amount),
     machine.name .. " failed to store " .. amount .. " " .. fluid)
 end
@@ -91,8 +92,8 @@ local function terminal_check()
   local wastewater_box = fluid_box(machine, "nullius-wastewater")
   check(epoxy_box ~= nil, "resin machine has no epoxy output")
   check(wastewater_box ~= nil, "resin machine has no wastewater output")
-  local epoxy = epoxy_box and machine.fluidbox[epoxy_box]
-  local wastewater = wastewater_box and machine.fluidbox[wastewater_box]
+  local epoxy = epoxy_box and fluid_api.get(machine, epoxy_box)
+  local wastewater = wastewater_box and fluid_api.get(machine, wastewater_box)
   local output = machine.get_output_inventory()
 
   observations.products_finished = machine.products_finished

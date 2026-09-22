@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "vulcanus-vent-prime"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local GAS = "nullius-compressed-volcanic-gas"
@@ -200,7 +201,7 @@ local function setup()
   check(drills[1].direction == vent.direction,
     "hidden gas drill did not follow free-gas vent rotation")
   local pipe_position = nil
-  for _, connection in pairs(drills[1].fluidbox.get_pipe_connections(1)) do
+  for _, connection in pairs(fluid_api.connections(drills[1], 1)) do
     if connection.target_position then
       pipe_position = connection.target_position
       break

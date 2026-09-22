@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "vulcanus-residual-gas"
 local GAS = "nullius-compressed-volcanic-gas"
 local failures, assertions = {}, 0
@@ -26,8 +27,8 @@ local function research(tech, seen)
   tech.researched = true
 end
 local function box(machine, name)
-  for i=1,#machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(i)
+  for i=1,fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, i)
     if filter and filter.name == name then return i end
   end
   error("missing fluid box for " .. name)
@@ -75,13 +76,13 @@ script.on_nth_tick(30, function()
   end
   -- Declared sinks remove co-products; residual gas travels only through pipes.
   for _, name in pairs({"nullius-carbon-dioxide", "nullius-sulfur-dioxide"}) do
-    source.fluidbox[box(source, name)] = nil
+    fluid_api.set(source, box(source, name), nil)
   end
   for _, name in pairs({"nullius-trace-gas", "nullius-water", "nullius-argon"}) do
     local i = box(consumer, name)
-    local fluid = consumer.fluidbox[i]
+    local fluid = fluid_api.get(consumer, i)
     if fluid and name == "nullius-argon" then storage.argon = storage.argon + fluid.amount end
-    consumer.fluidbox[i] = nil
+    fluid_api.set(consumer, i, nil)
   end
   if storage.argon >= 120-0.001 or game.tick >= 15000 then
     check(storage.argon >= 120-0.001, "connected separation must produce 120 argon")

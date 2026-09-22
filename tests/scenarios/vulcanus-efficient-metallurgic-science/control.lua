@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local probability = require("__nullius-star__/factorio-version").is_2_1 and "independent_probability" or "probability"
 local CASE = "vulcanus-efficient-metallurgic-science"
@@ -214,14 +215,14 @@ local function start_efficient_recipe()
   } == 1, "failed to transfer sulfur dioxide barrel")
 
   local gas_box = nil
-  for index = 1, #assembler.fluidbox do
-    local filter = assembler.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(assembler) do
+    local filter = fluid_api.filter(assembler, index)
     if filter and filter.name == GAS then gas_box = index end
   end
-  if not gas_box and #assembler.fluidbox == 1 then gas_box = 1 end
+  if not gas_box and fluid_api.count(assembler) == 1 then gas_box = 1 end
   check(gas_box ~= nil, "efficient assembler has no gas energy box")
   if not gas_box then finish() return end
-  local connection = assembler.fluidbox.get_pipe_connections(gas_box)[1]
+  local connection = fluid_api.connections(assembler, gas_box)[1]
   local gas_pipe = surface.create_entity{
     name = "pipe",
     position = connection.target_position,
@@ -259,8 +260,8 @@ local function prepare_barrel_pump(surface, position, recipe_name, fluid_name)
   check(input.insert{name = "barrel", count = 1} == 1,
     "failed to insert barrel for " .. fluid_name)
   local ingredient_box = nil
-  for index = 1, #pump.fluidbox do
-    local filter = pump.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(pump) do
+    local filter = fluid_api.filter(pump, index)
     if filter and filter.name == fluid_name then
       check(ingredient_box == nil,
         "barrel pump has multiple input boxes for " .. fluid_name)
@@ -270,17 +271,17 @@ local function prepare_barrel_pump(surface, position, recipe_name, fluid_name)
   check(ingredient_box ~= nil,
     "barrel pump has no recipe input box for " .. fluid_name)
   if not ingredient_box then return nil end
-  pump.fluidbox[ingredient_box] = {
+  fluid_api.set(pump, ingredient_box, {
     name = fluid_name,
     amount = 100,
     temperature = prototypes.fluid[fluid_name].default_temperature,
-  }
+  })
   check(pump.get_fluid_count(fluid_name) == 100,
     "failed to fill recipe input box with " .. fluid_name)
   local gas_pipe = nil
-  for index = 1, #pump.fluidbox do
+  for index = 1, fluid_api.count(pump) do
     for _, connection in ipairs(
-        pump.fluidbox.get_pipe_connections(index)) do
+        fluid_api.connections(pump, index)) do
       local candidate = surface.create_entity{
         name = "pipe",
         position = connection.target_position,

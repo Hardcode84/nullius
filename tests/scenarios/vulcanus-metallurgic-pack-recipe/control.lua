@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-metallurgic-pack-recipe"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -262,29 +263,29 @@ local function setup()
     gas_fuel_value = prototypes.fluid[GAS].fuel_value,
     fuel_effectivity = fluid_source.effectivity,
     gas_per_cycle = required_gas,
-    fluidbox_count = #machine.fluidbox,
+    fluidbox_count = fluid_api.count(machine),
     fluidbox_filters = {},
   }
   check(close(required_gas, GAS_INPUT),
     "runtime pneumatic fuel demand differs from the manifest")
 
   local gas_box = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     observations.runtime.fluidbox_filters[index] = filter and filter.name or false
     if filter and filter.name == GAS then
       check(gas_box == nil, "pneumatic assembler has multiple gas energy boxes")
       gas_box = index
     end
   end
-  if not gas_box and #machine.fluidbox == 1 then
-    check(machine.fluidbox.get_filter(1) == nil,
+  if not gas_box and fluid_api.count(machine) == 1 then
+    check(fluid_api.filter(machine, 1) == nil,
       "unfiltered pneumatic energy box unexpectedly has a recipe filter")
     gas_box = 1
   end
   check(gas_box ~= nil, "pneumatic assembler has no compressed-gas energy box")
   if not gas_box then finish() return end
-  local connection = machine.fluidbox.get_pipe_connections(gas_box)[1]
+  local connection = fluid_api.connections(machine, gas_box)[1]
   check(connection ~= nil, "compressed-gas energy box has no pipe connection")
   if not connection then finish() return end
   local delta_x = connection.target_position.x - machine.position.x

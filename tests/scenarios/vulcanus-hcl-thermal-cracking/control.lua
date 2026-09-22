@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "vulcanus-hcl-thermal-cracking"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local HEAT_PRODUCER = "nullius-hydro-plant-1-pneumatic"
@@ -89,8 +90,8 @@ end
 
 local function filtered_fluidbox(machine, fluid)
   local found = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     if filter and filter.name == fluid then
       check(found == nil, machine.name .. " has multiple " .. fluid .. " fluidboxes")
       found = index
@@ -328,18 +329,18 @@ local function setup()
     temperature = prototypes.fluid.lava.default_temperature,
   }
   storage.producer_fluid_entities[#storage.producer_fluid_entities + 1] = lava_source
-  producer.fluidbox[1] = {
+  fluid_api.set(producer, 1, {
     name = GAS, amount = 24,
     temperature = prototypes.fluid[GAS].default_temperature,
-  }
+  })
   local stone_sink = place(surface, "infinity-chest",
     offset(producer.position, 0, 4))
   if not stone_sink then finish() return end
   storage.stone_sink = stone_sink
-  radiator.fluidbox[hcl_box] = {
+  fluid_api.set(radiator, hcl_box, {
     name = HCL, amount = 60,
     temperature = prototypes.fluid[HCL].default_temperature,
-  }
+  })
 
   observations.geometry = {
     producer_position = producer.position,

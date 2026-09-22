@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-sulfur-catalysis"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -279,8 +280,8 @@ local function setup()
 
   local input_fluidbox = nil
   local output_fluidbox = nil
-  for index = 1, #machine.fluidbox do
-    local filter = machine.fluidbox.get_filter(index)
+  for index = 1, fluid_api.count(machine) do
+    local filter = fluid_api.filter(machine, index)
     if filter and filter.name == SO2 then
       check(input_fluidbox == nil, "radiator has multiple fluid input boxes")
       input_fluidbox = index
@@ -296,7 +297,7 @@ local function setup()
   storage.output_fluidbox = output_fluidbox
 
   local function fluid_pipe(fluidbox_index, label)
-    local connection = machine.fluidbox.get_pipe_connections(fluidbox_index)[1]
+    local connection = fluid_api.connections(machine, fluidbox_index)[1]
     check(connection ~= nil, "radiator has no " .. label .. " pipe connection")
     if not connection then return nil end
     local position = connection.target_position

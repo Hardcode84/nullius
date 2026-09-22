@@ -14,14 +14,25 @@ also uses `fluid-api.lua`; its 98 assertions pass on both engines.
 All 41 entity `active` assignments now use the inverse `disabled_by_script`
 value. Both engines support this field. The 2.0 `active` setter changes only
 this flag, so no version branch is required. Test timing and production
-assertions are unchanged. The full 2.0 suite passes all 127 scenarios. The
-full 2.1 suite passes 98 and fails 29. Thermal machines pass 302 assertions;
-aluminum reduction passes 39. Sixteen tests now reach removed `fluidbox`
-accesses instead of stopping at `active` writes.
+assertions are unchanged.
 
-Remaining first failures: 24 fluid accesses, two recipe categories, one fluid
-removal signature, one hot-rock contract, and one statistics timing check.
-Route fluid access through `fluid-api.lua`, including pipe connection checks.
+Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
+Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
+suite passes all 127 scenarios; 2.1 passes 116 and fails 11.
+
+| Remaining 2.1 failure | Scenarios | Required correction |
+|---|---:|---|
+| Removed recipe category | 2 | Use the native category list |
+| Old fluid removal signature | 1 | Use the native argument list |
+| Missing hot-rock contracts | 1 | Add mining and destruction checks |
+| Immediate build statistics | 1 | Read after the native tick flush |
+| Configurable Valves linked connection | 1 | Port dependency `builder.lua` to entity fluid methods; retain the revival event |
+| Lava intake timing | 5 | Resolve slower input-buffer filling with the same finite stock and pipe layout |
+
+At tick 60, the iron separation input holds 71.631107 lava on 2.1 versus
+86.197913 on 2.0. Fuel is equal. At tick 440, 2.1 has no completed cycle and
+0.82 progress. A separate test with buffer multiplier 2 does not restore
+2.0 timing. The scenario reports buffer contents; deadlines remain unchanged.
 
 ## Original full audit
 
@@ -226,8 +237,8 @@ Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
 `41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
 manifest-retargeted installed versions in that probe. The current source passes
-the full 2.1 prototype dump with this staged set. The full suite passes 88 of
-126 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
+the full 2.1 prototype dump with this staged set. The full suite passes 116 of
+127 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
 and the isolated compatibility suite pass.
 
 Bob's 3.0.1 also reports two missing `bob-tungsten-processing` prerequisites.
