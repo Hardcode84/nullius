@@ -2,6 +2,7 @@
 local api = {}
 if require("__nullius-star__/factorio-version").is_2_1 then
   function api.count(entity) return entity.fluids_count end
+  function api.extract(entity, specification) return entity.extract_fluid(specification) end
   function api.connections(entity, index)
     return assert(entity.get_fluid_box_pipe_connections(index), "fluid storage has no pipe connections")
   end
@@ -37,6 +38,7 @@ if require("__nullius-star__/factorio-version").is_2_1 then
 else
   assert(string.match(script.active_mods.base, "^2%.0%."), "unsupported Factorio version")
   function api.count(entity) return #entity.fluidbox end
+  function api.extract(entity, specification) return entity.remove_fluid(specification) end
   function api.connections(entity, index)
     local connections = entity.fluidbox.get_pipe_connections(index)
     for _, connection in ipairs(connections) do

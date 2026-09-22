@@ -18,13 +18,15 @@ assertions are unchanged.
 
 Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
 Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
-suite passes all 127 scenarios; the last full 2.1 run passed 116 and failed 11.
-The two category failures now pass focused reruns on both engines: 175 thermal
-technology assertions and 108 hot-casting assertions. Nine failures remain.
+suite passes all 127 scenarios. The fresh full 2.1 run passes 119 and fails eight.
+Both engines pass 175 thermal technology assertions and 108 hot-casting
+assertions. Name-based gas removal
+uses `extract_fluid` on 2.1 and `remove_fluid` on 2.0. The roboport experiment
+passes 19 assertions at tick 1391 on both engines, including charging,
+blackout, and recovery. Eight failures remain.
 
 | Remaining 2.1 failure | Scenarios | Required correction |
 |---|---:|---|
-| Old fluid removal signature | 1 | Use the native argument list |
 | Missing hot-rock contracts | 1 | Add mining and destruction checks |
 | Immediate build statistics | 1 | Read after the native tick flush |
 | Configurable Valves linked connection | 1 | Port dependency `builder.lua` to entity fluid methods; retain the revival event |
@@ -238,7 +240,7 @@ Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
 `41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
 manifest-retargeted installed versions in that probe. The current source passes
-the full 2.1 prototype dump with this staged set. The full suite passes 116 of
+the full 2.1 prototype dump with this staged set. The full suite passes 119 of
 127 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
 and the isolated compatibility suite pass.
 

@@ -1,3 +1,4 @@
+local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "experiment-pneumatic-roboport"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local PORT = "factorio-test-pneumatic-roboport"
@@ -54,7 +55,7 @@ local function refill()
   local capacity = storage.port.prototype.electric_energy_source_prototype.buffer_capacity
   local deficit = math.max(0, capacity - storage.port.energy)
   local requested = deficit / storage.fuel_value
-  local removed = storage.reservoir.remove_fluid{name = GAS, amount = requested}
+  local removed = fluid_api.extract(storage.reservoir, {name = GAS, amount = requested})
   storage.port.energy = storage.port.energy + removed * storage.fuel_value
   observations.refill_ticks[#observations.refill_ticks + 1] = game.tick
   observations.last_refill_gas = removed
