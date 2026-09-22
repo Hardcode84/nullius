@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local BASEENTITY = "__base__/graphics/entity/"
 
 data:extend({
@@ -18,7 +20,8 @@ data:extend({
     result_inventory_size = 1,
     crafting_speed = 1,
     source_inventory_size = 0,
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     resistances = {
       { type = "impact", decrease = 100, percent = 90 },
       { type = "fire", percent = 75 }
@@ -301,7 +304,8 @@ data:extend({
     result_inventory_size = 1,
     crafting_speed = 5,
     source_inventory_size = 0,
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     resistances = {
       { type = "impact", decrease = 100, percent = 90 },
       { type = "fire", percent = 75 }
@@ -718,7 +722,6 @@ nc3.graphics_set.working_visualisations[2] = {
   always_draw = true
 }
 nc3.graphics_set_flipped = nil
---nc3.forced_symmetry = nil
 
 data:extend({
   nc3,

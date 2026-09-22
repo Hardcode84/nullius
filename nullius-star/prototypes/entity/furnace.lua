@@ -1,3 +1,5 @@
+local modern = require("factorio-version").is_2_1
+
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
@@ -897,7 +899,8 @@ data:extend({
     
     graphics_set = get_foundry_graphics_set(false, 0.4, {0.6, 0.8, 0.7}),
     graphics_set_flipped = get_foundry_graphics_set(true, 0.4, {0.6, 0.8, 0.7}),
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
 
     resistances = {
       { type = "impact", decrease = 100, percent = 90 },
@@ -954,7 +957,8 @@ data:extend({
     
     graphics_set = get_foundry_graphics_set(false, 0.5, {0.7, 0.8, 1}),
     graphics_set_flipped = get_foundry_graphics_set(true, 0.5, {0.7, 0.8, 1}),
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
    
     resistances = {
       { type = "impact", decrease = 100, percent = 90 },
@@ -1008,7 +1012,8 @@ data:extend({
     
     graphics_set = get_foundry_graphics_set(false, 0.6),
     graphics_set_flipped = get_foundry_graphics_set(true, 0.6),
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     
     resistances = {
       { type = "impact", decrease = 100, percent = 90 },
@@ -1355,7 +1360,8 @@ data:extend({
         pipe_connections = {{ flow_direction ="output", position = {1.5, 0.5}, direction = defines.direction.east }}
       }
     },
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     graphics_set = {
       animation = scale_image({
           layers = {
@@ -1523,7 +1529,8 @@ data:extend({
     selection_box = {{-2, -2}, {2, 2}},
     crafting_categories = {"ore-flotation"},
     crafting_speed = 2,
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
@@ -1735,7 +1742,8 @@ data:extend({
     selection_box = {{-2, -2}, {2, 2}},
     crafting_categories = {"ore-flotation"},
     crafting_speed = 4,
-    forced_symmetry = "horizontal",
+    forced_symmetry = not modern and "horizontal" or nil,
+    use_mirroring = modern or nil,
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
