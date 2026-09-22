@@ -8,6 +8,7 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
+| Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
 | Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe definitions and mutation; prototype filters, runtime filters, and tool category handling pass |
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
@@ -111,6 +112,8 @@ python tools/test_optional_override_compatibility.py --factorio /path/to/factori
 python tools/test_optional_override_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.0
+python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```

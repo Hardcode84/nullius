@@ -303,7 +303,7 @@ function create_mission(force)
     end
     update_mission_global()
 
-	if (not game.is_multiplayer()) then
+	if (not game.is_multiplayer() and #game.players == 1) then
       game.show_message_dialog{text = {"nullius-mission"}}
 	elseif (force ~= nil) then
 	  force.print({"nullius-mission"})
@@ -314,7 +314,7 @@ end
 function cargo_pod_finished(event)
   local pod = event.cargo_pod
   if (pod and pod.valid) then
-    create_mission(force)
+    create_mission(pod.force)
     local inv = pod.get_inventory(defines.inventory.item_main)
     local payload = inv.get_contents()
     for _, slot in pairs(payload) do

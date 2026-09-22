@@ -494,6 +494,7 @@ data:extend({
   {
     type = "rocket-silo",
     name = "nullius-silo",
+    graphics_set = table.deepcopy(data.raw["rocket-silo"]["rocket-silo"].graphics_set),
     icon = "__base__/graphics/icons/rocket-silo.png",
     icon_size = 64,
     flags = {"placeable-player", "player-creation"},
