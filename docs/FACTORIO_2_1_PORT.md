@@ -1,8 +1,49 @@
 # Factorio 2.1 port assessment
 
-Assessed 2026-09-21: Nullius* `8ca5de2`, Factorio 2.0.77 → 2.1.19.
-Scope: dependency inventory, isolated loading probes, source/API audit, and
-planner schema witness. Full gameplay has not been ported.
+Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
+The staged 2.1 mod loads, renders, and passes multiplayer checks. Full
+compatibility is not established: 38 campaign and feature scenarios fail.
+
+## Full audit
+
+| Check | Result |
+|---|---|
+| Full 2.0 scenario suite | 126 pass, 0 fail |
+| Full 2.1 scenario suite | 88 pass, 38 fail |
+| 2.1 isolated compatibility suite | Pass, including native recipe execution, fluid preservation, mining, power, and recipe UI checks |
+| Fresh full-mod plans | Vulcanus progression through physics, plus Nauvis and Vulcanus tier-2 science plans complete |
+| Locale, both engines | No missing prototype names, missing keys, or unused UI keys |
+| Strict 2.1 prototype check | 2,131 ignored fields on Nullius prototypes; see below |
+| Release metadata | The shipping manifest still selects 2.0 |
+| Published 2.1 dependencies | Download retry returns HTTP 403; the full published set is not tested |
+
+The full suites use the same source and 126 scenario contracts. The 2.1 set
+uses Bob library 3.0.0 and logistics 3.0.1, plus six installed dependencies
+with changed manifests. The locale check must use a real source copy:
+its source scanner skips staged directory links and otherwise reports 74
+false unused keys.
+
+| First 2.1 failure | Scenarios | Required correction |
+|---|---:|---|
+| Writes to read-only `LuaEntity.active` | 18 | Use the native script-disable flag; retain timing and throughput assertions |
+| Removed `LuaEntity.fluidbox` | 8 | Use the shared version-specific fluid API |
+| Removed assembler inventory indices | 7 | Select `crafter_input` on 2.1 |
+| Removed recipe `category` | 2 | Check the native category list |
+| Old `remove_fluid` call signature | 1 | Port the pneumatic-roboport experiment call |
+| Missing hot-rock contracts | 1 | Add `big-volcanic-rock-hot` and `huge-volcanic-rock-hot` and test mining and destruction |
+| Immediate build-statistics assertions | 1 | Read after the next tick; retain both surface attribution checks |
+
+The separate `flow-statistics-timing` witness passes on both engines. After
+`on_flow(+1)` and `on_flow(-1)`, 2.1 reads 0/0 in the same tick and 1/1 in
+the next tick. The 2.0 values are 1/1 in both ticks. This confirms a test
+timing error, not lost build counts. Other failures can hide later assertions;
+the full suite must run again after the test APIs are ported.
+
+The strict check reports `always_show_products` on 1,071 recipes,
+`show_amount_in_title` on 1,047 recipes, `base_render_layer` on three
+geothermal build drills, and `fluid_wagon_connector_frame_count` on ten pumps.
+These fields are ignored on 2.1. Recipe categories already use the native
+schema; their display flags still need cleanup.
 
 ## Required changes
 
@@ -17,9 +58,9 @@ planner schema witness. Full gameplay has not been ported.
 | Hidden upgrade targets | Cleanup checks build items across all item types and the first explicit `placeable_by` entry | Ten native cases pass on each engine. Full-mod 2.0 data is unchanged. Removing nine invalid rolling-stock links lets the staged 2.1 prototype dump pass |
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
-| Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe definitions and mutation; prototype filters, runtime filters, and tool category handling pass |
-| Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
-| Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
+| Recipe categories | Full staged 2.1 data loads and native recipe execution checks pass | Two scenario category reads still use the removed runtime field |
+| Recipe presentation | Strict checking finds 2,118 ignored display fields | Remove obsolete flags on 2.1 and check the intended recipe UI |
+| Product amounts | Full staged 2.1 validation and native recipe checks pass | Add the two new hot-rock contracts to complete the full-mod rock test |
 | Industrial metallurgic science | The second barrel return uses the engine-specific 90% probability field | Both engines retain five science packs, one guaranteed barrel, and one 90% barrel return. Native tests verify that productivity doubles science but does not duplicate barrels |
 | Pump wagon reach | Five pump definitions use the native arm reach on 2.1; alignment tolerances and the Mini Trains override apply only on 2.0 | Headless tests cover 64 aligned, offset, and out-of-reach placements per engine. Tests check inherited pneumatic settings and the Mini Trains override branch. Actual Mini Trains wagon tests require its archive; authenticated downloads returned HTTP 403 |
 | Hidden fluid connections | A shared helper retains the box-level flag on 2.0 and sets it on each connection on 2.1 | Full-mod 2.0 resolved data matches the baseline exactly. Native fixtures check 60 fluid boxes and 121 connections on both engines, including linked ports and inherited variants |
@@ -63,13 +104,13 @@ planner schema witness. Full gameplay has not been ported.
 | Pump wagon connectors | Five full-size pumps select the engine connector graphics field | Checks cover all five definitions and 16 native loading/unloading cases across both normal tiers and four directions |
 | Nuclear-reactor neighbours | The 2.1 connection points use a private Nullius category | 32 layouts check bonuses, heat output, rotation, gaps, mixed prototypes, and neighbour removal. Different reactor prototypes give no bonus, as on 2.0 |
 | Solar-collector neighbours | Each tier has four 2.1 connection points around its 5×4 footprint and a separate category | 144 layouts check same-tier bonuses, mixed-tier exclusion, gaps, offsets, neighbour removal, and native plus scripted heat in daylight and darkness |
-| Entity prototypes | Other mining-drill graphics and crafting symmetry changed | Port each entity family; check graphics and fluid port geometry |
+| Entity prototypes | All enabled sprites load; strict checking finds 13 ignored drill/pump fields | Remove or port those fields and retain layer and connector behavior |
 | Runtime fluid preservation | Version-specific fluid access; snapshots retain their slot count | 61 assertions pass on each engine: replacement, empty slots, fluid identity, amount, temperature, and rejection of missing occupied slots |
 | Runtime mining flags | Four helper creation paths use `minable_flag` on both engines | 45 assertions per engine verify protection and cleanup; full Nullius heat and gas-vent scenarios pass 160 assertions |
 | Mining drone refresh | Uses `update_connections()` without activation writes | 18 assertions pass per engine and in full Nullius 2.0: ore pickup, disabled-state preservation, and mining after explicit re-enable |
 | Prototype recipe filtering | Both `hidden.lua` passes use `prototypes/recipe-visibility.lua` | Category sets preserve testing-tool exemptions; full-mod filter and checkpoint scenarios pass 223 assertions |
 | Runtime recipe filtering | Startup uses the dual-version `scripts/recipe_filter.lua` | 174 assertions per engine cover prototype visibility, product visibility, exemptions, locked recipes, broken counts, and repeated filtering; full-mod force creation also passes |
-| Test code | 121 fluidbox-reference lines across 20 files; 52 candidate active/minable-write lines across 19 files | Port fluid reads/writes, capacities, filters, and connection queries. Preserve actual fluid and heat assertions |
+| Test code | The full 2.1 suite fails 38 scenarios; the full 2.0 suite passes | Port the API calls, add hot-rock contracts, and defer statistics assertions by one tick. Preserve fluid, heat, and throughput checks |
 | Recipe productivity families | Matcher accepts both category schemas | Verified on 2.0.77 and 2.1.19: three sorted effects, no duplicates, zero-cap exclusion, and +1% research bonuses |
 | Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Supported on 2.0 and 2.1; see tool checks below |
 
@@ -81,7 +122,7 @@ section's `active` field must not receive the entity API conversion.
 
 | Check | Result |
 |---|---|
-| Python tool tests | 98 pass |
+| Python tool tests | 105 pass, plus 10 subtests |
 | Fresh Nullius 2.0 Vulcanus plan | Completes; regenerated executor fixture is unchanged |
 | Nullius 2.0 chemical executors | 1,927 assertions pass |
 | Nullius 2.0 manifest executors | Three scenarios; 1,705 assertions pass |
@@ -98,8 +139,9 @@ that executor path. Exact amounts reject independent and shared probability.
 Guaranteed amounts omit uncertain products. The fluid matcher reserves
 additional ports; shared executor helpers use each engine's native fluid API.
 
-These checks use isolated fixtures on 2.1. Full Nullius 2.1 plans require the
-prototype and dependency repairs listed above.
+The fresh full-mod 2.1 plans also complete with the staged dependencies.
+These solver results do not prove a connected factory or the failing scenario
+contracts.
 
 ```bash
 python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.0
@@ -165,8 +207,9 @@ Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
 `41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
 manifest-retargeted installed versions in that probe. The current source passes
-the full 2.1 prototype dump with this staged set. Full 2.1 runtime and campaign
-validation has not passed. The planner schema witness passes.
+the full 2.1 prototype dump with this staged set. The full suite passes 88 of
+126 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
+and the isolated compatibility suite pass.
 
 Bob's 3.0.1 also reports two missing `bob-tungsten-processing` prerequisites.
 Its robot and repair-pack updates detect Space Age's `tungsten-carbide` item,
@@ -181,11 +224,10 @@ technology/mod that supplies the prerequisite, not by the shared item name.
   generated recycling and unwanted quality behavior.
 - Science packs can remain tools: 2.1 still uses tool durability for labs.
   Converting every pack into an item is not required.
-- Body ownership and personal autocrafting have no demonstrated need for a
-  redesign. Run their scenarios; 2.1 changed remote-view teleport behavior, while
-  body switching already sets the controller explicitly.
+- Body ownership, personal autocrafting, and probe alignment pass their real
+  multiplayer scenarios, including shared-body save/reload.
 - Acceptance requires fresh resolved prototypes, recipe/locale audits, planner
-  contracts, and the 85-scenario suite. Preserve ingredients, yields, machine
+  contracts, and every discovered scenario. Preserve ingredients, yields, machine
   eligibility, and the Nauvis/Vulcanus research supply comparison.
 
 The [electrical API experiment](PLANET_FULGORA.md#factorio-21-api-experiment)
@@ -195,6 +237,11 @@ Fulgora API benefit, not full-mod compatibility.
 ## Reproduce
 
 ```bash
+python tools/run_factorio_tests.py --factorio "$FACTORIO_2_1" --mod-under-test "$STAGED_MOD" --dependency-mod-directory "$STAGED_DEPS" --keep-run-directory --result-json "$AUDIT_DIR/scenarios.json" -n auto > "$AUDIT_DIR/scenarios.log" 2>&1
+python tools/run_factorio_tests.py flow-statistics-timing --factorio "$FACTORIO_2_1" --mod-under-test "$STAGED_MOD" --dependency-mod-directory "$STAGED_DEPS" --json
+python tools/summarize_factorio_test_log.py "$AUDIT_DIR/scenarios.log" --groups-only
+"$FACTORIO_2_1" --config "$STAGED_CONFIG" --mod-directory "$STAGED_MODS" --dump-data --check-unused-prototype-data > "$AUDIT_DIR/unused.log" 2>&1
+python tools/summarize_factorio_test_log.py "$AUDIT_DIR/unused.log" --unused-prototypes
 python tools/test_hidden_connections_compatibility.py --factorio-2-0 "$FACTORIO_2_0" --factorio-2-1 "$FACTORIO_2_1"
 python tools/test_machine_mirroring_compatibility.py --factorio-2-0 "$FACTORIO_2_0" --factorio-2-1 "$FACTORIO_2_1"
 python tools/assess_factorio_port.py --factorio-version 2.1 --portal-only
