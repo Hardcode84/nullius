@@ -1066,6 +1066,7 @@ data:extend({
 })
 
 -- Correct the 2.1 shadow sheet before the legacy wells copy these graphics.
+local pumpjack_shadow = require("prototypes.entity.pumpjack-shadow")
 if require("factorio-version").is_2_1 then
   for tier=1,2 do
     local animation = data.raw["assembling-machine"]["nullius-well-" .. tier].graphics_set.animation
@@ -1075,6 +1076,8 @@ if require("factorio-version").is_2_1 then
       shadow.height = 273
       shadow.x = (i-1) * 261
       shadow.shift = util.by_pixel(-2, -5)
+      local layers = animation[direction].layers
+      layers[4] = pumpjack_shadow(layers[3], layers[4])
     end
   end
 end
@@ -4428,3 +4431,7 @@ data:extend({
 local extractor_pictures = require("prototypes.entity.extractor-pictures")
 extractor_pictures(data.raw["mining-drill"]["nullius-extractor-1"])
 extractor_pictures(data.raw["mining-drill"]["nullius-extractor-2"])
+for tier = 1, 2 do
+  local layers = data.raw["mining-drill"]["nullius-extractor-" .. tier].graphics_set.animation.north.layers
+  layers[2] = require("prototypes.entity.pumpjack-shadow")(layers[1], layers[2])
+end

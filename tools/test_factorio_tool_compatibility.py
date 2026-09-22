@@ -201,6 +201,7 @@ def stage_well_pictures(mod, version):
 
 
 def stage_extractor_pictures(mod):
+    (mod / "prototypes/entity/pumpjack-shadow.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/pumpjack-shadow.lua")
     source = (ROOT / "nullius-star/prototypes/entity/plumbing.lua").read_text()
     start = source.index('data:extend({\n  {\n    type = "mining-drill",')
     end = source.index('  {\n    type = "assembling-machine",', start)
