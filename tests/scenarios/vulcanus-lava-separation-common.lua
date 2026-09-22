@@ -159,6 +159,8 @@ local function run(spec)
       fuel_buffer = fluid_api.get(storage.machine, 1),
       lava_buffer = fluid_api.get(storage.machine, 2),
     }
+    check(close(storage.machine.get_fluid_count("lava"), spec.lava),
+      "pipe feed did not deliver the full batch before the timed recipe check")
     storage.machine.disabled_by_script = false
     storage.started_tick = game.tick
     storage.before_tick = 60 + spec.recipe_ticks
@@ -232,9 +234,11 @@ local function run(spec)
     machine.disabled_by_script = true
 
     local lava_pipe = place(surface, "pipe", offset(origin, -1, -3))
-    local lava_tank = place(surface, "storage-tank", offset(origin, -2, -5))
-    if not lava_pipe or not lava_tank then finish() return end
-    storage.lava_entities = {lava_pipe, lava_tank}
+    -- A finite recipe batch goes in a pipe, as it does at the lava intake.
+    -- A nearly empty bulk tank adds a separate transfer delay.
+    local lava_feed = place(surface, "pipe", offset(origin, -1, -4))
+    if not lava_pipe or not lava_feed then finish() return end
+    storage.lava_entities = {lava_pipe, lava_feed}
 
     storage.gas_entities = {}
     local gas_pipe_offsets = {
@@ -270,7 +274,7 @@ local function run(spec)
     storage.item_sink = item_sink
     storage.inserter = inserter
 
-    local inserted_lava = lava_tank.insert_fluid{name = "lava", amount = spec.lava}
+    local inserted_lava = lava_feed.insert_fluid{name = "lava", amount = spec.lava}
     fluid_api.set(machine, 1, {
       name = GAS,
       amount = spec.fuel_gas,

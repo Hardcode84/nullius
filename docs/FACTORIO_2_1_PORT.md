@@ -18,7 +18,7 @@ assertions are unchanged.
 
 Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
 Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
-suite passes all 127 scenarios. The fresh full 2.1 run passes 122 and fails five.
+suite passes all 127 scenarios. The fresh full 2.1 run also passes all 127.
 Both engines pass 175 thermal technology assertions and 108 hot-casting
 assertions. Name-based gas removal
 uses `extract_fluid` on 2.1 and `remove_fluid` on 2.0. The roboport experiment
@@ -31,16 +31,15 @@ Both hot volcanic rocks now use the ordinary volcanic-rock mining drops and
 have no destruction loot. The rock test covers 40 types on 2.1 and 38 on 2.0,
 with 64 mining and destruction samples per type. Configurable Valves now uses
 the native 2.1 source listed below; the pneumatic-heat scenario passes 126
-assertions on both engines. Five scenario failures remain.
+assertions on both engines.
 
-| Remaining 2.1 failure | Scenarios | Required correction |
-|---|---:|---|
-| Lava intake timing | 5 | Resolve slower input-buffer filling with the same finite stock and pipe layout |
-
-At tick 60, the iron separation input holds 71.631107 lava on 2.1 versus
-86.197913 on 2.0. Fuel is equal. At tick 440, 2.1 has no completed cycle and
-0.82 progress. A separate test with buffer multiplier 2 does not restore
-2.0 timing. The scenario reports buffer contents; deadlines remain unchanged.
+The five finite-stock lava tests now feed through pipes. The old nearly empty
+bulk tank left only 71.631107 of 100 lava in the iron input at tick 60 on 2.1,
+versus 86.197913 on 2.0. The pipe feed delivers the full batch by tick 60 on
+both engines; each test checks this before it enables crafting. Stock, recipe
+deadlines, yields, and fuel checks are unchanged. The gas test completes two
+cycles by tick 305 with 105.986668 gas left and no electric feed pump.
+All five tests pass 208 assertions on each engine.
 
 ## Original full audit
 
@@ -249,7 +248,7 @@ source, version 2.0.2, at commit
 This replaces the retargeted 0.3.3 archive that crashed on valve revival.
 It is a source archive, not the Portal release ZIP. The other five dependencies
 remain manifest-retargeted installed versions. The current source passes
-the full 2.1 prototype dump with this staged set. The full suite passes 122 of
+the full 2.1 prototype dump with this staged set. The full suite passes all
 127 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
 and the isolated compatibility suite pass.
 

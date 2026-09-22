@@ -108,6 +108,12 @@ local function start_machine()
     "lava changed while the fixture was settling")
   check(close(fluid_total(GAS, storage.gas_entities), 24),
     "gas changed while the fixture was settling")
+  observations.start = {
+    lava_buffer = fluid_api.get(storage.machine, 2),
+    fuel_buffer = fluid_api.get(storage.machine, 1),
+  }
+  check(close(storage.machine.get_fluid_count("lava"), 100),
+    "pipe feed did not deliver both batches before the timed recipe check")
   storage.machine.disabled_by_script = false
   storage.started_tick = game.tick
   script.on_nth_tick(305, check_terminal)
@@ -191,9 +197,10 @@ local function setup()
     if not pipe then finish() return end
     storage.lava_entities[#storage.lava_entities + 1] = pipe
   end
-  local lava_tank = place(surface, "storage-tank", offset(origin, -2, -6))
-  if not lava_tank then finish() return end
-  storage.lava_entities[#storage.lava_entities + 1] = lava_tank
+  -- Keep the finite batch in the intake pipe network, without an electric pump.
+  local lava_feed = place(surface, "pipe", offset(origin, -1, -5))
+  if not lava_feed then finish() return end
+  storage.lava_entities[#storage.lava_entities + 1] = lava_feed
 
   local stone_sink = place(surface, "infinity-chest", offset(origin, 0, 4))
   local inserter = place(surface, "inserter", offset(origin, 0, 3),
@@ -206,7 +213,7 @@ local function setup()
   storage.stone_sink = stone_sink
   storage.inserter = inserter
 
-  local inserted_lava = lava_tank.insert_fluid{name = "lava", amount = 100}
+  local inserted_lava = lava_feed.insert_fluid{name = "lava", amount = 100}
   fluid_api.set(storage.machine, 1, {
     name = GAS,
     amount = 24,
