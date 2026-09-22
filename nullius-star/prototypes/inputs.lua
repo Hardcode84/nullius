@@ -1,6 +1,17 @@
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
+-- Configurable Valves 0.3.3 uses the old keypad names. Keep the same keys on 2.1.
+if require("factorio-version").is_2_1 then
+  for _, binding in ipairs({
+    {"configurable-valves-minus", "PAD -", "KP_MINUS"},
+    {"configurable-valves-plus", "PAD +", "KP_PLUS"},
+  }) do
+    local input = data.raw["custom-input"][binding[1]]
+    if input.key_sequence == binding[2] then input.key_sequence = binding[3] end
+  end
+end
+
 data:extend({
   {
     type = "shortcut",

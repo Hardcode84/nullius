@@ -8,12 +8,12 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
-| Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three 2.0 multiplayer scenarios pass 297 assertions. The 2.1 clients load all sprites; tests stop at rejected Configurable Valves key bindings |
+| Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three scenarios pass on both engines, including shared-body save/reload. The 2.1 run passes 287 assertions |
 | Assembler sprite layouts | All eight definitions use native 2.1 layers with the Nullius scale, offsets, and cycle duration | Both clients render and craft: 16 assertions each. Checks include status lights, frozen overlays, and inherited variants. The full 2.0 prototype dump is unchanged |
 | Distillery sprite layouts | All three tiers and their pneumatic variants use complete native 2.1 refinery graphics with their tier colours | Both clients render and craft in all four directions: 48 assertions each. Native layers, smoke, lights, and frozen overlays match. The full 2.0 prototype dump is unchanged |
 | Pumpjack sprite layouts | Wells and extractors use native 2.1 arm shadows; custom coloured arms stay unchanged | Shadow scale and timing match each arm. Both clients render all eight definitions in four directions and produce water: 64 assertions each. The full 2.0 prototype dump is unchanged |
 | Chemical-plant sprite layouts | All three tiers and their pneumatic variants use native 2.1 body layers with Nullius scale, offsets, and colours | Both clients render and craft in all four directions: 48 assertions each. Checks preserve animation timing and recipe effects and include frozen overlays. The full 2.0 prototype dump is unchanged |
-| Configurable Valves key bindings | The staged dependency uses `PAD -` and `PAD +`, which 2.1 rejects | Update the dependency bindings and verify them with a client |
+| Configurable Valves key bindings | The old keypad defaults map to `KP_MINUS` and `KP_PLUS` on 2.1 | Fresh full dumps show exactly two changed defaults on 2.1 and no changes on 2.0. Native multiplayer clients accept the bindings |
 | Hidden upgrade targets | Cleanup checks build items across all item types and the first explicit `placeable_by` entry | Ten native cases pass on each engine. Full-mod 2.0 data is unchanged. Removing nine invalid rolling-stock links lets the staged 2.1 prototype dump pass |
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
@@ -127,6 +127,7 @@ python tools/test_assembler_graphics_compatibility.py --factorio-2-0 /path/to/fa
 python tools/test_distillery_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_pumpjack_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_chemical_plant_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
+python tools/test_valve_input_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```

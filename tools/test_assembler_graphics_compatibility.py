@@ -20,7 +20,8 @@ NAMES = {"nullius-small-assembler-1": 1, "nullius-medium-assembler-1": 1,
          "nullius-medium-assembler-3": 3, "nullius-large-assembler-2": 3}
 
 
-def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua", baseline_ref="6491f73"):
+def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua", baseline_ref="6491f73",
+            baseline_directory="entity"):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
     work = Path(tempfile.mkdtemp(prefix="assembler-capture-"))
@@ -33,8 +34,9 @@ def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua",
     if baseline:
         p = work / "mods/nullius-star/prototypes"
         p.unlink(); shutil.copytree(ROOT / "nullius-star/prototypes", p)
-        (p / "entity" / baseline_file).write_bytes(subprocess.check_output(
-            ["git", "show", f"{baseline_ref}:nullius-star/prototypes/entity/{baseline_file}"], cwd=ROOT))
+        relative = Path("prototypes") / baseline_directory / baseline_file
+        (work / "mods/nullius-star" / relative).write_bytes(subprocess.check_output(
+            ["git", "show", f"{baseline_ref}:nullius-star/{relative}"], cwd=ROOT))
     data = dump(work, engine)
     print(f"Captured {version}, baseline={baseline}: {work}", flush=True)
     return data, major
