@@ -1,0 +1,24 @@
+--- a/boblogistics/prototypes/recipe/robots-recipe-updates.lua
++++ b/boblogistics/prototypes/recipe/robots-recipe-updates.lua
+@@ -265,7 +265,9 @@
+       "bob-robot-tool-logistic-4",
+       { type = "item", name = "tungsten-carbide", amount = 1 }
+     )
+-    bobmods.lib.tech.add_prerequisite("bob-robots-3", "bob-tungsten-processing")
++    local tungsten = data.raw.technology["bob-tungsten-processing"] or data.raw.technology["tungsten-carbide"]
++    assert(tungsten, "No technology provides tungsten-carbide")
++    bobmods.lib.tech.add_prerequisite("bob-robots-3", tungsten.name)
+   end
+ end
+ 
+--- a/boblogistics/prototypes/repair-pack-updates.lua
++++ b/boblogistics/prototypes/repair-pack-updates.lua
+@@ -44,5 +44,7 @@
+ 
+ if data.raw.item["tungsten-carbide"] then
+   bobmods.lib.recipe.replace_ingredient("bob-repair-pack-5", "steel-plate", "tungsten-carbide")
+-  bobmods.lib.tech.add_prerequisite("bob-repair-pack-5", "bob-tungsten-processing")
++  local tungsten = data.raw.technology["bob-tungsten-processing"] or data.raw.technology["tungsten-carbide"]
++  assert(tungsten, "No technology provides tungsten-carbide")
++  bobmods.lib.tech.add_prerequisite("bob-repair-pack-5", tungsten.name)
+ end

@@ -255,10 +255,18 @@ the full 2.1 prototype dump with this staged set. The full suite passes all
 127 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
 and the isolated compatibility suite pass.
 
-Bob's 3.0.1 also reports two missing `bob-tungsten-processing` prerequisites.
-Its robot and repair-pack updates detect Space Age's `tungsten-carbide` item,
-then assume Bob's tungsten technology exists. Guard this integration by the
-technology/mod that supplies the prerequisite, not by the shared item name.
+Bob's 3.0.1 needs `tools/patches/boblogistics-tungsten-prerequisites.patch`.
+The two updates select Bob's tungsten technology when present, otherwise
+Space Age's. Native Space Age and declared Bob-only, both-provider, and
+no-tungsten fixtures pass. The archive tool preserves the source archive and
+manifest; it writes a separate patched archive and reports source/patch hashes.
+The patched full mod has no missing-prerequisite warnings, no ignored Nullius
+prototype fields, and passes all 127 scenarios on 2.1.
+
+```bash
+python tools/patch_boblogistics_tungsten.py --source /path/to/original/boblogistics_3.0.1.zip --output /path/to/staged/boblogistics_3.0.1.zip
+python tools/test_boblogistics_tungsten.py --factorio /path/to/factorio-2.1 --dependency-mod-directory /path/to/original/dependencies
+```
 
 ## Behavior and validation
 
