@@ -8,6 +8,8 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
+| Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three 2.0 multiplayer scenarios pass 297 assertions. The 2.1 servers start; clients stop at invalid assembler shadow rectangles |
+| Assembler sprite layouts | The 2.1 assembler-1 and assembler-3 shadow sheets no longer match the Nullius frame rectangles | Port affected animation layers to the native sprite metadata; verify client graphics loading on both engines |
 | Hidden upgrade targets | Cleanup checks build items across all item types and the first explicit `placeable_by` entry | Ten native cases pass on each engine. Full-mod 2.0 data is unchanged. Removing nine invalid rolling-stock links lets the staged 2.1 prototype dump pass |
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |

@@ -115,15 +115,11 @@ def prepare_support_overlay(run_directory: Path, scenario: Path, until_tick: int
     if not multiplayer and not settings_fixture.is_file():
         return
     support = run_directory / "mods" / "factorio-test-support"
-    source = support.resolve()
-    if multiplayer and (source / "control.lua").exists():
+    if multiplayer and (support / "control.lua").exists():
         raise TestFailure("multiplayer deadline conflicts with the test-support runtime entry point")
-    if settings_fixture.is_file() and (source / "settings-updates.lua").exists():
+    if settings_fixture.is_file() and (support / "settings-updates.lua").exists():
         raise TestFailure("scenario settings conflict with test-support settings")
-    support.unlink()
-    support.mkdir()
-    for entry in source.iterdir():
-        (support / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
+    # prepare_mods owns this directory and its version-specific manifest.
     if settings_fixture.is_file():
         (support / "settings-updates.lua").symlink_to(settings_fixture.resolve())
     if multiplayer:

@@ -23,9 +23,65 @@ from tools.run_factorio_tests import (
     validate_until_tick,
     write_result_json,
 )
+from tools.factorio_multiplayer import prepare_support_overlay
 
 
 class FactorioTestRunnerTests(unittest.TestCase):
+    def test_support_overlay_preserves_staged_manifest_and_sources(self) -> None:
+        for version in ("2.0", "2.1"):
+            for multiplayer, settings in ((False, False), (False, True), (True, False), (True, True)):
+                with self.subTest(version=version, multiplayer=multiplayer, settings=settings), tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    dependencies = root / "dependencies"
+                    dependencies.mkdir()
+                    for name in DEPENDENCY_MODS:
+                        (dependencies / f"{name}_1.0.0.zip").touch()
+                    subject = root / "subject"
+                    subject.mkdir()
+                    (subject / "info.json").write_text(json.dumps({
+                        "factorio_version": version, "version": "1.2.3",
+                    }))
+                    scenario = root / "scenario"
+                    scenario.mkdir()
+                    if settings:
+                        (scenario / "settings-updates.lua").write_text("-- startup settings\n")
+                    prepare_mods(root / "mods", dependencies, subject)
+                    support = root / "mods/factorio-test-support"
+                    before = {p.name: (p.resolve(), p.read_bytes()) for p in support.iterdir() if p.is_file()}
+
+                    prepare_support_overlay(root, scenario, 6000, multiplayer)
+
+                    self.assertFalse(support.is_symlink())
+                    for name, (source, contents) in before.items():
+                        self.assertEqual((support / name).resolve(), source)
+                        self.assertEqual((support / name).read_bytes(), contents)
+                        self.assertEqual(source.read_bytes(), contents)
+                    metadata = json.loads((support / "info.json").read_text())
+                    self.assertEqual(metadata["factorio_version"], version)
+                    self.assertEqual(metadata["dependencies"], ["nullius-star = 1.2.3"])
+                    self.assertEqual((support / "settings-updates.lua").exists(), settings)
+                    if settings:
+                        self.assertEqual((support / "settings-updates.lua").resolve(), scenario / "settings-updates.lua")
+                    self.assertEqual((support / "control.lua").exists(), multiplayer)
+                    if multiplayer:
+                        self.assertIn("on_nth_tick(6001", (support / "control.lua").read_text())
+                        self.assertIn("game.tick > 6000", (support / "control.lua").read_text())
+
+    def test_support_overlay_rejects_conflicts_before_writing(self) -> None:
+        for conflict in ("control.lua", "settings-updates.lua"):
+            with self.subTest(conflict=conflict), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                support = root / "mods/factorio-test-support"
+                support.mkdir(parents=True)
+                (support / conflict).write_text("-- retained entry point\n")
+                scenario = root / "scenario"
+                scenario.mkdir()
+                (scenario / "settings-updates.lua").write_text("-- scenario settings\n")
+                with self.assertRaisesRegex(TestFailure, "conflicts? with"):
+                    prepare_support_overlay(root, scenario, 10, True)
+                self.assertEqual(list(support.iterdir()), [support / conflict])
+                self.assertEqual((support / conflict).read_text(), "-- retained entry point\n")
+
     def test_multiplayer_metadata_and_deadline(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             scenarios = Path(temporary)
