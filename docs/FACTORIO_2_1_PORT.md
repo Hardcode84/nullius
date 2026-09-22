@@ -12,6 +12,7 @@ planner schema witness. Full gameplay has not been ported.
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
 | Industrial metallurgic science | The second barrel return uses the engine-specific 90% probability field | Both engines retain five science packs, one guaranteed barrel, and one 90% barrel return. Native tests verify that productivity doubles science but does not duplicate barrels |
+| Optional mod recipe definitions | `prototypes/mods.lua` uses native categories and removes obsolete display fields on 2.1 | Native fixtures craft 174 recipes on both engines and compare recipes and technologies with the original 2.0 source across 12 configurations. Legacy Crafting Combinator item names contain `:` and fail native validation on both engines; their external port must supply valid names before the integration can load |
 | Optional mod overrides | All remaining recipe categories in `override_mod.lua` use the native schema; removed display fields are version-gated, cargo drone friction uses `friction_force`, and obsolete depot-fluid fields are removed | Both engines craft 18 Text Plates recipes and 25 transport recipes with declared external prototypes. Tests check exact costs, yields, categories, depot volumes, and optional guards; full Nullius 2.0 passes the absent-mod cases |
 | Induction Charging recipe category | The override replaces inherited categories with the native small-crafting field | Both engines pass 93 assertions for crafting, inherited output/unlock, five research definitions, item properties, and the absent-mod guard. External prototypes are declared fixtures; full Nullius 2.0 passes the absent-mod case |
 | GCKI car-key recipe category | The optional recipe selects the native schema | Both engines pass 28 assertions with declared external prototypes: crafting, broadcasting unlock, exact costs and time, category rejection, and both guards. Full Nullius 2.0 passes the GCKI-absent guard; the external GCKI mod is not included in this test |
@@ -104,6 +105,7 @@ python tools/test_textplate_recipe_compatibility.py --factorio /path/to/factorio
 python tools/test_textplate_recipe_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_optional_override_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_optional_override_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```
 

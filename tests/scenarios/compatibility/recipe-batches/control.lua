@@ -4,7 +4,7 @@
 -- act: select each recipe on a surface within its temperature bounds
 -- run: at most 3600 ticks; inspect outputs as soon as each craft completes
 -- expect: one craft, exact deterministic products, and bounded random returns
-local contracts = require("__nullius-star__/vulcanus-test-contracts")
+local contracts = require("__nullius-star__/recipe-test-contracts")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local modern = require("__nullius-star__/factorio-version").is_2_1
 local function check(ok, message)
@@ -45,7 +45,7 @@ script.on_init(function()
         end
         check(index ~= nil, name .. " input port " .. part.name)
         local x = position.x + 2*(part.fluidbox_index or index)-7
-        local pump = surface.create_entity{name="test-vulcanus-pump",position={x,position.y-7.5},direction=defines.direction.south,force="player"}
+        local pump = surface.create_entity{name="test-recipe-pump",position={x,position.y-7.5},direction=defines.direction.south,force="player"}
         local buffer = surface.create_entity{name="test-buffer-"..name.."-"..part.name,position={x,position.y-9},force="player"}
         local temperature = part.temperature or part.minimum_temperature or prototypes.fluid[part.name].default_temperature
         fluid_api.set(buffer,1,{name=part.name,amount=part.amount,temperature=temperature})
@@ -104,7 +104,7 @@ script.on_nth_tick(10,function(event)
     end
   end
   if #storage.rows==0 then
-    helpers.write_file("factorio-tests/vulcanus-processing.json",helpers.table_to_json({status="pass",recipes=storage.total,assertions=storage.assertions,tick=event.tick}),false)
+    helpers.write_file("factorio-tests/recipe-batches.json",helpers.table_to_json({status="pass",recipes=storage.total,assertions=storage.assertions,tick=event.tick}),false)
     script.on_nth_tick(10,nil)
   elseif event.tick>=3600 then
     local missing={}

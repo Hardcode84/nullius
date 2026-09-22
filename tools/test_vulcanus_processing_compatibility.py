@@ -101,10 +101,10 @@ def run(engine, baseline, alignment):
                  if name not in baseline["inputs"] and
                  (alignment or name != "nullius-align-identification-card-vulcanus")}
     assert contracts, "No generated Vulcanus recipes captured"
-    (mod / "vulcanus-test-contracts.lua").write_text("return " + lua(contracts) + "\n")
-    (mod / "executors.lua").symlink_to(ROOT / "tests/compatibility/vulcanus-processing-executors.lua")
+    (mod / "recipe-test-contracts.lua").write_text("return " + lua(contracts) + "\n")
+    (mod / "executors.lua").symlink_to(ROOT / "tests/factorio-test-support/recipe-batches.lua")
     (mod / "scenarios").mkdir()
-    (mod / "scenarios/vulcanus-processing").symlink_to(ROOT / "tests/scenarios/compatibility/vulcanus-processing")
+    (mod / "scenarios/recipe-batches").symlink_to(ROOT / "tests/scenarios/compatibility/recipe-batches")
     (mod / "scenarios/fluid-api.lua").symlink_to(ROOT / "tests/scenarios/fluid-api.lua")
     with (mod / "data.lua").open("a") as output:
         output.write('require("executors")\n')
@@ -126,11 +126,11 @@ def run(engine, baseline, alignment):
         assert actual == baseline["alignment_after"]["effects"], "Alignment unlocks differ"
     assert resolved["recipe"]["nullius-boxed-solar-panel-1-vulcanus"].get(
         "categories", [resolved["recipe"]["nullius-boxed-solar-panel-1-vulcanus"].get("category")]) == ["huge-fluid-assembly"]
-    deadline = json.loads((ROOT / "tests/scenarios/compatibility/vulcanus-processing/test.json").read_text())["until_tick"]
-    command(work, engine, ["--scenario2map", "nullius-star/vulcanus-processing"], "compile")
-    command(work, engine, ["--load-game", str(work / "saves/nullius-star/vulcanus-processing.zip"),
+    deadline = json.loads((ROOT / "tests/scenarios/compatibility/recipe-batches/test.json").read_text())["until_tick"]
+    command(work, engine, ["--scenario2map", "nullius-star/recipe-batches"], "compile")
+    command(work, engine, ["--load-game", str(work / "saves/nullius-star/recipe-batches.zip"),
                            "--until-tick", str(deadline)], "run")
-    result = json.loads((work / "script-output/factorio-tests/vulcanus-processing.json").read_text())
+    result = json.loads((work / "script-output/factorio-tests/recipe-batches.json").read_text())
     assert result["status"] == "pass" and result["recipes"] == len(contracts), result
     return dict(version=version, alignment=alignment, recipes=checked, crafting=result,
                 items=len(baseline["products"]), artifacts=str(work))

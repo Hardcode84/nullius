@@ -1,4 +1,4 @@
-local contracts = require("vulcanus-test-contracts")
+local contracts = require("recipe-test-contracts")
 for name, recipe in pairs(contracts) do
   local machine = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-2"])
   machine.name = "test-" .. name
@@ -40,7 +40,7 @@ for name, recipe in pairs(contracts) do
   end
 end
 local pump = table.deepcopy(data.raw.pump.pump)
-pump.name = "test-vulcanus-pump"
+pump.name = "test-recipe-pump"
 pump.energy_source = {type="void"}
 pump.pumping_speed = 10000
 data:extend({pump})
