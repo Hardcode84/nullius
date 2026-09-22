@@ -1,3 +1,4 @@
+local hide_connections = require("prototypes.entity.hide-fluid-connections")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
@@ -1377,16 +1378,15 @@ data:extend({
             collision_box = {{-0.29, -0.9}, {0.29, 0.9}}, --from pump
             collision_mask = { layers = { } }, -- collide with nothing
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-            fluid_box = {
+            fluid_box = hide_connections({
                 volume = 100,
                 pipe_covers = pipecoverspictures(),
                 pipe_connections = {
                     { direction = defines.direction.south, position = {0, 0.5}, flow_direction = "input-output" },
                     { connection_type = "linked", flow_direction = "input-output", linked_connection_id=31113 }
                 },
-                hide_connection_info = true,
                 max_pipeline_extent = 1000000, -- Big number, nobody would build this big right?
-            },
+            }),
             show_fluid_icon = false,
             window_bounding_box = {{0,0}, {0,0}},
             flow_length_in_ticks = 360,
@@ -1417,7 +1417,7 @@ data:extend({
             collision_box = {{-0.29, -0.9}, {0.29, 0.9}}, --from pump
             collision_mask = { layers = { } }, -- collide with nothing
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-            fluid_box = {
+            fluid_box = hide_connections({
                 volume = 100,
                 pipe_covers = pipecoverspictures(),
                 pipe_connections = {
@@ -1427,9 +1427,8 @@ data:extend({
                     --{ position = {0, -0.5}, flow_direction = "output", direction = defines.direction.north },
                     --{ position = {0, 0.5}, flow_direction = "input", direction = defines.direction.south }
                 },
-                hide_connection_info = true,
                 max_pipeline_extent = 1000000, -- Big number, nobody would build this big right?
-            },
+            }),
             show_fluid_icon = false,
             window_bounding_box = {{0,0}, {0,0}},
             flow_length_in_ticks = 360,
@@ -3252,7 +3251,7 @@ data:extend({
     },
   
     fluid_box =
-        {
+        hide_connections({
           volume = 500,
           pipe_covers = pipecoverspictures(),
           pipe_connections =
@@ -3260,8 +3259,7 @@ data:extend({
             {connection_type = "linked", flow_direction = "output", linked_connection_id=31113 + 1 },
             {connection_type = "linked", flow_direction = "input", linked_connection_id=31113 - 1 }
           },
-          hide_connection_info = true,
-        },
+        }),
     energy_source = {
       type = "electric",
       usage_priority = "primary-input"
@@ -3435,7 +3433,7 @@ data:extend({
       { type = "fire", decrease = 20, percent = 50 }
     },
     fluid_box =
-        {
+        hide_connections({
           volume = 500,
           pipe_covers = pipecoverspictures(),
           pipe_connections =
@@ -3443,8 +3441,7 @@ data:extend({
             {connection_type = "linked", flow_direction = "output", linked_connection_id=31113 + 1 },
             {connection_type = "linked", flow_direction = "input", linked_connection_id=31113 - 1 }
           },
-          hide_connection_info = true,
-        },
+        }),
     energy_source = {
       type = "electric",
       usage_priority = "primary-input"
@@ -3620,7 +3617,7 @@ data:extend({
       { type = "fire", decrease = 20, percent = 50 }
     },
     fluid_box =
-    {
+    hide_connections({
       volume = 1000,
       pipe_covers = pipecoverspictures(),
       pipe_connections =
@@ -3628,8 +3625,7 @@ data:extend({
         {connection_type = "linked", flow_direction = "output", linked_connection_id=31113 + 1 },
         {connection_type = "linked", flow_direction = "input", linked_connection_id=31113 - 1 }
       },
-      hide_connection_info = true,
-    },
+    }),
     energy_source = {
       type = "electric",
       usage_priority = "primary-input"
@@ -3961,7 +3957,7 @@ data:extend({
 	  -- pipe_covers = pipecoverspictures()
     -- },
     fluid_box =
-        {
+        hide_connections({
           volume = 500,
           pipe_covers = pipecoverspictures(),
           pipe_connections =
@@ -3969,8 +3965,7 @@ data:extend({
             {connection_type = "linked", flow_direction = "output", linked_connection_id=31113 + 1 },
             {connection_type = "linked", flow_direction = "input", linked_connection_id=31113 - 1 }
           },
-          hide_connection_info = true,
-        },
+        }),
     energy_source = {
       type = "electric",
       usage_priority = "primary-input"
@@ -4098,7 +4093,7 @@ data:extend({
     -- pipe_covers = pipecoverspictures()
     -- },
       fluid_box =
-        {
+        hide_connections({
           volume = 500,
           pipe_covers = pipecoverspictures(),
           pipe_connections =
@@ -4106,8 +4101,7 @@ data:extend({
             {connection_type = "linked", flow_direction = "output", linked_connection_id=31113 + 1 },
             {connection_type = "linked", flow_direction = "input", linked_connection_id=31113 - 1 }
           },
-          hide_connection_info = true,
-        },
+        }),
     energy_source = {
       type = "electric",
       usage_priority = "primary-input"
@@ -4212,7 +4206,7 @@ data:extend({
     collision_box = {{-0.29, -0.29}, {0.29, 0.29}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe"]["pipe"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(), -- in case a real pipe is connected to a ghost
       max_pipeline_extent = 144,
@@ -4222,8 +4216,7 @@ data:extend({
         { position = {0, 0},  direction = defines.direction.south },
         { position = {0, 0}, direction = defines.direction.west }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe"]["pipe"].impact_category,
     working_sound = data.raw["pipe"]["pipe"].working_sound,
     horizontal_window_bounding_box = {{-0.25, -0.25}, {0.25, 0.15625}},
@@ -4251,7 +4244,7 @@ data:extend({
     collision_box = {{-0.29, -0.29}, {0.29, 0.29}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe"]["pipe"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(), -- in case a real pipe is connected to a ghost
       max_pipeline_extent = 320,
@@ -4261,8 +4254,7 @@ data:extend({
         { position = {0, 0},  direction = defines.direction.south },
         { position = {0, 0}, direction = defines.direction.west }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe"]["pipe"].impact_category,
     working_sound = data.raw["pipe"]["pipe"].working_sound,
     horizontal_window_bounding_box = {{-0.25, -0.25}, {0.25, 0.15625}},
@@ -4289,7 +4281,7 @@ data:extend({
     collision_box = {{-0.29, -0.29}, {0.29, 0.29}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe"]["pipe"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(), -- in case a real pipe is connected to a ghost
       max_pipeline_extent = 672,
@@ -4299,8 +4291,7 @@ data:extend({
         { position = {0, 0},  direction = defines.direction.south },
         { position = {0, 0}, direction = defines.direction.west }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe"]["pipe"].impact_category,
     working_sound = data.raw["pipe"]["pipe"].working_sound,
     horizontal_window_bounding_box = {{-0.25, -0.25}, {0.25, 0.15625}},
@@ -4328,7 +4319,7 @@ data:extend({
     collision_box = {{-0.29, -0.25}, {0.25, 0.2}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe-to-ground"]["pipe-to-ground"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(),
       max_pipeline_extent = 144,
@@ -4341,8 +4332,7 @@ data:extend({
           direction = defines.direction.south
         }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe-to-ground"]["pipe-to-ground"].impact_category,
     pictures = undergroundpipepics("__boblogistics__/graphics/entity/pipe/copper-tungsten/"),
     visualization = data.raw["pipe-to-ground"]["pipe-to-ground"].visualization,
@@ -4369,7 +4359,7 @@ data:extend({
     collision_box = {{-0.29, -0.25}, {0.25, 0.2}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe-to-ground"]["pipe-to-ground"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(),
       max_pipeline_extent = 320,
@@ -4382,8 +4372,7 @@ data:extend({
           direction = defines.direction.south
         }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe-to-ground"]["pipe-to-ground"].impact_category,
     pictures = data.raw["pipe-to-ground"]["bob-plastic-pipe-to-ground"].pictures,
     visualization = data.raw["pipe-to-ground"]["pipe-to-ground"].visualization,
@@ -4409,7 +4398,7 @@ data:extend({
     collision_box = {{-0.29, -0.25}, {0.25, 0.2}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     damaged_trigger_effect = data.raw["pipe-to-ground"]["pipe-to-ground"].damaged_trigger_effect,
-    fluid_box = {
+    fluid_box = hide_connections({
       volume = 400,
       pipe_covers = pipecoverspictures(),
       max_pipeline_extent = 672,
@@ -4422,8 +4411,7 @@ data:extend({
           direction = defines.direction.south
         }
       },
-      hide_connection_info = true
-    },
+    }),
     impact_category = data.raw["pipe-to-ground"]["pipe-to-ground"].impact_category,
     pictures = undergroundpipepics("__boblogistics__/graphics/entity/pipe/tungsten/"),
     visualization = data.raw["pipe-to-ground"]["pipe-to-ground"].visualization,

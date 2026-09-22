@@ -1,3 +1,4 @@
+local hide_connections = require("prototypes.entity.hide-fluid-connections")
 local modern = require("factorio-version").is_2_1
 
 local function extend_vulcanus_entities(prototypes)
@@ -372,17 +373,16 @@ for i = 1, 2 do
     -- Keep a directional connection so Factorio allows the shell to rotate.
     -- Its private connection category cannot join ordinary pipes; the hidden
     -- drill remains the sole owner of the physical gas network at this position.
-    lava_gasvent.fluid_boxes = {{
+    lava_gasvent.fluid_boxes = {hide_connections({
       production_type = "output",
       volume = 1,
-      hide_connection_info = true,
       pipe_connections = {{
         position = {0, 1},
         direction = defines.direction.south,
         flow_direction = "output",
         connection_category = "nullius-gasvent-shell-direction",
       }},
-    }}
+    })}
     data:extend({lava_gasvent})
   end
 end

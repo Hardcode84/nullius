@@ -12,6 +12,7 @@ planner schema witness. Full gameplay has not been ported.
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
 | Industrial metallurgic science | The second barrel return uses the engine-specific 90% probability field | Both engines retain five science packs, one guaranteed barrel, and one 90% barrel return. Native tests verify that productivity doubles science but does not duplicate barrels |
+| Hidden fluid connections | A shared helper retains the box-level flag on 2.0 and sets it on each connection on 2.1 | Full-mod 2.0 resolved data matches the baseline exactly. Native fixtures check 60 fluid boxes and 121 connections on both engines, including linked ports and inherited variants |
 | Crafting-machine mirroring | All 15 declarations retain `forced_symmetry` on 2.0 and use `use_mirroring` on 2.1 | Isolated native assemblers use 29 resolved recipe-port layouts, including thermal and pneumatic variants. Both engines pass 116 mirrored orientations and 600 pipe-flow checks. 2.1 also checks both native flip axes and fluid preservation; fixtures use base graphics and void power |
 | Optional mod recipe definitions | `prototypes/mods.lua` uses native categories and removes obsolete display fields on 2.1 | Native fixtures craft 174 recipes on both engines and compare recipes and technologies with the original 2.0 source across 12 configurations. Legacy Crafting Combinator item names contain `:` and fail native validation on both engines; their external port must supply valid names before the integration can load |
 | Optional mod overrides | All remaining recipe categories in `override_mod.lua` use the native schema; removed display fields are version-gated, cargo drone friction uses `friction_force`, and obsolete depot-fluid fields are removed | Both engines craft 18 Text Plates recipes and 25 transport recipes with declared external prototypes. Tests check exact costs, yields, categories, depot volumes, and optional guards; full Nullius 2.0 passes the absent-mod cases |
@@ -172,6 +173,7 @@ Fulgora API benefit, not full-mod compatibility.
 ## Reproduce
 
 ```bash
+python tools/test_hidden_connections_compatibility.py --factorio-2-0 "$FACTORIO_2_0" --factorio-2-1 "$FACTORIO_2_1"
 python tools/test_machine_mirroring_compatibility.py --factorio-2-0 "$FACTORIO_2_0" --factorio-2-1 "$FACTORIO_2_1"
 python tools/assess_factorio_port.py --factorio-version 2.1 --portal-only
 python tools/assess_factorio_port.py --factorio-version 2.1 --source-audit tests/compatibility/factorio-2.1-source-audit.json --report ../nullius-source-audit.json

@@ -1,3 +1,4 @@
+local hide_connections = require("prototypes.entity.hide-fluid-connections")
 local invisible = {
   filename = "__nullius-star__/graphics/icons/blank.png",
   width = 32,
@@ -262,15 +263,14 @@ local furnace1cb = {
       volume = 1000,
       secondary_draw_orders = { north = -1 }
     },
-    {
+    hide_connections({
 	    filter = "nullius-energy",
       production_type = "output",
 	    pipe_connections = {
 	      { flow_direction = "output", position = {1, -1.1}, direction = defines.direction.north },
 	      { flow_direction = "output", position = {-1, 1.1}, direction = defines.direction.south }},
       volume = 500,
-	    hide_connection_info = true
-    },
+    }),
     {
       production_type = "output",
 	    pipe_connections = {{ flow_direction = "output", position = {0, 2}, direction = defines.direction.south }},
@@ -327,7 +327,7 @@ local generator1ob = {
     performance_to_activity_rate = 0.5
   },
   
-  fluid_box = {
+  fluid_box = hide_connections({
     filter = "nullius-energy",
     production_type = "input",
 	  pipe_connections = {
@@ -335,8 +335,7 @@ local generator1ob = {
 	    { flow_direction = "input-output", position = {1, 1.1}, direction = defines.direction.south }
 	  },
     volume = 500,
-	  hide_connection_info = true
-  }
+  })
 }
 
 local generator2ob = util.table.deepcopy(generator1ob)
@@ -379,15 +378,14 @@ local connector = {
     flow_sprite = invisible,
     gas_flow = invisible
   },
-  fluid_box = {
+  fluid_box = hide_connections({
     filter = "nullius-energy",
     volume = 500,
-	  hide_connection_info = true,
     pipe_connections = {
       { position = {1, 0.04}, direction = defines.direction.south },
       { position = {-1, 0.04}, direction = defines.direction.south }
     }
-  }
+  })
 }
 
 local vent1 = {
@@ -407,13 +405,12 @@ local vent1 = {
   result_inventory_size = 1,
   crafting_speed = 1,
   source_inventory_size = 0,
-  fluid_boxes = {{
+  fluid_boxes = {hide_connections({
 	  filter = "nullius-energy",
     production_type = "input",
     volume = 500,
-	  hide_connection_info = true,
     pipe_connections = {{ flow_direction ="input-output", position = {-1, 0.04}, direction = defines.direction.south }}
-  }},
+  })},
   energy_source = {type = "void"},
   energy_usage = "1W"
 }
