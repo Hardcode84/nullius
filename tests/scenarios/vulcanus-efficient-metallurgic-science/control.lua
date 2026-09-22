@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local probability = require("__nullius-star__/factorio-version").is_2_1 and "independent_probability" or "probability"
 local CASE = "vulcanus-efficient-metallurgic-science"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -115,7 +116,7 @@ local function check_terminal()
   script.on_nth_tick(storage.terminal_tick, nil)
   local output = storage.assembler.get_output_inventory()
   local input = storage.assembler.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   local gas = storage.assembler.get_fluid_count(GAS) +
     storage.gas_pipe.get_fluid_count(GAS)
   observations.terminal = {
@@ -161,7 +162,7 @@ local function start_efficient_recipe()
       cycles = pump.products_finished,
       fluids = pump.get_fluid_contents(),
       input = pump.get_inventory(
-        defines.inventory.assembling_machine_input).get_contents(),
+        crafting_input).get_contents(),
     }
   end
   check(storage.chlorine_pump.products_finished == 1,
@@ -197,7 +198,7 @@ local function start_efficient_recipe()
     "efficient recipe allows productivity to duplicate returned barrels")
 
   local input = inventory(assembler,
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   if not input then finish() return end
   check(input.insert{name = "nullius-molten-iron-bloom", count = 2} == 2,
     "failed to insert hot iron blooms")
@@ -253,7 +254,7 @@ local function prepare_barrel_pump(surface, position, recipe_name, fluid_name)
   if not pump then return nil end
   pump.active = false
   check(pump.set_recipe(recipe_name), "failed to set " .. recipe_name)
-  local input = inventory(pump, defines.inventory.assembling_machine_input)
+  local input = inventory(pump, crafting_input)
   if not input then return nil end
   check(input.insert{name = "barrel", count = 1} == 1,
     "failed to insert barrel for " .. fluid_name)

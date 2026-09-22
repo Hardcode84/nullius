@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-inorganic-barrel"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local MACHINE = "nullius-small-assembler-1-pneumatic"
@@ -62,7 +63,7 @@ local function check_terminal()
   script.on_nth_tick(TERMINAL_TICK, nil)
   local output = storage.machine.get_output_inventory()
   local input = storage.machine.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   observations.terminal = {
     cycles = storage.machine.products_finished,
     barrels = output and output.get_item_count("barrel") or 0,
@@ -168,7 +169,7 @@ local function setup()
   check(pipe.insert_fluid{name = GAS, amount = 59} == 59,
     "failed to supply compressed volcanic gas")
 
-  local input = machine.get_inventory(defines.inventory.assembling_machine_input)
+  local input = machine.get_inventory(crafting_input)
   check(input ~= nil, "pneumatic assembler has no input inventory")
   if not input then finish() return end
   for name, amount in pairs(INPUTS) do

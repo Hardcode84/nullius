@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "thermal-cell-1"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-pneumatic-technology"
@@ -114,7 +115,7 @@ end
 local function transfer_inputs(cell)
   for machine_index, machine in ipairs(cell.machines) do
     local machine_inventory = machine.get_inventory(
-      defines.inventory.assembling_machine_input)
+      crafting_input)
     local chest_inventory = cell.input_chests[machine_index].get_inventory(
       defines.inventory.chest)
     for name in pairs(cell.inputs) do
@@ -149,7 +150,7 @@ local function inputs_empty(cell)
     if not cell.input_chests[machine_index].get_inventory(
         defines.inventory.chest).is_empty() or
         not machine.get_inventory(
-          defines.inventory.assembling_machine_input).is_empty() then
+          crafting_input).is_empty() then
       return false
     end
   end

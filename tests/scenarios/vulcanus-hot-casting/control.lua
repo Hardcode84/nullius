@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-hot-casting"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-hot-metalworking"
@@ -165,7 +166,7 @@ local function terminal_check()
   for index, expected in ipairs(CASES) do
     local machine = storage.machines[index]
     local input = machine.get_inventory(
-      defines.inventory.assembling_machine_input)
+      crafting_input)
     local output = machine.get_output_inventory()
     observations.terminal[expected.recipe] = {
       cycles = machine.products_finished,
@@ -258,7 +259,7 @@ local function setup()
     check(machine.set_recipe(expected.recipe),
       "failed to set " .. expected.recipe)
     local input = machine.get_inventory(
-      defines.inventory.assembling_machine_input)
+      crafting_input)
     check(input.insert{name = expected.input, count = expected.input_count} ==
       expected.input_count, "failed to insert inputs for " .. expected.recipe)
     if not connect_heat(surface, machine) then finish() return end

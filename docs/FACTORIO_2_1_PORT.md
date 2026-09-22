@@ -2,7 +2,20 @@
 
 Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
 The staged 2.1 mod loads, renders, and passes multiplayer checks. Full
-compatibility is not established: 38 campaign and feature scenarios fail.
+compatibility is not established. The original audit found 38 failing
+scenarios; the inventory correction below resolves seven.
+
+## Inventory API correction
+
+All 27 scenario input-inventory accesses now select the native index through
+`inventory-api.lua`. The seven inventory-blocked scenarios pass on 2.1.
+`thermal-nanofabricators` also uses `fluid-api.lua`; all 98 assertions pass
+on both engines, including solid and fluid preservation during mode changes.
+The 2.0 regression suite passes all 127 scenarios. The 2.1 full run reports
+95 pass and 32 fail before the nanofabricator fluid correction; its focused
+rerun passes. Thus, 31 failures remain: 18 script-disable writes, eight fluid
+accesses, two recipe categories, one fluid removal, one rock contract, and
+one statistics timing check.
 
 ## Full audit
 

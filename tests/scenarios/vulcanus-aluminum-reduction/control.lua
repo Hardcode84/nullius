@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-aluminum-reduction"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local MACHINE = "nullius-small-furnace-1-thermal"
@@ -300,7 +301,7 @@ local function setup()
   storage.initial_pipe_temperature = heat_pipe.temperature
 
   local input_inventory = machine.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   check(input_inventory ~= nil, "thermal furnace has no crafter input inventory")
   if not input_inventory then finish() return end
   storage.input_inventory = input_inventory

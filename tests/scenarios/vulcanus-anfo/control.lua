@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 -- given: one batch of each recipe's ingredients and 5000 fuel gas per plant.
 -- place: two tier-1 pneumatic chemical plants on Vulcanus.
 -- connect: three input pipes and one wastewater pipe per plant; delay SO2 to tick 600.
@@ -77,7 +78,7 @@ script.on_nth_tick(30,function()
     for _,row in ipairs(storage.rows) do
       check(row.machine.products_finished==1,"one craft: "..row.product.." status="..row.machine.status)
       check(row.machine.get_output_inventory().get_item_count(row.product)==1,"one product: "..row.product)
-      check(row.machine.get_inventory(defines.inventory.assembling_machine_input).is_empty(),"all solids consumed")
+      check(row.machine.get_inventory(crafting_input).is_empty(),"all solids consumed")
       local fluids=row.output.get_fluid_contents()
       check(math.abs((fluids["nullius-wastewater"] or 0)-16*row.scale)<0.001,"connected wastewater output")
       check(row.fuel_left<5000,"fuel supplied")

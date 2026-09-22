@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local fluids = require("__nullius-star__/scenarios/fluid-api")
 return function(CASE, fixture)
 local failures = {}
@@ -37,7 +38,7 @@ local function feed(row)
         -- Deliver fresh declared stock in batches. Do not preload several
         -- spoilage windows of blooms into a slow bulk casting station.
         if input.batch then
-          local inventory = machine.get_inventory(defines.inventory.assembling_machine_input)
+          local inventory = machine.get_inventory(crafting_input)
           count = math.min(count, math.max(0, input.batch - inventory.get_item_count(input.name)))
         end
         if transferred[input.name] then count = math.min(count, storage.transfers[input.name] or 0) end

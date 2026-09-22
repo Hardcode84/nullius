@@ -1,3 +1,5 @@
+local fluids = require("__nullius-star__/scenarios/fluid-api")
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "thermal-nanofabricators"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local SPECS = {
@@ -115,10 +117,10 @@ end
 
 local function input_fluid_box(machine, fluid_name)
   local fallback = nil
-  for index = 1, #machine.fluidbox do
-    local prototype = machine.fluidbox.get_prototype(index)
+  for index = 1, fluids.count(machine) do
+    local prototype = fluids.prototype(machine, index)
     if prototype and prototype.production_type ~= "output" then
-      local filter = machine.fluidbox.get_filter(index)
+      local filter = fluids.filter(machine, index)
       if filter and filter.name == fluid_name then return index end
       fallback = fallback or index
     end
@@ -233,17 +235,17 @@ local function setup()
       if not process then finish() return end
       process.enabled = true
       base.set_recipe(process)
-      local input = base.get_inventory(defines.inventory.assembling_machine_input)
+      local input = base.get_inventory(crafting_input)
       check(input.insert{name = "nullius-polycrystalline-silicon", count = 5} == 5,
         "failed to insert polycrystalline silicon")
       local argon_box = input_fluid_box(base, "nullius-argon")
       check(argon_box ~= nil, "nanofabricator has no argon input fluid box")
       if not argon_box then finish() return end
-      base.fluidbox[argon_box] = {
+      fluids.set(base, argon_box, {
         name = "nullius-argon",
         amount = 10,
         temperature = prototypes.fluid["nullius-argon"].default_temperature,
-      }
+      })
     end
     toggle(base)
     check(base.valid and base.name == spec.base,
@@ -259,11 +261,11 @@ local function setup()
             thermal.get_recipe().name == "nullius-monocrystalline-silicon",
           "thermal transition did not preserve nanotechnology recipe")
         check(thermal.get_inventory(
-            defines.inventory.assembling_machine_input).get_item_count(
+            crafting_input).get_item_count(
               "nullius-polycrystalline-silicon") == 5,
           "thermal transition did not preserve solid recipe input")
         local argon_box = input_fluid_box(thermal, "nullius-argon")
-        local argon = argon_box and thermal.fluidbox[argon_box]
+        local argon = argon_box and fluids.get(thermal, argon_box)
         check(argon and argon.name == "nullius-argon" and argon.amount == 10,
           "thermal transition did not preserve argon recipe input")
       end

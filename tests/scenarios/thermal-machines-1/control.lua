@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "thermal-machines-1"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-pneumatic-technology"
@@ -185,7 +186,7 @@ local function check_production()
   for _, test in ipairs(cases) do
     local machine = storage.machines[test.id]
     local input_inventory = machine.get_inventory(
-      defines.inventory.assembling_machine_input)
+      crafting_input)
     local output_inventory = machine.get_output_inventory()
     local outputs = inventory_counts(output_inventory)
     observations.machines[test.id] = {
@@ -370,7 +371,7 @@ local function setup()
         check(thermal.get_recipe() and thermal.get_recipe().name == test.recipe,
           test.id .. " transition did not preserve recipe")
         check_exact(inventory_counts(thermal.get_inventory(
-          defines.inventory.assembling_machine_input)), test.inputs,
+          crafting_input)), test.inputs,
           test.id .. " transitioned input")
       end
     end

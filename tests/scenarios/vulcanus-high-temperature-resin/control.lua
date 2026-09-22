@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-high-temperature-resin"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local HOT_RECIPE = "nullius-high-temperature-resin"
@@ -144,7 +145,7 @@ local function setup()
   check(machine.set_recipe(HOT_RECIPE),
     "high-temperature resin is unavailable on Vulcanus")
 
-  local input = machine.get_inventory(defines.inventory.assembling_machine_input)
+  local input = machine.get_inventory(crafting_input)
   check(input.insert{name = "nullius-acrylonitrile-barrel", count = 2} == 2,
     "failed to insert acrylonitrile barrels")
   check(input.insert{name = "nullius-ammonia-barrel", count = 1} == 1,

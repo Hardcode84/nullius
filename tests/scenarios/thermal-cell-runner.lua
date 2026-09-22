@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 return function(config)
 local CASE = config.case
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -111,7 +112,7 @@ end
 local function transfer_inputs(cell)
   for machine_index, machine in ipairs(cell.machines) do
     local machine_inventory = machine.get_inventory(
-      defines.inventory.assembling_machine_input)
+      crafting_input)
     local chest_inventory = cell.input_chests[machine_index].get_inventory(
       defines.inventory.chest)
     for name in pairs(cell.inputs) do
@@ -146,7 +147,7 @@ local function inputs_empty(cell)
     if not cell.input_chests[machine_index].get_inventory(
         defines.inventory.chest).is_empty() or
         not machine.get_inventory(
-          defines.inventory.assembling_machine_input).is_empty() then
+          crafting_input).is_empty() then
       return false
     end
   end
@@ -332,7 +333,7 @@ local function timeout()
         status = status_name(machine.status),
         recipe = machine.get_recipe() and machine.get_recipe().name,
         input = inventory_counts(machine.get_inventory(
-          defines.inventory.assembling_machine_input)),
+          crafting_input)),
         products_finished = machine.products_finished,
       }
     end

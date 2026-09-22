@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-refractory-production"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-vulcanus-refractory-engineering"
@@ -125,7 +126,7 @@ local function inventory(machine, index)
 end
 
 local function insert_items(machine, items)
-  local input = inventory(machine, defines.inventory.assembling_machine_input)
+  local input = inventory(machine, crafting_input)
   if not input then return false end
   for name, amount in pairs(items) do
     check(input.insert{name = name, count = amount} == amount,

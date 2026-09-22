@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-pneumatic-heat-production"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local HYDRO = "nullius-hydro-plant-1-pneumatic"
@@ -406,7 +407,7 @@ local function setup()
     "failed to set catalytic decomposition recipe")
 
   local furnace_input = storage.furnace.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   check(furnace_input ~= nil, "furnace has no input inventory")
   if not furnace_input then finish() return end
   check(furnace_input.insert{name = "nullius-alumina", count = 9} == 9,
@@ -415,7 +416,7 @@ local function setup()
     "failed to insert graphite")
 
   local radiator_input = storage.radiator.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   check(radiator_input ~= nil, "radiator has no input inventory")
   if not radiator_input then finish() return end
   check(radiator_input.insert{name = "nullius-rutile", count = 1} == 1,

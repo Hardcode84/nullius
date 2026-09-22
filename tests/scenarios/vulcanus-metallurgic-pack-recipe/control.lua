@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-metallurgic-pack-recipe"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local MACHINE = "nullius-small-assembler-1-pneumatic"
@@ -319,7 +320,7 @@ local function setup()
     "gas fixture did not contain exactly 354 compressed volcanic gas")
 
   local input_inventory = machine.get_inventory(
-    defines.inventory.assembling_machine_input)
+    crafting_input)
   check(input_inventory ~= nil, "pneumatic assembler has no input inventory")
   if not input_inventory then finish() return end
   storage.input_inventory = input_inventory

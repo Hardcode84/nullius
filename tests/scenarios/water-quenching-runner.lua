@@ -1,3 +1,4 @@
+local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 return function(CASE, spec)
 local BLOOM = "nullius-molten-" .. spec.metal .. "-bloom"
 local PRODUCT = "nullius-" .. spec.metal .. "-" .. spec.shape
@@ -58,7 +59,7 @@ local function fuel(inserter)
 end
 local function snapshot(cell)
   return {cycles = cell.machine.products_finished,
-    input = cell.machine.get_inventory(defines.inventory.assembling_machine_input).get_contents(),
+    input = cell.machine.get_inventory(crafting_input).get_contents(),
     output = cell.machine.get_output_inventory().get_contents(),
     water = cell.machine.get_fluid_count(WATER) + cell.pipe.get_fluid_count(WATER)}
 end
