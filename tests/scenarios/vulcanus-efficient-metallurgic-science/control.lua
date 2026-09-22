@@ -180,7 +180,7 @@ local function start_efficient_recipe()
   local assembler = build(surface, MACHINE, {20, 0})
   if not assembler then finish() return end
   storage.assembler = assembler
-  assembler.active = false
+  assembler.disabled_by_script = true
   check(assembler.set_recipe(RECIPE), "failed to set efficient recipe")
   local recipe = assembler.get_recipe()
   check(recipe and recipe.name == RECIPE, "efficient assembler has wrong recipe")
@@ -244,7 +244,7 @@ local function start_efficient_recipe()
   check(observations.runtime.craft_ticks <
     observations.runtime.aluminum_spoil_ticks,
     "efficient recipe cannot finish before aluminum bloom spoils")
-  assembler.active = true
+  assembler.disabled_by_script = false
   storage.terminal_tick = game.tick + observations.runtime.craft_ticks + 2
   script.on_nth_tick(storage.terminal_tick, check_terminal)
 end
@@ -252,7 +252,7 @@ end
 local function prepare_barrel_pump(surface, position, recipe_name, fluid_name)
   local pump = build(surface, BARREL_PUMP, position)
   if not pump then return nil end
-  pump.active = false
+  pump.disabled_by_script = true
   check(pump.set_recipe(recipe_name), "failed to set " .. recipe_name)
   local input = inventory(pump, crafting_input)
   if not input then return nil end
@@ -299,7 +299,7 @@ local function prepare_barrel_pump(surface, position, recipe_name, fluid_name)
   end
   check(gas_pipe ~= nil, "failed to fuel barrel pump for " .. fluid_name)
   if not gas_pipe then return nil end
-  pump.active = true
+  pump.disabled_by_script = false
   return pump
 end
 

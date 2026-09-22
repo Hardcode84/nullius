@@ -243,7 +243,7 @@ local function connect_heat()
     }
     check(source ~= nil, test.id .. " debug heat source could not be placed")
     if source then source.set_heat_setting{temperature = 250, mode = "at-least"} end
-    machine.active = true
+    machine.disabled_by_script = false
   end
   if #failures > 0 then finish() return end
   script.on_nth_tick(3600, check_production)
@@ -341,7 +341,7 @@ local function setup()
         check(machine.insert{name = name, count = count} == count,
           test.id .. " rejected input " .. name)
       end
-      machine.active = false
+      machine.disabled_by_script = true
     end
   end
 

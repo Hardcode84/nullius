@@ -188,7 +188,7 @@ local function start_research()
   check(force.current_research == force.technologies[TECHNOLOGY],
     "Efficient metallurgic science is not current research")
   storage.started_tick = game.tick
-  storage.lab.active = true
+  storage.lab.disabled_by_script = false
 end
 
 local function setup()
@@ -253,7 +253,7 @@ local function setup()
   check(lab ~= nil, "failed to build pneumatic lab")
   if not lab then finish() return end
   storage.lab = lab
-  lab.active = false
+  lab.disabled_by_script = true
 
   local lab_inputs = names_to_set(lab.prototype.lab_inputs)
   for name in pairs(UNIT_INGREDIENTS) do

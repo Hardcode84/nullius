@@ -323,7 +323,7 @@ local function setup()
       local _, machine = ghost.revive{raise_revive = true}
       check(machine ~= nil, "failed to revive " .. test.size .. " machine")
       if machine then
-        machine.active = false
+        machine.disabled_by_script = true
         storage.machine_positions[test.size] = machine.position
         check(#entities_at(s, test.interface, machine.position) == 1,
           test.size .. " build did not create exactly one heat interface")

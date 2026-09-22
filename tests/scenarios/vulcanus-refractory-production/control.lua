@@ -136,7 +136,7 @@ local function insert_items(machine, items)
 end
 
 local function set_recipe(machine, recipe_name)
-  machine.active = false
+  machine.disabled_by_script = true
   check(machine.set_recipe(recipe_name), "failed to set " .. recipe_name)
   local recipe = machine.get_recipe()
   check(recipe and recipe.name == recipe_name,
@@ -164,8 +164,8 @@ local function start_infrastructure()
     ["nullius-heat-pipe-1"] = 1,
     ["nullius-pipe-2"] = 4,
   })
-  storage.foundry.active = true
-  storage.radiator_assembler.active = true
+  storage.foundry.disabled_by_script = false
+  storage.radiator_assembler.disabled_by_script = false
   storage.stage = "infrastructure"
   observations.infrastructure_started = game.tick
 end
@@ -207,7 +207,7 @@ local function poll()
       "failed to transfer refractory mix")
     insert_items(storage.furnace, { ["nullius-refractory-mix"] = 10 })
     storage.furnace.temperature = 500
-    storage.furnace.active = true
+    storage.furnace.disabled_by_script = false
     storage.stage = "fire"
     observations.firing_started = game.tick
   elseif storage.stage == "fire" and
@@ -328,7 +328,7 @@ local function setup()
   fuel(surface, storage.radiator_assembler, 72)
   storage.foundry.temperature = 250
   if #failures > 0 then finish() return end
-  storage.mixer.active = true
+  storage.mixer.disabled_by_script = false
   storage.stage = "mix"
   observations.mix_started = game.tick
   script.on_nth_tick(30, poll)

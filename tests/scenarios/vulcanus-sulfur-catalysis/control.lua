@@ -189,7 +189,7 @@ local function start_machine()
   check(storage.machine.products_finished == 0,
     "radiator crafted while fixture was settling")
 
-  storage.machine.active = true
+  storage.machine.disabled_by_script = false
   storage.started_tick = game.tick
   storage.before_tick = game.tick + CRAFT_TICKS
   storage.terminal_tick = game.tick + TERMINAL_TICKS
@@ -245,7 +245,7 @@ local function setup()
   if #machines ~= 1 then finish() return end
   local machine = machines[1]
   storage.machine = machine
-  machine.active = false
+  machine.disabled_by_script = true
 
   local heat_source = machine.prototype.heat_energy_source_prototype
   check(heat_source ~= nil, "radiator has no heat energy source")

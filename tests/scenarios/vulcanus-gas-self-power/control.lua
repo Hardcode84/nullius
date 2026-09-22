@@ -104,7 +104,7 @@ local function start_machine()
     "lava changed while the fixture was settling")
   check(close(fluid_total(GAS, storage.gas_entities), 24),
     "gas changed while the fixture was settling")
-  storage.machine.active = true
+  storage.machine.disabled_by_script = false
   storage.started_tick = game.tick
   script.on_nth_tick(305, check_terminal)
 end
@@ -165,7 +165,7 @@ local function setup()
   check(machine.set_recipe(RECIPE), "failed to set lava gas-extraction recipe")
   check(machine.get_recipe() and machine.get_recipe().name == RECIPE,
     "pneumatic hydro plant has the wrong recipe")
-  machine.active = false
+  machine.disabled_by_script = true
 
   storage.gas_entities = {}
   local gas_pipe_offsets = {

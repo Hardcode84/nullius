@@ -166,7 +166,7 @@ local function start_machine()
   check(storage.machine.products_finished == 0,
     "assembler crafted while the fixture was settling")
 
-  storage.machine.active = true
+  storage.machine.disabled_by_script = false
   storage.started_tick = game.tick
   storage.before_tick = game.tick + CRAFT_TICKS
   storage.terminal_tick = game.tick + TERMINAL_TICKS
@@ -224,7 +224,7 @@ local function setup()
   check(machine ~= nil, "failed to build pneumatic assembler")
   if not machine then finish() return end
   storage.machine = machine
-  machine.active = false
+  machine.disabled_by_script = true
 
   local fluid_source = machine.prototype.fluid_energy_source_prototype
   check(fluid_source ~= nil, "pneumatic assembler has no fluid energy source")

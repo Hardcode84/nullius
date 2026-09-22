@@ -141,7 +141,7 @@ local function setup()
   check(machine ~= nil, "chemical plant did not enter pneumatic mode")
   if not machine then finish() return end
   storage.machine = machine
-  machine.active = false
+  machine.disabled_by_script = true
   check(machine.set_recipe(HOT_RECIPE),
     "high-temperature resin is unavailable on Vulcanus")
 
@@ -158,7 +158,7 @@ local function setup()
   set_fluid(machine, GAS, 100, "fuel")
 
   if #failures > 0 then finish() return end
-  machine.active = true
+  machine.disabled_by_script = false
   script.on_nth_tick(2300, terminal_check)
 end
 

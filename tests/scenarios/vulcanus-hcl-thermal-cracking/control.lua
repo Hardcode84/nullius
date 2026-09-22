@@ -198,7 +198,7 @@ local function start_cracking()
   check(radiator.products_finished == 0,
     "radiator crafted while disabled")
   if #failures > 0 then finish() return end
-  radiator.active = true
+  radiator.disabled_by_script = false
   script.on_nth_tick(BEFORE_TICK, check_before_terminal)
 end
 
@@ -242,7 +242,7 @@ local function setup()
   if not producer or not radiator then finish() return end
   storage.producer = producer
   storage.radiator = radiator
-  radiator.active = false
+  radiator.disabled_by_script = true
   check(producer.set_recipe(HEAT_RECIPE),
     "failed to set pneumatic heat-production recipe")
   check(radiator.set_recipe(CRACKING_RECIPE),
@@ -351,7 +351,7 @@ local function setup()
   check(observations.geometry.heat_pipe_count == 0,
     "fixture contains a heat pipe before operation")
   if #failures > 0 then finish() return end
-  producer.active = true
+  producer.disabled_by_script = false
   script.on_nth_tick(600, drain_stone)
   script.on_nth_tick(START_TICK, start_cracking)
 end

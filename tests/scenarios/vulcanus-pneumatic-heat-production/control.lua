@@ -293,7 +293,7 @@ local function setup()
   for _, fixture in ipairs(HYDRO_FIXTURES) do
     local hydro = build(surface, HYDRO, fixture.position, defines.direction.north)
     if not hydro then finish() return end
-    hydro.active = false
+    hydro.disabled_by_script = true
     check(hydro.set_recipe(HYDRO_RECIPE), "failed to set hydro gas-extraction recipe")
     storage.hydros[#storage.hydros + 1] = hydro
 
@@ -399,8 +399,8 @@ local function setup()
   storage.furnace = build(surface, FURNACE, {BASE_X, -4}, defines.direction.north)
   storage.radiator = build(surface, RADIATOR, {BASE_X, 9}, defines.direction.north)
   if not storage.furnace or not storage.radiator then finish() return end
-  storage.furnace.active = false
-  storage.radiator.active = false
+  storage.furnace.disabled_by_script = true
+  storage.radiator.disabled_by_script = true
   check(storage.furnace.set_recipe(FURNACE_RECIPE),
     "failed to set aluminum reduction recipe")
   check(storage.radiator.set_recipe(RADIATOR_RECIPE),
@@ -506,9 +506,9 @@ local function setup()
   check(close(storage.furnace.temperature, 15), "furnace was preheated")
   check(close(storage.radiator.temperature, 15), "radiator was preheated")
   if #failures > 0 then finish() return end
-  for _, hydro in ipairs(storage.hydros) do hydro.active = true end
-  storage.furnace.active = true
-  storage.radiator.active = true
+  for _, hydro in ipairs(storage.hydros) do hydro.disabled_by_script = false end
+  storage.furnace.disabled_by_script = false
+  storage.radiator.disabled_by_script = false
   script.on_nth_tick(TERMINAL_TICK, check_terminal)
 end
 

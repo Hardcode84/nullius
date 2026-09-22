@@ -130,7 +130,7 @@ local function setup()
   check(machine ~= nil, "failed to build pneumatic assembler")
   if not machine then finish() return end
   storage.machine = machine
-  machine.active = false
+  machine.disabled_by_script = true
   check(machine.set_recipe(RECIPE), "failed to set inorganic barrel recipe")
   local recipe = machine.get_recipe()
   check(recipe and recipe.name == RECIPE, "assembler selected the wrong recipe")
@@ -183,7 +183,7 @@ local function setup()
     recipe_seconds = recipe.energy,
   }
   if #failures > 0 then finish() return end
-  machine.active = true
+  machine.disabled_by_script = false
   script.on_nth_tick(TERMINAL_TICK, check_terminal)
 end
 

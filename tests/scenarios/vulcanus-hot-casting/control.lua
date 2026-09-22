@@ -255,7 +255,7 @@ local function setup()
     local machine = build(surface, MACHINE, {index * 10, 0})
     if not machine then finish() return end
     storage.machines[index] = machine
-    machine.active = false
+    machine.disabled_by_script = true
     check(machine.set_recipe(expected.recipe),
       "failed to set " .. expected.recipe)
     local input = machine.get_inventory(
@@ -272,7 +272,7 @@ local function setup()
       spoil_ticks = spoil_ticks,
     }
     max_craft_ticks = math.max(max_craft_ticks, craft_ticks)
-    machine.active = true
+    machine.disabled_by_script = false
   end
 
   storage.terminal_tick = game.tick + max_craft_ticks + 3

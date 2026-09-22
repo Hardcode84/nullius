@@ -188,7 +188,7 @@ local function setup()
       }
       check(lab ~= nil, "failed to place pneumatic lab")
       if not lab then finish() return end
-      lab.active = false
+      lab.disabled_by_script = true
 
       local inventory = lab.get_inventory(defines.inventory.lab_input)
       check(inventory ~= nil, "pneumatic lab has no input inventory")
@@ -235,7 +235,7 @@ local function setup()
   storage.finished_events = 0
   storage.started_tick = game.tick
   for _, lab in ipairs(surface.find_entities_filtered{name = LAB}) do
-    lab.active = true
+    lab.disabled_by_script = false
   end
   start_research(1)
   script.on_nth_tick(TIMEOUT_TICK, timeout)

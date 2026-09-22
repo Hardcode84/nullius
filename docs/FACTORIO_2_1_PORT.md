@@ -3,21 +3,27 @@
 Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
 The staged 2.1 mod loads, renders, and passes multiplayer checks. Full
 compatibility is not established. The original audit found 38 failing
-scenarios; the inventory correction below resolves seven.
+scenarios. Subsequent scenario API corrections are listed below.
 
-## Inventory API correction
+## Scenario API corrections
 
-All 27 scenario input-inventory accesses now select the native index through
-`inventory-api.lua`. The seven inventory-blocked scenarios pass on 2.1.
-`thermal-nanofabricators` also uses `fluid-api.lua`; all 98 assertions pass
-on both engines, including solid and fluid preservation during mode changes.
-The 2.0 regression suite passes all 127 scenarios. The 2.1 full run reports
-95 pass and 32 fail before the nanofabricator fluid correction; its focused
-rerun passes. Thus, 31 failures remain: 18 script-disable writes, eight fluid
-accesses, two recipe categories, one fluid removal, one rock contract, and
-one statistics timing check.
+All 27 scenario input-inventory accesses now use `inventory-api.lua`.
+The seven inventory-blocked scenarios pass on 2.1. The nanofabricator test
+also uses `fluid-api.lua`; its 98 assertions pass on both engines.
 
-## Full audit
+All 41 entity `active` assignments now use the inverse `disabled_by_script`
+value. Both engines support this field. The 2.0 `active` setter changes only
+this flag, so no version branch is required. Test timing and production
+assertions are unchanged. The full 2.0 suite passes all 127 scenarios. The
+full 2.1 suite passes 98 and fails 29. Thermal machines pass 302 assertions;
+aluminum reduction passes 39. Sixteen tests now reach removed `fluidbox`
+accesses instead of stopping at `active` writes.
+
+Remaining first failures: 24 fluid accesses, two recipe categories, one fluid
+removal signature, one hot-rock contract, and one statistics timing check.
+Route fluid access through `fluid-api.lua`, including pipe connection checks.
+
+## Original full audit
 
 | Check | Result |
 |---|---|

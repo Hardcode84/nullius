@@ -152,7 +152,7 @@ local function run(spec)
       check(close(amount, 0), "fixture contains fluid output: " .. name)
     end
 
-    storage.machine.active = true
+    storage.machine.disabled_by_script = false
     storage.started_tick = game.tick
     storage.before_tick = 60 + spec.recipe_ticks
     storage.terminal_tick = 60 + spec.ticks
@@ -222,7 +222,7 @@ local function run(spec)
     end
     check(close(recipe.energy * 60, spec.recipe_ticks),
       "runtime recipe duration differs from the matrix")
-    machine.active = false
+    machine.disabled_by_script = true
 
     local lava_pipe = place(surface, "pipe", offset(origin, -1, -3))
     local lava_tank = place(surface, "storage-tank", offset(origin, -2, -5))
