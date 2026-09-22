@@ -37,7 +37,7 @@
 | Field | Value |
 |---|---|
 | Initial version | `0.0.1` |
-| Current version | `0.0.3` alpha |
+| Current version | `0.0.4` alpha |
 | Playable endpoint | Local Vulcanus production through physics science |
 | Upstream Nullius saves | Unsupported; rejected on configuration change |
 | Packaged migrations | None |

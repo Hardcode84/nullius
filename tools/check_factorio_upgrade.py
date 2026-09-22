@@ -20,7 +20,11 @@ else:
     from run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, prepare_config
 
 
-def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int, previous_version: str = "0.0.1") -> dict:
+def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int,
+                  previous_version: str = "0.0.1", previous_factorio: Path | None = None,
+                  previous_dependencies: Path | None = None) -> dict:
+    previous_factorio = (previous_factorio or factorio).expanduser().resolve()
+    previous_dependencies = (previous_dependencies or dependencies).expanduser().resolve()
     fixture = REPOSITORY / "tests/upgrades" / previous_version
     if not fixture.is_dir():
         raise ValueError(f"No upgrade fixture for {previous_version}")
@@ -28,12 +32,19 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         candidate_version = json.loads(archive.read("nullius-star/info.json"))["version"]
     with tempfile.TemporaryDirectory(prefix="nullius-upgrade-") as temporary:
         root = Path(temporary)
-        for name in ("saves", "script-output", "temp"):
-            (root / name).mkdir()
-        config = prepare_config(root, factorio)
-        mods = root / "mods"
-        prepare_release_mods(mods, dependencies, candidate)
+        origin = root / "origin"
+        target = root / "target"
+        for run in (origin, target):
+            for name in ("saves", "script-output", "temp"):
+                (run / name).mkdir(parents=True)
+        origin_config = prepare_config(origin, previous_factorio)
+        config = prepare_config(target, factorio)
+        mods = origin / "mods"
+        prepare_release_mods(mods, previous_dependencies, candidate)
         (mods / candidate.name).unlink()
+        target_mods = target / "mods"
+        prepare_release_mods(target_mods, dependencies, candidate)
+        (target_mods / candidate.name).unlink()
         previous = subprocess.run(
             ["git", "archive", "--format=zip", f"v{previous_version}", "nullius-star"],
             cwd=REPOSITORY, check=True, stdout=subprocess.PIPE,
@@ -41,7 +52,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         with zipfile.ZipFile(io.BytesIO(previous)) as archive:
             archive.extractall(mods)
 
-        def install_fixture() -> None:
+        def install_fixture(mods: Path) -> None:
             mod = mods / "nullius-star"
             with (mod / "control.lua").open("a") as control:
                 control.write("\nlocal candidate_version = " + json.dumps(candidate_version) + "\n"
@@ -50,15 +61,16 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
             scenario.mkdir(parents=True)
             shutil.copyfile(fixture / "control.lua", scenario / "control.lua")
 
-        install_fixture()
-        common = [str(factorio), "--config", str(config), "--mod-directory", str(mods), "--disable-audio"]
-        run_checked([*common, "--scenario2map", "nullius-star/release-upgrade"],
+        install_fixture(mods)
+        origin_common = [str(previous_factorio), "--config", str(origin_config),
+                         "--mod-directory", str(mods), "--disable-audio"]
+        common = [str(factorio), "--config", str(config), "--mod-directory", str(target_mods), "--disable-audio"]
+        run_checked([*origin_common, "--scenario2map", "nullius-star/release-upgrade"],
                     f"{previous_version} upgrade fixture", timeout)
-        save = root / "saves/nullius-star/release-upgrade.zip"
-        shutil.rmtree(mods / "nullius-star")
+        save = origin / "saves/nullius-star/release-upgrade.zip"
         with zipfile.ZipFile(candidate) as archive:
-            archive.extractall(mods)
-        install_fixture()
+            archive.extractall(target_mods)
+        install_fixture(target_mods)
         settings = root / "server-settings.json"
         server_settings = json.loads((factorio.parents[2] /
             "data/server-settings.example.json").read_text())
@@ -66,7 +78,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
             "visibility": {"public": False, "lan": False},
             "require_user_verification": False, "auto_pause": False})
         settings.write_text(json.dumps(server_settings))
-        upgraded = root / "saves/_autosave-release-upgraded.zip"
+        upgraded = target / "saves/_autosave-release-upgraded.zip"
         log_path = root / "upgrade-server.log"
         with log_path.open("w") as log:
             server = subprocess.Popen([*common, "--start-server", str(save),
@@ -84,7 +96,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
                 server.wait(timeout=30)
         run_checked([*common, "--load-game", str(upgraded), "--until-tick", "3"],
                     "upgraded save reload", timeout)
-        result = json.loads((root / "script-output/upgrade-result.json").read_text())
+        result = json.loads((target / "script-output/upgrade-result.json").read_text())
         if result.get("status") != "pass":
             raise ValueError(f"upgrade failed: {result}")
         return result
@@ -96,7 +108,10 @@ if __name__ == "__main__":
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument("--dependencies", type=Path, default=default_dependency_mods())
     parser.add_argument("--from-version", default="0.0.1")
+    parser.add_argument("--previous-factorio", type=Path)
+    parser.add_argument("--previous-dependencies", type=Path)
     parser.add_argument("--timeout", type=int, default=300)
     args = parser.parse_args()
     print(json.dumps(check_upgrade(args.candidate.resolve(), args.factorio.resolve(),
-                                   args.dependencies.resolve(), args.timeout, args.from_version), indent=2))
+                                   args.dependencies.resolve(), args.timeout, args.from_version,
+                                   args.previous_factorio, args.previous_dependencies), indent=2))

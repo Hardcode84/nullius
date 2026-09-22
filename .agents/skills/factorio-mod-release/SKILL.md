@@ -52,6 +52,12 @@ Require a clean checkout, then run:
 python tools/build_release.py -n auto
 ```
 
+The default target is 2.1. Select matching `--factorio` and
+`--dependency-mod-directory` paths. Use `--factorio-version 2.0` and a separate
+`--output-directory` for the 2.0 package. For a 2.1 candidate, use
+`--upgrade-factorio` and `--upgrade-dependency-mod-directory` to select the
+2.0 installation for prior-release fixtures. The prior payload stays unchanged.
+
 The command must pass every gate and produce a ZIP plus JSON manifest.
 
 | Gate | Assertion |

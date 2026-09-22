@@ -67,6 +67,11 @@ def parse_arguments() -> argparse.Namespace:
         description="Build and validate a Nullius Star release archive."
     )
     parser.add_argument("--factorio", type=Path, default=default_factorio())
+    parser.add_argument("--factorio-version", choices=("2.0", "2.1"), default="2.1")
+    parser.add_argument("--upgrade-factorio", type=Path,
+                        help="engine used to create prior-release saves")
+    parser.add_argument("--upgrade-dependency-mod-directory", type=Path,
+                        help="dependencies used to create prior-release saves")
     parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
     )
@@ -392,8 +397,9 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
         from .check_factorio_upgrade import check_upgrade
     else:
         from check_factorio_upgrade import check_upgrade
-    upgrade = [check_upgrade(archive, factorio, dependencies, args.timeout_seconds, version)
-               for version in ("0.0.1", "0.0.2")]
+    upgrade = [check_upgrade(archive, factorio, dependencies, args.timeout_seconds, version,
+                            args.upgrade_factorio, args.upgrade_dependency_mod_directory)
+               for version in ("0.0.1", "0.0.2", "0.0.3")]
     return {
         "upgrade": upgrade,
         "progression_contracts": contract_count,
@@ -408,7 +414,13 @@ def main() -> int:
     try:
         print("[1/5] RUN  checkout and metadata")
         commit = require_clean_checkout()
-        metadata = read_metadata()
+        if __package__:
+            from .factorio_package import engine_series, package_metadata
+        else:
+            from factorio_package import engine_series, package_metadata
+        metadata = package_metadata(read_metadata(), args.factorio_version)
+        if engine_series(args.factorio.expanduser()) != args.factorio_version:
+            raise TestFailure("release target does not match the selected Factorio engine")
         print("[1/5] PASS checkout and metadata")
 
         print("[2/5] RUN  Python unit tests")
