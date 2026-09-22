@@ -630,6 +630,16 @@ data:extend({
   }
 })
 
+local assembler_graphics = require("prototypes.entity.assembler-graphics")
+for _, entry in ipairs({
+    {"small-assembler-1", 1}, {"medium-assembler-1", 1},
+    {"large-assembler-1", 2}, {"small-assembler-2", 2},
+    {"small-assembler-3", 3}, {"medium-assembler-2", 2},
+    {"medium-assembler-3", 3}, {"large-assembler-2", 3},
+}) do
+  assembler_graphics(data.raw["assembling-machine"]["nullius-" .. entry[1]], entry[2])
+end
+
 local nanofab_pipes = {
         north = {
           filename = "__angelsrefininggraphics__/graphics/entity/crystallizer/crystallizer-pipe-connection.png",
