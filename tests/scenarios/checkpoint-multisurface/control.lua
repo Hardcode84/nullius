@@ -39,6 +39,46 @@ local function progress(force, checkpoint, requirement)
   return remote.call(INTERFACE, "progress", force.name, checkpoint, requirement)
 end
 
+local function research_prerequisites(technology)
+  for _, prerequisite in pairs(technology.prerequisites) do
+    if not prerequisite.researched then
+      research_prerequisites(prerequisite)
+      prerequisite.researched = true
+    end
+  end
+end
+
+local function check_replacement_statistics()
+  script.on_nth_tick(1, nil)
+  local entity = storage.replacement_entity
+  local force = entity.force
+  local nauvis = game.surfaces.nauvis
+  local vulcanus = entity.surface
+  local nauvis_builds = force.get_entity_build_count_statistics(nauvis)
+  local vulcanus_builds = force.get_entity_build_count_statistics(vulcanus)
+  check(game.tick == storage.adjustment_tick + 1,
+    "replacement statistics were not checked on the next tick")
+  check(close(nauvis_builds.get_input_count(entity.name), 0),
+    "replacement build was attributed to Nauvis")
+  check(close(vulcanus_builds.get_input_count(entity.name), 1),
+    "replacement build was not attributed to Vulcanus")
+  check(close(nauvis_builds.get_output_count(entity.name), 0),
+    "replacement removal was attributed to Nauvis")
+  check(close(vulcanus_builds.get_output_count(entity.name), 1),
+    "replacement removal was not attributed to Vulcanus")
+
+  -- Allow the production checkpoint scheduler to scan the available checkpoints.
+  script.on_nth_tick(2000, function()
+    script.on_nth_tick(2000, nil)
+    check(force.technologies["nullius-checkpoint-furnace"].researched,
+      "scheduled checkpoint polling did not complete the furnace checkpoint")
+    finish({surfaces = {nauvis.name, vulcanus.name},
+      adjustment_tick = storage.adjustment_tick,
+      statistics_tick = storage.adjustment_tick + 1,
+      checkpoint_poll_tick = game.tick})
+  end)
+end
+
 script.on_nth_tick(1, function()
   script.on_nth_tick(1, nil)
   check(remote.interfaces[INTERFACE] ~= nil, "missing checkpoint test interface")
@@ -210,16 +250,12 @@ script.on_nth_tick(1, function()
   if not entity then finish({}) return end
   split_statistic(nauvis_builds, entity.name, 0, 0)
   split_statistic(vulcanus_builds, entity.name, 0, 0)
+  local checkpoint = force.technologies["nullius-checkpoint-furnace"]
+  research_prerequisites(checkpoint)
+  check(not checkpoint.researched, "furnace checkpoint completed before polling")
+  storage.replacement_entity = entity
+  storage.adjustment_tick = game.tick
   remote.call(INTERFACE, "adjust_build_statistics", entity, false)
-  check(close(nauvis_builds.get_input_count(entity.name), 0),
-    "replacement build was attributed to Nauvis")
-  check(close(vulcanus_builds.get_input_count(entity.name), 1),
-    "replacement build was not attributed to Vulcanus")
   remote.call(INTERFACE, "adjust_build_statistics", entity, true)
-  check(close(nauvis_builds.get_output_count(entity.name), 0),
-    "replacement removal was attributed to Nauvis")
-  check(close(vulcanus_builds.get_output_count(entity.name), 1),
-    "replacement removal was not attributed to Vulcanus")
-
-  finish({surfaces = {nauvis.name, vulcanus.name}})
+  script.on_nth_tick(1, check_replacement_statistics)
 end)

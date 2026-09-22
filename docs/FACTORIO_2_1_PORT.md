@@ -18,17 +18,19 @@ assertions are unchanged.
 
 Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
 Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
-suite passes all 127 scenarios. The fresh full 2.1 run passes 119 and fails eight.
+suite passes all 127 scenarios. The last full 2.1 run passed 119 and failed eight.
 Both engines pass 175 thermal technology assertions and 108 hot-casting
 assertions. Name-based gas removal
 uses `extract_fluid` on 2.1 and `remove_fluid` on 2.0. The roboport experiment
 passes 19 assertions at tick 1391 on both engines, including charging,
-blackout, and recovery. Eight failures remain.
+blackout, and recovery. The checkpoint rerun passes 42 assertions on each
+engine: next-tick build/removal attribution and scheduled checkpoint completion.
+The separate timing witness passes two assertions on each engine. Seven
+failures remain.
 
 | Remaining 2.1 failure | Scenarios | Required correction |
 |---|---:|---|
 | Missing hot-rock contracts | 1 | Add mining and destruction checks |
-| Immediate build statistics | 1 | Read after the native tick flush |
 | Configurable Valves linked connection | 1 | Port dependency `builder.lua` to entity fluid methods; retain the revival event |
 | Lava intake timing | 5 | Resolve slower input-buffer filling with the same finite stock and pipe layout |
 
