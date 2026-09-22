@@ -1821,7 +1821,6 @@ data:extend({
       height = 12
     },
     monitor_visualization_tint = {r=78, g=173, b=255},
-    base_render_layer = "lower-object-above-shadow",
     
     graphics_set = {
       animation = {
@@ -1870,7 +1869,6 @@ data:extend({
       height = 12
     },
     monitor_visualization_tint = {r=78, g=173, b=255},
-    base_render_layer = "lower-object-above-shadow",
     
     graphics_set = {
       animation = {
@@ -1917,7 +1915,6 @@ data:extend({
       height = 12
     },
     monitor_visualization_tint = {r=78, g=173, b=255},
-    base_render_layer = "lower-object-above-shadow",
     graphics_set = {
       animation = {
         filename = "__angelssmeltinggraphics__/graphics/entity/chemical-furnace/chemical-furnace-base_01.png",
