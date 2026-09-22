@@ -18,11 +18,12 @@ assertions are unchanged.
 
 Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
 Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
-suite passes all 127 scenarios; 2.1 passes 116 and fails 11.
+suite passes all 127 scenarios; the last full 2.1 run passed 116 and failed 11.
+The two category failures now pass focused reruns on both engines: 175 thermal
+technology assertions and 108 hot-casting assertions. Nine failures remain.
 
 | Remaining 2.1 failure | Scenarios | Required correction |
 |---|---:|---|
-| Removed recipe category | 2 | Use the native category list |
 | Old fluid removal signature | 1 | Use the native argument list |
 | Missing hot-rock contracts | 1 | Add mining and destruction checks |
 | Immediate build statistics | 1 | Read after the native tick flush |

@@ -1,3 +1,9 @@
+local modern = require("__nullius-star__/factorio-version").is_2_1
+local function has_category(recipe, expected)
+  local categories = modern and recipe.categories or {recipe.category}
+  return #categories == 1 and categories[1] == expected
+end
+
 local CASE = "thermal-engineering-technologies"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGIES = {
@@ -244,7 +250,7 @@ script.on_nth_tick(1, function()
   local reduction = force.recipes["nullius-titanium-ingot-vulcanus"]
   check(reduction ~= nil, "missing Vulcanus titanium reduction recipe")
   if reduction then
-    check(reduction.prototype.category == "nullius-high-temp-radiator",
+    check(has_category(reduction.prototype, "nullius-high-temp-radiator"),
       "Vulcanus titanium reduction has wrong category")
     check(reduction.energy == 8,
       "Vulcanus titanium reduction has wrong duration")
@@ -264,7 +270,7 @@ script.on_nth_tick(1, function()
   local recovery = force.recipes["nullius-aluminum-chloride-recovery"]
   check(recovery ~= nil, "missing aluminum chloride recovery recipe")
   if recovery then
-    check(recovery.prototype.category == "nullius-high-temp-radiator",
+    check(has_category(recovery.prototype, "nullius-high-temp-radiator"),
       "aluminum chloride recovery has wrong category")
     check(recovery.energy == 6,
       "aluminum chloride recovery has wrong duration")
@@ -284,7 +290,7 @@ script.on_nth_tick(1, function()
   if chlorine_sink then
     check(not chlorine_sink.enabled,
       "iron chlorination must require Pneumatic technology")
-    check(chlorine_sink.prototype.category == "nullius-high-temp-radiator",
+    check(has_category(chlorine_sink.prototype, "nullius-high-temp-radiator"),
       "iron chlorination has wrong category")
     check(chlorine_sink.energy == 4,
       "iron chlorination has wrong duration")
@@ -304,7 +310,7 @@ script.on_nth_tick(1, function()
   if sludge_dehydration then
     check(not sludge_dehydration.enabled,
       "iron-assisted sludge dehydration must require Boiling 1")
-    check(sludge_dehydration.prototype.category == "boiling",
+    check(has_category(sludge_dehydration.prototype, "boiling"),
       "iron-assisted sludge dehydration has wrong category")
     check(sludge_dehydration.prototype.surface_conditions == nil,
       "iron-assisted sludge dehydration must be surface-independent")

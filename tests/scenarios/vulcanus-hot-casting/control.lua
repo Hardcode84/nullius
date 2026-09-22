@@ -1,3 +1,9 @@
+local modern = require("__nullius-star__/factorio-version").is_2_1
+local function has_category(recipe, expected)
+  local categories = modern and recipe.categories or {recipe.category}
+  return #categories == 1 and categories[1] == expected
+end
+
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
 local CASE = "vulcanus-hot-casting"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
@@ -241,7 +247,7 @@ local function setup()
   for index, expected in ipairs(CASES) do
     local recipe = force.recipes[expected.recipe]
     check(recipe.enabled, expected.recipe .. " was not unlocked")
-    check(recipe.category == "machine-casting",
+    check(has_category(recipe, "machine-casting"),
       expected.recipe .. " has the wrong category")
     check(recipe.energy == expected.seconds,
       expected.recipe .. " has the wrong duration")
