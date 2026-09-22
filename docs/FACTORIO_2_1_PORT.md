@@ -25,12 +25,14 @@ uses `extract_fluid` on 2.1 and `remove_fluid` on 2.0. The roboport experiment
 passes 19 assertions at tick 1391 on both engines, including charging,
 blackout, and recovery. The checkpoint rerun passes 42 assertions on each
 engine: next-tick build/removal attribution and scheduled checkpoint completion.
-The separate timing witness passes two assertions on each engine. Seven
-failures remain.
+The separate timing witness passes two assertions on each engine.
+
+Both hot volcanic rocks now use the ordinary volcanic-rock mining drops and
+have no destruction loot. The rock test covers 40 types on 2.1 and 38 on 2.0,
+with 64 mining and destruction samples per type. Six scenario failures remain.
 
 | Remaining 2.1 failure | Scenarios | Required correction |
 |---|---:|---|
-| Missing hot-rock contracts | 1 | Add mining and destruction checks |
 | Configurable Valves linked connection | 1 | Port dependency `builder.lua` to entity fluid methods; retain the revival event |
 | Lava intake timing | 5 | Resolve slower input-buffer filling with the same finite stock and pipe layout |
 

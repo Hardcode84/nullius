@@ -16,6 +16,10 @@ local cases = {
     mining={drop("stone",5,15),drop("nullius-graphite",2,5),drop("nullius-rutile",0,2,0.5)}, loot={},
   },
 }
+if require("__nullius-star__/factorio-version").is_2_1 then
+  cases["huge-volcanic-rock-hot"] = cases["huge-volcanic-rock"]
+  cases["big-volcanic-rock-hot"] = cases["big-volcanic-rock"]
+end
 local regular = {
   tan={"nullius-gypsum","nullius-limestone","nullius-mineral-dust"},
   dustyrose={"nullius-bauxite","stone","nullius-sand"},

@@ -12,9 +12,11 @@ local results = {
   },
 }
 for name, drops in pairs(results) do
-  local rock = data.raw["simple-entity"][name]
-  if rock then
-    rock.minable.results = drops
-    rock.loot = nil
+  for _, suffix in ipairs({"", "-hot"}) do
+    local rock = data.raw["simple-entity"][name .. suffix]
+    if rock then
+      rock.minable.results = table.deepcopy(drops)
+      rock.loot = nil
+    end
   end
 end
