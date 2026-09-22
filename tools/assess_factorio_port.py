@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 import shutil
 import sys
+import subprocess
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -86,6 +87,28 @@ def download_release(name, target_version, directory, credentials):
     }
 
 
+def stage_source_dependency(name, repository, target_version, directory):
+    """Archive a committed dependency without changing its native manifest."""
+    def git(*arguments):
+        return subprocess.check_output(["git", "-C", str(repository), *arguments])
+
+    commit = git("rev-parse", "HEAD").decode().strip()
+    info = json.loads(git("show", f"{commit}:info.json"))
+    if info["name"] != name or name not in DEPENDENCIES:
+        raise ValueError(f"Dependency source name mismatch: {name}")
+    if info["factorio_version"] != target_version:
+        raise ValueError(f"Dependency source {name} does not target {target_version}")
+    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", info["version"]):
+        raise ValueError(f"Invalid dependency version: {name}")
+    prefix = f"{name}_{info['version']}"
+    contents = git("archive", "--format=zip", f"--prefix={prefix}/", commit)
+    with (directory / f"{prefix}.zip").open("xb") as output:
+        output.write(contents)
+    return {"name": name, "version": info["version"],
+            "factorio_version": target_version, "source_commit": commit,
+            "source_kind": "git"}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--destination", type=Path)
@@ -95,6 +118,9 @@ def main():
         type=Path,
         default=Path.home() / "factorio" / "mods",
     )
+    parser.add_argument("--dependency-source", action="append", default=[],
+                        metavar="NAME=CHECKOUT",
+                        help="Stage the committed HEAD of a native-version dependency checkout")
     parser.add_argument("--portal", action="store_true")
     parser.add_argument("--portal-only", action="store_true")
     parser.add_argument("--source-audit", type=Path)
@@ -275,6 +301,14 @@ def main():
         return
     if args.destination is None:
         parser.error("--destination is required for staging")
+    source_overrides = {}
+    for override in args.dependency_source:
+        name, separator, path = override.partition("=")
+        if not separator or not path or name not in DEPENDENCIES:
+            parser.error(f"Invalid dependency source: {override}")
+        if name in source_overrides:
+            parser.error(f"Duplicate dependency source: {name}")
+        source_overrides[name] = Path(path).expanduser().resolve()
     destination = args.destination.resolve()
     destination.mkdir()  # Never overwrite an assessment or a live installation.
     checkout = destination / "repo"
@@ -299,6 +333,10 @@ def main():
         else None
     )
     for name in DEPENDENCIES:
+        if name in source_overrides:
+            inventory.append(stage_source_dependency(
+                name, source_overrides[name], args.factorio_version, dependencies))
+            continue
         if credentials is not None:
             inventory.append(
                 download_release(name, args.factorio_version, dependencies, credentials)
@@ -339,9 +377,9 @@ def main():
         "checkout": str(checkout),
         "dependencies": inventory,
         "changes": (
-            "Staged subject manifests retargeted; published target dependencies"
+            "Unspecified dependencies use published target releases; source overrides use committed native manifests"
             if credentials is not None
-            else "Only factorio_version in staged manifests"
+            else "Unspecified dependency manifests retargeted; source overrides use committed native manifests"
         ),
     }
     if args.portal:

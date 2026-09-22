@@ -18,7 +18,7 @@ assertions are unchanged.
 
 Scenario fluid access now uses `fluid-api.lua`, including pipe connections.
 Both engines pass 600 mirrored pipe target and transfer checks. The full 2.0
-suite passes all 127 scenarios. The last full 2.1 run passed 119 and failed eight.
+suite passes all 127 scenarios. The fresh full 2.1 run passes 122 and fails five.
 Both engines pass 175 thermal technology assertions and 108 hot-casting
 assertions. Name-based gas removal
 uses `extract_fluid` on 2.1 and `remove_fluid` on 2.0. The roboport experiment
@@ -29,11 +29,12 @@ The separate timing witness passes two assertions on each engine.
 
 Both hot volcanic rocks now use the ordinary volcanic-rock mining drops and
 have no destruction loot. The rock test covers 40 types on 2.1 and 38 on 2.0,
-with 64 mining and destruction samples per type. Six scenario failures remain.
+with 64 mining and destruction samples per type. Configurable Valves now uses
+the native 2.1 source listed below; the pneumatic-heat scenario passes 126
+assertions on both engines. Five scenario failures remain.
 
 | Remaining 2.1 failure | Scenarios | Required correction |
 |---|---:|---|
-| Configurable Valves linked connection | 1 | Port dependency `builder.lua` to entity fluid methods; retain the revival event |
 | Lava intake timing | 5 | Resolve slower input-buffer filling with the same finite stock and pipe layout |
 
 At tick 60, the iron separation input holds 71.631107 lava on 2.1 versus
@@ -242,9 +243,13 @@ new release. A published release does not prove integration compatibility.
 
 Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
-`41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
-manifest-retargeted installed versions in that probe. The current source passes
-the full 2.1 prototype dump with this staged set. The full suite passes 119 of
+`41ecd658bc63ab69c96315c260276d4d82134198`. Configurable Valves uses native 2.1
+source, version 2.0.2, at commit
+[`af08520b8f4e887517799b15751d92673b656e03`](https://github.com/heinwessels/factorio-configurable-valves/tree/af08520b8f4e887517799b15751d92673b656e03).
+This replaces the retargeted 0.3.3 archive that crashed on valve revival.
+It is a source archive, not the Portal release ZIP. The other five dependencies
+remain manifest-retargeted installed versions. The current source passes
+the full 2.1 prototype dump with this staged set. The full suite passes 122 of
 127 scenarios. All three multiplayer scenarios pass. Fresh full-mod plans
 and the isolated compatibility suite pass.
 
@@ -274,6 +279,10 @@ Fulgora API benefit, not full-mod compatibility.
 ## Reproduce
 
 ```bash
+git clone https://github.com/heinwessels/factorio-configurable-valves.git "$VALVES_SOURCE"
+git -C "$VALVES_SOURCE" checkout --detach af08520b8f4e887517799b15751d92673b656e03
+python tools/assess_factorio_port.py --factorio-version 2.1 --dependency-mod-directory "$STAGED_DEPS" --dependency-source "configurable-valves=$VALVES_SOURCE" --destination "$VALVE_ASSESSMENT"
+
 python tools/run_factorio_tests.py --factorio "$FACTORIO_2_1" --mod-under-test "$STAGED_MOD" --dependency-mod-directory "$STAGED_DEPS" --keep-run-directory --result-json "$AUDIT_DIR/scenarios.json" -n auto > "$AUDIT_DIR/scenarios.log" 2>&1
 python tools/run_factorio_tests.py flow-statistics-timing --factorio "$FACTORIO_2_1" --mod-under-test "$STAGED_MOD" --dependency-mod-directory "$STAGED_DEPS" --json
 python tools/summarize_factorio_test_log.py "$AUDIT_DIR/scenarios.log" --groups-only
@@ -286,6 +295,10 @@ python tools/assess_factorio_port.py --factorio-version 2.1 --source-audit tests
 python tools/assess_factorio_port.py --factorio-version 2.1 --planner-schema-witness tests/compatibility/factorio-2.1-planner-witness.json
 python tools/assess_factorio_port.py --factorio-version 2.1 --destination ../nullius-port-assessment
 ```
+
+`--dependency-source` archives committed `HEAD` files, records the commit,
+and rejects a source manifest for another engine version. Use
+`$VALVE_ASSESSMENT/mods` for the refreshed dependency set.
 
 Run the staged checkout's scenario runner with the candidate `--factorio` and
 staged `--dependency-mod-directory`. `--apply-probe-edits` accepts
