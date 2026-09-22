@@ -1,5 +1,5 @@
 -- given: production graphics, footprints and speeds; void power, one plate each
--- place: every distillery tier and variant in all four directions
+-- place: every supplied machine tier and variant in all four directions
 -- act/run: craft for 300 ticks after a real client joins
 -- expect: one stick per machine; server and client results agree
 script.on_init(function() storage.assertions=0 end)

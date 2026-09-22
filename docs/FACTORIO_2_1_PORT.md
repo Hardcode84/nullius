@@ -8,11 +8,11 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
-| Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three 2.0 multiplayer scenarios pass 297 assertions. The 2.1 servers start; clients stop at the missing chemical-plant image |
+| Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three 2.0 multiplayer scenarios pass 297 assertions. The 2.1 clients load all sprites; tests stop at rejected Configurable Valves key bindings |
 | Assembler sprite layouts | All eight definitions use native 2.1 layers with the Nullius scale, offsets, and cycle duration | Both clients render and craft: 16 assertions each. Checks include status lights, frozen overlays, and inherited variants. The full 2.0 prototype dump is unchanged |
 | Distillery sprite layouts | All three tiers and their pneumatic variants use complete native 2.1 refinery graphics with their tier colours | Both clients render and craft in all four directions: 48 assertions each. Native layers, smoke, lights, and frozen overlays match. The full 2.0 prototype dump is unchanged |
 | Pumpjack sprite layouts | Wells and extractors use native 2.1 arm shadows; custom coloured arms stay unchanged | Shadow scale and timing match each arm. Both clients render all eight definitions in four directions and produce water: 64 assertions each. The full 2.0 prototype dump is unchanged |
-| Chemical-plant sprite layouts | All three tiers and their pneumatic variants use `chemical-plant.png`, which 2.1 removed | Port native graphics and verify client rendering |
+| Chemical-plant sprite layouts | All three tiers and their pneumatic variants use native 2.1 body layers with Nullius scale, offsets, and colours | Both clients render and craft in all four directions: 48 assertions each. Checks preserve animation timing and recipe effects and include frozen overlays. The full 2.0 prototype dump is unchanged |
 | Configurable Valves key bindings | The staged dependency uses `PAD -` and `PAD +`, which 2.1 rejects | Update the dependency bindings and verify them with a client |
 | Hidden upgrade targets | Cleanup checks build items across all item types and the first explicit `placeable_by` entry | Ten native cases pass on each engine. Full-mod 2.0 data is unchanged. Removing nine invalid rolling-stock links lets the staged 2.1 prototype dump pass |
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
@@ -126,6 +126,7 @@ python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2
 python tools/test_assembler_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_distillery_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_pumpjack_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
+python tools/test_chemical_plant_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```

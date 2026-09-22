@@ -2308,3 +2308,8 @@ data:extend({
     }
   }
 })
+
+local chemical_plant_graphics = require("prototypes.entity.chemical-plant-graphics")
+for tier = 1, 3 do
+  chemical_plant_graphics(data.raw["assembling-machine"]["nullius-chemical-plant-" .. tier])
+end
