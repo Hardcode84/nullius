@@ -27,7 +27,7 @@ class ReleaseBuilderTests(unittest.TestCase):
 
     def test_archive_contains_only_distributable_root(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            archive_path = build_archive(Path(temporary), {"version": "0.0.1"})
+            archive_path = build_archive(Path(temporary), read_metadata())
             with zipfile.ZipFile(archive_path) as archive:
                 names = archive.namelist()
             self.assertIn("nullius-star/info.json", names)
@@ -45,8 +45,8 @@ class ReleaseBuilderTests(unittest.TestCase):
             tempfile.TemporaryDirectory() as first,
             tempfile.TemporaryDirectory() as second,
         ):
-            first_archive = build_archive(Path(first), {"version": "0.0.1"})
-            second_archive = build_archive(Path(second), {"version": "0.0.1"})
+            first_archive = build_archive(Path(first), read_metadata())
+            second_archive = build_archive(Path(second), read_metadata())
             self.assertEqual(
                 hashlib.sha256(first_archive.read_bytes()).digest(),
                 hashlib.sha256(second_archive.read_bytes()).digest(),

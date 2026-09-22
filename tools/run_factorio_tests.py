@@ -127,7 +127,10 @@ def prepare_mods(
     run_mods: Path,
     dependency_mods: Path,
     mod_under_test: Path = MOD_UNDER_TEST,
+    factorio_version: str | None = None,
 ) -> None:
+    if factorio_version is not None and not mod_under_test.is_dir():
+        raise TestFailure("Only source directories can be retargeted; test release ZIPs unchanged")
     run_mods.mkdir(parents=True)
     enabled = [*BUILTIN_MODS]
     for mod_name in DEPENDENCY_MODS:
@@ -136,6 +139,12 @@ def prepare_mods(
         enabled.append(mod_name)
 
     stage_mod_under_test(run_mods, mod_under_test)
+    if factorio_version is not None:
+        if __package__:
+            from .factorio_package import retarget_manifest
+        else:
+            from factorio_package import retarget_manifest
+        retarget_manifest(run_mods / "nullius-star/info.json", factorio_version)
     enabled.append("nullius-star")
     subject = json.loads((run_mods / "nullius-star" / "info.json").read_text())
     version = supported_factorio_version(subject["factorio_version"])
@@ -253,7 +262,13 @@ def execute(
         (run_directory / directory).mkdir()
     config = prepare_config(run_directory, factorio)
     run_mods = run_directory / "mods"
-    prepare_mods(run_mods, dependency_mods, args.mod_under_test.expanduser().resolve())
+    subject = args.mod_under_test.expanduser().resolve()
+    if __package__:
+        from .factorio_package import workspace_target
+    else:
+        from factorio_package import workspace_target
+    target = workspace_target(factorio, subject)
+    prepare_mods(run_mods, dependency_mods, subject, target)
 
     until_tick = deadline_for(args, case)
     metadata = json.loads((scenario / "test.json").read_text())

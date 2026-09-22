@@ -130,7 +130,7 @@ class FactorioTestRunnerTests(unittest.TestCase):
             support_link = run_mods / "factorio-test-support"
             self.assertFalse(support_link.is_symlink())
             metadata = json.loads((support_link / "info.json").read_text())
-            self.assertEqual(metadata["factorio_version"], "2.0")
+            self.assertEqual(metadata["factorio_version"], "2.1")
             self.assertEqual((support_link / "data.lua").resolve(), (TEST_SUPPORT_MOD / "data.lua").resolve())
             mod_list = json.loads((run_mods / "mod-list.json").read_text())
             enabled = [entry["name"] for entry in mod_list["mods"]]

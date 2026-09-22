@@ -984,7 +984,13 @@ if settings.startup["nullius-hide-void-alt"].value then
   end
 end
 
-data.raw["utility-constants"]["default"].max_fluid_flow = 500
+if require("factorio-version").is_2_1 then
+  local box = data.raw.pump["configurable-valve"].fluid_box
+  require("prototypes.entity.hide-fluid-connections")(box)
+  box.hide_connection_info = nil
+else
+  data.raw["utility-constants"]["default"].max_fluid_flow = 500
+end
 
 data.raw["artillery-flare"]["artillery-flare"].shot_category = "artillery-shell" --regular remote will only fire artillery shells
 data.raw["custom-input"]["give-artillery-targeting-remote"].enabled = false

@@ -322,7 +322,14 @@ def main():
     for name in ("nullius-star", "tests/factorio-test-support"):
         path = checkout / name / "info.json"
         info = json.loads(path.read_text())
-        info["factorio_version"] = args.factorio_version
+        if name == "nullius-star":
+            if __package__:
+                from .factorio_package import package_metadata
+            else:
+                from factorio_package import package_metadata
+            info = package_metadata(info, args.factorio_version)
+        else:
+            info["factorio_version"] = args.factorio_version
         path.write_text(json.dumps(info, indent=2) + "\n")
     dependencies = destination / "mods"
     dependencies.mkdir()

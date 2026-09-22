@@ -1,6 +1,8 @@
 # Building gallery
 
 Build a separate inspection save with the current mod and its dependencies:
+Use Factorio 2.0 or 2.1 with matching dependency archives. The command selects
+the test metadata from the engine version.
 
 ```bash
 python tools/prepare_building_gallery.py \

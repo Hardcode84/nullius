@@ -26,6 +26,7 @@ from run_factorio_tests import (
 
 
 from factorio_schema import recipe_categories, deterministic_product
+from factorio_package import workspace_target
 
 Prototype = dict[str, Any]
 IGNORED_RECIPE_CATEGORIES = {"recycling", "recycling-or-hand-crafting"}
@@ -140,7 +141,8 @@ def dump_resolved_data(args: argparse.Namespace) -> tuple[Prototype, Path | None
             (run_directory / directory).mkdir(parents=True)
         config = prepare_config(run_directory, factorio)
         run_mods = run_directory / "mods"
-        prepare_mods(run_mods, dependency_mods, args.mod_under_test)
+        subject = args.mod_under_test.expanduser().resolve()
+        prepare_mods(run_mods, dependency_mods, subject, workspace_target(factorio, subject))
         log_path = run_directory / "dump.log"
         completed = run_factorio(
             [

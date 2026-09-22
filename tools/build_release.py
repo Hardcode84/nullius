@@ -190,7 +190,10 @@ def build_archive(output_directory: Path, metadata: dict[str, object]) -> Path:
                 info = zipfile.ZipInfo(relative.as_posix(), timestamp)
                 info.compress_type = zipfile.ZIP_DEFLATED
                 info.external_attr = 0o100644 << 16
-                archive.writestr(info, source.read_bytes(), compresslevel=9)
+                payload = source.read_bytes()
+                if relative.as_posix() == "nullius-star/info.json":
+                    payload = (json.dumps(metadata, indent=2) + "\n").encode("utf-8")
+                archive.writestr(info, payload, compresslevel=9)
         temporary.replace(destination)
     finally:
         temporary.unlink(missing_ok=True)

@@ -170,7 +170,29 @@ section's `active` field must not receive the entity API conversion.
 Use `--factorio`, `--mod-under-test`, and `--dependency-mod-directory`
 with the planner or prerequisite analyzer to select a matching installation
 and mod set. Test-support manifests follow the subject mod version. Release
-metadata checks accept 2.0 and 2.1.
+metadata checks accept 2.0 and 2.1. Workspace scenario and planner runs select
+private metadata for the selected engine. External packages remain unchanged.
+
+### Package targets
+
+Source metadata and the package default target Factorio 2.1.
+
+```bash
+python tools/factorio_package.py
+python tools/factorio_package.py --factorio-version 2.0
+python tools/factorio_package.py --factorio-version both
+```
+
+ZIPs go to `release/packages/2.0/` and `release/packages/2.1/`.
+Each ZIP has the target engine version and dependency requirements. All other
+files match. The command does not change source metadata, validate a release,
+or create a tag. Use `--mod-under-test` to test each ZIP with its matching
+engine and dependencies. Portal uploads require distinct mod release versions.
+
+Both package targets pass all 128 scenarios on 2.0.77 and 2.1.19, plus strict
+prototype loading, new-map creation, and reload. The 2.1 checks use the staged
+dependencies listed below. The 2.1 override omits `max_fluid_flow` and moves
+the Configurable Valves connection flag to each pipe connection.
 
 The planners treat categories as alternatives. A forbidden category removes
 that executor path. Exact amounts reject independent and shared probability.
