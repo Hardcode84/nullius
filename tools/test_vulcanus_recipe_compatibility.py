@@ -33,12 +33,14 @@ def run(factorio):
     (mod / "vulcanus-entity-source.lua").write_text(header + "extend_vulcanus_entities({\n" + ",\n".join(blocks) + "\n})\n")
     for target, source_path in (
         ("factorio-version.lua", "nullius-star/factorio-version.lua"),
+        ("prototypes/entity/hide-fluid-connections.lua", "nullius-star/prototypes/entity/hide-fluid-connections.lua"),
         ("fixture.lua", "tests/compatibility/vulcanus-entity-recipes.lua"),
         ("void-products.lua", "tests/factorio-test-support/void-products.lua"),
         ("executor.lua", "tests/factorio-test-support/vulcanus-entity-recipes.lua"),
         ("scenarios/vulcanus-entity-recipes", "tests/scenarios/vulcanus-entity-recipes"),
         ("scenarios/fluid-api.lua", "tests/scenarios/fluid-api.lua"),
     ):
+        (mod / target).parent.mkdir(parents=True, exist_ok=True)
         (mod / target).symlink_to(ROOT / source_path, target_is_directory=(ROOT / source_path).is_dir())
     (mod / "data.lua").write_text('data:extend({{type="recipe-category",name="nullius-liquid-void"},{type="recipe-category",name="nullius-gas-void"},{type="recipe-category",name="nullius-power-sink"}})\nrequire("fixture")\nrequire("void-products")\nrequire("executor")\n')
     config = prepare_config(work, factorio)

@@ -696,6 +696,8 @@ def run(factorio, dependency_mod_directory):
     (mod / "prototypes/entity/chest.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/chest.lua")
     (mod / "graphics").symlink_to(ROOT / "nullius-star/graphics", target_is_directory=True)
     (mod / "prototypes/entity/turbine.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/turbine.lua")
+    (mod / "prototypes/entity/hide-fluid-connections.lua").symlink_to(
+        ROOT / "nullius-star/prototypes/entity/hide-fluid-connections.lua")
     (mod / "prototypes/entity/assembler-pipe-pictures.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/assembler-pipe-pictures.lua")
     (mod / "prototypes/recipe-visibility.lua").symlink_to(ROOT / "nullius-star/prototypes/recipe-visibility.lua")
     (mod / "prototypes/recipe-productivity.lua").symlink_to(
