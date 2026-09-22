@@ -113,10 +113,12 @@ for prototype_type, names in pairs(vulcanus_blocked_entities) do
   end
 end
 
--- Reassign SA's Vulcanus music to our planet.
+-- Reassign Space Age music to the corresponding Nullius planets.
 for _, sound in pairs(data.raw["ambient-sound"]) do
   if sound.planet == "vulcanus" then
     sound.planet = "nullius-vulcanus"
+  elseif sound.planet == "fulgora" then
+    sound.planet = "nullius-fulgora"
   end
 end
 
@@ -143,11 +145,10 @@ for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
 end
 
 -- Strip autoplace from ALL SA tiles, decoratives, and entities that are NOT
--- in our explicit whitelist. This prevents non-Vulcanus content from bleeding
--- into our planet terrain generation.
+-- in our explicit whitelist. Each planet also has its own autoplace whitelist.
 --
 -- Whitelist approach: we know exactly which tiles we want on Nauvis (alien-biomes
--- handles that) and nullius-vulcanus. Everything else from SA gets stripped.
+-- handles that), nullius-vulcanus, and natural Fulgora terrain.
 
 -- Tiles used by nullius-vulcanus (from prototypes/planet/vulcanus.lua).
 local keep_tiles = {
@@ -168,10 +169,10 @@ local keep_tiles = {
 
 -- Explicit list of non-Vulcanus SA planet tiles to strip autoplace from.
 local strip_tiles = {
-  -- Fulgora.
-  "fulgoran-dust", "fulgoran-dunes", "fulgoran-sand", "fulgoran-rock",
+  -- Fulgora: keep natural dry ground, remove artificial terrain and oil.
   "fulgoran-paving", "fulgoran-walls", "fulgoran-conduit", "fulgoran-machinery",
   "oil-ocean-shallow", "oil-ocean-deep", "oil-deep",
+  "oil-ocean-shallow-2", "oil-ocean-deep-2",
   -- Gleba.
   "artificial-yumako-soil", "overgrowth-yumako-soil",
   "artificial-jellynut-soil", "overgrowth-jellynut-soil",

@@ -188,6 +188,7 @@ local upgrade = require("scripts.upgrade")
 script.on_configuration_changed(
   function(event)
     save_lineage.validate(event)
+    probe.migrate_landings()
     upgrade.from_0_0_1(event)
     reset_config()
     surface_config.configure_existing()

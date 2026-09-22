@@ -81,7 +81,7 @@ After the umbrella "Interplanetary Signal Acquisition" tech, each planet has its
 | Planet | Tech Name | Prerequisites | Cost | Status |
 |---|---|---|---|---|
 | **Vulcanus** | Volcanic Probe Signal Recovery | Interplanetary Signal Acquisition, metallurgy 2 | count=30; geology, climatology, mechanical, electrical x1; time=20 | Implemented |
-| **Fulgora** | Electromagnetic Probe Signal Recovery | Interplanetary Signal Acquisition, insulation 1 | count=30, 4 packs | Design only |
+| **Fulgora** | Electromagnetic Probe Signal Recovery | Interplanetary Signal Acquisition, insulation 1 | count=30, 4 packs, time=20 | Terrain and probe access implemented |
 | **Gleba** | Biological Probe Signal Recovery | Interplanetary Signal Acquisition, organic chemistry 1 | count=40, 4 packs | Design only |
 | **Aquilo** | Cryogenic Probe Signal Recovery | Interplanetary Signal Acquisition, experimental chemistry, thermal-tank checkpoint | count=80, 5 packs | Design only |
 | **Rogue** | Unidentified Probe Signal Recovery | Interplanetary Signal Acquisition | count=15, 4 packs | Design only |

@@ -10,14 +10,14 @@ function upgrade.from_0_0_1(event)
     if force.technologies["nullius-probe-vulcanus"].researched then
       -- Research already supplied a wreck. Never supply a second one on upgrade,
       -- including when the old body was destroyed or its reference was replaced.
-      storage.nullius_probe_landings[force.index] = {}
+      storage.nullius_probe_landings[force.index] = {["nullius-vulcanus"] = {}}
     end
   end
   for _, body in pairs(storage.nullius_probe_androids or {}) do
     if body.valid then
-      storage.nullius_probe_landings[body.force.index] = {
+      storage.nullius_probe_landings[body.force.index] = {["nullius-vulcanus"] = {
         android = body, unit = body.unit_number,
-      }
+      }}
       if not body.player then body.associated_player = nil end
     end
   end

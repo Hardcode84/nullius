@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Design only; no playable Fulgora progression is declared |
+| Status | Planet, terrain, probe research, and body access implemented; industry is not included |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -15,6 +15,7 @@
 ```yaml
 planet_role: organic industry
 setting: primordial world; no prior civilization or ruins
+surface: dry natural ground; no ruins, scrap, or oil ocean
 primary_resource: deep abiogenic hydrocarbon ocean
 initial_access: natural hydrocarbon fountains
 power: lightning; large peaks, no steady supply
@@ -32,7 +33,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Step | Proposed player outcome |
 |---|---|
 | Access | Reactivate the storm-damaged probe near a natural fountain |
-| Salvage | Recover capacitor banks, polymer pipes, one distillation column, basic inserters, and scrap; most electronics failed |
+| Salvage | Recover capacitor banks, polymer pipes, one distillation column, and basic inserters; most electronics failed |
 | Power | Collect lightning through power poles and buffer it for calm periods |
 | Materials | Distill hydrocarbons and filter trace minerals |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
@@ -41,6 +42,20 @@ imports: bulk metals, oxygen, water, nuclear devices
 
 The bootstrap must work without imports. Surviving equipment, exact recipes,
 resource yields, and the local research endpoint are not yet specified.
+
+## Implemented terrain and access
+
+| Contract | Value |
+|---|---|
+| Planet | `nullius-fulgora`; connected to Nauvis |
+| Terrain | Natural dust, dunes, sand, rock, cliffs, and rock decoratives |
+| Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |
+| Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
+| Landing | One equipped idle android and one empty probe wreck per force |
+| Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
+| Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
+| Storms | Native destructive lightning disabled; this slice adds terrain and access only |
+| Tests | `fulgora-mapgen`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment` on both engines |
 
 ## Resource model
 

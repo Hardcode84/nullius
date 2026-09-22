@@ -390,10 +390,10 @@ script.on_event(defines.events.on_player_toggled_map_editor,
     rematerialize_body)
 
 if script.active_mods["factorio-test-support"] then
-  local quick_start = require("scripts.debug").quick_start_vulcanus
+  local quick_start = require("scripts.debug").quick_start
   remote.add_interface("nullius-test-bodies", {
-    quick_start = function(player_index)
-      return quick_start(game.get_player(player_index))
+    quick_start = function(player_index, destination)
+      return quick_start(game.get_player(player_index), destination or "vulcanus")
     end,
     upload = function(player_index, body)
       upload_mind(game.get_player(player_index), body)
@@ -401,12 +401,12 @@ if script.active_mods["factorio-test-support"] then
     cycle = function(player_index, reverse)
       cycle_body(game.get_player(player_index), reverse)
     end,
-    activate = function(force)
-      probe.on_probe_researched("nullius-probe-vulcanus", force)
+    activate = function(force, destination)
+      probe.on_probe_researched("nullius-probe-" .. (destination or "vulcanus"), force)
     end,
-    snapshot = function(player_index)
+    snapshot = function(player_index, destination)
       local player = game.get_player(player_index)
-      local landing = probe.get_landing(player.force)
+      local landing = probe.get_landing(player.force, "nullius-" .. (destination or "vulcanus"))
       local queue = storage.nullius_body_queue and storage.nullius_body_queue[player.index]
       local nodes = {}
       for unit, node in pairs(queue and queue.nodes or {}) do

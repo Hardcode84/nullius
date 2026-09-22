@@ -94,9 +94,14 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
                 if server.poll() is None:
                     server.terminate()
                 server.wait(timeout=30)
-        run_checked([*common, "--load-game", str(upgraded), "--until-tick", "3"],
+        result_path = target / "script-output/upgrade-result.json"
+        result_path.unlink()
+        # Autosave completion can occur after tick 3. Advance relative to the
+        # saved tick and require fresh verification output from the reload.
+        run_checked([*common, "--benchmark", str(upgraded),
+                     "--benchmark-ticks", "2", "--benchmark-runs", "1"],
                     "upgraded save reload", timeout)
-        result = json.loads((target / "script-output/upgrade-result.json").read_text())
+        result = json.loads(result_path.read_text())
         if result.get("status") != "pass":
             raise ValueError(f"upgrade failed: {result}")
         return result
