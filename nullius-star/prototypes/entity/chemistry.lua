@@ -1232,6 +1232,21 @@ data:extend({
   }
 })
 
+-- Cold path: use the complete native refinery layers before variant copies.
+if require("factorio-version").is_2_1 then
+  for tier = 1, 3 do
+    local entity = data.raw["assembling-machine"]["nullius-distillery-" .. tier]
+    local tint = entity.graphics_set.animation.north.layers[1].tint
+    local graphics = table.deepcopy(data.raw["assembling-machine"]["oil-refinery"].graphics_set)
+    for _, direction in ipairs({"north", "east", "south", "west"}) do
+      for _, layer in ipairs(graphics.animation[direction].layers) do
+        if not layer.draw_as_shadow then layer.tint = tint end
+      end
+    end
+    entity.graphics_set = graphics
+  end
+end
+
 circuit_connector_definitions["nullius-electrolyser"] = circuit_connector_definitions.create_vector(universal_connector_template, {
   { variation =  4, main_offset = util.by_pixel( 20.875,  62), shadow_offset = util.by_pixel( 20.875,  62), show_shadow = true },
   { variation =  4, main_offset = util.by_pixel( 20.875,  62), shadow_offset = util.by_pixel( 20.875,  62), show_shadow = true },

@@ -20,7 +20,7 @@ NAMES = {"nullius-small-assembler-1": 1, "nullius-medium-assembler-1": 1,
          "nullius-medium-assembler-3": 3, "nullius-large-assembler-2": 3}
 
 
-def capture(engine, dependencies, baseline=False):
+def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua", baseline_ref="6491f73"):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
     work = Path(tempfile.mkdtemp(prefix="assembler-capture-"))
@@ -33,8 +33,8 @@ def capture(engine, dependencies, baseline=False):
     if baseline:
         p = work / "mods/nullius-star/prototypes"
         p.unlink(); shutil.copytree(ROOT / "nullius-star/prototypes", p)
-        (p / "entity/assembler.lua").write_bytes(subprocess.check_output(
-            ["git", "show", "6491f73:nullius-star/prototypes/entity/assembler.lua"], cwd=ROOT))
+        (p / "entity" / baseline_file).write_bytes(subprocess.check_output(
+            ["git", "show", f"{baseline_ref}:nullius-star/prototypes/entity/{baseline_file}"], cwd=ROOT))
     data = dump(work, engine)
     print(f"Captured {version}, baseline={baseline}: {work}", flush=True)
     return data, major
@@ -71,10 +71,10 @@ def check_graphics(old, data):
                 assert data["assembling-machine"][variant]["graphics_set"] == graphics, variant
 
 
-def render(engine, data, major):
+def render(engine, data, major, names=NAMES, scenario_name="assembler-graphics"):
     work = Path(tempfile.mkdtemp(prefix=f"assembler-render-{major}-"))
     mod = work / "mods/nullius-star"
-    (mod / "scenarios/assembler-graphics").mkdir(parents=True)
+    (mod / "scenarios" / scenario_name).mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="nullius-star",version="0.0.3",
         factorio_version=major,title="Assembler graphics test",author="tests",dependencies=["base", "space-age"], space_travel_required=True)))
     builtin = ["base", "quality", "space-age", "elevated-rails", "nullius-star"]
@@ -83,9 +83,10 @@ def render(engine, data, major):
     # Keep resolved graphics, geometry and speed; declare void power and one
     # iron-plate batch per machine to isolate rendering from the energy supply.
     entities = []
-    for name in NAMES:
+    for name in names:
         p = data["assembling-machine"][name]
-        entities.append({k: p[k] for k in ("name", "graphics_set", "collision_box", "selection_box", "crafting_speed")})
+        entities.append({k: p[k] for k in ("name", "graphics_set", "collision_box", "selection_box",
+            "crafting_speed", "fluid_boxes", "forced_symmetry", "use_mirroring") if k in p})
     (mod / "data.lua").write_text("local machines=" + lua(entities) + '''
 for _, p in ipairs(machines) do
   local e=table.deepcopy(data.raw["assembling-machine"]["assembling-machine-1"])
@@ -100,14 +101,15 @@ recipe.ingredients={{type="item",name="iron-plate",amount=1}}
 recipe.results={{type="item",name="iron-stick",amount=1}}
 data:extend({recipe})
 ''')
-    scenario = mod / "scenarios/assembler-graphics/control.lua"
-    scenario.write_text('local names=' + lua(list(NAMES)) + '\n' + (ROOT / "tests/scenarios/compatibility/assembler-graphics/control.lua").read_text())
-    command(work, engine, ["--scenario2map", "nullius-star/assembler-graphics"], "compile")
+    scenario = mod / "scenarios" / scenario_name / "control.lua"
+    source = ROOT / "tests/scenarios/compatibility" / scenario_name
+    scenario.write_text('local names=' + lua(list(names)) + '\n' + (source / "control.lua").read_text())
+    command(work, engine, ["--scenario2map", f"nullius-star/{scenario_name}"], "compile")
     common = [str(engine), "--config", str(prepare_config(work,engine)), "--mod-directory", str(work/"mods"), "--disable-audio"]
-    deadline = json.loads((ROOT / "tests/scenarios/compatibility/assembler-graphics/test.json").read_text())["until_tick"]
+    deadline = json.loads((source / "test.json").read_text())["until_tick"]
     execute_multiplayer(SimpleNamespace(timeout_seconds=180, multiplayer_until_tick=deadline), common,
-                        work/"saves/nullius-star/assembler-graphics.zip", work)
-    result=json.loads((work/"script-output/factorio-tests/assembler-graphics.json").read_text())
+                        work / "saves/nullius-star" / f"{scenario_name}.zip", work)
+    result=json.loads((work / "script-output/factorio-tests" / f"{scenario_name}.json").read_text())
     assert result["status"]=="pass", result
     print(f"PASS rendered {major}: {result['assertions']} assertions; {work}", flush=True)
 
