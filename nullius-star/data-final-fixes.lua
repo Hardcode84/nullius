@@ -240,9 +240,9 @@ for name, deco in pairs(data.raw["optimized-decorative"] or {}) do
   end
 end
 
--- Strip autoplace from non-Vulcanus SA entities.
+-- Strip autoplace from unused SA entities.
 local strip_entity_names = {
-  "scrap", "fulgurite", "big-fulgora-rock",
+  "scrap",
   "fulgoran-ruin-vault", "fulgoran-ruin-attractor",
   "fulgoran-ruin-colossal", "fulgoran-ruin-huge", "fulgoran-ruin-big",
   "fulgoran-ruin-stonehenge", "fulgoran-ruin-medium", "fulgoran-ruin-small",
@@ -262,6 +262,13 @@ end
 
 -- Override Vulcanus rock drops: stone, graphite, rutile (no vanilla ores).
 require("prototypes.vulcanus-rocks")
+
+-- Fulgora landmarks supply stone only, including the small spawned fulgurites.
+for name, maximum in pairs({fulgurite = 12, ["fulgurite-small"] = 16}) do
+  local rock = data.raw["simple-entity"][name]
+  rock.minable.results = {{type="item", name="stone", amount_min=8, amount_max=maximum}}
+  rock.loot = nil
+end
 
 -- Override sulfuric acid geyser to produce HCl on Vulcanus.
 -- The geyser entity is shared across surfaces, so we change it globally.

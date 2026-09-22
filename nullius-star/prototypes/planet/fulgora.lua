@@ -18,12 +18,29 @@ map.autoplace_settings = {
     ["medium-fulgora-rock"] = {}, ["small-fulgora-rock"] = {},
     ["tiny-fulgora-rock"] = {},
   }},
-  entity = {treat_missing_as_default = false, settings = {}},
+  entity = {treat_missing_as_default = false, settings = {
+    ["big-fulgora-rock"] = {}, ["fulgurite"] = {},
+  }},
 }
--- Cover low basins with dry sand. Do not use the native city's road or scrap
--- masks to choose natural terrain.
-map.property_expression_names["tile:fulgoran-dust:probability"] = "0.8 + fulgora_rock"
-map.property_expression_names["tile:fulgoran-rock:probability"] = "0.5 + 2 * fulgora_rock"
+-- Map overrides reference named noise expressions, not inline formulas.
+local function probability(kind, name, expression)
+  local noise_name = "nullius-fulgora-" .. name .. "-probability"
+  data:extend({{type="noise-expression", name=noise_name, expression=expression, hidden=true}})
+  map.property_expression_names[kind .. ":" .. name .. ":probability"] = noise_name
+end
+-- Cover low basins with dry sand, without city road or scrap masks.
+probability("tile", "fulgoran-dust", "1.2 + fulgora_rock")
+probability("tile", "fulgoran-rock", "0.5 + 2 * fulgora_rock")
+-- Natural clusters extend into the dry basins, without oil or city masks.
+for name, density in pairs({
+  ["medium-fulgora-rock"] = 0.12,
+  ["small-fulgora-rock"] = 0.24,
+  ["tiny-fulgora-rock"] = 0.4,
+}) do
+  probability("decorative", name, density .. " * clamp(fulgora_rock - 0.4, 0, 1)")
+end
+probability("entity", "big-fulgora-rock", "0.025 * clamp(fulgora_rock - 0.8, 0, 1)")
+probability("entity", "fulgurite", "0.008 * clamp(1 - fulgora_rock, 0, 1)")
 data:extend({planet, {
   type = "space-connection", name = "nauvis-nullius-fulgora",
   subgroup = "planet-connections", from = "nauvis", to = planet.name,

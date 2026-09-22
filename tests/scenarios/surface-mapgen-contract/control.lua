@@ -44,6 +44,7 @@ local nauvis_required_controls = {
 }
 local nauvis_forbidden = {
   "copper-ore", "uranium-ore", "coal", "crude-oil", "stone",
+  "big-fulgora-rock", "fulgurite", "fulgurite-small",
 }
 
 local assertions = 0

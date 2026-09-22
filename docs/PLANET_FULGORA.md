@@ -48,7 +48,8 @@ resource yields, and the local research endpoint are not yet specified.
 | Contract | Value |
 |---|---|
 | Planet | `nullius-fulgora`; connected to Nauvis |
-| Terrain | Natural dust, dunes, sand, rock, cliffs, and rock decoratives |
+| Terrain | Natural dust, dunes, sand, rock, cliffs, big rocks, and fulgurites; rock clusters also cover dry basins |
+| Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
 | Landing | One equipped idle android and one empty probe wreck per force |
