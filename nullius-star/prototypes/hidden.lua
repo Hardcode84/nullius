@@ -131,16 +131,11 @@ for _,fluid in pairs(data.raw.fluid) do
   end
 end
 
+local visible_build_items = require("prototypes.visible-build-items")()
 for _,type in pairs(building_types_list) do
   for _,entity in pairs(data.raw[type]) do
-    if entity.next_upgrade ~= nil then
-      local next_entity = data.raw[type][entity.next_upgrade]
-      if (next_entity ~= nil) and next_entity.minable ~= nil then
-        local item = data.raw.item[next_entity.minable.result]
-        if (item ~= nil) and item.hidden then
-          entity.next_upgrade = nil
-        end
-      end
+    if visible_build_items[entity.next_upgrade] == false then
+      entity.next_upgrade = nil
     end
     if entity.minable ~= nil then
       local item = data.raw.item[entity.minable.result]

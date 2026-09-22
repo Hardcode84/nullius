@@ -8,6 +8,7 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
+| Hidden upgrade targets | Cleanup checks build items across all item types and the first explicit `placeable_by` entry | Ten native cases pass on each engine. Full-mod 2.0 data is unchanged. Removing nine invalid rolling-stock links lets the staged 2.1 prototype dump pass |
 | Rocket-silo crafting graphics | The silo copies the base graphics set with its working sound | Both engines and full Nullius 2.0 pass 30 assertions: rocket construction, launch, and 100 astronomy boxes at tick 26,700. Mission startup accepts zero players and uses the cargo pod force |
 | Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
 | Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe definitions and mutation; prototype filters, runtime filters, and tool category handling pass |
@@ -114,6 +115,8 @@ python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-
 python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2.0 --compare-full-mod
+python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2.1 --staged-full-mod --dependency-mod-directory /path/to/staged/mods
 python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```
@@ -145,13 +148,14 @@ new release. A published release does not prove integration compatibility.
 | Use Bob library 3.0.0 and logistics 3.0.1 source | Nullius fails at `entity/assembler.lua:111`: removed global `assembler2pipepictures` |
 | Replace four assembler picture calls in the staged copy | Lua data stages complete; prototype validation rejects `nullius-asteroid-miner-1.rocket_launch_products[0].probability` |
 | Feed a declared 2.1 recipe to the planner | Preserves `categories=["chemistry"]`; rejects the 50% product as an exact amount |
+| Current source with the staged Bob 3.0 dependency set | Full 2.1 prototype dump passes after the hidden upgrade-target fix; no temporary prototype edits are needed |
 
 Portal archive download returned HTTP 403 with the installed credentials. The
 Bob probe uses public tag `v3.0-patch1`, commit
 `41ecd658bc63ab69c96315c260276d4d82134198`. The other six dependencies remain
-manifest-retargeted installed versions in that probe. Full 2.1 prototype,
-runtime, and campaign validation has not passed; the probe stops at the concrete
-product-schema error above. The planner schema witness now passes.
+manifest-retargeted installed versions in that probe. The current source passes
+the full 2.1 prototype dump with this staged set. Full 2.1 runtime and campaign
+validation has not passed. The planner schema witness passes.
 
 Bob's 3.0.1 also reports two missing `bob-tungsten-processing` prerequisites.
 Its robot and repair-pack updates detect Space Age's `tungsten-carbide` item,
