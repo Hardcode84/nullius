@@ -187,6 +187,8 @@ data:extend({
       {type = "unlock-recipe", recipe = "nullius-primitive-supply-chest"},
       {type = "unlock-recipe", recipe = "nullius-primitive-demand-chest"},
       {type = "character-logistic-requests", modifier = true},
+      require("factorio-version").is_2_1 and
+        {type = "unlock-logistic-network", modifier = true} or nil,
     },
     unit = {
       count = 5,

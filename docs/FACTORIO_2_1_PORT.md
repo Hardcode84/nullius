@@ -8,6 +8,7 @@ planner schema witness. Full gameplay has not been ported.
 
 | Area | Evidence | Required work |
 |---|---|---|
+| Logistic network connections | Robotics 1 and Primitive robotics grant `unlock-logistic-network` on 2.1 | Native checks pass on both engines: independent forces, recipe unlocks, personal requests, and effect reset |
 | Recipe categories | 1,419 category-definition lines across 20 item/planet files; 2.1 removes `category` | Use `categories`; preserve machine and character eligibility. Update recipe definitions and mutation; prototype filters, runtime filters, and tool category handling pass |
 | Recipe presentation | 1,193 lines across 18 files reference removed recipe fields | Remove obsolete display fields; move freshness settings to products where used |
 | Product amounts | Initial audit: 75 probability-related lines across 13 files | Port remaining products to `independent_probability`; preserve yields and recycling calculations. Rock loot is ported; other loot needs its own schema check |
@@ -108,6 +109,8 @@ python tools/test_textplate_recipe_compatibility.py --factorio /path/to/factorio
 python tools/test_textplate_recipe_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_optional_override_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_optional_override_compatibility.py --factorio /path/to/factorio-2.1
+python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-2.0
+python tools/test_logistic_unlock_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_mod_recipe_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
 python tools/probe_factorio_loot_fractions.py --factorio /path/to/factorio-2.0
 ```

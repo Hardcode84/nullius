@@ -2724,7 +2724,9 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-robot-frame-1"
-      }
+      },
+      require("factorio-version").is_2_1 and
+        {type = "unlock-logistic-network", modifier = true} or nil
     },
     unit = {
       count = 80,
