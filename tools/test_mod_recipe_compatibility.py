@@ -64,6 +64,15 @@ def run(engine, mode, enabled, settings, source):
     prefix += "local settings=" + lua({"startup": {k: {"value": v} for k, v in settings.items()}}) + "\n"
     (mod / "integration.lua").write_text(prefix + source)
     (mod / "data.lua").write_text('require("integration")\nrequire("register")\n')
+    with (mod / "data.lua").open("a") as output:
+        output.write('local pumps=require("fixture-data").raw.pump\n')
+        output.write('for _,pump in pairs(pumps) do\n')
+        if version.startswith("2.1"):
+            output.write('assert(pump.fluid_wagon_connector_alignment_tolerance == nil, "obsolete Mini Trains tolerance")\n')
+            output.write('assert(pump.fluid_wagon_tank_valve_max_distance == data.raw.pump.pump.fluid_wagon_tank_valve_max_distance, "Mini Trains changed native reach")\n')
+        elif "Mini_Trains" in enabled:
+            output.write('assert(pump.fluid_wagon_connector_alignment_tolerance == 20/32, "Mini Trains legacy tolerance")\n')
+        output.write('end\n')
     resolved = dump(work, engine)
     contracts = resolved["mod-data"]["mod-recipe-contracts"]["data"]
     recipes = contracts["recipes"]

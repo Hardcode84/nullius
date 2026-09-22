@@ -817,7 +817,7 @@ def run(factorio, dependency_mod_directory):
     wells = json.loads((work / "script-output/factorio-tests/well-pictures.json").read_text())
     assert wells["status"] == "pass" and wells["wells"] == 16, wells
     pumps = json.loads((work / "script-output/factorio-tests/pump-wagons.json").read_text())
-    assert pumps["status"] == "pass" and pumps["cases"] == 16, pumps
+    assert pumps["status"] == "pass" and pumps["cases"] == 64, pumps
     salvage = json.loads((work / "script-output/factorio-tests/salvage-research.json").read_text())
     assert salvage["status"] == "pass", salvage
     reactors = json.loads((work / "script-output/factorio-tests/reactor-neighbours.json").read_text())

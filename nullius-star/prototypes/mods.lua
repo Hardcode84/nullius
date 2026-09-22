@@ -4517,8 +4517,11 @@ if mods["Mini_Trains"] then
     }
   })
 
-  data.raw["pump"]["nullius-pump-1"].fluid_wagon_connector_alignment_tolerance = 20.0 / 32.0;
-  data.raw["pump"]["nullius-pump-2"].fluid_wagon_connector_alignment_tolerance = 20.0 / 32.0;
+  -- 2.1 uses the native pump arm reach for both wagon sizes.
+  if not modern then
+    data.raw["pump"]["nullius-pump-1"].fluid_wagon_connector_alignment_tolerance = 20.0 / 32.0
+    data.raw["pump"]["nullius-pump-2"].fluid_wagon_connector_alignment_tolerance = 20.0 / 32.0
+  end
 end
 
 if mods["fcpu"] then

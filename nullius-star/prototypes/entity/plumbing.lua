@@ -3,7 +3,8 @@ local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local BASEENTITY = "__base__/graphics/entity/"
-local wagon_connector_graphics = require("factorio-version").is_2_1
+local modern = require("factorio-version").is_2_1
+local wagon_connector_graphics = modern
   and "wagon_connection_graphics" or "fluid_wagon_connector_graphics"
 
 require("pipe_graphics")
@@ -2896,7 +2897,8 @@ data:extend({
     open_sound = data.raw.pump["pump"].open_sound,
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
-    fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
+    fluid_wagon_connector_alignment_tolerance = not modern and 2.0 / 32.0 or nil,
+    fluid_wagon_tank_valve_max_distance = modern and data.raw.pump.pump.fluid_wagon_tank_valve_max_distance or nil,
     [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
@@ -3086,7 +3088,8 @@ data:extend({
     open_sound = data.raw.pump["pump"].open_sound,
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
-    fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
+    fluid_wagon_connector_alignment_tolerance = not modern and 2.0 / 32.0 or nil,
+    fluid_wagon_tank_valve_max_distance = modern and data.raw.pump.pump.fluid_wagon_tank_valve_max_distance or nil,
     [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
@@ -3270,7 +3273,8 @@ data:extend({
     open_sound = data.raw.pump["pump"].open_sound,
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
-    fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
+    fluid_wagon_connector_alignment_tolerance = not modern and 2.0 / 32.0 or nil,
+    fluid_wagon_tank_valve_max_distance = modern and data.raw.pump.pump.fluid_wagon_tank_valve_max_distance or nil,
     [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
@@ -3452,7 +3456,8 @@ data:extend({
     open_sound = data.raw.pump["pump"].open_sound,
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
-    fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
+    fluid_wagon_connector_alignment_tolerance = not modern and 2.0 / 32.0 or nil,
+    fluid_wagon_tank_valve_max_distance = modern and data.raw.pump.pump.fluid_wagon_tank_valve_max_distance or nil,
     [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
@@ -3635,7 +3640,8 @@ data:extend({
     open_sound = data.raw.pump["pump"].open_sound,
     close_sound = data.raw.pump["pump"].close_sound,
     fluid_wagon_connector_frame_count = 35,
-    fluid_wagon_connector_alignment_tolerance = 2.0 / 32.0,
+    fluid_wagon_connector_alignment_tolerance = not modern and 2.0 / 32.0 or nil,
+    fluid_wagon_tank_valve_max_distance = modern and data.raw.pump.pump.fluid_wagon_tank_valve_max_distance or nil,
     [wagon_connector_graphics] = data.raw.pump["pump"][wagon_connector_graphics],
     fluid_animation = data.raw.pump["pump"].fluid_animation,
     glass_pictures = data.raw.pump["pump"].glass_pictures,
