@@ -111,7 +111,7 @@ local function check_nauvis()
   generate(surface, {512, 512}, 1)
   local fulgora_tiles = surface.count_tiles_filtered{
     area = {{480, 480}, {544, 544}},
-    name = {"fulgoran-dust", "fulgoran-dunes", "fulgoran-sand", "fulgoran-rock"},
+    name = {"fulgoran-dust", "fulgoran-dunes", "fulgoran-sand", "fulgoran-rock", "nullius-fulgora-sediment"},
   }
   check(fulgora_tiles == 0, "Nauvis generated Fulgora terrain")
   for _, name in pairs(nauvis_forbidden) do

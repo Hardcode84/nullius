@@ -48,7 +48,9 @@ resource yields, and the local research endpoint are not yet specified.
 | Contract | Value |
 |---|---|
 | Planet | `nullius-fulgora`; connected to Nauvis |
-| Terrain | Natural dust, dunes, sand, rock, cliffs, big rocks, and fulgurites; rock clusters also cover dry basins |
+| Terrain | Red plateaus, narrow ridges, pale sediment basins, cliffs, rocks, and fulgurites |
+| Construction | Sediment permits walking but rejects buildings, landfill, and paving; terraforming drones cannot change it |
+| Landing space | Clear 96×96 square; nearby terrain narrows into ridges and separate factory sites |
 | Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
@@ -56,7 +58,17 @@ resource yields, and the local research endpoint are not yet specified.
 | Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Native destructive lightning disabled; this slice adds terrain and access only |
-| Tests | `fulgora-mapgen`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment` on both engines |
+| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment` on both engines |
+
+To inspect the terrain and capture three screenshots:
+
+```bash
+python tools/prepare_fulgora_preview.py --destination release/fulgora-preview
+./release/fulgora-preview/launch.sh
+```
+
+The preview includes three fixed seeds. Screenshots and terrain maps are in
+`release/fulgora-preview/script-output/fulgora-preview/`.
 
 ## Resource model
 

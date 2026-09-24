@@ -5,7 +5,7 @@
 -- run: one check at tick 1.
 -- expect: dry natural terrain only; no ruins, scrap, fluid tiles, or enemies.
 local allowed_tiles = {['fulgoran-dust'] = true, ['fulgoran-dunes'] = true,
-  ['fulgoran-sand'] = true, ['fulgoran-rock'] = true}
+  ['fulgoran-sand'] = true, ['fulgoran-rock'] = true, ['nullius-fulgora-sediment'] = true}
 local allowed_decoratives = {['medium-fulgora-rock'] = true,
   ['small-fulgora-rock'] = true, ['tiny-fulgora-rock'] = true}
 local landmarks = {['big-fulgora-rock'] = {19,25}, fulgurite = {8,12},
@@ -102,7 +102,7 @@ script.on_nth_tick(1, function()
     check(prototypes.tile[name].fluid == nil, 'fluid source on Fulgora: ' .. name)
     distinct = distinct + 1
   end
-  check(distinct == 4, 'terrain fixture did not exercise all four natural tiles')
+  check(distinct == 5, 'terrain fixture did not exercise all five natural tiles')
   check(cliff_count > 0, 'no cliffs generated')
   for name in pairs(decorative_counts) do check(allowed_decoratives[name], 'forbidden decorative: ' .. name) end
   check(next(decorative_counts) ~= nil, 'no natural rock decoratives generated')

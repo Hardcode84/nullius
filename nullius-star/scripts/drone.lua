@@ -182,7 +182,7 @@ function paving_effect(event, tile, dirt)
 	local dy = math.abs(t.position.y - cy)
 	local dist = math.max(dx, dy)
 
-	if (dist < 64) then
+	if ((dist < 64) and (oname ~= "nullius-fulgora-sediment")) then
 	  if (oname:find("water")) then
 	    newname = dirt
 	    newind2 = newind2 + 1
