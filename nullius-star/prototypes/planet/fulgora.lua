@@ -4,27 +4,44 @@ local basin = table.deepcopy(data.raw.tile["fulgoran-dust"])
 basin.name = "nullius-fulgora-sediment"
 basin.order = "b[natural]-e[sediment]"
 basin.layer = 5
-basin.collision_mask = {layers={water_tile=true, ground_tile=true, resource=true, floor=true}}
+basin.collision_mask = {layers={water_tile=true, ground_tile=true, resource=true}}
 basin.variants = table.deepcopy(data.raw.tile["mineral-cream-dirt-1"].variants)
 basin.tint = {1, 0.9, 1}
 basin.map_color = {174, 156, 119}
 basin.walking_speed_modifier = 0.85
-basin.autoplace = {probability_expression="0"}
-data:extend({basin, {
-  type="noise-expression", name="nullius_fulgora_ridge", hidden=true,
-  expression="0.045 - abs(multioctave_noise{x=x, y=y, seed0=map_seed, " ..
-    "seed1='nullius-fulgora-ridges', octaves=2, persistence=0.4, input_scale=1/160})",
-}, {
-  type="noise-expression", name="nullius_fulgora_land", hidden=true,
-  expression="max(fulgora_mix_spots, (80 - distance) / 80, nullius_fulgora_ridge)",
-}, {
-  type="noise-expression", name="nullius_fulgora_elevation", hidden=true,
-  expression="80 + 60 * clamp(nullius_fulgora_land, -0.5, 0.5) + " ..
-    "20 * ((nullius_fulgora_land > 0) - 0.5)",
-}, {
-  type="noise-expression", name="nullius_fulgora_cliffiness", hidden=true,
-  expression="4 * slider_rescale(cliff_richness, 20) * (distance > 80) * (nullius_fulgora_ridge < -0.015)",
-}})
+-- Keep each native oil tile's probability, layer, and correction behavior.
+local sediment_tiles = {}
+local native_tiles = data.raw.planet.fulgora.map_gen_settings.autoplace_settings.tile.settings
+for name in pairs(native_tiles) do
+  if name:find("oil-ocean-",1,true)==1 then
+    local native = data.raw.tile[name]
+    local sediment = table.deepcopy(basin)
+    local suffix = name:sub(#"oil-ocean-"+1)
+    sediment.name = basin.name .. (suffix=="shallow" and "" or "-"..suffix)
+    sediment.localised_name = {"tile-name.nullius-fulgora-sediment"}
+    sediment.localised_description = {"tile-description.nullius-fulgora-sediment"}
+    if sediment.name~=basin.name then sediment.factoriopedia_alternative=basin.name end
+    sediment.layer = native.layer
+    sediment.layer_group = native.layer_group
+    sediment.autoplace = table.deepcopy(native.autoplace)
+    sediment_tiles[sediment.name] = {}
+    data:extend({sediment})
+  end
+end
+-- Keep the former city's tile boundaries too, but use natural dust graphics.
+local natural_tiles = {}
+for _,name in ipairs({"fulgoran-paving", "fulgoran-walls", "fulgoran-conduit", "fulgoran-machinery"}) do
+  local native = data.raw.tile[name]
+  local tile = table.deepcopy(data.raw.tile["fulgoran-dust"])
+  tile.name = "nullius-"..name
+  tile.localised_name = {"tile-name.fulgoran-dust"}
+  tile.factoriopedia_alternative = "fulgoran-dust"
+  tile.layer = native.layer
+  tile.layer_group = native.layer_group
+  tile.autoplace = table.deepcopy(native.autoplace)
+  natural_tiles[tile.name] = {}
+  data:extend({tile})
+end
 local planet = table.deepcopy(data.raw.planet.fulgora)
 planet.name = "nullius-fulgora"
 planet.order = "c[nullius-fulgora]"
@@ -39,7 +56,6 @@ map.autoplace_settings = {
   tile = {treat_missing_as_default = false, settings = {
     ["fulgoran-dust"] = {}, ["fulgoran-dunes"] = {},
     ["fulgoran-sand"] = {}, ["fulgoran-rock"] = {},
-    [basin.name] = {},
   }},
   decorative = {treat_missing_as_default = false, settings = {
     ["medium-fulgora-rock"] = {}, ["small-fulgora-rock"] = {},
@@ -49,28 +65,8 @@ map.autoplace_settings = {
     ["big-fulgora-rock"] = {}, ["fulgurite"] = {},
   }},
 }
--- Map overrides reference named noise expressions, not inline formulas.
-local function probability(kind, name, expression)
-  local noise_name = "nullius-fulgora-" .. name .. "-probability"
-  data:extend({{type="noise-expression", name=noise_name, expression=expression, hidden=true}})
-  map.property_expression_names[kind .. ":" .. name .. ":probability"] = noise_name
-end
-map.property_expression_names.elevation = "nullius_fulgora_elevation"
-map.property_expression_names.cliffiness = "nullius_fulgora_cliffiness"
-probability("tile", basin.name, "1000 * (nullius_fulgora_land < 0) - 100")
--- Keep the four native ground types on firm plateaus and ridges.
-probability("tile", "fulgoran-dust", "1.2 + fulgora_rock")
-probability("tile", "fulgoran-rock", "0.5 + 2 * fulgora_rock")
--- Natural clusters extend into the dry basins, without oil or city masks.
-for name, density in pairs({
-  ["medium-fulgora-rock"] = 0.12,
-  ["small-fulgora-rock"] = 0.24,
-  ["tiny-fulgora-rock"] = 0.4,
-}) do
-  probability("decorative", name, density .. " * clamp(fulgora_rock - 0.4, 0, 1)")
-end
-probability("entity", "big-fulgora-rock", "0.025 * clamp(fulgora_rock - 0.8, 0, 1) * (distance > 72)")
-probability("entity", "fulgurite", "0.008 * clamp(1 - fulgora_rock, 0, 1) * (distance > 72)")
+for name in pairs(sediment_tiles) do map.autoplace_settings.tile.settings[name] = {} end
+for name in pairs(natural_tiles) do map.autoplace_settings.tile.settings[name] = {} end
 data:extend({planet, {
   type = "space-connection", name = "nauvis-nullius-fulgora",
   subgroup = "planet-connections", from = "nauvis", to = planet.name,

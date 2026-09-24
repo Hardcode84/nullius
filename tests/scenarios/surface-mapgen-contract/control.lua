@@ -109,9 +109,12 @@ local function check_nauvis()
       "Nauvis retains forbidden entity autoplace " .. name)
   end
   generate(surface, {512, 512}, 1)
+  local fulgora_names = {}
+  for name in pairs(prototypes.tile) do
+    if name:find('fulgora',1,true) then fulgora_names[#fulgora_names+1]=name end
+  end
   local fulgora_tiles = surface.count_tiles_filtered{
-    area = {{480, 480}, {544, 544}},
-    name = {"fulgoran-dust", "fulgoran-dunes", "fulgoran-sand", "fulgoran-rock", "nullius-fulgora-sediment"},
+    area = {{480, 480}, {544, 544}}, name=fulgora_names,
   }
   check(fulgora_tiles == 0, "Nauvis generated Fulgora terrain")
   for _, name in pairs(nauvis_forbidden) do

@@ -312,3 +312,5 @@ require("vulcanus-entity-recipes")
 require("barrel-recipes")
 
 require("car-key-recipe")
+
+require('fulgora-reference')

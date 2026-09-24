@@ -6,6 +6,8 @@
 -- expect: dry natural terrain only; no ruins, scrap, fluid tiles, or enemies.
 local allowed_tiles = {['fulgoran-dust'] = true, ['fulgoran-dunes'] = true,
   ['fulgoran-sand'] = true, ['fulgoran-rock'] = true, ['nullius-fulgora-sediment'] = true}
+local natural_replacements = {['nullius-fulgoran-paving']=true, ['nullius-fulgoran-walls']=true,
+  ['nullius-fulgoran-conduit']=true, ['nullius-fulgoran-machinery']=true}
 local allowed_decoratives = {['medium-fulgora-rock'] = true,
   ['small-fulgora-rock'] = true, ['tiny-fulgora-rock'] = true}
 local landmarks = {['big-fulgora-rock'] = {19,25}, fulgurite = {8,12},
@@ -31,7 +33,7 @@ script.on_nth_tick(1, function()
   end
   check(surface.get_property('pressure') == 800, 'wrong pressure')
   local tile_counts, decorative_counts, cliff_count = {}, {}, 0
-  local entity_counts, basin_counts = {}, {}
+  local entity_counts = {}
   for _, seed in ipairs({0, 1, 8675309}) do
     local seeded = surface.map_gen_settings
     seeded.seed = seed
@@ -43,11 +45,9 @@ script.on_nth_tick(1, function()
       for _, tile in pairs(sample.find_tiles_filtered{area=area}) do
         tile_counts[tile.name] = (tile_counts[tile.name] or 0) + 1
       end
-      local positions, names = {}, {}
       for _, decorative in pairs(sample.find_decoratives_filtered{area=area}) do
         local name = decorative.decorative.name
         decorative_counts[name] = (decorative_counts[name] or 0) + decorative.amount
-        positions[#positions+1], names[#names+1] = decorative.position, name
       end
       for _, entity in pairs(sample.find_entities_filtered{area=area}) do
         check(entity.name == 'cliff-fulgora' or landmarks[entity.name],
@@ -56,28 +56,13 @@ script.on_nth_tick(1, function()
           cliff_count = cliff_count + 1
         else
           entity_counts[entity.name] = (entity_counts[entity.name] or 0) + 1
-          positions[#positions+1], names[#names+1] = entity.position, entity.name
         end
       end
-      local values = sample.calculate_tile_properties({'fulgora_oil_mask'}, positions)
-      check(values.fulgora_oil_mask ~= nil, 'missing basin noise property')
-      local region_basins = {}
-      for i, mask in ipairs(values.fulgora_oil_mask) do
-        if mask > 0 then
-          local name = names[i]
-          basin_counts[name] = (basin_counts[name] or 0) + 1
-          region_basins[name] = true
-        end
-      end
-      for name in pairs(allowed_decoratives) do
-        check(region_basins[name], 'no basin ' .. name .. ' at seed ' .. seed ..
-          ' position ' .. pos.x .. ',' .. pos.y)
-      end
+
     end
   end
   for name, bounds in pairs(landmarks) do
     check((entity_counts[name] or 0) > 0, 'no generated ' .. name)
-    check((basin_counts[name] or 0) > 0, 'no basin landmarks: ' .. name)
     local prototype = prototypes.entity[name]
     local products = prototype.mineable_properties.products
     check(#products == 1 and products[1].name == 'stone', name .. ' must yield only stone')
@@ -93,16 +78,13 @@ script.on_nth_tick(1, function()
       name .. ' actual mining amount')
     inventory.destroy()
   end
-  for name in pairs(allowed_decoratives) do
-    check((basin_counts[name] or 0) > 0, 'no basin decoratives: ' .. name)
-  end
   local distinct = 0
   for name in pairs(tile_counts) do
-    check(allowed_tiles[name], 'forbidden terrain: ' .. name)
+    check(allowed_tiles[name] or natural_replacements[name] or name:find('nullius-fulgora-sediment',1,true)==1, 'forbidden terrain: ' .. name)
     check(prototypes.tile[name].fluid == nil, 'fluid source on Fulgora: ' .. name)
     distinct = distinct + 1
   end
-  check(distinct == 5, 'terrain fixture did not exercise all five natural tiles')
+  for name in pairs(allowed_tiles) do check(tile_counts[name], 'missing natural tile: '..name) end
   check(cliff_count > 0, 'no cliffs generated')
   for name in pairs(decorative_counts) do check(allowed_decoratives[name], 'forbidden decorative: ' .. name) end
   check(next(decorative_counts) ~= nil, 'no natural rock decoratives generated')
@@ -110,6 +92,6 @@ script.on_nth_tick(1, function()
     schema=1, case='fulgora-mapgen', status='pass', failure_count=0,
     assertions=assertions, tick=game.tick, factorio_version=script.active_mods.base,
     observations={tiles=tile_counts, decoratives=decorative_counts, cliffs=cliff_count,
-      landmarks=entity_counts, basin_objects=basin_counts},
+      landmarks=entity_counts},
   }, false)
 end)

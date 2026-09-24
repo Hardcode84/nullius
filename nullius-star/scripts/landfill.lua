@@ -343,7 +343,7 @@ function landfill_area(surface, center, tilename)
   local threshold = 45000000 + max_matrix
 
   for i, t in pairs(oldtiles) do
-    if ((not sametile[t.name]) and (t.name ~= "nullius-fulgora-sediment")) then
+    if ((not sametile[t.name]) and (not t.name:find("nullius-fulgora-sediment", 1, true))) then
       local dx = (t.position.x - cx)
       local dy = (t.position.y - cy)
 	  dx = dx * dx
@@ -749,7 +749,7 @@ function excavate_area(surface, center, shallow)
 
   for i, t in pairs(oldtiles) do
     local oldname = t.name
-    if (oldname ~= "nullius-fulgora-sediment") and ((oldname ~= "deepwater") or shallow) then
+    if (not oldname:find("nullius-fulgora-sediment", 1, true)) and ((oldname ~= "deepwater") or shallow) then
 	  local tx = t.position.x
 	  local ty = t.position.y
       local dx = (tx - cx)

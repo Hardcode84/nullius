@@ -1,13 +1,18 @@
 -- given: production Fulgora, three fixed seeds; no factory supplies.
 -- place: generated 512x512 regions at the landing and a distant site.
+-- compare: native and replacement terrain without random landmark obstructions;
+-- also survey the complete production terrain with landmarks enabled.
 -- act: query real tile geometry and native building placement.
 -- run: once at tick 1; graphical preview is optional after a player joins.
--- expect: clear landing, constrained remote land, walkable but unbuildable basins.
+-- expect: native elevation and cliffs; oil footprints contain dry sediment.
 util = require('util')
 require('__nullius-star__/scripts/landfill')
 require('__nullius-star__/scripts/drone')
+local surface_config = require('__nullius-star__/scripts/surface_config')
 local CASE = 'fulgora-terrain'
 local BASIN = 'nullius-fulgora-sediment'
+local function is_basin(name) return name:find(BASIN,1,true)==1 end
+local basin_names = {}
 local assertions = 0
 local function check(value, message)
   assertions = assertions + 1
@@ -15,31 +20,47 @@ local function check(value, message)
 end
 local buildings = {'nullius-small-assembler-1', 'transport-belt',
   'pipe', 'wooden-chest', 'small-electric-pole'}
-local function survey(surface, center)
+local function survey(surface, center, reference, geometry)
   local area = {{center.x-256,center.y-256},{center.x+256,center.y+256}}
   surface.request_to_generate_chunks(center, 9)
   surface.force_generate_chunk_requests()
-  local basin_count = surface.count_tiles_filtered{area=area,name=BASIN}
+  reference.request_to_generate_chunks(center,9)
+  reference.force_generate_chunk_requests()
+  geometry.request_to_generate_chunks(center,9)
+  geometry.force_generate_chunk_requests()
+  local basin_count = surface.count_tiles_filtered{area=area,name=basin_names}
   local positions, firm, colors = {}, {}, {}
   for y=0,127 do
     for x=0,127 do
       local p = {x=center.x-253.5+x*4,y=center.y-253.5+y*4}
       local tile = surface.get_tile(p)
       local i = #positions+1
-      positions[i], firm[i] = p, tile.name ~= BASIN
+      positions[i], firm[i] = p, not is_basin(tile.name)
       colors[i] = tile.prototype.map_color
     end
   end
-  local props = surface.calculate_tile_properties({'fulgora_mix_spots', 'nullius_fulgora_ridge'}, positions)
-  local ridge_cells, buildable_ridge_cells = 0, 0
+  local props = surface.calculate_tile_properties(
+    {'elevation','fulgora_elevation','cliffiness','fulgora_cliffiness'},positions)
   for i in ipairs(positions) do
-    if props.fulgora_mix_spots[i] < 0 and props.nullius_fulgora_ridge[i] > 0.02 then
-      check(firm[i], 'ridge is not firm ground at '..positions[i].x..','..positions[i].y..' noise '..props.nullius_fulgora_ridge[i])
-      ridge_cells = ridge_cells + 1
-      if surface.can_place_entity{name='transport-belt',position=positions[i],force='player'} then
-        buildable_ridge_cells = buildable_ridge_cells+1
-      end
-    end
+    check(props.elevation[i]==props.fulgora_elevation[i], 'native elevation changed')
+    check(props.cliffiness[i]==props.fulgora_cliffiness[i], 'native cliffiness changed')
+    local native_tile = reference.get_tile(positions[i]).name
+    local native_oil = native_tile:find('factorio-test-oil-ocean-',1,true) == 1
+    check(firm[i] == not native_oil, 'sediment differs from generated native ocean at '..
+      positions[i].x..','..positions[i].y..' native '..native_tile)
+
+  end
+  local cliffs = surface.count_entities_filtered{area=area,name='cliff-fulgora'}
+  check(cliffs>20, 'missing native cliffs: '..cliffs)
+  -- Compare the same cliff-generation inputs. Random fulgurite children can
+  -- block or turn adjacent cliff segments, so both geometry fixtures omit them.
+  local native_cliffs = reference.find_entities_filtered{area=area,name='cliff-fulgora'}
+  check(geometry.count_entities_filtered{area=area,name='cliff-fulgora'}==#native_cliffs,
+    'native cliff count changed')
+  for _,cliff in ipairs(native_cliffs) do
+    local other = geometry.find_entity('cliff-fulgora',cliff.position)
+    check(other and other.cliff_orientation==cliff.cliff_orientation,
+      'native cliff position or orientation changed')
   end
   -- Four-neighbor components expose disconnected factory sites, not just coverage.
   local seen, components = {}, {}
@@ -71,39 +92,50 @@ local function survey(surface, center)
   end
   svg[#svg+1] = '</svg>'
   helpers.write_file('fulgora-preview/'..surface.name..'-'..center.x..'.svg', table.concat(svg), false)
-  return {basin_fraction=basin_count/(512*512), ridge_cells=ridge_cells, buildable_ridge_cells=buildable_ridge_cells,
+  return {basin_fraction=basin_count/(512*512), cliffs=cliffs, unobstructed_cliffs=#native_cliffs,
     firm_components=components}, positions
 end
 script.on_nth_tick(1, function()
   if game.tick==0 then return end
   script.on_nth_tick(1,nil)
   if storage.terrain_checked then return end
+  for name in pairs(prototypes.tile) do if is_basin(name) then basin_names[#basin_names+1]=name end end
   local planet = game.planets['nullius-fulgora'].create_surface()
+  local stale = planet.map_gen_settings
+  local seed = stale.seed
+  stale.property_expression_names.elevation = 'vulcanus_elevation'
+  stale.property_expression_names['tile:fulgoran-rock:probability'] = 'fulgora_rock'
+  stale.cliff_settings.cliff_elevation_0 = 1000
+  planet.map_gen_settings = stale
+  surface_config.configure(planet)
+  local refreshed = planet.map_gen_settings
+  check(refreshed.seed==seed, 'configuration changed the surface seed')
+  check(refreshed.property_expression_names.elevation=='fulgora_elevation', 'stale terrain expression retained')
+  check(refreshed.property_expression_names['tile:fulgoran-rock:probability']==nil, 'stale tile expression retained')
+  check(refreshed.cliff_settings.cliff_elevation_0==80, 'stale cliff settings retained')
   local observations = {}
   for _,seed in ipairs({0,1,8675309}) do
     local settings = planet.map_gen_settings
     settings.seed = seed
     local surface = game.create_surface('fulgora-terrain-'..seed,settings)
     surface.always_day = true
-    local origin = survey(surface,{x=0,y=0})
-    local distant, positions = survey(surface,{x=2048,y=1024})
-    check(surface.count_tiles_filtered{area={{-48,-48},{48,48}},name=BASIN}==0,
-      'basin intrudes into landing square')
-    check(surface.count_entities_filtered{area={{-48,-48},{48,48}},type={'cliff','simple-entity'}}==0,
-      'obstacles intrude into landing square')
-    check(distant.basin_fraction>0.35 and distant.basin_fraction<0.85,
-      'remote basin fraction outside 35-85%: '..distant.basin_fraction)
-    check(distant.ridge_cells>20, 'no narrow ridge terrain')
-    check(distant.buildable_ridge_cells>20, 'ridges do not permit belt construction')
-    check(#distant.firm_components>1 and distant.firm_components[1]>2000,
-      'missing separate usable factory sites')
+    local reference_settings = util.table.deepcopy(prototypes.mod_data['factorio-test-fulgora-reference'].data)
+    reference_settings.seed = seed
+    local reference = game.create_surface('fulgora-reference-'..seed,reference_settings)
+    local geometry_settings = surface.map_gen_settings
+    geometry_settings.autoplace_settings.entity.settings = {}
+    geometry_settings.autoplace_settings.decorative.settings = {}
+    local geometry = game.create_surface('fulgora-geometry-'..seed,geometry_settings)
+    local origin = survey(surface,{x=0,y=0},reference,geometry)
+    local distant, positions = survey(surface,{x=2048,y=1024},reference,geometry)
+    check(distant.basin_fraction>0 and distant.basin_fraction<1, 'missing land or sediment')
     for _,name in ipairs(buildings) do
-      check(surface.can_place_entity{name=name,position={0,0},force='player'},
-        'landing rejects '..name)
+      local placement = surface.find_non_colliding_position(name,{0,0},64,1)
+      check(placement~=nil, 'no native landing space for '..name)
     end
     local witness
     for _,p in ipairs(positions) do
-      if surface.get_tile(p).name==BASIN and surface.can_place_entity{
+      if is_basin(surface.get_tile(p).name) and surface.can_place_entity{
           name='character',position=p,force='player'} then
         local blocked = true
         for _,name in ipairs(buildings) do
@@ -139,7 +171,7 @@ script.on_nth_tick(1, function()
   local surface = game.surfaces['fulgora-terrain-1']
   local center = observations[2].basin_witness
   local area = area_bound(center,192)
-  local before = surface.find_tiles_filtered{area=area,name=BASIN}
+  local before = surface.find_tiles_filtered{area=area,name=basin_names}
   local event = {surface_index=surface.index,target_position=center}
   paving_effect(event,'refined-concrete','landfill')
   check(surface.count_tiles_filtered{area=area,name='refined-concrete'}>0,
@@ -147,7 +179,7 @@ script.on_nth_tick(1, function()
   landfill_area(surface,center,'landfill')
   excavate_area(surface,center,false)
   for _,tile in pairs(before) do
-    check(surface.get_tile(tile.position).name==BASIN,'drone changed unstable sediment')
+    check(is_basin(surface.get_tile(tile.position).name),'drone changed unstable sediment')
   end
   storage.terrain_checked = true
   helpers.write_file('factorio-tests/'..CASE..'.json', helpers.table_to_json{
