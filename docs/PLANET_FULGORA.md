@@ -79,7 +79,10 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 natural fountains -> filtration
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
   -> mineral concentrate -> separation -> random metal and mineral traces
+  -> mineral concentrate -> salt recovery -> salt
   -> hydrocarbons -> distillation -> organic feedstocks + heavy tar
+salt + recovered water -> brine -> electrolysis -> chlorine + hydrogen + caustic solution
+hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
 ```
 
@@ -91,6 +94,12 @@ oxygen + fuel -> combustion -> heat or power
 | Large unwanted output volume | Disposal throughput is part of factory capacity |
 | No atmospheric oxygen | Manufacture oxygen by water electrolysis; stored oxygen permits combustion during calm periods |
 | No surface water | Recover a small, guaranteed ice output from filtration; metal traces remain probabilistic |
+| Local chlorine | Recover salt at a fixed yield from concentrate; electrolyze brine made with recovered water |
+
+Use caustic solution in mineral processing. Salt and ice yields must be
+predictable; basic chemistry must not depend on random metal recovery.
+Before implementation, check recipe access and the first electrolyzer's
+materials at probe-era research.
 
 Disposal candidates: return waste to the ocean through a limited-throughput
 outfall, compress and store it, use it in other recipes, or export it after cargo.
