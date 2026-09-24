@@ -23,7 +23,7 @@ extend_mod_prototypes({
   {
     type = "technology",
     name = "nullius-elevated-rails",
-    order = "nullius-em",
+    order = "nullius-df",
     icon = "__elevated-rails__/graphics/technology/elevated-rail.png",
     icon_size = 256,
     effects =
@@ -41,16 +41,16 @@ extend_mod_prototypes({
         modifier = true
       },
     },
-    prerequisites = {"nullius-architecture-1"},
+    prerequisites = {"nullius-freight-transportation-1", "nullius-energy-distribution-2"},
     unit = {
-      count = 560,
+      count = 50,
       ingredients = {
         {"nullius-geology-pack", 1},
         {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 2},
-        {"nullius-chemical-pack", 1}
+        {"nullius-mechanical-pack", 1},
+        {"nullius-electrical-pack", 1}
       },
-      time = 35
+      time = 20
     }
   },
   {
@@ -64,8 +64,9 @@ extend_mod_prototypes({
     always_show_products = true,
     energy_required = 8,
     ingredients = {
-      {type = "item", name = "stone-wall", amount = 6},
-      {type = "item", name = "nullius-pylon-2", amount = 1}
+      {type = "item", name = "nullius-steel-beam", amount = 20},
+      {type = "item", name = "nullius-steel-plate", amount = 10},
+      {type = "item", name = "nullius-steel-rod", amount = 8}
     },
     results = {{type="item", name="rail-support", amount = 1}}
   },
@@ -80,8 +81,8 @@ extend_mod_prototypes({
     always_show_products = true,
     energy_required = 20,
     ingredients = {
-      {type = "item", name = "stone-wall", amount = 8},
-      {type = "item", name = "nullius-steel-beam", amount = 10},
+      {type = "item", name = "nullius-steel-plate", amount = 10},
+      {type = "item", name = "nullius-steel-beam", amount = 20},
       {type = "item", name = "rail-support", amount = 1},
       {type = "item", name = "rail", amount = 8}
     },

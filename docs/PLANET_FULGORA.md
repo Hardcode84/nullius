@@ -52,6 +52,7 @@ resource yields, and the local research endpoint are not yet specified.
 | Island size | Native size control: 2; frequency unchanged |
 | Sediment | Light rust shallows and darker red depths; one shade per native oil-ocean type |
 | Construction | Sediment permits walking but rejects buildings, landfill, and paving; terraforming drones cannot change it |
+| Bridges | Elevated rails: basic trains + energy distribution 2; 50 of each early science pack. Steel supports can stand in sediment; ramps need firm ground |
 | Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
@@ -59,7 +60,7 @@ resource yields, and the local research endpoint are not yet specified.
 | Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Native destructive lightning disabled; this slice adds terrain and access only |
-| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment` on both engines |
+| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports` on both engines |
 
 To inspect the terrain and capture three screenshots:
 
