@@ -20,7 +20,7 @@ local function check(value, message)
 end
 local buildings = {'nullius-small-assembler-1', 'transport-belt',
   'pipe', 'wooden-chest', 'small-electric-pole'}
-local function survey(surface, center, reference, geometry)
+local function survey(surface, center, reference, geometry, baseline)
   local area = {{center.x-256,center.y-256},{center.x+256,center.y+256}}
   surface.request_to_generate_chunks(center, 9)
   surface.force_generate_chunk_requests()
@@ -28,7 +28,16 @@ local function survey(surface, center, reference, geometry)
   reference.force_generate_chunk_requests()
   geometry.request_to_generate_chunks(center,9)
   geometry.force_generate_chunk_requests()
+  baseline.request_to_generate_chunks(center,9)
+  baseline.force_generate_chunk_requests()
+  local baseline_oil = 0
+  for name in pairs(prototypes.tile) do
+    if name:find("factorio-test-oil-ocean-",1,true)==1 then
+      baseline_oil = baseline_oil + baseline.count_tiles_filtered{area=area,name=name}
+    end
+  end
   local basin_count = surface.count_tiles_filtered{area=area,name=basin_names}
+  check(basin_count < baseline_oil, "larger island setting did not increase land area")
   local positions, firm, colors = {}, {}, {}
   for y=0,127 do
     for x=0,127 do
@@ -92,7 +101,8 @@ local function survey(surface, center, reference, geometry)
   end
   svg[#svg+1] = '</svg>'
   helpers.write_file('fulgora-preview/'..surface.name..'-'..center.x..'.svg', table.concat(svg), false)
-  return {basin_fraction=basin_count/(512*512), cliffs=cliffs, unobstructed_cliffs=#native_cliffs,
+  return {basin_fraction=basin_count/(512*512), baseline_basin_fraction=baseline_oil/(512*512),
+    land_area_ratio=(512*512-basin_count)/(512*512-baseline_oil), cliffs=cliffs, unobstructed_cliffs=#native_cliffs,
     firm_components=components}, positions
 end
 script.on_nth_tick(1, function()
@@ -106,6 +116,7 @@ script.on_nth_tick(1, function()
   stale.property_expression_names.elevation = 'vulcanus_elevation'
   stale.property_expression_names['tile:fulgoran-rock:probability'] = 'fulgora_rock'
   stale.cliff_settings.cliff_elevation_0 = 1000
+  stale.autoplace_controls.fulgora_islands.size = 1
   planet.map_gen_settings = stale
   surface_config.configure(planet)
   local refreshed = planet.map_gen_settings
@@ -113,6 +124,7 @@ script.on_nth_tick(1, function()
   check(refreshed.property_expression_names.elevation=='fulgora_elevation', 'stale terrain expression retained')
   check(refreshed.property_expression_names['tile:fulgoran-rock:probability']==nil, 'stale tile expression retained')
   check(refreshed.cliff_settings.cliff_elevation_0==80, 'stale cliff settings retained')
+  check(refreshed.autoplace_controls.fulgora_islands.size==2, "stale island size retained")
   local observations = {}
   for _,seed in ipairs({0,1,8675309}) do
     local settings = planet.map_gen_settings
@@ -121,13 +133,15 @@ script.on_nth_tick(1, function()
     surface.always_day = true
     local reference_settings = util.table.deepcopy(prototypes.mod_data['factorio-test-fulgora-reference'].data)
     reference_settings.seed = seed
+    local baseline = game.create_surface('fulgora-baseline-'..seed,reference_settings)
+    reference_settings.autoplace_controls.fulgora_islands.size = 2
     local reference = game.create_surface('fulgora-reference-'..seed,reference_settings)
     local geometry_settings = surface.map_gen_settings
     geometry_settings.autoplace_settings.entity.settings = {}
     geometry_settings.autoplace_settings.decorative.settings = {}
     local geometry = game.create_surface('fulgora-geometry-'..seed,geometry_settings)
-    local origin = survey(surface,{x=0,y=0},reference,geometry)
-    local distant, positions = survey(surface,{x=2048,y=1024},reference,geometry)
+    local origin = survey(surface,{x=0,y=0},reference,geometry,baseline)
+    local distant, positions = survey(surface,{x=2048,y=1024},reference,geometry,baseline)
     check(distant.basin_fraction>0 and distant.basin_fraction<1, 'missing land or sediment')
     for _,name in ipairs(buildings) do
       local placement = surface.find_non_colliding_position(name,{0,0},64,1)

@@ -24,6 +24,7 @@ function surface_config.configure(surface)
     settings.property_expression_names = native.property_expression_names
     settings.autoplace_settings = native.autoplace_settings
     settings.cliff_settings = native.cliff_settings
+    settings.autoplace_controls.fulgora_islands.size = native.autoplace_controls.fulgora_islands.size
   end
   settings.no_enemies_mode = true
   settings.default_enable_all_autoplace_controls = false

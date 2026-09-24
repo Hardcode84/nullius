@@ -49,6 +49,8 @@ resource yields, and the local research endpoint are not yet specified.
 |---|---|
 | Planet | `nullius-fulgora`; connected to Nauvis |
 | Terrain | Native Fulgora islands, elevation, cliffs, and natural ground; dry sediment replaces oil oceans, and dust replaces artificial ground |
+| Island size | Native size control: 2; frequency unchanged |
+| Sediment | Light rust shallows and darker red depths; one shade per native oil-ocean type |
 | Construction | Sediment permits walking but rejects buildings, landfill, and paving; terraforming drones cannot change it |
 | Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |

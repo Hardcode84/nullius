@@ -6,10 +6,14 @@ basin.order = "b[natural]-e[sediment]"
 basin.layer = 5
 basin.collision_mask = {layers={water_tile=true, ground_tile=true, resource=true}}
 basin.variants = table.deepcopy(data.raw.tile["mineral-cream-dirt-1"].variants)
-basin.tint = {1, 0.9, 1}
-basin.map_color = {174, 156, 119}
 basin.walking_speed_modifier = 0.85
 -- Keep each native oil tile's probability, layer, and correction behavior.
+local sediment_shades = {
+  shallow = {tint={1, 0.63, 0.57}, map_color={190, 111, 81}},
+  ["shallow-2"] = {tint={1, 0.73, 0.65}, map_color={210, 137, 107}},
+  deep = {tint={0.80, 0.46, 0.40}, map_color={143, 74, 58}},
+  ["deep-2"] = {tint={0.90, 0.54, 0.47}, map_color={168, 92, 74}},
+}
 local sediment_tiles = {}
 local native_tiles = data.raw.planet.fulgora.map_gen_settings.autoplace_settings.tile.settings
 for name in pairs(native_tiles) do
@@ -17,6 +21,9 @@ for name in pairs(native_tiles) do
     local native = data.raw.tile[name]
     local sediment = table.deepcopy(basin)
     local suffix = name:sub(#"oil-ocean-"+1)
+    local shade = sediment_shades[suffix]
+    sediment.tint = shade.tint
+    sediment.map_color = shade.map_color
     sediment.name = basin.name .. (suffix=="shallow" and "" or "-"..suffix)
     sediment.localised_name = {"tile-name.nullius-fulgora-sediment"}
     sediment.localised_description = {"tile-description.nullius-fulgora-sediment"}
@@ -52,6 +59,7 @@ planet.lightning_properties = nil
 planet.surface_properties["nullius-ambient-temperature"] = 25
 local map = planet.map_gen_settings
 map.autoplace_controls.scrap = nil
+map.autoplace_controls.fulgora_islands.size = 2
 map.autoplace_settings = {
   tile = {treat_missing_as_default = false, settings = {
     ["fulgoran-dust"] = {}, ["fulgoran-dunes"] = {},
