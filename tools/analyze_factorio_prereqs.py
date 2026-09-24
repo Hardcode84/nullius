@@ -1666,6 +1666,8 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "targets", nargs="*", metavar="ITEM[=COUNT]", type=parse_target
     )
+    parser.add_argument("--compact", action="store_true",
+                        help="omit consumption and executor details from consumer inspection text")
     parser.add_argument("--data-raw", type=Path)
     parser.add_argument("--mod-under-test", type=Path, default=Path(__file__).resolve().parents[1] / "nullius-star")
     parser.add_argument(
@@ -1895,7 +1897,7 @@ def main() -> int:
                             f"  {recipe['name']}: {recipe['energy_required']:g}s "
                             f"[{','.join(recipe['categories'])}]"
                         )
-                        if args.describe_consumers:
+                        if args.describe_consumers and not args.compact:
                             print(
                                 f"    consumption: {recipe['input_amount']:g} in, "
                                 f"{recipe['returned_amount']:g} returned, "

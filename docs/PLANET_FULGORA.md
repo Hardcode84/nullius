@@ -18,11 +18,12 @@ setting: primordial world; no prior civilization or ruins
 surface: dry natural ground; no ruins, scrap, or oil ocean
 primary_resource: deep abiogenic hydrocarbon ocean
 initial_access: natural hydrocarbon fountains
-power: lightning; large peaks, no steady supply
+power: lightning; combustion requires manufactured oxygen
 atmosphere: oxygen-free
-natural_water: none
+surface_water: none
+local_water: ice recovered by fountain filtration
 metals: dissolved traces; no ore deposits
-combustion: unavailable
+combustion: permitted with oxygen from water electrolysis
 pre_cargo: independent local bootstrap and petrochemical research
 exports: advanced organics, polymers, carbon materials, rare traces
 imports: bulk metals, oxygen, water, nuclear devices
@@ -35,7 +36,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Access | Reactivate the storm-damaged probe near a natural fountain |
 | Salvage | Recover capacitor banks, polymer pipes, one distillation column, and basic inserters; most electronics failed |
 | Power | Collect lightning through power poles and buffer it for calm periods |
-| Materials | Distill hydrocarbons and filter trace minerals |
+| Materials | Filter ice and mineral concentrate; melt ice, distill hydrocarbons, and separate trace minerals |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
 | Research | Produce local generic science and petrochemical science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
@@ -54,7 +55,7 @@ resource yields, and the local research endpoint are not yet specified.
 | Construction | Sediment permits walking but rejects buildings, landfill, and paving; terraforming drones cannot change it |
 | Bridges | Elevated rails: basic trains + energy distribution 2; 50 of each early science pack. Steel supports can stand in sediment; ramps need firm ground |
 | Rock drops | Stone only; no holmium from either fulgurite size |
-| Excluded | Ruins, artificial ground, scrap, oil ocean, water, ore deposits, and enemies |
+| Excluded | Ruins, artificial ground, scrap, oil ocean, surface water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
 | Landing | One equipped idle android and one empty probe wreck per force |
 | Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
@@ -75,10 +76,11 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 ## Resource model
 
 ```text
-natural fountains -> raw hydrocarbons -> filtration and distillation
-  -> ethylene, propene, methane, benzene and other organic feedstocks
-  -> random traces: iron dust, aluminum dust, silicon, sulfur, rare elements
-  -> heavy tars and unusable fractions
+natural fountains -> filtration
+  -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
+  -> mineral concentrate -> separation -> random metal and mineral traces
+  -> hydrocarbons -> distillation -> organic feedstocks + heavy tar
+oxygen + fuel -> combustion -> heat or power
 ```
 
 | Constraint | Design consequence |
@@ -87,10 +89,16 @@ natural fountains -> raw hydrocarbons -> filtration and distillation
 | Deep ocean inaccessible initially | No unrestricted bulk extraction at arrival |
 | Small, probabilistic trace yields | Filter at scale and buffer variable material ratios |
 | Large unwanted output volume | Disposal throughput is part of factory capacity |
-| No oxygen | Hydrocarbons are chemical feedstock; hydrogen combustion cannot provide backup power |
+| No atmospheric oxygen | Manufacture oxygen by water electrolysis; stored oxygen permits combustion during calm periods |
+| No surface water | Recover a small, guaranteed ice output from filtration; metal traces remain probabilistic |
 
 Disposal candidates: return waste to the ocean through a limited-throughput
 outfall, compress and store it, use it in other recipes, or export it after cargo.
+Use electricity or supplied heat to melt ice. Include melting, electrolysis,
+compression, combustion, and water recovery in the power balance. A closed
+hydrogen/oxygen storage loop must not produce net energy; fountain hydrocarbons
+are an external fuel input. Prove the first oxygen batch with probe power.
+
 Copper dust remains an open choice because Nullius otherwise reserves copper
 for asteroid mining.
 
@@ -149,17 +157,55 @@ Proposed flow: lightning -> super-capacitors -> accumulators -> heat storage ->
 Stirling generation. Super-capacitors use polymer dielectric and carbon electrodes.
 The initial tuning suggestion was 5-10 MJ per capacitor versus 15-100 MJ per
 accumulator; these are not validated values. Storage transfer and priority rules
-must prove that energy can flow through this sequence without combustion.
+must prove that energy can flow through this sequence. Stored oxygen and fuel
+provide a separate combustion option; combustion is not required to start it.
 
 ## Organic industry
 
-| Conventional material | Proposed local substitute |
+Design only: change display names, keep item IDs, and add local recipes for the
+same output. Preserve separate grades. Apply each change to boxed products too.
+
+| Current intermediate | Naming decision | Fulgora route or restriction |
+|---|---|---|
+| Iron gear / steel gear | Gear / reinforced gear | Molded polymer / fiber-reinforced polymer |
+| Steel beam | Structural beam | Carbon composite; steel plates and rods still limit bridge production |
+| Steel cable | Tension cable | High-strength fiber cable |
+| Iron, steel, aluminum, titanium, and copper plates, rods, sheets, and bare wires | Keep material names | Use trace metals; substitute at the equipment recipe where practical |
+| Insulated wire, red/green wire, optical cable | Keep functional names | Conductive polymer and polymer optics; do not output bare metal wire |
+| Glass / hard glass | Keep material names | Use polymer windows in local equipment recipes; hard glass also feeds glass fiber |
+| Glass fiber | Keep material name | Its consumers include insulation, composites, and optical cable; use local alternatives at those outputs |
+| Fiberglass | Fiber composite | Reinforcing fiber + polymer binder; keep carbon composite as a separate grade |
+| Plastic, rubber, acrylic fiber, textile, carbon fiber/composite, graphite, graphene | Keep names | Supply from fountain chemistry; move or add local recipes without removing grade requirements |
+| Bearing, filters, insulation | Keep functional names | Polymer/composite alternatives; retain ceramic or metal inputs where required |
+| Motors, transformers, circuits, sensors, processors, capacitors, batteries | Keep functional names and tiers | Use local casings, conductors, and dielectrics; retain required metal, silicon, and electrolyte inputs |
+| Chassis, robot frames, tools, pipes, valves, tanks, canisters | Keep functional names and tiers | Add local assembly recipes; audit container-to-metal recovery before substituting |
+| Ores, ingots, metal powders, oxides, salts, silicon, ceramics, refractory materials | Keep material names | Recover actual minerals; no polymer recipe may output these items |
+
+### Metal recovery constraint
+
+A shared item does not record whether its recipe used metal or polymer.
+Renamed components must not recover metals, directly or through other products.
+
+| Existing path | Required decision |
 |---|---|
-| Iron beams and steel structures | Polymer composites and carbon fiber |
-| Metal pipes | Polymer tubing |
-| Copper or aluminum wire | Conductive polymers; carbon nanotube wire is another candidate |
-| Metal gears | Plastic gears and rubber belts |
-| Silica glass | Acrylic or polycarbonate |
+| Iron wire -> iron oxide; boxed equivalent | Keep iron wire metallic |
+| Aluminum wire -> aluminum powder; boxed equivalent | Keep aluminum wire metallic |
+| Small tank + valves -> barrels -> iron ingot | Remove metal recovery before any metal-free tank, valve, or barrel recipe |
+| Component -> equipment -> recycling products | Audit the equipment output as well as the component |
+
+For shared components and equipment with organic alternatives, remove metal
+recovery outputs and their unlock paths; retain only disposal or nonmetal
+recovery. Apply this on every planet and to boxed, legacy, and generated recipes.
+Setting `auto_recycle=false` alone does not remove an existing recipe; hidden
+recipes and `enabled=false` alone do not prevent a technology from unlocking it.
+
+Before adding a substitute, test ordinary and boxed routes on both engines,
+including downstream assembly, recycling, unboxing, and chemical conversion.
+Reject any route that turns the substitute into metal or metal-bearing feedstock.
+Direct-consumer inspection is not proof of this condition. Use the repeatable
+[consumer audit](../tests/progression/fulgora-intermediate-consumers.args) and
+[producer audit](../tests/progression/fulgora-component-producers.args) as inputs
+to the implementation checks.
 
 Conductive polymer wire connects the industry to the ocean setting. Imported
 Vulcanus iron chloride is a proposed dopant after cargo; local bootstrap wiring

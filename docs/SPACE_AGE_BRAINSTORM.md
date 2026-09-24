@@ -93,7 +93,7 @@ Each planet needs enough local resources to get started without imports. The bro
 | Planet | Local Power | Local Materials | Local Chemistry | Missing (import later) |
 |---|---|---|---|---|
 | **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Fully pneumatic, no electrical grid. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
-| **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Organic chemistry only (cracking, polymerization). No combustion (no O2). | Bulk metals, oxygen, water, combustion-based anything |
+| **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Hydrocarbon chemistry; filtered ice supplies water. Combustion uses manufactured oxygen. | Bulk metals, bulk oxygen and water |
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
@@ -482,7 +482,7 @@ Aquilo solves Nauvis's nuclear endgame bottleneck. Once cargo rockets connect, b
 Every planet has a different power challenge:
 - Nauvis: wind (intermittent, H2 storage loop)
 - Vulcanus: geothermal (abundant, constant)
-- Fulgora: lightning (spiky, no combustion, capacitor storage)
+- Fulgora: lightning (spiky, capacitor storage); combustion with electrolytic oxygen
 - Gleba: biological (decaying, needs breeding)
 - Aquilo: **monopole induction** (finite, relocatable) + fusion (abundant fuel, but most output is eaten by heating)
 
@@ -829,7 +829,7 @@ The 500 metallurgic packs are the real cost, and they're trivial to produce on V
 
 Each planet needs to produce small amounts of generic Nauvis packs from local resources. This is intentionally painful but possible:
 
-| Pack | Vulcanus (metals, no water) | Fulgora (organics, no O2) | Gleba (bio, no ores) | Aquilo (cryo, limited everything) |
+| Pack | Vulcanus (metals, no water) | Fulgora (organics, no atmospheric O2) | Gleba (bio, no ores) | Aquilo (cryo, limited everything) |
 |---|---|---|---|---|
 | **Geology** | Volcanic rock + mineral dust (easy) | Trace minerals from filtering (slow) | Bacterial mineral extraction (unreliable) | Ice-bound minerals (thaw first) |
 | **Mechanical** | Abundant metal gears (easy) | Polymer gears (alt recipe) | Bio-composite gears (alt recipe) | Frozen salvage from probe |
