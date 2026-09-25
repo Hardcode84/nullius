@@ -34,14 +34,14 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Step | Proposed player outcome |
 |---|---|
 | Access | Reactivate the storm-damaged probe near a natural fountain |
-| Salvage | Recover capacitor banks, polymer pipes, one distillation column, and basic inserters; most electronics failed |
+| Salvage | Recover a few extractors, a working filter, power poles, capacitor banks, polymer pipes, one distillation column, and basic inserters |
 | Power | Collect lightning through power poles and buffer it for calm periods |
-| Materials | Filter ice and mineral concentrate; melt ice, distill hydrocarbons, and separate trace minerals |
+| Materials | Filter raw hydrocarbon fluid into filtered hydrocarbons, sludge, ice, salt, and gypsum |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
 | Research | Produce local generic science and petrochemical science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
 
-The bootstrap must work without imports. Surviving equipment, exact recipes,
+The bootstrap must work without imports. Exact equipment counts, recipe quantities,
 resource yields, and the local research endpoint are not yet specified.
 
 ## Implemented terrain and access
@@ -76,11 +76,12 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 ## Resource model
 
 ```text
-natural fountains -> filtration
+natural fountains -> extractors -> raw hydrocarbon fluid -> filtration
+  -> filtered hydrocarbons -> distillation -> organic feedstocks + heavy tar
+  -> sludge -> waste reclamation -> metals and minerals
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
-  -> mineral concentrate -> separation -> random metal and mineral traces
-  -> mineral concentrate -> salt recovery -> salt
-  -> hydrocarbons -> distillation -> organic feedstocks + heavy tar
+  -> salt -> brine dissolution
+  -> gypsum -> decomposition -> lime + sulfur dioxide
 salt + recovered water -> brine [new local dissolution recipe]
 brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
 sodium hydroxide + water -> caustic solution
@@ -88,18 +89,25 @@ hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
 ```
 
+Filtration has five fixed outputs: two fluids (filtered hydrocarbons and existing
+`nullius-sludge`) and three solids (ice, salt, gypsum). Raw hydrocarbon fluid and
+filtered hydrocarbons are new fluids; no mineral concentrate is required.
+Use the planner to set yields and distillation fractions against extractor
+production, processing equipment expansion, and bridge construction.
+
 | Constraint | Design consequence |
 |---|---|
 | Few fountains at fixed locations | Initial extraction has limited throughput |
 | Deep ocean inaccessible initially | No unrestricted bulk extraction at arrival |
-| Small, probabilistic trace yields | Filter at scale and buffer variable material ratios |
+| Fixed output ratios | Use separate sludge recovery lines to adjust mineral supply; process every filtration output |
 | Large unwanted output volume | Disposal throughput is part of factory capacity |
 | No atmospheric oxygen | Manufacture oxygen by water electrolysis; stored oxygen permits combustion during calm periods |
-| No surface water | Recover a small, guaranteed ice output from filtration; metal traces remain probabilistic |
-| Local chlorine | Recover salt at a fixed yield from concentrate; electrolyze brine made with recovered water |
+| No surface water | Recover ice at a fixed yield from filtration |
+| Local chlorine | Recover salt directly from filtration; electrolyze brine made with recovered water |
+| Local sulfur | Recover gypsum directly from filtration; decompose it to supply sulfur dioxide |
 
-Use caustic solution in mineral processing. Salt and ice yields must be
-predictable; basic chemistry must not depend on random metal recovery.
+Use caustic solution in mineral processing. Water, chlorine, and sulfur supply
+must not depend on metal recovery.
 Before implementation, check recipe access and the first electrolyzer's
 materials at probe-era research.
 
@@ -151,14 +159,14 @@ Prioritize recovered wastewater and sludge before fresh extraction. Send surplus
 iron through gravel to mineral dust; bauxite and calcium carbonate can become
 mineral dust directly. Acid treatment returns dust to sludge for another recovery
 route. This changes the output mix at a reagent and energy cost. Fixed ratios
-remain within each recipe; random yields do not solve a persistent surplus.
+remain within each recipe; include all surplus outputs in the material balance.
 Waste reclamation now follows Concrete 1, Nitrogen Chemistry 1, and Sulfur
 Processing 1. It costs 220 of each early science pack, at 30 seconds per unit.
 All five recovery recipes, including stone, and barrel recycling remain together.
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 
-Proposed sulfur source: recover gypsum from fountain concentrate. Existing
+Proposed sulfur source: recover gypsum directly from raw hydrocarbon fluid filtration. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
 `8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
 limestone processing 2, before chemical science; a boxed recipe also exists.
@@ -425,7 +433,7 @@ supply areas because a helper can connect to more than one network.
 | Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |
 | Super-capacitors | `AccumulatorPrototype` with high `input_flow_limit`, low `buffer_capacity`, and energy-source `drain` | Verify charging, leakage, and transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
-| Trace extraction | Probabilistic recipe products | Set yields and prove a complete local bootstrap |
+| Fountain filtration | Five fixed recipe products: two fluids and three solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |
 
 No engine performance, production-rate, or completion-time claim is established
 by these inherited candidates.

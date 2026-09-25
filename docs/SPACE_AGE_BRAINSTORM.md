@@ -56,7 +56,7 @@ This reframes Space Age's planet travel as:
 - **Explains independent bootstrap**: Each probe landed with basic equipment that partially survived. The broken equipment mechanic already exists on Nauvis -- extend it per planet. Each planet starts with a set of damaged/salvageable buildings specific to that world's environment.
 - **Explains failure modes**: Each probe failed for planet-specific reasons that become the gameplay challenge:
   - **Vulcanus probe**: Overheated. Metallurgy survived but electronics melted. Must rebuild from heat-resistant components.
-  - **Fulgora probe**: Electromagnetic storms fried most equipment. Scrap plus a few non-metallic survivors (capacitor banks, polymer pipes, one distillation column). Must salvage and rebuild.
+  - **Fulgora probe**: Electromagnetic storms fried most equipment. Surviving extractors, a filter, power equipment, pipes, one distillation column, and inserters start local production. See [Fulgora design](PLANET_FULGORA.md).
   - **Gleba probe**: Biological contamination. Organisms overran the probe. Must study and control native life.
   - **Aquilo probe**: Froze solid. Cryogenically preserved but needs heating infrastructure to thaw and restart.
 - **Defers bulk logistics**: Physical cargo rockets come much later (rocket science tier). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer is a late-game unlock that transforms the economy.
@@ -93,7 +93,7 @@ Each planet needs enough local resources to get started without imports. The bro
 | Planet | Local Power | Local Materials | Local Chemistry | Missing (import later) |
 |---|---|---|---|---|
 | **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Fully pneumatic, no electrical grid. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
-| **Fulgora** | Lightning (massive peaks, zero baseload) | Trace metals filtered from hydrocarbons (random, slow). Abundant organic feedstock. | Hydrocarbon chemistry; filtered ice supplies water. Combustion uses manufactured oxygen. | Bulk metals, bulk oxygen and water |
+| **Fulgora** | Lightning (massive peaks, zero baseload) | Fixed filtration outputs: hydrocarbons, sludge, ice, salt, gypsum. Recover metals from sludge. | Hydrocarbon chemistry; filtered ice supplies water. Combustion uses manufactured oxygen. | Bulk metals, bulk oxygen and water |
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
@@ -104,7 +104,7 @@ Each planet needs enough local resources to get started without imports. The bro
 | Planet | Surviving Equipment | Why It Survived |
 |---|---|---|
 | **Vulcanus** | Furnaces, heat pipes, lava intake (toggles to free-gas vent), gas-powered inserters, pre-filled gas tank, gas pipes | Heat-resistant components survived. Electronics melted. No Stirling, no circuits. See [PLANET_VULCANUS.md](PLANET_VULCANUS.md). |
-| **Fulgora** | Capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. See [Fulgora design](PLANET_FULGORA.md). |
+| **Fulgora** | A few extractors, a filter, power poles, capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. See [Fulgora design](PLANET_FULGORA.md). |
 | **Gleba** | Basic lab, containment walls, bacterial harvester, water recycler | Probe landed in bacterial mat zone. Sterile equipment survived; biological seal held. Minimal power. |
 | **Aquilo** | Everything, but frozen -- must thaw | Cryogenic preservation kept equipment intact but inert |
 
@@ -329,7 +329,7 @@ The existing Nullius nuclear chain has clear pain points that Aquilo could solve
 
 Each planet has a defining production mechanic:
 - Vulcanus: **spoilage-as-cooldown** (molten metal must cool)
-- Fulgora: **random trace filtering** (hydrocarbons yield probabilistic resources)
+- Fulgora: **fixed output ratios** (filtration supplies five products; sludge recovery adjusts the mineral mix)
 - Gleba: **probabilistic breeding** (net-negative loops + continuous maintenance)
 - Aquilo: **finite monopole allocation** (defined below)
 
@@ -442,7 +442,7 @@ MONOPOLE ALLOCATION (finite, competing uses):
 
 Every monopole on one belt loop is a monopole NOT available for another. Early game you need heating loops; mid game you want fusion confinement; late game you want exotic physics. Rebalancing means physically rerouting belt circuits, which requires downtime and re-timing polarity cycles.
 
-**This makes Aquilo the "strategy" planet**: while other planets reward throughput optimization (Vulcanus), probability management (Fulgora/Gleba), or ecosystem balance (Gleba), Aquilo rewards **resource allocation and spatial planning** with a hard-capped finite resource.
+**This makes Aquilo the "strategy" planet**: while other planets reward throughput optimization (Vulcanus), material-ratio management (Fulgora), probability management (Gleba), or ecosystem balance (Gleba), Aquilo rewards **resource allocation and spatial planning** with a hard-capped finite resource.
 
 #### Fishing Mechanic Details
 
