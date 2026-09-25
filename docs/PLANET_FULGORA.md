@@ -81,7 +81,9 @@ natural fountains -> filtration
   -> mineral concentrate -> separation -> random metal and mineral traces
   -> mineral concentrate -> salt recovery -> salt
   -> hydrocarbons -> distillation -> organic feedstocks + heavy tar
-salt + recovered water -> brine -> electrolysis -> chlorine + hydrogen + caustic solution
+salt + recovered water -> brine [new local dissolution recipe]
+brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
+sodium hydroxide + water -> caustic solution
 hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
 ```
@@ -101,8 +103,31 @@ predictable; basic chemistry must not depend on random metal recovery.
 Before implementation, check recipe access and the first electrolyzer's
 materials at probe-era research.
 
-Disposal candidates: return waste to the ocean through a limited-throughput
-outfall, compress and store it, use it in other recipes, or export it after cargo.
+No liquid voiding on Fulgora. Use existing chimney recipes for gases; no new
+venting whitelist is required. Storage does not remove a continuous surplus.
+
+| Existing route | Output or constraint |
+|---|---|
+| Gas vents | Hydrogen, oxygen, nitrogen, air, argon, helium, CO, CO2, SO2, methane, ammonia, steam, residual gas, trace gas, volcanic gas, and deuterium; compressed vents exist for several gases |
+| Chlorine, HCl, ethylene, propene, benzene | No direct chimney recipe |
+| HCl + caustic solution | Brine; boil brine to salt + ventable steam |
+| Wastewater filtration | Saline + sludge; boiling saline produces steam + brine |
+| Wastewater boiling | Steam + sludge; does not remove the sludge problem |
+| Sludge dehydration | Mineral dust + steam + CO; requires high-pressure chemistry 2 and physics science |
+| Organic combustion | Existing ethylene, propene, benzene, methanol, and biodiesel recipes consume oxygen and produce steam + CO2 |
+| Ethylene / propene pyrolysis | Methane plus other organics; not a complete disposal route |
+| Benzene reforming | Steam input; hydrogen + CO + CO2 outputs, all ventable |
+
+Brine boiling, wastewater boiling, pyrolysis, and benzene reforming require
+chemical science. Select earlier local unlocks before these are bootstrap routes.
+Existing salination makes seawater from freshwater and salt, not brine from pure
+water. The proposed local dissolution recipe is not implemented.
+
+Sludge can produce iron ore or bauxite through existing recovery recipes.
+Do not use sludge as disposal output for metal-free replacement components:
+that would violate the metal recovery constraint. Mineral dust acid disposal
+returns sludge; it is not a final solid sink.
+
 Use electricity or supplied heat to melt ice. Include melting, electrolysis,
 compression, combustion, and water recovery in the power balance. A closed
 hydrogen/oxygen storage loop must not produce net energy; fountain hydrocarbons
