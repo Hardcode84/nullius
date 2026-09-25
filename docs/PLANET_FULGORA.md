@@ -152,9 +152,11 @@ iron through gravel to mineral dust; bauxite and calcium carbonate can become
 mineral dust directly. Acid treatment returns dust to sludge for another recovery
 route. This changes the output mix at a reagent and energy cost. Fixed ratios
 remain within each recipe; random yields do not solve a persistent surplus.
-Waste reclamation currently requires chemical science. An early local unlock and
-a planner balance for all outputs, reagents, and recycle streams are required
-before this is a bootstrap design.
+Waste reclamation now follows Concrete 1, Nitrogen Chemistry 1, and Sulfur
+Processing 1. It costs 220 of each early science pack, at 30 seconds per unit.
+All five recovery recipes, including stone, and barrel recycling remain together.
+The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
+balance for local supplies, outputs, reagents, and recycle streams.
 
 Proposed sulfur source: recover gypsum from fountain concentrate. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then

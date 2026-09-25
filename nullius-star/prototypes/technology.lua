@@ -4882,7 +4882,7 @@ data:extend({
   {
     type = "technology",
     name = "nullius-waste-reclamation",
-    order = "nullius-eg",
+    order = "nullius-dk",
     icon_size = 64,
     icon = ICONPATH .. "fluid/sludge.png",
     effects = {
@@ -4915,12 +4915,11 @@ data:extend({
       count = 220,
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 1}
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1}
       },
       time = 30
     },
-    prerequisites = {"nullius-venting-2", "nullius-titanium-production-1", "nullius-organic-chemistry-4", "nullius-limestone-processing-3", "nullius-empiricism-3"}
+    prerequisites = {"nullius-concrete-1", "nullius-nitrogen-chemistry-1", "nullius-sulfur-processing-1"}
   },
   {
     type = "technology",
