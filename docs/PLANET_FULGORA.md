@@ -123,10 +123,9 @@ chemical science. Select earlier local unlocks before these are bootstrap routes
 Existing salination makes seawater from freshwater and salt, not brine from pure
 water. The proposed local dissolution recipe is not implemented.
 
-Sludge can produce iron ore or bauxite through existing recovery recipes.
-Do not use sludge as disposal output for metal-free replacement components:
-that would violate the metal recovery constraint. Mineral dust acid disposal
-returns sludge; it is not a final solid sink.
+Sludge resource recovery is permitted. The metal recovery constraint applies to
+recycling shared replacement components, not to processing factory sludge.
+Mineral dust acid disposal returns sludge; it is not a final solid sink.
 
 Use electricity or supplied heat to melt ice. Include melting, electrolysis,
 compression, combustion, and water recovery in the power balance. A closed
@@ -135,6 +134,35 @@ are an external fuel input. Prove the first oxygen batch with probe power.
 
 Copper dust remains an open choice because Nullius otherwise reserves copper
 for asteroid mining.
+
+### Mineral ratios and sulfur
+
+Use separate recovery lines to adjust the material mix. Existing recipes consume
+200 sludge per batch:
+
+| Recovery | Reagent | Main solid outputs |
+|---|---|---|
+| Iron | Caustic solution | 8 crushed iron ore + 4 calcium carbonate |
+| Bauxite | Sulfuric acid | 8 crushed bauxite + 4 sand |
+| Sand | Hydrochloric acid | 8 sand + 4 crushed iron ore |
+| Limestone | Soda ash + freshwater | 8 calcium carbonate + 4 crushed bauxite |
+
+Prioritize recovered wastewater and sludge before fresh extraction. Send surplus
+iron through gravel to mineral dust; bauxite and calcium carbonate can become
+mineral dust directly. Acid treatment returns dust to sludge for another recovery
+route. This changes the output mix at a reagent and energy cost. Fixed ratios
+remain within each recipe; random yields do not solve a persistent surplus.
+Waste reclamation currently requires chemical science. An early local unlock and
+a planner balance for all outputs, reagents, and recycle streams are required
+before this is a bootstrap design.
+
+Proposed sulfur source: recover gypsum from fountain concentrate. Existing
+recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
+`8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
+limestone processing 2, before chemical science; a boxed recipe also exists.
+Bauxite recovery returns SO2 but consumes sulfuric acid, so it cannot supply the
+first sulfur input. Gypsum recovery from fountains is not implemented. Include
+its lime output in the mineral balance; surplus SO2 can use the existing vent.
 
 ## Storms and industrial feedback
 
