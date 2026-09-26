@@ -1527,12 +1527,12 @@ def build_production_manifest(
     }
 
 
-def print_human(report: Prototype) -> None:
+def print_human(report: Prototype, compact: bool = False) -> None:
     print("Targets: " + ", ".join(report["targets"]))
     forbidden = ", ".join(report["forbidden_categories"]) or "none"
     print("Forbidden crafting categories: " + forbidden)
     print(f"Selected production steps: {len(report['selected_recipes'])}")
-    for step in report["selected_recipes"]:
+    for step in ([] if compact else report["selected_recipes"]):
         ingredients = ", ".join(
             ingredient["name"] for ingredient in step["ingredients"]
         ) or "none"
@@ -1541,8 +1541,8 @@ def print_human(report: Prototype) -> None:
             f"[{step['category']} via {step.get('provider', 'n/a')}] ({ingredients})"
         )
 
-    print("\nCrafting categories:")
-    for category, providers in report["crafting_categories"].items():
+    print(f"\nCrafting categories: {len(report['crafting_categories'])}")
+    for category, providers in ({} if compact else report["crafting_categories"]).items():
         machines = ", ".join(providers["machine_items"]) or "none"
         characters = ", ".join(providers["characters"]) or "none"
         print(f"  {category}: machines={machines}; characters={characters}")
@@ -1572,14 +1572,16 @@ def print_human(report: Prototype) -> None:
         print("  none")
 
     print("\nElectric-required paths:")
-    for match in report["electric_required_paths"]:
+    if compact:
+        print(f"  {len(report['electric_required_paths'])} paths (omit --compact for details)")
+    for match in ([] if compact else report["electric_required_paths"]):
         chain = [match["target"]]
         chain.extend(edge["dependency"] for edge in match["path"])
         print(
             f"  {' -> '.join(chain)}: {match['producer']} "
             f"requires {match['executor']}"
         )
-    if not report["electric_required_paths"]:
+    if not compact and not report["electric_required_paths"]:
         print("  none")
 
     manifest = report.get("production_manifest")
@@ -1667,7 +1669,7 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         "targets", nargs="*", metavar="ITEM[=COUNT]", type=parse_target
     )
     parser.add_argument("--compact", action="store_true",
-                        help="omit consumption and executor details from consumer inspection text")
+                        help="omit step, executor, and electric-path details from text reports")
     parser.add_argument("--data-raw", type=Path)
     parser.add_argument("--mod-under-test", type=Path, default=Path(__file__).resolve().parents[1] / "nullius-star")
     parser.add_argument(
@@ -1993,7 +1995,7 @@ def main() -> int:
         if args.json_output:
             print(json.dumps(report, indent=2, sort_keys=True))
         else:
-            print_human(report)
+            print_human(report, compact=args.compact)
         failed_technology_contract = (
             args.require_no_additional_technologies
             and bool(report["required_technologies"])

@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from contextlib import redirect_stdout
+from io import StringIO
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -25,10 +27,28 @@ from analyze_factorio_prereqs import (
     find_electric_required_paths,
     merge_prototype_overlay,
     parse_target,
+    print_human,
 )
 
 
 class AnalyzePrerequisitesTest(unittest.TestCase):
+    def test_compact_report_preserves_failures_and_research_gates(self):
+        report = {
+            "targets": ["machine"], "forbidden_categories": ["air-filtration"],
+            "selected_recipes": [{}], "crafting_categories": {"crafting": {}},
+            "required_technologies": ["unlock-machine"],
+            "raw_sources": {"ore": ["resource:ore"]},
+            "unresolved": ["nitrogen"], "invalid_raw": ["imported-item"],
+            "electric_required_paths": [{}],
+        }
+        output = StringIO()
+        with redirect_stdout(output):
+            print_human(report, compact=True)
+        for expected in ("unlock-machine", "nitrogen", "imported-item",
+                         "resource:ore", "Selected production steps: 1",
+                         "Crafting categories: 1", "1 paths"):
+            self.assertIn(expected, output.getvalue())
+
     def test_omitted_enabled_uses_factorio_default(self):
         data = {"recipe": {"vent": {"ingredients": [], "results": []},
                            "locked": {"enabled": False, "ingredients": [], "results": []}},

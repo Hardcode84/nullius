@@ -48,6 +48,40 @@ pack. Waste Reclamation improves recovery after this point; its
 220-unit research cost must not gate the first local building production.
 Starter equipment counts and the local research endpoint are not yet specified.
 
+### Bootstrap audit
+
+The current probe cannot start production: its wreck is empty.
+Resolved-prototype checks give these results:
+
+| Check | Result |
+|---|---|
+| Basic buildings and logistics | Nine targets reachable at Primitive Filtration; 29 recipe steps |
+| Hydro plant, distillery, chemical plant, electrolyzer, crusher | Reproduction routes reachable at Primitive Filtration |
+| Extractor reproduction | Needs Volcanism 1 and 12 other technologies beyond the starting research |
+| First local research | Probe research does not grant Primitive Filtration; supply five of each early pack or research it before transfer |
+| Geology packs | Raw ores are absent; the crushed-ore recipe needs Geology 2 |
+| Climatology packs | No local route with air and surface-water extraction excluded |
+| Electrical packs | Logic circuits need polycrystalline silicon; its early recipe needs nitrogen, which has no local source |
+| Surplus bauxite | Dust conversion needs Mineral Processing 2 |
+| Surplus sand | Existing disposal needs seawater; salination needs freshwater, which has no local source |
+
+The material checks assume powered starter machines and a supply of the five
+probabilistic crude-filtration products. They prove recipe reachability, not
+starter quantities, production time, or continuous waste balance. Basic-building
+and science results agree on Factorio 2.0 and 2.1.
+
+Repeat the checks with `tools/analyze_factorio_prereqs.py --compact` and
+`@tests/progression/fulgora-bootstrap-basic.args`,
+`@tests/progression/fulgora-bootstrap-processing.args`,
+`@tests/progression/fulgora-bootstrap-audit.args`, or
+`@tests/progression/fulgora-bootstrap-science.args`.
+The full-kit and science checks must fail until their listed blockers are removed.
+
+Before selecting wreck quantities, resolve the research and disposal gates.
+Then test a finite wreck inventory in a headless scenario: extract slurry,
+reproduce the starter machines and logistics, and process every surplus without
+imports or liquid voiding.
+
 ## Sand construction
 
 | Location or object | Rule |
