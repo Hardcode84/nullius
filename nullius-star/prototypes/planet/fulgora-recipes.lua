@@ -20,7 +20,6 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
     subgroup="waste-management", order="nullius-fulgora-"..name..(boxed and "-boxed" or ""),
     enabled=false, energy_required=seconds, ingredients=ingredients, results=results,
     allow_productivity=false, no_productivity=true,
-    surface_conditions={{property="pressure",min=800,max=800}},
   }
   if modern then recipe.categories={category} else recipe.category=category end
   data:extend({recipe})

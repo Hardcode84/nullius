@@ -120,7 +120,7 @@ Primitive Filtration follows probe access: 5 of each early science pack,
 | Hydrocarbon cracking | 50 filtered hydrocarbons | 60 methane + 12 benzene + 2 graphite | 4 s | Distillery 1 |
 
 Boxed recipes consume five times the input and time; each solid output is a box
-of five. Productivity is disabled. These recipes require Fulgora pressure.
+of five. Productivity is disabled. These recipes work on every planet.
 Design change pending: move boxed recipe unlocks from Primitive Filtration to
 much later mass-production research.
 Salt and gypsum come directly from slurry so the first chlorine and sulfur

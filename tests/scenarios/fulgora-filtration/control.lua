@@ -1,10 +1,10 @@
 -- given: basic hydro plants/crushers, pipes, substations and debug electric grids.
 -- inputs per ordinary/boxed line: 100/500 slurry, 1000/5000 sludge, 1 salt/box salt.
--- place: six independent cells on firm Fulgora ground, fluid outputs connected to pipes.
+-- place: six independent cells on Nauvis, fluid outputs connected to pipes.
 -- act: research probe access then Primitive Filtration; execute all six recipes.
 -- run: scheduled input feeds every 60 ticks, exact 20-batch crude recovery budget.
 -- expect: deterministic slurry/salt outputs, bounded random minerals, boxed parity,
--- research gates, no productivity, and Fulgora pressure restrictions.
+-- research gates, no productivity, and no planet restrictions.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
 local assertions=0
 local function check(ok,message) assertions=assertions+1; assert(ok,message) end
@@ -15,7 +15,8 @@ script.on_nth_tick(1,function()
   if game.tick==0 then return end
   script.on_nth_tick(1,nil)
   local force=game.create_force('filtration')
-  local surface=game.planets['nullius-fulgora'].create_surface()
+  local surface=game.surfaces.nauvis
+  check(surface.get_property('pressure')==1000,'Nauvis pressure fixture')
   surface.request_to_generate_chunks({0,0},4); surface.force_generate_chunk_requests()
   for _,e in pairs(surface.find_entities_filtered{area={{-16,-16},{120,16}}}) do e.destroy() end
   local tiles={}
@@ -39,8 +40,7 @@ script.on_nth_tick(1,function()
       check(force.recipes[name].enabled,'missing unlock '..name)
       local recipe=prototypes.recipe[name]
       check(not recipe.allowed_effects.productivity,'productivity enabled '..name)
-      check(#recipe.surface_conditions==1 and recipe.surface_conditions[1].property=='pressure' and
-        recipe.surface_conditions[1].min==800 and recipe.surface_conditions[1].max==800,'Fulgora restriction '..name)
+      check(not recipe.surface_conditions or #recipe.surface_conditions==0,'planet restriction '..name)
       local x=cell*20; cell=cell+1
       local machine=surface.create_entity{name=kind=='salt-disposal' and 'nullius-crusher-1' or 'nullius-hydro-plant-1',position={x,0},force=force}
       machine.set_recipe(name)

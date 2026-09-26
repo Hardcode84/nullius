@@ -1,5 +1,5 @@
 -- given: ordinary/boxed cells, 3 ice, 6 salt, 50/250 filtered hydrocarbons.
--- place: distilleries and hydro plants on Fulgora; declared debug electric power.
+-- place: distilleries and hydro plants on Nauvis; declared debug electric power.
 -- connect: ice melting outputs to salt dissolution inputs through real pipes.
 -- act: research Primitive Filtration; execute one cracking and dissolution batch.
 -- run: until both cells complete, at most 3900 ticks.
@@ -20,7 +20,8 @@ script.on_nth_tick(1,function()
   if game.tick==0 then return end
   script.on_nth_tick(1,nil)
   storage.assertions=0; storage.rows={}
-  local surface=game.planets['nullius-fulgora'].create_surface()
+  local surface=game.surfaces.nauvis
+  check(surface.get_property('pressure')==1000,'Nauvis pressure fixture')
   surface.request_to_generate_chunks({0,0},3); surface.force_generate_chunk_requests()
   for _,entity in pairs(surface.find_entities_filtered{area={{-16,-24},{100,20}}}) do entity.destroy() end
   local tiles={}
@@ -40,8 +41,7 @@ script.on_nth_tick(1,function()
       check(not force.recipes[prefix..recipe].enabled,'recipe available before Primitive Filtration')
       local prototype=prototypes.recipe[prefix..recipe]
       check(not prototype.allowed_effects.productivity,'productivity enabled '..recipe)
-      check(#prototype.surface_conditions==1 and prototype.surface_conditions[1].property=='pressure' and
-        prototype.surface_conditions[1].min==800 and prototype.surface_conditions[1].max==800,'wrong planet gate')
+      check(not prototype.surface_conditions or #prototype.surface_conditions==0,'planet restriction '..recipe)
       return entity
     end
     local melt=machine('nullius-distillery-1',0,0,'ice-melting')
