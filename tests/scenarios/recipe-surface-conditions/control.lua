@@ -42,8 +42,8 @@ script.on_nth_tick(1, function()
       local hot = false
       for _, condition in pairs(recipe_conditions) do
         conditions = conditions + 1
-        check(condition.property == AMBIENT_TEMPERATURE,
-          name .. " uses non-temperature surface condition " ..
+        check(condition.property == AMBIENT_TEMPERATURE or condition.property == "magnetic-field",
+          name .. " uses unsupported surface condition " ..
           condition.property)
         if condition.max and condition.max <= 50 then cool = true end
         if condition.min and condition.min >= 100 then hot = true end

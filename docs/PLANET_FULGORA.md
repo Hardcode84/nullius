@@ -60,8 +60,8 @@ Resolved-prototype checks give these results:
 | Hydro plant, distillery, chemical plant, electrolyzer, crusher | Reproduction routes reachable at Primitive Filtration |
 | Extractor reproduction | Needs Volcanism 1 and 12 other technologies beyond the starting research |
 | Geology packs | Raw ores are absent; the crushed-ore recipe needs Geology 2 |
-| Climatology packs | Needs a local recipe: Fulgora atmosphere is distinct from generic air, and seawater is absent |
-| Electrical packs | Needs nitrogen for polycrystalline silicon; atmospheric capture and separation below supply it once implemented |
+| Climatology packs | Needs a local recipe: seawater is absent |
+| Electrical packs | Local nitrogen is available from atmospheric separation |
 | Surplus bauxite | Dust conversion needs Mineral Processing 2 |
 | Surplus sand | Existing disposal needs seawater; salination needs freshwater, which has no local source |
 
@@ -84,35 +84,33 @@ imports or liquid voiding.
 
 ## Atmospheric capture
 
-Design values; capture and separation are not yet implemented.
-
 | Component | Fraction |
 |---|---:|
 | Nitrogen | 80% |
 | Carbon dioxide | 19% |
-| Argon | 1% |
+| Argon, recovered through residual gas | 1% |
 | Oxygen and water | 0% |
 
 | Process | Machine | Recipe | Time |
 |---|---|---|---:|
-| Capture | Air filter | Electricity → 150 Fulgora atmosphere | 3 s |
-| Separation | Distillery | 100 Fulgora atmosphere → 80 nitrogen + 19 CO2 + 1 argon | 1 s |
+| Capture | Air filter | Electricity → 150 air | 3 s |
+| Separation | Distillery | 100 air → 80 nitrogen + 19 CO2 + 1 residual gas | 1 s |
+| Argon recovery | Distillery | 50 residual gas → 50 argon | 5 s |
 
-Unlock both recipes with Primitive Filtration. Use a separate atmospheric fluid;
-generic air permits oxygen recovery, and generic residual gas permits water
-recovery. Do not convert Fulgora atmosphere to either fluid. Use existing gas
-vents for surplus nitrogen, CO2, and argon. Hydrocarbons still come from slurry.
+Use the existing air and residual-gas fluids. Fulgora separation requires
+`magnetic-field = 99`; generic air separation, oxygen recovery, residual-gas
+enrichment, and water-producing residual separation are excluded there.
+The destination surface sets the separation recipe, including for imported gas.
 
-Reuse the air-filter buildings on island ground. Replace their fixed generic-air
-recipe with surface-appropriate capture. Gate Fulgora capture with
-`magnetic-field = 99` and exclude generic-air capture there. Separation can run
-on any surface with the captured fluid. Add one air filter to the starter kit.
+Ordinary Fulgora recipes unlock with Primitive Filtration. Compressed variants
+unlock with High Pressure Chemistry; they use the same amounts of compressed
+fluids and take 2 s and 10 s. Gas recipes have no boxed variants.
+Use existing gas vents for surplus products. Hydrocarbons still come from slurry.
 
-The air filter, distillery, and chimney have reproduction routes at Primitive
-Filtration under the audit boundary. Check with
-`@tests/progression/fulgora-atmosphere-equipment.args`.
-The current-code audits still exclude atmospheric capture until this design is
-implemented. A Fulgora climatology recipe must use local inputs without seawater.
+Air filters retain their capture recipe and require island ground. Include one
+in the planned starter kit. The air filter, distillery, and chimney have local
+reproduction routes under `@tests/progression/fulgora-atmosphere-equipment.args`.
+A Fulgora climatology recipe must still use local inputs without seawater.
 
 ## Sand construction
 

@@ -88,6 +88,7 @@ valves["nullius-togglable-small-pump-2-pneumatic"] = { name = "nullius-togglable
 
 -- Pneumatic machine variants (gas-powered alternates for Vulcanus).
 require("prototypes.pneumatic")
+require("prototypes.planet.fulgora-atmosphere")
 
 -- Prevent quality mod from generating recycling recipes for nullius items.
 -- Quality data-updates.lua runs after all data.lua, so this takes effect

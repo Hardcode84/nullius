@@ -60,6 +60,4 @@ nullius-brine=nullius-salt-dissolution
 seawater-pumping
 --forbid-category
 water-pumping
---forbid-category
-air-filtration
 --require-no-additional-technologies
