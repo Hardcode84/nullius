@@ -38,6 +38,14 @@ script.on_nth_tick(1, function()
     local seeded = surface.map_gen_settings
     seeded.seed = seed
     local sample = game.create_surface('fulgora-seed-' .. seed, seeded)
+    sample.request_to_generate_chunks({0,0},16)
+    sample.force_generate_chunk_requests()
+    local vents = sample.find_entities_filtered{name='nullius-hydrocarbon-vent',position={0,0},radius=512}
+    check(#vents>0,'no starter-area vents, seed '..seed)
+    for _,vent in ipairs(vents) do
+      check(sample.get_tile(vent.position).name:find('nullius-fulgora-sediment',1,true)==1,
+        'starter vent is not on sediment')
+    end
     for _, pos in ipairs({{x=0,y=0}, {x=2048,y=1024}, {x=-4096,y=-2048}}) do
       sample.request_to_generate_chunks(pos, 4)
       sample.force_generate_chunk_requests()
@@ -50,12 +58,17 @@ script.on_nth_tick(1, function()
         decorative_counts[name] = (decorative_counts[name] or 0) + decorative.amount
       end
       for _, entity in pairs(sample.find_entities_filtered{area=area}) do
-        check(entity.name == 'cliff-fulgora' or landmarks[entity.name],
+        check(entity.name == 'cliff-fulgora' or landmarks[entity.name] or entity.name=='nullius-hydrocarbon-vent',
           'unexpected generated entity: ' .. entity.name)
         if entity.name == 'cliff-fulgora' then
           cliff_count = cliff_count + 1
         else
           entity_counts[entity.name] = (entity_counts[entity.name] or 0) + 1
+          if entity.name=='nullius-hydrocarbon-vent' then
+            check(sample.get_tile(entity.position).name:find('nullius-fulgora-sediment',1,true)==1,
+              'hydrocarbon vent generated on '..sample.get_tile(entity.position).name..
+              ' at '..entity.position.x..','..entity.position.y..' seed '..seed)
+          end
         end
       end
 

@@ -1,10 +1,10 @@
--- Cold data-stage path: natural terrain and probe access, without industry.
--- Dry sediment is walkable, but cannot carry buildings, landfill, or paving.
+-- Cold data-stage path: native terrain, hydrocarbon vents, and probe access.
+data:extend({{type="collision-layer", name="nullius_fulgora_sand"}})
 local basin = table.deepcopy(data.raw.tile["fulgoran-dust"])
 basin.name = "nullius-fulgora-sediment"
 basin.order = "b[natural]-e[sediment]"
 basin.layer = 5
-basin.collision_mask = {layers={water_tile=true, ground_tile=true, resource=true}}
+basin.collision_mask = {layers={ground_tile=true, nullius_fulgora_sand=true}}
 basin.variants = table.deepcopy(data.raw.tile["mineral-cream-dirt-1"].variants)
 basin.walking_speed_modifier = 0.85
 -- Keep each native oil tile's probability, layer, and correction behavior.
@@ -35,6 +35,30 @@ for name in pairs(native_tiles) do
     data:extend({sediment})
   end
 end
+local resource_autoplace = require("resource-autoplace")
+local vent = table.deepcopy(data.raw.resource["crude-oil"])
+vent.name = "nullius-hydrocarbon-vent"
+vent.order = "nullius-hydrocarbon"
+-- Space Age adds an Aquilo snow-placement effect to the shared oil prototype.
+vent.created_effect = nil
+vent.minable.results = {{type="fluid", name="nullius-hydrocarbon-slurry", amount=10}}
+vent.autoplace = resource_autoplace.resource_autoplace_settings{
+  name=vent.name, autoplace_set_name="nullius_fulgora", order="c",
+  base_density=8.2, base_spots_per_km2=1.8,
+  random_probability=1/48, random_spot_size_minimum=1,
+  random_spot_size_maximum=1, additional_richness=220000,
+  regular_rq_factor_multiplier=1,
+}
+vent.autoplace.tile_restriction = {}
+for name in pairs(sediment_tiles) do
+  table.insert(vent.autoplace.tile_restriction, name)
+end
+table.sort(vent.autoplace.tile_restriction)
+data:extend({vent, {
+  type="autoplace-control", name=vent.name, category="resource",
+  richness=true, order="nullius-hydrocarbon",
+  localised_name={"entity-name.nullius-hydrocarbon-vent"},
+}})
 -- Keep the former city's tile boundaries too, but use natural dust graphics.
 local natural_tiles = {}
 for _,name in ipairs({"fulgoran-paving", "fulgoran-walls", "fulgoran-conduit", "fulgoran-machinery"}) do
@@ -59,6 +83,7 @@ planet.lightning_properties = nil
 planet.surface_properties["nullius-ambient-temperature"] = 25
 local map = planet.map_gen_settings
 map.autoplace_controls.scrap = nil
+map.autoplace_controls[vent.name] = {frequency=1, size=1, richness=1}
 map.autoplace_controls.fulgora_islands.size = 2
 map.autoplace_settings = {
   tile = {treat_missing_as_default = false, settings = {
@@ -71,6 +96,7 @@ map.autoplace_settings = {
   }},
   entity = {treat_missing_as_default = false, settings = {
     ["big-fulgora-rock"] = {}, ["fulgurite"] = {},
+    ["nullius-hydrocarbon-vent"] = {},
   }},
 }
 for name in pairs(sediment_tiles) do map.autoplace_settings.tile.settings[name] = {} end

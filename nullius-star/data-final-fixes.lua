@@ -331,3 +331,4 @@ end
 local variant_upgrades = require("shared.variant-upgrades")
 variant_upgrades.apply("-pneumatic")
 variant_upgrades.apply("-thermal")
+require("prototypes.planet.fulgora-placement")

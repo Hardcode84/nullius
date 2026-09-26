@@ -5,6 +5,7 @@
 -- expect: one guaranteed 10-unit output at its specified/default temperature
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local cases = {
+  {resource="nullius-hydrocarbon-vent", fluid="nullius-hydrocarbon-slurry"},
   {resource="nullius-fumarole", fluid="nullius-volcanic-gas", temperature=200},
   {resource="sulfuric-acid-geyser", fluid="nullius-hydrogen-chloride"},
   {resource="offshore-oil", fluid="nullius-volcanic-gas", temperature=200, optional_mod="cargo-ships"},

@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Planet, terrain, probe research, body access, and hydrocarbon slurry fluid implemented; extraction and processing are not included |
+| Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, and sand construction rules implemented; processing is not included |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -47,19 +47,16 @@ additional science. Waste Reclamation improves recovery after this point; its
 Exact equipment counts, recipe quantities,
 resource yields, and the local research endpoint are not yet specified.
 
-## Planned sand construction
-
-These rules extend the implemented terrain; the building whitelist and vents
-are not implemented.
+## Sand construction
 
 | Location or object | Rule |
 |---|---|
-| Hydrocarbon vents | Place on sand; pipe raw fluid to island processing |
+| Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Remains walkable; no landfill, paving, or terraforming |
-| Starter island | Provide a reachable vent and space for the starter processing line |
+| Starter island | Design requirement: provide a reachable vent and space for the starter processing line |
 
 ## Implemented terrain and access
 
@@ -69,7 +66,7 @@ are not implemented.
 | Terrain | Native Fulgora islands, elevation, cliffs, and natural ground; dry sediment replaces oil oceans, and dust replaces artificial ground |
 | Island size | Native size control: 2; frequency unchanged |
 | Sediment | Light rust shallows and darker red depths; one shade per native oil-ocean type |
-| Construction | Sediment permits walking but rejects buildings, landfill, and paving; terraforming drones cannot change it |
+| Construction | Sediment permits walking and the equipment listed above; no landfill, paving, or drone terraforming |
 | Bridges | Elevated rails: basic trains + energy distribution 2; 50 of each early science pack. Steel supports can stand in sediment; ramps need firm ground |
 | Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, surface water, ore deposits, and enemies |
@@ -77,8 +74,8 @@ are not implemented.
 | Landing | One equipped idle android and one empty probe wreck per force |
 | Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
-| Storms | Native destructive lightning disabled; this slice adds terrain and access only |
-| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports` on both engines |
+| Storms | Native destructive lightning disabled |
+| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fluid-resource-products` on both engines |
 
 To inspect the terrain and capture three screenshots:
 

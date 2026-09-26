@@ -18,8 +18,7 @@ local function check(value, message)
   assertions = assertions + 1
   assert(value, message)
 end
-local buildings = {'nullius-small-assembler-1', 'transport-belt',
-  'pipe', 'wooden-chest', 'small-electric-pole'}
+local buildings = {'nullius-small-assembler-1', 'transport-belt', 'wooden-chest'}
 local function survey(surface, center, reference, geometry, baseline)
   local area = {{center.x-256,center.y-256},{center.x+256,center.y+256}}
   surface.request_to_generate_chunks(center, 9)
@@ -117,6 +116,7 @@ script.on_nth_tick(1, function()
   stale.property_expression_names['tile:fulgoran-rock:probability'] = 'fulgora_rock'
   stale.cliff_settings.cliff_elevation_0 = 1000
   stale.autoplace_controls.fulgora_islands.size = 1
+  stale.autoplace_controls['nullius-hydrocarbon-vent'] = nil
   planet.map_gen_settings = stale
   surface_config.configure(planet)
   local refreshed = planet.map_gen_settings
@@ -125,6 +125,8 @@ script.on_nth_tick(1, function()
   check(refreshed.property_expression_names['tile:fulgoran-rock:probability']==nil, 'stale tile expression retained')
   check(refreshed.cliff_settings.cliff_elevation_0==80, 'stale cliff settings retained')
   check(refreshed.autoplace_controls.fulgora_islands.size==2, "stale island size retained")
+  check(refreshed.autoplace_controls['nullius-hydrocarbon-vent'].frequency==1,
+    'missing vent control was not restored')
   local observations = {}
   for _,seed in ipairs({0,1,8675309}) do
     local settings = planet.map_gen_settings
