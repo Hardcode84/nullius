@@ -32,6 +32,7 @@ script.on_nth_tick(1, function()
       'unspecified ' .. kind .. ' autoplace enabled')
   end
   check(surface.get_property('pressure') == 800, 'wrong pressure')
+  check(surface.get_property('magnetic-field') == 99, 'wrong magnetic field')
   local tile_counts, decorative_counts, cliff_count = {}, {}, 0
   local entity_counts = {}
   for _, seed in ipairs({0, 1, 8675309}) do

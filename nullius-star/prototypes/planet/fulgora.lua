@@ -91,6 +91,7 @@ planet.lightning_properties.lightning_warning_icon = {
   filename="__core__/graphics/empty.png", width=1, height=1,
 }
 planet.surface_properties["nullius-ambient-temperature"] = 25
+planet.surface_properties["magnetic-field"] = 99
 local map = planet.map_gen_settings
 map.autoplace_controls.scrap = nil
 map.autoplace_controls[vent.name] = {frequency=1, size=1, richness=1}

@@ -20,6 +20,7 @@ primary_resource: deep abiogenic hydrocarbon ocean
 initial_access: natural hydrocarbon vents on sand
 power: lightning; combustion requires manufactured oxygen
 atmosphere: oxygen-free
+distinctive_surface_property: magnetic-field (99)
 surface_water: none
 local_water: ice recovered by fountain filtration
 metals: dissolved traces; no ore deposits
@@ -76,6 +77,7 @@ Starter equipment counts and the local research endpoint are not yet specified.
 | Access | `/nullius-fulgora` completes probe access and Primitive Filtration, then transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Harmless native lightning all day; daytime frequency is 25% of nighttime frequency |
+| Process restrictions | Use `magnetic-field` for processes that need Fulgora's electromagnetic environment; ordinary processing has no planet restriction |
 | Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products` on both engines |
 
 To inspect the terrain and capture three screenshots:
