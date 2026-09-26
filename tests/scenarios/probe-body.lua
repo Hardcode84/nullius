@@ -36,7 +36,8 @@ local function stock()
   if destination == "vulcanus" then
     check(wreck.get_item_count("nullius-seawater-intake-1") == 2, "wreck supplies changed")
   else
-    check(wreck.get_inventory(defines.inventory.chest).is_empty(), "Fulgora wreck gained supplies")
+    check(wreck.get_item_count("nullius-extractor-1") == 3, "Fulgora starter extractors")
+    check(wreck.get_item_count("cliff-explosives") == 30, "Fulgora starter explosives")
   end
 end
 local function queue(player)

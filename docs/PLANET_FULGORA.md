@@ -50,7 +50,7 @@ each early science pack. Waste Reclamation improves recovery after this point; i
 
 ### Starter inventory
 
-Proposed wreck contents; not yet supplied by the probe.
+Supplied once per force when the probe is activated.
 
 | Equipment | Count | First use |
 |---|---:|---|
@@ -69,6 +69,7 @@ Proposed wreck contents; not yet supplied by the probe.
 | Combustion chamber 1 | 1 | Consume surplus benzene with oxygen |
 | Chimney 1 | 3 | Vent permitted gases; reuse for different gases |
 | Lab 1 | 1 | Local research |
+| Cliff explosives | 30 | Clear cliffs for the starter factory |
 | Small electric pole | 32 | Lightning capture and distribution |
 | Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
 | Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
@@ -91,7 +92,8 @@ counts with a finite-inventory scenario before treating them as a proven kit.
 
 ### Bootstrap audit
 
-The current probe cannot start production: its wreck is empty.
+The probe supplies the starter kit. Full finite-inventory bootstrap validation
+remains separate from the checks below.
 Resolved-prototype checks give these results:
 
 | Check | Result |
@@ -177,7 +179,7 @@ Slurry climatology uses the captured air without seawater.
 | Rock drops | Stone only; no holmium from either fulgurite size |
 | Excluded | Ruins, artificial ground, scrap, oil ocean, surface water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
-| Landing | One equipped idle android and one empty probe wreck per force |
+| Landing | One equipped idle android, supplied probe wreck, and two salvage chests per force |
 | Access | `/nullius-fulgora` completes probe access and Primitive Filtration, then transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Harmless native lightning all day; daytime frequency is 25% of nighttime frequency |

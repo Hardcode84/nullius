@@ -14,6 +14,38 @@ local function fulgora_landing_site(surface, pos, force)
   if not position then error("Fulgora probe has no safe landing position") end
   local wreck = surface.create_entity{name = "nullius-landing-main", position = position, force = force}
   if not wreck then error("Fulgora probe could not create its wreck") end
+  -- Cold landing path. Separate logistics keep the kit within the wreck's slots.
+  local supplies = {
+    {
+      {"nullius-extractor-1",3}, {"nullius-hydro-plant-1",4},
+      {"nullius-distillery-1",3}, {"nullius-air-filter-1",4},
+      {"nullius-chemical-plant-1",2}, {"nullius-electrolyzer-1",2},
+      {"nullius-crusher-1",2}, {"nullius-small-furnace-1",1},
+      {"nullius-medium-furnace-1",1}, {"nullius-foundry-1",1},
+      {"nullius-small-assembler-1",2}, {"nullius-flotation-cell-1",1},
+      {"nullius-combustion-chamber-1",1}, {"nullius-chimney-1",3},
+      {"nullius-lab-1",1}, {"cliff-explosives",30},
+    },
+    {{"small-electric-pole",32}, {"pipe",200}, {"pipe-to-ground",40},
+      {"nullius-small-tank-1",8}, {"nullius-one-way-valve",8}},
+    {{"transport-belt",100}, {"inserter",24}, {"wooden-chest",10}},
+  }
+  for index,items in ipairs(supplies) do
+    local container = wreck
+    if index > 1 then
+      -- Check tile centers: create_entity snaps this one-tile chest to that grid.
+      local chest_position = surface.find_non_colliding_position(
+        "wooden-chest", {position.x+(index==2 and -6 or 6),position.y}, 64, 1, true)
+      if not chest_position then error("Fulgora probe has no safe salvage chest position") end
+      container = surface.create_entity{name="wooden-chest",position=chest_position,force=force}
+      if not container then error("Fulgora probe could not create a salvage chest") end
+    end
+    for _,stack in ipairs(items) do
+      if container.insert{name=stack[1],count=stack[2]} ~= stack[2] then
+        error("Fulgora probe could not store all starter "..stack[1])
+      end
+    end
+  end
 end
 
 -- Vulcanus probe landing site: spawn broken equipment.
