@@ -113,11 +113,13 @@ Primitive Filtration follows probe access: 5 of each early science pack,
 | Recipe | Input | Output | Time | Machine |
 |---|---|---|---|---|
 | Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
-| Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each); rutile (10%) | 2 s | Hydro plant 1 |
+| Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
 | Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
 
 Boxed recipes consume five times the input and time; each solid output is a box
 of five. Productivity is disabled. These recipes require Fulgora pressure.
+Design change pending: move boxed recipe unlocks from Primitive Filtration to
+much later mass-production research.
 Salt and gypsum come directly from slurry so the first chlorine and sulfur
 supply does not depend on random mineral recovery. Ice melting, salt dissolution,
 and filtered hydrocarbon processing still require local recipes.

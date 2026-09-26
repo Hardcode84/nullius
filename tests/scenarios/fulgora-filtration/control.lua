@@ -57,10 +57,11 @@ script.on_nth_tick(1,function()
         end
       elseif kind=='crude-sludge-filtration' then
         row.remaining=1000*scale
-        check(#recipe.products==6,'crude product set')
+        check(#recipe.products==5,'crude product set')
         for _,p in pairs(recipe.products) do
+          check(p.name~=item('rutile'),'crude filtration must not recover rutile')
           local chance=p.independent_probability or p.probability
-          check(chance==(p.name==item('rutile') and 0.1 or 0.25),'crude product probability '..p.name)
+          check(chance==0.25,'crude product probability '..p.name)
         end
       else
         check(machine.insert{name=item('salt'),count=1}==1,'salt fixture')
@@ -104,11 +105,12 @@ script.on_nth_tick(60,function()
     else
       check(m.products_finished==20 and row.remaining==0,'crude batch budget')
       local total=0
-      for _,name in ipairs({'crushed-iron-ore','crushed-bauxite','sand','crushed-limestone','stone','rutile'}) do
+      for _,name in ipairs({'crushed-iron-ore','crushed-bauxite','sand','crushed-limestone','stone'}) do
         local count=m.get_item_count(item(name)); total=total+count
         check(count<=20,'random output exceeded one per batch')
       end
-      check(total>0 and total<120,'crude filtration did not exercise random recovery')
+      check(m.get_item_count(item('rutile'))==0,'crude filtration produced rutile')
+      check(total>0 and total<100,'crude filtration did not exercise random recovery')
     end
   end
   result(); script.on_nth_tick(60,nil)
