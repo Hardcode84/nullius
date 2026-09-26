@@ -227,6 +227,13 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 ## Lightning and overload
 
 Power poles collect lightning; there is no separate player-built collector.
+Implemented on Fulgora: each pole has one hidden native collector. It captures
+20% of strike energy, holds up to 200 MJ, and supplies up to 100 MW. Collection
+uses the native 10-tile search radius. There is no idle drain.
+Pole placement, blueprint revival, replacement, cloning, movement, and removal
+maintain the collector. Existing poles receive collectors when the mod updates.
+Native supply areas determine electricity sharing, including between forces.
+Overload trips and manual reset are not implemented.
 Lightning must interrupt production without destroying the factory.
 
 ```text
@@ -356,7 +363,7 @@ organics with intermittent electricity. Both lack natural surface water.
 ## Pole collector experiment
 
 `experiment-lightning-poles`: Factorio 2.0.77, 31 assertions, tick 240.
-Test fixtures only; no gameplay implementation.
+This experiment established the native mechanism used by gameplay collectors.
 
 | Case | Measured result |
 |---|---|
@@ -372,8 +379,9 @@ Use a normal pole with one invisible `lightning-attractor`. The engine handles
 capture, efficiency, buffering, and network delivery. Script ownership is needed
 for helper creation and removal, not for energy transfer. The fixture uses
 `execute_lightning` with ambient storms disabled; it does not measure storm rates.
-Before gameplay integration, test player/robot builds, blueprints, upgrades,
-cloning, force changes, and surface deletion against the one-helper-per-pole rule.
+Gameplay coverage: `fulgora-pole-collectors` tests native power delivery, robot
+builds, replacement, cloning, force changes, movement, removal, and surface clear/deletion.
+`fulgora-pole-players` tests player builds, blueprints, mining, and multiplayer reload.
 
 ```bash
 python tools/run_factorio_tests.py experiment-lightning-poles -n auto
@@ -457,7 +465,7 @@ supply areas because a helper can connect to more than one network.
 
 | Area | Inherited candidate | Required check |
 |---|---|---|
-| Pole collectors | Native hidden attractor; see experiment above | Validate remaining ownership events before gameplay integration |
+| Pole collectors | Implemented native hidden attractor | Lifecycle and native power delivery covered by collector scenarios |
 | Storm control | `nullius-storm-intensity`, `LightningProperties.multiplier_surface_property`, `LuaSurface.set_property()` | Verify runtime frequency changes and select an update interval |
 | Lightning tuning | Native night rate; 25% day rate; zero damage | Day/night activity and direct strikes tested on both engines |
 | Strike effects | Separate ordinary and attracted callbacks confirmed by the pole experiment | Use the attractor callback for collector-side overload logic |

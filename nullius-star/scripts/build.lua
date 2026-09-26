@@ -1,4 +1,5 @@
 function entity_added(entity, handbuilt)
+  fulgora_collectors.add(entity)
   if (entity.type == "spider-vehicle") then
 	  mecha_added(entity)
     return
@@ -62,6 +63,7 @@ function entity_added(entity, handbuilt)
 end
 
 function entity_removed(entity, died)
+  if entity.type=="electric-pole" then fulgora_collectors.remove(entity.unit_number) end
   -- Clean up heat interface for any pneumatic machine (before prefix check).
   if string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.remove_heat_interface(entity.unit_number, entity)
@@ -105,6 +107,7 @@ function entity_raised(event)
 end
 function entity_cloned(event)
   local entity = event.destination
+  fulgora_collectors.cloned(entity)
   if entity and entity.valid and
       string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.add_heat_interface(entity)
@@ -118,6 +121,7 @@ function entity_died(event)
   entity_removed(event.entity, true)
 end
 function entity_destroyed(event)
+  if fulgora_collectors.destroyed(event) then return end
   if (script_kill or (event.type ~= defines.target_type.entity)) then return end
   local unit_number = event.useful_id
   remove_body_tag(unit_number)

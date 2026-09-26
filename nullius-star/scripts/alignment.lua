@@ -882,12 +882,18 @@ local function align_update_landing(entry)
 end
 
 local function align_update_teleport(entry)
+  local player = entry.player
+  if not player.valid then return true end
+  -- A respawn or controller change can remove the body while landing is queued.
+  if not player.character then
+    entry.delay = game.tick + 60
+    return false
+  end
   local surface = entry.surface
   local pos = entry.position
   entry.force.chart(surface,
 	  {{pos.x - 150, pos.y - 150}, {pos.x + 150, pos.y + 150}})
 
-  local player = entry.player
   pos = {pos.x + ((math.random() - math.random()) * 24),
 	  pos.y + ((math.random() - math.random()) * 24)}
   pos = surface.find_non_colliding_position(

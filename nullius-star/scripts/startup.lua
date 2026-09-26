@@ -165,6 +165,7 @@ script.on_init(
     init_geothermal()
     vulcanus_heat.init()
     vulcanus_gasvent.init()
+    fulgora_collectors.rebuild()
 	  surface_config.configure_existing()
 	  reset_config()
     if (remote.interfaces["freeplay"] ~= nil) then
@@ -193,6 +194,7 @@ script.on_configuration_changed(
     reset_config()
     surface_config.configure_existing()
     vulcanus_heat.rebuild()
+    fulgora_collectors.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()
     end

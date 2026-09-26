@@ -490,10 +490,11 @@ end
 script.on_event(defines.events.on_entity_settings_pasted, entity_paste_event)
 
 function dolly_moved_entity(event)
-  if (storage.nullius_turbines == nil) then return end
   if (event == nil) then return end
   local entity = event.moved_entity
   if ((entity == nil) or (not entity.valid)) then return end
+  fulgora_collectors.add(entity)
+  if (storage.nullius_turbines == nil) then return end
   if (string.sub(entity.name, 1, 16) ~= "nullius-turbine-") then return end
   local entry = storage.nullius_turbines[entity.unit_number]
   if (entry == nil) then return end
