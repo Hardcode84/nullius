@@ -8414,3 +8414,23 @@ extend_intermediate_prototypes({
   },
 
 })
+
+-- Cold data-stage path: dry sand disposal, with the same bulk ratio.
+for _,boxed in ipairs({false,true}) do
+  local prefix = boxed and "nullius-boxed-" or "nullius-"
+  local item = boxed and "nullius-box-" or "nullius-"
+  local recipe = table.deepcopy(data.raw.recipe[prefix.."bauxite-disposal"])
+  recipe.name = prefix.."sand-crushing"
+  recipe.subgroup = boxed and "boxed-silicon" or "masonry-material"
+  recipe.order = "nullius-nd"
+  recipe.localised_name = boxed and
+    {"recipe-name.nullius-boxed", {"recipe-name.nullius-sand-crushing"}} or
+    {"recipe-name.nullius-sand-crushing"}
+  recipe.icons[#recipe.icons].icon = ICONPATH.."sand.png"
+  recipe.icons[#recipe.icons].tint = nil
+  recipe.ingredients = {{type="item",name=item.."sand",amount=4}}
+  recipe.results = {{type="item",name=item.."mineral-dust",amount=3}}
+  recipe.allow_productivity = false
+  recipe.no_productivity = true
+  data:extend({recipe})
+end

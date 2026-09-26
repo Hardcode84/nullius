@@ -1431,6 +1431,10 @@ data:extend({
       },
       {
         type = "unlock-recipe",
+        recipe = "nullius-sand-crushing"
+      },
+      {
+        type = "unlock-recipe",
         recipe = "nullius-mineral-dust"
       },
       {
@@ -9296,7 +9300,11 @@ data:extend({
 	  {
         type = "unlock-recipe",
         recipe = "nullius-boxed-bauxite-disposal"
-      },	  
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-boxed-sand-crushing"
+      },
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-pressure-filter-1"

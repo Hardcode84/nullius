@@ -63,7 +63,7 @@ Resolved-prototype checks give these results:
 | Climatology packs | Needs a local recipe: seawater is absent |
 | Electrical packs | Local nitrogen is available from atmospheric separation |
 | Surplus bauxite | Dust conversion unlocks with Waste Management |
-| Surplus sand | Existing disposal needs seawater; salination needs freshwater, which has no local source |
+| Surplus sand | Crusher: 4 sand → 3 mineral dust in 2 s; Waste Management. Boxed variant: 4 boxes → 3 boxes in 10 s; Mass Production 7 |
 
 The material checks assume powered starter machines and a supply of the five
 probabilistic crude-filtration products. They prove recipe reachability, not
