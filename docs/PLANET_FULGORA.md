@@ -58,9 +58,9 @@ Resolved-prototype checks give these results:
 |---|---|
 | Basic buildings and logistics | Nine targets reachable at Primitive Filtration; 29 recipe steps |
 | Hydro plant, distillery, chemical plant, electrolyzer, crusher | Reproduction routes reachable at Primitive Filtration |
-| Extractor reproduction | Needs Volcanism 1 and 11 other technologies beyond the starting research |
+| Extractor reproduction | Research Volcanism 1 and its prerequisites with local science; starter extractors supply the first factory |
 | Geology packs | Primitive Filtration requires Geology 2; the crushed-ore recipe is ready before transfer |
-| Climatology packs | Needs a local recipe: seawater is absent |
+| Climatology packs | Hydro plant: 5000 air + 100 slurry → 1 pack in 60 s; Primitive Filtration |
 | Electrical packs | Local nitrogen is available from atmospheric separation |
 | Surplus bauxite | Dust conversion unlocks with Waste Management |
 | Surplus sand | Crusher: 4 sand → 3 mineral dust in 2 s; Waste Management. Boxed variant: 4 boxes → 3 boxes in 10 s; Mass Production 7 |
@@ -75,10 +75,10 @@ Repeat the checks with `tools/analyze_factorio_prereqs.py --compact` and
 `@tests/progression/fulgora-bootstrap-processing.args`,
 `@tests/progression/fulgora-bootstrap-audit.args`, or
 `@tests/progression/fulgora-bootstrap-science.args`.
-The full-kit and science checks must fail until their listed blockers are removed.
+The science check passes. The full-kit check reports the research needed to
+reproduce extractors; that research is permitted after arrival.
 
-Before selecting wreck quantities, resolve the research and disposal gates.
-Then test a finite wreck inventory in a headless scenario: extract slurry,
+Test a finite wreck inventory in a headless scenario: extract slurry,
 reproduce the starter machines and logistics, and process every surplus without
 imports or liquid voiding.
 
@@ -110,7 +110,7 @@ Use existing gas vents for surplus products. Hydrocarbons still come from slurry
 Air filters retain their capture recipe and require island ground. Include one
 in the planned starter kit. The air filter, distillery, and chimney have local
 reproduction routes under `@tests/progression/fulgora-atmosphere-equipment.args`.
-A Fulgora climatology recipe must still use local inputs without seawater.
+Slurry climatology uses the captured air without seawater.
 
 ## Sand construction
 
@@ -178,6 +178,7 @@ Primitive Filtration requires probe access and Geology 2: 5 of each early scienc
 
 | Recipe | Input | Output | Time | Machine |
 |---|---|---|---|---|
+| Slurry climatology | 5000 air + 100 hydrocarbon slurry | 1 climatology pack | 60 s | Hydro plant 1 |
 | Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
 | Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
 | Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
@@ -192,6 +193,19 @@ much later mass-production research.
 Salt and gypsum come directly from slurry so the first chlorine and sulfur
 supply does not depend on random mineral recovery. Cracking supplies organic
 feedstocks and graphite for metal smelting.
+
+Planner capacity at 60 climatology packs/min, with tier-1 machines:
+
+| Surface | Hydro plants | Air filters | Fluid supply | Electric demand |
+|---|---:|---:|---|---:|
+| Nauvis | 60 | 100 | 32 seawater intakes | 33.4 MW |
+| Fulgora | 60 | 100 | 10 extractors at 100% vent yield | 31 MW |
+
+Use `tools/plan_factorio_factory.py` with the `nauvis-climatology.json` and
+`fulgora-climatology.json` configs in `tests/progression/planner/`.
+These compare continuous supply at 30, 60, and 120 packs/min. They exclude labs,
+power generation, storage, and logistics. Their restricted machine catalogs
+cannot produce construction items; use the bootstrap audit for those routes.
 
 | Constraint | Design consequence |
 |---|---|

@@ -61,4 +61,12 @@ for _,boxed in ipairs({false,true}) do
     {fluid("filtered-hydrocarbons",50)},
     {fluid("methane",60),fluid("benzene",12),item("graphite",2)},
     "__base__/graphics/icons/fluid/heavy-oil.png",boxed)
+  add("climatology-pack-fulgora","nullius-water-treatment",60*scale,
+    {fluid("air",5000),fluid("hydrocarbon-slurry",100)},
+    {item("climatology-pack",1)},
+    "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  local science = data.raw.recipe["nullius-"..(boxed and "boxed-" or "").."climatology-pack-fulgora"]
+  local product = boxed and data.raw.item["nullius-box-climatology-pack"] or data.raw.tool["nullius-climatology-pack"]
+  science.subgroup = product.subgroup
+  science.icons = table.deepcopy(product.icons)
 end

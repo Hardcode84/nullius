@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "science_rates_per_minute": [
+    30,
+    60,
+    120
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [],
+  "prime_stock": {},
+  "solid_discard": [],
+  "wreck_machines": {},
+  "lab": "nullius-lab-1",
+  "extractors": {},
+  "assumptions": {
+    "capacity": "Dedicated tier-1 climatology line. External continuous electricity; no modules, beacons, technology productivity or labs.",
+    "construction": "Capacity comparison only. Restricted process catalog cannot reproduce equipment; construction is reported as infeasible. Use the separate bootstrap prerequisites audit for material reachability.",
+    "resources": "Nauvis uses native seawater pumping; Fulgora vents have 100 percent yield. No supplied fluids or discarded byproducts."
+  },
+  "stages": [
+    {
+      "name": "nauvis",
+      "contract": "tests/progression/planner/nauvis-climatology.args",
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-hydro-plant-1",
+        "nullius-air-filter-1",
+        "nullius-seawater-intake-1"
+      ],
+      "excluded_recipes": [
+        "nullius-climatology-pack-fulgora",
+        "nullius-boxed-climatology-pack-fulgora"
+      ]
+    }
+  ]
+}

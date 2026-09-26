@@ -1,0 +1,10 @@
+--technology
+nullius-primitive-filtration
+--surface-property
+magnetic-field=99
+--surface-property
+nullius-ambient-temperature=25
+--forbid-category
+seawater-pumping
+--forbid-category
+water-pumping
