@@ -5,7 +5,7 @@ local unlocks = {}
 data:extend({{
   type="technology",name="nullius-primitive-filtration",
   icon="__base__/graphics/technology/fluid-handling.png",icon_size=256,
-  order="nullius-df-fulgora",prerequisites={"nullius-probe-fulgora"},effects=unlocks,
+  order="nullius-df-fulgora",prerequisites={"nullius-probe-fulgora","nullius-geology-2"},effects=unlocks,
   unit={count=5,time=15,ingredients={
     {"nullius-geology-pack",1},{"nullius-climatology-pack",1},
     {"nullius-mechanical-pack",1},{"nullius-electrical-pack",1},

@@ -44,8 +44,8 @@ imports: bulk metals, oxygen, water, nuclear devices
 
 The bootstrap must reproduce basic buildings and logistics without imports or
 large research batches. Research Primitive Filtration on Nauvis before transfer,
-as with Vulcanus pneumatic technology. It costs five of each early science
-pack. Waste Reclamation improves recovery after this point; its
+as with Vulcanus pneumatic technology. It requires Geology 2 and costs five of
+each early science pack. Waste Reclamation improves recovery after this point; its
 220-unit research cost must not gate the first local building production.
 Starter equipment counts and the local research endpoint are not yet specified.
 
@@ -58,8 +58,8 @@ Resolved-prototype checks give these results:
 |---|---|
 | Basic buildings and logistics | Nine targets reachable at Primitive Filtration; 29 recipe steps |
 | Hydro plant, distillery, chemical plant, electrolyzer, crusher | Reproduction routes reachable at Primitive Filtration |
-| Extractor reproduction | Needs Volcanism 1 and 12 other technologies beyond the starting research |
-| Geology packs | Raw ores are absent; the crushed-ore recipe needs Geology 2 |
+| Extractor reproduction | Needs Volcanism 1 and 11 other technologies beyond the starting research |
+| Geology packs | Primitive Filtration requires Geology 2; the crushed-ore recipe is ready before transfer |
 | Climatology packs | Needs a local recipe: seawater is absent |
 | Electrical packs | Local nitrogen is available from atmospheric separation |
 | Surplus bauxite | Dust conversion unlocks with Waste Management |
@@ -173,7 +173,7 @@ surplus salt -> mineral dust
 mineral dust + acid -> sludge -> mineral recovery
 ```
 
-Primitive Filtration follows probe access: 5 of each early science pack,
+Primitive Filtration requires probe access and Geology 2: 5 of each early science pack,
 15 seconds per unit. It unlocks these recipes and their boxed equivalents.
 
 | Recipe | Input | Output | Time | Machine |
