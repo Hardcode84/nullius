@@ -35,7 +35,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Step | Proposed player outcome |
 |---|---|
 | Access | Reactivate the storm-damaged probe on an island with a hydrocarbon vent within reach on adjacent sand |
-| Salvage | Recover a few extractors, a working filter, power poles, capacitor banks, polymer pipes, one distillation column, and basic inserters |
+| Salvage | Recover the starter equipment listed below |
 | Power | Collect lightning through power poles and buffer it for calm periods |
 | Materials | Filter hydrocarbon slurry into filtered hydrocarbons, sludge, ice, salt, and gypsum |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
@@ -47,7 +47,47 @@ large research batches. Research Primitive Filtration on Nauvis before transfer,
 as with Vulcanus pneumatic technology. It requires Geology 2 and costs five of
 each early science pack. Waste Reclamation improves recovery after this point; its
 220-unit research cost must not gate the first local building production.
-Starter equipment counts and the local research endpoint are not yet specified.
+
+### Starter inventory
+
+Proposed wreck contents; not yet supplied by the probe.
+
+| Equipment | Count | First use |
+|---|---:|---|
+| Extractor 1 | 3 | Slurry for materials and science |
+| Hydro plant 1 | 4 | Slurry filtration, crude filtration, brine, climatology |
+| Distillery 1 | 3 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
+| Air filter 1 | 4 | Nitrogen and climatology |
+| Chemical plant 1 | 2 | Acids and polymers |
+| Electrolyzer 1 | 2 | Water and brine electrolysis |
+| Crusher 1 | 2 | Mineral processing and surplus crushing |
+| Small furnace 1 | 1 | Early smelting |
+| Medium furnace 1 | 1 | Smelting with gas output, including gypsum decomposition |
+| Foundry 1 | 1 | Metal parts |
+| Small assembler 1 | 2 | Equipment and science |
+| Flotation cell 1 | 1 | Silica and dust treatment |
+| Combustion chamber 1 | 1 | Consume surplus benzene with oxygen |
+| Chimney 1 | 3 | Vent permitted gases; reuse for different gases |
+| Lab 1 | 1 | Local research |
+| Small electric pole | 32 | Lightning capture and distribution |
+| Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
+| Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
+| One-way valve | 8 | Direct recovered fluids |
+| Transport belt / inserter | 100 / 24 | Solid transport |
+| Small chest | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
+
+Keep processing machines in the wreck. Put logistics supplies in the two
+salvage chests; the wreck has only 20 inventory slots.
+
+No ore, science packs, fuel, or bottled fluids. Keep the equipped probe android.
+Poles already include lightning energy buffers; separate batteries are not
+required to start. Spread the collectors and connect them before processing.
+Build filters and other restricted machines on islands; route pipes to sand vents.
+
+This is seed equipment, not a complete science factory. Reproduce ordinary
+buildings locally, then research extractor expansion. Support-machine routes
+pass `@tests/progression/fulgora-bootstrap-support.args`. Validate these exact
+counts with a finite-inventory scenario before treating them as a proven kit.
 
 ### Bootstrap audit
 
