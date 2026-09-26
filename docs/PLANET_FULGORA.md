@@ -75,7 +75,7 @@ Starter equipment counts and the local research endpoint are not yet specified.
 | Landing | One equipped idle android and one empty probe wreck per force |
 | Access | `/nullius-fulgora` completes probe access and Primitive Filtration, then transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
-| Storms | Native destructive lightning disabled |
+| Storms | Harmless native lightning all day; daytime frequency is 25% of nighttime frequency |
 | Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products` on both engines |
 
 To inspect the terrain and capture three screenshots:
@@ -219,8 +219,8 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 | Industrial feedback | Extraction, waste heat, and returned contaminants increase convection and storm intensity |
 | Factory response | Scale surge protection, limit extraction, or research storm mitigation |
 | Long-term mitigation | Removing dissolved metals can weaken the dynamo |
-| Short cycles | Calm, rising intensity, peak, and recovery |
-| Cycle candidates | Sine cycle, random superstorms, longer seasons, and day/night weighting |
+| Short cycles | Lower intensity, rising intensity, peak, and recovery; storms remain active |
+| Cycle candidates | Sine cycle, random superstorms, and longer seasons above the day/night baseline |
 | Baseline metric candidates | Extraction rate, machine count, or cumulative hydrocarbons processed |
 | Forecast | Expose storm information so the player can prepare |
 
@@ -459,9 +459,9 @@ supply areas because a helper can connect to more than one network.
 |---|---|---|
 | Pole collectors | Native hidden attractor; see experiment above | Validate remaining ownership events before gameplay integration |
 | Storm control | `nullius-storm-intensity`, `LightningProperties.multiplier_surface_property`, `LuaSurface.set_property()` | Verify runtime frequency changes and select an update interval |
-| Lightning tuning | `lightnings_per_chunk_per_tick`, day/night multipliers, targeting priorities, exemptions, search radius | Confirm current fields and targeting behavior |
+| Lightning tuning | Native night rate; 25% day rate; zero damage | Day/night activity and direct strikes tested on both engines |
 | Strike effects | Separate ordinary and attracted callbacks confirmed by the pole experiment | Use the attractor callback for collector-side overload logic |
-| No destruction | Zero damage preserves ordinary and collector-backed poles in the experiment | Check other building families when adding storms |
+| No destruction | Zero-damage Fulgora bolt | Direct strikes preserve both android tiers, hydro plants, crushers, poles, pipes, and chests |
 | Overload detection | 2.1 aggregate offered energy versus requested energy | Test short surges between samples and tune the threshold |
 | Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
 | Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |

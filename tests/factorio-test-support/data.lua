@@ -249,6 +249,7 @@ planner_grid.energy_usage = "0W"
 data:extend({planner_grid})
 
 require("lightning-poles")
+require("fulgora-storms")
 require("network-trip")
 
 require("fluid-preservation")

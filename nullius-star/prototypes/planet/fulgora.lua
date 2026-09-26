@@ -77,9 +77,19 @@ local planet = table.deepcopy(data.raw.planet.fulgora)
 planet.name = "nullius-fulgora"
 planet.order = "c[nullius-fulgora]"
 planet.asteroid_spawn_definitions = {}
--- Storm power and protection are a separate mechanic. Native destructive
--- lightning is not part of the Nullius Fulgora design.
-planet.lightning_properties = nil
+-- Native storms need no runtime callbacks. Keep vanilla lightning unchanged.
+local lightning = table.deepcopy(data.raw.lightning.lightning)
+lightning.name = "nullius-fulgora-lightning"
+lightning.localised_name = {"entity-name.lightning"}
+lightning.factoriopedia_simulation = nil
+lightning.damage = require("factorio-version").is_2_1 and {amount=0,type="electric"} or 0
+data:extend({lightning})
+planet.lightning_properties.lightning_types = {lightning.name}
+planet.lightning_properties.lightning_multiplier_at_day = 0.25
+planet.lightning_properties.lightning_multiplier_at_night = 1
+planet.lightning_properties.lightning_warning_icon = {
+  filename="__core__/graphics/empty.png", width=1, height=1,
+}
 planet.surface_properties["nullius-ambient-temperature"] = 25
 local map = planet.map_gen_settings
 map.autoplace_controls.scrap = nil
