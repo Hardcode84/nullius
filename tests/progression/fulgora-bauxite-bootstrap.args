@@ -1,0 +1,4 @@
+@tests/progression/fulgora-bootstrap-boundary.args
+--recipe
+nullius-mineral-dust=nullius-bauxite-disposal
+nullius-mineral-dust

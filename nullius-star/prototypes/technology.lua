@@ -1427,6 +1427,10 @@ data:extend({
       },
       {
         type = "unlock-recipe",
+        recipe = "nullius-bauxite-disposal"
+      },
+      {
+        type = "unlock-recipe",
         recipe = "nullius-mineral-dust"
       },
       {
@@ -2774,10 +2778,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-crusher-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-bauxite-disposal"
       }
     },
     unit = {

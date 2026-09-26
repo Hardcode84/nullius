@@ -62,7 +62,7 @@ Resolved-prototype checks give these results:
 | Geology packs | Raw ores are absent; the crushed-ore recipe needs Geology 2 |
 | Climatology packs | Needs a local recipe: seawater is absent |
 | Electrical packs | Local nitrogen is available from atmospheric separation |
-| Surplus bauxite | Dust conversion needs Mineral Processing 2 |
+| Surplus bauxite | Dust conversion unlocks with Waste Management |
 | Surplus sand | Existing disposal needs seawater; salination needs freshwater, which has no local source |
 
 The material checks assume powered starter machines and a supply of the five
