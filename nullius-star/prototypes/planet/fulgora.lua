@@ -44,7 +44,7 @@ vent.created_effect = nil
 vent.minable.results = {{type="fluid", name="nullius-hydrocarbon-slurry", amount=10}}
 vent.autoplace = resource_autoplace.resource_autoplace_settings{
   name=vent.name, autoplace_set_name="nullius_fulgora", order="c",
-  base_density=8.2, base_spots_per_km2=1.8,
+  base_density=65.6, base_spots_per_km2=14.4,
   random_probability=1/48, random_spot_size_minimum=1,
   random_spot_size_maximum=1, additional_richness=220000,
   regular_rq_factor_multiplier=1,

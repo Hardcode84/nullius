@@ -160,7 +160,7 @@ script.on_nth_tick(1, function()
         if blocked then witness=p; break end
       end
     end
-    check(witness~=nil, 'no walkable basin blocking all building types')
+    check(witness~=nil, 'no basin placement witness blocking all building types')
     -- Native tile-placement masks: every available landfill/paving item must collide.
     local layers = prototypes.tile[BASIN].collision_mask.layers
     local paving = 0

@@ -3,6 +3,8 @@
 local masks = require("collision-mask-util")
 local buildable = require("prototypes.visible-build-items")()
 local allowed = {
+  -- Androids have build items, but must not inherit building restrictions.
+  character=true,
   ["electric-pole"]=true, pipe=true, ["pipe-to-ground"]=true, pump=true,
   ["rail-support"]=true,
 }

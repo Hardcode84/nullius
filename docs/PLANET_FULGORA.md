@@ -55,7 +55,8 @@ resource yields, and the local research endpoint are not yet specified.
 | Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
-| Sand | Remains walkable; no landfill, paving, or terraforming |
+| Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
+| Vent coverage check | At least three usable vents within 256 tiles of the origin on twelve fixed seeds; `fulgora-vent-coverage` |
 | Starter island | Design requirement: provide a reachable vent and space for the starter processing line |
 
 ## Implemented terrain and access
@@ -75,7 +76,7 @@ resource yields, and the local research endpoint are not yet specified.
 | Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Native destructive lightning disabled |
-| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fluid-resource-products` on both engines |
+| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products` on both engines |
 
 To inspect the terrain and capture three screenshots:
 
