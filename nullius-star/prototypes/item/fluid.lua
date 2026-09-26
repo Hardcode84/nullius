@@ -392,6 +392,25 @@ extend_fluid_prototypes({
   },
   {
     type = "fluid",
+    name = "nullius-hydrocarbon-slurry",
+    icons = {
+      {
+        icon = FLUIDPATH .. "sludge.png",
+        icon_size = 64,
+        tint = {r = 0.65, g = 0.35, b = 0.25}
+      }
+    },
+    subgroup = "carbon",
+    order = "nullius-j",
+    base_color = {r = 0.20, g = 0.08, b = 0.04},
+    flow_color = {r = 0.45, g = 0.22, b = 0.10},
+    heat_capacity = "0.08kJ",
+    default_temperature = 25,
+    max_temperature = 100,
+    auto_barrel = false
+  },
+  {
+    type = "fluid",
     name = "nullius-petroleum",
 	  icon = "__base__/graphics/icons/fluid/crude-oil.png",
     icon_size = 64,

@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Planet, terrain, probe research, and body access implemented; industry is not included |
+| Status | Planet, terrain, probe research, body access, and hydrocarbon slurry fluid implemented; extraction and processing are not included |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -36,7 +36,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Access | Reactivate the storm-damaged probe on an island with a hydrocarbon vent within reach on adjacent sand |
 | Salvage | Recover a few extractors, a working filter, power poles, capacitor banks, polymer pipes, one distillation column, and basic inserters |
 | Power | Collect lightning through power poles and buffer it for calm periods |
-| Materials | Filter raw hydrocarbon fluid into filtered hydrocarbons, sludge, ice, salt, and gypsum |
+| Materials | Filter hydrocarbon slurry into filtered hydrocarbons, sludge, ice, salt, and gypsum |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
 | Research | Produce local generic science and petrochemical science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
@@ -93,7 +93,7 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 ## Resource model
 
 ```text
-natural fountains -> extractors -> raw hydrocarbon fluid -> filtration
+natural fountains -> extractors -> hydrocarbon slurry -> filtration
   -> filtered hydrocarbons -> distillation -> organic feedstocks + heavy tar
   -> sludge -> crude filtration -> low-yield random minerals
             -> waste reclamation -> selective mineral recovery [researched]
@@ -110,8 +110,9 @@ mineral dust + acid -> sludge -> mineral recovery
 ```
 
 Filtration has five fixed outputs: two fluids (filtered hydrocarbons and existing
-`nullius-sludge`) and three solids (ice, salt, gypsum). Raw hydrocarbon fluid and
-filtered hydrocarbons are new fluids; no mineral concentrate is required.
+`nullius-sludge`) and three solids (ice, salt, gypsum). Hydrocarbon slurry
+(`nullius-hydrocarbon-slurry`) is defined. Filtered hydrocarbons
+(`nullius-filtered-hydrocarbons`) remain proposed; no mineral concentrate is required.
 Use the planner to set yields and distillation fractions against extractor
 production, processing equipment expansion, and bridge construction.
 
@@ -196,7 +197,7 @@ All five recovery recipes, including stone, and barrel recycling remain together
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 
-Proposed sulfur source: recover gypsum directly from raw hydrocarbon fluid filtration. Existing
+Proposed sulfur source: recover gypsum directly from hydrocarbon slurry filtration. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
 `8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
 limestone processing 2, before chemical science; a boxed recipe also exists.
