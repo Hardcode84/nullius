@@ -51,4 +51,15 @@ for _,boxed in ipairs({false,true}) do
   add("salt-disposal","ore-crushing",scale,
     {item("salt",1)},{item("mineral-dust",1)},
     "__angelssmeltinggraphics__/graphics/icons/powder-tungsten.png",boxed)
+  add("ice-melting","distillation",2*scale,
+    {item("ice",1)},{fluid("water",20)},
+    "__space-age__/graphics/icons/ice.png",boxed)
+  -- Reverse the salt/water balance of brine boiling and steam condensation.
+  add("salt-dissolution","nullius-water-treatment",scale,
+    {item("salt",6),fluid("water",45)},{fluid("brine",65)},
+    "__nullius-star__/graphics/icons/salt.png",boxed)
+  add("hydrocarbon-cracking","distillation",4*scale,
+    {fluid("filtered-hydrocarbons",50)},
+    {fluid("methane",60),fluid("benzene",12),item("graphite",2)},
+    "__base__/graphics/icons/fluid/heavy-oil.png",boxed)
 end

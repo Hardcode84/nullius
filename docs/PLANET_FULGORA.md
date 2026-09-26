@@ -92,13 +92,13 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 
 ```text
 natural fountains -> extractors -> hydrocarbon slurry -> filtration
-  -> filtered hydrocarbons -> distillation -> organic feedstocks + heavy tar
+  -> filtered hydrocarbons -> cracking -> methane + benzene + graphite
   -> sludge -> crude filtration -> low-yield random minerals
             -> waste reclamation -> selective mineral recovery [researched]
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
   -> salt -> brine dissolution
   -> gypsum -> decomposition -> lime + sulfur dioxide
-salt + recovered water -> brine [new local dissolution recipe]
+salt + recovered water -> brine
 brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
 sodium hydroxide + water -> caustic solution
 hydrogen + chlorine -> hydrogen chloride
@@ -115,14 +115,17 @@ Primitive Filtration follows probe access: 5 of each early science pack,
 | Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
 | Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
 | Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
+| Ice melting | 1 ice | 20 water | 2 s | Distillery 1 |
+| Salt dissolution | 6 salt + 45 water | 65 brine | 1 s | Hydro plant 1 |
+| Hydrocarbon cracking | 50 filtered hydrocarbons | 60 methane + 12 benzene + 2 graphite | 4 s | Distillery 1 |
 
 Boxed recipes consume five times the input and time; each solid output is a box
 of five. Productivity is disabled. These recipes require Fulgora pressure.
 Design change pending: move boxed recipe unlocks from Primitive Filtration to
 much later mass-production research.
 Salt and gypsum come directly from slurry so the first chlorine and sulfur
-supply does not depend on random mineral recovery. Ice melting, salt dissolution,
-and filtered hydrocarbon processing still require local recipes.
+supply does not depend on random mineral recovery. Cracking supplies organic
+feedstocks and graphite for metal smelting.
 
 | Constraint | Design consequence |
 |---|---|
@@ -157,8 +160,8 @@ venting whitelist is required. Storage does not remove a continuous surplus.
 
 Brine boiling, wastewater boiling, pyrolysis, and benzene reforming require
 chemical science. Select earlier local unlocks before these are bootstrap routes.
-Existing salination makes seawater from freshwater and salt, not brine from pure
-water. The proposed local dissolution recipe is not implemented.
+Local salt dissolution uses pure water. Existing salination produces seawater
+from freshwater and salt.
 
 Sludge resource recovery is permitted. The metal recovery constraint applies to
 recycling shared replacement components, not to processing factory sludge.
