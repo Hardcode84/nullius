@@ -19,7 +19,7 @@ surface: dry natural ground; no ruins, scrap, or oil ocean
 primary_resource: deep abiogenic hydrocarbon ocean
 initial_access: natural hydrocarbon vents on sand
 power: lightning; combustion requires manufactured oxygen
-atmosphere: oxygen-free
+atmosphere: nitrogen 80%; carbon dioxide 19%; argon 1%; no oxygen or water
 distinctive_surface_property: magnetic-field (99)
 surface_water: none
 local_water: ice recovered by fountain filtration
@@ -43,7 +43,8 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Expansion | Improve fountain processing; later expose the deep ocean |
 
 The bootstrap must reproduce basic buildings and logistics without imports or
-large research batches. Primitive Filtration costs five of each early science
+large research batches. Research Primitive Filtration on Nauvis before transfer,
+as with Vulcanus pneumatic technology. It costs five of each early science
 pack. Waste Reclamation improves recovery after this point; its
 220-unit research cost must not gate the first local building production.
 Starter equipment counts and the local research endpoint are not yet specified.
@@ -58,10 +59,9 @@ Resolved-prototype checks give these results:
 | Basic buildings and logistics | Nine targets reachable at Primitive Filtration; 29 recipe steps |
 | Hydro plant, distillery, chemical plant, electrolyzer, crusher | Reproduction routes reachable at Primitive Filtration |
 | Extractor reproduction | Needs Volcanism 1 and 12 other technologies beyond the starting research |
-| First local research | Probe research does not grant Primitive Filtration; supply five of each early pack or research it before transfer |
 | Geology packs | Raw ores are absent; the crushed-ore recipe needs Geology 2 |
-| Climatology packs | No local route with air and surface-water extraction excluded |
-| Electrical packs | Logic circuits need polycrystalline silicon; its early recipe needs nitrogen, which has no local source |
+| Climatology packs | Needs a local recipe: Fulgora atmosphere is distinct from generic air, and seawater is absent |
+| Electrical packs | Needs nitrogen for polycrystalline silicon; atmospheric capture and separation below supply it once implemented |
 | Surplus bauxite | Dust conversion needs Mineral Processing 2 |
 | Surplus sand | Existing disposal needs seawater; salination needs freshwater, which has no local source |
 
@@ -81,6 +81,38 @@ Before selecting wreck quantities, resolve the research and disposal gates.
 Then test a finite wreck inventory in a headless scenario: extract slurry,
 reproduce the starter machines and logistics, and process every surplus without
 imports or liquid voiding.
+
+## Atmospheric capture
+
+Design values; capture and separation are not yet implemented.
+
+| Component | Fraction |
+|---|---:|
+| Nitrogen | 80% |
+| Carbon dioxide | 19% |
+| Argon | 1% |
+| Oxygen and water | 0% |
+
+| Process | Machine | Recipe | Time |
+|---|---|---|---:|
+| Capture | Air filter | Electricity → 150 Fulgora atmosphere | 3 s |
+| Separation | Distillery | 100 Fulgora atmosphere → 80 nitrogen + 19 CO2 + 1 argon | 1 s |
+
+Unlock both recipes with Primitive Filtration. Use a separate atmospheric fluid;
+generic air permits oxygen recovery, and generic residual gas permits water
+recovery. Do not convert Fulgora atmosphere to either fluid. Use existing gas
+vents for surplus nitrogen, CO2, and argon. Hydrocarbons still come from slurry.
+
+Reuse the air-filter buildings on island ground. Replace their fixed generic-air
+recipe with surface-appropriate capture. Gate Fulgora capture with
+`magnetic-field = 99` and exclude generic-air capture there. Separation can run
+on any surface with the captured fluid. Add one air filter to the starter kit.
+
+The air filter, distillery, and chimney have reproduction routes at Primitive
+Filtration under the audit boundary. Check with
+`@tests/progression/fulgora-atmosphere-equipment.args`.
+The current-code audits still exclude atmospheric capture until this design is
+implemented. A Fulgora climatology recipe must use local inputs without seawater.
 
 ## Sand construction
 
