@@ -17,7 +17,7 @@ planet_role: organic industry
 setting: primordial world; no prior civilization or ruins
 surface: dry natural ground; no ruins, scrap, or oil ocean
 primary_resource: deep abiogenic hydrocarbon ocean
-initial_access: natural hydrocarbon fountains
+initial_access: natural hydrocarbon vents on sand
 power: lightning; combustion requires manufactured oxygen
 atmosphere: oxygen-free
 surface_water: none
@@ -33,7 +33,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 
 | Step | Proposed player outcome |
 |---|---|
-| Access | Reactivate the storm-damaged probe near a natural fountain |
+| Access | Reactivate the storm-damaged probe on an island with a hydrocarbon vent within reach on adjacent sand |
 | Salvage | Recover a few extractors, a working filter, power poles, capacitor banks, polymer pipes, one distillation column, and basic inserters |
 | Power | Collect lightning through power poles and buffer it for calm periods |
 | Materials | Filter raw hydrocarbon fluid into filtered hydrocarbons, sludge, ice, salt, and gypsum |
@@ -41,8 +41,25 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Research | Produce local generic science and petrochemical science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
 
-The bootstrap must work without imports. Exact equipment counts, recipe quantities,
+The bootstrap must reproduce basic buildings and logistics without imports or
+additional science. Waste Reclamation improves recovery after this point; its
+220-unit research cost must not gate the first local building production.
+Exact equipment counts, recipe quantities,
 resource yields, and the local research endpoint are not yet specified.
+
+## Planned sand construction
+
+These rules extend the implemented terrain; the building whitelist and vents
+are not implemented.
+
+| Location or object | Rule |
+|---|---|
+| Hydrocarbon vents | Place on sand; pipe raw fluid to island processing |
+| Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
+| All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
+| Elevated rails | Bridge sand basins between islands on rail supports |
+| Sand | Remains walkable; no landfill, paving, or terraforming |
+| Starter island | Provide a reachable vent and space for the starter processing line |
 
 ## Implemented terrain and access
 
@@ -78,7 +95,8 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 ```text
 natural fountains -> extractors -> raw hydrocarbon fluid -> filtration
   -> filtered hydrocarbons -> distillation -> organic feedstocks + heavy tar
-  -> sludge -> waste reclamation -> metals and minerals
+  -> sludge -> crude filtration -> low-yield random minerals
+            -> waste reclamation -> selective mineral recovery [researched]
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
   -> salt -> brine dissolution
   -> gypsum -> decomposition -> lime + sulfur dioxide
@@ -87,6 +105,8 @@ brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
 sodium hydroxide + water -> caustic solution
 hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
+surplus salt -> mineral dust [new recipe]
+mineral dust + acid -> sludge -> mineral recovery
 ```
 
 Filtration has five fixed outputs: two fluids (filtered hydrocarbons and existing
@@ -145,7 +165,17 @@ for asteroid mining.
 
 ### Mineral ratios and sulfur
 
-Use separate recovery lines to adjust the material mix. Existing recipes consume
+Design: make crude sludge filtration available at probe access. It gives the
+basic mineral set at very low, probabilistic yields. Unlock the required dust
+conversion, dissolution, and acid supply with it. Check startup across seeds;
+average yields alone do not establish acceptable time to reproduce equipment.
+
+Add salt -> mineral dust, including a boxed equivalent. Keep salt for chemistry
+and send excess to dust dissolution. Balance the complete recycle loop for net
+loss so unwanted outputs cannot accumulate indefinitely. Product probabilities
+and recipe quantities require balance tests.
+
+After research, use separate recovery lines to adjust the material mix. Existing recipes consume
 200 sludge per batch:
 
 | Recovery | Reagent | Main solid outputs |

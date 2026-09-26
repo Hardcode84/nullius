@@ -329,7 +329,7 @@ The existing Nullius nuclear chain has clear pain points that Aquilo could solve
 
 Each planet has a defining production mechanic:
 - Vulcanus: **spoilage-as-cooldown** (molten metal must cool)
-- Fulgora: **fixed output ratios** (filtration supplies five products; sludge recovery adjusts the mineral mix)
+- Fulgora: **sand extraction and island processing** (five fixed primary outputs; crude random mineral recovery before efficient selective recovery). See [Fulgora design](PLANET_FULGORA.md).
 - Gleba: **probabilistic breeding** (net-negative loops + continuous maintenance)
 - Aquilo: **finite monopole allocation** (defined below)
 
