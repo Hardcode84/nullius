@@ -3,7 +3,7 @@ local research = require("scripts.research")
 local debug = {}
 local destinations = {
   vulcanus = {planet = "nullius-vulcanus", technology = "nullius-pneumatic-technology", label = "Vulcanus"},
-  fulgora = {planet = "nullius-fulgora", technology = "nullius-probe-fulgora", label = "Fulgora"},
+  fulgora = {planet = "nullius-fulgora", technology = "nullius-primitive-filtration", label = "Fulgora"},
 }
 
 function debug.quick_start(player, destination)

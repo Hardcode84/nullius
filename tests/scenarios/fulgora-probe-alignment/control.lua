@@ -33,6 +33,8 @@ script.on_nth_tick(30, function()
     local force = player.force
     check(remote.call("nullius-test-bodies", "quick_start", player.index, "fulgora") ~= nil,
       "quick-start failed after faction landing")
+    check(force.technologies['nullius-primitive-filtration'].researched,'quick-start did not unlock filtration')
+    check(force.recipes['nullius-crude-sludge-filtration'].enabled,'quick-start left filtration disabled')
     local body = remote.call("nullius-test-bodies", "snapshot", player.index, "fulgora").body
     check(body and body.valid and body == player.character, "caller did not receive the probe body")
     check(body.force == force and body.surface.name == "nullius-fulgora", "probe has wrong faction or surface")

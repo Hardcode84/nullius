@@ -1,0 +1,54 @@
+-- Cold data-stage path: probe-era separation, before selective recovery research.
+local modern = require("factorio-version").is_2_1
+local probability = modern and "independent_probability" or "probability"
+local unlocks = {}
+data:extend({{
+  type="technology",name="nullius-primitive-filtration",
+  icon="__base__/graphics/technology/fluid-handling.png",icon_size=256,
+  order="nullius-df-fulgora",prerequisites={"nullius-probe-fulgora"},effects=unlocks,
+  unit={count=5,time=15,ingredients={
+    {"nullius-geology-pack",1},{"nullius-climatology-pack",1},
+    {"nullius-mechanical-pack",1},{"nullius-electrical-pack",1},
+  }},
+}})
+local function add(name, category, seconds, ingredients, results, icon, boxed)
+  local title = {"recipe-name.nullius-"..name}
+  if boxed then title = {"recipe-name.nullius-boxed",title} end
+  local recipe = {
+    type="recipe", name="nullius-"..(boxed and "boxed-" or "")..name,
+    localised_name=title, icons={{icon=icon,icon_size=64}},
+    subgroup="waste-management", order="nullius-fulgora-"..name..(boxed and "-boxed" or ""),
+    enabled=false, energy_required=seconds, ingredients=ingredients, results=results,
+    allow_productivity=false, no_productivity=true,
+    surface_conditions={{property="pressure",min=800,max=800}},
+  }
+  if modern then recipe.categories={category} else recipe.category=category end
+  data:extend({recipe})
+  unlocks[#unlocks+1]={type="unlock-recipe",recipe=recipe.name}
+end
+for _,boxed in ipairs({false,true}) do
+  local scale = boxed and 5 or 1
+  local function item(name, amount)
+    return {type="item",name=boxed and "nullius-box-"..name or
+      (name=="stone" and "stone" or "nullius-"..name),amount=amount}
+  end
+  local function fluid(name, amount)
+    return {type="fluid",name="nullius-"..name,amount=amount*scale}
+  end
+  add("hydrocarbon-slurry-filtration","nullius-water-treatment",4*scale,
+    {fluid("hydrocarbon-slurry",100)},
+    {fluid("filtered-hydrocarbons",50),fluid("sludge",40),
+      item("ice",2),item("salt",1),item("gypsum",1)},
+    "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  local minerals={}
+  for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","rutile"}) do
+    local result=item(name,1)
+    result[probability]=name=="rutile" and 0.1 or 0.25
+    minerals[#minerals+1]=result
+  end
+  add("crude-sludge-filtration","nullius-water-treatment",2*scale,
+    {fluid("sludge",50)},minerals,"__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  add("salt-disposal","ore-crushing",scale,
+    {item("salt",1)},{item("mineral-dust",1)},
+    "__angelssmeltinggraphics__/graphics/icons/powder-tungsten.png",boxed)
+end

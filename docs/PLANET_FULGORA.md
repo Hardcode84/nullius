@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, and sand construction rules implemented; processing is not included |
+| Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, primitive filtration, salt crushing, and sand construction rules implemented |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -42,10 +42,10 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Expansion | Improve fountain processing; later expose the deep ocean |
 
 The bootstrap must reproduce basic buildings and logistics without imports or
-additional science. Waste Reclamation improves recovery after this point; its
+large research batches. Primitive Filtration costs five of each early science
+pack. Waste Reclamation improves recovery after this point; its
 220-unit research cost must not gate the first local building production.
-Exact equipment counts, recipe quantities,
-resource yields, and the local research endpoint are not yet specified.
+Starter equipment counts and the local research endpoint are not yet specified.
 
 ## Sand construction
 
@@ -73,7 +73,7 @@ resource yields, and the local research endpoint are not yet specified.
 | Excluded | Ruins, artificial ground, scrap, oil ocean, surface water, ore deposits, and enemies |
 | Probe research | Signal acquisition + insulation 1; 30 of each of the four early science packs; 20 seconds |
 | Landing | One equipped idle android and one empty probe wreck per force |
-| Access | `/nullius-fulgora` completes access research and transfers the caller to the idle body |
+| Access | `/nullius-fulgora` completes probe access and Primitive Filtration, then transfers the caller to the idle body |
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Native destructive lightning disabled |
 | Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products` on both engines |
@@ -103,16 +103,24 @@ brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
 sodium hydroxide + water -> caustic solution
 hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
-surplus salt -> mineral dust [new recipe]
+surplus salt -> mineral dust
 mineral dust + acid -> sludge -> mineral recovery
 ```
 
-Filtration has five fixed outputs: two fluids (filtered hydrocarbons and existing
-`nullius-sludge`) and three solids (ice, salt, gypsum). Hydrocarbon slurry
-(`nullius-hydrocarbon-slurry`) is defined. Filtered hydrocarbons
-(`nullius-filtered-hydrocarbons`) remain proposed; no mineral concentrate is required.
-Use the planner to set yields and distillation fractions against extractor
-production, processing equipment expansion, and bridge construction.
+Primitive Filtration follows probe access: 5 of each early science pack,
+15 seconds per unit. It unlocks these recipes and their boxed equivalents.
+
+| Recipe | Input | Output | Time | Machine |
+|---|---|---|---|---|
+| Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
+| Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each); rutile (10%) | 2 s | Hydro plant 1 |
+| Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
+
+Boxed recipes consume five times the input and time; each solid output is a box
+of five. Productivity is disabled. These recipes require Fulgora pressure.
+Salt and gypsum come directly from slurry so the first chlorine and sulfur
+supply does not depend on random mineral recovery. Ice melting, salt dissolution,
+and filtered hydrocarbon processing still require local recipes.
 
 | Constraint | Design consequence |
 |---|---|
@@ -164,15 +172,10 @@ for asteroid mining.
 
 ### Mineral ratios and sulfur
 
-Design: make crude sludge filtration available at probe access. It gives the
-basic mineral set at very low, probabilistic yields. Unlock the required dust
-conversion, dissolution, and acid supply with it. Check startup across seeds;
-average yields alone do not establish acceptable time to reproduce equipment.
-
-Add salt -> mineral dust, including a boxed equivalent. Keep salt for chemistry
-and send excess to dust dissolution. Balance the complete recycle loop for net
-loss so unwanted outputs cannot accumulate indefinitely. Product probabilities
-and recipe quantities require balance tests.
+Crude filtration and salt crushing unlock at Primitive Filtration. Dust
+conversion, dissolution, and acid supply must also be available before research
+scales up. Test the complete recycle loop for net loss and test startup across
+seeds; average yields alone do not establish equipment reproduction time.
 
 After research, use separate recovery lines to adjust the material mix. Existing recipes consume
 200 sludge per batch:
@@ -195,13 +198,13 @@ All five recovery recipes, including stone, and barrel recycling remain together
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 
-Proposed sulfur source: recover gypsum directly from hydrocarbon slurry filtration. Existing
+Slurry filtration supplies gypsum. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
 `8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
 limestone processing 2, before chemical science; a boxed recipe also exists.
 Bauxite recovery returns SO2 but consumes sulfuric acid, so it cannot supply the
-first sulfur input. Gypsum recovery from fountains is not implemented. Include
-its lime output in the mineral balance; surplus SO2 can use the existing vent.
+first sulfur input. Include
+the lime output in the mineral balance; surplus SO2 can use the existing vent.
 
 ## Storms and industrial feedback
 
