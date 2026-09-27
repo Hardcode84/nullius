@@ -147,7 +147,7 @@ IMPORTS:   Water, organics (Fulgora), bio-feed for demolishers (Gleba)
 ### 3.2 Fulgora (Hydrocarbon/Lightning)
 
 See [Fulgora design](PLANET_FULGORA.md) for hydrocarbon filtration, lightning
-power and overloads, organic industry, petrochemical science, and nuclear
+power and overloads, organic industry, electromagnetic science, overcharged assemblers, and nuclear
 geoengineering. Status: design only.
 
 ### 3.3 Gleba (Microbiology/Breeding)
@@ -744,7 +744,7 @@ Each planet can produce one or more science packs from purely local materials:
 |---|---|---|---|
 | **Nauvis** | Geology, Climatology, Mechanical, Electrical, Chemical, Physics | (existing Nullius packs) | The core 6 packs, same as current Nullius |
 | **Vulcanus** | **Metallurgic Pack** | Lava metals, volcanic compounds, titanium intermediates | Requires cooled (spoiled) metal products |
-| **Fulgora** | **Petrochemical Pack** | Hydrocarbon distillates, polymer compounds, trace metals | Requires filtering infrastructure |
+| **Fulgora** | **Electromagnetic Pack** | Locally produced electrical components and polymer materials | Bootstrap and efficient recipes; see [Fulgora design](PLANET_FULGORA.md#science-and-research) |
 | **Gleba** | **Biological Pack** | Bred bacterial strains, exotic enzymes, cultured organisms | Requires active breeding loop (probabilistic) |
 | **Aquilo** | **Cryogenic Pack** | Monopole-processed deuterium, lithium compounds, ammonia derivatives | Requires monopole allocation to lab processes |
 
@@ -768,7 +768,7 @@ TIER 5 (Single-planet research, no cargo needed):
 
   Each planet unlocks globally-useful technologies:
     Vulcanus metallurgic --> advanced alloys, heat-resistant equipment
-    Fulgora petrochemical --> advanced polymers, organic electronics
+    Fulgora electromagnetic --> overcharged assemblers
     Gleba biological --> advanced organisms, bio-catalysts
     Aquilo cryogenic --> fusion improvements, exotic physics
 
@@ -842,7 +842,7 @@ Each planet gets **alternative recipes** for generic packs using local materials
 | Planet Research | Globally Useful Unlocks |
 |---|---|
 | **Vulcanus metallurgic** | Advanced alloys for all planets, heat-resistant buildings, improved furnace tiers, titanium recipes |
-| **Fulgora petrochemical** | Advanced polymers, organic electronics, improved chemical recipes, lightning-resistant equipment |
+| **Fulgora electromagnetic** | Overcharged assemblers in all sizes; see [Fulgora design](PLANET_FULGORA.md#overcharged-assemblers) |
 | **Gleba biological** | Improved organism designs for Nauvis seeding, bio-catalysts that improve recipes everywhere, advanced biology packs |
 | **Aquilo cryogenic** | Fusion reactor improvements (global), improved tritium production, superconductor components, monopole applications |
 
@@ -925,7 +925,7 @@ Rationale:
 | Potential Pack | Planet | Ingredients |
 |---|---|---|
 | Metallurgic | Vulcanus | Titanium intermediates + calcite + volcanic alloys |
-| Petrochemical | Fulgora | Hydrocarbon distillates + polymers + super-capacitor cells |
+| Electromagnetic | Fulgora | Local electrical components and polymer materials; recipe design in [Fulgora design](PLANET_FULGORA.md#science-and-research) |
 | Cryogenic | Aquilo | Lithium + tritium + ammonia compounds |
 
 ---

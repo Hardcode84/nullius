@@ -13,7 +13,7 @@
 ## Role
 
 ```yaml
-planet_role: organic industry
+planet_role: electromagnetic manufacturing
 setting: primordial world; no prior civilization or ruins
 surface: dry natural ground; no ruins, scrap, or oil ocean
 primary_resource: deep abiogenic hydrocarbon ocean
@@ -25,7 +25,8 @@ surface_water: none
 local_water: ice recovered by fountain filtration
 metals: dissolved traces; no ore deposits
 combustion: permitted with oxygen from water electrolysis
-pre_cargo: independent local bootstrap and petrochemical research
+pre_cargo: independent local bootstrap and electromagnetic research
+global_machine_reward: overcharged assemblers
 exports: advanced organics, polymers, carbon materials, rare traces
 imports: bulk metals, oxygen, water, nuclear devices
 ```
@@ -39,7 +40,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Power | Collect lightning through power poles and buffer it for calm periods |
 | Materials | Filter hydrocarbon slurry into filtered hydrocarbons, sludge, ice, salt, and gypsum |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
-| Research | Produce local generic science and petrochemical science before cargo |
+| Research | Produce local generic science and electromagnetic science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
 
 The bootstrap must reproduce basic buildings and logistics without imports or
@@ -517,10 +518,33 @@ must not depend on that import.
 | Geology science | Trace minerals from filtration |
 | Mechanical science | Polymer gears |
 | Electrical science | Conductive polymer circuits |
-| Petrochemical pack | Hydrocarbon distillates, polymer compounds, trace metals, and super-capacitor cells; exact recipe unresolved |
-| Global petrochemical rewards | Advanced polymers, organic electronics, improved chemical recipes, lightning-resistant equipment |
+| Electromagnetic science | Bootstrap recipe from local components; efficient recipe with further processing. Define quantities before implementation. |
+| Global electromagnetic rewards | Overcharged assemblers; polymers and organic electronics supply their components |
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
+
+### Overcharged assemblers
+
+Design only. Optional electric upgrades usable on all planets, parallel to
+Vulcanus thermal machinery. Provide small, medium, and large assemblers at each
+of three tiers: nine variants.
+
+| Tier | Built-in productivity | Power consumption |
+|---|---:|---:|
+| 1 | +20% | 10× |
+| 2 | +40% | 100× |
+| 3 | +60% | 1000× |
+
+Power multipliers use the ordinary assembler of the same size and tier.
+Keep its crafting speed and recipe categories. Always use surge electrical
+priority. Productivity applies only to eligible recipes.
+
+Unlocks require electromagnetic science and the corresponding ordinary
+assembler research. Ordinary Nauvis progression remains independent. Bootstrap
+science and the first overcharged assemblers must use ordinary production.
+Efficient electromagnetic science can use more advanced components.
+
+Chemical plants, refineries, and hydro plants are reserved for other planets.
 
 ## Nuclear geoengineering
 
@@ -541,7 +565,7 @@ The shared endgame also proposes repurposing these charges for orbital defence.
 | Vulcanus to Fulgora | Bulk metals; iron chloride dopant |
 | Fulgora to Vulcanus | Organics, polymers, and carbon materials |
 | Nauvis or Aquilo to Fulgora | Water; nuclear equipment for geoengineering |
-| Fulgora to other planets | Advanced organics, rare traces, and petrochemical research |
+| Fulgora to other planets | Overcharged assemblers, electromagnetic research, advanced organics, and rare traces |
 
 Vulcanus supplies metals with pneumatic and thermal industry. Fulgora supplies
 organics with intermittent electricity. Both lack natural surface water.
