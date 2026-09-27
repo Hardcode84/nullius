@@ -522,10 +522,33 @@ must not depend on that import.
 | Geology science | Trace minerals from filtration |
 | Mechanical science | Polymer gears |
 | Electrical science | Conductive polymer circuits |
-| Electromagnetic science | Bootstrap recipe from local components; efficient recipe with further processing. Define quantities before implementation. |
+| Electromagnetic science | Basic and improved recipes below |
 | Global electromagnetic rewards | Overcharged assemblers; polymers and organic electronics supply their components |
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
+
+### Electromagnetic science recipes
+
+Design only. Both recipes produce the same pack. Quantities and craft times
+are candidates for factory-planner validation.
+
+| Recipe | Ingredients | Output | Craft time |
+|---|---|---:|---:|
+| Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 60 s |
+| Improved | 1 capacitor + 1 logic circuit + 2 insulated wire | 5 EM packs | 15 s |
+
+The basic recipe uses an iron core, insulated winding, and graphite electrodes.
+The improved recipe adds capacitor and circuit production: aluminum sheet,
+alumina, plastic, and silicon processing.
+
+- Unlock the basic recipe with initial local EM research that needs no EM packs.
+- Unlock the improved recipe with a small EM-pack research cost.
+- Use ordinary assemblers for both recipes; overcharged assemblers are optional.
+- Restrict both recipes to Fulgora through its electromagnetic-field property.
+- Exclude transformers from this upgrade; their current unlock requires Energy
+  Distribution 3 and its power-research prerequisites.
+- Compare both recipes with Vulcanus science in the planner before setting final
+  quantities. Include mineral filtration, silicon demand, and waste balance.
 
 ### Overcharged assemblers
 
@@ -546,7 +569,7 @@ priority. Productivity applies only to eligible recipes.
 Unlocks require electromagnetic science and the corresponding ordinary
 assembler research. Ordinary Nauvis progression remains independent. Bootstrap
 science and the first overcharged assemblers must use ordinary production.
-Efficient electromagnetic science can use more advanced components.
+Improved electromagnetic science uses the components specified above.
 
 Chemical plants, refineries, and hydro plants are reserved for other planets.
 Keep the existing electrolyzer progression unchanged.
