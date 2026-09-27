@@ -137,10 +137,10 @@ Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 <!-- bootstrap-timing:start -->
 | Target | 100% vent yield | Survey high yield | Survey low yield |
 |---|---:|---:|---:|
-| 20 iron plates + 20 aluminum plates | 24.9 min | 12.6 min | 26.5 min |
-| Expansion kit | 48.6 min | 24.4 min | 51.7 min |
-| 10 of each early science pack | 33.7 min | 17.4 min | 35.9 min |
-| Expansion kit + first science | 82.3 min | 48.6 min | 87.6 min |
+| 20 iron plates + 20 aluminum plates | 7.3 min | 4.4 min | 7.6 min |
+| Expansion kit | 13.4 min | 8.0 min | 14.1 min |
+| 10 of each early science pack | 10.3 min | 7.5 min | 11.0 min |
+| Expansion kit + first science | 23.7 min | 14.8 min | 25.0 min |
 <!-- bootstrap-timing:end -->
 
 These are fractional-work bounds with mean mineral yields and continuous power.
@@ -149,33 +149,32 @@ and startup order. Tanks limit final surplus, not peak fluid volume. The survey
 uses the nearest three usable vents from the origin in twelve seeds on 2.1:
 94.0–199.2% mean yield. It does not cover every map or probe landing position.
 
-Slurry supply limits the 100% case. Extra air filters or hydro plants do not
-reduce its time. At higher yield, hydro plants, dust treatment, and distilleries
-limit production. With 50% machine duty, the combined 100% case takes 164.7 min.
+Slurry supply and flotation limit the 100% case. Extra air filters or hydro plants do not
+reduce its time. At higher yield, hydro plants, flotation, and hand crafting
+limit production. With 50% machine duty, the combined 100% case takes 47.4 min.
 
 Extractor research needs 250 geology, 228 climatology, 255 mechanical, and
 247 electrical packs after the minimum arrival research. The starter buffer
 allocation cannot support this batch with arrival recipes. Allowing more filtered
-hydrocarbon storage makes it feasible; the fixed-fleet work bound is 854.5 min
+hydrocarbon storage makes it feasible; the fixed-fleet work bound is 260.1 min
 at 100% yield. This is not a progression schedule with expansion and recipe upgrades.
 No zero-liquid-surplus solution exists for these targets at the arrival boundary.
 
 ### Mineral recovery comparison
 
-Planner experiment only: keep each mineral's 25% chance; compare 1, 2, 3, or 4
-items per successful drop. Apply the same amount change to boxed outputs.
+The recipe now returns 3 items per successful drop, with a 25% chance for each
+mineral. The boxed recipe returns 3 boxes. The planner compares absolute drop amounts.
 Starter machines, research, and buffer allocation stay fixed.
 
 | Items per drop | First science, 100% vents | Expansion + science, 100% vents | Expansion + science, sampled vents |
 |---|---:|---:|---:|
-| 1 (current) | 33.7 min | 82.3 min | 48.6–87.6 min |
+| 1 (previous) | 33.7 min | 82.3 min | 48.6–87.6 min |
 | 2 | 16.1 min | 38.1 min | 20.9–40.6 min |
-| 3 | 10.3 min | 23.7 min | 14.8–25.0 min |
+| 3 (current) | 10.3 min | 23.7 min | 14.8–25.0 min |
 | 4 | 7.9 min | 17.8 min | 11.8–18.7 min |
 
-Prefer 3 items per drop for the first gameplay trial. At 100% yield, it meets
-the proposed 10–15 min science and 20–30 min combined production targets.
-These remain mean-yield work bounds. Gameplay recipes still produce 1 item.
+At 100% yield, the current recipe meets the proposed 10–15 min science and
+20–30 min combined production targets. These remain mean-yield work bounds.
 
 All candidates still fail the extractor-research batch with starter buffers.
 The 3-item combined batch retains about 17,749 filtered hydrocarbons, 844 benzene,
@@ -284,7 +283,7 @@ Primitive Filtration requires probe access and Geology 2: 5 of each early scienc
 |---|---|---|---|---|
 | Slurry climatology | 5000 air + 100 hydrocarbon slurry | 1 climatology pack | 60 s | Hydro plant 1 |
 | Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
-| Crude sludge filtration | 50 sludge | Independent chance of 1 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
+| Crude sludge filtration | 50 sludge | Independent chance of 3 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
 | Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
 | Ice melting | 1 ice | 20 water | 2 s | Distillery 1 |
 | Salt dissolution | 6 salt + 45 water | 65 brine | 1 s | Hydro plant 1 |

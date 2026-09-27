@@ -41,7 +41,7 @@ for _,boxed in ipairs({false,true}) do
     "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
   local minerals={}
   for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone"}) do
-    local result=item(name,1)
+    local result=item(name,3)
     result[probability]=0.25
     minerals[#minerals+1]=result
   end

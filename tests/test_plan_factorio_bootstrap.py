@@ -72,6 +72,13 @@ class BootstrapPlannerTest(unittest.TestCase):
             with self.assertRaises(TestFailure):
                 expected_catalog(rows, ['ordinary', 'boxed'], invalid)
 
+    def test_absolute_recovery_amount_survives_shipping_a_new_baseline(self):
+        row = recipe('random', 'filter', 2, {'ore': 0})
+        row['uncertain_outputs'] = [{'name': 'ore', 'amount': 3, 'probability': .25}]
+        self.assertEqual(expected_catalog([row], ['random'])[0]['flows']['ore'], .75)
+        self.assertEqual(expected_catalog([row], ['random'], 1)[0]['flows']['ore'], .25)
+        self.assertEqual(expected_catalog([row], ['random'], 3)[0]['flows']['ore'], .75)
+
     def test_handcrafting_uses_android_categories_and_rejects_fluids(self):
         data = {'character': {'android': {'crafting_categories': ['large-crafting'], 'crafting_speed': 2}},
                 'technology': {}, 'fluid': {'gas': {'fuel_value': '1kJ'}},

@@ -168,81 +168,95 @@
     },
     {
       "name": "2x-recovery-starter",
-      "expected_output_multiplier": 2
+      "expected_output_amount": 2
     },
     {
       "name": "2x-recovery-survey-low-yield",
       "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_multiplier": 2
+      "expected_output_amount": 2
     },
     {
       "name": "2x-recovery-survey-high-yield",
       "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_multiplier": 2
+      "expected_output_amount": 2
     },
     {
       "name": "2x-recovery-no-fluid-surplus",
       "store_fluids": false,
-      "expected_output_multiplier": 2
+      "expected_output_amount": 2
     },
     {
       "name": "2x-recovery-only-hydrocarbons-unbounded",
       "unbounded_buffers": [
         "nullius-filtered-hydrocarbons"
       ],
-      "expected_output_multiplier": 2
+      "expected_output_amount": 2
     },
     {
       "name": "4x-recovery-starter",
-      "expected_output_multiplier": 4
+      "expected_output_amount": 4
     },
     {
       "name": "4x-recovery-survey-low-yield",
       "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_multiplier": 4
+      "expected_output_amount": 4
     },
     {
       "name": "4x-recovery-survey-high-yield",
       "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_multiplier": 4
+      "expected_output_amount": 4
     },
     {
       "name": "4x-recovery-no-fluid-surplus",
       "store_fluids": false,
-      "expected_output_multiplier": 4
+      "expected_output_amount": 4
     },
     {
       "name": "4x-recovery-only-hydrocarbons-unbounded",
       "unbounded_buffers": [
         "nullius-filtered-hydrocarbons"
       ],
-      "expected_output_multiplier": 4
+      "expected_output_amount": 4
     },
     {
       "name": "3x-recovery-starter",
-      "expected_output_multiplier": 3
+      "expected_output_amount": 3
     },
     {
       "name": "3x-recovery-survey-low-yield",
       "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_multiplier": 3
+      "expected_output_amount": 3
     },
     {
       "name": "3x-recovery-survey-high-yield",
       "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_multiplier": 3
+      "expected_output_amount": 3
     },
     {
       "name": "3x-recovery-no-fluid-surplus",
       "store_fluids": false,
-      "expected_output_multiplier": 3
+      "expected_output_amount": 3
     },
     {
       "name": "3x-recovery-only-hydrocarbons-unbounded",
       "unbounded_buffers": [
         "nullius-filtered-hydrocarbons"
       ],
-      "expected_output_multiplier": 3
+      "expected_output_amount": 3
+    },
+    {
+      "name": "1x-recovery-starter",
+      "expected_output_amount": 1
+    },
+    {
+      "name": "1x-recovery-survey-low-yield",
+      "vent_yield_multiplier": 0.9400644444444444,
+      "expected_output_amount": 1
+    },
+    {
+      "name": "1x-recovery-survey-high-yield",
+      "vent_yield_multiplier": 1.992444444444444,
+      "expected_output_amount": 1
     }
   ],
   "assumptions": [
@@ -257,7 +271,7 @@
     "Fleet-doubling cases supply the extra machines at time zero; their construction is excluded from those sensitivity cases.",
     "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",
     "Survey cases use nearest-three usable vent means at the origin from fulgora-vent-coverage: seed 42 and seed 2 on 2.1.19. These bracket twelve sampled seeds, not all maps or actual landing sites. Resource depletion is omitted.",
-    "Recovery multiplier cases are hypothetical: multiply solid amounts on successful drops in both named crude filtration recipes. Probability, fluid input and craft time are unchanged. These cases do not modify gameplay prototypes."
+    "Recovery comparison cases set an absolute item or box count per successful drop in both named crude filtration recipes. Counts different from the resolved prototypes are hypothetical. Probability, fluid input and craft time are unchanged. These cases do not modify gameplay prototypes."
   ],
   "character": "character"
 }

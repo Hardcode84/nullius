@@ -21,10 +21,10 @@ from scipy.optimize import linprog
 import plan_factorio_factory as planner
 
 
-def expected_catalog(catalog, names, multiplier=1):
+def expected_catalog(catalog, names, output_amount=None):
     """Opt in to expected independent returns for named recipes only."""
-    if isinstance(multiplier, bool) or not isinstance(multiplier, int) or multiplier < 1:
-        raise planner.TestFailure("expected-output multiplier must be a positive integer")
+    if output_amount is not None and (isinstance(output_amount, bool) or not isinstance(output_amount, int) or output_amount < 1):
+        raise planner.TestFailure("expected-output amount must be a positive integer")
     found = set()
     result = deepcopy(catalog)
     for row in result:
@@ -38,7 +38,7 @@ def expected_catalog(catalog, names, multiplier=1):
                 raise planner.TestFailure('expected output needs fixed amounts and independent probability')
             probability = product.get('independent_probability', product.get('probability', 1))
             # Guaranteed mode contributed zero for uncertain products.
-            row['flows'][product['name']] += product['amount'] * probability * multiplier
+            row['flows'][product['name']] += (product['amount'] if output_amount is None else output_amount) * probability
     if set(names) != found:
         raise planner.TestFailure('expected recipes absent from the available catalog: ' + str(set(names) - found))
     return result
@@ -174,7 +174,7 @@ def analyze(data, config):
             if case.get('unbounded_fluid_storage'):
                 storage = {p: None for p in data['fluid']}
             case_catalog = expected_catalog(guaranteed_catalog, config['expected_recipes'],
-                                            case.get('expected_output_multiplier', 1))
+                                            case.get('expected_output_amount'))
             case_catalog = [r for r in case_catalog if set(r['inputs']) <= reachable]
             for recipe in case_catalog:
                 if recipe['recipe'].startswith('<mine:'):
@@ -187,8 +187,10 @@ def analyze(data, config):
             except planner.TestFailure as error:
                 raise planner.TestFailure(f"{target['name']} / {case['name']}: {error}") from error
             result['name'] = case['name']
-            result['expected_output_multiplier'] = case.get('expected_output_multiplier', 1)
-            result['hypothetical'] = result['expected_output_multiplier'] != 1
+            result['expected_output_amount'] = case.get('expected_output_amount')
+            result['hypothetical'] = result['expected_output_amount'] is not None and any(
+                p['amount'] != result['expected_output_amount'] for r in guaranteed_catalog
+                if r['recipe'] in config['expected_recipes'] for p in r['uncertain_outputs'])
             if result['status'] == 'optimal':
                 result['production_and_lab_minutes_lower_bound'] = max(
                     result['production_minutes_lower_bound'], lab_minutes / case.get('duty', 1))

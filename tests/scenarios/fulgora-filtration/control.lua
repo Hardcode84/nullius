@@ -1,6 +1,7 @@
 -- given: basic hydro plants/crushers, pipes, substations and debug electric grids.
 -- inputs per ordinary/boxed line: 100/500 slurry, 1000/5000 sludge, 1 salt/box salt.
--- place: six independent cells on Nauvis, fluid outputs connected to pipes.
+-- place: six independent cells on Nauvis, fluid outputs connected to pipes;
+-- crude recovery cells unload through powered inserters into wooden chests.
 -- act: research probe access then Primitive Filtration; execute all six recipes.
 -- run: scheduled input feeds every 60 ticks, exact 20-batch crude recovery budget.
 -- expect: deterministic slurry/salt outputs, bounded random minerals, boxed parity,
@@ -57,11 +58,15 @@ script.on_nth_tick(1,function()
         end
       elseif kind=='crude-sludge-filtration' then
         row.remaining=1000*scale
+        row.chest=surface.create_entity{name='wooden-chest',position={x,-3},force=force}
+        row.inserter=surface.create_entity{name='inserter',position={x,-2},
+          direction=defines.direction.south,force=force}
         check(#recipe.products==5,'crude product set')
         for _,p in pairs(recipe.products) do
           check(p.name~=item('rutile'),'crude filtration must not recover rutile')
           local chance=p.independent_probability or p.probability
           check(chance==0.25,'crude product probability '..p.name)
+          check(p.amount==3,'crude product drop size '..p.name)
         end
       else
         check(machine.insert{name=item('salt'),count=1}==1,'salt fixture')
@@ -82,6 +87,8 @@ script.on_nth_tick(60,function()
       row.remaining=row.remaining-added
     end
     if row.machine.products_finished<target then done=false end
+    if row.chest and (not row.machine.get_output_inventory().is_empty() or
+      row.inserter.held_stack.valid_for_read) then done=false end
   end
   if not done then
     check(game.tick<14400,'filtration did not finish its declared batches')
@@ -106,11 +113,11 @@ script.on_nth_tick(60,function()
       check(m.products_finished==20 and row.remaining==0,'crude batch budget')
       local total=0
       for _,name in ipairs({'crushed-iron-ore','crushed-bauxite','sand','crushed-limestone','stone'}) do
-        local count=m.get_item_count(item(name)); total=total+count
-        check(count<=20,'random output exceeded one per batch')
+        local count=row.chest.get_item_count(item(name)); total=total+count
+        check(count<=60 and count%3==0,'random output must contain three-item drops')
       end
-      check(m.get_item_count(item('rutile'))==0,'crude filtration produced rutile')
-      check(total>0 and total<100,'crude filtration did not exercise random recovery')
+      check(row.chest.get_item_count(item('rutile'))==0,'crude filtration produced rutile')
+      check(total>0 and total<300,'crude filtration did not exercise random recovery')
     end
   end
   result(); script.on_nth_tick(60,nil)
