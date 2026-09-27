@@ -1,0 +1,184 @@
+{
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "uncertain_outputs": "guaranteed",
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "lab": "nullius-lab-1",
+  "labs": 1,
+  "extractors": {
+    "nullius-hydrocarbon-slurry": {
+      "machine": "nullius-extractor-1",
+      "resource": "nullius-hydrocarbon-vent",
+      "yield_fraction": 1
+    }
+  },
+  "boundary": {
+    "contract": "tests/progression/planner/fulgora-bootstrap-timing.args"
+  },
+  "expected_recipes": [
+    "nullius-crude-sludge-filtration",
+    "nullius-boxed-crude-sludge-filtration"
+  ],
+  "fleet": {
+    "nullius-extractor-1": 3,
+    "nullius-hydro-plant-1": 4,
+    "nullius-distillery-1": 3,
+    "nullius-air-filter-1": 4,
+    "nullius-chemical-plant-1": 2,
+    "nullius-electrolyzer-1": 2,
+    "nullius-crusher-1": 2,
+    "nullius-small-furnace-1": 1,
+    "nullius-medium-furnace-1": 1,
+    "nullius-foundry-1": 1,
+    "nullius-small-assembler-1": 2,
+    "nullius-flotation-cell-1": 1,
+    "nullius-combustion-chamber-1": 1,
+    "nullius-chimney-1": 3
+  },
+  "buffer_tank": "nullius-small-tank-1",
+  "buffer_allocation": {
+    "nullius-filtered-hydrocarbons": 2,
+    "nullius-sludge": 1,
+    "nullius-water": 1,
+    "nullius-brine": 1,
+    "nullius-benzene": 1,
+    "nullius-caustic-solution": 1,
+    "nullius-wastewater": 1
+  },
+  "targets": [
+    {
+      "name": "first-metals",
+      "items": {
+        "nullius-iron-plate": 20,
+        "nullius-aluminum-plate": 20
+      }
+    },
+    {
+      "name": "first-expansion",
+      "items": {
+        "nullius-hydro-plant-1": 1,
+        "nullius-distillery-1": 1,
+        "nullius-air-filter-1": 4,
+        "pipe": 50,
+        "transport-belt": 50,
+        "inserter": 10,
+        "small-electric-pole": 8
+      }
+    },
+    {
+      "name": "first-science",
+      "items": {
+        "nullius-geology-pack": 10,
+        "nullius-climatology-pack": 10,
+        "nullius-mechanical-pack": 10,
+        "nullius-electrical-pack": 10
+      }
+    },
+    {
+      "name": "expansion-and-first-science",
+      "items": {
+        "nullius-hydro-plant-1": 1,
+        "nullius-distillery-1": 1,
+        "nullius-air-filter-1": 4,
+        "pipe": 50,
+        "transport-belt": 50,
+        "inserter": 10,
+        "small-electric-pole": 8,
+        "nullius-geology-pack": 10,
+        "nullius-climatology-pack": 10,
+        "nullius-mechanical-pack": 10,
+        "nullius-electrical-pack": 10
+      }
+    },
+    {
+      "name": "extractor-research",
+      "research_roots": [
+        "nullius-volcanism-1"
+      ]
+    },
+    {
+      "name": "selective-recovery-research",
+      "research_roots": [
+        "nullius-waste-reclamation"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "starter"
+    },
+    {
+      "name": "double-air",
+      "fleet_multipliers": {
+        "nullius-air-filter-1": 2
+      }
+    },
+    {
+      "name": "double-hydro",
+      "fleet_multipliers": {
+        "nullius-hydro-plant-1": 2
+      }
+    },
+    {
+      "name": "double-extractors",
+      "fleet_multipliers": {
+        "nullius-extractor-1": 2
+      }
+    },
+    {
+      "name": "half-power-duty",
+      "duty": 0.5
+    },
+    {
+      "name": "no-fluid-surplus",
+      "store_fluids": false
+    },
+    {
+      "name": "unbounded-fluid-storage",
+      "unbounded_fluid_storage": true
+    },
+    {
+      "name": "yield-300-percent",
+      "vent_yield_multiplier": 3
+    },
+    {
+      "name": "yield-1000-percent",
+      "vent_yield_multiplier": 10
+    },
+    {
+      "name": "survey-low-yield",
+      "vent_yield_multiplier": 0.9400644444444444
+    },
+    {
+      "name": "survey-high-yield",
+      "vent_yield_multiplier": 1.992444444444444
+    },
+    {
+      "name": "larger-buffers",
+      "buffer_multiplier": 1000
+    },
+    {
+      "name": "only-hydrocarbons-unbounded",
+      "unbounded_buffers": [
+        "nullius-filtered-hydrocarbons"
+      ]
+    }
+  ],
+  "assumptions": [
+    "Independent targets from zero materials, using only the supplied processing machines. Targets are not cumulative.",
+    "Primitive Filtration and its prerequisites researched before arrival. No imported materials. Vents stay at 100 percent yield.",
+    "Only named crude filtration recipes use mean independent yields. This is an average-yield work estimate, not an exact batch or completion-time expectation.",
+    "Continuous electricity, no modules, beacons or research productivity. Half-power duty is a sensitivity case, not measured lightning availability.",
+    "Shared machine time allows free recipe changes. Fractional crafts, no dependency delays, placement, transport or player time. Results are work lower bounds.",
+    "Eight starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
+    "Liquid voiding is forbidden. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
+    "Research costs subtract the entrance closure. Production keeps entrance recipes throughout. Research time uses one lab and overlaps production optimistically.",
+    "Fleet-doubling cases supply the extra machines at time zero; their construction is excluded from those sensitivity cases.",
+    "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",
+    "Survey cases use nearest-three usable vent means at the origin from fulgora-vent-coverage: seed 42 and seed 2 on 2.1.19. These bracket twelve sampled seeds, not all maps or actual landing sites. Resource depletion is omitted."
+  ],
+  "character": "character"
+}

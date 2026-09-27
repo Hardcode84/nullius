@@ -233,3 +233,35 @@ command to replace its marked capacity table. Use the same option with the
 factory planner and `vulcanus-science-scale.json` to refresh the marked physics
 tables. Each updater requires one ordered marker pair and preserves other text.
 Full JSON and detailed Markdown reports are disposable build outputs.
+
+## Fixed starter inventory
+
+Use the bootstrap planner for batches that share a fixed fleet and one android:
+
+```bash
+python tools/plan_factorio_bootstrap.py \
+  --config tests/progression/planner/fulgora-bootstrap-timing.json \
+  --output /tmp/fulgora-bootstrap-timing.json --table
+```
+
+The configuration declares placement-item counts, arrival research, independent
+batch targets, finite final-fluid buffers, and sensitivity cases. Research targets
+include prerequisite costs after the arrival closure. Production retains arrival
+recipes. Solid surplus is stored; the report gives its stack count.
+`expected_recipes` opts named independent random outputs into mean-yield analysis.
+All other uncertain outputs use the guaranteed policy. Exact prerequisite
+manifests still reject probability. Mean-yield work is not expected completion time.
+
+The solver minimizes elapsed work subject to shared machine capacity and material
+balance. It allows fractional crafts and immediate recipe changes. It does not
+schedule startup, use newly produced machines, or measure placement and lightning.
+The android uses solid recipes in its resolved crafting categories. No inventory
+items are consumed from the starter kit. Fluid limits apply to final surplus,
+not peak inventory; a feasible result is not a finite-inventory runtime proof.
+
+Read a saved result with `--read-plan PATH`, `--target NAME`, `--case NAME`, and
+`--field FIELD`. Useful fields are `bottlenecks`, `stored_surplus`, `machine_work`,
+and `research`. Pass `--table` for the compact timing table. Pass
+`--update-fulgora-doc docs/PLANET_FULGORA.md` to refresh its marked table.
+Run `python -m unittest discover -s tests -p 'test_plan_factorio_bootstrap.py'`
+after solver changes. The vent coverage scenario supplies the survey yield cases.

@@ -126,6 +126,40 @@ Test a finite wreck inventory in a headless scenario: extract slurry,
 reproduce the starter machines and logistics, and process every surplus without
 imports or liquid voiding.
 
+### Initial production time
+
+`tools/plan_factorio_bootstrap.py` uses
+`tests/progression/planner/fulgora-bootstrap-timing.json` and fresh prototypes.
+The fixed starter machines and one android produce each target from zero stock.
+Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
+10 inserters, and 8 poles. New machines do not operate during these batches.
+
+<!-- bootstrap-timing:start -->
+| Target | 100% vent yield | Survey high yield | Survey low yield |
+|---|---:|---:|---:|
+| 20 iron plates + 20 aluminum plates | 24.9 min | 12.6 min | 26.5 min |
+| Expansion kit | 48.6 min | 24.4 min | 51.7 min |
+| 10 of each early science pack | 33.7 min | 17.4 min | 35.9 min |
+| Expansion kit + first science | 82.3 min | 48.6 min | 87.6 min |
+<!-- bootstrap-timing:end -->
+
+These are fractional-work bounds with mean mineral yields and continuous power.
+They exclude placement, recipe-change delays, research bonuses, resource depletion,
+and startup order. Tanks limit final surplus, not peak fluid volume. The survey
+uses the nearest three usable vents from the origin in twelve seeds on 2.1:
+94.0–199.2% mean yield. It does not cover every map or probe landing position.
+
+Slurry supply limits the 100% case. Extra air filters or hydro plants do not
+reduce its time. At higher yield, hydro plants, dust treatment, and distilleries
+limit production. With 50% machine duty, the combined 100% case takes 164.7 min.
+
+Extractor research needs 250 geology, 228 climatology, 255 mechanical, and
+247 electrical packs after the minimum arrival research. The starter buffer
+allocation cannot support this batch with arrival recipes. Allowing more filtered
+hydrocarbon storage makes it feasible; the fixed-fleet work bound is 854.5 min
+at 100% yield. This is not a progression schedule with expansion and recipe upgrades.
+No zero-liquid-surplus solution exists for these targets at the arrival boundary.
+
 ## Atmospheric capture
 
 | Component | Fraction |
