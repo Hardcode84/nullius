@@ -21,8 +21,10 @@ from scipy.optimize import linprog
 import plan_factorio_factory as planner
 
 
-def expected_catalog(catalog, names):
+def expected_catalog(catalog, names, multiplier=1):
     """Opt in to expected independent returns for named recipes only."""
+    if isinstance(multiplier, bool) or not isinstance(multiplier, int) or multiplier < 1:
+        raise planner.TestFailure("expected-output multiplier must be a positive integer")
     found = set()
     result = deepcopy(catalog)
     for row in result:
@@ -36,7 +38,7 @@ def expected_catalog(catalog, names):
                 raise planner.TestFailure('expected output needs fixed amounts and independent probability')
             probability = product.get('independent_probability', product.get('probability', 1))
             # Guaranteed mode contributed zero for uncertain products.
-            row['flows'][product['name']] += product['amount'] * probability
+            row['flows'][product['name']] += product['amount'] * probability * multiplier
     if set(names) != found:
         raise planner.TestFailure('expected recipes absent from the available catalog: ' + str(set(names) - found))
     return result
@@ -88,20 +90,22 @@ def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1):
                 work[i, j] = -fleet[m] * (1 if m.startswith('<character:') else duty)
     cost = np.zeros(len(columns)); cost[-1] = 1
     rhs = np.array([demands.get(p, 0) for p in products])
+    # The 4x recovery/no-storage balance makes the default simplex solver
+    # return an unknown status. Interior point resolves that case explicitly.
     result = linprog(cost, A_eq=material, b_eq=rhs, A_ub=work,
-                     b_ub=np.zeros(len(fleet)), bounds=bounds, method='highs')
+                     b_ub=np.zeros(len(fleet)), bounds=bounds, method='highs-ipm')
     if result.status == 2:
         return {'status': 'infeasible'}
     if not result.success:
-        raise planner.TestFailure(result.message)
+        raise planner.TestFailure('duration solve: ' + result.message)
     # At the optimal duration minimize work and surplus to avoid arbitrary cycles.
     bounds[-1] = (result.fun, result.fun + 1e-6)
     cost = np.array([entry['seconds'] + 1e-6 if kind == 'recipe' else 1e-7
                      for kind, entry in columns])
     result = linprog(cost, A_eq=material, b_eq=rhs, A_ub=work,
-                     b_ub=np.zeros(len(fleet)), bounds=bounds, method='highs')
+                     b_ub=np.zeros(len(fleet)), bounds=bounds, method='highs-ipm')
     if not result.success:
-        raise planner.TestFailure(result.message)
+        raise planner.TestFailure('work solve: ' + result.message)
     error = float(np.max(np.abs(material @ result.x - rhs), initial=0))
     if error > 1e-5 or np.max(work @ result.x, initial=0) > 1e-5:
         raise planner.TestFailure('batch conservation or capacity residual exceeded tolerance')
@@ -139,7 +143,8 @@ def analyze(data, config):
     android, hand_rows = character_catalog(data, boundary, config['character'])
     base_fleet[android] = 1
     catalog += hand_rows
-    catalog = expected_catalog(catalog, config['expected_recipes'])
+    guaranteed_catalog = catalog
+    catalog = expected_catalog(guaranteed_catalog, config['expected_recipes'])
     raw = ['@resource:' + s['resource'] for s in config['extractors'].values()]
     reachable = planner.startup_reachability(catalog, {}, raw)
     catalog = [r for r in catalog if set(r['inputs']) <= reachable]
@@ -168,15 +173,22 @@ def analyze(data, config):
                 storage[p] = None
             if case.get('unbounded_fluid_storage'):
                 storage = {p: None for p in data['fluid']}
-            case_catalog = deepcopy(catalog)
+            case_catalog = expected_catalog(guaranteed_catalog, config['expected_recipes'],
+                                            case.get('expected_output_multiplier', 1))
+            case_catalog = [r for r in case_catalog if set(r['inputs']) <= reachable]
             for recipe in case_catalog:
                 if recipe['recipe'].startswith('<mine:'):
                     for p in recipe['flows']:
                         if not p.startswith('@') and recipe['flows'][p] > 0:
                             recipe['flows'][p] *= case.get('vent_yield_multiplier', 1)
-            result = batch_bound(case_catalog, demand, raw, fleet, storage, solids,
-                                 case.get('duty', 1))
+            try:
+                result = batch_bound(case_catalog, demand, raw, fleet, storage, solids,
+                                     case.get('duty', 1))
+            except planner.TestFailure as error:
+                raise planner.TestFailure(f"{target['name']} / {case['name']}: {error}") from error
             result['name'] = case['name']
+            result['expected_output_multiplier'] = case.get('expected_output_multiplier', 1)
+            result['hypothetical'] = result['expected_output_multiplier'] != 1
             if result['status'] == 'optimal':
                 result['production_and_lab_minutes_lower_bound'] = max(
                     result['production_minutes_lower_bound'], lab_minutes / case.get('duty', 1))
@@ -209,6 +221,20 @@ def timing_table(report):
     return '\n'.join(lines)
 
 
+def comparison_table(report, cases):
+    lines = ['| Target | ' + ' | '.join(cases) + ' |',
+             '|---|' + '---:|' * len(cases)]
+    for target in report['targets']:
+        selected = {r['name']: r for r in target['cases']}
+        values = []
+        for name in cases:
+            case = selected[name]
+            values.append(f"{case['production_minutes_lower_bound']:.1f} min"
+                          if case['status'] == 'optimal' else case['status'])
+        lines.append('| ' + target['name'] + ' | ' + ' | '.join(values) + ' |')
+    return '\n'.join(lines)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
@@ -222,6 +248,7 @@ def main():
     parser.add_argument('--field')
     parser.add_argument('--update-fulgora-doc', type=Path)
     parser.add_argument('--table', action='store_true')
+    parser.add_argument('--compare-cases', nargs='+')
     args = parser.parse_args()
     if args.read_plan:
         report = json.loads(args.read_plan.read_text())
@@ -242,6 +269,9 @@ def main():
             args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
         finally:
             shutil.rmtree(directory)
+    if args.compare_cases:
+        print(comparison_table(report, args.compare_cases))
+        return
     if args.update_fulgora_doc:
         planner.update_markdown_section(args.update_fulgora_doc, 'bootstrap-timing', timing_table(report))
     if args.table:

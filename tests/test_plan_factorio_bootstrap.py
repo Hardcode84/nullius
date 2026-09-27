@@ -47,6 +47,31 @@ class BootstrapPlannerTest(unittest.TestCase):
             self.assertEqual(row['flows']['ore'], 0)
             self.assertEqual(expected_catalog([row], [])[0]['flows']['ore'], 0)
 
+    def test_recovery_experiment_scales_outputs_without_scaling_sludge_or_time(self):
+        rows = []
+        for name, scale in [('ordinary', 1), ('boxed', 5)]:
+            row = recipe(name, 'filter', 2 * scale, {'sludge': -50 * scale, name: 0})
+            row['uncertain_outputs'] = [{'name': name, 'amount': 1, 'independent_probability': .25}]
+            rows.append(row)
+        scaled = expected_catalog(rows, ['ordinary', 'boxed'], 4)
+        for row, scale in zip(scaled, [1, 5]):
+            self.assertEqual(row['flows'][row['recipe']], 1)
+            self.assertEqual(row['flows']['sludge'], -50 * scale)
+            self.assertEqual(row['seconds'], 2 * scale)
+        # Increasing mineral yield must retain downstream processing work.
+        mineral = recipe('random', 'filter', 1, {'sludge': -1, 'ore': 0})
+        mineral['uncertain_outputs'] = [{'name': 'ore', 'amount': 1, 'probability': .25}]
+        smelt = recipe('smelt', 'filter', 2, {'ore': -1, 'plate': 1})
+        args = ({'plate': 10}, ['sludge'], {'filter': 1}, {}, set())
+        original = batch_bound(expected_catalog([mineral, smelt], ['random']), *args)
+        changed = batch_bound(expected_catalog([mineral, smelt], ['random'], 4), *args)
+        self.assertAlmostEqual(original['production_minutes_lower_bound'], 1, places=6)
+        self.assertAlmostEqual(changed['production_minutes_lower_bound'], .5, places=6)
+        self.assertEqual(rows[0]['flows']['ordinary'], 0)
+        for invalid in (0, -1, .5, True):
+            with self.assertRaises(TestFailure):
+                expected_catalog(rows, ['ordinary', 'boxed'], invalid)
+
     def test_handcrafting_uses_android_categories_and_rejects_fluids(self):
         data = {'character': {'android': {'crafting_categories': ['large-crafting'], 'crafting_speed': 2}},
                 'technology': {}, 'fluid': {'gas': {'fuel_value': '1kJ'}},

@@ -265,3 +265,10 @@ and `research`. Pass `--table` for the compact timing table. Pass
 `--update-fulgora-doc docs/PLANET_FULGORA.md` to refresh its marked table.
 Run `python -m unittest discover -s tests -p 'test_plan_factorio_bootstrap.py'`
 after solver changes. The vent coverage scenario supplies the survey yield cases.
+
+Set a case's `expected_output_multiplier` to a positive integer to compare
+larger successful drops in the named `expected_recipes`. The calculation retains
+probability, craft time, and input amounts, and covers ordinary and boxed recipes.
+The report marks changed yields as hypothetical. Gameplay prototypes are unchanged.
+Use `--compare-cases starter 2x-recovery-starter 3x-recovery-starter 4x-recovery-starter`
+for the recovery comparison. It reports production work, not research completion.

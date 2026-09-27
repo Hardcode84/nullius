@@ -160,6 +160,31 @@ hydrocarbon storage makes it feasible; the fixed-fleet work bound is 854.5 min
 at 100% yield. This is not a progression schedule with expansion and recipe upgrades.
 No zero-liquid-surplus solution exists for these targets at the arrival boundary.
 
+### Mineral recovery comparison
+
+Planner experiment only: keep each mineral's 25% chance; compare 1, 2, 3, or 4
+items per successful drop. Apply the same amount change to boxed outputs.
+Starter machines, research, and buffer allocation stay fixed.
+
+| Items per drop | First science, 100% vents | Expansion + science, 100% vents | Expansion + science, sampled vents |
+|---|---:|---:|---:|
+| 1 (current) | 33.7 min | 82.3 min | 48.6–87.6 min |
+| 2 | 16.1 min | 38.1 min | 20.9–40.6 min |
+| 3 | 10.3 min | 23.7 min | 14.8–25.0 min |
+| 4 | 7.9 min | 17.8 min | 11.8–18.7 min |
+
+Prefer 3 items per drop for the first gameplay trial. At 100% yield, it meets
+the proposed 10–15 min science and 20–30 min combined production targets.
+These remain mean-yield work bounds. Gameplay recipes still produce 1 item.
+
+All candidates still fail the extractor-research batch with starter buffers.
+The 3-item combined batch retains about 17,749 filtered hydrocarbons, 844 benzene,
+and 389 wastewater. Cracking and benzene combustion use local oxygen from water;
+steam condensation requires Distillation 2. Wastewater filtration requires
+Water Filtration 3. Verify a complete water and oxygen balance before changing
+these unlocks. Inspect the routes with
+`@tests/progression/planner/fulgora-bootstrap-liquid-inspection.args`.
+
 ## Atmospheric capture
 
 | Component | Fraction |
