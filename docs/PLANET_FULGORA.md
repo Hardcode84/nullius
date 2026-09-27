@@ -522,39 +522,44 @@ must not depend on that import.
 | Geology science | Trace minerals from filtration |
 | Mechanical science | Polymer gears |
 | Electrical science | Conductive polymer circuits |
-| Electromagnetic science | Basic and improved recipes below |
+| Electromagnetic science | Basic, improved, and improved boxed recipes below |
 | Global electromagnetic rewards | Overcharged assemblers; polymers and organic electronics supply their components |
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
 
 ### Electromagnetic science recipes
 
-Design only. Both recipes produce the same pack. Quantities and craft times
-are candidates for factory-planner validation.
+Design only. All recipes produce the same pack, loose or boxed. Quantities and
+craft times are candidates for factory-planner validation.
 
-| Recipe | Ingredients | Output | Craft time |
-|---|---|---:|---:|
-| Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 60 s |
-| Improved | 1 capacitor + 1 logic circuit + 2 insulated wire | 5 EM packs | 15 s |
+| Recipe | Ingredients | Output | Craft time | Minimum overcharged tier |
+|---|---|---|---|---:|
+| Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 60 s | 1 |
+| Improved | 1 capacitor + 1 logic circuit + 2 insulated wire | 5 EM packs | 15 s | 2 |
+| Improved boxed | Boxed equivalents of improved inputs; set quantities with the planner | Boxed EM packs | Set with the planner | 3 |
 
 The basic recipe uses an iron core, insulated winding, and graphite electrodes.
 The improved recipe adds capacitor and circuit production: aluminum sheet,
 alumina, plastic, and silicon processing.
 
-- Unlock the basic recipe with initial local EM research that needs no EM packs.
-- Unlock the improved recipe with a small EM-pack research cost.
-- Use ordinary assemblers for both recipes; overcharged assemblers are optional.
-- Restrict both recipes to Fulgora through its electromagnetic-field property.
+- Initial local research uses ordinary science to unlock the basic recipe and
+  overcharged small assembler 1.
+- Basic EM packs unlock tier 2 and the improved recipe. EM production then
+  funds tier 3 and the improved boxed recipe. No unlock requires its own output.
+- Only overcharged assemblers can make EM science. Higher tiers retain recipes
+  from lower tiers. Machine size is a separate requirement for boxed production.
+- Restrict all three recipes to Fulgora through its electromagnetic-field property.
 - Exclude transformers from this upgrade; their current unlock requires Energy
   Distribution 3 and its power-research prerequisites.
 - Compare both recipes with Vulcanus science in the planner before setting final
-  quantities. Include mineral filtration, silicon demand, and waste balance.
+  quantities. Include mineral filtration, silicon demand, waste balance, and
+  energy per pack with built-in productivity at each tier.
 
 ### Overcharged assemblers
 
-Design only. Optional electric upgrades usable on all planets, parallel to
-Vulcanus thermal machinery. Provide small, medium, and large assemblers at each
-of three tiers: nine variants.
+Design only. Electric upgrades usable on all planets, required for Fulgora EM
+science and optional for ordinary production. Provide small, medium, and large
+assemblers at each of three tiers: nine variants.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|
@@ -563,13 +568,13 @@ of three tiers: nine variants.
 | 3 | +60% | 1000× |
 
 Power multipliers use the ordinary assembler of the same size and tier.
-Keep its crafting speed and recipe categories. Always use surge electrical
+Keep its crafting speed and ordinary recipe categories; add EM categories
+according to the tier requirements above. Always use surge electrical
 priority. Productivity applies only to eligible recipes.
 
-Unlocks require electromagnetic science and the corresponding ordinary
-assembler research. Ordinary Nauvis progression remains independent. Bootstrap
-science and the first overcharged assemblers must use ordinary production.
-Improved electromagnetic science uses the components specified above.
+Unlocks require the corresponding ordinary assembler research. The first
+overcharged small assembler unlock uses ordinary science; subsequent unlocks
+require EM science. Ordinary Nauvis progression remains independent.
 
 Chemical plants, refineries, and hydro plants are reserved for other planets.
 Keep the existing electrolyzer progression unchanged.
@@ -588,7 +593,8 @@ Each pair shares its construction item and footprint. Blueprints retain the
 selected mode. Preserve stored energy in joules, capped at the destination's
 capacity; discard excess energy. Switching must never create energy.
 
-For assemblers, preserve the recipe, contents, modules, and connections. Test
+For assemblers, preserve compatible recipes, contents, modules, and connections.
+Clear an EM recipe when switching to ordinary mode. Test
 crafting and productivity progress across switches: ordinary-power work must
 not earn an overcharged productivity bonus through switching.
 
