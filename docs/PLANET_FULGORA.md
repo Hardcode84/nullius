@@ -447,18 +447,22 @@ energy and cannot implement this check without additional measurements.
 
 ## Energy storage
 
-| Storage | Charge rate | Capacity | Loss | Role |
+Design only. Super-capacitors are an alternate mode of normal grid batteries.
+Use native accumulator entities for both modes.
+
+| Storage | Charge/discharge rate | Capacity | Loss | Role |
 |---|---|---|---|---|
-| Super-capacitor | Very high | Low | High continuous drain | Absorb individual strikes |
+| Super-capacitor | Faster than normal mode | Lower than normal mode | Higher continuous leakage | Handle short power bursts |
 | Accumulator | Moderate | Medium | Low | Supply the gaps between strikes |
 | Thermal storage | Slow | High | Low storage loss; conversion loss | Supply extended calm periods through Stirling conversion |
 
-Proposed flow: lightning -> super-capacitors -> accumulators -> heat storage ->
-Stirling generation. Super-capacitors use polymer dielectric and carbon electrodes.
-The initial tuning suggestion was 5-10 MJ per capacitor versus 15-100 MJ per
-accumulator; these are not validated values. Storage transfer and priority rules
-must prove that energy can flow through this sequence. Stored oxygen and fuel
-provide a separate combustion option; combustion is not required to start it.
+Set charge rate, discharge rate, capacity, and leakage together during balance
+checks. Before implementation, test whether native accumulator discharge supplies
+surge consumers on both supported engines. Do not assume direct energy transfer
+between super-capacitors and normal accumulators.
+
+Thermal storage and Stirling conversion remain a separate proposal. Stored oxygen
+and fuel provide a combustion option; combustion is not required to start it.
 
 ## Organic industry
 
@@ -545,6 +549,25 @@ science and the first overcharged assemblers must use ordinary production.
 Efficient electromagnetic science can use more advanced components.
 
 Chemical plants, refineries, and hydro plants are reserved for other planets.
+Keep the existing electrolyzer progression unchanged.
+
+### Mode switching
+
+Design only. Ctrl+R switches the selected building after the corresponding
+research unlocks its alternate mode.
+
+| Building | Modes |
+|---|---|
+| Grid battery, each tier | Normal accumulator ↔ super-capacitor |
+| Assembler, each size and tier | Ordinary ↔ overcharged |
+
+Each pair shares its construction item and footprint. Blueprints retain the
+selected mode. Preserve stored energy in joules, capped at the destination's
+capacity; discard excess energy. Switching must never create energy.
+
+For assemblers, preserve the recipe, contents, modules, and connections. Test
+crafting and productivity progress across switches: ordinary-power work must
+not earn an overcharged productivity bonus through switching.
 
 ## Nuclear geoengineering
 
