@@ -75,14 +75,16 @@ Supplied once per force when the probe is activated.
 | Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
 | One-way valve | 8 | Direct recovered fluids |
 | Transport belt / inserter | 100 / 24 | Solid transport |
+| Splitter / underground belt | 8 / 20 | Split belts and cross processing lines |
+| Grid battery 1 | 4 | Additional electric storage |
 | Small chest | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
 
 Keep processing machines in the wreck. Put logistics supplies in the two
 salvage chests; the wreck has only 20 inventory slots.
 
 No ore, science packs, fuel, or bottled fluids. Keep the equipped probe android.
-Poles already include lightning energy buffers; separate batteries are not
-required to start. Spread the collectors and connect them before processing.
+Poles include lightning energy buffers; the four grid batteries add storage.
+Spread the collectors and connect them before processing.
 Build filters and other restricted machines on islands; route pipes to sand vents.
 
 This is seed equipment, not a complete science factory. Reproduce ordinary
