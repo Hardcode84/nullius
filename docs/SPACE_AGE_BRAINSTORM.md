@@ -14,7 +14,7 @@
 | Conflict | Nullius Current | Space Age Expects | Resolution Options |
 |---|---|---|---|
 | **Coal/oil** | Removed entirely | Vulcanus uses coal-like processes; Gleba produces bioflux | A) Keep removed on Nauvis, available on other planets. B) Replace SA planet resources with Nullius equivalents. |
-| **Copper** | Asteroid-only (endgame) | Available as basic resource everywhere | A) Keep asteroid-only, remap SA copper recipes. B) Copper available on specific planets only (e.g., Vulcanus). |
+| **Copper** | Asteroid-only (endgame) | Available as basic resource everywhere | Fulgora is the sole primary source; late-game deep extraction replaces asteroid copper. See [Fulgora design](PLANET_FULGORA.md#late-game-copper). |
 | **Vanilla recipes** | All replaced | SA adds planet-specific recipes assuming vanilla chains | Must create Nullius-compatible versions of all SA recipes. |
 | **Vanilla intermediates** | Replaced (aluminum wire instead of copper, etc.) | SA builds on vanilla intermediates | Remap SA intermediates to Nullius equivalents. |
 
@@ -852,7 +852,7 @@ Each planet gets **alternative recipes** for generic packs using local materials
 
 ```
 NAUVIS (home, terraforming target):
-  Imports: Copper (asteroid mining), rare electronics, tritium, advanced bio-research
+  Imports: Copper (Fulgora), rare electronics, tritium, advanced bio-research
   Exports: Basic chemicals, manufactured goods, construction kits
 
 VULCANUS (heavy industry):
@@ -861,7 +861,7 @@ VULCANUS (heavy industry):
 
 FULGORA (hydrocarbon/organics):
   Imports: Bulk metals (from Vulcanus), nuclear devices (for geoengineering), water
-  Exports: Advanced organics, polymers, carbon materials, trace rare elements
+  Exports: Advanced organics, polymers, carbon materials, copper, trace rare elements
 
 GLEBA (microbiology/breeding):
   Imports: Metals, electronics, containment materials, mutagens
@@ -960,7 +960,6 @@ This is a massive undertaking:
 - Should there be a "care package" mechanic -- small one-time data/blueprint transfer before cargo rockets?
 
 ### Resources & Production
-- Should copper remain asteroid-exclusive, or should Fulgora's trace filtration yield small amounts of copper dust as a rare byproduct?
 - Does the chlorine problem exist on other planets, or is it Nauvis-specific?
 - Should the hydrogen storage loop have planet-specific variants (lightning storage on Fulgora, geothermal baseload on Vulcanus)?
 - How do planet-exclusive resources interact with the checkpoint system? Can checkpoints require off-world items?

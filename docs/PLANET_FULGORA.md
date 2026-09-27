@@ -356,8 +356,24 @@ compression, combustion, and water recovery in the power balance. A closed
 hydrogen/oxygen storage loop must not produce net energy; fountain hydrocarbons
 are an external fuel input. Prove the first oxygen batch with probe power.
 
-Copper dust remains an open choice because Nullius otherwise reserves copper
-for asteroid mining.
+### Late-game copper
+
+Design only. Fulgora is the sole primary copper source. Remove copper from
+asteroid mining; other planets must import it from Fulgora.
+
+Copper is concentrated in deep mineral-rich sediments beneath the hydrocarbon
+ocean. Surface vents do not supply recoverable copper at the starter stage.
+
+| Stage | Copper route |
+|---|---|
+| Arrival | No copper from primitive filtration; use aluminum and polymer conductors |
+| Advanced EM industry | Deep extraction supplies a separate copper-bearing concentrate; chemical extraction and electrolysis recover copper |
+| Nuclear geoengineering | Expose deeper deposits for bulk copper production and export |
+
+Keep the copper-bearing feed separate from generic sludge. Copper production
+must not require copper to build or research its first extraction and processing
+line. Preserve copper's late-game role; validate the research and cargo gates
+before replacing the asteroid route.
 
 ### Mineral ratios and sulfur
 
@@ -606,7 +622,7 @@ not earn an overcharged productivity bonus through switching.
 | Deployment | Use nuclear charges as geological tools |
 | Terrain change | Fracture the crust and expose large areas of hydrocarbon ocean |
 | Construction | Use specialized foundations on unstable, fluid-rich terrain |
-| Production | Replace limited fountain extraction with bulk surface filtration |
+| Production | Replace limited fountain extraction with bulk surface filtration; expose deeper copper deposits |
 
 The shared endgame also proposes repurposing these charges for orbital defence.
 
@@ -617,10 +633,11 @@ The shared endgame also proposes repurposing these charges for orbital defence.
 | Vulcanus to Fulgora | Bulk metals; iron chloride dopant |
 | Fulgora to Vulcanus | Organics, polymers, and carbon materials |
 | Nauvis or Aquilo to Fulgora | Water; nuclear equipment for geoengineering |
-| Fulgora to other planets | Overcharged assemblers, electromagnetic research, advanced organics, and rare traces |
+| Fulgora to other planets | Overcharged assemblers, electromagnetic research, advanced organics, copper, and rare traces |
 
 Vulcanus supplies metals with pneumatic and thermal industry. Fulgora supplies
-organics with intermittent electricity. Both lack natural surface water.
+organics and late-game copper with intermittent electricity. Both lack natural
+surface water.
 
 ## Pole collector experiment
 

@@ -143,7 +143,8 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Current Tier 5 | SA Tier 5 |
 |---|---|
 | Nuclear power 1-4 (all on Nauvis) | Nuclear power 1-2 on Nauvis, 3-4 benefit from Aquilo |
-| Asteroid mining (abstract, Nauvis) | Asteroid mining moved to space platform / Rogue aftermath |
+| Asteroid mining (abstract, Nauvis) | Asteroid mining moved to space platform / Rogue aftermath; excludes copper |
+| Copper from asteroids | Import copper from Fulgora, its sole primary source; see [Fulgora design](PLANET_FULGORA.md#late-game-copper) |
 | Rocket science (Nauvis) | Rocket science enables cargo rockets (cross-planet logistics) |
 | Physics pack (complex machines) | Physics pack stays on Nauvis |
 
