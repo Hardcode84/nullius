@@ -159,6 +159,7 @@ Slurry climatology uses the captured air without seawater.
 | Location or object | Rule |
 |---|---|
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
+| Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
 | Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
