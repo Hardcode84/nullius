@@ -462,3 +462,5 @@ create_boxed_item("heliostat-mirror", "heat-energy", "cb", "chcs-heliostat-mirro
 end
 
 data.raw.item["nullius-box-barrel"].stack_size = 20
+
+return create_boxed_item

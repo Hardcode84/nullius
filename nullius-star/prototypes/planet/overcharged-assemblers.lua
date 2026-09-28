@@ -22,6 +22,17 @@ for _, spec in ipairs(require("shared.overcharged-assemblers")) do
   variant.placeable_by = {item = spec.base, count = 1}
   variant.hidden = true
   table.insert(variant.crafting_categories, "nullius-electromagnetism-1")
+  if spec.tier >= 2 then
+    table.insert(variant.crafting_categories, "nullius-electromagnetism-2")
+  end
+  if spec.tier == 3 then
+    for _, category in ipairs(base.crafting_categories) do
+      if category == "large-assembly" then
+        table.insert(variant.crafting_categories, "nullius-electromagnetism-3")
+        break
+      end
+    end
+  end
   variant.next_upgrade = nil
   variant.energy_source.usage_priority = "tertiary"
   variant.energy_usage = tostring(util.parse_energy(base.energy_usage) * 60 * 10 ^ spec.tier) .. "W"

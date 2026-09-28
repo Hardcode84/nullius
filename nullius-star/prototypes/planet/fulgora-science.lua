@@ -29,3 +29,34 @@ data:extend({
 })
 table.insert(data.raw.technology["nullius-primitive-filtration"].effects,
   {type="unlock-recipe",recipe=name})
+
+require("prototypes.item.boxing")("electromagnetic-pack", "science", "w", nil, "tool")
+for _, spec in ipairs({
+  {tier=2,name="nullius-electromagnetic-pack-improved",seconds=15,
+    ingredients={{"nullius-capacitor",1},{"decider-combinator",1},{"copper-cable",2}},
+    product=name,subgroup="research-pack-2"},
+  {tier=3,name="nullius-boxed-electromagnetic-pack",seconds=75,
+    ingredients={{"nullius-box-capacitor",1},{"nullius-box-logic-circuit",1},
+      {"nullius-box-insulated-wire",2}},
+    product="nullius-box-electromagnetic-pack",subgroup="boxed-science"},
+}) do
+  local advanced=table.deepcopy(recipe)
+  advanced.name=spec.name
+  advanced.energy_required=spec.seconds
+  advanced.subgroup=spec.subgroup
+  advanced.order="nullius-w" .. spec.tier
+  advanced.ingredients={}
+  for _,ingredient in ipairs(spec.ingredients) do
+    table.insert(advanced.ingredients,{type="item",name=ingredient[1],amount=ingredient[2]})
+  end
+  advanced.results={{type="item",name=spec.product,amount=5}}
+  if spec.tier==2 then
+    advanced.localised_name={"recipe-name.nullius-electromagnetic-pack-improved"}
+  end
+  if require("factorio-version").is_2_1 then
+    advanced.categories={"nullius-electromagnetism-" .. spec.tier}
+  else
+    advanced.category="nullius-electromagnetism-" .. spec.tier
+  end
+  data:extend({{type="recipe-category",name="nullius-electromagnetism-" .. spec.tier},advanced})
+end

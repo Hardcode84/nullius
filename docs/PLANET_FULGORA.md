@@ -545,14 +545,14 @@ must not depend on that import.
 
 ### Electromagnetic science recipes
 
-Basic EM science is implemented. Primitive Filtration unlocks it. Improved and
-boxed recipes remain design only. All recipes produce the same science pack.
+All three recipes are implemented. Primitive Filtration unlocks basic EM;
+Overcharged Assembly 2 unlocks improved EM; tier 3 unlocks boxed EM and packing.
 
 | Recipe | Ingredients | Output | Craft time | Minimum overcharged tier |
 |---|---|---|---|---:|
 | Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 20 s | 1 |
 | Improved | 1 capacitor + 1 logic circuit + 2 insulated wire | 5 EM packs | 15 s | 2 |
-| Improved boxed | Boxed equivalents of improved inputs; set quantities with the planner | Boxed EM packs | Set with the planner | 3 |
+| Improved boxed | 1 capacitor box + 1 logic circuit box + 2 insulated wire boxes | 5 EM boxes | 75 s | 3, medium or large |
 
 The basic recipe uses an iron core, insulated winding, and graphite electrodes.
 The improved recipe adds capacitor and circuit production: aluminum sheet,
@@ -560,16 +560,15 @@ alumina, plastic, and silicon processing.
 
 - Primitive Filtration uses ordinary science to unlock the basic recipe.
   Tier-1 overcharged modes have no separate research gate.
-- Basic EM packs fund Overcharged Assembly 2 and 3. Improved recipes are not
-  implemented; their planned machine gates remain tier 2 and tier 3.
+- Basic EM packs fund Overcharged Assembly 2. Improved EM can then fund tier 3.
+  Neither upgrade requires its own recipe output.
 - Only overcharged assemblers can make EM science. Higher tiers retain recipes
   from lower tiers. Machine size is a separate requirement for boxed production.
 - Restrict all three recipes to Fulgora through its electromagnetic-field property.
 - Exclude transformers from this upgrade; their current unlock requires Energy
   Distribution 3 and its power-research prerequisites.
-- Before setting improved recipe quantities, compare them with basic EM and
-  Vulcanus science. Include mineral filtration, silicon demand, waste balance,
-  and energy per pack with built-in productivity at each tier.
+- Each box contains five items. Boxed crafting has the same material and time
+  ratios as improved crafting. Packing and unpacking do not gain productivity.
 
 Basic recipe balance (`tests/progression/planner/fulgora-em-capacity.json`):
 
@@ -587,14 +586,17 @@ assemblers in overcharged mode, and continuous external power. It excludes
 construction, transport, process startup, and lightning outages. Extractors and
 assembly limit this batch. A 60-second craft needs 10 minutes; half-price inputs
 need 3.3 minutes. Keep the full material cost and use the 20-second craft.
-Basic EM has no boxed recipe; bulk production requires the planned tier-3 route.
+Bulk production uses the improved tier-3 route. At 60 packs/min, final assembly
+needs three tier-2 small assemblers and 26.96 MW. Tier-3 medium assembly needs
+one machine and 344.06 MW, plus one unpacker for boxed output. These figures
+include native productivity and drain; they exclude upstream material production.
+The comparison is `tests/progression/planner/fulgora-em-upgrades.json`.
 
 ### Overcharged assemblers
 
 Implemented: eight electric assembler variants usable on all planets. Small and
 medium assemblers cover tiers 1–3. Large assembler 1 is tier 2; large assembler 2
 is tier 3. Overcharged Assembly 2 and 3 unlock the higher modes.
-Higher EM recipes are not implemented.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|
@@ -604,7 +606,7 @@ Higher EM recipes are not implemented.
 
 Power multipliers apply to the corresponding ordinary assembler's working power
 and idle drain. Crafting speed and module slots stay the same. Only overcharged
-variants add the basic EM recipe category.
+variants add EM categories for their tier. Small assemblers cannot make boxed EM.
 All variants use surge priority and the shared productivity constants. Excluded
 recipes have a zero productivity cap, including boxing and unboxing.
 
@@ -619,7 +621,7 @@ Each higher mode also requires its ordinary construction recipe. Large assembler
 
 Reference: Vulcanus Thermal Engineering 2 and 3 cost 800 and 3,200 metallurgic
 packs. Use the same fourfold increase and research-unit times. EM costs one
-quarter as many planetary packs because only its basic recipe is available.
+quarter as many planetary packs. Tier 2 uses basic EM; tier 3 can use improved EM.
 The resolved comparison is `tests/progression/planner/overcharged-research.json`;
 it excludes ordinary prerequisite research and includes tier 2 in tier-3 totals.
 

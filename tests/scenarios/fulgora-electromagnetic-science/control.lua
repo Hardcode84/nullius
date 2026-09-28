@@ -43,8 +43,6 @@ script.on_nth_tick(1,function()
   force.technologies["nullius-overcharged-assembly-3"].researched=true
   for _,spec in ipairs(specs) do force.recipes[spec.base].enabled=true end
   check(prototypes.recipe[name].allowed_effects.productivity,"productivity disabled")
-  check(not prototypes.item["nullius-box-electromagnetic-pack"],"premature boxed pack")
-  check(not prototypes.recipe["nullius-boxed-electromagnetic-pack"],"premature boxed recipe")
   for _,lab in ipairs({"nullius-hidden-lab","nullius-lab-1","nullius-lab-2","nullius-lab-3"}) do
     local accepts=false
     for _,pack in pairs(prototypes.entity[lab].lab_inputs) do if pack==name then accepts=true end end

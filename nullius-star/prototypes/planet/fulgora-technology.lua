@@ -5,7 +5,8 @@ local function overcharged(tier, count, seconds, ingredients, prerequisites)
     localised_description=description,
     icon="__base__/graphics/technology/automation-" .. tier .. ".png",icon_size=256,
     order="nullius-dg-overcharged-" .. tier,
-    effects={{type="nothing",effect_description=description}},
+    effects={{type="nothing",effect_description=description},
+      {type="unlock-recipe",recipe=tier==2 and "nullius-electromagnetic-pack-improved" or "nullius-boxed-electromagnetic-pack"}},
     prerequisites=prerequisites,
     unit={count=count,time=seconds,ingredients=ingredients},
   }
@@ -22,3 +23,8 @@ data:extend({
     {"nullius-chemical-pack",16},{"nullius-physics-pack",8},
   },{"nullius-overcharged-assembly-2","nullius-automation-3"}),
 })
+
+for _,name in ipairs({"nullius-box-electromagnetic-pack","nullius-unbox-electromagnetic-pack"}) do
+  table.insert(data.raw.technology["nullius-overcharged-assembly-3"].effects,
+    {type="unlock-recipe",recipe=name})
+end

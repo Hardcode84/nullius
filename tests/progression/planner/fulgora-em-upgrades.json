@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "entrance_technologies": [
+    "nullius-overcharged-assembly-3"
+  ],
+  "science_rates_per_minute": [
+    30,
+    60,
+    120
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [
+    "nullius-iron-plate",
+    "copper-cable",
+    "nullius-graphite",
+    "nullius-capacitor",
+    "decider-combinator",
+    "nullius-box-capacitor",
+    "nullius-box-logic-circuit",
+    "nullius-box-insulated-wire"
+  ],
+  "prime_stock": {},
+  "solid_discard": [],
+  "wreck_machines": {},
+  "lab": "nullius-lab-1",
+  "extractors": {},
+  "assumptions": {
+    "capacity": "Final assembly and EM unpacking only; supplied intermediates, machines and continuous external power. Native productivity, no modules or beacons.",
+    "construction": "Equipment manufacture and material production are outside this boundary; construction is infeasible. Boxed inputs each contain five ordinary items.",
+    "comparison": "All targets are loose packs per minute. Same tier-3 medium assembler for boxed/unboxed parity, ordinary small assembler 1 for unpacking. Each alternative has a fixed machine tier."
+  },
+  "stages": [
+    {
+      "name": "basic",
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "products": {
+        "nullius-electromagnetic-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-small-assembler-1-overcharged",
+        "nullius-small-assembler-1"
+      ],
+      "excluded_recipes": [
+        "nullius-electromagnetic-pack-improved",
+        "nullius-boxed-electromagnetic-pack"
+      ]
+    },
+    {
+      "name": "improved-tier2",
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "products": {
+        "nullius-electromagnetic-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-small-assembler-2-overcharged",
+        "nullius-small-assembler-1"
+      ],
+      "excluded_recipes": [
+        "nullius-electromagnetic-pack",
+        "nullius-boxed-electromagnetic-pack"
+      ]
+    },
+    {
+      "name": "improved-tier3",
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "products": {
+        "nullius-electromagnetic-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-medium-assembler-3-overcharged",
+        "nullius-small-assembler-1"
+      ],
+      "excluded_recipes": [
+        "nullius-electromagnetic-pack",
+        "nullius-boxed-electromagnetic-pack"
+      ]
+    },
+    {
+      "name": "boxed-tier3",
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "products": {
+        "nullius-electromagnetic-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-medium-assembler-3-overcharged",
+        "nullius-small-assembler-1"
+      ],
+      "excluded_recipes": [
+        "nullius-electromagnetic-pack",
+        "nullius-electromagnetic-pack-improved"
+      ]
+    }
+  ]
+}
