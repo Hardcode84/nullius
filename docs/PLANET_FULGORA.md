@@ -463,19 +463,19 @@ energy and cannot implement this check without additional measurements.
 
 ## Energy storage
 
-Design only. Super-capacitors are an alternate mode of normal grid batteries.
-Use native accumulator entities for both modes.
+Supercapacitors are an alternate mode of all three grid battery tiers.
+Research costs 100 EM and 40 electrical science packs. It requires Primitive
+Filtration and Battery Storage 2; each mode also requires its ordinary battery recipe.
 
 | Storage | Charge/discharge rate | Capacity | Loss | Role |
 |---|---|---|---|---|
-| Super-capacitor | Faster than normal mode | Lower than normal mode | Higher continuous leakage | Handle short power bursts |
+| Supercapacitor | 10× normal rate | 20% of normal capacity | 1% of full capacity per second | Handle short power bursts |
 | Accumulator | Moderate | Medium | Low | Supply the gaps between strikes |
 | Thermal storage | Slow | High | Low storage loss; conversion loss | Supply extended calm periods through Stirling conversion |
 
-Set charge rate, discharge rate, capacity, and leakage together during balance
-checks. Before implementation, test whether native accumulator discharge supplies
-surge consumers on both supported engines. Do not assume direct energy transfer
-between super-capacitors and normal accumulators.
+Both modes use native accumulator charge and discharge. Neither supplies surge
+consumers nor charges other accumulators. Supercapacitor leakage also applies
+when idle or disconnected.
 
 Thermal storage and Stirling conversion remain a separate proposal. Stored oxygen
 and fuel provide a combustion option; combustion is not required to start it.
@@ -636,15 +636,15 @@ until its research and ordinary recipe are unlocked.
 Leaving pneumatic mode releases fuel remaining in the engine; recipe fluids stay.
 Leaving overcharged mode cancels exclusive recipes and returns their items on
 the ground. Compatible recipes retain their work.
-Super-capacitor modes and their research are design only.
+Ctrl+R also switches unlocked grid batteries to supercapacitor mode.
 
 | Building | Modes |
 |---|---|
-| Grid battery, each tier (design only) | Normal accumulator ↔ super-capacitor |
+| Grid battery, each tier | Normal accumulator ↔ supercapacitor |
 | Assembler, each size and tier | Ordinary ↔ overcharged |
 
 Each pair shares its construction item and footprint. Blueprints retain unlocked
-modes. Locked variants become ordinary assemblers when placed or revived.
+modes. Locked variants become ordinary buildings when placed, revived, or cloned.
 Preserve stored energy in joules, capped at the destination's capacity; discard
 excess energy. Switching must never create energy.
 
@@ -791,7 +791,7 @@ supply areas because a helper can connect to more than one network.
 | Overload detection | 2.1 aggregate offered energy versus requested energy | Test short surges between samples and tune the threshold |
 | Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
 | Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |
-| Super-capacitors | `AccumulatorPrototype` with high `input_flow_limit`, low `buffer_capacity`, and energy-source `drain` | Verify charging, leakage, and transfer to other storage |
+| Supercapacitors | Native accumulator rates and capacity; scripted stored-energy loss | Verified idle leakage; no surge supply or transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
 | Fountain filtration | Five fixed recipe products: two fluids and three solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |
 

@@ -1,6 +1,7 @@
 local variant_upgrades = {}
 
 local ENTITY_TYPES = {
+  "accumulator",
   "assembling-machine",
   "furnace",
   "pump",

@@ -331,6 +331,8 @@ end
 local variant_upgrades = require("shared.variant-upgrades")
 require("prototypes.planet.overcharged-assemblers")
 variant_upgrades.apply("-overcharged")
+require("prototypes.planet.supercapacitors")
+variant_upgrades.apply("-supercapacitor")
 variant_upgrades.apply("-pneumatic")
 variant_upgrades.apply("-thermal")
 require("prototypes.planet.fulgora-placement")

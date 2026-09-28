@@ -1,3 +1,4 @@
+local supercapacitors = require("scripts.supercapacitors")
 local recipe_filter = require("scripts.recipe_filter")
 
 artillery_remote = require("scripts.artillery_remote")
@@ -166,6 +167,7 @@ script.on_init(
     vulcanus_heat.init()
     vulcanus_gasvent.init()
     fulgora_collectors.rebuild()
+    supercapacitors.rebuild()
 	  surface_config.configure_existing()
 	  reset_config()
     if (remote.interfaces["freeplay"] ~= nil) then
@@ -195,6 +197,7 @@ script.on_configuration_changed(
     surface_config.configure_existing()
     vulcanus_heat.rebuild()
     fulgora_collectors.rebuild()
+    supercapacitors.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()
     end

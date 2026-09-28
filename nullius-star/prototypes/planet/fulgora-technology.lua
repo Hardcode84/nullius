@@ -28,3 +28,16 @@ for _,name in ipairs({"nullius-box-electromagnetic-pack","nullius-unbox-electrom
   table.insert(data.raw.technology["nullius-overcharged-assembly-3"].effects,
     {type="unlock-recipe",recipe=name})
 end
+
+local capacitor_description = {"technology-description.nullius-supercapacitors"}
+data:extend({{
+  type="technology",name="nullius-supercapacitors",
+  icon="__base__/graphics/technology/electric-energy-acumulators.png",icon_size=256,
+  localised_description=capacitor_description,
+  order="nullius-dg-supercapacitors",
+  prerequisites={"nullius-primitive-filtration","nullius-battery-storage-2"},
+  effects={{type="nothing",effect_description=capacitor_description}},
+  unit={count=10,time=30,ingredients={
+    {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},
+  }},
+}})

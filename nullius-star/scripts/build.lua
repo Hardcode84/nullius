@@ -1,7 +1,9 @@
+local supercapacitors = require("scripts.supercapacitors")
 local overcharged_assemblers = require("scripts.overcharged_assemblers")
 
 function entity_added(entity, handbuilt)
   if overcharged_assemblers.built(entity) ~= entity then return end
+  if supercapacitors.built(entity) ~= entity then return end
   fulgora_collectors.add(entity)
   if (entity.type == "spider-vehicle") then
 	  mecha_added(entity)
@@ -109,7 +111,7 @@ function entity_raised(event)
   entity_added(event.entity, nil)
 end
 function entity_cloned(event)
-  local entity = overcharged_assemblers.built(event.destination)
+  local entity = supercapacitors.built(overcharged_assemblers.built(event.destination))
   fulgora_collectors.cloned(entity)
   if entity and entity.valid and
       string.sub(entity.name, -10) == "-pneumatic" then
