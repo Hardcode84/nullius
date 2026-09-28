@@ -137,6 +137,7 @@ data:extend({
     hidden = true,
     inputs = {
       "nullius-metallurgic-pack",
+      "nullius-electromagnetic-pack",
       "nullius-geology-pack",
       "nullius-climatology-pack",
       "nullius-mechanical-pack",
@@ -184,6 +185,7 @@ data:extend({
     researching_speed = 1,
     inputs = {
       "nullius-metallurgic-pack",
+      "nullius-electromagnetic-pack",
       "nullius-geology-pack",
       "nullius-climatology-pack",
       "nullius-mechanical-pack",

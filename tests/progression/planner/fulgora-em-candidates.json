@@ -1,0 +1,82 @@
+{
+  "recipe": {
+    "candidate-em-slow": {
+      "type": "recipe",
+      "name": "candidate-em-slow",
+      "enabled": true,
+      "category": "nullius-electromagnetism-1",
+      "energy_required": 60,
+      "allow_productivity": true,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-iron-plate",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "copper-cable",
+          "amount": 4
+        },
+        {
+          "type": "item",
+          "name": "nullius-graphite",
+          "amount": 2
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "candidate-em-slow",
+          "amount": 1
+        }
+      ]
+    },
+    "candidate-em-light": {
+      "type": "recipe",
+      "name": "candidate-em-light",
+      "enabled": true,
+      "category": "nullius-electromagnetism-1",
+      "energy_required": 20,
+      "allow_productivity": true,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-iron-plate",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "copper-cable",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "nullius-graphite",
+          "amount": 1
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "candidate-em-light",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  "tool": {
+    "candidate-em-slow": {
+      "type": "tool",
+      "name": "candidate-em-slow",
+      "stack_size": 200,
+      "durability": 1
+    },
+    "candidate-em-light": {
+      "type": "tool",
+      "name": "candidate-em-light",
+      "stack_size": 200,
+      "durability": 1
+    }
+  }
+}

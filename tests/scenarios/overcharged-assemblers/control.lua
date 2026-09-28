@@ -83,7 +83,8 @@ script.on_nth_tick(1, function()
       check(variant.crafting_categories[category], name .. " lost category " .. category)
     end
     for category in pairs(variant.crafting_categories) do
-      check(base.crafting_categories[category], name .. " gained category " .. category)
+      check(base.crafting_categories[category] or category == "nullius-electromagnetism-1",
+        name .. " gained category " .. category)
     end
     check(variant.items_to_place_this[1].name == spec.base, name .. " build item")
     check(variant.mineable_properties.products[1].name == spec.base, name .. " mining item")

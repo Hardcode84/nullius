@@ -21,6 +21,7 @@ for _, spec in ipairs(require("shared.overcharged-assemblers")) do
     tostring(productivity[spec.tier] * 100), tostring(10 ^ spec.tier)}
   variant.placeable_by = {item = spec.base, count = 1}
   variant.hidden = true
+  table.insert(variant.crafting_categories, "nullius-electromagnetism-1")
   variant.next_upgrade = nil
   variant.energy_source.usage_priority = "tertiary"
   variant.energy_usage = tostring(util.parse_energy(base.energy_usage) * 60 * 10 ^ spec.tier) .. "W"

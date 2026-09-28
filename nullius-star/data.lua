@@ -28,6 +28,7 @@ require("prototypes.item.landfill")
 require("prototypes.planet.primitive-robotics-items")
 require("prototypes.item.boxing")
 require("prototypes.planet.fulgora-recipes")
+require("prototypes.planet.fulgora-science")
 
 require("prototypes.entity.furnace") 
 require("prototypes.planet.thermal-machines")

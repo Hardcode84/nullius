@@ -272,3 +272,24 @@ probability, craft time, and input amounts, and covers ordinary and boxed recipe
 The report marks changed yields as hypothetical. Gameplay prototypes are unchanged.
 Use `--compare-cases 1x-recovery-starter 2x-recovery-starter starter 4x-recovery-starter`
 for the recovery comparison. It reports production work, not research completion.
+
+## EM science batch comparison
+
+`fulgora-em-capacity.json` compares final assembly at 30, 60, and 120 packs/min.
+`fulgora-em-bootstrap.json` compares 12-pack batches with the supplied fleet.
+Both files are in `tests/progression/planner/`. Candidate recipes are additive
+hypotheses; the basic stage uses the shipping recipe.
+
+The bootstrap planner accepts `machine_modes`, a map from a supplied fleet item
+to its entity mode. The mode must use the same build item. All supplied machines
+of that item use the selected mode. It also accepts `prototype_overlay` and
+records its hash. Neither option supplies extra machines or materials.
+
+```bash
+python tools/plan_factorio_factory.py \
+  --config tests/progression/planner/fulgora-em-capacity.json \
+  --output /tmp/fulgora-em-capacity.json --overview
+python tools/plan_factorio_bootstrap.py \
+  --config tests/progression/planner/fulgora-em-bootstrap.json \
+  --output /tmp/fulgora-em-bootstrap.json --compare-cases starter half-power-duty
+```

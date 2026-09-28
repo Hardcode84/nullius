@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog
+from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog, fleet_placements
 from plan_factorio_factory import TestFailure
 
 
@@ -14,6 +14,19 @@ def recipe(name, machine, seconds, flows):
 
 
 class BootstrapPlannerTest(unittest.TestCase):
+    def test_fleet_mode_requires_the_same_supplied_item(self):
+        data = {'item': {'assembler': {'place_result': 'normal'}},
+                'assembling-machine': {
+                    'overcharged': {'name': 'overcharged', 'placeable_by': {'item': 'assembler', 'count': 1}},
+                    'other': {'name': 'other', 'placeable_by': {'item': 'other-item', 'count': 1}}}}
+        self.assertEqual(fleet_placements(data, {'assembler': 2}, {}), {'assembler': 'normal'})
+        self.assertEqual(fleet_placements(data, {'assembler': 2}, {'assembler': 'overcharged'}),
+                         {'assembler': 'overcharged'})
+        with self.assertRaisesRegex(TestFailure, 'build item'):
+            fleet_placements(data, {'assembler': 2}, {'assembler': 'other'})
+        with self.assertRaisesRegex(TestFailure, 'supplied fleet item'):
+            fleet_placements(data, {}, {'assembler': 'overcharged'})
+
     def test_shared_machine_work_is_summed(self):
         catalog = [recipe('smelt', 'machine', 2, {'ore': -1, 'plate': 1}),
                    recipe('shape', 'machine', 3, {'plate': -1, 'gear': 1})]

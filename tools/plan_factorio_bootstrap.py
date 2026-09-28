@@ -130,12 +130,25 @@ def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1):
                 key=lambda r: -r['machine_seconds']) for m in usage}}
 
 
+def fleet_placements(data, fleet, modes):
+    """Resolve each supplied item to its selected mode, with the same build item."""
+    if set(modes) - set(fleet):
+        raise planner.TestFailure('machine mode requires a supplied fleet item')
+    placements = {item: data['item'][item]['place_result'] for item in fleet}
+    for item, name in modes.items():
+        machine = planner.entity(data, name)[1]
+        if planner.place_item(data, machine) != item:
+            raise planner.TestFailure('machine mode changes the supplied build item: ' + item)
+        placements[item] = name
+    return placements
+
+
 def analyze(data, config):
     if config['uncertain_outputs'] != 'guaranteed':
         raise planner.TestFailure('bootstrap catalog requires guaranteed outputs before explicit mean-yield opt-in')
     if any(p not in data['fluid'] for p in config['buffer_allocation']):
         raise planner.TestFailure('buffer allocation names unknown fluids')
-    placements = {item: data['item'][item]['place_result'] for item in config['fleet']}
+    placements = fleet_placements(data, config['fleet'], config.get('machine_modes', {}))
     base_fleet = {placements[item]: n for item, n in config['fleet'].items()}
     stage = dict(config['boundary'], machines=list(base_fleet))
     boundary = planner.boundary_from_config(data, config, stage)
@@ -262,8 +275,11 @@ def main():
         dump_args.mod_under_test = args.mod_under_test
         data, directory = planner.prereqs.dump_resolved_data(dump_args)
         try:
+            overlay = planner.ROOT / config['prototype_overlay'] if config.get('prototype_overlay') else None
+            planner.prereqs.merge_prototype_overlay(data, overlay)
             report = analyze(data, config)
-            report['provenance'] = {'config_sha256': hashlib.sha256(args.config.read_bytes()).hexdigest(),
+            report['provenance'] = {'prototype_overlay_sha256': hashlib.sha256(overlay.read_bytes()).hexdigest() if overlay else None,
+                'config_sha256': hashlib.sha256(args.config.read_bytes()).hexdigest(),
                 'planner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 'catalog_planner_sha256': hashlib.sha256(Path(planner.__file__).read_bytes()).hexdigest(),
                 'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=planner.ROOT, text=True).strip(),

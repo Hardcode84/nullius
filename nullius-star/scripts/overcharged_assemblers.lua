@@ -1,7 +1,17 @@
 local assemblers = {}
+local modern = require("factorio-version").is_2_1
 
--- Cold user-action path. Native fast replacement transfers inventories,
--- modules, settings and wires. Preserve paid crafting work and joules too.
+local function accepts_recipe(prototype, recipe)
+  if not recipe then return true end
+  if not modern and prototype.crafting_categories[recipe.category] then return true end
+  for _, category in pairs(modern and recipe.categories or recipe.additional_categories or {}) do
+    if prototype.crafting_categories[category] then return true end
+  end
+  return false
+end
+
+-- Switching preserves compatible work, settings and contents. An incompatible
+-- recipe is cancelled; its removed items are returned on the ground.
 function assemblers.replace(entity, name, force)
   if entity.type == "entity-ghost" then
     local tags = entity.tags
@@ -19,6 +29,10 @@ function assemblers.replace(entity, name, force)
     end
     return replacement
   end
+  local refunded
+  if not accepts_recipe(prototypes.entity[name], entity.get_recipe()) then
+    refunded = entity.set_recipe(nil)
+  end
   local progress = entity.crafting_progress
   local bonus = entity.bonus_progress
   local energy = entity.prototype.electric_energy_source_prototype and entity.energy or 0
@@ -33,6 +47,12 @@ function assemblers.replace(entity, name, force)
   end
   replacement.health = health
   replacement.disabled_by_script = disabled
+  for _, stack in ipairs(refunded or {}) do
+    replacement.surface.spill_item_stack{
+      position=replacement.position, stack=stack, enable_looted=true,
+      allow_belts=false, use_start_position_on_failure=true,
+    }
+  end
   return replacement
 end
 

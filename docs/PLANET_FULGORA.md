@@ -545,12 +545,12 @@ must not depend on that import.
 
 ### Electromagnetic science recipes
 
-Design only. All recipes produce the same pack, loose or boxed. Quantities and
-craft times are candidates for factory-planner validation.
+Basic EM science is implemented. Primitive Filtration unlocks it. Improved and
+boxed recipes remain design only. All recipes produce the same science pack.
 
 | Recipe | Ingredients | Output | Craft time | Minimum overcharged tier |
 |---|---|---|---|---:|
-| Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 60 s | 1 |
+| Basic | 2 iron plates + 4 insulated wire + 2 graphite | 1 EM pack | 20 s | 1 |
 | Improved | 1 capacitor + 1 logic circuit + 2 insulated wire | 5 EM packs | 15 s | 2 |
 | Improved boxed | Boxed equivalents of improved inputs; set quantities with the planner | Boxed EM packs | Set with the planner | 3 |
 
@@ -558,8 +558,8 @@ The basic recipe uses an iron core, insulated winding, and graphite electrodes.
 The improved recipe adds capacitor and circuit production: aluminum sheet,
 alumina, plastic, and silicon processing.
 
-- Initial local research uses ordinary science to unlock the basic recipe and
-  overcharged small assembler 1.
+- Primitive Filtration uses ordinary science to unlock the basic recipe.
+  Overcharged assembler modes have no separate research gate.
 - Basic EM packs unlock tier 2 and the improved recipe. EM production then
   funds tier 3 and the improved boxed recipe. No unlock requires its own output.
 - Only overcharged assemblers can make EM science. Higher tiers retain recipes
@@ -567,15 +567,33 @@ alumina, plastic, and silicon processing.
 - Restrict all three recipes to Fulgora through its electromagnetic-field property.
 - Exclude transformers from this upgrade; their current unlock requires Energy
   Distribution 3 and its power-research prerequisites.
-- Compare both recipes with Vulcanus science in the planner before setting final
-  quantities. Include mineral filtration, silicon demand, waste balance, and
-  energy per pack with built-in productivity at each tier.
+- Before setting improved recipe quantities, compare them with basic EM and
+  Vulcanus science. Include mineral filtration, silicon demand, waste balance,
+  and energy per pack with built-in productivity at each tier.
+
+Basic recipe balance (`tests/progression/planner/fulgora-em-capacity.json`):
+
+| Packs/min | Tier-1 small assemblers | Assembly power | Plates/min | Wire/min | Graphite/min |
+|---:|---:|---:|---:|---:|---:|
+| 30 | 17 | 10 MW | 50 | 100 | 50 |
+| 60 | 34 | 20 MW | 100 | 200 | 100 |
+| 120 | 67 | 40 MW | 200 | 400 | 200 |
+
+Includes native +20% productivity and drain; excludes upstream production.
+The starter-fleet model (`fulgora-em-bootstrap.json` in the same directory)
+gives a 4.2-minute work lower bound for 12 packs from slurry, versus 7.5 minutes
+for electrical packs. It uses mean mineral yields, eight tanks, both starter
+assemblers in overcharged mode, and continuous external power. It excludes
+construction, transport, process startup, and lightning outages. Extractors and
+assembly limit this batch. A 60-second craft needs 10 minutes; half-price inputs
+need 3.3 minutes. Keep the full material cost and use the 20-second craft.
+Basic EM has no boxed recipe; bulk production requires the planned tier-3 route.
 
 ### Overcharged assemblers
 
 Implemented: eight electric assembler variants usable on all planets. Small and
 medium assemblers cover tiers 1–3. Large assembler 1 is tier 2; large assembler 2
-is tier 3. Research and EM science recipes are not implemented.
+is tier 3. Separate assembler research and higher EM recipes are not implemented.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|
@@ -584,7 +602,8 @@ is tier 3. Research and EM science recipes are not implemented.
 | 3 | +60% | 1000× |
 
 Power multipliers apply to the corresponding ordinary assembler's working power
-and idle drain. Crafting speed, categories, and module slots stay the same.
+and idle drain. Crafting speed and module slots stay the same. Only overcharged
+variants add the basic EM recipe category.
 All variants use surge priority and the shared productivity constants. Excluded
 recipes have a zero productivity cap, including boxing and unboxing.
 
@@ -600,6 +619,8 @@ Keep the existing electrolyzer progression unchanged.
 Ctrl+R switches assembler modes without added research. On Vulcanus, pneumatic
 research adds a third mode: ordinary → pneumatic → overcharged → ordinary.
 Leaving pneumatic mode releases fuel remaining in the engine; recipe fluids stay.
+Leaving overcharged mode cancels exclusive recipes and returns their items on
+the ground. Compatible recipes retain their work.
 Super-capacitor modes and their research are design only.
 
 | Building | Modes |
