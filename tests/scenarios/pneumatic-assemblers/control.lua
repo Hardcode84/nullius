@@ -85,6 +85,9 @@ local function setup()
     return
   end
   research_closure(technology, {})
+  game.forces.player.technologies["nullius-overcharged-assembly-2"].researched=true
+  game.forces.player.technologies["nullius-overcharged-assembly-3"].researched=true
+  for _,spec in ipairs(MACHINES) do game.forces.player.recipes[spec.name].enabled=true end
 
   local planet = game.planets["nullius-vulcanus"]
   if not check(planet ~= nil, "missing Vulcanus planet") then finish() return end

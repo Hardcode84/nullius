@@ -39,6 +39,9 @@ script.on_nth_tick(1,function()
   check(not force.recipes[name].enabled,"premature unlock")
   force.technologies["nullius-primitive-filtration"].researched=true
   check(force.recipes[name].enabled,"filtration unlock")
+  force.technologies["nullius-overcharged-assembly-2"].researched=true
+  force.technologies["nullius-overcharged-assembly-3"].researched=true
+  for _,spec in ipairs(specs) do force.recipes[spec.base].enabled=true end
   check(prototypes.recipe[name].allowed_effects.productivity,"productivity disabled")
   check(not prototypes.item["nullius-box-electromagnetic-pack"],"premature boxed pack")
   check(not prototypes.recipe["nullius-boxed-electromagnetic-pack"],"premature boxed recipe")

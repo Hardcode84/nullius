@@ -58,6 +58,9 @@ script.on_nth_tick(1, function()
   surface.set_tiles(tiles)
   local force = game.forces.player
   force.recipes["nullius-mechanical-pack"].enabled = true
+  force.technologies["nullius-overcharged-assembly-2"].researched=true
+  force.technologies["nullius-overcharged-assembly-3"].researched=true
+  for _,spec in ipairs(specs) do force.recipes[spec.base].enabled=true end
   force.recipes["nullius-box-iron-plate"].enabled = true
   force.recipes["nullius-unbox-iron-plate"].enabled = true
   force.recipes["nullius-heat-pipe-1"].enabled = true

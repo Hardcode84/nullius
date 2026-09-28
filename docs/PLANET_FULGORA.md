@@ -559,9 +559,9 @@ The improved recipe adds capacitor and circuit production: aluminum sheet,
 alumina, plastic, and silicon processing.
 
 - Primitive Filtration uses ordinary science to unlock the basic recipe.
-  Overcharged assembler modes have no separate research gate.
-- Basic EM packs unlock tier 2 and the improved recipe. EM production then
-  funds tier 3 and the improved boxed recipe. No unlock requires its own output.
+  Tier-1 overcharged modes have no separate research gate.
+- Basic EM packs fund Overcharged Assembly 2 and 3. Improved recipes are not
+  implemented; their planned machine gates remain tier 2 and tier 3.
 - Only overcharged assemblers can make EM science. Higher tiers retain recipes
   from lower tiers. Machine size is a separate requirement for boxed production.
 - Restrict all three recipes to Fulgora through its electromagnetic-field property.
@@ -593,7 +593,8 @@ Basic EM has no boxed recipe; bulk production requires the planned tier-3 route.
 
 Implemented: eight electric assembler variants usable on all planets. Small and
 medium assemblers cover tiers 1–3. Large assembler 1 is tier 2; large assembler 2
-is tier 3. Separate assembler research and higher EM recipes are not implemented.
+is tier 3. Overcharged Assembly 2 and 3 unlock the higher modes.
+Higher EM recipes are not implemented.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|
@@ -607,17 +608,29 @@ variants add the basic EM recipe category.
 All variants use surge priority and the shared productivity constants. Excluded
 recipes have a zero productivity cap, including boxing and unboxing.
 
-Planned unlocks require the corresponding ordinary assembler research. The first
-overcharged small assembler unlock uses ordinary science; subsequent unlocks
-require EM science. Ordinary Nauvis progression remains independent.
+| Research | Prerequisites | Total science cost | Units × time |
+|---|---|---|---|
+| Overcharged Assembly 2 | Primitive Filtration; Automation 2 | 200 EM, 40 mechanical, 40 electrical | 10 × 45 s |
+| Overcharged Assembly 3 | Overcharged Assembly 2; Automation 3 | 800 EM, 160 mechanical, 160 electrical, 320 chemical, 160 physics | 20 × 60 s |
+
+Each higher mode also requires its ordinary construction recipe. Large assembler
+1 therefore requires Mass Production 3. Tier 3 follows physics through Automation
+3. Ordinary Nauvis research has no new Fulgora dependency.
+
+Reference: Vulcanus Thermal Engineering 2 and 3 cost 800 and 3,200 metallurgic
+packs. Use the same fourfold increase and research-unit times. EM costs one
+quarter as many planetary packs because only its basic recipe is available.
+The resolved comparison is `tests/progression/planner/overcharged-research.json`;
+it excludes ordinary prerequisite research and includes tier 2 in tier-3 totals.
 
 Chemical plants, refineries, and hydro plants are reserved for other planets.
 Keep the existing electrolyzer progression unchanged.
 
 ### Mode switching
 
-Ctrl+R switches assembler modes without added research. On Vulcanus, pneumatic
-research adds a third mode: ordinary → pneumatic → overcharged → ordinary.
+Ctrl+R switches unlocked assembler modes. On Vulcanus, pneumatic research adds
+a mode: ordinary → pneumatic → overcharged → ordinary. Skip overcharged mode
+until its research and ordinary recipe are unlocked.
 Leaving pneumatic mode releases fuel remaining in the engine; recipe fluids stay.
 Leaving overcharged mode cancels exclusive recipes and returns their items on
 the ground. Compatible recipes retain their work.
@@ -628,9 +641,10 @@ Super-capacitor modes and their research are design only.
 | Grid battery, each tier (design only) | Normal accumulator ↔ super-capacitor |
 | Assembler, each size and tier | Ordinary ↔ overcharged |
 
-Each pair shares its construction item and footprint. Blueprints retain the
-selected mode. Preserve stored energy in joules, capped at the destination's
-capacity; discard excess energy. Switching must never create energy.
+Each pair shares its construction item and footprint. Blueprints retain unlocked
+modes. Locked variants become ordinary assemblers when placed or revived.
+Preserve stored energy in joules, capped at the destination's capacity; discard
+excess energy. Switching must never create energy.
 
 For assemblers, preserve compatible recipes, contents, modules, and connections.
 Crafting and productivity progress retain only work already done. Stored energy

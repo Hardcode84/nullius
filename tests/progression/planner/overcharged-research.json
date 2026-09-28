@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "entrance_technologies": [
+    "nullius-primitive-filtration",
+    "nullius-automation-3",
+    "nullius-efficient-metallurgic-science",
+    "nullius-mineral-processing-3",
+    "nullius-metallurgy-3",
+    "nullius-metalworking-4",
+    "nullius-thermal-storage-3",
+    "nullius-solar-thermal-power-2",
+    "nullius-nuclear-power-1"
+  ],
+  "stages": [
+    {
+      "name": "basic",
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "products": {
+        "nullius-electromagnetic-pack": 1
+      },
+      "research_roots": [],
+      "machines": [
+        "nullius-small-assembler-1-overcharged"
+      ]
+    }
+  ],
+  "assumptions": {
+    "boundary": "Ordinary assembler and thermal prerequisite research is supplied. Compare remaining research costs only, not whole progression or a material factory.",
+    "supply": "Each named pack is supplied at 30, 60 or 120 per minute. Supply times exclude labs, construction, transport and process startup.",
+    "tiers": "Tier 3 includes tier 2. The direct cost of each technology is listed under top_technologies.",
+    "assembly": "Basic EM assembly only, supplied plates, wire, graphite, machines and continuous electricity. Construction flow is infeasible because building materials are outside the boundary."
+  },
+  "science_analysis": {
+    "research_roots": {
+      "overcharged-2": [
+        "nullius-overcharged-assembly-2"
+      ],
+      "overcharged-3": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "thermal-2": [
+        "nullius-thermal-engineering-2"
+      ],
+      "thermal-3": [
+        "nullius-thermal-engineering-3"
+      ]
+    },
+    "factory_stages": [],
+    "packs": [
+      "nullius-electromagnetic-pack",
+      "nullius-metallurgic-pack",
+      "nullius-geology-pack",
+      "nullius-climatology-pack",
+      "nullius-mechanical-pack",
+      "nullius-electrical-pack",
+      "nullius-chemical-pack",
+      "nullius-physics-pack"
+    ],
+    "rates": [
+      30,
+      60,
+      120
+    ],
+    "hours": [
+      4,
+      8
+    ]
+  },
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "science_rates_per_minute": [
+    30,
+    60,
+    120
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [
+    "nullius-iron-plate",
+    "copper-cable",
+    "nullius-graphite"
+  ],
+  "prime_stock": {},
+  "solid_discard": [],
+  "wreck_machines": {},
+  "lab": "nullius-lab-1",
+  "extractors": {}
+}

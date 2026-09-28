@@ -43,8 +43,14 @@ local function register_pneumatic_pair(electric, pneumatic)
     on_enter = on_enter_pneumatic,
     replace_fn = assembler and overcharged_assemblers.replace or nil,
   })
-  local target = assembler and electric .. "-overcharged" or electric
-  transitions.register(pneumatic, target, {
+  if assembler then
+    transitions.register(pneumatic, electric .. "-overcharged", {
+      condition = function(_, force) return overcharged_assemblers.unlocked(force, electric) end,
+      on_leave = on_leave_pneumatic,
+      replace_fn = overcharged_assemblers.replace,
+    })
+  end
+  transitions.register(pneumatic, electric, {
     on_leave = on_leave_pneumatic,
     replace_fn = assembler and overcharged_assemblers.replace or nil,
   })

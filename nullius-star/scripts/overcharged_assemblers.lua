@@ -1,5 +1,18 @@
 local assemblers = {}
 local modern = require("factorio-version").is_2_1
+local specs = require("shared.overcharged-assemblers")
+local by_base, by_variant = {}, {}
+for _, spec in ipairs(specs) do
+  by_base[spec.base] = spec
+  by_variant[spec.base .. "-overcharged"] = spec
+end
+
+function assemblers.unlocked(force, base)
+  local tier = assert(by_base[base], "Unknown overcharged assembler " .. base).tier
+  if tier == 1 then return true end
+  return force.technologies["nullius-overcharged-assembly-" .. tier].researched and
+    force.recipes[base].enabled
+end
 
 local function accepts_recipe(prototype, recipe)
   if not recipe then return true end
@@ -56,12 +69,25 @@ function assemblers.replace(entity, name, force)
   return replacement
 end
 
+-- Locked modes placed from blueprints or upgrades become ordinary assemblers.
+function assemblers.built(entity)
+  local name = entity.type == "entity-ghost" and entity.ghost_name or entity.name
+  local spec = by_variant[name]
+  if spec and not assemblers.unlocked(entity.force, spec.base) then
+    return assemblers.replace(entity, spec.base, entity.force)
+  end
+  return entity
+end
+
 function assemblers.register()
   local transitions = require("scripts.transitions")
-  for _, spec in ipairs(require("shared.overcharged-assemblers")) do
+  for _, spec in ipairs(specs) do
     local base = spec.base
     local variant = base .. "-overcharged"
-    transitions.register(base, variant, {replace_fn = assemblers.replace})
+    transitions.register(base, variant, {
+      condition = function(_, force) return assemblers.unlocked(force, base) end,
+      replace_fn = assemblers.replace,
+    })
     transitions.register(variant, base, {replace_fn = assemblers.replace})
   end
 end
