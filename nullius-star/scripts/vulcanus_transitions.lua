@@ -4,6 +4,7 @@
 local transitions = require("scripts.transitions")
 local pneumatic_families = require("shared.pneumatic-machine-families")
 local thermal_nanofabricators = require("thermal-nanofabricator-specs")
+local overcharged_assemblers = require("scripts.overcharged_assemblers")
 
 -- Condition: entity is on Vulcanus and pneumatic tech is researched.
 local function is_vulcanus_pneumatic(entity, force)
@@ -36,12 +37,16 @@ end
 -- Convenience: register both directions of a pneumatic pair.
 -- Must match entities generated in prototypes/pneumatic.lua.
 local function register_pneumatic_pair(electric, pneumatic)
+  local assembler = pneumatic_families.is_normal_assembler(electric)
   transitions.register(electric, pneumatic, {
     condition = is_vulcanus_pneumatic,
     on_enter = on_enter_pneumatic,
+    replace_fn = assembler and overcharged_assemblers.replace or nil,
   })
-  transitions.register(pneumatic, electric, {
+  local target = assembler and electric .. "-overcharged" or electric
+  transitions.register(pneumatic, target, {
     on_leave = on_leave_pneumatic,
+    replace_fn = assembler and overcharged_assemblers.replace or nil,
   })
 end
 

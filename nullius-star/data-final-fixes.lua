@@ -329,6 +329,8 @@ for _, module in pairs(data.raw.module) do
 end
 
 local variant_upgrades = require("shared.variant-upgrades")
+require("prototypes.planet.overcharged-assemblers")
+variant_upgrades.apply("-overcharged")
 variant_upgrades.apply("-pneumatic")
 variant_upgrades.apply("-thermal")
 require("prototypes.planet.fulgora-placement")

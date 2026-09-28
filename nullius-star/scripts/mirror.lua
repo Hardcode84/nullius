@@ -12,17 +12,24 @@ function update_build_statistics(entity, force, deconstruct)
 end
 
 -- Cold path: preserve indexed fluid stores across entity replacement.
-local fluid_count, read_fluid, write_fluid
+local fluid_count, read_fluid, write_fluid, fluid_prototypes
 if require("factorio-version").is_2_1 then
   fluid_count = function(entity) return entity.fluids_count end
   read_fluid = function(entity, index) return entity.get_fluid(index) end
   write_fluid = function(entity, index, fluid)
     if fluid then entity.set_fluid(index, fluid) else entity.clear_fluid(index) end
   end
+  fluid_prototypes = function(entity, index)
+    local prototype = entity.get_fluid_box_prototype(index)
+    return prototype.object_name and {prototype} or prototype
+  end
 else
   fluid_count = function(entity) return #entity.fluidbox end
   read_fluid = function(entity, index) return entity.fluidbox[index] end
   write_fluid = function(entity, index, fluid) entity.fluidbox[index] = fluid end
+  fluid_prototypes = function(entity, index)
+    return {entity.fluidbox.get_prototype(index)}
+  end
 end
 
 function save_fluid_contents(entity)
@@ -70,13 +77,43 @@ function replace_fluid_entity(entity, newname, force, dir)
 	  end
   else
     local contents = save_fluid_contents(entity)
+    local recipe_fluids
+    local source_fuel = entity.prototype.fluid_energy_source_prototype ~= nil
+    local target_fuel = prototypes.entity[newname].fluid_energy_source_prototype ~= nil
+    if entity.type == "assembling-machine" and source_fuel ~= target_fuel then
+      -- Fuel occupies a separate runtime slot (first in 2.1). Recipe and fuel
+      -- prototypes can both have index 1. Map recipe stores by their prototype,
+      -- not their runtime slot. Removing the engine releases its residual fuel.
+      recipe_fluids = {}
+      for index = 1, contents.count do
+        local prototype = fluid_prototypes(entity, index)[1]
+        if prototype.production_type ~= "none" then
+          recipe_fluids[prototype.index] = {fluid = contents[index]}
+        end
+      end
+    end
     update_build_statistics(entity, force, true)
     entity = entity.surface.create_entity{
       name = newname, force = force, direction = dir,
 	    position = entity.position, spill = false, raise_built = true,
 	    fast_replace = true, create_build_effect_smoke = false}
     if ((entity ~= nil) and entity.valid) then
-      restore_fluid_contents(entity, contents)
+      if recipe_fluids then
+        for index = 1, fluid_count(entity) do
+          local prototype = fluid_prototypes(entity, index)[1]
+          if prototype.production_type ~= "none" then
+            local saved = assert(recipe_fluids[prototype.index],
+              "Missing recipe fluid store " .. prototype.index)
+            write_fluid(entity, index, saved.fluid)
+            recipe_fluids[prototype.index] = nil
+          end
+        end
+        for index, saved in pairs(recipe_fluids) do
+          assert(saved.fluid == nil, "replacement has no recipe fluid store " .. index)
+        end
+      else
+        restore_fluid_contents(entity, contents)
+      end
 	    update_build_statistics(entity, force, false)
     end
   end

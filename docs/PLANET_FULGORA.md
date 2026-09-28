@@ -573,9 +573,9 @@ alumina, plastic, and silicon processing.
 
 ### Overcharged assemblers
 
-Design only. Electric upgrades usable on all planets, required for Fulgora EM
-science and optional for ordinary production. Provide small, medium, and large
-assemblers at each of three tiers: nine variants.
+Implemented: eight electric assembler variants usable on all planets. Small and
+medium assemblers cover tiers 1–3. Large assembler 1 is tier 2; large assembler 2
+is tier 3. Research and EM science recipes are not implemented.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|
@@ -583,12 +583,12 @@ assemblers at each of three tiers: nine variants.
 | 2 | +40% | 100× |
 | 3 | +60% | 1000× |
 
-Power multipliers use the ordinary assembler of the same size and tier.
-Keep its crafting speed and ordinary recipe categories; add EM categories
-according to the tier requirements above. Always use surge electrical
-priority. Productivity applies only to eligible recipes.
+Power multipliers apply to the corresponding ordinary assembler's working power
+and idle drain. Crafting speed, categories, and module slots stay the same.
+All variants use surge priority and the shared productivity constants. Excluded
+recipes have a zero productivity cap, including boxing and unboxing.
 
-Unlocks require the corresponding ordinary assembler research. The first
+Planned unlocks require the corresponding ordinary assembler research. The first
 overcharged small assembler unlock uses ordinary science; subsequent unlocks
 require EM science. Ordinary Nauvis progression remains independent.
 
@@ -597,12 +597,14 @@ Keep the existing electrolyzer progression unchanged.
 
 ### Mode switching
 
-Design only. Ctrl+R switches the selected building after the corresponding
-research unlocks its alternate mode.
+Ctrl+R switches assembler modes without added research. On Vulcanus, pneumatic
+research adds a third mode: ordinary → pneumatic → overcharged → ordinary.
+Leaving pneumatic mode releases fuel remaining in the engine; recipe fluids stay.
+Super-capacitor modes and their research are design only.
 
 | Building | Modes |
 |---|---|
-| Grid battery, each tier | Normal accumulator ↔ super-capacitor |
+| Grid battery, each tier (design only) | Normal accumulator ↔ super-capacitor |
 | Assembler, each size and tier | Ordinary ↔ overcharged |
 
 Each pair shares its construction item and footprint. Blueprints retain the
@@ -610,9 +612,9 @@ selected mode. Preserve stored energy in joules, capped at the destination's
 capacity; discard excess energy. Switching must never create energy.
 
 For assemblers, preserve compatible recipes, contents, modules, and connections.
-Clear an EM recipe when switching to ordinary mode. Test
-crafting and productivity progress across switches: ordinary-power work must
-not earn an overcharged productivity bonus through switching.
+Crafting and productivity progress retain only work already done. Stored energy
+and health must not increase when the mode changes. When EM recipes are added,
+clear an incompatible recipe on return to ordinary mode.
 
 ## Nuclear geoengineering
 

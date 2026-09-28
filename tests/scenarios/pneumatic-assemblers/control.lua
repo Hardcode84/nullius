@@ -1,5 +1,6 @@
 local CASE = "pneumatic-assemblers"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
+local fluids = require("__nullius-star__/scenarios/fluid-api")
 local MACHINES = {
   {name = "nullius-small-assembler-1", heat = "nullius-pneumatic-heat-small"},
   {name = "nullius-small-assembler-2", heat = "nullius-pneumatic-heat-small"},
@@ -13,7 +14,7 @@ local MACHINES = {
 
 local assertions = 0
 local failures = {}
-local observations = {machines = {}}
+local observations = {machines = {}, fluids = {}}
 
 local function check(condition, message)
   assertions = assertions + 1
@@ -140,6 +141,7 @@ local function setup()
       force = game.forces.player,
     }
     if check(machine ~= nil, "failed to place " .. test.name) then
+      machine.health = 50
       position = {machine.position.x, machine.position.y}
       check(remote.call("nullius-test-transitions", "execute", machine),
         test.name .. " has no pneumatic transition")
@@ -149,11 +151,49 @@ local function setup()
       check(#entities_at(surface, test.heat, position) == 1,
         pneumatic_name .. " has the wrong heat interface")
       if #pneumatic_entities == 1 then
+        check(pneumatic_entities[1].health == 50, "entering pneumatic mode repaired assembler")
+        if not test.name:find("nullius-small-assembler-", 1, true) then
+          pneumatic_entities[1].set_recipe("nullius-steel-cable")
+          check(pneumatic_entities[1].get_recipe() and
+            pneumatic_entities[1].get_recipe().name == "nullius-steel-cable", "pneumatic recipe selection")
+        end
+        local source = pneumatic_entities[1]
+        local fuel_index = source.prototype.fluid_energy_source_prototype.fluid_box.index
+        observations.fluids[test.name] = {fuel_index=fuel_index,slots={}}
+        local recipe_fluid_inserted = false
+        for slot=1,fluids.count(source) do
+          local prototype = fluids.prototype(source, slot)
+          observations.fluids[test.name].slots[#observations.fluids[test.name].slots+1] =
+            {slot=slot,index=prototype.index,production_type=prototype.production_type}
+          if prototype.production_type == "none" then
+            fluids.set(source, slot, {name="nullius-compressed-volcanic-gas",amount=10})
+          elseif prototype.production_type == "input" and not recipe_fluid_inserted then
+            fluids.set(source, slot, {name="nullius-lubricant",amount=2})
+            recipe_fluid_inserted = true
+          end
+        end
+        check(source.get_fluid_count("nullius-compressed-volcanic-gas") == 10, "pneumatic fuel fixture")
+        if not test.name:find("nullius-small-assembler-", 1, true) then
+          check(source.get_fluid_count("nullius-lubricant") == 2, "pneumatic recipe fluid fixture")
+        end
         check(remote.call("nullius-test-transitions", "execute",
           pneumatic_entities[1]), pneumatic_name .. " has no electric transition")
       end
+      local overcharged = entities_at(surface, test.name .. "-overcharged", position)
+      check(#overcharged == 1, pneumatic_name .. " did not enter overcharged mode")
+      if #overcharged == 1 then
+        check(overcharged[1].health == 50, "pneumatic transition repaired assembler")
+        check(overcharged[1].get_fluid_count("nullius-compressed-volcanic-gas") == 0,
+          "fuel leaked into a recipe slot")
+        if not test.name:find("nullius-small-assembler-", 1, true) then
+          check(overcharged[1].get_fluid_count("nullius-lubricant") == 2,
+            "pneumatic transition lost recipe fluid")
+        end
+        check(remote.call("nullius-test-transitions", "execute", overcharged[1]),
+          "overcharged assembler has no ordinary transition")
+      end
       check(#entities_at(surface, test.name, position) == 1,
-        pneumatic_name .. " did not transition back to " .. test.name)
+        "overcharged assembler did not return to " .. test.name)
       check(#entities_at(surface, test.heat, position) == 0,
         pneumatic_name .. " left an orphan heat interface")
     end
