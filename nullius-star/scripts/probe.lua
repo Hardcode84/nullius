@@ -26,7 +26,7 @@ local function fulgora_landing_site(surface, pos, force)
       {"nullius-combustion-chamber-1",1}, {"nullius-chimney-1",3},
       {"nullius-lab-1",1}, {"cliff-explosives",30},
     },
-    {{"small-electric-pole",32}, {"pipe",200}, {"pipe-to-ground",40},
+    {{"small-electric-pole",32}, {"big-electric-pole",4}, {"pipe",200}, {"pipe-to-ground",40},
       {"nullius-small-tank-1",8}, {"nullius-one-way-valve",8}},
     {{"transport-belt",100}, {"inserter",24}, {"wooden-chest",10},
       {"splitter",8}, {"underground-belt",20}, {"nullius-grid-battery-1",4}, {"nullius-grounding-coil",4}},

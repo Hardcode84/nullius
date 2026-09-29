@@ -72,6 +72,7 @@ Supplied once per force when the probe is activated.
 | Lab 1 | 1 | Local research |
 | Cliff explosives | 30 | Clear cliffs for the starter factory |
 | Small electric pole | 32 | Lightning capture and distribution |
+| Pylon 1 | 4 | Wider lightning capture and longer power connections |
 | Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
 | Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
 | One-way valve | 8 | Direct recovered fluids |
