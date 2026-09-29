@@ -1,6 +1,8 @@
 -- Test-only prototype: faults follow registered poles across network changes.
 local overload={}
 local SINK="factorio-test-trip-sink"
+local MESSAGE="Electrical grid overloaded"
+local ICON={type="virtual",name="signal-alert"}
 local PANEL="fulgora_overload_experiment"
 local function state() return storage.overload end
 function overload.init()
@@ -17,6 +19,21 @@ local function key(pole)
   for _,sub in pairs(network.sub_networks) do id=math.min(id,sub.id) end
   return id,network
 end
+-- Alerts follow current grid ownership and mark the hidden consumer on the map.
+local function refresh_alerts()
+  for _,player in pairs(game.players) do
+    player.remove_alert{type=defines.alert_type.custom,prototype=SINK,message=MESSAGE}
+    for id,sink in pairs(state().sinks) do
+      local group=state().groups[id]
+      local affected=false
+      for _,row in ipairs(group.rows) do
+        if row.pole.force==player.force then affected=true;break end
+      end
+      if affected then player.add_custom_alert(sink,ICON,MESSAGE,true) end
+    end
+  end
+end
+
 function overload.reconcile()
   local groups={}
   for id,row in pairs(state().poles) do
@@ -50,6 +67,7 @@ function overload.reconcile()
     end
   end
   state().groups=groups
+  refresh_alerts()
 end
 function overload.sample()
   overload.reconcile()

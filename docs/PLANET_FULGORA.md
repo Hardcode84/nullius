@@ -711,8 +711,9 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 
 Run `python tools/test_fulgora_overload.py`. The retained save has a pole reset
 panel; use `/overload-demo` after loading it with the generated test mods.
-The 25 assertions pass before and after reload from tick 102. Headless checks
-call the reset operation; they do not simulate a player click.
+The 25 core assertions pass before and after reload from tick 102.
+`experiment-fulgora-overload-alerts` passes 27 assertions with two real clients,
+including reload and the reset handler with the native GUI button.
 
 | Case | Result on 2.1.19 |
 |---|---|
@@ -723,6 +724,8 @@ call the reset operation; they do not simulate a player click.
 | Remove anchor / sink | Restore one sink per faulted component |
 | Save / reload | Retain faults and complete the same topology and reset checks |
 | Reset | Resolve the current component; allow 120 ticks before another trip |
+| Alert | “Electrical grid overloaded”, anchored to the sink and shown on the map; refresh while offline and remove on reset |
+| Alert ownership | Notify players whose force has a pole in the grid; follow sink relocation and force changes |
 | Overlapping unwired grids | One sink connects to both grids and starves the neighbour |
 | Short pulse | An 8-tick pulse between samples is missed |
 
