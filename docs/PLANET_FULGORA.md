@@ -433,7 +433,9 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 Power poles collect lightning; there is no separate player-built collector.
 Implemented on Fulgora: each pole has one hidden native collector. It captures
 20% of strike energy, holds up to 200 MJ, and supplies up to 0.5 MW. Collection
-uses the native 10-tile search radius. There is no idle drain.
+uses the native 10-tile search radius. There is no idle drain. A full buffer
+supplies maximum output for 400 seconds. The `fulgora-collector-drain` scenario
+checks depletion after one strike with ambient storms disabled.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
 Native supply areas determine electricity sharing, including between forces.
@@ -475,7 +477,7 @@ not the whole 30-tick interval. Short pulses between samples can be missed.
 | Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
 | Placement | Fulgora sand only; use the wind-turbine collision fields, including mutual exclusion with turbines |
 | Power | 2 MW surge demand; no power output |
-| Unlock | Primitive Filtration; boxed production and packaging at Mass Production 7 |
+| Unlock | Primitive Filtration; no boxed coil recipes |
 | Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
 | Recipe | 20 stone bricks, 20 aluminum wire, and 10 aluminum plates; 5 seconds; hand crafting or small assembler |
 | Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |

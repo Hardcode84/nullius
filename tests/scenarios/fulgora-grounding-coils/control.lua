@@ -80,7 +80,7 @@ script.on_nth_tick(1,function()
   storage.moved.teleport({300,70},nil,true)
   check(field_count(300,0)==0 and field_count(300,70)==4,'moved field remained')
   storage.moved.destroy()
-  -- Actual recipe execution and boxed parity.
+  -- Actual recipe execution.
   game.forces.player.technologies['nullius-primitive-filtration'].researched=true
   check(game.forces.player.recipes[NAME].enabled,'arrival unlock missing')
   tiles(550,0,12,'fulgoran-rock')
@@ -90,14 +90,9 @@ script.on_nth_tick(1,function()
     storage.assembler.insert{name=stack[1],count=stack[2]}
   end
   place('factorio-test-trip-pole',550,3,false);place('factorio-test-trip-source-2000000',551,2,false)
-  local bulk=prototypes.recipe['nullius-boxed-grounding-coil']
-  local ordinary=prototypes.recipe[NAME]
-  local ordinary_amounts={}
-  for _,ingredient in ipairs(ordinary.ingredients) do ordinary_amounts[ingredient.name]=ingredient.amount end
-  for _,ingredient in ipairs(bulk.ingredients) do
-    local product=prototypes.recipe[ingredient.name:gsub('^nullius%-box%-','nullius-unbox-')].products[1]
-    assert(ordinary_amounts[product.name], 'unexpected unboxed material: '..product.name)
-    check(product.amount*ingredient.amount==ordinary_amounts[product.name]*5,'boxed material parity: '..product.name)
+  check(prototypes.item['nullius-box-grounding-coil']==nil,'boxed coil item remains')
+  for _,name in ipairs({'nullius-boxed-grounding-coil','nullius-box-grounding-coil','nullius-unbox-grounding-coil'}) do
+    check(prototypes.recipe[name]==nil,'boxed coil recipe remains')
   end
 end)
 script.on_nth_tick(30,function()

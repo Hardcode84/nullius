@@ -15,13 +15,11 @@ data:extend({
     energy_usage='2MW',energy_production='0W',gui_mode='none',allow_copy_paste=false,
     animations=graphics.picture},
 })
-for _,boxed in ipairs({false,true}) do
-  local recipe={type='recipe',name=boxed and 'nullius-boxed-grounding-coil' or name,
-    enabled=false,categories={boxed and 'huge-assembly' or 'small-crafting'},
-    energy_required=boxed and 25 or 5,allow_productivity=false,no_productivity=true,
-    ingredients={{type='item',name=boxed and 'nullius-box-stone-brick' or 'stone-brick',amount=boxed and 10 or 20},
-      {type='item',name=boxed and 'nullius-box-aluminum-wire' or 'nullius-aluminum-wire',amount=20},
-      {type='item',name=boxed and 'nullius-box-aluminum-plate' or 'nullius-aluminum-plate',amount=10}},
-    results={{type='item',name=boxed and 'nullius-box-grounding-coil' or name,amount=1}}}
-  data:extend({recipe})
-end
+data:extend({{
+  type='recipe',name=name,enabled=false,categories={'small-crafting'},
+  energy_required=5,allow_productivity=false,no_productivity=true,
+  ingredients={{type='item',name='stone-brick',amount=20},
+    {type='item',name='nullius-aluminum-wire',amount=20},
+    {type='item',name='nullius-aluminum-plate',amount=10}},
+  results={{type='item',name=name,amount=1}},
+}})

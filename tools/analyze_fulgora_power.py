@@ -78,7 +78,11 @@ def report(data, config):
         'storms': data['planet']['nullius-fulgora']['lightning_properties'],
         'machines': machines, 'fleet_active_MW': sum(m['active_MW'] + m['drain_MW'] for m in machines),
         'fleet_idle_MW': sum(m['drain_MW'] for m in machines),
-        'candidates': candidates, 'strike_energy_sensitivity': sensitivity}
+        'candidates': candidates, 'strike_energy_sensitivity': sensitivity,
+        'buffer_sensitivity': [{'buffer_MJ': cap, 'full_output_seconds': cap * 1e6 / output,
+                                'bank_MJ': cap * max(config['charged_poles']),
+                                'maximum_capture_fraction': min(1, cap * 1e6 / energy)}
+                               for cap in config['candidate_buffer_MJ']]}
 
 
 def main():
@@ -91,6 +95,7 @@ def main():
     parser.add_argument('--timeout-seconds', type=int, default=300)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--native-results', type=Path)
+    parser.add_argument('--drain-results', type=Path)
     parser.add_argument('--read-report', type=Path)
     parser.add_argument('--profile', action='append', help='Print only native samples for named profiles')
     args = parser.parse_args()
@@ -131,7 +136,26 @@ def main():
         result['native_factorio_version'] = case['factorio_version']
         result['native_first_flows'] = [{k: v for k, v in r.items() if k in ('name', 'first_trip', 'first_flow')}
                                        for r in case['observations']]
+    if args.drain_results:
+        run = json.loads(args.drain_results.read_text())
+        if run['status'] != 'pass':
+            raise ValueError('Native drain scenario run did not pass')
+        cases = [r for r in run['results'] if r['case'] == 'fulgora-collector-drain']
+        if len(cases) != 1:
+            raise ValueError('Expected one collector drain result')
+        samples = cases[0]['observations']['samples']
+        first, second = samples[:2]
+        result['drain'] = {
+            'observed_discharge_MW': (first['networks'][0]['energy_MJ'] - second['networks'][0]['energy_MJ']) / (second['seconds'] - first['seconds']),
+            'last_nonempty_seconds': max(s['seconds'] for s in samples if s['networks'][0]['energy_MJ'] > 0),
+            'first_empty_seconds': min(s['seconds'] for s in samples if s['networks'][0]['energy_MJ'] == 0),
+            'end_idle_MJ': samples[-1]['networks'][1]['energy_MJ'],
+            'end_loaded_MJ': samples[-1]['networks'][0]['energy_MJ'],
+            'end_loaded_offered_MW': samples[-1]['networks'][0]['offered_MW'],
+        }
     args.output.write_text(json.dumps(result, indent=2) + '\n')
+    if 'drain' in result:
+        print('drain', json.dumps(result['drain']))
     if args.profile:
         unknown = set(args.profile) - {row['name'] for row in result.get('native', [])}
         if unknown:
@@ -140,7 +164,7 @@ def main():
             if row['name'] in args.profile:
                 print(json.dumps(row))
         return
-    for field in ('collector', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity'):
+    for field in ('collector', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity', 'buffer_sensitivity'):
         print(field, json.dumps(result[field]))
     if 'native' in result:
         print('native_first_flows', json.dumps(result['native_first_flows']))
