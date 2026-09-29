@@ -1,5 +1,5 @@
 -- given: native 2 MW sources (1.2 MW with storage), 100 kW loads, 600 kW battery charge limits;
--- a production pole collector and one declared 1 MJ lightning strike.
+-- the original 100 MW pole collector fixture and one declared 1 MJ lightning strike.
 -- place/connect: isolated networks, a splittable pair, and overlapping unwired poles.
 -- act: sample every 30 ticks; split/merge, remove anchors/helpers, reset, and pulse power.
 -- expect: latch overloads, retain storage headroom, expose overlap and sampling bounds.
@@ -50,7 +50,7 @@ script.on_nth_tick(1,function()
   storage.far_load=build(P.."load",410,1);wire(storage.branch.pole,storage.far,true)
   storage.lightning={pole=build(P.."pole",500,0),load=build(P.."load",501,1)}
   overload.add(storage.lightning.pole)
-  storage.lightning.collector=build("nullius-pole-lightning-collector",500,0)
+  storage.lightning.collector=build("factorio-test-power-collector-100000",500,0)
   storage.overlap=row(600,false)
   storage.neighbour=row(602,false)
   wire(storage.overlap.pole,storage.neighbour.pole,false)

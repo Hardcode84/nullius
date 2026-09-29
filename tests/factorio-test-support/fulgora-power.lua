@@ -1,5 +1,5 @@
 -- Test-only collector output candidates; all other properties stay unchanged.
-for _,mw in ipairs({0.5,1,2,5}) do
+for _,mw in ipairs({0.5,1,2,5,100}) do
   local collector=table.deepcopy(data.raw['lightning-attractor']['nullius-pole-lightning-collector'])
   collector.name='factorio-test-power-collector-'..math.floor(mw*1000)
   collector.energy_source.output_flow_limit=mw..'MW'

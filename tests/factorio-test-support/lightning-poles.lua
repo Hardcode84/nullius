@@ -83,3 +83,8 @@ storage.collision_mask = {layers={}}
 storage.energy_source = {type="electric",buffer_capacity="1GJ",usage_priority="tertiary",
   input_flow_limit="100MW",output_flow_limit="10MW",drain="0W"}
 data:extend({storage})
+
+local slow=table.deepcopy(receiver)
+slow.name='factorio-test-lightning-receiver-slow'
+slow.energy_source.input_flow_limit='200kW'
+data:extend({slow})

@@ -5,8 +5,8 @@
 -- expect: production grid trips; observational grids measure unclipped supply and trip risk.
 local CASE='fulgora-power-budget'
 local function check(ok,message) storage.assertions=storage.assertions+1;assert(ok,message) end
-local profiles={{name='actual',poles=8,actual=true},{name='current-1',poles=1},
-  {name='current-8',poles=8},{name='current-32',poles=32},
+local profiles={{name='actual',poles=8,actual=true},{name='original-1',poles=1,cap=100},
+  {name='original-8',poles=8,cap=100},{name='original-32',poles=32,cap=100},
   {name='cap-0.5-8',poles=8,cap=0.5},{name='cap-1-8',poles=8,cap=1},
   {name='cap-2-8',poles=8,cap=2},{name='cap-5-8',poles=8,cap=5},
   {name='cap-0.5-32',poles=32,cap=0.5},{name='cap-1-32',poles=32,cap=1},
@@ -104,7 +104,7 @@ script.on_nth_tick(30,function()
       result[#result+1]={name=row.name,poles=#row.poles,first_trip=row.first_trip,first_flow=row.first_flow,
         direct=row.direct,day=row.day,night=row.night}
     end
-    check(storage.rows[1].first_trip<=60,'production overload did not trip promptly')
+    check(storage.rows[1].first_trip~=nil,'unprotected production grid never tripped')
     for _,row in ipairs(storage.rows) do
       check(row.direct.captures>0,'no declared strike captured: '..row.name)
       if row.dump then

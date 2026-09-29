@@ -21,5 +21,5 @@ collector.efficiency = 0.2
 collector.range_elongation = 0
 collector.energy_source = {type="electric", buffer_capacity="200MJ",
   usage_priority="primary-output", input_flow_limit="0W",
-  output_flow_limit="100MW", drain="0W"}
+  output_flow_limit="500kW", drain="0W"}
 data:extend({collector})

@@ -15,7 +15,7 @@ for kind in pairs(require("collision-mask-defaults")) do
       (name:find("nullius-extractor-",1,true)==1 or name=="pumpjack")
     local elevated = kind:find("elevated-",1,true)==1
     if kind~="tile" and not allowed[kind] and not extractor and not elevated and
-        name~="nullius-hydrocarbon-vent" and
+        name~="nullius-hydrocarbon-vent" and name~="nullius-grounding-coil" and
         (mask.layers.water_tile or mask.layers.ground_tile or buildable[name]~=nil) then
       entity.collision_mask = table.deepcopy(mask)
       entity.collision_mask.layers.nullius_fulgora_sand = true
@@ -30,4 +30,18 @@ for kind in pairs(defines.prototypes.item) do
       placement.condition.layers.nullius_fulgora_sand = not placement.invert or nil
     end
   end
+end
+
+data:extend({{type='collision-layer',name='nullius_grounding_land'}})
+for name,tile in pairs(data.raw.tile) do
+  if not name:find('nullius-fulgora-sediment',1,true) then
+    tile.collision_mask=table.deepcopy(tile.collision_mask)
+    tile.collision_mask.layers.nullius_grounding_land=true
+  end
+end
+for _,direction in ipairs({'horizontal','vertical'}) do
+  local field=table.deepcopy(data.raw['simple-entity-with-force']['nullius-wind-collision-'..direction])
+  field.name='nullius-grounding-collision-'..direction
+  field.localised_name={'entity-name.nullius-grounding-coil'}
+  data:extend({field})
 end

@@ -33,7 +33,7 @@ local function landing(force, name)
       ['small-electric-pole']=32,pipe=200,['pipe-to-ground']=40,['nullius-small-tank-1']=8,
       ['nullius-one-way-valve']=8,['transport-belt']=100,inserter=24,['wooden-chest']=10,
       ['cliff-explosives']=30,
-      splitter=8,['underground-belt']=20,['nullius-grid-battery-1']=4,
+      splitter=8,['underground-belt']=20,['nullius-grid-battery-1']=4,['nullius-grounding-coil']=4,
     }
     local chests=surface.find_entities_filtered{name='wooden-chest',force=force}
     check(#chests==2,'two salvage chests per force')

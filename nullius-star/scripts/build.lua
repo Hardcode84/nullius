@@ -5,6 +5,7 @@ function entity_added(entity, handbuilt)
   if overcharged_assemblers.built(entity) ~= entity then return end
   if supercapacitors.built(entity) ~= entity then return end
   fulgora_collectors.add(entity)
+  grounding_coils.built(entity)
   if (entity.type == "spider-vehicle") then
 	  mecha_added(entity)
     return
@@ -68,6 +69,7 @@ function entity_added(entity, handbuilt)
 end
 
 function entity_removed(entity, died)
+  if entity.name=="nullius-grounding-coil" then remove_wind_mod_entity(entity) end
   if entity.type=="electric-pole" then fulgora_collectors.remove(entity.unit_number) end
   -- Clean up heat interface for any pneumatic machine (before prefix check).
   if string.sub(entity.name, -10) == "-pneumatic" then
@@ -111,6 +113,7 @@ function entity_raised(event)
   entity_added(event.entity, nil)
 end
 function entity_cloned(event)
+  if grounding_coils.cloned(event.destination) then return end
   if fulgora_overload.cloned(event.destination) then return end
   local entity = supercapacitors.built(overcharged_assemblers.built(event.destination))
   fulgora_collectors.cloned(entity)

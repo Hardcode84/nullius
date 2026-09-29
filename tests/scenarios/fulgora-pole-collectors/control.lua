@@ -34,7 +34,7 @@ script.on_nth_tick(1,function()
   patch(surface,0,100,'nullius-fulgora-sediment')
   storage.pole=build('small-electric-pole',0,0,true)
   storage.collector=helper(storage.pole)
-  storage.receiver=build('factorio-test-lightning-receiver',1,1,false)
+  storage.receiver=build('factorio-test-lightning-receiver-slow',1,1,false)
   storage.battery=build('factorio-test-lightning-storage',-1,1,false)
   storage.crusher=build('nullius-crusher-1',2,-1,false)
   game.forces.player.technologies['nullius-primitive-filtration'].researched=true

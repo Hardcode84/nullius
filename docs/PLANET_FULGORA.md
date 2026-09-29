@@ -78,6 +78,7 @@ Supplied once per force when the probe is activated.
 | Transport belt / inserter | 100 / 24 | Solid transport |
 | Splitter / underground belt | 8 / 20 | Split belts and cross processing lines |
 | Grid battery 1 | 4 | Additional electric storage |
+| Grounding coil | 4 | Discharge surplus power; one coil protects eight poles |
 | Small chest | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
 
 Keep processing machines in the wreck. Put logistics supplies in the two
@@ -221,8 +222,7 @@ Slurry climatology uses the captured air without seawater.
 |---|---|
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
-| Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
-| Planned sand construction | Grounding coils; see lightning protection below |
+| Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, elevated rail supports, and grounding coils only |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
@@ -432,7 +432,7 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 
 Power poles collect lightning; there is no separate player-built collector.
 Implemented on Fulgora: each pole has one hidden native collector. It captures
-20% of strike energy, holds up to 200 MJ, and supplies up to 100 MW. Collection
+20% of strike energy, holds up to 200 MJ, and supplies up to 0.5 MW. Collection
 uses the native 10-tile search radius. There is no idle drain.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
@@ -453,7 +453,7 @@ lightning -> pole collector -> electrical network
 
 | Protection | Role | Cost or constraint |
 |---|---|---|
-| Grounding coil (planned surge sink) | Discharge excess electricity into conductive slurry beneath the sand | Tertiary priority; sand placement; spaced like wind turbines |
+| Grounding coil | Discharge excess electricity into conductive slurry beneath the sand | Tertiary priority; sand placement; spaced like wind turbines |
 | Priority sink | Maintain storage headroom through steady consumption | Secondary priority; can cause calm-period shortages |
 | Reset grace period | Prevent immediate repeat trips | Allow 120 ticks after manual reset |
 
@@ -466,22 +466,25 @@ Trip only if offered power also exceeds requested power by more than 1 MW.
 Exclude accumulator discharge from the offered sum. This uses the latest tick,
 not the whole 30-tick interval. Short pulses between samples can be missed.
 
-### Grounding coils — design only
+### Grounding coils
 
-| Property | Design |
+| Property | Value |
 |---|---|
 | Function | An electrode conducts excess electricity into buried slurry; the energy becomes underground heat |
-| Appearance | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
+| Visual target | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
 | Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
-| Placement | On sand around the islands; require separation between coils |
+| Placement | Fulgora sand only; use the wind-turbine collision fields, including mutual exclusion with turbines |
+| Power | 2 MW surge demand; no power output |
+| Unlock | Primitive Filtration; boxed production and packaging at Mass Production 7 |
 | Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
-| Recipe basis | Ceramic insulation and conductive windings; use starter conductors, not late-game copper |
+| Recipe | 20 stone bricks, 20 aluminum wire, and 10 aluminum plates; 5 seconds; hand crafting or small assembler |
 | Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |
-| Higher tiers | Induction discharge towers with stacked coils and stronger electrical effects |
+| Higher-tier design | Induction discharge towers with stacked coils and stronger electrical effects |
 
 ### Starter power balance experiment
 
-Gameplay settings are unchanged. Run `tools/analyze_fulgora_power.py` with
+Pole output is now 0.5 MW, with four 2 MW grounding coils in the starter kit.
+Run `tools/analyze_fulgora_power.py` with
 `tests/progression/planner/fulgora-power.json` and `--output REPORT.json`.
 Run scenario `fulgora-power-budget` for native flow samples. Pass its runner JSON
 with `--native-results` to add the measurements to the report.
@@ -489,13 +492,13 @@ with `--native-results` to add the measurements to the report.
 | Current value | Resolved amount |
 |---|---:|
 | Energy captured per strike | 200 MJ |
-| Collector capacity / maximum output, per pole | 200 MJ / 100 MW |
+| Collector capacity / maximum output, per pole | 200 MJ / 0.5 MW |
 | Four starter batteries: capacity / charge / discharge | 60 MJ / 0.8 MW / 2 MW |
 | Starter process machines and lab, all active | 7.13 MW |
 | Same machines, idle drain | 0.247 MW |
 
-One charged pole offers 100 MW against 1.3 MW of demand from a 0.5 MW load
-and four empty batteries. The production grid is offline by the check at tick 60.
+Before this change, one charged pole offered 100 MW against 1.3 MW of demand
+from a 0.5 MW load and four empty batteries. That grid was offline by tick 60.
 Offered power is available output, not new strike energy. Charged poles retain
 that output rating between strikes. Full batteries remove their charging demand.
 
@@ -505,7 +508,7 @@ Each profile has a separate location; strike counts are not matched traces.
 
 | Candidate | Poles | Night samples above trip threshold |
 |---|---:|---:|
-| Current 100 MW output | 32 | 100% |
+| Original 100 MW output | 32 | 100% |
 | 0.5 MW output only | 8 | 100% |
 | 0.5 MW output + 2 MW surge sink | 8 | 0% |
 | 0.5 MW output + 8 MW surge sink | 32 | 0% |
@@ -513,7 +516,10 @@ Each profile has a separate location; strike counts are not matched traces.
 Both protected candidates powered the load at every sample and filled the
 batteries. At 0.5 MW per pole, a 2 MW surge sink covers eight fully charged
 poles even when the factory is idle. Four such sinks cover the full starter kit.
-This is a candidate for basic poles and early surge sinks. It does not prove
+The production scenario also checks four real coils, spacing, construction,
+removal, reload, and loss of protection. Run
+`python tools/test_fulgora_overload.py --case fulgora-grounding-coils` for the
+reload check. These checks do not prove
 continuous operation of the full 7.13 MW fleet or power for overcharged machines.
 
 ## Energy storage
@@ -773,7 +779,7 @@ pole reset panel. The client test needs a display socket and loopback networking
 |---|---|
 | Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality does not trip |
 | Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
-| Native lightning | The production pole collector triggers a trip |
+| Native lightning | One collector stays below the excess floor; accumulated output can trigger a trip |
 | Split / merge | Both split parts retain the fault; merging propagates it |
 | Remove anchor / sink | Restore one sink per faulted native network |
 | Replace pole | Retain the fault after fast replacement |

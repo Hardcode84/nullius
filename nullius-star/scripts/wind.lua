@@ -191,9 +191,9 @@ function update_wind()
 end
 
 
-function create_wind_collision(surface, pos, force, dir, xo, yo, xsz, ysz)
+function create_wind_collision(surface, pos, force, dir, xo, yo, xsz, ysz, prefix)
   return (create_collision_box(surface, pos, force,
-	  "nullius-wind-collision-"..dir, xo, yo, xsz, ysz, "layer-43"))
+	  (prefix or "nullius-wind-collision-")..dir, xo, yo, xsz, ysz, "layer-43"))
 end
 
 function build_wind_turbine(entity, level)
@@ -276,18 +276,20 @@ function destroyed_wind_turbine(unit)
   return false
 end
 
-function build_wind_mod_entity(entity)
-  -- Entity is managed by another mod.  Only build collision boxes.
+function build_wind_mod_entity(entity, collision_prefix)
+  destroy_wind_mod_entity(entity.unit_number)
+  script.register_on_object_destroyed(entity)
+  -- Reserve the same space as a wind turbine.
   local surface = entity.surface
   local position = entity.position
   local force = entity.force
 
-  toff, boff, loff, roff = unpack(wind_mod_offsets[entity.name] or {0, 0, 0, 0})
+  local toff, boff, loff, roff = unpack(wind_mod_offsets[entity.name] or {0, 0, 0, 0})
 
-  local collision1 = create_wind_collision(surface, position, force, "horizontal", 14.5 + roff, 16 + boff, 16, 14.5)
-  local collision2 = create_wind_collision(surface, position, force, "vertical", 16 + roff, -14.5 + toff, 14.5, 16)
-  local collision3 = create_wind_collision(surface, position, force, "horizontal", -14.5 + loff, -16 + toff, 16, 14.5)
-  local collision4 = create_wind_collision(surface, position, force, "vertical", -16 + loff, 14.5 + boff, 14.5, 16)
+  local collision1 = create_wind_collision(surface, position, force, "horizontal", 14.5 + roff, 16 + boff, 16, 14.5, collision_prefix)
+  local collision2 = create_wind_collision(surface, position, force, "vertical", 16 + roff, -14.5 + toff, 14.5, 16, collision_prefix)
+  local collision3 = create_wind_collision(surface, position, force, "horizontal", -14.5 + loff, -16 + toff, 16, 14.5, collision_prefix)
+  local collision4 = create_wind_collision(surface, position, force, "vertical", -16 + loff, 14.5 + boff, 14.5, 16, collision_prefix)
 
   storage.nullius_wind_mod_entities[entity.unit_number] = {
     collision_box = collision1,
@@ -299,7 +301,7 @@ function build_wind_mod_entity(entity)
 end
 
 function destroy_wind_mod_entity(unit)
-  -- Entity is managed by another mod.  Only destroy collision boxes.
+  -- Release the reserved space.
   local entry = storage.nullius_wind_mod_entities[unit]
   if entry == nil then return false end
 

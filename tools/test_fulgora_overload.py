@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
-    parser.add_argument("--case", choices=("fulgora-grid-overload", "experiment-fulgora-overload"),
+    parser.add_argument("--case", choices=("fulgora-grid-overload", "fulgora-grounding-coils", "experiment-fulgora-overload"),
                         default="fulgora-grid-overload")
     args = parser.parse_args()
     args.mod_under_test = MOD_UNDER_TEST

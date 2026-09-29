@@ -41,3 +41,9 @@ data:extend({{
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},
   }},
 }})
+
+table.insert(data.raw.technology['nullius-primitive-filtration'].effects,
+  {type='unlock-recipe',recipe='nullius-grounding-coil'})
+for _,name in ipairs({'nullius-boxed-grounding-coil','nullius-box-grounding-coil','nullius-unbox-grounding-coil'}) do
+  table.insert(data.raw.technology['nullius-mass-production-7'].effects,{type='unlock-recipe',recipe=name})
+end
