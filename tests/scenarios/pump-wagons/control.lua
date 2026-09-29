@@ -1,4 +1,4 @@
--- given: void-powered production pump copies, straight rails, one wagon per case
+-- given: void-powered production pump copies, straight rails, one production wagon per case
 -- place: two pump tiers in four directions, load/unload, and four wagon offsets
 -- connect: a pipe at the pump's land-side port
 -- act: put 100 water in the source pipe or wagon; run 599 ticks
@@ -28,7 +28,7 @@ script.on_nth_tick(1,function()
       check(surface.create_entity{name="straight-rail",position=position(1,y),
         direction=rotation*4,force="player"}~=nil,"rail placed")
     end
-    local wagon=surface.create_entity{name="fluid-wagon",position=position(1,1+offset),direction=rotation*4,force="player"}
+    local wagon=surface.create_entity{name="nullius-fluid-wagon-1",position=position(1,1+offset),direction=rotation*4,force="player"}
     check(wagon~=nil,"wagon placed")
     wagon.train.manual_mode=true
     local pump=surface.create_entity{name="factorio-test-nullius-pump-" .. tier,

@@ -21,7 +21,7 @@
 
 ## Supported engine
 
-- Target Factorio 2.1 only; minimum version is 2.1.19.
+- Target Factorio 2.1 only; minimum version is 2.1.20.
 - Build release packages and validate new changes on 2.1. Do not add 2.0 compatibility.
 - Retain older-engine fixtures only for historical comparisons and prior-release upgrades.
 

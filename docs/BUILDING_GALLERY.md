@@ -17,7 +17,7 @@ arrow buttons to move between displays. Each group shows north, east, south,
 and west. A direction note identifies rotations that
 the engine maps to the same direction. Labels use prototype names.
 
-The gallery includes all Nullius building prototypes, including hidden helpers,
+The gallery includes all Nullius building prototypes with a selection area,
 and base buildings placed by Nullius items or produced by Nullius recipes.
 Buildings are idle and disabled.
 The surface has permanent daylight. The player can move without a character.

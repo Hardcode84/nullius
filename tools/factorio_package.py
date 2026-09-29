@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = {
-    "2.1": {"base": "2.1.19", "space-age": "2.1.19", "elevated-rails": "2.1.19",
+    "2.1": {"base": "2.1.20", "space-age": "2.1.20", "elevated-rails": "2.1.20",
             "boblogistics": "3.0.1", "boblibrary": "3.0.0", "configurable-valves": "2.0.2"},
 }
 

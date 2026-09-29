@@ -6,9 +6,9 @@
   "author": "Anachrony et al.",
   "description": "Space Age expansion for Nullius.",
   "dependencies": [
-    "base >= 2.1.19",
-    "space-age >= 2.1.19",
-    "elevated-rails >= 2.1.19",
+    "base >= 2.1.20",
+    "space-age >= 2.1.20",
+    "elevated-rails >= 2.1.20",
     "alien-biomes >= 0.7.4",
     "angelsrefininggraphics >= 2.0.0",
     "angelssmeltinggraphics >= 2.0.0",

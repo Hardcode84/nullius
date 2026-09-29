@@ -36,7 +36,8 @@ script.on_nth_tick(1,function()
         cases[#cases+1]={name=name:sub(15),item=item.name,ratio=ratio}
       end
     end
-    check(#cases==258+(script.active_mods["ch-concentrated-solar"] and 1 or 0),"all production boxing pairs: "..#cases)
+    -- Includes ice and electromagnetic research packs.
+    check(#cases==260+(script.active_mods["ch-concentrated-solar"] and 1 or 0),"all production boxing pairs: "..#cases)
   end
   table.sort(cases,function(a,b) return a.name<b.name end)
   storage.cases=cases

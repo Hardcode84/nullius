@@ -31,6 +31,8 @@ script.on_nth_tick(1, function()
     check(entity and entity.valid,'support creation failed on '..name)
     entity.destroy()
     local firm = name=='fulgoran-rock'
+    check(surface.can_place_entity{name='straight-rail',position={1,1},
+      direction=defines.direction.north,force='player'}==firm,'ground rail contract: '..name)
     check(surface.can_place_entity{name='rail-ramp',position={0,0},
       direction=defines.direction.north,force='player'}==firm,'ramp ground contract: '..name)
     check(surface.can_place_entity{name='nullius-small-assembler-1',position={0,0},force='player'}==firm,

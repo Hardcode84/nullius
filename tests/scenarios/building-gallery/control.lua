@@ -1,5 +1,5 @@
 -- given: loaded production prototypes; no recipes, resources, or power inputs
--- place: each Nullius building in four cardinal directions, including helpers
+-- place: each Nullius building in four cardinal directions, excluding invisible helpers
 -- connect: separate display cells; no production networks
 -- act: inspect idle graphics in permanent daylight; select a row to teleport
 -- expect: every requested entity exists and keeps its initial native direction
@@ -37,7 +37,12 @@ local function names()
     end
   end
   local result = {}
-  for name in pairs(selected) do result[#result+1] = name end
+  for name in pairs(selected) do
+    local box = prototypes.entity[name].selection_box
+    if box.left_top.x ~= box.right_bottom.x or box.left_top.y ~= box.right_bottom.y then
+      result[#result+1] = name
+    end
+  end
   table.sort(result)
   return result
 end

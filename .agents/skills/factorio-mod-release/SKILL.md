@@ -52,7 +52,7 @@ Require a clean checkout, then run:
 python tools/build_release.py -n auto
 ```
 
-The only release target is Factorio 2.1, minimum version 2.1.19. Select matching
+The only release target is Factorio 2.1, minimum version 2.1.20. Select matching
 `--factorio` and `--dependency-mod-directory` paths. Use `--upgrade-factorio`
 and `--upgrade-dependency-mod-directory` only when prior-release fixtures need
 an older engine. The prior payload stays unchanged.

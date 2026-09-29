@@ -348,6 +348,8 @@ def parse_arguments() -> argparse.Namespace:
         metavar="CASE",
         help="scenario test(s) to run; the default is every discovered test",
     )
+    parser.add_argument("--read-result", type=Path,
+                        help="show failures and counts from a saved suite result without running tests")
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument(
         "--mod-under-test",
@@ -485,6 +487,13 @@ def print_case_result(
 def main() -> int:
     suite_started = time.perf_counter()
     args = parse_arguments()
+    if args.read_result:
+        suite = json.loads(args.read_result.read_text())
+        for index, result in enumerate(suite["results"], 1):
+            if result["status"] != "pass":
+                print_case_result(index, len(suite["results"]), result["case"], result)
+        print(f"Result: {suite['passed']} passed, {suite['failed']} failed")
+        return 0 if suite["failed"] == 0 else 1
     try:
         cases = args.cases or discover_cases()
         for case in cases:

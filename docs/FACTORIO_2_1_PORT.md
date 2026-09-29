@@ -1,6 +1,9 @@
 # Factorio 2.1 port assessment
 
-Support policy, 2026-09-29: Factorio 2.1 only, minimum 2.1.19.
+Support policy, 2026-09-30: Factorio 2.1 only, minimum 2.1.20.
+Fuel items use `fuel_categories` as required by 2.1.20.
+Factory Planner requires version 2.1.16 or later for this engine API.
+2.1.20 validation: 165 scenarios, 126 Python tests, and a clean locale audit.
 The comparisons below record the earlier port checks.
 
 Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
@@ -54,7 +57,7 @@ All five tests pass 208 assertions on each engine.
 | Fresh full-mod plans | Vulcanus progression through physics, plus Nauvis and Vulcanus tier-2 science plans complete |
 | Locale, both engines | No missing prototype names, missing keys, or unused UI keys |
 | Strict 2.1 prototype check | 2,131 ignored fields on Nullius prototypes; see below |
-| Release metadata | The package now targets 2.1 and requires engine 2.1.19, Bob library 3.0.0, Bob logistics 3.0.1, and Configurable Valves 2.0.2 |
+| Release metadata | The package now targets 2.1 and requires engine 2.1.20, Bob library 3.0.0, Bob logistics 3.0.1, and Configurable Valves 2.0.2 |
 | Published 2.1 dependencies | Download retry returns HTTP 403; the full published set is not tested |
 
 The full suites use the same source and 126 scenario contracts. The 2.1 set
