@@ -222,6 +222,7 @@ Slurry climatology uses the captured air without seawater.
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
 | Buildings permitted on sand | Extractors, power poles, pipes, underground pipes, pumps, and elevated rail supports only |
+| Planned sand construction | Grounding coils; see lightning protection below |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
@@ -452,7 +453,7 @@ lightning -> pole collector -> electrical network
 
 | Protection | Role | Cost or constraint |
 |---|---|---|
-| Surge sink | Consume excess electricity as waste heat | Tertiary priority; spaced like wind turbines |
+| Grounding coil (planned surge sink) | Discharge excess electricity into conductive slurry beneath the sand | Tertiary priority; sand placement; spaced like wind turbines |
 | Priority sink | Maintain storage headroom through steady consumption | Secondary priority; can cause calm-period shortages |
 | Reset grace period | Prevent immediate repeat trips | Allow 120 ticks after manual reset |
 
@@ -464,6 +465,18 @@ and solar energy against twice the requested energy across all input priorities.
 Trip only if offered power also exceeds requested power by more than 1 MW.
 Exclude accumulator discharge from the offered sum. This uses the latest tick,
 not the whole 30-tick interval. Short pulses between samples can be missed.
+
+### Grounding coils — design only
+
+| Property | Design |
+|---|---|
+| Function | An electrode conducts excess electricity into buried slurry; the energy becomes underground heat |
+| Appearance | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
+| Placement | On sand around the islands; require separation between coils |
+| Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
+| Recipe basis | Ceramic insulation and conductive windings; use starter conductors, not late-game copper |
+| Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |
+| Higher tiers | Induction discharge towers with stacked coils and stronger electrical effects |
 
 ### Starter power balance experiment
 
