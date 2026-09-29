@@ -668,6 +668,8 @@ The comparison is `tests/progression/planner/fulgora-em-upgrades.json`.
 Implemented: eight electric assembler variants usable on all planets. Small and
 medium assemblers cover tiers 1–3. Large assembler 1 is tier 2; large assembler 2
 is tier 3. Overcharged Assembly 2 and 3 unlock the higher modes.
+Upgrade planners keep overcharged mode and use ordinary assembler items.
+Robot upgrades and downgrades retain compatible recipes.
 
 | Tier | Built-in productivity | Power consumption |
 |---|---:|---:|

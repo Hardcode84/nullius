@@ -26,6 +26,10 @@ function variant_upgrades.apply(suffix)
           error("Missing base entity for upgrade chain: " .. name)
         end
 
+        -- Modes remain selectable by upgrade planners without duplicate encyclopedia entries.
+        variant.hidden = false
+        variant.hidden_in_factoriopedia = true
+
         local target = base.next_upgrade
         local variant_target = target and prototypes[target .. suffix]
         if variant_target then

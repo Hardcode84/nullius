@@ -1,6 +1,10 @@
+-- given: all four mode families and an empty upgrade planner.
+-- place: each source variant alone on landfill, without build-event side effects.
+-- act: apply the native default planner.
+-- expect: every link selects the next tier in the same mode; terminal tiers stop.
 local CASE = "variant-upgrades"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local SUFFIXES = {"-pneumatic", "-thermal"}
+local SUFFIXES = {"-pneumatic", "-thermal", "-overcharged", "-supercapacitor"}
 
 local assertions = 0
 local failures = {}
@@ -34,6 +38,16 @@ end
 local function setup()
   script.on_nth_tick(1, nil)
 
+  local surface = game.surfaces.nauvis
+  surface.request_to_generate_chunks({0, 0}, 1)
+  surface.force_generate_chunk_requests()
+  for _, entity in pairs(surface.find_entities_filtered{area={{-10,-10},{10,10}}}) do entity.destroy() end
+  local tiles = {}
+  for x=-10,10 do for y=-10,10 do tiles[#tiles+1]={name="landfill",position={x,y}} end end
+  surface.set_tiles(tiles, true)
+  local inventory = game.create_inventory(1)
+  inventory[1].set_stack{name="upgrade-planner"}
+
   for _, suffix in ipairs(SUFFIXES) do
     local variants = 0
     local upgrades = 0
@@ -53,6 +67,11 @@ local function setup()
           end
           if base_target and expected then
             upgrades = upgrades + 1
+            local entity = assert(surface.create_entity{name=name, position={0,0}, force="player"})
+            surface.upgrade_area{area={{-8,-8},{8,8}}, force="player", item=inventory[1]}
+            local target = entity.get_upgrade_target()
+            check(target and target.name == expected.name, name .. " skipped by default upgrade planner")
+            entity.destroy()
             check(variant.next_upgrade ~= nil, name .. " has no next upgrade")
             if variant.next_upgrade then
               check(variant.next_upgrade.name == expected.name,
@@ -77,6 +96,7 @@ local function setup()
     }
   end
 
+  inventory.destroy()
   finish()
 end
 

@@ -319,7 +319,9 @@ Thermal crushers, furnaces, and foundries are global alternatives to their
 electric equivalents. The first tier unlocks with pneumatic technology; later
 tiers depend on corresponding Nauvis machinery and metallurgic thermal
 research. Thermal research is optional and never gates the ordinary Nauvis
-progression path.
+progression path. Upgrade planners keep thermal mode and use ordinary machine
+items, including for nanofabricators. Robot upgrades and downgrades retain
+compatible recipes.
 
 ### Industrial optimization
 
