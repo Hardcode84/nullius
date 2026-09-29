@@ -10,9 +10,9 @@ data:extend({
     collision_box={{-1.2,-1.2},{1.2,1.2}},selection_box={{-1.5,-1.5},{1.5,1.5}},
     collision_mask={layers={layer_43=true,object=true,player=true,item=true,water_tile=true,
       elevated_rail=true,nullius_grounding_land=true}},
-    energy_source={type='electric',buffer_capacity='1MJ',usage_priority='tertiary',
-      input_flow_limit='2MW',output_flow_limit='0W',drain='0W',render_no_power_icon=false},
-    energy_usage='2MW',energy_production='0W',gui_mode='none',allow_copy_paste=false,
+    energy_source={type='electric',buffer_capacity='20MJ',usage_priority='tertiary',
+      input_flow_limit='400MW',output_flow_limit='0W',drain='0W',render_no_power_icon=false},
+    energy_usage='400MW',energy_production='0W',gui_mode='none',allow_copy_paste=false,
     animations=graphics.picture},
 })
 data:extend({{

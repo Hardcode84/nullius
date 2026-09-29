@@ -111,6 +111,7 @@ script.on_nth_tick(30,function()
     storage.inventory=game.create_inventory(10)
     for _,coil in ipairs(storage.coils) do check(coil.mine{inventory=storage.inventory,raise_destroyed=true},'mine coil') end
     check(storage.inventory.get_item_count(NAME)==4,'mining did not return four coils')
+    storage.surface.execute_lightning{name='nullius-fulgora-lightning',position=storage.poles[1].position}
   elseif game.tick==660 then
     check(remote.call('nullius-test-overload','offline',storage.poles[1]),'removing protection did not trip')
     local ghost=storage.surface.create_entity{name='entity-ghost',inner_name=NAME,position={0,0},force='player'}

@@ -85,7 +85,7 @@ local actions={
   check(not overload.offline(storage.protected.pole),"battery charge demand ignored")
   check(not overload.offline(storage.edge.pole),"exact 2x boundary tripped")
   check(not overload.offline(storage.dark.pole),"accumulator discharge counted as generation")
-  check(not overload.offline(storage.lightning.pole),"single 500 kW collector exceeded grace floor")
+  check(overload.offline(storage.lightning.pole),"unprotected collector burst did not trip")
   check(overload.offline(storage.far),"fault missing on remote pole")
   check(storage.hot.load.energy==0,"load not starved")
   local networks=0

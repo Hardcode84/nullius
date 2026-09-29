@@ -42,6 +42,11 @@ script.on_nth_tick(1,function()
     grid.power_production=1000000000;grid.electric_buffer_size=1000000000
     place("substation",x+3,44)
     storage.charges[#storage.charges+1]=charging
+    local ordinary_charging=place(base,x,100)
+    local ordinary_grid=place("factorio-test-planner-grid",x+6,100)
+    ordinary_grid.power_production=1000000000;ordinary_grid.electric_buffer_size=1000000000
+    place("substation",x+3,104)
+    storage.charges[#storage.charges+1]=ordinary_charging
   end
   storage.switching=place("nullius-grid-battery-1-supercapacitor",0,80)
   storage.switching.energy=storage.switching.electric_buffer_size
@@ -66,10 +71,18 @@ script.on_nth_tick(1,function()
     storage[mode]={donor=donor,load=load}
   end
 end)
+script.on_nth_tick(2,function()
+  if game.tick==0 then return end
+  for _,entity in ipairs(storage.charges) do
+    local rate=entity.prototype.electric_energy_source_prototype.get_input_flow_limit()
+    near(entity.energy,math.min(entity.electric_buffer_size,rate),"first-tick native charge")
+  end
+  script.on_nth_tick(2,nil)
+end)
 script.on_nth_tick(31,function()
   if game.tick==0 then return end
   for _,entity in ipairs(storage.charges) do
-    near(entity.energy,entity.prototype.electric_energy_source_prototype.get_input_flow_limit()*30,"native charge rate")
+    near(entity.energy,math.min(entity.electric_buffer_size,entity.prototype.electric_energy_source_prototype.get_input_flow_limit()*30),"native charge saturation")
   end
   local entity=storage.switching
   local expected=entity.energy-entity.electric_buffer_size*config.leakage_per_second*30/60

@@ -432,9 +432,9 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 
 Power poles collect lightning; there is no separate player-built collector.
 Implemented on Fulgora: each pole has one hidden native collector. It captures
-20% of strike energy, holds up to 200 MJ, and supplies up to 0.5 MW. Collection
+20% of strike energy, holds up to 200 MJ, and supplies up to 100 MW. Collection
 uses the native 10-tile search radius. There is no idle drain. A full buffer
-supplies maximum output for 400 seconds. The `fulgora-collector-drain` scenario
+supplies maximum output for 2 seconds. The `fulgora-collector-drain` scenario
 checks depletion after one strike with ambient storms disabled.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
@@ -476,53 +476,49 @@ not the whole 30-tick interval. Short pulses between samples can be missed.
 | Visual target | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
 | Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
 | Placement | Fulgora sand only; use the wind-turbine collision fields, including mutual exclusion with turbines |
-| Power | 2 MW surge demand; no power output |
+| Power | 400 MW surge demand; no power output |
 | Unlock | Primitive Filtration; no boxed coil recipes |
 | Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
 | Recipe | 20 stone bricks, 20 aluminum wire, and 10 aluminum plates; 5 seconds; hand crafting or small assembler |
 | Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |
 | Higher-tier design | Induction discharge towers with stacked coils and stronger electrical effects |
 
-### Starter power balance experiment
+### Starter power balance
 
-Pole output is now 0.5 MW, with four 2 MW grounding coils in the starter kit.
-Run `tools/analyze_fulgora_power.py` with
-`tests/progression/planner/fulgora-power.json` and `--output REPORT.json`.
-Run scenario `fulgora-power-budget` for native flow samples. Pass its runner JSON
-with `--native-results` to add the measurements to the report.
-
-| Current value | Resolved amount |
+| Property | Value |
 |---|---:|
-| Energy captured per strike | 200 MJ |
-| Collector capacity / maximum output, per pole | 200 MJ / 0.5 MW |
-| Four starter batteries: capacity / charge / discharge | 60 MJ / 0.8 MW / 2 MW |
+| Collector capacity / maximum output, per pole | 200 MJ / 100 MW |
+| Full-buffer discharge at maximum output | 2 seconds |
+| Grounding coil demand | 400 MW |
+| Four coils: protection with full batteries and no factory load | 32 charged poles |
+| Four starter batteries: capacity / charge / discharge | 60 MJ / 200 MW / 2 MW |
+| Battery tiers 1 / 2 / 3: charge rate | 50 / 100 / 200 MW |
 | Starter process machines and lab, all active | 7.13 MW |
 | Same machines, idle drain | 0.247 MW |
 
-Before this change, one charged pole offered 100 MW against 1.3 MW of demand
-from a 0.5 MW load and four empty batteries. That grid was offline by tick 60.
-Offered power is available output, not new strike energy. Charged poles retain
-that output rating between strikes. Full batteries remove their charging demand.
+The charge rates apply on all planets. Battery capacity and discharge rates
+stay the same. Supercapacitors retain their charge-rate multiplier.
+Coils and batteries share tertiary power. Faster charging lets batteries store
+a useful part of each pulse before coils discharge the remaining energy.
+The overload thresholds stay at twice demand and more than 1 MW excess.
 
-The fixed-seed sample uses a 0.5 MW load, four batteries, and five minutes each
-at noon and midnight. Candidate grids measure flow without latching shutdown.
-Each profile has a separate location; strike counts are not matched traces.
+The `fulgora-starter-power` scenario uses seed 1729 and three isolated grids.
+Each has 32 poles, four coils with legal spacing, four empty batteries, and a
+500 kW test load. One initial strike starts each grid. Native storms then supply
+ten minutes at noon and ten minutes at midnight. All three grids remain powered
+at every 30-tick sample and do not trip. Native consumption totals confirm
+300 MJ delivered to each load per ten-minute period. Removing coils and striking
+a grid with full batteries triggers shutdown. This checks starter power at 500 kW; the full
+7.13 MW machine fleet needs more supply and battery discharge capacity.
 
-| Candidate | Poles | Night samples above trip threshold |
-|---|---:|---:|
-| Original 100 MW output | 32 | 100% |
-| 0.5 MW output only | 8 | 100% |
-| 0.5 MW output + 2 MW surge sink | 8 | 0% |
-| 0.5 MW output + 8 MW surge sink | 32 | 0% |
-
-Both protected candidates powered the load at every sample and filled the
-batteries. At 0.5 MW per pole, a 2 MW surge sink covers eight fully charged
-poles even when the factory is idle. Four such sinks cover the full starter kit.
-The production scenario also checks four real coils, spacing, construction,
-removal, reload, and loss of protection. Run
-`python tools/test_fulgora_overload.py --case fulgora-grounding-coils` for the
-reload check. These checks do not prove
-continuous operation of the full 7.13 MW fleet or power for overcharged machines.
+The `fulgora-power-budget` experiment retains the old charging baseline and
+compares two-second pulses with different coil and charging rates. Slow charging
+with large coils can prevent trips but leave the factory without power.
+Run `tools/analyze_fulgora_power.py` with
+`tests/progression/planner/fulgora-power.json` and `--output REPORT.json`.
+Pass the experiment runner JSON with `--native-results` for measured results.
+Run `python tools/test_fulgora_overload.py --case fulgora-grounding-coils`
+to check coil construction, removal, and reload.
 
 ## Energy storage
 
@@ -533,7 +529,7 @@ Filtration and Battery Storage 2; each mode also requires its ordinary battery r
 | Storage | Charge/discharge rate | Capacity | Loss | Role |
 |---|---|---|---|---|
 | Supercapacitor | 10× normal rate | 20% of normal capacity | 1% of full capacity per second | Handle short power bursts |
-| Accumulator | Moderate | Medium | Low | Supply the gaps between strikes |
+| Accumulator | Fast charge; normal discharge | Medium | Low | Supply the gaps between strikes |
 | Thermal storage | Slow | High | Low storage loss; conversion loss | Supply extended calm periods through Stirling conversion |
 
 Both modes use native accumulator charge and discharge. Neither supplies surge
@@ -781,7 +777,7 @@ pole reset panel. The client test needs a display socket and loopback networking
 |---|---|
 | Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality does not trip |
 | Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
-| Native lightning | One collector stays below the excess floor; accumulated output can trigger a trip |
+| Native lightning | An unprotected collector burst triggers a trip |
 | Split / merge | Both split parts retain the fault; merging propagates it |
 | Remove anchor / sink | Restore one sink per faulted native network |
 | Replace pole | Retain the fault after fast replacement |

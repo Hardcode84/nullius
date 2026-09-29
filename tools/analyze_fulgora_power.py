@@ -28,6 +28,8 @@ def flow_watts(value):
 def report(data, config):
     collector = data['lightning-attractor']['nullius-pole-lightning-collector']
     bolt = data['lightning']['nullius-fulgora-lightning']
+    coil = data['electric-energy-interface']['nullius-grounding-coil']
+    coil_demand = flow_watts(coil['energy_usage']) * config['grounding_coils']
     battery = data['accumulator']['nullius-grid-battery-1']['energy_source']
     source = collector['energy_source']
     energy = parse_energy(bolt['energy'], 'J') * collector['efficiency']
@@ -88,6 +90,12 @@ def report(data, config):
             'captured_MJ_per_strike': min(energy, capacity) / 1e6,
             'buffer_MJ': capacity / 1e6, 'output_MW': output / 1e6,
             'full_rate_seconds_per_strike': min(energy, capacity) / output},
+        'grounding': {'count': config['grounding_coils'],
+                      'per_coil_MW': flow_watts(coil['energy_usage']) / 1e6,
+                      'total_MW': coil_demand / 1e6,
+                      'protected_charged_poles_without_load': math.floor(max(
+                          config['ratio'] * coil_demand,
+                          coil_demand + config['excess_floor_MW'] * 1e6) / output)},
         'battery': {'count': config['batteries'], 'total_MJ': storage * config['batteries'] / 1e6,
                     'total_charge_MW': charge * config['batteries'] / 1e6,
                     'total_discharge_MW': parse_energy(battery['output_flow_limit'], 'W') * config['batteries'] / 1e6,
@@ -181,7 +189,7 @@ def main():
             if row['name'] in args.profile:
                 print(json.dumps(row))
         return
-    for field in ('vanilla', 'collector', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity', 'buffer_sensitivity'):
+    for field in ('vanilla', 'collector', 'grounding', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity', 'buffer_sensitivity'):
         print(field, json.dumps(result[field]))
     if 'native' in result:
         print('native_first_flows', json.dumps(result['native_first_flows']))

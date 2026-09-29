@@ -1,4 +1,5 @@
--- given: fixed seed, native storms, four empty starter batteries, 500 kW fixed demand.
+-- given: fixed seed, native storms, four empty batteries per grid, 500 kW fixed demand.
+-- Baseline uses 200 kW charging; burst candidates use 15/50 MW; actual uses production batteries.
 -- place/connect: isolated 1/8/32-pole grids; output-cap candidates use test collectors.
 -- act: one explicit native strike, then five minutes each at noon and midnight.
 -- run: sample native flow every 30 ticks; count collector hits, including buffer overflow.
@@ -13,6 +14,14 @@ local profiles={{name='actual',poles=8,actual=true},{name='original-1',poles=1,c
   {name='cap-2-32',poles=32,cap=2},
   {name='cap-0.5-8-dump-2',poles=8,cap=0.5,dump=2},
   {name='cap-0.5-32-dump-8',poles=32,cap=0.5,dump=8}}
+for _,mw in ipairs({10,25,50,100}) do
+  for _,dump in ipairs({8,100,1600}) do
+    profiles[#profiles+1]={name='burst-'..mw..'-dump-'..dump,poles=32,burst=mw,dump=dump}
+  end
+end
+for _,mw in ipairs({10,25,50,100}) do
+  profiles[#profiles+1]={name='burst-'..mw..'-full-pack',poles=32,burst=mw,dump=16*mw,fast=true}
+end
 local function blank() return {samples=0,trip_samples=0,powered_samples=0,captures=0,
   sum_offered_MW=0,max_offered_MW=0,sum_demand_MW=0,sum_charged_poles=0,max_charged_poles=0} end
 script.on_event(defines.events.on_script_trigger_effect,function(event)
@@ -35,7 +44,7 @@ script.on_nth_tick(1,function()
     for _,entity in pairs(surface.find_entities_filtered{area={{x-32,-32},{x+80,64}}}) do entity.destroy() end
     local tiles={};for dx=-10,55 do for y=-10,35 do tiles[#tiles+1]={name='fulgoran-rock',position={x+dx,y}} end end
     surface.set_tiles(tiles,true)
-    local row={name=profile.name,dump=profile.dump,poles={},collectors={},batteries={},loads={},
+    local row={name=profile.name,dump=profile.dump,burst=profile.burst,poles={},collectors={},batteries={},loads={},
       direct=blank(),day=blank(),night=blank()}
     storage.rows[#storage.rows+1]=row
     local function place(name,px,py,raised)
@@ -54,7 +63,7 @@ script.on_nth_tick(1,function()
       if profile.actual then
         collector=surface.find_entities_filtered{name='nullius-pole-lightning-collector',position=pole.position,radius=0.1}[1]
       else
-        collector=place(profile.cap and 'factorio-test-power-collector-'..math.floor(profile.cap*1000) or
+        collector=place(profile.burst and 'factorio-test-burst-collector-'..profile.burst or profile.cap and 'factorio-test-power-collector-'..math.floor(profile.cap*1000) or
           'nullius-pole-lightning-collector',pole.position.x,pole.position.y,false)
       end
       assert(collector)
@@ -62,7 +71,7 @@ script.on_nth_tick(1,function()
     end
     -- Four batteries fit around the first pole; each overlaps its supply area.
     for _,p in ipairs({{-2,-2},{2,-2},{-2,2},{2,2}}) do
-      row.batteries[#row.batteries+1]=place('nullius-grid-battery-1',x+p[1],p[2],false)
+      row.batteries[#row.batteries+1]=place(profile.fast and 'factorio-test-burst-battery-fast' or profile.burst and 'factorio-test-burst-battery' or profile.actual and 'nullius-grid-battery-1' or 'factorio-test-power-original-battery',x+p[1],p[2],false)
     end
     for j=1,5 do row.loads[j]=place('factorio-test-trip-load',x,1,false) end
     if profile.dump then place('factorio-test-power-dump-'..profile.dump,x,1,false) end
@@ -107,7 +116,7 @@ script.on_nth_tick(30,function()
     check(storage.rows[1].first_trip~=nil,'unprotected production grid never tripped')
     for _,row in ipairs(storage.rows) do
       check(row.direct.captures>0,'no declared strike captured: '..row.name)
-      if row.dump then
+      if row.dump and not row.burst then
         for _,phase in ipairs({'direct','day','night'}) do
           check(row[phase].trip_samples==0,'protected grid exceeded trip threshold')
           check(row[phase].powered_samples==row[phase].samples,'protected load lost power')
