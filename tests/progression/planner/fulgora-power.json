@@ -1,0 +1,10 @@
+{
+  "fleet_config": "tests/progression/planner/fulgora-em-bootstrap.json",
+  "batteries": 4,
+  "ratio": 2,
+  "excess_floor_MW": 1,
+  "candidate_output_MW": [10, 5, 2, 1, 0.5],
+  "charged_poles": [1, 4, 8, 32],
+  "load_MW": [0, 0.5, 2],
+  "strike_energy_factors": [1, 0.1, 0.01]
+}

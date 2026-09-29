@@ -319,3 +319,5 @@ require('fulgora-reference')
 if settings.startup["factorio-test-controlled-lightning"].value then
   data.raw.planet["nullius-fulgora"].lightning_properties.lightnings_per_chunk_per_tick=0
 end
+
+require('fulgora-power')

@@ -465,6 +465,43 @@ Trip only if offered power also exceeds requested power by more than 1 MW.
 Exclude accumulator discharge from the offered sum. This uses the latest tick,
 not the whole 30-tick interval. Short pulses between samples can be missed.
 
+### Starter power balance experiment
+
+Gameplay settings are unchanged. Run `tools/analyze_fulgora_power.py` with
+`tests/progression/planner/fulgora-power.json` and `--output REPORT.json`.
+Run scenario `fulgora-power-budget` for native flow samples. Pass its runner JSON
+with `--native-results` to add the measurements to the report.
+
+| Current value | Resolved amount |
+|---|---:|
+| Energy captured per strike | 200 MJ |
+| Collector capacity / maximum output, per pole | 200 MJ / 100 MW |
+| Four starter batteries: capacity / charge / discharge | 60 MJ / 0.8 MW / 2 MW |
+| Starter process machines and lab, all active | 7.13 MW |
+| Same machines, idle drain | 0.247 MW |
+
+One charged pole offers 100 MW against 1.3 MW of demand from a 0.5 MW load
+and four empty batteries. The production grid is offline by the check at tick 60.
+Offered power is available output, not new strike energy. Charged poles retain
+that output rating between strikes. Full batteries remove their charging demand.
+
+The fixed-seed sample uses a 0.5 MW load, four batteries, and five minutes each
+at noon and midnight. Candidate grids measure flow without latching shutdown.
+Each profile has a separate location; strike counts are not matched traces.
+
+| Candidate | Poles | Night samples above trip threshold |
+|---|---:|---:|
+| Current 100 MW output | 32 | 100% |
+| 0.5 MW output only | 8 | 100% |
+| 0.5 MW output + 2 MW surge sink | 8 | 0% |
+| 0.5 MW output + 8 MW surge sink | 32 | 0% |
+
+Both protected candidates powered the load at every sample and filled the
+batteries. At 0.5 MW per pole, a 2 MW surge sink covers eight fully charged
+poles even when the factory is idle. Four such sinks cover the full starter kit.
+This is a candidate for basic poles and early surge sinks. It does not prove
+continuous operation of the full 7.13 MW fleet or power for overcharged machines.
+
 ## Energy storage
 
 Supercapacitors are an alternate mode of all three grid battery tiers.
