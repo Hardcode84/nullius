@@ -439,6 +439,8 @@ Native supply areas determine electricity sharing, including between forces.
 Overload protection is active on Fulgora. Overlapping unwired grids form one
 shutdown group. Each affected force receives map alerts. A player can reset the
 whole group from any pole owned by their force.
+A trip plays an alarm for connected players in each affected force. Alert
+refreshes do not repeat the sound; simultaneous trips play one alarm per player.
 Lightning must interrupt production without destroying the factory.
 
 ```text

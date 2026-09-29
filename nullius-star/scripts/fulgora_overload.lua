@@ -125,6 +125,7 @@ local function refresh_panels(nodes)
 end
 function overload.update()
   local nodes,groups=topology()
+  local tripped_forces={}
   for _,n in pairs(nodes) do
     local group=n.group
     if not group.offline and game.tick>=group.grace then
@@ -133,10 +134,16 @@ function overload.update()
       local demand=flow.primary_demand+flow.secondary_demand+flow.tertiary_demand
       if offered>config.demand_ratio*demand and offered-demand>config.minimum_excess_watts/60 then
         group.offline=true
+        for force in pairs(group.forces) do tripped_forces[force]=true end
       end
     end
   end
   apply(nodes,groups);refresh_panels(nodes)
+  for _,player in pairs(game.connected_players) do
+    if tripped_forces[player.force.index] then
+      player.play_sound{path="utility/alert_destroyed"}
+    end
+  end
 end
 -- Reset the current shared shutdown group; stored energy is not restored.
 function overload.reset(pole,force)
