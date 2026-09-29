@@ -75,3 +75,11 @@ local tertiary_collector=table.deepcopy(collector)
 tertiary_collector.name="factorio-test-pole-collector-tertiary"
 tertiary_collector.energy_source.usage_priority="tertiary"
 data:extend({pole,collector,tertiary_collector,receiver,bolt,planet})
+
+local storage = table.deepcopy(data.raw.accumulator.accumulator)
+storage.name = "factorio-test-lightning-storage"
+storage.minable = nil
+storage.collision_mask = {layers={}}
+storage.energy_source = {type="electric",buffer_capacity="1GJ",usage_priority="tertiary",
+  input_flow_limit="100MW",output_flow_limit="10MW",drain="0W"}
+data:extend({storage})

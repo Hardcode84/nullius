@@ -111,6 +111,7 @@ function entity_raised(event)
   entity_added(event.entity, nil)
 end
 function entity_cloned(event)
+  if fulgora_overload.cloned(event.destination) then return end
   local entity = supercapacitors.built(overcharged_assemblers.built(event.destination))
   fulgora_collectors.cloned(entity)
   if entity and entity.valid and

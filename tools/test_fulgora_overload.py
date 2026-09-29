@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the overload prototype and reload a checkpoint with a tripped grid."""
+"""Run the Fulgora overload scenario and reload a checkpoint with a tripped grid."""
 import argparse
 import json
 from pathlib import Path
@@ -16,11 +16,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--factorio", type=Path, default=default_factorio())
     parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
+    parser.add_argument("--case", choices=("fulgora-grid-overload", "experiment-fulgora-overload"),
+                        default="fulgora-grid-overload")
     args = parser.parse_args()
     args.mod_under_test = MOD_UNDER_TEST
     args.timeout_seconds = 300
     args.until_tick = None
-    case = "experiment-fulgora-overload"
+    case = args.case
     work = Path(tempfile.mkdtemp(prefix="fulgora-overload-"))
     first = execute(args, case, work)
     common = [str(args.factorio.expanduser().resolve()), "--config", str(work / "config.ini"),

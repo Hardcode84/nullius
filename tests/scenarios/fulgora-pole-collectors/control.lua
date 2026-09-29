@@ -1,5 +1,6 @@
 -- given: native Fulgora storms, poles, ten salt, crusher, empty electric receiver.
--- Robot fixture: roboport, construction robots, pole stock, and debug power.
+-- Storage: two empty 1 GJ batteries, 100 MW charge and 10 MW discharge.
+-- Robot fixture: roboport, construction robots, pole stock, and a 2 MW source.
 -- place: isolated patches on sand and island; no generator at the crusher.
 -- act: raised build, ghost revival, clone, upgrade, move, mine, destroy, merge forces.
 -- run: scheduled lifecycle checks and native robot construction through tick 3600.
@@ -34,6 +35,7 @@ script.on_nth_tick(1,function()
   storage.pole=build('small-electric-pole',0,0,true)
   storage.collector=helper(storage.pole)
   storage.receiver=build('factorio-test-lightning-receiver',1,1,false)
+  storage.battery=build('factorio-test-lightning-storage',-1,1,false)
   storage.crusher=build('nullius-crusher-1',2,-1,false)
   game.forces.player.technologies['nullius-primitive-filtration'].researched=true
   storage.crusher.set_recipe('nullius-salt-disposal'); storage.crusher.insert{name='nullius-salt',count=10}
@@ -53,8 +55,8 @@ script.on_nth_tick(1,function()
   storage.port.insert{name='construction-robot',count=5}
   local chest=build('passive-provider-chest',505,4,false)
   chest.insert{name='small-electric-pole',count=5}
-  local grid=build('factorio-test-planner-grid',500,4,false)
-  grid.power_production=100000000; grid.electric_buffer_size=100000000
+  build('factorio-test-trip-source-2000000',500,1,false)
+  build('factorio-test-lightning-storage',499,1,false)
   surface.create_entity{name='entity-ghost',inner_name='small-electric-pole',position={508,0},force='player'}
   local nauvis=game.surfaces[1]
   patch(nauvis,500,500,'grass-1')
@@ -100,6 +102,7 @@ script.on_nth_tick(60,function()
     check(storage.surface.count_entities_filtered{name=NAME,position={320,0},radius=1}==0,'moved pole orphan')
     check(game.surfaces[1].count_entities_filtered{name=NAME}==0,'cloned collector outside Fulgora')
   elseif game.tick==3600 then
+    check(storage.surface.count_entities_filtered{name='nullius-fulgora-overload-sink'}==0,'storage did not protect grids')
     check(storage.crusher.products_finished==10,'lightning-powered salt batches incomplete')
     local robot=storage.surface.find_entities_filtered{type='electric-pole',position={508,0},radius=1}[1]
     check(robot~=nil,'robot did not build pole'); helper(robot)

@@ -167,6 +167,7 @@ script.on_init(
     vulcanus_heat.init()
     vulcanus_gasvent.init()
     fulgora_collectors.rebuild()
+    fulgora_overload.rebuild()
     supercapacitors.rebuild()
 	  surface_config.configure_existing()
 	  reset_config()
@@ -197,6 +198,7 @@ script.on_configuration_changed(
     surface_config.configure_existing()
     vulcanus_heat.rebuild()
     fulgora_collectors.rebuild()
+    fulgora_overload.rebuild()
     supercapacitors.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()

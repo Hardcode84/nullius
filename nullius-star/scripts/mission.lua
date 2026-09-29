@@ -330,6 +330,7 @@ function cargo_pod_finished(event)
 end
 
 function gui_clicked(event)
+  if fulgora_overload.click(event) then return end
   if not event.element.valid then return end
   if event.element.name == "nullius_mission_button" then
     local player = game.players[event.player_index]

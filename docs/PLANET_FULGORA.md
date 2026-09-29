@@ -436,8 +436,9 @@ uses the native 10-tile search radius. There is no idle drain.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
 Native supply areas determine electricity sharing, including between forces.
-Overload trips and pole reset have a test-only prototype; normal games do not
-use it. See the overload prototype check below.
+Overload protection is active on Fulgora. Overlapping unwired grids form one
+shutdown group. Each affected force receives map alerts. A player can reset the
+whole group from any pole owned by their force.
 Lightning must interrupt production without destroying the factory.
 
 ```text
@@ -451,7 +452,7 @@ lightning -> pole collector -> electrical network
 |---|---|---|
 | Surge sink | Consume excess electricity as waste heat | Tertiary priority; spaced like wind turbines |
 | Priority sink | Maintain storage headroom through steady consumption | Secondary priority; can cause calm-period shortages |
-| Reset grace period | Prevent immediate repeat trips | Clear the measurement window when the player resets the network |
+| Reset grace period | Prevent immediate repeat trips | Allow 120 ticks after manual reset |
 
 Absorption must account for both available capacity and charge rate. Too few
 sinks cause overloads; excessive consumption leaves insufficient stored power.
@@ -708,36 +709,35 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 
 ## Engine candidates and validation questions
 
-### Overload prototype
+### Overload checks
 
-Run `python tools/test_fulgora_overload.py`. The retained save has a pole reset
-panel; use `/overload-demo` after loading it with the generated test mods.
-The 25 core assertions pass before and after reload from tick 102.
-`experiment-fulgora-overload-alerts` passes 27 assertions with two real clients,
-including reload and the reset handler with the native GUI button.
-`experiment-fulgora-overload-threshold` checks eight native networks: below, at,
-and above the excess floor and ratio, with zero and nonzero demand.
+Run `python tools/test_fulgora_overload.py` for the production scenario and a
+reload from tick 102. Run `fulgora-grid-threshold` for the eight threshold cases.
+Run `fulgora-grid-alerts` for two-client alerts, force changes, reload, and the
+pole reset panel. The client test needs a display socket and loopback networking.
 
-| Case | Result on 2.1.19 |
+| Case | Required result |
 |---|---|
-| Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality at either threshold does not trip |
+| Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality does not trip |
 | Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
 | Native lightning | The production pole collector triggers a trip |
 | Split / merge | Both split parts retain the fault; merging propagates it |
-| Remove anchor / sink | Restore one sink per faulted component |
+| Remove anchor / sink | Restore one sink per faulted native network |
+| Replace pole | Retain the fault after fast replacement |
+| Clone sink | Remove the copied consumer |
 | Save / reload | Retain faults and complete the same topology and reset checks |
-| Reset | Resolve the current component; allow 120 ticks before another trip |
-| Alert | “Electrical grid overloaded”, anchored to the sink and shown on the map; refresh while offline and remove on reset |
-| Alert ownership | Notify players whose force has a pole in the grid; follow sink relocation and force changes |
-| Overlapping unwired grids | One sink connects to both grids and starves the neighbour |
+| Reset | Reset the current shared group; allow 120 ticks before another trip |
+| Alert | Anchor the map alert to the sink; refresh while offline and remove on reset |
+| Alert ownership | Notify every force with a pole in the shared group; follow relocation and force changes |
+| Overlapping unwired grids | Shut down together; allow reset from any owned pole in the group |
 | Short pulse | An 8-tick pulse between samples is missed |
 
-Do not enable this prototype in normal games yet. To isolate shutdown, a sink
-must connect only to its target grid. The native API reports all sink connections
-but does not select one. Either require exclusive supply coverage for the sink,
-or explicitly treat overlapping grids as one shutdown group. The prototype walks
-registered poles for topology and reads aggregate flow once per online network;
-it does not read collector buffers or use strike callbacks.
+Each faulted native network gets a hidden 1 TW primary consumer at one of its
+poles. Keep that anchor until it is removed or changes networks. Overlapping
+coverage joins shutdown groups, including through intermediate grids. Native
+supply areas cannot isolate a consumer from other grids that cover its position.
+The check reads pole connections and aggregate flow; it does not read collector
+buffers or use strike callbacks.
 
 ### Factorio 2.1 API experiment
 
@@ -806,23 +806,21 @@ not provide total capacity or include the hidden collectors' buffers.
 The API provides `on_gui_opened`, `electric_network_gui` relative GUI anchoring,
 and `on_gui_click` for a reset button at any pole.
 
-Before gameplay integration, prove one connected sink per offline component
-after save/load, pole removal, network splits, and merges. Restore the sink if
-its anchor pole is removed. Resolve the current component when a player clicks
-reset; network IDs alone are not persistent ownership. Exclude sink consumption
-from overload measurements and clear the window on reset. Test overlapping
-supply areas because a helper can connect to more than one network.
+Production checks cover sink ownership after save/load, pole removal, network
+splits, merges, and pole replacement. Fault state follows poles; native network
+IDs identify only the current topology. Offline groups are not sampled. Reset
+removes their consumers and starts the grace period.
 
 | Area | Inherited candidate | Required check |
 |---|---|---|
 | Pole collectors | Implemented native hidden attractor | Lifecycle and native power delivery covered by collector scenarios |
 | Storm control | `nullius-storm-intensity`, `LightningProperties.multiplier_surface_property`, `LuaSurface.set_property()` | Verify runtime frequency changes and select an update interval |
 | Lightning tuning | Native night rate; 25% day rate; zero damage | Day/night activity and direct strikes tested on both engines |
-| Strike effects | Separate ordinary and attracted callbacks confirmed by the pole experiment | Use the attractor callback for collector-side overload logic |
+| Strike effects | Native callbacks are available | Overload detection uses aggregate flow, with no strike callback |
 | No destruction | Zero-damage Fulgora bolt | Direct strikes preserve both android tiers, hydro plants, crushers, poles, pipes, and chests |
 | Overload detection | 2.1 aggregate offered energy versus requested energy | Test short surges between samples and tune the threshold |
-| Network state | Cache storage information and identify networks through `electric_network_id` | Keep values correct as energy changes and networks split or merge |
-| Offline network | Hidden 1 TW primary consumer with manual reset; see experiment above | Prove sink ownership, topology changes, and the reset interface |
+| Network state | Pole fault state and current native parent networks | Split, merge, replacement, and reload checks |
+| Offline network | Hidden 1 TW primary consumer per native network | Shared shutdown and reset for overlapping grids |
 | Supercapacitors | Native accumulator rates and capacity; scripted stored-energy loss | Verified idle leakage; no surge supply or transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
 | Fountain filtration | Five fixed recipe products: two fluids and three solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |

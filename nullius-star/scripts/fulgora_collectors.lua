@@ -22,12 +22,18 @@ function collectors.add(pole)
     assert(row.helper.teleport(pole.position), "Cannot move pole collector")
     return
   end
+  local offline=row and row.grid_offline or false
+  local grace=row and row.grid_grace or 0
   -- Fast replacement invalidates the old pole before its destruction event.
   -- Remove its collector now so the replacement never gets a duplicate.
   for _,helper in pairs(pole.surface.find_entities_filtered{name=NAME,position=pole.position,radius=0.1}) do
     local previous=storage.fulgora_collector_helpers[script.register_on_object_destroyed(helper)]
     local owner=previous and storage.fulgora_collectors[previous]
-    if owner and not owner.pole.valid then collectors.remove(previous) end
+    if owner and not owner.pole.valid then
+      offline=offline or owner.grid_offline or false
+      grace=math.max(grace,owner.grid_grace or 0)
+      collectors.remove(previous)
+    end
   end
   local helper = assert(pole.surface.create_entity{
     name=NAME, position=pole.position, force="neutral", quality=pole.quality,
@@ -37,7 +43,7 @@ function collectors.add(pole)
   helper.destructible=false
   helper.operable=false
   local registration=script.register_on_object_destroyed(pole)
-  storage.fulgora_collectors[pole.unit_number]={pole=pole,helper=helper,registration=registration}
+  storage.fulgora_collectors[pole.unit_number]={pole=pole,helper=helper,registration=registration,grid_offline=offline,grid_grace=grace}
   storage.fulgora_collector_owners[registration]=pole.unit_number
   local helper_registration=script.register_on_object_destroyed(helper)
   storage.fulgora_collector_helpers[helper_registration]=pole.unit_number

@@ -142,7 +142,7 @@ function autocraft.update_tick()
   check_all()
 end
 
-script.on_nth_tick(30, check_all)
+autocraft.check_all = check_all
 script.on_event(defines.events.on_gui_checked_state_changed, autocraft.on_checkbox)
 script.on_event(defines.events.on_player_cancelled_crafting, function(event)
   autocraft.toggle(game.get_player(event.player_index), false)

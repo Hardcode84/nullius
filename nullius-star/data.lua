@@ -5,6 +5,7 @@ pipe_extents = {64, 144, 320, 672}
 require("prototypes.planet.vulcanus")
 require("prototypes.planet.fulgora")
 require("prototypes.planet.fulgora-collectors")
+require("prototypes.planet.fulgora-overload")
 -- vulcanus-entities loaded after plumbing (needs seawater-intake-1 as template).
 
 require("prototypes.reskin")
