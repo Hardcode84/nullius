@@ -472,6 +472,7 @@ not the whole 30-tick interval. Short pulses between samples can be missed.
 |---|---|
 | Function | An electrode conducts excess electricity into buried slurry; the energy becomes underground heat |
 | Appearance | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
+| Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
 | Placement | On sand around the islands; require separation between coils |
 | Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
 | Recipe basis | Ceramic insulation and conductive windings; use starter conductors, not late-game copper |
