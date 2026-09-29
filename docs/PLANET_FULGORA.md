@@ -436,7 +436,8 @@ uses the native 10-tile search radius. There is no idle drain.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
 Native supply areas determine electricity sharing, including between forces.
-Overload trips and manual reset are not implemented.
+Overload trips and pole reset have a test-only prototype; normal games do not
+use it. See the overload prototype check below.
 Lightning must interrupt production without destroying the factory.
 
 ```text
@@ -458,8 +459,7 @@ sinks cause overloads; excessive consumption leaves insufficient stored power.
 Check each network every 30 ticks. On 2.1, compare offered primary, secondary,
 and solar energy against twice the requested energy across all input priorities.
 Exclude accumulator discharge from the offered sum. This uses the latest tick,
-not the whole 30-tick interval. On 2.0, production statistics count delivered
-energy and cannot implement this check without additional measurements.
+not the whole 30-tick interval. Short pulses between samples can be missed.
 
 ## Energy storage
 
@@ -706,6 +706,32 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 ```
 
 ## Engine candidates and validation questions
+
+### Overload prototype
+
+Run `python tools/test_fulgora_overload.py`. The retained save has a pole reset
+panel; use `/overload-demo` after loading it with the generated test mods.
+The 25 assertions pass before and after reload from tick 102. Headless checks
+call the reset operation; they do not simulate a player click.
+
+| Case | Result on 2.1.19 |
+|---|---|
+| Offered power > 2× requested power | Trip; equality does not trip |
+| Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
+| Native lightning | The production pole collector triggers a trip |
+| Split / merge | Both split parts retain the fault; merging propagates it |
+| Remove anchor / sink | Restore one sink per faulted component |
+| Save / reload | Retain faults and complete the same topology and reset checks |
+| Reset | Resolve the current component; allow 120 ticks before another trip |
+| Overlapping unwired grids | One sink connects to both grids and starves the neighbour |
+| Short pulse | An 8-tick pulse between samples is missed |
+
+Do not enable this prototype in normal games yet. To isolate shutdown, a sink
+must connect only to its target grid. The native API reports all sink connections
+but does not select one. Either require exclusive supply coverage for the sink,
+or explicitly treat overlapping grids as one shutdown group. The prototype walks
+registered poles for topology and reads aggregate flow once per online network;
+it does not read collector buffers or use strike callbacks.
 
 ### Factorio 2.1 API experiment
 

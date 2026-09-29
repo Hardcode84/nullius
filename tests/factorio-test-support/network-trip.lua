@@ -48,3 +48,11 @@ sink.energy_source={type="electric",buffer_capacity="1TJ",usage_priority="primar
   input_flow_limit="1TW",output_flow_limit="0W",drain="0W"}
 sink.energy_usage="1TW"
 data:extend({source,load,primary_load,sink,battery,poles[1],poles[2]})
+
+for _,watts in ipairs({0,100000,200000}) do
+  local fixture=table.deepcopy(source)
+  fixture.name="factorio-test-trip-source-"..watts
+  fixture.energy_production=watts.."W"
+  fixture.energy_source.output_flow_limit=watts.."W"
+  data:extend({fixture})
+end
