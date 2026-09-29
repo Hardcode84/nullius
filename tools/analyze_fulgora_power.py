@@ -20,6 +20,11 @@ def minimum_demand(offered, ratio, floor):
     return max(0, min(offered / ratio, offered - floor))
 
 
+def flow_watts(value):
+    """Return watts for Factorio flow values in watts or joules per tick."""
+    return parse_energy(value, 'J') * 60 if value.endswith('J') else parse_energy(value, 'W')
+
+
 def report(data, config):
     collector = data['lightning-attractor']['nullius-pole-lightning-collector']
     bolt = data['lightning']['nullius-fulgora-lightning']
@@ -68,7 +73,19 @@ def report(data, config):
         sensitivity.append({'strike_energy_factor': factor, 'captured_MJ': captured / 1e6,
                             'full_rate_seconds': captured / output,
                             'minimum_batteries_for_energy': math.ceil(captured / storage)})
-    return {'collector': {'captured_MJ_per_strike': energy / 1e6,
+    vanilla = []
+    for name in ('lightning-rod', 'lightning-collector'):
+        reference = data['lightning-attractor'][name]['energy_source']
+        reference_capacity = parse_energy(reference['buffer_capacity'], 'J')
+        reference_output = flow_watts(reference['output_flow_limit'])
+        duration = reference_capacity / reference_output
+        vanilla.append({'name': name, 'buffer_MJ': reference_capacity / 1e6,
+                        'output_MW': reference_output / 1e6,
+                        'full_output_ticks': duration * 60,
+                        'matching_buffer_J_at_current_output': output * duration,
+                        'matching_output_MW_at_current_buffer': capacity / duration / 1e6})
+    return {'vanilla': vanilla, 'collector': {'potential_capture_MJ_per_strike': energy / 1e6,
+            'captured_MJ_per_strike': min(energy, capacity) / 1e6,
             'buffer_MJ': capacity / 1e6, 'output_MW': output / 1e6,
             'full_rate_seconds_per_strike': min(energy, capacity) / output},
         'battery': {'count': config['batteries'], 'total_MJ': storage * config['batteries'] / 1e6,
@@ -123,7 +140,7 @@ def main():
                 n = sample['samples']
                 summaries.append({'name': row['name'], 'phase': phase,
                     'captures_per_minute': sample['captures'] / (n / 120),
-                    'potential_capture_MW': sample['captures'] * result['collector']['captured_MJ_per_strike'] / (n / 2),
+                    'potential_capture_MW': sample['captures'] * result['collector']['potential_capture_MJ_per_strike'] / (n / 2),
                     'trip_percent': sample['trip_samples'] / n * 100,
                     'powered_percent': sample['powered_samples'] / n * 100,
                     'mean_offered_MW': sample['sum_offered_MW'] / n,
@@ -164,7 +181,7 @@ def main():
             if row['name'] in args.profile:
                 print(json.dumps(row))
         return
-    for field in ('collector', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity', 'buffer_sensitivity'):
+    for field in ('vanilla', 'collector', 'battery', 'fleet_active_MW', 'fleet_idle_MW', 'machines', 'strike_energy_sensitivity', 'buffer_sensitivity'):
         print(field, json.dumps(result[field]))
     if 'native' in result:
         print('native_first_flows', json.dumps(result['native_first_flows']))

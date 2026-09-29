@@ -3,10 +3,14 @@ import unittest
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from analyze_fulgora_power import minimum_demand
+from analyze_fulgora_power import minimum_demand, flow_watts
 
 
 class TripDemandTest(unittest.TestCase):
+    def test_flow_units(self):
+        self.assertEqual(flow_watts('500MJ'), 30e9)
+        self.assertEqual(flow_watts('500kW'), 500e3)
+
     def test_strict_boundaries(self):
         for power, required in ((0, 0), (1e6, 0), (1.5e6, 0.5e6), (2e6, 1e6), (100e6, 50e6)):
             with self.subTest(power=power):
