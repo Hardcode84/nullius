@@ -1,4 +1,4 @@
--- given: two real clients, separate forces, a 1 MW source and 100 kW load.
+-- given: two real clients, separate forces, a 2 MW source and 100 kW load.
 -- place/connect: two wired poles and one hidden consumer in the test storm surface.
 -- act: trip, wait, remove the anchor, change player force, reload and reset.
 -- expect: one current custom alert per affected player, targeted at the sink;
@@ -46,7 +46,7 @@ script.on_nth_tick(30,function()
       return assert(surface.create_entity{name="factorio-test-trip-"..name,position={x,y},force=player.force})
     end
     storage.pole=place("pole",0,0);storage.other=place("pole",9,0)
-    storage.source=place("source",1,0);storage.load=place("load",1,1)
+    storage.source=place("source-2000000",1,0);storage.load=place("load",1,1)
     overload.add(storage.pole);overload.add(storage.other)
     storage.stage="peer"
     helpers.write_file("factorio-tests/multiplayer-action.json",helpers.table_to_json{

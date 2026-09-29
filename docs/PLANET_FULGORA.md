@@ -458,6 +458,7 @@ sinks cause overloads; excessive consumption leaves insufficient stored power.
 
 Check each network every 30 ticks. On 2.1, compare offered primary, secondary,
 and solar energy against twice the requested energy across all input priorities.
+Trip only if offered power also exceeds requested power by more than 1 MW.
 Exclude accumulator discharge from the offered sum. This uses the latest tick,
 not the whole 30-tick interval. Short pulses between samples can be missed.
 
@@ -714,10 +715,12 @@ panel; use `/overload-demo` after loading it with the generated test mods.
 The 25 core assertions pass before and after reload from tick 102.
 `experiment-fulgora-overload-alerts` passes 27 assertions with two real clients,
 including reload and the reset handler with the native GUI button.
+`experiment-fulgora-overload-threshold` checks eight native networks: below, at,
+and above the excess floor and ratio, with zero and nonzero demand.
 
 | Case | Result on 2.1.19 |
 |---|---|
-| Offered power > 2× requested power | Trip; equality does not trip |
+| Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality at either threshold does not trip |
 | Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
 | Native lightning | The production pole collector triggers a trip |
 | Split / merge | Both split parts retain the fault; merging propagates it |

@@ -1,4 +1,4 @@
--- given: native 1 MW sources, 100 kW loads, 600 kW battery charge limits;
+-- given: native 2 MW sources (1.2 MW with storage), 100 kW loads, 600 kW battery charge limits;
 -- a production pole collector and one declared 1 MJ lightning strike.
 -- place/connect: isolated networks, a splittable pair, and overlapping unwired poles.
 -- act: sample every 30 ticks; split/merge, remove anchors/helpers, reset, and pulse power.
@@ -23,7 +23,7 @@ local function generation(source,watts)
   return build(P.."source"..(watts==1000000 and "" or "-"..watts),position.x,position.y)
 end
 local function row(x,battery)
-  local r={pole=build(P.."pole",x,0),source=build(P.."source",x+1,0),load=build(P.."load",x+1,1)}
+  local r={pole=build(P.."pole",x,0),source=build(P.."source-2000000",x+1,0),load=build(P.."load",x+1,1)}
   overload.add(r.pole)
   if battery then r.battery=build(P.."battery",x-1,1) end
   return r
@@ -41,6 +41,7 @@ script.on_nth_tick(1,function()
   s.set_tiles(tiles,true)
   storage.hot=row(0,false)
   storage.protected=row(100,true)
+  storage.protected.source=generation(storage.protected.source,1200000)
   storage.edge=row(200,false);storage.edge.source=generation(storage.edge.source,200000)
   storage.dark=row(300,false);storage.dark.source=generation(storage.dark.source,0)
   storage.dark.battery=build(P.."battery",299,1);storage.dark.battery.energy=10000000
@@ -121,7 +122,7 @@ local actions={
  [481]=function()
   check(not overload.offline(storage.hot.pole),"rebalanced grid retripped")
   check(storage.hot.load.energy>0,"rebalanced grid unpowered")
-  storage.edge.source=generation(storage.edge.source,1000000)
+  storage.edge.source=generation(storage.edge.source,2000000)
  end,
  [489]=function() storage.edge.source=generation(storage.edge.source,200000) end,
  [541]=function()

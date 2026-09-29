@@ -1,5 +1,6 @@
 -- Test-only prototype: faults follow registered poles across network changes.
 local overload={}
+local MINIMUM_EXCESS_WATTS=1000000
 local SINK="factorio-test-trip-sink"
 local MESSAGE="Electrical grid overloaded"
 local ICON={type="virtual",name="signal-alert"}
@@ -78,7 +79,7 @@ function overload.sample()
       local offered=flow.primary_output+flow.secondary_output+flow.solar_output
       local demand=flow.primary_demand+flow.secondary_demand+flow.tertiary_demand
       group.offered=offered;group.demand=demand
-      if offered>2*demand then
+      if offered>2*demand and offered-demand>MINIMUM_EXCESS_WATTS/60 then
         for _,row in ipairs(group.rows) do row.offline=true end
         state().trips=state().trips+1
       end
