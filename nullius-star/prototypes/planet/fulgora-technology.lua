@@ -44,3 +44,20 @@ data:extend({{
 
 table.insert(data.raw.technology['nullius-primitive-filtration'].effects,
   {type='unlock-recipe',recipe='nullius-grounding-coil'})
+
+for tier=2,3 do
+  data:extend({{
+    type='technology',name='nullius-grounding-coils-'..tier,
+    localised_name={'technology-name.nullius-grounding-coils-'..tier},
+    localised_description={'technology-description.nullius-grounding-coils-'..tier},
+    icon='__space-age__/graphics/technology/lightning-collector.png',icon_size=256,
+    order='nullius-dg-grounding-'..tier,
+    prerequisites=tier==2 and {'nullius-overcharged-assembly-2','nullius-steelmaking-1'} or
+      {'nullius-grounding-coils-2','nullius-overcharged-assembly-3','nullius-insulation-2'},
+    effects={{type='unlock-recipe',recipe='nullius-grounding-coil-'..tier}},
+    unit={count=tier==2 and 10 or 20,time=tier==2 and 45 or 60,
+      ingredients=tier==2 and {{'nullius-electromagnetic-pack',20},{'nullius-electrical-pack',4}} or
+        {{'nullius-electromagnetic-pack',40},{'nullius-electrical-pack',8},
+         {'nullius-chemical-pack',16},{'nullius-physics-pack',8}}},
+  }})
+end

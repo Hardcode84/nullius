@@ -2,6 +2,8 @@
 -- other planets unchanged; the engine enforces the sand rules without events.
 local masks = require("collision-mask-util")
 local buildable = require("prototypes.visible-build-items")()
+local coils={}
+for _,name in ipairs(require('shared.grounding-coils')) do coils[name]=true end
 local allowed = {
   -- Androids have build items, but must not inherit building restrictions.
   character=true,
@@ -15,7 +17,7 @@ for kind in pairs(require("collision-mask-defaults")) do
       (name:find("nullius-extractor-",1,true)==1 or name=="pumpjack")
     local elevated = kind:find("elevated-",1,true)==1
     if kind~="tile" and not allowed[kind] and not extractor and not elevated and
-        name~="nullius-hydrocarbon-vent" and name~="nullius-grounding-coil" and
+        name~="nullius-hydrocarbon-vent" and not coils[name] and
         (mask.layers.water_tile or mask.layers.ground_tile or buildable[name]~=nil) then
       entity.collision_mask = table.deepcopy(mask)
       entity.collision_mask.layers.nullius_fulgora_sand = true

@@ -476,12 +476,24 @@ not the whole 30-tick interval. Short pulses between samples can be missed.
 | Visual target | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
 | Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
 | Placement | Fulgora sand only; use the wind-turbine collision fields, including mutual exclusion with turbines |
-| Power | 400 MW surge demand; no power output |
-| Unlock | Primitive Filtration; no boxed coil recipes |
+| Power | 400 MW / 1.6 GW / 6.4 GW surge demand; no power output |
+| Unlock | Primitive Filtration for tier 1; Grounding Coils 2 and 3 for higher tiers; no boxed recipes |
 | Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
 | Recipe | 20 stone bricks, 20 aluminum wire, and 10 aluminum plates; 5 seconds; hand crafting or small assembler |
 | Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |
-| Higher-tier design | Induction discharge towers with stacked coils and stronger electrical effects |
+| Upgrades | Default planner: 1 → 2 → 3; custom mappings permit replacement between tiers |
+
+All tiers have the same footprint and wind-turbine spacing. Higher tiers use
+blue and violet tints. Each upgrade recipe consumes one previous-tier coil.
+
+| Tier | Other recipe inputs | Research prerequisites | Science cost |
+|---|---|---|---|
+| 2 | 80 aluminum wire, 40 steel plates, 20 glass | Overcharged Assembly 2; Steelmaking 1 | 200 EM, 40 electrical; 10 × 45 s |
+| 3 | 160 aluminum wire, 80 steel plates, 40 insulation | Grounding Coils 2; Overcharged Assembly 3; Insulation 2 | 800 EM, 160 electrical, 320 chemical, 160 physics; 20 × 60 s |
+
+Recipes take 10 seconds in medium crafting and 20 seconds in large assembly.
+The `fulgora-coil-upgrades` scenario checks native robot upgrades, custom
+planner downgrades, spacing, recipe execution, power demand, and removal.
 
 ### Starter power balance
 

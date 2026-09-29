@@ -69,7 +69,7 @@ function entity_added(entity, handbuilt)
 end
 
 function entity_removed(entity, died)
-  if entity.name=="nullius-grounding-coil" then remove_wind_mod_entity(entity) end
+  if grounding_coils.is_coil(entity.name) then remove_wind_mod_entity(entity) end
   if entity.type=="electric-pole" then fulgora_collectors.remove(entity.unit_number) end
   -- Clean up heat interface for any pneumatic machine (before prefix check).
   if string.sub(entity.name, -10) == "-pneumatic" then
