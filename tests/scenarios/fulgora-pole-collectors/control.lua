@@ -5,11 +5,13 @@
 -- act: raised build, ghost revival, clone, upgrade, move, mine, destroy, merge forces.
 -- run: scheduled lifecycle checks and native robot construction through tick 3600.
 -- expect: one invisible collector per pole, native energy delivery, no orphans.
-local NAME='nullius-pole-lightning-collector'
+local config=require('__nullius-star__/shared/fulgora-collectors')
+local NAME=config.names
 local function check(ok,message) storage.assertions=storage.assertions+1; assert(ok,message) end
 local function helper(pole)
   local list=pole.surface.find_entities_filtered{name=NAME,position=pole.position,radius=0.1}
   check(#list==1,'one helper for '..pole.name)
+  check(list[1].name==(config.by_pole[pole.name] or config.default).name,'wrong collector profile')
   check(not list[1].destructible and not list[1].operable,'helper exposed')
   return list[1]
 end

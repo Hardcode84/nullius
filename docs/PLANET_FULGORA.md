@@ -431,11 +431,22 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 ## Lightning and overload
 
 Power poles collect lightning; there is no separate player-built collector.
-Implemented on Fulgora: each pole has one hidden native collector. It captures
-20% of strike energy, holds up to 200 MJ, and supplies up to 100 MW. Collection
-uses the native 10-tile search radius. There is no idle drain. A full buffer
-supplies maximum output for 2 seconds. The `fulgora-collector-drain` scenario
-checks depletion after one strike with ambient storms disabled.
+Each pole has one native collector. Collection reach is 10 tiles for ordinary
+poles, 20 for substations, and 30 for pylons.
+Other mods' poles use the ordinary tier-1 profile.
+
+| Pole tier | Strike energy captured | Buffer | Maximum output |
+|---|---:|---:|---:|
+| 1 | 20% | 200 MJ | 100 MW |
+| 2 | 40% | 400 MJ | 200 MW |
+| 3 | 60% | 600 MJ | 300 MW |
+| 4 (ordinary poles only) | 80% | 800 MJ | 400 MW |
+
+There is no idle drain. Each full buffer supplies maximum output for 2 seconds.
+Fast replacement retains stored energy up to the new capacity. Larger outputs
+need more storage charge capacity or grounding coils to prevent overload.
+`fulgora-collector-tiers` checks native collection reach, energy, discharge,
+and charged replacements for all ten pole tiers.
 Pole placement, blueprint revival, replacement, cloning, movement, and removal
 maintain the collector. Existing poles receive collectors when the mod updates.
 Native supply areas determine electricity sharing, including between forces.
@@ -499,10 +510,10 @@ planner downgrades, spacing, recipe execution, power demand, and removal.
 
 | Property | Value |
 |---|---:|
-| Collector capacity / maximum output, per pole | 200 MJ / 100 MW |
+| Tier-1 collector capacity / maximum output, per pole | 200 MJ / 100 MW |
 | Full-buffer discharge at maximum output | 2 seconds |
 | Grounding coil demand | 400 MW |
-| Four coils: protection with full batteries and no factory load | 32 charged poles |
+| Four coils: protection with full batteries and no factory load | 32 charged tier-1 poles |
 | Four starter batteries: capacity / charge / discharge | 60 MJ / 200 MW / 2 MW |
 | Battery tiers 1 / 2 / 3: charge rate | 50 / 100 / 200 MW |
 | Starter process machines and lab, all active | 7.13 MW |

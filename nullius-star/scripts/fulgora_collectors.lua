@@ -1,6 +1,6 @@
 -- Lifecycle path only. Native lightning and electric networks transfer energy.
 local collectors = {}
-local NAME = "nullius-pole-lightning-collector"
+local config = require("shared.fulgora-collectors")
 local function eligible(pole)
   return pole.valid and pole.type=="electric-pole" and pole.surface.planet and
     pole.surface.planet.name=="nullius-fulgora"
@@ -18,28 +18,33 @@ function collectors.add(pole)
   if pole.type~="electric-pole" then return end
   if not eligible(pole) then collectors.remove(pole.unit_number); return end
   local row = storage.fulgora_collectors[pole.unit_number]
-  if row and row.helper.valid then
+  local profile = config.by_pole[pole.name] or config.default
+  if row and row.helper.valid and row.helper.name == profile.name then
     assert(row.helper.teleport(pole.position), "Cannot move pole collector")
     return
   end
   local offline=row and row.grid_offline or false
   local grace=row and row.grid_grace or 0
+  local energy=row and row.helper.valid and row.helper.energy or 0
+  if row then collectors.remove(pole.unit_number) end
   -- Fast replacement invalidates the old pole before its destruction event.
   -- Remove its collector now so the replacement never gets a duplicate.
-  for _,helper in pairs(pole.surface.find_entities_filtered{name=NAME,position=pole.position,radius=0.1}) do
+  for _,helper in pairs(pole.surface.find_entities_filtered{name=config.names,position=pole.position,radius=0.1}) do
     local previous=storage.fulgora_collector_helpers[script.register_on_object_destroyed(helper)]
     local owner=previous and storage.fulgora_collectors[previous]
     if owner and not owner.pole.valid then
       offline=offline or owner.grid_offline or false
       grace=math.max(grace,owner.grid_grace or 0)
+      energy=energy+helper.energy
       collectors.remove(previous)
     end
   end
   local helper = assert(pole.surface.create_entity{
-    name=NAME, position=pole.position, force="neutral", quality=pole.quality,
+    name=profile.name, position=pole.position, force="neutral", quality=pole.quality,
   }, "Cannot create pole collector")
   -- Electricity follows native supply areas, including across forces. Neutral
   -- helpers need no polling when a pole changes force or forces are merged.
+  helper.energy=math.min(energy,helper.electric_buffer_size)
   helper.destructible=false
   helper.operable=false
   local registration=script.register_on_object_destroyed(pole)
@@ -65,7 +70,7 @@ end
 function collectors.cloned(entity)
   -- clone_area may copy a helper before or after its pole. Discard that copy;
   -- only the pole's clone event may create the new owned helper.
-  if entity.name==NAME then entity.destroy() else collectors.add(entity) end
+  if config.by_name[entity.name] then entity.destroy() else collectors.add(entity) end
 end
 
 function collectors.rebuild()
@@ -83,7 +88,7 @@ function collectors.rebuild()
   end
   for _,row in pairs(storage.fulgora_collectors) do owned[row.helper.unit_number]=true end
   for _,surface in pairs(game.surfaces) do
-    for _,helper in pairs(surface.find_entities_filtered{name=NAME}) do
+    for _,helper in pairs(surface.find_entities_filtered{name=config.names}) do
       if not owned[helper.unit_number] then helper.destroy() end
     end
   end
