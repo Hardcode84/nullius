@@ -53,14 +53,14 @@ def default_factorio() -> Path:
     configured = os.environ.get("FACTORIO_BIN")
     if configured:
         return Path(configured)
-    return Path.home() / "factorio" / "bin" / "x64" / "factorio"
+    return Path.home() / "factorio-2.1.19" / "bin" / "x64" / "factorio"
 
 
 def default_dependency_mods() -> Path:
     configured = os.environ.get("FACTORIO_MOD_DIRECTORY")
     if configured:
         return Path(configured)
-    return Path.home() / "factorio" / "mods"
+    return Path.home() / "factorio-2.1.19" / "mods"
 
 
 def find_archive(mod_directory: Path, mod_name: str) -> Path:

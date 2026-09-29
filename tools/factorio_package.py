@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""Build development ZIPs for Factorio 2.1 (default), 2.0, or both."""
+"""Build development ZIPs for Factorio 2.1."""
 import argparse
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = {
-    "2.0": {"base": "2.0.73", "space-age": "2.0.73", "elevated-rails": "2.0",
-            "boblogistics": "2.0.6", "boblibrary": "1.1.4", "configurable-valves": "0.3.3"},
     "2.1": {"base": "2.1.19", "space-age": "2.1.19", "elevated-rails": "2.1.19",
             "boblogistics": "3.0.1", "boblibrary": "3.0.0", "configurable-valves": "2.0.2"},
 }
@@ -53,14 +51,12 @@ def build_packages(destination, version="2.1"):
     else:
         from build_release import build_archive, read_metadata
     source = read_metadata()
-    versions = tuple(REQUIREMENTS) if version == "both" else (version,)
-    return [build_archive(destination / target, package_metadata(source, target))
-            for target in versions]
+    return [build_archive(destination / version, package_metadata(source, version))]
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--factorio-version", choices=(*REQUIREMENTS, "both"), default="2.1")
+    parser.add_argument("--factorio-version", choices=tuple(REQUIREMENTS), default="2.1")
     parser.add_argument("--output-directory", type=Path, default=ROOT / "release/packages")
     args = parser.parse_args()
     for archive in build_packages(args.output_directory.expanduser().resolve(), args.factorio_version):

@@ -16,11 +16,12 @@ actual mod set in Factorio and creates a fresh resolved prototype dump. Reuse a
 dump with `--data-raw PATH` only for repeated queries against the same Factorio
 version, mod versions, and startup settings.
 
-The tools accept Factorio 2.0 and 2.1 schemas. Select a matching installation
+Target Factorio 2.1. Select a matching installation
 and mod set with `--factorio`, `--mod-under-test`, and
 `--dependency-mod-directory`. A schema check does not prove that the full mod
 loads on that engine. For schema or executor changes, run
-`tools/test_factorio_tool_compatibility.py --factorio PATH` on both versions.
+`tools/test_factorio_tool_compatibility.py --factorio PATH` on 2.1.
+Older schema readers serve historical fixtures only.
 Recipe categories are alternatives; exact quantities reject both independent
 and shared probability.
 

@@ -1,5 +1,8 @@
 # Factorio 2.1 port assessment
 
+Support policy, 2026-09-29: Factorio 2.1 only, minimum 2.1.19.
+The comparisons below record the earlier port checks.
+
 Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
 The staged 2.1 mod loads, renders, and passes multiplayer checks. Full
 compatibility is not established. The original audit found 38 failing
@@ -150,7 +153,7 @@ fields are removed on both engines.
 | Runtime recipe filtering | Startup uses the dual-version `scripts/recipe_filter.lua` | 174 assertions per engine cover prototype visibility, product visibility, exemptions, locked recipes, broken counts, and repeated filtering; full-mod force creation also passes |
 | Test code | The full 2.1 suite fails 38 scenarios; the full 2.0 suite passes | Port the API calls, add hot-rock contracts, and defer statistics assertions by one tick. Preserve fluid, heat, and throughput checks |
 | Recipe productivity families | Matcher accepts both category schemas | Verified on 2.0.77 and 2.1.19: three sorted effects, no duplicates, zero-cap exclusion, and +1% research bonuses |
-| Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Supported on 2.0 and 2.1; see tool checks below |
+| Analysis and release tools | Dual-schema planners, UI audit, test overlays, and release metadata checks | Historical 2.0 and 2.1 checks; current target is 2.1 |
 
 Counts are lexical source matches, not resolved prototype counts or an edit
 budget. Comments and non-entity fields can match. In particular, a logistic
@@ -170,26 +173,22 @@ section's `active` field must not receive the entity API conversion.
 Use `--factorio`, `--mod-under-test`, and `--dependency-mod-directory`
 with the planner or prerequisite analyzer to select a matching installation
 and mod set. Test-support manifests follow the subject mod version. Release
-metadata checks accept 2.0 and 2.1. Workspace scenario and planner runs select
-private metadata for the selected engine. External packages remain unchanged.
+metadata requires 2.1. Older fixtures remain available for upgrade checks.
+External packages remain unchanged.
 
 ### Package targets
 
-Source metadata and the package default target Factorio 2.1.
+Source metadata and all new packages target Factorio 2.1.
 
 ```bash
 python tools/factorio_package.py
-python tools/factorio_package.py --factorio-version 2.0
-python tools/factorio_package.py --factorio-version both
 ```
 
-ZIPs go to `release/packages/2.0/` and `release/packages/2.1/`.
-Each ZIP has the target engine version and dependency requirements. All other
-files match. The command does not change source metadata, validate a release,
-or create a tag. Use `--mod-under-test` to test each ZIP with its matching
-engine and dependencies. Portal uploads require distinct mod release versions.
+ZIPs go to `release/packages/2.1/`. The command does not change source metadata,
+validate a release, or create a tag. Use `--mod-under-test` to test the ZIP with
+Factorio 2.1 and matching dependencies. The 2.0 and `both` targets are rejected.
 
-Both package targets pass all 128 scenarios on 2.0.77 and 2.1.19, plus strict
+During the port, both package targets passed all 128 scenarios on 2.0.77 and 2.1.19, plus strict
 prototype loading, new-map creation, and reload. The 2.1 checks use the staged
 dependencies listed below. The 2.1 override omits `max_fluid_flow` and moves
 the Configurable Valves connection flag to each pipe connection.

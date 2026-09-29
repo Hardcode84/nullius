@@ -10,7 +10,7 @@ from tools.build_release import build_archive, read_metadata, TestFailure
 
 
 class ReleaseBuilderTests(unittest.TestCase):
-    def test_release_metadata_supports_both_engine_versions(self):
+    def test_release_metadata_requires_2_1(self):
         with tempfile.TemporaryDirectory() as temporary:
             mod = Path(temporary)
             (mod / "changelog.txt").write_text("Version: 1.0.0\n")
@@ -19,7 +19,7 @@ class ReleaseBuilderTests(unittest.TestCase):
                 for version in ("2.0", "2.1", "2.2"):
                     metadata["factorio_version"] = version
                     (mod / "info.json").write_text(json.dumps(metadata))
-                    if version == "2.2":
+                    if version != "2.1":
                         with self.assertRaisesRegex(TestFailure, "factorio_version"):
                             read_metadata()
                     else:

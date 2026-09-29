@@ -60,11 +60,12 @@ def stage_fluid_resource_products(mod):
     # Copy the exact product literals, not a second implementation of their fields.
     # Reject missing/ambiguous source matches so the witness cannot silently drift.
     specifications = (
+        ("nullius-hydrocarbon-vent", "prototypes/planet/fulgora.lua", "nullius-hydrocarbon-slurry"),
         ("nullius-fumarole", "prototypes/resource.lua", "nullius-volcanic-gas"),
         ("offshore-oil", "prototypes/resource_override.lua", "nullius-volcanic-gas"),
         ("sulfuric-acid-geyser", "data-final-fixes.lua", "nullius-hydrogen-chloride"),
     )
-    code = ['for _, name in ipairs({"nullius-volcanic-gas", "nullius-hydrogen-chloride"}) do',
+    code = ['for _, name in ipairs({"nullius-volcanic-gas", "nullius-hydrogen-chloride", "nullius-hydrocarbon-slurry"}) do',
             'local fluid=table.deepcopy(data.raw.fluid.water); fluid.name=name;',
             'fluid.max_temperature=1000; data:extend({fluid}); end']
     for name, path, fluid in specifications:
@@ -802,7 +803,7 @@ def run(factorio, dependency_mod_directory):
     assert rocks["status"] == "pass", rocks
     resources = json.loads((work / "script-output/factorio-tests/fluid-resource-products.json").read_text())
     assert resources["status"] == "pass", resources
-    assert resources["resources"] == 3, resources
+    assert resources["resources"] == 4, resources
     turbines = json.loads((work / "script-output/factorio-tests/turbine-generator.json").read_text())
     assert turbines["status"] == "pass" and turbines["variants"] == 18, turbines
     vehicles = json.loads((work / "script-output/factorio-tests/vehicle-forces.json").read_text())
