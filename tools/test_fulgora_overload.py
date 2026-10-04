@@ -18,7 +18,10 @@ def main():
     parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
     parser.add_argument("--case", choices=("fulgora-grid-overload", "fulgora-grounding-coils", "fulgora-coil-upgrades", "experiment-fulgora-overload"),
                         default="fulgora-grid-overload")
+    parser.add_argument("--checkpoint-tick", type=int, default=102)
     args = parser.parse_args()
+    if args.checkpoint_tick < 1:
+        parser.error("--checkpoint-tick must be positive")
     args.mod_under_test = MOD_UNDER_TEST
     args.timeout_seconds = 300
     args.until_tick = None
@@ -37,7 +40,7 @@ def main():
 
     # --until-tick writes the reached state back to the loaded map.
     run("compile-checkpoint", ["--scenario2map", f"nullius-star/{case}"])
-    run("checkpoint", ["--load-game", str(save), "--until-tick", "102"])
+    run("checkpoint", ["--load-game", str(save), "--until-tick", str(args.checkpoint_tick)])
     checkpoint = work / "saves/overload-checkpoint.zip"
     shutil.copyfile(save, checkpoint)
     result_path = work / f"script-output/factorio-tests/{case}.json"
@@ -47,8 +50,8 @@ def main():
         raise TestFailure(f"Overload reload produced no result: {work}")
     resumed = json.loads(result_path.read_text())
     reload_tick = resumed["observations"].pop("reload_tick", None)
-    if reload_tick != 102:
-        raise TestFailure(f"Expected restart at tick 102, got {reload_tick!r}")
+    if reload_tick != args.checkpoint_tick:
+        raise TestFailure(f"Expected restart at tick {args.checkpoint_tick}, got {reload_tick!r}")
     if resumed != first:
         raise TestFailure(f"Overload reload changed the result: {first!r} != {resumed!r}")
     print(json.dumps({"status": "pass", "initial": first, "reload": "identical result", "reload_tick": reload_tick,

@@ -553,7 +553,10 @@ The charge rates apply on all planets. Battery capacity and discharge rates
 stay the same. Supercapacitors retain their charge-rate multiplier.
 Coils and batteries share tertiary power. Faster charging lets batteries store
 a useful part of each pulse before coils discharge the remaining energy.
-The overload thresholds stay at twice demand and more than 1 MW excess.
+A trip requires three consecutive checks above twice demand and more than
+1 MW excess. Checks run every 0.5 seconds. A safe check or manual reset clears
+the count. Reset grace does not count toward a trip. Shared grids count once
+per check; a split retains the count and a merge takes the highest count.
 
 The four batteries cannot supply the 3.56 MW mean first-science load between
 strikes. Eight batteries meet that discharge rate; fifteen meet the full fleet's
@@ -990,7 +993,9 @@ python tools/run_factorio_tests.py experiment-lightning-poles -n auto
 ### Overload checks
 
 Run `python tools/test_fulgora_overload.py` for the production scenario and a
-reload from tick 102. Run `fulgora-grid-threshold` for the eight threshold cases.
+reload from tick 102. Use `--checkpoint-tick 62` to check a pending trip across
+a reload. Run `fulgora-grid-threshold` for the eight threshold cases and
+`fulgora-grid-debounce` for brief spikes, interrupted excess, and shared counts.
 Run `fulgora-grid-alerts` for two-client alerts, force changes, reload, and the
 pole reset panel. The client test needs a display socket and loopback networking.
 
@@ -998,13 +1003,13 @@ pole reset panel. The client test needs a display socket and loopback networking
 |---|---|
 | Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality does not trip |
 | Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
-| Native lightning | An unprotected collector burst triggers a trip |
+| Native lightning | Stored collector energy trips the grid if excess lasts for three checks |
 | Split / merge | Both split parts retain the fault; merging propagates it |
 | Remove anchor / sink | Restore one sink per faulted native network |
 | Replace pole | Retain the fault after fast replacement |
 | Clone sink | Remove the copied consumer |
 | Save / reload | Retain faults and complete the same topology and reset checks |
-| Reset | Reset the current shared group; allow 120 ticks before another trip |
+| Reset | Clear the fault and pending count; wait 120 ticks before counting again |
 | Alert | Anchor the map alert to the sink; refresh while offline and remove on reset |
 | Alert ownership | Notify every force with a pole in the shared group; follow relocation and force changes |
 | Overlapping unwired grids | Shut down together; allow reset from any owned pole in the group |

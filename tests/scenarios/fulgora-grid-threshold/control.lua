@@ -1,6 +1,6 @@
 -- given: fixed native sources; zero, 100 kW, or 1.2 MW demand; no storage.
 -- place/connect: eight isolated networks on the test surface, no ambient storms.
--- act/run: measure native flow and sample overloads at tick 60.
+-- act/run: measure native flow and sample overloads at tick 90.
 -- expect: both the 2x ratio and 1 MW excess floor must be strictly exceeded.
 local overload={
   offline=function(pole) return remote.call("nullius-test-overload","offline",pole) end}
@@ -46,9 +46,9 @@ script.on_nth_tick(29,function()
     check(math.abs(demand-case.demand)<0.001,"native demand case "..i)
   end
 end)
-script.on_nth_tick(61,function()
+script.on_nth_tick(91,function()
   if game.tick==0 then return end
-  script.on_nth_tick(61,nil)
+  script.on_nth_tick(91,nil)
   for i,case in ipairs(cases) do
     check(overload.offline(storage.rows[i])==case.trip,"threshold case "..i)
   end

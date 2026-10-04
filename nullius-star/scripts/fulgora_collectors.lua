@@ -25,6 +25,7 @@ function collectors.add(pole)
   end
   local offline=row and row.grid_offline or false
   local grace=row and row.grid_grace or 0
+  local checks=row and row.grid_overload_checks or 0
   local energy=row and row.helper.valid and row.helper.energy or 0
   if row then collectors.remove(pole.unit_number) end
   -- Fast replacement invalidates the old pole before its destruction event.
@@ -35,6 +36,7 @@ function collectors.add(pole)
     if owner and not owner.pole.valid then
       offline=offline or owner.grid_offline or false
       grace=math.max(grace,owner.grid_grace or 0)
+      checks=math.max(checks,owner.grid_overload_checks or 0)
       energy=energy+helper.energy
       collectors.remove(previous)
     end
@@ -48,7 +50,7 @@ function collectors.add(pole)
   helper.destructible=false
   helper.operable=false
   local registration=script.register_on_object_destroyed(pole)
-  storage.fulgora_collectors[pole.unit_number]={pole=pole,helper=helper,registration=registration,grid_offline=offline,grid_grace=grace}
+  storage.fulgora_collectors[pole.unit_number]={pole=pole,helper=helper,registration=registration,grid_offline=offline,grid_grace=grace,grid_overload_checks=checks}
   storage.fulgora_collector_owners[registration]=pole.unit_number
   local helper_registration=script.register_on_object_destroyed(helper)
   storage.fulgora_collector_helpers[helper_registration]=pole.unit_number

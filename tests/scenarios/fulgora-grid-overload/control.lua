@@ -67,11 +67,14 @@ script.on_nth_tick(1,function()
   -- No ambient storms: the production collector gets one explicit native strike.
 end)
 local actions={
+ [61]=function() check(not overload.offline(storage.hot.pole),"tripped before third check") end,
+ [91]=function() check(overload.offline(storage.hot.pole),"pending trip did not survive") end,
+ [481]=function() check(not overload.offline(storage.hot.pole),"reset retained pending checks") end,
 
  [29]=function()
   storage.surface.execute_lightning{name="factorio-test-lightning",position={500,0}}
  end,
- [61]=function()
+ [181]=function()
   check(overload.offline(storage.replacement),"replacement fixture did not trip")
   storage.replacement=assert(storage.surface.create_entity{name="medium-electric-pole",
     position={700,0},force="player",fast_replace=true,spill=false,raise_built=true})
@@ -85,7 +88,7 @@ local actions={
   check(not overload.offline(storage.protected.pole),"battery charge demand ignored")
   check(not overload.offline(storage.edge.pole),"exact 2x boundary tripped")
   check(not overload.offline(storage.dark.pole),"accumulator discharge counted as generation")
-  check(overload.offline(storage.lightning.pole),"unprotected collector burst did not trip")
+  check(overload.offline(storage.lightning.pole),"sustained collector excess did not trip")
   check(overload.offline(storage.far),"fault missing on remote pole")
   check(storage.hot.load.energy==0,"load not starved")
   local networks=0
@@ -103,7 +106,7 @@ local actions={
   check(not overload.offline(storage.overlap.pole),"shared reset left neighbour offline")
   wire(storage.branch.pole,storage.far,false)
  end,
- [91]=function()
+ [211]=function()
   check(overload.offline(storage.replacement),"replacement fault did not survive reconciliation")
   check(overload.offline(storage.branch.pole) and overload.offline(storage.far),"split lost fault")
   local count=0;for _,sink in pairs(sinks()) do if sink.position.x>=400 and sink.position.x<420 then count=count+1 end end
@@ -112,11 +115,11 @@ local actions={
   check(not overload.offline(storage.far) and overload.offline(storage.branch.pole),"reset crossed split")
   wire(storage.branch.pole,storage.far,true)
  end,
- [121]=function()
+ [241]=function()
   check(overload.offline(storage.far),"merge failed to propagate fault")
   storage.branch.pole.destroy()
  end,
- [151]=function()
+ [271]=function()
   check(overload.offline(storage.far),"anchor removal lost fault")
   local found=false
   for _,sink in pairs(sinks()) do
@@ -124,33 +127,33 @@ local actions={
   end
   check(found,"sink did not relocate after anchor removal")
  end,
- [181]=function()
+ [301]=function()
   local found=false
   for _,sink in pairs(sinks()) do if sink.position.x==409 then found=true end end
   check(found,"deleted sink was not restored")
   overload.reset(storage.hot.pole)
  end,
- [211]=function()
+ [331]=function()
   check(not overload.offline(storage.hot.pole),"reset grace missing")
   check(storage.hot.load.energy>0,"manual reset did not restore power")
  end,
- [331]=function()
+ [511]=function()
   check(overload.offline(storage.hot.pole),"persistent excess did not retrip")
   storage.hot.source=generation(storage.hot.source,100000)
   overload.reset(storage.hot.pole)
  end,
- [481]=function()
+ [661]=function()
   check(not overload.offline(storage.hot.pole),"rebalanced grid retripped")
   check(storage.hot.load.energy>0,"rebalanced grid unpowered")
   storage.edge.source=generation(storage.edge.source,2000000)
  end,
- [489]=function() storage.edge.source=generation(storage.edge.source,200000) end,
- [541]=function()
+ [669]=function() storage.edge.source=generation(storage.edge.source,200000) end,
+ [721]=function()
   check(not overload.offline(storage.edge.pole),"between-sample pulse unexpectedly latched")
   storage.observations.short_pulse="8 tick pulse between samples is missed"
   storage.protected.battery.energy=storage.protected.battery.electric_buffer_size
  end,
- [601]=function()
+ [811]=function()
   check(overload.offline(storage.protected.pole),"full storage still protects grid")
  end,
  [1051]=function()

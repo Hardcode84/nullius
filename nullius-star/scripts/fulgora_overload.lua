@@ -45,12 +45,13 @@ local function topology()
   local groups={}
   for id,n in pairs(nodes) do
     local r=root(id)
-    local group=groups[r] or {nodes={},offline=false,grace=0,forces={}}
+    local group=groups[r] or {nodes={},offline=false,grace=0,checks=0,forces={}}
     groups[r]=group;n.group=group;group.nodes[#group.nodes+1]=n
     table.sort(n.rows,function(a,b) return a.pole.unit_number<b.pole.unit_number end)
     for _,row in ipairs(n.rows) do
       group.offline=group.offline or row.grid_offline or false
       group.grace=math.max(group.grace,row.grid_grace or 0)
+      group.checks=math.max(group.checks,row.grid_overload_checks or 0)
       group.forces[row.pole.force.index]=true
     end
   end
@@ -69,7 +70,10 @@ end
 local function apply(nodes,groups)
   for _,group in pairs(groups) do
     for _,n in ipairs(group.nodes) do
-      for _,row in ipairs(n.rows) do row.grid_offline=group.offline;row.grid_grace=group.grace end
+      for _,row in ipairs(n.rows) do
+        row.grid_offline=group.offline;row.grid_grace=group.grace
+        row.grid_overload_checks=group.checks
+      end
     end
   end
   local sinks=storage.fulgora_overload_sinks
@@ -126,16 +130,23 @@ end
 function overload.update()
   local nodes,groups=topology()
   local tripped_forces={}
-  for _,n in pairs(nodes) do
-    local group=n.group
+  for _,group in pairs(groups) do
+    local excessive=false
     if not group.offline and game.tick>=group.grace then
-      local flow=n.network.flow_last_tick
-      local offered=flow.primary_output+flow.secondary_output+flow.solar_output
-      local demand=flow.primary_demand+flow.secondary_demand+flow.tertiary_demand
-      if offered>config.demand_ratio*demand and offered-demand>config.minimum_excess_watts/60 then
-        group.offline=true
-        for force in pairs(group.forces) do tripped_forces[force]=true end
+      for _,n in ipairs(group.nodes) do
+        local flow=n.network.flow_last_tick
+        local offered=flow.primary_output+flow.secondary_output+flow.solar_output
+        local demand=flow.primary_demand+flow.secondary_demand+flow.tertiary_demand
+        if offered>config.demand_ratio*demand and offered-demand>config.minimum_excess_watts/60 then
+          excessive=true
+          break
+        end
       end
+    end
+    group.checks=excessive and group.checks+1 or 0
+    if group.checks>=config.consecutive_checks then
+      group.offline=true
+      for force in pairs(group.forces) do tripped_forces[force]=true end
     end
   end
   apply(nodes,groups);refresh_panels(nodes)
@@ -151,7 +162,7 @@ function overload.reset(pole,force)
   local nodes,groups=topology()
   local n=nodes[network_key(pole.electric_network.parent_network)]
   if not n or not n.group.offline then return false end
-  n.group.offline=false;n.group.grace=game.tick+config.reset_grace_ticks
+  n.group.offline=false;n.group.checks=0;n.group.grace=game.tick+config.reset_grace_ticks
   apply(nodes,groups);refresh_panels(nodes)
   return true
 end
