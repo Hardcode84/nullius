@@ -26,10 +26,10 @@ local function fulgora_landing_site(surface, pos, force)
       {"nullius-combustion-chamber-1",1}, {"nullius-chimney-1",3},
       {"nullius-lab-1",1}, {"cliff-explosives",30}, {"iron-chest",4},
     },
-    {{"small-electric-pole",32}, {"big-electric-pole",4}, {"pipe",200}, {"pipe-to-ground",40},
-      {"nullius-small-tank-1",8}, {"nullius-one-way-valve",8}, {"nullius-pump-1",5}},
+    {{"small-electric-pole",40}, {"big-electric-pole",6}, {"pipe",200}, {"pipe-to-ground",40},
+      {"nullius-small-tank-1",8}, {"storage-tank",2}, {"nullius-one-way-valve",8}, {"nullius-pump-1",5}},
     {{"transport-belt",100}, {"inserter",24}, {"wooden-chest",10},
-      {"splitter",8}, {"underground-belt",20}, {"nullius-grid-battery-1",4}, {"nullius-grounding-coil",4}},
+      {"splitter",8}, {"underground-belt",20}, {"nullius-grid-battery-1",10}, {"nullius-grounding-coil",4}},
   }
   for index,items in ipairs(supplies) do
     local container = wreck

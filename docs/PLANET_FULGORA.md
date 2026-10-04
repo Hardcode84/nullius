@@ -71,15 +71,16 @@ Supplied once per force when the probe is activated.
 | Chimney 1 | 3 | Vent permitted gases; reuse for different gases |
 | Lab 1 | 1 | Local research |
 | Cliff explosives | 30 | Clear cliffs for the starter factory |
-| Small electric pole | 32 | Lightning capture and distribution |
-| Pylon 1 | 4 | Wider lightning capture and longer power connections |
+| Small electric pole | 40 | Lightning capture and distribution |
+| Pylon 1 | 6 | Wider lightning capture and longer power connections |
 | Pump 1 | 5 | Move fluids between processing lines |
 | Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
 | Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
+| Medium tank 1 | 2 | Store surplus fluids |
 | One-way valve | 8 | Direct recovered fluids |
 | Transport belt / inserter | 100 / 24 | Solid transport |
 | Splitter / underground belt | 8 / 20 | Split belts and cross processing lines |
-| Grid battery 1 | 4 | Additional electric storage |
+| Grid battery 1 | 10 | Additional electric storage |
 | Grounding coil | 4 | Discharge surplus power; one coil protects eight poles |
 | Small chest 1 | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
 | Small chest 2 | 4 | Packed in the wreck; extra storage |
@@ -88,7 +89,7 @@ Keep processing machines in the wreck. Put logistics supplies in the two
 salvage chests; the wreck has only 20 inventory slots.
 
 No ore, science packs, fuel, or bottled fluids. Keep the equipped probe android.
-Poles include lightning energy buffers; the four grid batteries add storage.
+Poles include lightning energy buffers; the ten grid batteries add storage.
 Spread the collectors and connect them before processing.
 Build filters and other restricted machines on islands; route pipes to sand vents.
 
@@ -551,6 +552,9 @@ The `fulgora-coil-upgrades` scenario checks native robot upgrades, custom
 planner downgrades, spacing, recipe execution, power demand, and removal.
 
 ### Starter power balance
+
+The measurements below use the earlier starter kit with 32 small poles and four
+batteries. The current inventory is listed above.
 
 | Property | Value |
 |---|---:|
