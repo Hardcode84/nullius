@@ -143,10 +143,10 @@ Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 <!-- bootstrap-timing:start -->
 | Target | 100% vent yield | Survey high yield | Survey low yield |
 |---|---:|---:|---:|
-| 20 iron plates + 20 aluminum plates | 7.3 min | 4.4 min | 7.6 min |
-| Expansion kit | 13.4 min | 8.0 min | 14.1 min |
-| 10 of each early science pack | 10.3 min | 7.5 min | 10.9 min |
-| Expansion kit + first science | 23.7 min | 14.8 min | 25.0 min |
+| 20 iron plates + 20 aluminum plates | 6.7 min | 3.7 min | 7.1 min |
+| Expansion kit | 13.2 min | 6.7 min | 14.0 min |
+| 10 of each early science pack | 10.2 min | 5.7 min | 10.9 min |
+| Expansion kit + first science | 23.4 min | 11.9 min | 24.9 min |
 <!-- bootstrap-timing:end -->
 
 These are fractional-work bounds with mean mineral yields and continuous power.
@@ -155,19 +155,52 @@ and startup order. Tanks limit final surplus, not peak fluid volume. The survey
 uses the nearest three usable vents from the origin in twelve seeds on 2.1:
 94.0–199.2% mean yield. It does not cover every map or probe landing position.
 
-Slurry supply and flotation limit the 100% case. Extra air filters or hydro plants do not
-reduce its time. At higher yield, hydro plants, flotation, and hand crafting
-limit production. With 50% machine duty, the combined 100% case takes 47.4 min.
+Slurry extraction limits the current 100% cases. At half machine duty,
+expansion plus first science requires 46.8 min of work.
 
-Extractor research needs 250 geology, 228 climatology, 255 mechanical, and
-247 electrical packs after the minimum arrival research. The starter buffer
-allocation cannot support this batch with arrival recipes. Allowing more filtered
-hydrocarbon storage makes it feasible; the fixed-fleet work bound is 260.1 min
-at 100% yield. This is not a progression schedule with expansion and recipe upgrades.
-No zero-liquid-surplus solution exists for these targets at the arrival boundary.
-Players can manually delete excess fluid until automated disposal is available.
+### Building bootstrap time
+
+Fresh prototypes and the expanded starter fleet; three extractors and one android.
+The eight small tanks and two medium tanks provide 50,000 filtered-hydrocarbon
+storage and 10,000 each for six other liquids. No imported materials.
+
+| Independent target | 100% vents | Sampled yield range | 50% machine duty |
+|---|---:|---:|---:|
+| First medium assembler | 2.0 min | 1.0–2.2 min | 4.1 min |
+| One of each arrival building/logistics type, plus medium assembler | 20.8 min | 10.6–22.1 min | 41.6 min |
+| Reproduce the supplied processing fleet, excluding extractors | 35.7 min | 18.0–38.0 min | 71.4 min |
+
+The arrival-type target excludes extractors and grid batteries. Extractors need
+motor 2 through pump 2 and well 1; build a medium assembler for the lubricant
+input. With that assembler's construction and research included, one additional
+extractor needs a 269.6 min work bound and 99.2 lab-minutes. This case retains
+171,220 filtered hydrocarbons, above the 50,000 starter capacity. It allows
+unlimited storage for that fluid; expand storage or manually clear it.
+
+Reproducing every starter building type also needs grid-battery research,
+a compressor, a barrel pump, and medium furnace 2. The deliberately fixed-fleet
+case needs 4,803 min of production and 3,946 lab-minutes. This is a counterfactual
+capacity warning: expand extraction, processing, and labs before that research.
+It is not a normal-play duration. All 63 building types used through physics
+have a local material and research path in the separate reachability audit.
+
+At 100% yield, extractors run at full duty for processing-fleet reproduction;
+flotation uses 52%, hydro plants 39%, distilleries 32%, and chemical plants 11%.
+The android needs 84% of the batch duration. Stored surplus includes about
+29,967 hydrocarbons, 749 benzene, and 580 wastewater.
+
+These are mean-yield work bounds. They omit recipe startup order, fluid fill,
+transport, placement, and power interruptions. Research-bound cases permit the
+listed research and costed new machines from time zero, then count their science,
+lab work, and construction. The ten batteries do not prove continuous power.
+
+Repeat with `tools/plan_factorio_bootstrap.py` and the
+`fulgora-building-timing.json`, `fulgora-extractor-building-timing.json`, and
+`fulgora-self-reproduction-timing.json` configs in `tests/progression/planner/`.
 
 ### Mineral recovery comparison
+
+Historical comparison with the smaller starter fleet and eight small tanks:
 
 The recipe now returns 3 items per successful drop, with a 25% chance for each
 mineral. There is no boxed crude filtration recipe. The planner compares absolute drop amounts.

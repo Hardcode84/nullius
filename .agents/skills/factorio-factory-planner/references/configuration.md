@@ -247,7 +247,11 @@ python tools/plan_factorio_bootstrap.py \
 The configuration declares placement-item counts, arrival research, independent
 batch targets, finite final-fluid buffers, and sensitivity cases. Research targets
 include prerequisite costs after the arrival closure. Production retains arrival
-recipes. Solid surplus is stored; the report gives its stack count.
+recipes unless `boundary.technologies` declares a later recipe boundary.
+Solid surplus is stored; the report gives its stack count.
+`buffer_allocation` maps each fluid to tank entity names and integer counts;
+for example, `{"nullius-water": {"nullius-small-tank-1": 2, "storage-tank": 1}}`.
+Tank capacities come from resolved prototypes.
 `expected_recipes` opts named independent random outputs into mean-yield analysis.
 All other uncertain outputs use the guaranteed policy. Exact prerequisite
 manifests still reject probability. Mean-yield work is not expected completion time.

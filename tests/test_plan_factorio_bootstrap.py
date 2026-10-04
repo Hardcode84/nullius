@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog, fleet_placements
+from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog, fleet_placements, buffer_capacities
 from plan_factorio_factory import TestFailure
 
 
@@ -122,3 +122,15 @@ class BootstrapPlannerTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class BufferCapacityTest(unittest.TestCase):
+    def test_mixed_tanks_and_separate_fluids(self):
+        data = {'fluid': {'oil': {}, 'water': {}}, 'storage-tank': {
+            'small': {'fluid_box': {'volume': 10}},
+            'medium': {'fluid_box': {'volume': 100}}}}
+        self.assertEqual(buffer_capacities(data, {'oil': {'small': 2, 'medium': 2},
+                                                  'water': {'small': 1}}), {'oil': 220, 'water': 10})
+        with self.assertRaises(TestFailure):
+            buffer_capacities(data, {'oil': {'small': -1}})
+        with self.assertRaises(TestFailure):
+            buffer_capacities(data, {'oil': {'unknown': 1}})

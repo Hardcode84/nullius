@@ -63,6 +63,65 @@
   },
   "targets": [
     {
+      "name": "first-medium-assembler",
+      "items": {
+        "nullius-medium-assembler-1": 1
+      }
+    },
+    {
+      "name": "one-of-each-arrival-building",
+      "items": {
+        "nullius-hydro-plant-1": 1,
+        "nullius-distillery-1": 1,
+        "nullius-air-filter-1": 1,
+        "nullius-chemical-plant-1": 1,
+        "nullius-electrolyzer-1": 1,
+        "nullius-crusher-1": 1,
+        "nullius-small-furnace-1": 1,
+        "nullius-medium-furnace-1": 1,
+        "nullius-foundry-1": 1,
+        "nullius-small-assembler-1": 1,
+        "nullius-flotation-cell-1": 1,
+        "nullius-combustion-chamber-1": 1,
+        "nullius-chimney-1": 1,
+        "nullius-lab-1": 1,
+        "nullius-pump-1": 1,
+        "nullius-small-tank-1": 1,
+        "storage-tank": 1,
+        "nullius-one-way-valve": 1,
+        "nullius-grounding-coil": 1,
+        "small-electric-pole": 1,
+        "big-electric-pole": 1,
+        "pipe": 1,
+        "pipe-to-ground": 1,
+        "transport-belt": 1,
+        "inserter": 1,
+        "splitter": 1,
+        "underground-belt": 1,
+        "wooden-chest": 1,
+        "iron-chest": 1,
+        "nullius-medium-assembler-1": 1
+      }
+    },
+    {
+      "name": "duplicate-processing-fleet",
+      "items": {
+        "nullius-hydro-plant-1": 5,
+        "nullius-distillery-1": 4,
+        "nullius-air-filter-1": 4,
+        "nullius-chemical-plant-1": 4,
+        "nullius-electrolyzer-1": 2,
+        "nullius-crusher-1": 4,
+        "nullius-small-furnace-1": 4,
+        "nullius-medium-furnace-1": 1,
+        "nullius-foundry-1": 2,
+        "nullius-small-assembler-1": 2,
+        "nullius-flotation-cell-1": 2,
+        "nullius-combustion-chamber-1": 1,
+        "nullius-chimney-1": 3
+      }
+    },
+    {
       "name": "first-metals",
       "items": {
         "nullius-iron-plate": 20,
@@ -142,42 +201,12 @@
       "name": "starter"
     },
     {
-      "name": "double-air",
-      "fleet_multipliers": {
-        "nullius-air-filter-1": 2
-      }
-    },
-    {
-      "name": "double-hydro",
-      "fleet_multipliers": {
-        "nullius-hydro-plant-1": 2
-      }
-    },
-    {
-      "name": "double-extractors",
-      "fleet_multipliers": {
-        "nullius-extractor-1": 2
-      }
-    },
-    {
       "name": "half-power-duty",
       "duty": 0.5
     },
     {
-      "name": "no-fluid-surplus",
-      "store_fluids": false
-    },
-    {
       "name": "unbounded-fluid-storage",
       "unbounded_fluid_storage": true
-    },
-    {
-      "name": "yield-300-percent",
-      "vent_yield_multiplier": 3
-    },
-    {
-      "name": "yield-1000-percent",
-      "vent_yield_multiplier": 10
     },
     {
       "name": "survey-low-yield",
@@ -188,106 +217,10 @@
       "vent_yield_multiplier": 1.992444444444444
     },
     {
-      "name": "larger-buffers",
-      "buffer_multiplier": 1000
-    },
-    {
       "name": "only-hydrocarbons-unbounded",
       "unbounded_buffers": [
         "nullius-filtered-hydrocarbons"
       ]
-    },
-    {
-      "name": "2x-recovery-starter",
-      "expected_output_amount": 2
-    },
-    {
-      "name": "2x-recovery-survey-low-yield",
-      "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_amount": 2
-    },
-    {
-      "name": "2x-recovery-survey-high-yield",
-      "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_amount": 2
-    },
-    {
-      "name": "2x-recovery-no-fluid-surplus",
-      "store_fluids": false,
-      "expected_output_amount": 2
-    },
-    {
-      "name": "2x-recovery-only-hydrocarbons-unbounded",
-      "unbounded_buffers": [
-        "nullius-filtered-hydrocarbons"
-      ],
-      "expected_output_amount": 2
-    },
-    {
-      "name": "4x-recovery-starter",
-      "expected_output_amount": 4
-    },
-    {
-      "name": "4x-recovery-survey-low-yield",
-      "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_amount": 4
-    },
-    {
-      "name": "4x-recovery-survey-high-yield",
-      "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_amount": 4
-    },
-    {
-      "name": "4x-recovery-no-fluid-surplus",
-      "store_fluids": false,
-      "expected_output_amount": 4
-    },
-    {
-      "name": "4x-recovery-only-hydrocarbons-unbounded",
-      "unbounded_buffers": [
-        "nullius-filtered-hydrocarbons"
-      ],
-      "expected_output_amount": 4
-    },
-    {
-      "name": "3x-recovery-starter",
-      "expected_output_amount": 3
-    },
-    {
-      "name": "3x-recovery-survey-low-yield",
-      "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_amount": 3
-    },
-    {
-      "name": "3x-recovery-survey-high-yield",
-      "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_amount": 3
-    },
-    {
-      "name": "3x-recovery-no-fluid-surplus",
-      "store_fluids": false,
-      "expected_output_amount": 3
-    },
-    {
-      "name": "3x-recovery-only-hydrocarbons-unbounded",
-      "unbounded_buffers": [
-        "nullius-filtered-hydrocarbons"
-      ],
-      "expected_output_amount": 3
-    },
-    {
-      "name": "1x-recovery-starter",
-      "expected_output_amount": 1
-    },
-    {
-      "name": "1x-recovery-survey-low-yield",
-      "vent_yield_multiplier": 0.9400644444444444,
-      "expected_output_amount": 1
-    },
-    {
-      "name": "1x-recovery-survey-high-yield",
-      "vent_yield_multiplier": 1.992444444444444,
-      "expected_output_amount": 1
     }
   ],
   "assumptions": [
@@ -299,10 +232,8 @@
     "Eight small and two medium starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
     "Liquid voiding is forbidden. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
     "Research costs subtract the entrance closure. Production keeps entrance recipes throughout. Research time uses one lab and overlaps production optimistically.",
-    "Fleet-doubling cases supply the extra machines at time zero; their construction is excluded from those sensitivity cases.",
     "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",
-    "Survey cases use nearest-three usable vent means at the origin from fulgora-vent-coverage: seed 42 and seed 2 on 2.1.19. These bracket twelve sampled seeds, not all maps or actual landing sites. Resource depletion is omitted.",
-    "Recovery comparison cases set an absolute item or box count per successful drop in the named crude filtration recipe. Counts different from the resolved prototypes are hypothetical. Probability, fluid input and craft time are unchanged. These cases do not modify gameplay prototypes."
+    "Survey cases use nearest-three usable vent means at the origin from fulgora-vent-coverage: seed 42 and seed 2 on 2.1.19. These bracket twelve sampled seeds, not all maps or actual landing sites. Resource depletion is omitted."
   ],
   "character": "character"
 }

@@ -1,0 +1,173 @@
+{
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "uncertain_outputs": "guaranteed",
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "lab": "nullius-lab-1",
+  "labs": 1,
+  "extractors": {
+    "nullius-hydrocarbon-slurry": {
+      "machine": "nullius-extractor-1",
+      "resource": "nullius-hydrocarbon-vent",
+      "yield_fraction": 1
+    }
+  },
+  "boundary": {
+    "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+    "technologies": [
+      "nullius-primitive-filtration",
+      "nullius-volcanism-1",
+      "nullius-hydrology-1",
+      "nullius-masonry-3",
+      "nullius-steelworking",
+      "nullius-battery-storage-2",
+      "nullius-weaving-2",
+      "nullius-barreling-2"
+    ]
+  },
+  "expected_recipes": [
+    "nullius-crude-sludge-filtration"
+  ],
+  "fleet": {
+    "nullius-extractor-1": 3,
+    "nullius-hydro-plant-1": 5,
+    "nullius-distillery-1": 4,
+    "nullius-air-filter-1": 4,
+    "nullius-chemical-plant-1": 4,
+    "nullius-electrolyzer-1": 2,
+    "nullius-crusher-1": 4,
+    "nullius-small-furnace-1": 4,
+    "nullius-medium-furnace-1": 1,
+    "nullius-foundry-1": 2,
+    "nullius-small-assembler-1": 2,
+    "nullius-flotation-cell-1": 2,
+    "nullius-combustion-chamber-1": 1,
+    "nullius-chimney-1": 3,
+    "nullius-medium-assembler-1": 1,
+    "nullius-medium-furnace-2": 1,
+    "nullius-barrel-pump-1": 1,
+    "nullius-compressor-1": 1
+  },
+  "buffer_allocation": {
+    "nullius-filtered-hydrocarbons": {
+      "nullius-small-tank-1": 2,
+      "storage-tank": 2
+    },
+    "nullius-sludge": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-water": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-brine": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-benzene": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-caustic-solution": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-wastewater": {
+      "nullius-small-tank-1": 1
+    }
+  },
+  "targets": [
+    {
+      "name": "all-starter-building-types-and-research",
+      "items": {
+        "nullius-hydro-plant-1": 1,
+        "nullius-distillery-1": 1,
+        "nullius-air-filter-1": 1,
+        "nullius-chemical-plant-1": 1,
+        "nullius-electrolyzer-1": 1,
+        "nullius-crusher-1": 1,
+        "nullius-small-furnace-1": 1,
+        "nullius-medium-furnace-1": 1,
+        "nullius-foundry-1": 1,
+        "nullius-small-assembler-1": 1,
+        "nullius-flotation-cell-1": 1,
+        "nullius-combustion-chamber-1": 1,
+        "nullius-chimney-1": 1,
+        "nullius-lab-1": 1,
+        "nullius-pump-1": 1,
+        "nullius-small-tank-1": 1,
+        "storage-tank": 1,
+        "nullius-one-way-valve": 1,
+        "nullius-grounding-coil": 1,
+        "small-electric-pole": 1,
+        "big-electric-pole": 1,
+        "pipe": 1,
+        "pipe-to-ground": 1,
+        "transport-belt": 1,
+        "inserter": 1,
+        "splitter": 1,
+        "underground-belt": 1,
+        "wooden-chest": 1,
+        "iron-chest": 1,
+        "nullius-medium-assembler-1": 1,
+        "nullius-extractor-1": 1,
+        "nullius-grid-battery-1": 1,
+        "nullius-medium-furnace-2": 1,
+        "nullius-barrel-pump-1": 1,
+        "nullius-compressor-1": 1
+      },
+      "research_roots": [
+        "nullius-volcanism-1",
+        "nullius-hydrology-1",
+        "nullius-masonry-3",
+        "nullius-steelworking",
+        "nullius-battery-storage-2",
+        "nullius-weaving-2",
+        "nullius-barreling-2"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "starter"
+    },
+    {
+      "name": "half-power-duty",
+      "duty": 0.5
+    },
+    {
+      "name": "unbounded-fluid-storage",
+      "unbounded_fluid_storage": true
+    },
+    {
+      "name": "survey-low-yield",
+      "vent_yield_multiplier": 0.9400644444444444
+    },
+    {
+      "name": "survey-high-yield",
+      "vent_yield_multiplier": 1.992444444444444
+    },
+    {
+      "name": "only-hydrocarbons-unbounded",
+      "unbounded_buffers": [
+        "nullius-filtered-hydrocarbons"
+      ]
+    }
+  ],
+  "assumptions": [
+    "Independent targets from zero materials, using the supplied machines and explicitly costed local additions. Targets are not cumulative.",
+    "Primitive Filtration and its prerequisites researched before arrival. No imported materials. Vents stay at 100 percent yield.",
+    "Only named crude filtration recipes use mean independent yields. This is an average-yield work estimate, not an exact batch or completion-time expectation.",
+    "Continuous electricity, no modules, beacons or research productivity. Half-power duty is a sensitivity case, not measured lightning availability.",
+    "Shared machine time allows free recipe changes. Fractional crafts, no dependency delays, placement, transport or player time. Results are work lower bounds.",
+    "Eight small and two medium starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
+    "Liquid voiding is forbidden. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
+    "Research costs subtract the entrance closure. Production uses the explicit boundary technology closure throughout. Research time uses one lab and overlaps production optimistically.",
+    "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",
+    "Survey cases use nearest-three usable vent means at the origin from fulgora-vent-coverage: seed 42 and seed 2 on 2.1.19. These bracket twelve sampled seeds, not all maps or actual landing sites. Resource depletion is omitted.",
+    "Extractor research recipes are available from time zero in this optimistic lower bound, but all required science production and one-lab work are counted. This does not schedule research unlocks or new-machine deployment.",
+    "One locally built medium assembler is used throughout this lower bound; its construction is included in each target. The separate arrival-stage target proves its materials are available before the extractor batch.",
+    "A medium furnace 2 and barrel pump 1 are also built locally and their costs are included; this lower bound permits their use before construction and research finish.",
+    "One locally built compressor is included in construction cost and usable throughout the lower-bound solve."
+  ],
+  "character": "character"
+}

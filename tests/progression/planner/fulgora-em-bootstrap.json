@@ -37,15 +37,29 @@
     "nullius-combustion-chamber-1": 1,
     "nullius-chimney-1": 3
   },
-  "buffer_tank": "nullius-small-tank-1",
   "buffer_allocation": {
-    "nullius-filtered-hydrocarbons": 2,
-    "nullius-sludge": 1,
-    "nullius-water": 1,
-    "nullius-brine": 1,
-    "nullius-benzene": 1,
-    "nullius-caustic-solution": 1,
-    "nullius-wastewater": 1
+    "nullius-filtered-hydrocarbons": {
+      "nullius-small-tank-1": 2,
+      "storage-tank": 2
+    },
+    "nullius-sludge": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-water": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-brine": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-benzene": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-caustic-solution": {
+      "nullius-small-tank-1": 1
+    },
+    "nullius-wastewater": {
+      "nullius-small-tank-1": 1
+    }
   },
   "targets": [
     {
@@ -94,7 +108,7 @@
     "Only named crude filtration recipes use mean independent yields. This is an average-yield work estimate, not an exact batch or completion-time expectation.",
     "Continuous electricity, no modules, beacons or research productivity. Half-power duty is a sensitivity case, not measured lightning availability.",
     "Shared machine time allows free recipe changes. Fractional crafts, no dependency delays, placement, transport or player time. Results are work lower bounds.",
-    "Eight starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
+    "Eight small and two medium starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
     "Liquid voiding is forbidden. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
     "Research costs subtract the entrance closure. Production keeps entrance recipes throughout. Research time uses one lab and overlaps production optimistically.",
     "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",

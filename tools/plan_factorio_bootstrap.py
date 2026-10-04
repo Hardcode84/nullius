@@ -123,11 +123,25 @@ def fleet_placements(data, fleet, modes):
     return placements
 
 
+def buffer_capacities(data, allocation):
+    """Resolve each fluid's dedicated tank capacity from the declared tank counts."""
+    capacities = {}
+    for fluid, tanks in allocation.items():
+        if fluid not in data['fluid']:
+            raise planner.TestFailure('buffer allocation names unknown fluid: ' + fluid)
+        capacities[fluid] = 0
+        for name, count in tanks.items():
+            if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+                raise planner.TestFailure('buffer tank counts must be positive integers')
+            if name not in data['storage-tank']:
+                raise planner.TestFailure('unknown buffer tank: ' + name)
+            capacities[fluid] += count * data['storage-tank'][name]['fluid_box']['volume']
+    return capacities
+
+
 def analyze(data, config):
     if config['uncertain_outputs'] != 'guaranteed':
         raise planner.TestFailure('bootstrap catalog requires guaranteed outputs before explicit mean-yield opt-in')
-    if any(p not in data['fluid'] for p in config['buffer_allocation']):
-        raise planner.TestFailure('buffer allocation names unknown fluids')
     placements = fleet_placements(data, config['fleet'], config.get('machine_modes', {}))
     base_fleet = {placements[item]: n for item, n in config['fleet'].items()}
     stage = dict(config['boundary'], machines=list(base_fleet))
@@ -141,8 +155,7 @@ def analyze(data, config):
     raw = ['@resource:' + s['resource'] for s in config['extractors'].values()]
     reachable = planner.startup_reachability(catalog, {}, raw)
     catalog = [r for r in catalog if set(r['inputs']) <= reachable]
-    tank = data['storage-tank'][config['buffer_tank']]['fluid_box']['volume']
-    buffers = {p: n * tank for p, n in config['buffer_allocation'].items()}
+    buffers = buffer_capacities(data, config['buffer_allocation'])
     solids = set(data.get('item', {})) | set(data.get('tool', {}))
     results = []
     for target in config['targets']:
@@ -155,7 +168,7 @@ def analyze(data, config):
         lab_minutes = research['lab_hours_at_speed_one'] * 60 / (
             data['lab'][config['lab']]['researching_speed'] * config['labs'])
         row = {'name': target['name'], 'demands': demand, 'research': research,
-               'blocked_inputs': planner.blocked_inputs(catalog, demand, reachable),
+               'blocked_inputs': planner.blocked_inputs(expected_catalog(guaranteed_catalog, config['expected_recipes']), demand, reachable),
                'lab_minutes_lower_bound': lab_minutes, 'cases': []}
         for case in config['cases']:
             fleet = dict(base_fleet)
