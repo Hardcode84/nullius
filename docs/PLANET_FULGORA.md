@@ -774,8 +774,19 @@ machine, material, and power details. The factory skill lists the commands.
 
 | Blocker | Cause | Required change |
 |---|---|---|
-| Volcanic gas checkpoint | Only ordinary or compressed volcanic gas counts; slurry does not. | Add a local equivalent. Checkpoints sum all force surfaces; Nauvis production can mask the failure. |
-| Initial liquid storage | Extractor research is infeasible with arrival recipes and starter tanks. | Establish the disposal unlock order. Extra hydrocarbon storage alone gives a 260.1-minute fixed-fleet work bound. |
+| Volcanic gas checkpoint | Requires 5000 gas or 1250 compressed gas. No local source is available before this checkpoint. | Add a local equivalent. Checkpoints sum all force surfaces; Nauvis production can mask the failure. |
+| Initial liquid storage | The fixed arrival fleet, recipes, and tank allocation cannot supply extractor research. | Establish the disposal unlock order or build more storage. Extra hydrocarbon storage alone gives a 260.1-minute fixed-fleet work bound. |
+
+The checkpoint blocks Climatology 2 → Water Filtration 3 → Distillation 2 →
+Sulfur Processing 1 → Waste Reclamation. Trace separation produces volcanic gas,
+but Air Separation 3 requires the same checkpoint. It cannot bypass the gate.
+
+The fixed-arrival batch model also cannot supply Water Filtration 3,
+Distillation 2, Limestone Processing 2, or Waste Reclamation within the starter
+tank allocation. These cases exclude intermediate research and fleet expansion;
+they establish storage pressure, not an additional absolute progression lock.
+The extractor-research case with unrestricted hydrocarbon storage retains
+165,228 filtered hydrocarbons, 10,000 benzene, and 9,606 wastewater.
 
 Iron-ore and bauxite checkpoints accept crushed ore at their crushing ratios
 (6/5 and 7/5 raw units per crushed item). Sandstone and limestone already accept
@@ -837,6 +848,12 @@ guaranteed yields. All liquid and solid outputs balance through real recipes;
 there is no external waste sink. Process construction is feasible with
 local materials. The solve does not establish startup order, buffer capacity,
 vent availability, or a connected factory layout. Vents remain at 100% yield.
+
+Audit at `833086e`: seven native scenarios passed, including every selected
+physics executor. The prerequisite and planner unit suites passed 59 tests.
+The research query is `tests/progression/balance/fulgora-research.json`, used
+with `tools/audit_vulcanus_progression.py`. These checks do not execute a connected
+arrival-to-physics campaign or prove that local lightning supplies the full load.
 
 Validation: native borate leaching checks both recipe sizes, the research gate,
 delayed water connection, exact outputs, and productivity restrictions. The

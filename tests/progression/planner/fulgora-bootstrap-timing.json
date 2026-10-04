@@ -104,6 +104,24 @@
       "research_roots": [
         "nullius-waste-reclamation"
       ]
+    },
+    {
+      "name": "wastewater-filtration-research",
+      "research_roots": [
+        "nullius-water-filtration-3"
+      ]
+    },
+    {
+      "name": "condensation-research",
+      "research_roots": [
+        "nullius-distillation-2"
+      ]
+    },
+    {
+      "name": "gypsum-decomposition-research",
+      "research_roots": [
+        "nullius-limestone-processing-2"
+      ]
     }
   ],
   "cases": [

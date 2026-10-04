@@ -250,7 +250,7 @@ def main():
                 "factorio": subprocess.check_output([str(dump_args.factorio), "--version"], text=True).splitlines()[0],
                 "generated_utc": datetime.now(timezone.utc).isoformat(),
                 "dump_sha256": hashlib.sha256(dump_path.read_bytes()).hexdigest(),
-                "config": str(args.config.relative_to(ROOT)),
+                "config": str(args.config.resolve().relative_to(ROOT)),
             }, "stages": []}
             for stage in config["stages"]:
                 print("Audit " + stage["name"], file=sys.stderr, flush=True)

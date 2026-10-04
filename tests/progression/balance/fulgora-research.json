@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "science_rates_per_minute": [
+    30,
+    60,
+    120,
+    240
+  ],
+  "stages": [],
+  "research_boundaries": {
+    "physics": [
+      "nullius-physics"
+    ],
+    "extractors": [
+      "nullius-volcanism-1"
+    ],
+    "reclamation": [
+      "nullius-waste-reclamation"
+    ],
+    "water-treatment": [
+      "nullius-water-filtration-3"
+    ],
+    "condensation": [
+      "nullius-distillation-2"
+    ],
+    "trace-separation": [
+      "nullius-air-separation-3"
+    ]
+  },
+  "inspect_products": [
+    "nullius-volcanic-gas",
+    "nullius-compressed-volcanic-gas",
+    "nullius-freshwater",
+    "nullius-acid-boric"
+  ],
+  "inspect_technologies": [
+    "nullius-primitive-filtration",
+    "nullius-physics",
+    "nullius-climatology-2",
+    "nullius-volcanism-1",
+    "nullius-water-filtration-3",
+    "nullius-distillation-2",
+    "nullius-waste-reclamation",
+    "nullius-limestone-processing-2",
+    "nullius-boiling-2",
+    "nullius-checkpoint-volcanic-gas",
+    "nullius-air-separation-3"
+  ]
+}
