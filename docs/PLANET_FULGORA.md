@@ -56,23 +56,24 @@ Supplied once per force when the probe is activated.
 | Equipment | Count | First use |
 |---|---:|---|
 | Extractor 1 | 3 | Slurry for materials and science |
-| Hydro plant 1 | 4 | Slurry filtration, crude filtration, brine, climatology |
-| Distillery 1 | 3 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
+| Hydro plant 1 | 5 | Slurry filtration, crude filtration, brine, climatology |
+| Distillery 1 | 4 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
 | Air filter 1 | 4 | Nitrogen and climatology |
-| Chemical plant 1 | 2 | Acids and polymers |
+| Chemical plant 1 | 4 | Acids and polymers |
 | Electrolyzer 1 | 2 | Water and brine electrolysis |
 | Crusher 1 | 2 | Mineral processing and surplus crushing |
 | Small furnace 1 | 4 | Early smelting |
 | Medium furnace 1 | 1 | Smelting with gas output, including gypsum decomposition |
 | Foundry 1 | 2 | Metal parts |
 | Small assembler 1 | 2 | Equipment and science |
-| Flotation cell 1 | 1 | Silica and dust treatment |
+| Flotation cell 1 | 2 | Silica and dust treatment |
 | Combustion chamber 1 | 1 | Consume surplus benzene with oxygen |
 | Chimney 1 | 3 | Vent permitted gases; reuse for different gases |
 | Lab 1 | 1 | Local research |
 | Cliff explosives | 30 | Clear cliffs for the starter factory |
 | Small electric pole | 32 | Lightning capture and distribution |
 | Pylon 1 | 4 | Wider lightning capture and longer power connections |
+| Pump 1 | 5 | Move fluids between processing lines |
 | Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
 | Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
 | One-way valve | 8 | Direct recovered fluids |

@@ -25,13 +25,13 @@ local function landing(force, name)
     force = force, build_check_type = defines.build_check_type.manual_ghost}, "probe landing is not walkable: "..name.." force="..force.name.." position="..helpers.table_to_json(bodies[1].position))
   if name == "fulgora" then
     local expected={
-      ['nullius-extractor-1']=3,['nullius-hydro-plant-1']=4,['nullius-distillery-1']=3,
-      ['nullius-air-filter-1']=4,['nullius-chemical-plant-1']=2,['nullius-electrolyzer-1']=2,
+      ['nullius-extractor-1']=3,['nullius-hydro-plant-1']=5,['nullius-distillery-1']=4,
+      ['nullius-air-filter-1']=4,['nullius-chemical-plant-1']=4,['nullius-electrolyzer-1']=2,
       ['nullius-crusher-1']=2,['nullius-small-furnace-1']=4,['nullius-medium-furnace-1']=1,
-      ['nullius-foundry-1']=2,['nullius-small-assembler-1']=2,['nullius-flotation-cell-1']=1,
+      ['nullius-foundry-1']=2,['nullius-small-assembler-1']=2,['nullius-flotation-cell-1']=2,
       ['nullius-combustion-chamber-1']=1,['nullius-chimney-1']=3,['nullius-lab-1']=1,
       ['small-electric-pole']=32,['big-electric-pole']=4,pipe=200,['pipe-to-ground']=40,['nullius-small-tank-1']=8,
-      ['nullius-one-way-valve']=8,['transport-belt']=100,inserter=24,['wooden-chest']=10,
+      ['nullius-one-way-valve']=8,['nullius-pump-1']=5,['transport-belt']=100,inserter=24,['wooden-chest']=10,
       ['cliff-explosives']=30,['iron-chest']=4,
       splitter=8,['underground-belt']=20,['nullius-grid-battery-1']=4,['nullius-grounding-coil']=4,
     }
