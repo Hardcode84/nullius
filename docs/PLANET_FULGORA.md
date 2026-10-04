@@ -757,8 +757,12 @@ machine, material, and power details. The factory skill lists the commands.
 
 | Blocker | Cause | Required change |
 |---|---|---|
-| Local checkpoints | Iron ore accepts raw ore or iron bloom; bauxite accepts raw ore or aluminum bloom; volcanic gas accepts ordinary or compressed gas. Slurry and crushed minerals do not count. | Add local equivalents. Checkpoints currently sum all force surfaces; Nauvis production can mask the failure. |
+| Volcanic gas checkpoint | Only ordinary or compressed volcanic gas counts; slurry does not. | Add a local equivalent. Checkpoints sum all force surfaces; Nauvis production can mask the failure. |
 | Initial liquid storage | Extractor research is infeasible with arrival recipes and starter tanks. | Establish the disposal unlock order. Extra hydrocarbon storage alone gives a 260.1-minute fixed-fleet work bound. |
+
+Iron-ore and bauxite checkpoints accept crushed ore at their crushing ratios
+(6/5 and 7/5 raw units per crushed item). Sandstone and limestone already accept
+sand and crushed limestone. Raw-ore and bloom alternatives remain available.
 
 Argon is available through local residual-gas separation. Sand and sulfuric acid
 supply rutile. Borate leaching supplies boric acid. All materials for physics

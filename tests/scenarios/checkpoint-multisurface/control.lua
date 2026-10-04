@@ -72,7 +72,11 @@ local function check_replacement_statistics()
     script.on_nth_tick(2000, nil)
     check(force.technologies["nullius-checkpoint-furnace"].researched,
       "scheduled checkpoint polling did not complete the furnace checkpoint")
-    finish({surfaces = {nauvis.name, vulcanus.name},
+    for _, name in ipairs({"iron-ore","bauxite"}) do
+      check(force.technologies["nullius-checkpoint-"..name].researched,
+        "scheduled crushed-only checkpoint did not complete: "..name)
+    end
+    finish({surfaces = {nauvis.name, vulcanus.name, "nullius-fulgora"},
       adjustment_tick = storage.adjustment_tick,
       statistics_tick = storage.adjustment_tick + 1,
       checkpoint_poll_tick = game.tick})
@@ -217,6 +221,46 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "bauxite"), 1),
     "bauxite assay did not combine proportional alternatives")
 
+  -- given: declared production/consumption histories on Nauvis and Fulgora.
+  -- act/expect: crushed-only thresholds, mixed resources, and consumption exclusion.
+  local fulgora = game.planets["nullius-fulgora"].surface or
+    game.planets["nullius-fulgora"].create_surface()
+  local fulgora_items = force.get_item_production_statistics(fulgora)
+  for _, row in ipairs({
+    {checkpoint="iron-ore", raw="iron-ore", crushed="nullius-crushed-iron-ore",
+      bloom="nullius-molten-iron-bloom", goal=400, below=333, weight=6/5,
+      raw_mix=100, crushed_mix=250, recipe="nullius-crushed-iron-ore", ore_input=6},
+    {checkpoint="bauxite", raw="nullius-bauxite", crushed="nullius-crushed-bauxite",
+      bloom="nullius-molten-aluminum-bloom", goal=2000, below=1428, weight=7/5,
+      raw_mix=600, crushed_mix=1000, recipe="nullius-crushed-bauxite", ore_input=7},
+  }) do
+    local recipe = prototypes.recipe[row.recipe]
+    check(recipe.ingredients[1].name==row.raw and recipe.ingredients[1].amount==row.ore_input,
+      row.checkpoint.." crushing input ratio changed")
+    local output
+    for _, product in ipairs(recipe.products) do
+      if product.name==row.crushed then output=product.amount end
+    end
+    check(output==5, row.checkpoint.." crushing output ratio changed")
+    for _, stats in ipairs({nauvis_items,vulcanus_items,fulgora_items}) do
+      for _, name in ipairs({row.raw,row.crushed,row.bloom}) do
+        split_statistic(stats,name,0,9000)
+      end
+    end
+    check(close(progress(force,row.checkpoint),0),row.checkpoint.." counted consumption")
+    split_statistic(fulgora_items,row.crushed,row.below,9000)
+    check(close(progress(force,row.checkpoint),row.below*row.weight/row.goal),
+      row.checkpoint.." incorrect crushed weight below threshold")
+    split_statistic(fulgora_items,row.crushed,row.below+1,9000)
+    check(close(progress(force,row.checkpoint),1),row.checkpoint.." rejects crushed-only completion")
+    split_statistic(fulgora_items,row.crushed,row.crushed_mix,9000)
+    split_statistic(nauvis_items,row.raw,row.raw_mix,9000)
+    check(close(progress(force,row.checkpoint),1),row.checkpoint.." mixed forms/surfaces failed")
+    split_statistic(nauvis_items,row.raw,0,0)
+    split_statistic(fulgora_items,row.crushed,row.below+1,9000)
+    research_prerequisites(force.technologies["nullius-checkpoint-"..row.checkpoint])
+  end
+
   check(force.technologies["nullius-checkpoint-freshwater"] == nil,
     "obsolete freshwater checkpoint still exists")
 
@@ -252,7 +296,12 @@ script.on_nth_tick(1, function()
   split_statistic(vulcanus_builds, entity.name, 0, 0)
   local checkpoint = force.technologies["nullius-checkpoint-furnace"]
   research_prerequisites(checkpoint)
-  check(not checkpoint.researched, "furnace checkpoint completed before polling")
+  -- given: prerequisites are researched, but each tested checkpoint is pending.
+  for _, name in ipairs({"furnace", "iron-ore", "bauxite"}) do
+    local pending = force.technologies["nullius-checkpoint-"..name]
+    pending.researched = false
+    check(not pending.researched, name.." checkpoint completed before polling")
+  end
   storage.replacement_entity = entity
   storage.adjustment_tick = game.tick
   remote.call(INTERFACE, "adjust_build_statistics", entity, false)
