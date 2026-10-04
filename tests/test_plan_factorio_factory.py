@@ -49,7 +49,7 @@ class FactoryPlannerTest(unittest.TestCase):
         data = {"technology": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},
                 "assembling-machine": {"m": {"name": "m", "type": "assembling-machine",
                     "crafting_speed": 1, "crafting_categories": ["crafting"],
-                    "energy_usage": "1MW", "energy_source": {"type": "electric", "drain": "10kW"},
+                    "energy_usage": "1MW", "energy_source": {"type": "electric", "drain": "10kW", "usage_priority": "tertiary"},
                     "minable": {"result": "m"}}},
                 "recipe": {"plate": {"name": "plate", "energy_required": 1,
                     "ingredients": [{"name": "ore", "amount": 1}],
@@ -65,6 +65,8 @@ class FactoryPlannerTest(unittest.TestCase):
         sized = size_factory(result)
         self.assertEqual(sized["process_machines"], 2)
         self.assertAlmostEqual(sized["electric_grid_mw"], 1.52)
+        self.assertAlmostEqual(sized["electric_installed_mw"], 2.02)
+        self.assertEqual(sized["electric_mw_by_priority"], {"tertiary": 1.52})
         self.assertEqual(sized["fuel_per_minute"], 0)
         self.assertEqual(result["raw_per_minute"], {"ore": 90})
 
@@ -129,6 +131,14 @@ class FactoryPlannerTest(unittest.TestCase):
         self.assertEqual(packs["climate"]["supply_hours"]["60"], 8 / 60)
         self.assertEqual(packs["climate"]["required_rate_per_minute"]["8"], 1)
         self.assertEqual(packs["geo"]["top_technologies"], [{"technology": "physics", "packs": 240}])
+        spec["factory_stages"] = ["blocked"]
+        blocked = {"name": "blocked", "plans": [{"rate_per_minute": 60,
+                    "flow": {"status": "infeasible"}}]}
+        result = analyze_science_scale(data, {"stages": [blocked]}, spec, ["entrance"])
+        self.assertEqual(result["infeasible_stages"], ["blocked"])
+        self.assertEqual(result["production_lines"], [])
+        self.assertEqual(len(result["budgets"]), 1)
+
 
     def test_research_bound_requires_actual_science_supply(self):
         self.assertIsNone(research_supply_hours({"pack": 60}, {"plate": 60}))

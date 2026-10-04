@@ -454,19 +454,19 @@ for Nauvis climatology 2. These are gross recipe inputs, including circulation.
 
 | Packs/min each | Stations | Labs | Fuel gas/min | Process heat MW | Supply hours | Scheduled hours |
 |---:|---:|---:|---:|---:|---:|---:|
-| 60 | 975 | 40 | 564,151 | 115.00 | 16.490 | 16.542 |
-| 120 | 1682 | 80 | 1,128,302 | 230.00 | 8.245 | 8.271 |
-| 240 | 3096 | 160 | 2,256,604 | 459.99 | 4.122 | 4.136 |
+| 60 | 903 | 40 | 427,427 | 141.82 | 16.358 | 16.410 |
+| 120 | 1531 | 80 | 854,853 | 283.63 | 8.179 | 8.205 |
+| 240 | 2797 | 160 | 1,709,707 | 567.26 | 4.090 | 4.103 |
 
 Research for the 120/min factory, including selected recipe and construction unlocks:
 
 | Science | Required packs |
 |---|---:|
-| nullius-chemical-pack | 48,252 |
-| nullius-climatology-pack | 58,154 |
-| nullius-electrical-pack | 51,498 |
-| nullius-geology-pack | 59,364 |
-| nullius-mechanical-pack | 57,112 |
+| nullius-chemical-pack | 47,472 |
+| nullius-climatology-pack | 57,679 |
+| nullius-electrical-pack | 51,583 |
+| nullius-geology-pack | 58,889 |
+| nullius-mechanical-pack | 56,077 |
 | nullius-metallurgic-pack | 1,410 |
 
 Largest geology and climatology research costs:

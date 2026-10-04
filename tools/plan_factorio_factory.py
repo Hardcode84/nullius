@@ -65,6 +65,30 @@ def amount(entry, policy):
     raise TestFailure(f"ranged output: {entry['name']}")
 
 
+def expected_catalog(catalog, names, output_amount=None):
+    """Opt in to expected independent returns for named recipes only."""
+    if output_amount is not None and (isinstance(output_amount, bool) or not isinstance(output_amount, int) or output_amount < 1):
+        raise TestFailure("expected-output amount must be a positive integer")
+    found = set()
+    result = deepcopy(catalog)
+    for row in result:
+        if row['recipe'] not in names:
+            continue
+        found.add(row['recipe'])
+        if row['native_productivity']:
+            raise TestFailure('expected-output recipes must have zero productivity')
+        for product in row['uncertain_outputs']:
+            if 'amount' not in product or product.get('shared_probability', {'min': 0, 'max': 1}) != {'min': 0, 'max': 1}:
+                raise TestFailure('expected output needs fixed amounts and independent probability')
+            probability = product.get('independent_probability', product.get('probability', 1))
+            # Guaranteed mode contributed zero for uncertain products.
+            row['flows'][product['name']] += (product['amount'] if output_amount is None else output_amount) * probability
+        row['expected_outputs'] = True
+    if set(names) != found:
+        raise TestFailure('expected recipes absent from the available catalog: ' + str(set(names) - found))
+    return result
+
+
 def entity(data, name):
     for kind in ("assembling-machine", "furnace", "lab", "mining-drill", "heat-interface", "resource"):
         if name in data.get(kind, {}):
@@ -254,7 +278,7 @@ def recipe_catalog(data, boundary):
                             "category": category, "seconds": seconds, "flows": dict(flows), "inputs": inputs,
                             "validation_ingredients": recipe.get("ingredients", []),
                             "validation_outputs": prereqs.recipe_results(recipe),
-                            "joules": joules, "energy_type": source_type, "fuel": fuel, "drain_watts": drain,
+                            "joules": joules, "energy_type": source_type, "electric_priority": source.get("usage_priority"), "fuel": fuel, "drain_watts": drain,
                             "heat_minimum": source.get("min_working_temperature") if source_type == "heat" else None,
                             "generated_heat_mj": generated_heat, "native_productivity": productivity, "uncertain_outputs": uncertain,
                             "unlock_technologies": [] if recipe.get("enabled", True) else sorted(t for t in technologies if any(
@@ -294,7 +318,7 @@ def recipe_catalog(data, boundary):
         flows["@heat:" + str(heat_contract["MAX_HEAT"])] = generated_heat
         catalog.append({"recipe": "<mine:" + spec["resource"] + ">", "machine": machine["name"],
                         "item": place_item(data, machine), "seconds": seconds, "flows": flows,
-                        "inputs": {natural: 1}, "joules": joules, "energy_type": source["type"], "fuel": fuel,
+                        "inputs": {natural: 1}, "joules": joules, "energy_type": source["type"], "electric_priority": source.get("usage_priority"), "fuel": fuel,
                         "drain_watts": prereqs.parse_energy(source.get("drain", "0W"), "W"),
                         "generated_heat_mj": generated_heat, "native_productivity": 0,
                         "uncertain_outputs": [], "unlock_technologies": []})
@@ -368,12 +392,14 @@ def solve_flow(catalog, demands, raw, discard, caps=None):
 def size_factory(solution):
     if solution["status"] != "optimal":
         return {}
-    machines = defaultdict(lambda: {"count": 0, "active_equivalents": 0, "recipes": []})
+    machines = defaultdict(lambda: {"count": 0, "active_equivalents": 0, "recipes": [], "electric_mw": 0, "electric_installed_mw": 0})
     heat = defaultdict(float)
+    electric_by_priority = defaultdict(float)
     gas = 0
     electric_active = electric_drain = 0
     items = defaultdict(int)
     uncertain = []
+    expected = []
     spoilage = []
     for row in solution["recipes"]:
         if row["machine"] is None:
@@ -391,18 +417,25 @@ def size_factory(solution):
         items[row["item"]] += count
         gas += row["fuel"] * row["cycles_per_minute"]
         if row["energy_type"] == "electric":
-            electric_active += row["joules"] * row["cycles_per_minute"] / 60 / 1e6
-            electric_drain += count * row.get("drain_watts", 0) / 1e6
+            active_mw = row["joules"] * row["cycles_per_minute"] / 60 / 1e6
+            drain_mw = count * row.get("drain_watts", 0) / 1e6
+            electric_by_priority[row.get("electric_priority", "unspecified")] += active_mw + drain_mw
+            electric_active += active_mw
+            electric_drain += drain_mw
+            machine["electric_mw"] += active_mw + drain_mw
+            machine["electric_installed_mw"] += count * row["joules"] / row["seconds"] / 1e6 + drain_mw
         if row["energy_type"] == "heat":
             heat[str(row["heat_minimum"])] += row["joules"] * row["cycles_per_minute"] / 60 / 1e6
         if row["uncertain_outputs"]:
-            uncertain.append(row["recipe"])
+            (expected if row.get("expected_outputs") else uncertain).append(row["recipe"])
     return {"process_machines": sum(m["count"] for m in machines.values()),
             "machines": dict(machines), "placement_items": dict(items), "fuel_per_minute": gas,
             "electric_active_mw": electric_active, "electric_drain_mw": electric_drain,
             "electric_grid_mw": electric_active + electric_drain,
+            "electric_mw_by_priority": dict(electric_by_priority),
+            "electric_installed_mw": sum(m["electric_installed_mw"] for m in machines.values()),
             "heat_demand_mw_by_minimum_temperature": dict(heat),
-            "guaranteed_output_recipes": sorted(set(uncertain)), "spoilage_buffers": spoilage}
+            "guaranteed_output_recipes": sorted(set(uncertain)), "expected_output_recipes": sorted(set(expected)), "spoilage_buffers": spoilage}
 
 
 def startup_reachability(catalog, stock, raw):
@@ -452,6 +485,7 @@ def boundary_from_config(data, config, stage):
             "forbid_categories": args.forbid_category,
             "excluded_recipes": stage.get("excluded_recipes", []),
             "uncertain_outputs": config["uncertain_outputs"],
+            "expected_recipes": config.get("expected_recipes", []),
             "heat_contract": read_heat_contract(ROOT / config["heat_controller"]),
             "extractors": config["extractors"]}
 
@@ -502,6 +536,10 @@ def research_schedule(data, cost, supplies, lab_name):
 def analyze_stage(data, config, stage):
     boundary = boundary_from_config(data, config, stage)
     catalog, excluded, technologies = recipe_catalog(data, boundary)
+    if boundary["expected_recipes"]:
+        if boundary["uncertain_outputs"] != "guaranteed":
+            raise TestFailure("expected recipes require guaranteed output policy")
+        catalog = expected_catalog(catalog, boundary["expected_recipes"])
     raw = list(stage.get("raw", config["raw"]))
     raw += ["@resource:" + spec["resource"] for spec in boundary["extractors"].values()]
     reachable = startup_reachability(catalog, config["prime_stock"], raw)
@@ -543,7 +581,7 @@ def analyze_stage(data, config, stage):
                     raise TestFailure("lab requires a declared electric grid or fluid fuel")
                 solve_catalog.append({"recipe": "<research-power>", "machine": config["lab"],
                     "item": place_item(data, lab), "seconds": 60 * count, "flows": {"@research-power": 1, config["fuel"]: -fuel},
-                    "inputs": {}, "joules": joules, "energy_type": source["type"], "fuel": fuel,
+                    "inputs": {}, "joules": joules, "energy_type": source["type"], "electric_priority": source.get("usage_priority"), "fuel": fuel,
                     "drain_watts": prereqs.parse_energy(source.get("drain", "0W"), "W"),
                     "native_productivity": 0, "uncertain_outputs": [], "unlock_technologies": []})
                 solve_demands["@research-power"] = 1
@@ -625,6 +663,7 @@ def write_executor_fixture(report, stage_name, path):
     fixture = {"schema": 1, "fuel": stage["boundary"]["fuel"], "executors": rows,
                "transfers": stage.get("executor_transfers", []),
                "surface_temperature": stage["boundary"]["surface"]["nullius-ambient-temperature"],
+               "surface_properties": stage["boundary"]["surface"],
                "electric_grid_watts_per_executor": 1000000000 if stage["boundary"].get("electric_grid") else 0,
                "boundary_technologies": stage["allowed_technologies"],
                "deadline": math.ceil(max(r["seconds_per_cycle"] * r["cycles"] for r in rows) * 60) + 3600}
@@ -659,7 +698,7 @@ def analyze_science_scale(data, report, spec, entrance):
                for name, roots in spec["research_roots"].items()}
     for stage in report["stages"]:
         for plan in stage["plans"]:
-            if stage["name"] in spec["factory_stages"]:
+            if stage["name"] in spec["factory_stages"] and plan["flow"]["status"] == "optimal":
                 budgets[f"{stage['name']}@{plan['rate_per_minute']:g}"] = plan["research"]
     rows = []
     for name, budget in budgets.items():
@@ -681,7 +720,7 @@ def analyze_science_scale(data, report, spec, entrance):
     for stage in report["stages"]:
         for plan in stage["plans"]:
             if plan["flow"]["status"] != "optimal":
-                raise TestFailure("science scale requires optimal flow: " + stage["name"])
+                continue
             for pack in spec["packs"]:
                 producers = []
                 products = {pack, pack.replace("nullius-", "nullius-box-", 1)}
@@ -702,7 +741,8 @@ def analyze_science_scale(data, report, spec, entrance):
                         "fuel_per_minute": plan["factory"]["fuel_per_minute"],
                         "heat_mw": sum(plan["factory"]["heat_demand_mw_by_minimum_temperature"].values()),
                         "construction_status": plan["construction"]["flow"]["status"]})
-    return {"budgets": rows, "production_lines": lines}
+    return {"budgets": rows, "production_lines": lines,
+            "infeasible_stages": [s["name"] for s in report["stages"] if any(p["flow"]["status"] != "optimal" for p in s["plans"])]}
 
 
 def write_science_scale(report, path):

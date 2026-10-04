@@ -293,3 +293,27 @@ python tools/plan_factorio_bootstrap.py \
   --config tests/progression/planner/fulgora-em-bootstrap.json \
   --output /tmp/fulgora-em-bootstrap.json --compare-cases starter half-power-duty
 ```
+
+## Fulgora through physics
+
+`fulgora-science-scale.json` checks local physics, the preceding science factory,
+and explicit boric-acid supply cases at 30, 60, 120, and 240 packs/min.
+`expected_recipes` permits mean independent drops only for the named crude
+filtration recipes. All other uncertain outputs retain the guaranteed policy.
+The report separates expected-output recipes from guaranteed-output recipes.
+Research budgets do not prove checkpoint completion. Infeasible production
+stages are listed in `science_analysis.infeasible_stages`.
+
+```bash
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-science-scale.json --output /tmp/fulgora-science.json --overview
+python tools/analyze_fulgora_industry.py --plan /tmp/fulgora-science.json --output /tmp/fulgora-industry.json --table
+python tools/analyze_fulgora_industry.py --read-report /tmp/fulgora-industry.json --output /tmp/fulgora-industry.json --stage physics-with-supplied-boric-acid --rate 60 --field machines
+```
+
+The industry report requires a fresh matching prototype dump. It reports gross
+material flow, process stations, construction inputs, electric priorities, and
+full-storage requirements. Installed power assumes every rounded station works
+at once. Batteries cover primary and secondary consumers only. Tertiary machines
+need generation. Ideal strike rates exclude clipped energy, grounding losses,
+and charging congestion. A storage-gap input does not establish a storm interval.
+The maintained conclusions are in `docs/PLANET_FULGORA.md`.

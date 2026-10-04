@@ -21,27 +21,7 @@ from scipy.optimize import linprog
 import plan_factorio_factory as planner
 
 
-def expected_catalog(catalog, names, output_amount=None):
-    """Opt in to expected independent returns for named recipes only."""
-    if output_amount is not None and (isinstance(output_amount, bool) or not isinstance(output_amount, int) or output_amount < 1):
-        raise planner.TestFailure("expected-output amount must be a positive integer")
-    found = set()
-    result = deepcopy(catalog)
-    for row in result:
-        if row['recipe'] not in names:
-            continue
-        found.add(row['recipe'])
-        if row['native_productivity']:
-            raise planner.TestFailure('expected-output recipes must have zero productivity')
-        for product in row['uncertain_outputs']:
-            if 'amount' not in product or product.get('shared_probability', {'min': 0, 'max': 1}) != {'min': 0, 'max': 1}:
-                raise planner.TestFailure('expected output needs fixed amounts and independent probability')
-            probability = product.get('independent_probability', product.get('probability', 1))
-            # Guaranteed mode contributed zero for uncertain products.
-            row['flows'][product['name']] += (product['amount'] if output_amount is None else output_amount) * probability
-    if set(names) != found:
-        raise planner.TestFailure('expected recipes absent from the available catalog: ' + str(set(names) - found))
-    return result
+expected_catalog = planner.expected_catalog
 
 
 def character_catalog(data, boundary, name):

@@ -101,6 +101,9 @@ script.on_nth_tick(30, function()
     elseif fixture.surface_temperature == 200 then
       local planet = game.planets["nullius-vulcanus"]
       surface = planet.surface or planet.create_surface()
+    elseif fixture.surface_temperature == 25 then
+      surface = game.create_surface(CASE, {width=512, height=512})
+      for name, value in pairs(fixture.surface_properties) do surface.set_property(name, value) end
     else
       error("unsupported planner fixture surface temperature")
     end
@@ -113,7 +116,7 @@ script.on_nth_tick(30, function()
       local x, y = (index % 12) * 20 - 120, math.floor(index / 12) * 20 - 100
       local tiles = {}
       for dx=-6,6 do for dy=-6,6 do
-        tiles[#tiles+1] = {name=fixture.surface_temperature == 15 and "grass-1" or "volcanic-soil-dark", position={x+dx,y+dy}}
+        tiles[#tiles+1] = {name=fixture.surface_temperature ~= 200 and "grass-1" or "volcanic-soil-dark", position={x+dx,y+dy}}
       end end
       surface.set_tiles(tiles, true, false, false, false)
       for _, obstruction in ipairs(surface.find_entities_filtered{area={{x-7,y-7},{x+7,y+7}}}) do
