@@ -54,7 +54,7 @@ for _,boxed in ipairs({false,true}) do
     icons=table.deepcopy(data.raw.item["nullius-gypsum"].icons),
     subgroup="waste-management", order="nullius-fulgora-gypsum-recovery"..(boxed and "-boxed" or ""),
     enabled=false, categories={"ore-flotation"}, energy_required=20*scale,
-    ingredients={fluid("sludge",200),fluid("oxygen",180)},
+    ingredients={fluid("sludge",200),fluid(boxed and "compressed-oxygen" or "oxygen",boxed and 45 or 180)},
     results={item("gypsum",8),item("sand",4),fluid("wastewater",150)},
     main_product=boxed and "nullius-box-gypsum" or "nullius-gypsum",
     allow_productivity=false, no_productivity=true,
@@ -94,4 +94,23 @@ for _,boxed in ipairs({false,true}) do
   local product = boxed and data.raw.item["nullius-box-climatology-pack"] or data.raw.tool["nullius-climatology-pack"]
   science.subgroup = product.subgroup
   science.icons = table.deepcopy(product.icons)
+end
+
+for _,mineral in ipairs({"limestone","stone"}) do
+  local base=data.raw.recipe["nullius-"..mineral.."-recovery"]
+  local boxed=table.deepcopy(base)
+  boxed.name="nullius-boxed-"..mineral.."-recovery"
+  boxed.localised_name={"recipe-name.nullius-boxed",base.localised_name}
+  boxed.energy_required=base.energy_required*5
+  for _,entries in ipairs({boxed.ingredients,boxed.results}) do
+    for _,entry in ipairs(entries) do
+      if entry.type=="fluid" then
+        entry.amount=entry.amount*5
+      else
+        entry.name="nullius-box-"..entry.name:gsub("^nullius%-","")
+      end
+    end
+  end
+  boxed.main_product="nullius-box-"..base.main_product:gsub("^nullius%-","")
+  data:extend({boxed})
 end

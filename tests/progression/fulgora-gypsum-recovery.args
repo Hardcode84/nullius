@@ -5,6 +5,8 @@ nullius-waste-reclamation
 nullius-sludge
 --available
 nullius-oxygen
+--available
+nullius-compressed-oxygen
 --available-machine
 nullius-flotation-cell-1
 --executor

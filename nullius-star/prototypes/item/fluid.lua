@@ -7541,7 +7541,7 @@ extend_fluid_prototypes({
     ingredients = {
       {type="fluid", name="nullius-sludge", amount=200},
       {type="item", name="nullius-soda-ash", amount=5},
-      {type="fluid", name="nullius-freshwater", amount=250}
+      {type="fluid", name="nullius-water", amount=250}
     },
     results = {
       {type="item", name="nullius-crushed-limestone", amount=8},
@@ -7686,7 +7686,7 @@ extend_fluid_prototypes({
     ingredients = {
       {type="fluid", name="nullius-sludge", amount=250},
       {type="item", name="nullius-cement", amount=4},
-      {type="fluid", name="nullius-freshwater", amount=200}
+      {type="fluid", name="nullius-water", amount=200}
     },
     results = {
       {type="item", name="stone", amount=15},

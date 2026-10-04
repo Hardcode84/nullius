@@ -2,6 +2,16 @@
 -- other planets unchanged; the engine enforces the sand rules without events.
 local masks = require("collision-mask-util")
 local buildable = require("prototypes.visible-build-items")()
+-- Groundwater extraction is unavailable in Fulgora's electromagnetic environment.
+for _,entity in pairs(data.raw["assembling-machine"]) do
+  for _,category in pairs(entity.crafting_categories or {}) do
+    if category=="water-pumping" then
+      entity.surface_conditions=entity.surface_conditions or {}
+      table.insert(entity.surface_conditions,{property="magnetic-field",max=98})
+      break
+    end
+  end
+end
 local coils={}
 for _,name in ipairs(require('shared.grounding-coils')) do coils[name]=true end
 local allowed = {

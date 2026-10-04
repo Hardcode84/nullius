@@ -321,7 +321,7 @@ cannot produce construction items; use the bootstrap audit for those routes.
 | Fixed output ratios | Use separate sludge recovery lines to adjust mineral supply; process every filtration output |
 | Large unwanted output volume | Disposal throughput is part of factory capacity |
 | No atmospheric oxygen | Manufacture oxygen by water electrolysis; stored oxygen permits combustion during calm periods |
-| No surface water | Recover ice at a fixed yield from filtration |
+| No surface water or wells | Recover ice at a fixed yield from filtration; groundwater wells cannot be placed on Fulgora |
 | Local chlorine | Recover salt directly from filtration; electrolyze brine made with recovered water |
 | Local sulfur | Recover gypsum from sludge; decompose it to supply sulfur dioxide |
 
@@ -404,7 +404,7 @@ After research, use separate recovery lines to adjust the material mix. Existing
 | Iron | Caustic solution | 8 crushed iron ore + 4 calcium carbonate |
 | Bauxite | Sulfuric acid | 8 crushed bauxite + 4 sand |
 | Sand | Hydrochloric acid | 8 sand + 4 crushed iron ore |
-| Limestone | Soda ash + freshwater | 8 calcium carbonate + 4 crushed bauxite |
+| Limestone | 5 soda ash + 250 water | 8 calcium carbonate + 4 crushed bauxite |
 | Gypsum | 180 oxygen | 8 gypsum + 4 sand; also 150 wastewater |
 
 Prioritize recovered wastewater and sludge before fresh extraction. Send surplus
@@ -423,7 +423,11 @@ Waste reclamation now follows Concrete 1, Nitrogen Chemistry 1, and Sulfur
 Processing 1. It costs 220 of each early science pack, at 30 seconds per unit.
 The five original recovery recipes, gypsum recovery, and barrel recycling unlock
 together. Gypsum recovery takes 20 seconds in flotation cell 1. Its boxed recipe
-uses five times the fluids and time and returns boxes. Productivity is disabled.
+uses 1000 sludge and 225 compressed oxygen, takes 100 seconds, and returns
+8 gypsum boxes, 4 sand boxes, and 750 wastewater. Productivity is disabled.
+Limestone and stone recovery use water instead of freshwater on every planet.
+Stone recovery uses 250 sludge, 4 cement, and 200 water to make 15 stone and
+150 wastewater in 30 seconds. Both have boxed recipes at five times the scale.
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 

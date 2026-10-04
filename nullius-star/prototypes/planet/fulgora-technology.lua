@@ -1,5 +1,6 @@
 for _,name in ipairs({"nullius-borate-leaching","nullius-boxed-borate-leaching",
-    "nullius-gypsum-recovery","nullius-boxed-gypsum-recovery"}) do
+    "nullius-gypsum-recovery","nullius-boxed-gypsum-recovery",
+    "nullius-boxed-limestone-recovery","nullius-boxed-stone-recovery"}) do
   table.insert(data.raw.technology["nullius-waste-reclamation"].effects,
     {type="unlock-recipe",recipe=name})
 end
