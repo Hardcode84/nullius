@@ -18,6 +18,8 @@ nullius-sand
 nullius-crushed-limestone
 --available
 stone
+--available
+nullius-gypsum
 --available-machine
 nullius-extractor-1
 --available-machine
@@ -44,8 +46,6 @@ nullius-water=nullius-ice-melting
 nullius-ice=nullius-hydrocarbon-slurry-filtration
 --recipe
 nullius-salt=nullius-hydrocarbon-slurry-filtration
---recipe
-nullius-gypsum=nullius-hydrocarbon-slurry-filtration
 --recipe
 nullius-filtered-hydrocarbons=nullius-hydrocarbon-slurry-filtration
 --recipe

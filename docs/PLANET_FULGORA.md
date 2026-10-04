@@ -38,7 +38,7 @@ imports: bulk metals, oxygen, water, nuclear devices
 | Access | Reactivate the storm-damaged probe on an island with a hydrocarbon vent within reach on adjacent sand |
 | Salvage | Recover the starter equipment listed below |
 | Power | Collect lightning through power poles and buffer it for calm periods |
-| Materials | Filter hydrocarbon slurry into filtered hydrocarbons, sludge, ice, salt, and gypsum |
+| Materials | Filter hydrocarbon slurry into filtered hydrocarbons, sludge, ice, and salt |
 | Construction | Use organic substitutes and scarce recovered metals to expand |
 | Research | Produce local generic science and electromagnetic science before cargo |
 | Expansion | Improve fountain processing; later expose the deep ocean |
@@ -112,10 +112,10 @@ Resolved-prototype checks give these results:
 | Surplus bauxite | Dust conversion unlocks with Waste Management |
 | Surplus sand | Crusher: 4 sand → 3 mineral dust in 2 s; Waste Management. Boxed variant: 4 boxes → 3 boxes in 10 s; Mass Production 7 |
 
-The material checks assume powered starter machines and a supply of the five
+The material checks assume powered starter machines and a supply of the six
 probabilistic crude-filtration products. They prove recipe reachability, not
 starter quantities, production time, or continuous waste balance. Basic-building
-and science results agree on Factorio 2.0 and 2.1.
+and science checks target Factorio 2.1.
 
 Repeat the checks with `tools/analyze_factorio_prereqs.py --compact` and
 `@tests/progression/fulgora-bootstrap-basic.args`,
@@ -142,7 +142,7 @@ Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 |---|---:|---:|---:|
 | 20 iron plates + 20 aluminum plates | 7.3 min | 4.4 min | 7.6 min |
 | Expansion kit | 13.4 min | 8.0 min | 14.1 min |
-| 10 of each early science pack | 10.3 min | 7.5 min | 11.0 min |
+| 10 of each early science pack | 10.3 min | 7.5 min | 10.9 min |
 | Expansion kit + first science | 23.7 min | 14.8 min | 25.0 min |
 <!-- bootstrap-timing:end -->
 
@@ -269,7 +269,7 @@ natural fountains -> extractors -> hydrocarbon slurry -> filtration
             -> waste reclamation -> selective mineral recovery [researched]
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
   -> salt -> brine dissolution
-  -> gypsum -> decomposition -> lime + sulfur dioxide
+sludge -> crude filtration or gypsum recovery -> gypsum -> lime + sulfur dioxide
 salt + recovered water -> brine
 brine -> electrolysis -> chlorine + hydrogen + sodium hydroxide
 sodium hydroxide + water -> caustic solution
@@ -285,8 +285,8 @@ Primitive Filtration requires probe access and Geology 2: 5 of each early scienc
 | Recipe | Input | Output | Time | Machine |
 |---|---|---|---|---|
 | Slurry climatology | 5000 air + 100 hydrocarbon slurry | 1 climatology pack | 60 s | Hydro plant 1 |
-| Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt + 1 gypsum | 4 s | Hydro plant 1 |
-| Crude sludge filtration | 50 sludge | Independent chance of 3 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone (25% each) | 2 s | Hydro plant 1 |
+| Slurry filtration | 100 hydrocarbon slurry | 50 filtered hydrocarbons + 40 sludge + 2 ice + 1 salt | 4 s | Hydro plant 1 |
+| Crude sludge filtration | 50 sludge | Independent chance of 3 each: crushed iron, crushed bauxite, sand, calcium carbonate, stone, gypsum (25% each) | 2 s | Hydro plant 1 |
 | Salt crushing | 1 salt | 1 mineral dust | 1 s | Crusher 1 |
 | Ice melting | 1 ice | 20 water | 2 s | Distillery 1 |
 | Salt dissolution | 6 salt + 45 water | 65 brine | 1 s | Hydro plant 1 |
@@ -296,9 +296,10 @@ Boxed recipes consume five times the input and time; each solid output is a box
 of five. Productivity is disabled. These recipes work on every planet.
 Design change pending: move boxed recipe unlocks from Primitive Filtration to
 much later mass-production research.
-Salt and gypsum come directly from slurry so the first chlorine and sulfur
-supply does not depend on random mineral recovery. Cracking supplies organic
-feedstocks and graphite for metal smelting.
+Salt and ice come directly from slurry. They supply hydrochloric acid without
+mineral recovery. Crude filtration supplies the first gypsum without acid.
+Selective gypsum recovery uses hydrochloric acid; it needs no sulfuric acid.
+Cracking supplies organic feedstocks and graphite for metal smelting.
 
 Planner capacity at 60 climatology packs/min, with tier-1 machines:
 
@@ -322,7 +323,7 @@ cannot produce construction items; use the bootstrap audit for those routes.
 | No atmospheric oxygen | Manufacture oxygen by water electrolysis; stored oxygen permits combustion during calm periods |
 | No surface water | Recover ice at a fixed yield from filtration |
 | Local chlorine | Recover salt directly from filtration; electrolyze brine made with recovered water |
-| Local sulfur | Recover gypsum directly from filtration; decompose it to supply sulfur dioxide |
+| Local sulfur | Recover gypsum from sludge; decompose it to supply sulfur dioxide |
 
 Use caustic solution in mineral processing. Water, chlorine, and sulfur supply
 must not depend on metal recovery.
@@ -404,19 +405,30 @@ After research, use separate recovery lines to adjust the material mix. Existing
 | Bauxite | Sulfuric acid | 8 crushed bauxite + 4 sand |
 | Sand | Hydrochloric acid | 8 sand + 4 crushed iron ore |
 | Limestone | Soda ash + freshwater | 8 calcium carbonate + 4 crushed bauxite |
+| Gypsum | 180 hydrochloric acid | 8 gypsum + 4 sand; also 150 wastewater |
 
 Prioritize recovered wastewater and sludge before fresh extraction. Send surplus
 iron through gravel to mineral dust; bauxite and calcium carbonate can become
 mineral dust directly. Acid treatment returns dust to sludge for another recovery
 route. This changes the output mix at a reagent and energy cost. Fixed ratios
 remain within each recipe; include all surplus outputs in the material balance.
+Keep paired recovery outputs. Recycle the unwanted output through dust and
+sludge. Dissolution acid must not depend on that mineral pair: salt and ice
+supply hydrochloric acid; gypsum recovery with hydrochloric acid supplies sulfur.
+The acid contract is `tests/progression/fulgora-independent-acids.args`. It assumes
+Waste Reclamation and Limestone Processing 2, powered starter machines, and
+supplied salt, ice, and sludge. It proves an acid route without mineral inputs;
+it does not prove continuous disposal of its co-products.
 Waste reclamation now follows Concrete 1, Nitrogen Chemistry 1, and Sulfur
 Processing 1. It costs 220 of each early science pack, at 30 seconds per unit.
-All five recovery recipes, including stone, and barrel recycling remain together.
+The five original recovery recipes, gypsum recovery, and barrel recycling unlock
+together. Gypsum recovery takes 20 seconds in flotation cell 1. Its boxed recipe
+uses five times the fluids and time and returns boxes. Productivity is disabled.
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 
-Slurry filtration supplies gypsum. Existing
+Crude sludge filtration supplies gypsum without acid. Selective recovery uses
+hydrochloric acid from salt and water. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
 `8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
 limestone processing 2, before chemical science; a boxed recipe also exists.
@@ -780,26 +792,26 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 
 | Packs/min each | Stations, including labs | Labs | Average demand | Installed demand | Research supply bound |
 |---:|---:|---:|---:|---:|---:|
-| 30 | 609 | 20 | 189 MW | 297 MW | 32.57 h |
-| 60 | 963 | 40 | 372 MW | 471 MW | 16.29 h |
-| 120 | 1,698 | 80 | 739 MW | 830 MW | 8.14 h |
-| 240 | 3,185 | 160 | 1,472 MW | 1,558 MW | 4.07 h |
+| 30 | 603 | 20 | 187 MW | 293 MW | 32.57 h |
+| 60 | 957 | 40 | 368 MW | 465 MW | 16.29 h |
+| 120 | 1,689 | 80 | 731 MW | 821 MW | 8.14 h |
+| 240 | 3,167 | 160 | 1,456 MW | 1,542 MW | 4.07 h |
 
 Research after Primitive Filtration: 58,626 geology, 57,594 climatology,
 55,951 mechanical, 51,477 electrical, and 47,342 chemical packs. Times assume
 all lines operate from the start. They exclude construction, checkpoint work,
 transport, and power interruptions. Actual local completion is blocked above.
 
-At 60/min: 172 extractors, 96 distilleries, 86 hydro plants, 57 medium furnaces,
-54 electrolyzers, 55 chemical plants, 40 air filters, and 40 labs, plus assembly
-and support. Gross flows: 102,823 slurry/min, 101,669 water/min, 94,694 oxygen/min.
+At 60/min: 174 extractors, 96 distilleries, 86 hydro plants, 55 medium furnaces,
+50 electrolyzers, 56 chemical plants, 40 air filters, and 40 labs, plus assembly
+and support. Gross flows: 104,029 slurry/min, 94,216 water/min, 86,314 oxygen/min.
 Boric acid for operation and process construction comes from local sludge.
 Climatology alone uses 30 hydro plants, 300,000 air/min, and 6,000 slurry/min.
 
-The six-line case without physics needs 610 stations and 244 MW at 60/min.
+The six-line case without physics needs 615 stations and 242 MW at 60/min.
 Allowing tier-2 overcharged machines across the seven-line factory reduces it to
-688 stations, but raises average demand to 1.67 GW and installed demand to
-10.02 GW. The solver minimizes active machine time, not electricity or rounded
+686 stations, but raises average demand to 1.66 GW and installed demand to
+9.92 GW. The solver minimizes active machine time, not electricity or rounded
 station count. Use overcharged modes selectively.
 
 Fresh Vulcanus reference: 895 stations at 60/min and 1,518 at 120/min; research
@@ -809,11 +821,11 @@ differs. These are factory-scale references, not identical progression starts.
 
 ### Power and model boundaries
 
-At 60/min, 316 MW is battery-compatible and 56 MW uses surge priority. Grid
+At 60/min, 312 MW is battery-compatible and 56 MW uses surge priority. Grid
 batteries cannot supply the surge load. The ideal full-strike requirement is
-111.7 tier-1 captures/min before clipping, grounding losses, and charge limits.
-To cover the battery-compatible load, a full tier-1 bank needs 633 batteries
-for a 30-second gap or 1,265 for 60 seconds. These gaps are sensitivity inputs,
+110.4 tier-1 captures/min before clipping, grounding losses, and charge limits.
+To cover the battery-compatible load, a full tier-1 bank needs 625 batteries
+for a 30-second gap or 1,249 for 60 seconds. These gaps are sensitivity inputs,
 not measured storm intervals. Logistics and power infrastructure are excluded.
 
 Crude filtration uses mean independent yields. Other uncertain outputs use their
@@ -998,7 +1010,7 @@ removes their consumers and starts the grace period.
 | Offline network | Hidden 1 TW primary consumer per native network | Shared shutdown and reset for overlapping grids |
 | Supercapacitors | Native accumulator rates and capacity; scripted stored-energy loss | Verified idle leakage; no surge supply or transfer to other storage |
 | Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
-| Fountain filtration | Five fixed recipe products: two fluids and three solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |
+| Fountain filtration | Four fixed recipe products: two fluids and two solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |
 
 No engine performance, production-rate, or completion-time claim is established
 by these inherited candidates.

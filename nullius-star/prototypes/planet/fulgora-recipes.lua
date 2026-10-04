@@ -37,16 +37,28 @@ for _,boxed in ipairs({false,true}) do
   add("hydrocarbon-slurry-filtration","nullius-water-treatment",4*scale,
     {fluid("hydrocarbon-slurry",100)},
     {fluid("filtered-hydrocarbons",50),fluid("sludge",40),
-      item("ice",2),item("salt",1),item("gypsum",1)},
+      item("ice",2),item("salt",1)},
     "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
   local minerals={}
-  for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone"}) do
+  for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","gypsum"}) do
     local result=item(name,3)
     result[probability]=0.25
     minerals[#minerals+1]=result
   end
   add("crude-sludge-filtration","nullius-water-treatment",2*scale,
     {fluid("sludge",50)},minerals,"__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  data:extend({{
+    type="recipe", name="nullius-"..(boxed and "boxed-" or "").."gypsum-recovery",
+    localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name.nullius-gypsum-recovery"}}
+      or {"recipe-name.nullius-gypsum-recovery"},
+    icons=table.deepcopy(data.raw.item["nullius-gypsum"].icons),
+    subgroup="waste-management", order="nullius-fulgora-gypsum-recovery"..(boxed and "-boxed" or ""),
+    enabled=false, categories={"ore-flotation"}, energy_required=20*scale,
+    ingredients={fluid("sludge",200),fluid("acid-hydrochloric",180)},
+    results={item("gypsum",8),item("sand",4),fluid("wastewater",150)},
+    main_product=boxed and "nullius-box-gypsum" or "nullius-gypsum",
+    allow_productivity=false, no_productivity=true,
+  }})
   local leaching = {
     type="recipe", name="nullius-"..(boxed and "boxed-" or "").."borate-leaching",
     localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name.nullius-borate-leaching"}}

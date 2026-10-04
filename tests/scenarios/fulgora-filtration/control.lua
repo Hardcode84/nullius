@@ -61,13 +61,16 @@ script.on_nth_tick(1,function()
         row.chest=surface.create_entity{name='wooden-chest',position={x,-3},force=force}
         row.inserter=surface.create_entity{name='inserter',position={x,-2},
           direction=defines.direction.south,force=force}
-        check(#recipe.products==5,'crude product set')
+        check(#recipe.products==6,'crude product set')
+        local gypsum=false
         for _,p in pairs(recipe.products) do
+          if p.name==item('gypsum') then gypsum=true end
           check(p.name~=item('rutile'),'crude filtration must not recover rutile')
           local chance=p.independent_probability or p.probability
           check(chance==0.25,'crude product probability '..p.name)
           check(p.amount==3,'crude product drop size '..p.name)
         end
+        check(gypsum,'crude filtration must recover gypsum')
       else
         check(machine.insert{name=item('salt'),count=1}==1,'salt fixture')
       end
@@ -103,7 +106,7 @@ script.on_nth_tick(60,function()
       check(m.products_finished==1,'slurry batch count')
       check(m.get_item_count(item('ice'))==2,'ice yield')
       check(m.get_item_count(item('salt'))==1,'salt yield')
-      check(m.get_item_count(item('gypsum'))==1,'gypsum yield')
+      check(m.get_item_count(item('gypsum'))==0,'slurry must not yield gypsum')
       local seen={}
       for _,pipe in ipairs(row.pipes) do local f=fluids.get(pipe,1); check(f and f.amount>0,'unconnected output'); seen[f.name]=true end
       check(seen['nullius-filtered-hydrocarbons'] and seen['nullius-sludge'],'two independent fluid outputs')
@@ -112,12 +115,12 @@ script.on_nth_tick(60,function()
     else
       check(m.products_finished==20 and row.remaining==0,'crude batch budget')
       local total=0
-      for _,name in ipairs({'crushed-iron-ore','crushed-bauxite','sand','crushed-limestone','stone'}) do
+      for _,name in ipairs({'crushed-iron-ore','crushed-bauxite','sand','crushed-limestone','stone','gypsum'}) do
         local count=row.chest.get_item_count(item(name)); total=total+count
         check(count<=60 and count%3==0,'random output must contain three-item drops')
       end
       check(row.chest.get_item_count(item('rutile'))==0,'crude filtration produced rutile')
-      check(total>0 and total<300,'crude filtration did not exercise random recovery')
+      check(total>0 and total<360,'crude filtration did not exercise random recovery')
     end
   end
   result(); script.on_nth_tick(60,nil)

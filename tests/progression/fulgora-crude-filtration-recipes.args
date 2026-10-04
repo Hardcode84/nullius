@@ -2,3 +2,11 @@
 nullius-crude-sludge-filtration
 --describe-recipe
 nullius-boxed-crude-sludge-filtration
+--describe-recipe
+nullius-hydrocarbon-slurry-filtration
+--describe-recipe
+nullius-boxed-hydrocarbon-slurry-filtration
+--describe-recipe
+nullius-gypsum-recovery
+--describe-recipe
+nullius-boxed-gypsum-recovery
