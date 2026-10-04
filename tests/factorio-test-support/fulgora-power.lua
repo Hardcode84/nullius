@@ -50,3 +50,24 @@ local fast_battery=table.deepcopy(battery)
 fast_battery.name='factorio-test-burst-battery-fast'
 fast_battery.energy_source.input_flow_limit='50MW'
 data:extend({fast_battery})
+
+-- Constant audit loads use the planner's average priority split; no debug generation.
+for _,profile in ipairs(require('__nullius-star__/scenarios/fulgora-power-audit/fixture')) do
+  for _,priority in ipairs({'secondary','surge'}) do
+    local watts=profile[priority..'_MW']*1000000
+    local load=table.deepcopy(data.raw['electric-energy-interface']['factorio-test-trip-load'])
+    load.name='factorio-test-audit-'..profile.name..'-'..priority
+    load.energy_usage=watts..'W'
+    load.energy_source.input_flow_limit=watts..'W'
+    load.energy_source.buffer_capacity=math.max(1,watts/30)..'J'
+    load.energy_source.usage_priority=priority=='surge' and 'tertiary' or 'secondary-input'
+    data:extend({load})
+  end
+end
+local distribution=table.deepcopy(data.raw['electric-pole']['factorio-test-trip-pole'])
+distribution.name='factorio-test-audit-distribution'
+distribution.collision_mask={layers={}}
+distribution.collision_box={{0,0},{0,0}}
+distribution.supply_area_distance=64
+distribution.maximum_wire_distance=64
+data:extend({distribution})

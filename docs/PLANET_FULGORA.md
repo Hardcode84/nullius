@@ -555,14 +555,37 @@ Coils and batteries share tertiary power. Faster charging lets batteries store
 a useful part of each pulse before coils discharge the remaining energy.
 The overload thresholds stay at twice demand and more than 1 MW excess.
 
-The `fulgora-starter-power` scenario uses seed 1729 and three isolated grids.
-Each has 32 poles, four coils with legal spacing, four empty batteries, and a
-500 kW test load. One initial strike starts each grid. Native storms then supply
-ten minutes at noon and ten minutes at midnight. All three grids remain powered
-at every 30-tick sample and do not trip. Native consumption totals confirm
-300 MJ delivered to each load per ten-minute period. Removing coils and striking
-a grid with full batteries triggers shutdown. This checks starter power at 500 kW; the full
-7.13 MW machine fleet needs more supply and battery discharge capacity.
+The four batteries cannot supply the 3.56 MW mean first-science load between
+strikes. Eight batteries meet that discharge rate; fifteen meet the full fleet's
+7.13 MW rate. These counts do not guarantee supply through every storm gap.
+Four coils protect 32 simultaneously full tier-1 collectors; the pack has 36
+collectors including pylons. Five coils cover that worst case.
+
+`fulgora-power-audit`: Factorio 2.1.20, seed 1729, native storms only, empty
+batteries, 60 seconds warmup, then ten minutes each at noon and midnight.
+Loads represent the planner's constant average demand; they are not crafting
+machines. Test poles connect the battery banks without additional collectors.
+
+| Load and grid | Day: demand supplied | Night: demand supplied |
+|---|---:|---:|
+| First-science mean, 3.56 MW, starter collectors and 4 batteries | 75.3% | 94.5% |
+| Full starter fleet, 7.13 MW, 4 batteries | 57.3% | 90.6% |
+| Full starter fleet, 7.13 MW, 15 batteries | 100% | 100% |
+| Science at 60/min, 32 compact pylons, 625 batteries: ordinary / surge | 9.7% / 0% | 45.6% / 0.02% |
+| Science at 60/min, 256 spread pylons, 625 batteries: ordinary / surge | 100% / 3.9% | 100% / 22.2% |
+
+No grid tripped. The 256-pylon grid uses 24-tile spacing and 32 coils. It delivered
+813 MW by day and 3161 MW at night, but coils consumed 499 MW and 2836 MW.
+Coils and surge machines share tertiary priority. With full batteries, the
+56 MW surge load receives only 0.436% of their combined 12.856 GW demand.
+More battery capacity cannot remove this competition. Sustained science needs
+surge consumers to receive power before surplus is grounded, or a grid design
+that separates their supply. The measured grid does not sustain 60 packs/min.
+
+Generate load profiles and read native results with `tools/fulgora_power_audit.py`.
+Use `--bootstrap` and `--industry` planner reports, `--fixture` for the scenario
+fixture, or `--results` for the native runner report; always specify `--output`.
+The older `fulgora-starter-power` scenario still passes its 500 kW load test.
 
 The `fulgora-power-budget` experiment retains the old charging baseline and
 compares two-second pulses with different coil and charging rates. Slow charging
@@ -883,10 +906,8 @@ arrival-to-physics campaign or prove that local lightning supplies the full load
 Validation: native borate leaching checks both recipe sizes, the research gate,
 delayed water connection, exact outputs, and productivity restrictions. The
 physics executor fixture checks the selected local production recipes. Executors
-use declared inputs and a continuous test grid at Fulgora surface properties. The starter
-power test covers 500 kW, not this industrial load. To validate industrial
-throughput, place the selected factory and power network, supply finite starter
-stock, and measure production, storage, surge duty, and checkpoint completion.
+use declared inputs and a continuous test grid at Fulgora surface properties. The power audit above measures equivalent electrical loads and shows that
+surge supply falls short. It does not execute the connected crafting factory.
 
 ## Nuclear geoengineering
 
