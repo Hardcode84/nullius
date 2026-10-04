@@ -17,6 +17,8 @@ for _,name in ipairs(require('shared.grounding-coils')) do coils[name]=true end
 local allowed = {
   -- Androids have build items, but must not inherit building restrictions.
   character=true,
+  -- Robot items deploy mobile entities; they do not place buildings.
+  ["construction-robot"]=true, ["logistic-robot"]=true, ["combat-robot"]=true,
   -- Rolling stock stays on rails. Ground rails enforce the sand restriction.
   locomotive=true, ["cargo-wagon"]=true, ["fluid-wagon"]=true,
   ["artillery-wagon"]=true, ["infinity-cargo-wagon"]=true,

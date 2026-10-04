@@ -1,4 +1,4 @@
--- given: empty land, three processing machines, blueprint inventory; no production inputs.
+-- given: empty land, three processing machines, hovering construction robot, blueprint inventory; no production inputs.
 -- act: mark each machine for deconstruction, paste, remove it, and paste again.
 -- expect: native blueprint placement at the original location on both planets.
 script.on_nth_tick(1,function()
@@ -6,6 +6,12 @@ script.on_nth_tick(1,function()
   script.on_nth_tick(1,nil)
   local rows={};local assertions=0
   local function check(ok,message) assertions=assertions+1;assert(ok,message) end
+  for _,kind in ipairs({'construction-robot','logistic-robot','combat-robot'}) do
+    for name,prototype in pairs(prototypes.get_entity_filtered{{filter='type',type=kind}}) do
+      check(not prototype.collision_mask.layers.nullius_fulgora_sand,
+        'robot inherits building terrain mask: '..name)
+    end
+  end
   for _,surface in ipairs({game.surfaces.nauvis,game.planets['nullius-fulgora'].create_surface()}) do
     surface.request_to_generate_chunks({0,0},3);surface.force_generate_chunk_requests()
     for _,e in pairs(surface.find_entities_filtered{area={{-40,-40},{80,40}}}) do e.destroy() end
@@ -26,6 +32,8 @@ script.on_nth_tick(1,function()
       check(#ghosts==1,'paste over marked entity failed: '..name)
       for _,g in pairs(ghosts) do if g.valid and g.type=='entity-ghost' then g.destroy() end end
       entity.destroy{raise_destroy=true}
+      local robot=assert(surface.create_entity{name='nullius-construction-bot-1',position=row.position,force='player'})
+      check(not robot.prototype.collision_mask.layers.nullius_fulgora_sand,'robot inherits building terrain mask')
       row.place_after=surface.can_place_entity{name=name,position=pos,force='player'}
       ghosts=inv[1].build_blueprint{surface=surface,force='player',position=pos,raise_built=true}
       row.paste_removed_count=#ghosts
@@ -36,6 +44,7 @@ script.on_nth_tick(1,function()
         row.nearby[#row.nearby+1]={name=e.name,type=e.type,position=e.position}
       end
       for _,g in pairs(ghosts) do if g.valid and g.type=='entity-ghost' then g.destroy() end end
+      robot.destroy()
       inv.destroy();rows[#rows+1]=row
     end
   end
