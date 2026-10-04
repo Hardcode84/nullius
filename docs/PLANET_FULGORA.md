@@ -80,7 +80,8 @@ Supplied once per force when the probe is activated.
 | Splitter / underground belt | 8 / 20 | Split belts and cross processing lines |
 | Grid battery 1 | 4 | Additional electric storage |
 | Grounding coil | 4 | Discharge surplus power; one coil protects eight poles |
-| Small chest | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
+| Small chest 1 | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
+| Small chest 2 | 4 | Packed in the wreck; extra storage |
 
 Keep processing machines in the wreck. Put logistics supplies in the two
 salvage chests; the wreck has only 20 inventory slots.

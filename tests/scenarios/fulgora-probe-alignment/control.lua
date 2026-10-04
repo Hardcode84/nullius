@@ -40,6 +40,8 @@ script.on_nth_tick(30, function()
     check(body.force == force and body.surface.name == "nullius-fulgora", "probe has wrong faction or surface")
     check(body.surface.count_entities_filtered{name = "nullius-landing-main", force = force} == 1,
       "faction must receive one probe wreck")
+    local wreck = body.surface.find_entities_filtered{name = "nullius-landing-main", force = force}[1]
+    check(wreck.get_item_count("iron-chest") == 4, "wreck must supply four small chests 2")
     check(body.surface.count_entities_filtered{name = "nullius-landing-main", force = "player"} == 0,
       "lobby force received probe supplies")
     helpers.write_file("factorio-tests/" .. CASE .. ".json", helpers.table_to_json{
