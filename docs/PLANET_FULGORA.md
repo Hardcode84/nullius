@@ -813,8 +813,11 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 | 120 | 1,689 | 80 | 731 MW | 821 MW | 8.14 h |
 | 240 | 3,167 | 160 | 1,456 MW | 1,542 MW | 4.07 h |
 
-Research after Primitive Filtration: 58,626 geology, 57,594 climatology,
-55,951 mechanical, 51,477 electrical, and 47,342 chemical packs. Times assume
+Physics research alone after Primitive Filtration needs 58,126 geology, 56,594
+climatology, 55,451 mechanical, 50,977 electrical, and 46,341 chemical packs.
+The selected factory routes raise these totals to 58,626 geology, 57,594
+climatology, 55,951 mechanical, 51,477 electrical, and 47,342 chemical packs.
+Times in the table include the selected routes and assume
 all lines operate from the start. They exclude construction, checkpoint work,
 transport, and power interruptions. They are not arrival-to-physics timings.
 
@@ -850,8 +853,12 @@ there is no external waste sink. Process construction is feasible with
 local materials. The solve does not establish startup order, buffer capacity,
 vent availability, or a connected factory layout. Vents remain at 100% yield.
 
-Audit at `833086e`: seven native scenarios passed, including every selected
-physics executor. The prerequisite and planner unit suites passed 59 tests.
+Audit at `60c9b0b` on Factorio 2.1.20: all local flow and process-construction
+cases passed at 30, 60, 120, and 240 packs/min. Seven native scenarios passed:
+physics executors (2714 assertions), checkpoints (64), filtration (309), borate
+leaching (36), gypsum recovery (32), water recovery (70), and well placement (17).
+The fresh executor fixture matches the tested fixture. Early science, starter
+processing machines, and independent-acid prerequisite checks passed.
 The research query is `tests/progression/balance/fulgora-research.json`, used
 with `tools/audit_vulcanus_progression.py`. These checks do not execute a connected
 arrival-to-physics campaign or prove that local lightning supplies the full load.
