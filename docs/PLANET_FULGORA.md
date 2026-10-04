@@ -62,9 +62,9 @@ Supplied once per force when the probe is activated.
 | Chemical plant 1 | 2 | Acids and polymers |
 | Electrolyzer 1 | 2 | Water and brine electrolysis |
 | Crusher 1 | 2 | Mineral processing and surplus crushing |
-| Small furnace 1 | 1 | Early smelting |
+| Small furnace 1 | 4 | Early smelting |
 | Medium furnace 1 | 1 | Smelting with gas output, including gypsum decomposition |
-| Foundry 1 | 1 | Metal parts |
+| Foundry 1 | 2 | Metal parts |
 | Small assembler 1 | 2 | Equipment and science |
 | Flotation cell 1 | 1 | Silica and dust treatment |
 | Combustion chamber 1 | 1 | Consume surplus benzene with oxygen |
