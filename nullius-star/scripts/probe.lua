@@ -20,7 +20,7 @@ local function fulgora_landing_site(surface, pos, force)
       {"nullius-extractor-1",3}, {"nullius-hydro-plant-1",5},
       {"nullius-distillery-1",4}, {"nullius-air-filter-1",4},
       {"nullius-chemical-plant-1",4}, {"nullius-electrolyzer-1",2},
-      {"nullius-crusher-1",2}, {"nullius-small-furnace-1",4},
+      {"nullius-crusher-1",4}, {"nullius-small-furnace-1",4},
       {"nullius-medium-furnace-1",1}, {"nullius-foundry-1",2},
       {"nullius-small-assembler-1",2}, {"nullius-flotation-cell-1",2},
       {"nullius-combustion-chamber-1",1}, {"nullius-chimney-1",3},

@@ -61,7 +61,7 @@ Supplied once per force when the probe is activated.
 | Air filter 1 | 4 | Nitrogen and climatology |
 | Chemical plant 1 | 4 | Acids and polymers |
 | Electrolyzer 1 | 2 | Water and brine electrolysis |
-| Crusher 1 | 2 | Mineral processing and surplus crushing |
+| Crusher 1 | 4 | Mineral processing and surplus crushing |
 | Small furnace 1 | 4 | Early smelting |
 | Medium furnace 1 | 1 | Smelting with gas output, including gypsum decomposition |
 | Foundry 1 | 2 | Metal parts |
