@@ -15,7 +15,10 @@ def summarize_native(case):
     for row in case['observations']:
         for phase in ('day','night'):
             v=row[phase]; seconds=v['ticks']/60
-            rows.append(dict(name=row['name'],phase=phase,
+            rows.append(dict(name=row['name'],phase=phase,first_trip_tick=row.get('first_trip'),
+                grounding_switch_on_percent=100*v.get('switch_on',0)/(v['ticks']/30),
+                sensor_mean_percent=v.get('sensor_sum',0)/(v['ticks']/30),
+                sensor_above_80_percent=100*v.get('sensor_high',0)/(v['ticks']/30),
                 secondary_delivered_percent=100*v['secondary_J']/(row['secondary_MW']*1e6*seconds),
                 surge_delivered_percent=100*v['surge_J']/(row['surge_MW']*1e6*seconds) if row['surge_MW'] else None,
                 capture_per_minute=v['captures']/seconds*60,
@@ -32,12 +35,13 @@ def main():
     p.add_argument('--industry',type=Path)
     p.add_argument('--fixture',type=Path)
     p.add_argument('--results',type=Path)
+    p.add_argument('--case',default='fulgora-power-audit')
     p.add_argument('--output',type=Path,required=True)
     args=p.parse_args()
     if args.results:
         run=json.loads(args.results.read_text())
         if run['status']!='pass': raise ValueError('Native audit failed')
-        case=next(r for r in run['results'] if r['case']=='fulgora-power-audit')
+        case=next(r for r in run['results'] if r['case']==args.case)
         result=summarize_native(case)
     else:
         if not args.bootstrap or not args.industry:

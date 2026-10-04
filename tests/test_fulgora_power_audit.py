@@ -21,6 +21,19 @@ class NativePowerAuditTest(unittest.TestCase):
         self.assertEqual(result['grounding_MW'],.75)
         self.assertEqual(result['secondary_gap_seconds'],5)
 
+    def test_switch_samples_and_capacitor_charge(self):
+        phase=dict(ticks=120,secondary_J=2e6,surge_J=1e6,captures=1,
+                   collector_J=3e6,coil_J=0,trips=2,secondary_gaps=0,
+                   surge_gaps=0,battery_MJ=0,switch_on=1,sensor_sum=240,sensor_high=2)
+        case=dict(factorio_version='test',observations=[dict(name='switched',
+                  secondary_MW=1,surge_MW=1,day=phase,night=phase,first_trip=90)])
+        result=summarize_native(case)['rows'][0]
+        self.assertEqual(result['grounding_switch_on_percent'],25)
+        self.assertEqual(result['sensor_mean_percent'],60)
+        self.assertEqual(result['sensor_above_80_percent'],50)
+        self.assertEqual(result['first_trip_tick'],90)
+        self.assertEqual(result['trip_samples'],2)
+
     def test_absent_surge_is_not_reported_as_full_supply(self):
         phase=dict(ticks=60,secondary_J=1e6,surge_J=0,captures=0,
                    collector_J=0,coil_J=0,trips=0,secondary_gaps=0,surge_gaps=0,battery_MJ=14)

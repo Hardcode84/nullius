@@ -211,7 +211,7 @@ def discover_cases() -> list[str]:
     )
 
 
-def deadline_for(args: argparse.Namespace, case: str) -> int:
+def metadata_for(case: str) -> dict:
     scenario = SCENARIOS / case
     if not scenario.is_dir() or not (scenario / "control.lua").is_file():
         raise TestFailure(f"scenario not found: {scenario}")
@@ -225,10 +225,10 @@ def deadline_for(args: argparse.Namespace, case: str) -> int:
             f"invalid scenario metadata {metadata_path}: {error}"
         ) from error
     if (not isinstance(metadata, dict) or
-            set(metadata) not in ({"schema", "until_tick"},
-                                 {"schema", "until_tick", "multiplayer"})):
+            not {"schema", "until_tick"} <= set(metadata) or
+            set(metadata) - {"schema", "until_tick", "multiplayer", "timeout_seconds"}):
         raise TestFailure(
-            f"scenario metadata must contain schema, until_tick, and optional multiplayer: "
+            f"scenario metadata must contain schema, until_tick, and optional multiplayer/timeout_seconds: "
             f"{metadata_path}"
         )
     if "multiplayer" in metadata and metadata["multiplayer"] is not True:
@@ -238,7 +238,26 @@ def deadline_for(args: argparse.Namespace, case: str) -> int:
             f"unsupported scenario metadata schema in {metadata_path}: "
             f"{metadata['schema']!r}"
         )
-    until_tick = validate_until_tick(metadata["until_tick"], str(metadata_path))
+    validate_until_tick(metadata["until_tick"], str(metadata_path))
+    if "timeout_seconds" in metadata:
+        validate_timeout_seconds(metadata["timeout_seconds"])
+    return metadata
+
+
+def validate_timeout_seconds(value: object) -> int:
+    if type(value) is not int or value <= 0:
+        raise TestFailure("timeout_seconds must be a positive integer")
+    return value
+
+
+def timeout_for(args: argparse.Namespace, metadata: dict) -> int:
+    if args.timeout_seconds is not None:
+        return validate_timeout_seconds(args.timeout_seconds)
+    return metadata.get("timeout_seconds", 300)
+
+
+def deadline_for(args: argparse.Namespace, case: str) -> int:
+    until_tick = metadata_for(case)["until_tick"]
     if args.until_tick is not None:
         return validate_until_tick(args.until_tick, "--until-tick")
     return until_tick
@@ -271,7 +290,8 @@ def execute(
     prepare_mods(run_mods, dependency_mods, subject, target)
 
     until_tick = deadline_for(args, case)
-    metadata = json.loads((scenario / "test.json").read_text())
+    metadata = metadata_for(case)
+    timeout_seconds = timeout_for(args, metadata)
     if str(REPOSITORY) not in sys.path:
         sys.path.insert(0, str(REPOSITORY))
     from tools.factorio_multiplayer import prepare_support_overlay
@@ -289,7 +309,7 @@ def execute(
     compiled = run_factorio(
         [*common, "--scenario2map", f"nullius-star/{case}"],
         compile_log,
-        args.timeout_seconds,
+        timeout_seconds,
     )
     if compiled.returncode != 0:
         raise TestFailure(
@@ -306,13 +326,14 @@ def execute(
         import copy
         multiplayer_args = copy.copy(args)
         multiplayer_args.multiplayer_until_tick = until_tick
+        multiplayer_args.timeout_seconds = timeout_seconds
         execute_multiplayer(multiplayer_args, common, save, run_directory)
         executed = subprocess.CompletedProcess(common, 0)
     else:
         executed = run_factorio(
             [*common, "--load-game", str(save), "--until-tick", str(until_tick)],
             run_log,
-            args.timeout_seconds,
+            timeout_seconds,
         )
 
     result_path = run_directory / "script-output" / "factorio-tests" / f"{case}.json"
@@ -365,7 +386,8 @@ def parse_arguments() -> argparse.Namespace:
         type=int,
         help=f"override the scenario deadline, capped at {MAX_UNTIL_TICK} ticks",
     )
-    parser.add_argument("--timeout-seconds", type=int, default=300)
+    parser.add_argument("--timeout-seconds", type=int,
+                        help="override the scenario wall-clock limit (default 300 seconds)")
     parser.add_argument("--keep-run-directory", action="store_true")
     parser.add_argument(
         "-n",

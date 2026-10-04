@@ -71,3 +71,7 @@ distribution.collision_box={{0,0},{0,0}}
 distribution.supply_area_distance=64
 distribution.maximum_wire_distance=64
 data:extend({distribution})
+local wire=table.deepcopy(distribution)
+wire.name='factorio-test-audit-wire'
+wire.supply_area_distance=2
+data:extend({wire})

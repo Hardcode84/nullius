@@ -582,6 +582,30 @@ More battery capacity cannot remove this competition. Sustained science needs
 surge consumers to receive power before surplus is grounded, or a grid design
 that separates their supply. The measured grid does not sustain 60 packs/min.
 
+`fulgora-switched-grounding` tests the same 60/min load, 256 pylons, 625
+batteries, and 32 coils. A tier-1 supercapacitor controls a real switch through
+a decider latch. Each run uses ten minutes at noon and ten at midnight, seed
+1729. Connect the switched coils above the high threshold; disconnect them at
+or below the low threshold. No charge injection or trip resets.
+
+| Permanent coils / switched coils | Charge thresholds | Surge supplied, day / night | Switch connected, day / night |
+|---|---|---|---|
+| 32 / 0 | None | 4.09% / 22.04% | — |
+| 0 / 32 | 80% / 30% | 4.07% / 22.26% | 100% / 100% |
+| 4 / 28 | 80% / 30% | 4.03% / 22.14% | 99.00% / 100% |
+| 8 / 24 | 80% / 30% | 3.97% / 22.27% | 99.58% / 100% |
+| 4 / 28 | 98% / 90% | 4.16% / 22.42% | 97.83% / 100% |
+
+Switch percentages use sampled states. All grids supplied the ordinary load
+and had no trips. Mean capacitor charge
+was 98.09–99.08% by day and at least 99.99% at night. A nearly full capacitor
+does not show that surge demand is satisfied. These controls leave grounding
+connected and do not remove starvation. Different grids receive different
+native strikes; small differences in supply do not establish an improvement.
+
+Run `python tools/run_factorio_tests.py fulgora-switched-grounding -n auto`
+and use `--case fulgora-switched-grounding` when reading its results below.
+
 Generate load profiles and read native results with `tools/fulgora_power_audit.py`.
 Use `--bootstrap` and `--industry` planner reports, `--fixture` for the scenario
 fixture, or `--results` for the native runner report; always specify `--output`.

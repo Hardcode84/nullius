@@ -16,6 +16,8 @@ from tools.run_factorio_tests import (
     TEST_SUPPORT_MOD,
     TestFailure,
     deadline_for,
+    metadata_for,
+    timeout_for,
     format_duration,
     prepare_mods,
     print_case_result,
@@ -102,6 +104,22 @@ class FactorioTestRunnerTests(unittest.TestCase):
                 }))
                 with self.assertRaisesRegex(TestFailure, "multiplayer metadata"):
                     deadline_for(SimpleNamespace(until_tick=None), "shared-body")
+                metadata.write_text(json.dumps({"schema": 1, "until_tick": 10,
+                                                 "timeout_seconds": 0}))
+                with self.assertRaisesRegex(TestFailure, "timeout_seconds"):
+                    metadata_for("shared-body")
+
+    def test_scenario_wall_clock_timeout(self) -> None:
+        default = SimpleNamespace(timeout_seconds=None)
+        self.assertEqual(timeout_for(default, {}), 300)
+        self.assertEqual(timeout_for(default, {"timeout_seconds": 900}), 900)
+        self.assertEqual(timeout_for(SimpleNamespace(timeout_seconds=60),
+                                     {"timeout_seconds": 900}), 60)
+        for invalid in (0, -1, True, 1.5):
+            with self.subTest(invalid=invalid), self.assertRaises(TestFailure):
+                timeout_for(SimpleNamespace(timeout_seconds=invalid), {})
+        metadata = metadata_for("fulgora-switched-grounding")
+        self.assertEqual(timeout_for(default, metadata), 900)
 
     def test_distributable_mod_excludes_repository_only_content(self) -> None:
         self.assertEqual(list(MOD_UNDER_TEST.glob("*.md")), [])
