@@ -511,6 +511,9 @@ def main() -> int:
     args = parse_arguments()
     if args.read_result:
         suite = json.loads(args.read_result.read_text())
+        if args.json_output:
+            print(json.dumps(suite, indent=2))
+            return 0 if suite["failed"] == 0 else 1
         for index, result in enumerate(suite["results"], 1):
             if result["status"] != "pass":
                 print_case_result(index, len(suite["results"]), result["case"], result)
