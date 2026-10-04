@@ -1291,6 +1291,10 @@ data:extend({
       },
       {
         type = "unlock-recipe",
+        recipe = "nullius-carbon-gasification-1"
+      },
+      {
+        type = "unlock-recipe",
         recipe = "nullius-butadiene"
       },
       {
@@ -5003,10 +5007,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-plastic-pc-abs"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-carbon-gasification-1"
       }
     },
     unit = {

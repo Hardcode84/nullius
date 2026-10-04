@@ -343,6 +343,7 @@ venting whitelist is required. Storage does not remove a continuous surplus.
 | Organic combustion | Existing ethylene, propene, benzene, methanol, and biodiesel recipes consume oxygen and produce steam + CO2 |
 | Ethylene / propene pyrolysis | Methane plus other organics; not a complete disposal route |
 | Benzene reforming | Steam input; hydrogen + CO + CO2 outputs, all ventable |
+| Carbon gasification | Graphite + steam → CO + hydrogen, both ventable; basic recipe unlocks at Organic Chemistry 2; boxed recipe remains at bulk processing |
 
 Brine boiling, wastewater boiling, pyrolysis, and benzene reforming require
 chemical science. Select earlier local unlocks before these are bootstrap routes.
