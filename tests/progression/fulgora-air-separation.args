@@ -6,3 +6,5 @@ nullius-pressure-air-separation-fulgora
 nullius-residual-separation-fulgora
 --describe-recipe
 nullius-pressure-residual-separation-fulgora
+--describe-recipe
+nullius-air-separation-fulgora-2

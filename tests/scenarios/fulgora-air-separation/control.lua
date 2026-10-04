@@ -1,8 +1,8 @@
--- given: 100 air and 49 residual gas per ordinary/compressed Fulgora cell;
+-- given: 100 air per basic cell; 100 air and 49 residual gas per advanced/compressed cell;
 -- one recipe batch per generic-route cell; declared debug electricity.
 -- place: production air filters and distilleries on Fulgora and Nauvis.
 -- connect: Fulgora residual outputs to second-stage distilleries through pipes.
--- act: unlock Primitive Filtration, then High Pressure Chemistry.
+-- act: unlock Primitive Filtration, Air Separation 2, then High Pressure Chemistry.
 -- run: 1200 ticks.
 -- expect: 80 nitrogen, 19 CO2, 50 argon; no oxygen/water; planet restrictions.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
@@ -29,9 +29,16 @@ script.on_nth_tick(1,function()
   end
   force.technologies['nullius-primitive-filtration'].researched=true
   check(force.recipes['nullius-air-separation-fulgora'].enabled,'ordinary unlock')
+  check(not force.recipes['nullius-air-separation-fulgora-2'].enabled,'premature advanced unlock')
+  check(not force.recipes['nullius-residual-separation-fulgora'].enabled,'premature argon unlock')
+  force.technologies['nullius-air-separation-2'].researched=true
+  check(force.recipes['nullius-air-separation-fulgora-2'].enabled,'advanced unlock')
   check(force.recipes['nullius-residual-separation-fulgora'].enabled,'argon unlock')
   check(not force.recipes['nullius-pressure-air-separation-fulgora'].enabled,'premature pressure unlock')
   check(not force.recipes['nullius-pressure-residual-separation-fulgora'].enabled,'premature pressure argon unlock')
+  force.technologies['nullius-high-pressure-chemistry'].researched=true
+  check(force.recipes['nullius-pressure-air-separation-fulgora'].enabled,'pressure unlock')
+  check(force.recipes['nullius-pressure-residual-separation-fulgora'].enabled,'pressure argon unlock')
   force.research_all_technologies()
   for _,surface in ipairs({game.surfaces.nauvis,game.planets['nullius-fulgora'].create_surface()}) do
     local fulgora=surface.name=='nullius-fulgora'
@@ -65,13 +72,16 @@ script.on_nth_tick(1,function()
       select_recipe(e,'nullius-'..name,not fulgora)
       storage.generic[#storage.generic+1]={entity=e,allowed=not fulgora,name=name}
     end
+    local basic=machine('nullius-distillery-1',112,16)
+    select_recipe(basic,'nullius-air-separation-fulgora',fulgora,100)
+    storage.cells[#storage.cells+1]={air=basic,entities={basic},gas='',allowed=fulgora,basic=true}
     for i,compressed in ipairs({false,true}) do
       local prefix=compressed and 'pressure-' or ''
       local gas=compressed and 'compressed-' or ''
       local x=112+(i-1)*24
       local air=machine('nullius-distillery-1',x,0)
       local residual=machine('nullius-distillery-1',x+3,-6)
-      select_recipe(air,'nullius-'..prefix..'air-separation-fulgora',fulgora,100)
+      select_recipe(air,'nullius-'..prefix..'air-separation-fulgora'..(compressed and '' or '-2'),fulgora,100)
       select_recipe(residual,'nullius-'..prefix..'residual-separation-fulgora',fulgora,49)
       local entities={air,residual,machine('pipe',x+2,-3)}
       storage.cells[#storage.cells+1]={air=air,residual=residual,entities=entities,gas=gas,allowed=fulgora}
@@ -106,9 +116,9 @@ script.on_nth_tick(1200,function()
   end
   for _,row in ipairs(storage.cells) do
     check(row.air.products_finished==(row.allowed and 1 or 0),'air surface gate')
-    check(row.residual.products_finished==(row.allowed and 1 or 0),'residual transfer or surface gate')
+    if row.residual then check(row.residual.products_finished==(row.allowed and 1 or 0),'residual transfer or surface gate') end
     if row.allowed then
-      for name,expected in pairs({nitrogen=80,['carbon-dioxide']=19,argon=50,['residual-gas']=0,air=0}) do
+      for name,expected in pairs({nitrogen=80,['carbon-dioxide']=19,argon=row.basic and 0 or 50,['residual-gas']=0,air=0}) do
         check(math.abs(total(row.entities,'nullius-'..row.gas..name)-expected)<0.01,'yield '..row.gas..name)
       end
       for _,name in ipairs({'oxygen','water','steam','trace-gas'}) do

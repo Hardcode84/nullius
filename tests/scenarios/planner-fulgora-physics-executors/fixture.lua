@@ -1206,7 +1206,7 @@ return {
         },
       },
       productivity = 0,
-      recipe = "nullius-air-separation-fulgora",
+      recipe = "nullius-air-separation-fulgora-2",
       seconds_per_cycle = 0.5,
     },
     {

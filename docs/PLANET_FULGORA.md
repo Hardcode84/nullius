@@ -201,7 +201,8 @@ these unlocks. Inspect the routes with
 | Process | Machine | Recipe | Time |
 |---|---|---|---:|
 | Capture | Air filter | Electricity → 150 air | 3 s |
-| Separation | Distillery | 100 air → 80 nitrogen + 19 CO2 + 1 residual gas | 1 s |
+| Basic separation | Distillery | 100 air → 80 nitrogen + 19 CO2 | 1 s |
+| Advanced separation | Distillery | 100 air → 80 nitrogen + 19 CO2 + 1 residual gas | 1 s |
 | Argon recovery | Distillery | 50 residual gas → 50 argon | 5 s |
 
 Use the existing air and residual-gas fluids. Fulgora separation requires
@@ -209,8 +210,9 @@ Use the existing air and residual-gas fluids. Fulgora separation requires
 enrichment, and water-producing residual separation are excluded there.
 The destination surface sets the separation recipe, including for imported gas.
 
-Ordinary Fulgora recipes unlock with Primitive Filtration. Compressed variants
-unlock with High Pressure Chemistry; they use the same amounts of compressed
+Basic separation unlocks with Primitive Filtration. Air Separation 2 unlocks
+advanced separation and argon recovery. Their compressed variants unlock with
+High Pressure Chemistry; they use the same amounts of compressed
 fluids and take 2 s and 10 s. Gas recipes have no boxed variants.
 Use existing gas vents for surplus products. Hydrocarbons still come from slurry.
 

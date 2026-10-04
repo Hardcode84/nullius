@@ -19,11 +19,14 @@ end
 local function gas(name, amount)
   return {type="fluid", name="nullius-"..name, amount=amount}
 end
+separate("nullius-air-separation-2", "nullius-air-separation-fulgora",
+  "nullius-primitive-filtration", {gas("nitrogen",80),gas("carbon-dioxide",19)})
+
 for _,compressed in ipairs({false,true}) do
   local prefix = compressed and "pressure-" or ""
   local fluid = compressed and "compressed-" or ""
-  local technology = compressed and "nullius-high-pressure-chemistry" or "nullius-primitive-filtration"
-  local air = "nullius-"..prefix.."air-separation-fulgora"
+  local technology = compressed and "nullius-high-pressure-chemistry" or "nullius-air-separation-2"
+  local air = "nullius-"..prefix.."air-separation-fulgora"..(compressed and "" or "-2")
   separate(compressed and "nullius-pressure-air-separation" or "nullius-air-separation-2",
     air, technology, {gas(fluid.."nitrogen",80),gas(fluid.."carbon-dioxide",19),gas(fluid.."residual-gas",1)})
   separate("nullius-"..prefix.."residual-separation",
