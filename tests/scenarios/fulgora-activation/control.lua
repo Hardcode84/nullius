@@ -25,7 +25,7 @@ local function landing(force, name)
     force = force, build_check_type = defines.build_check_type.manual_ghost}, "probe landing is not walkable: "..name.." force="..force.name.." position="..helpers.table_to_json(bodies[1].position))
   if name == "fulgora" then
     local expected={
-      ['nullius-extractor-1']=3,['nullius-hydro-plant-1']=5,['nullius-distillery-1']=4,
+      ['nullius-extractor-1']=5,['nullius-hydro-plant-1']=5,['nullius-distillery-1']=4,
       ['nullius-air-filter-1']=4,['nullius-chemical-plant-1']=4,['nullius-electrolyzer-1']=2,
       ['nullius-crusher-1']=4,['nullius-small-furnace-1']=4,['nullius-medium-furnace-1']=1,
       ['nullius-foundry-1']=2,['nullius-small-assembler-1']=2,['nullius-flotation-cell-1']=2,

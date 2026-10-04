@@ -17,7 +17,7 @@ local function fulgora_landing_site(surface, pos, force)
   -- Cold landing path. Separate logistics keep the kit within the wreck's slots.
   local supplies = {
     {
-      {"nullius-extractor-1",3}, {"nullius-hydro-plant-1",5},
+      {"nullius-extractor-1",5}, {"nullius-hydro-plant-1",5},
       {"nullius-distillery-1",4}, {"nullius-air-filter-1",4},
       {"nullius-chemical-plant-1",4}, {"nullius-electrolyzer-1",2},
       {"nullius-crusher-1",4}, {"nullius-small-furnace-1",4},

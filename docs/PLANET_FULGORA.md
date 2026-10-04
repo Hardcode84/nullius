@@ -55,7 +55,7 @@ Supplied once per force when the probe is activated.
 
 | Equipment | Count | First use |
 |---|---:|---|
-| Extractor 1 | 3 | Slurry for materials and science |
+| Extractor 1 | 5 | Slurry for materials and science |
 | Hydro plant 1 | 5 | Slurry filtration, crude filtration, brine, climatology |
 | Distillery 1 | 4 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
 | Air filter 1 | 4 | Nitrogen and climatology |
@@ -136,7 +136,8 @@ imports or liquid voiding.
 
 `tools/plan_factorio_bootstrap.py` uses
 `tests/progression/planner/fulgora-bootstrap-timing.json` and fresh prototypes.
-The fixed starter machines and one android produce each target from zero stock.
+The results below use the previous three-extractor kit and one android, from zero stock.
+The planner configs now use five extractors.
 Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 10 inserters, and 8 poles. New machines do not operate during these batches.
 
@@ -155,12 +156,12 @@ and startup order. Tanks limit final surplus, not peak fluid volume. The survey
 uses the nearest three usable vents from the origin in twelve seeds on 2.1:
 94.0–199.2% mean yield. It does not cover every map or probe landing position.
 
-Slurry extraction limits the current 100% cases. At half machine duty,
+Slurry extraction limits these three-extractor 100% cases. At half machine duty,
 expansion plus first science requires 46.8 min of work.
 
 ### Building bootstrap time
 
-Fresh prototypes and the expanded starter fleet; three extractors and one android.
+The results below use the previous three-extractor kit and one android.
 The eight small tanks and two medium tanks provide 50,000 filtered-hydrocarbon
 storage and 10,000 each for six other liquids. No imported materials.
 
@@ -194,7 +195,7 @@ transport, placement, and power interruptions. Research-bound cases permit the
 listed research and costed new machines from time zero, then count their science,
 lab work, and construction. The ten batteries do not prove continuous power.
 
-Repeat with `tools/plan_factorio_bootstrap.py` and the
+Calculate updated five-extractor results with `tools/plan_factorio_bootstrap.py` and the
 `fulgora-building-timing.json`, `fulgora-extractor-building-timing.json`, and
 `fulgora-self-reproduction-timing.json` configs in `tests/progression/planner/`.
 

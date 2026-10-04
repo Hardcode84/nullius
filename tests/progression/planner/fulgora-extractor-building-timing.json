@@ -29,7 +29,7 @@
     "nullius-crude-sludge-filtration"
   ],
   "fleet": {
-    "nullius-extractor-1": 3,
+    "nullius-extractor-1": 5,
     "nullius-hydro-plant-1": 5,
     "nullius-distillery-1": 4,
     "nullius-air-filter-1": 4,
@@ -86,7 +86,7 @@
     {
       "name": "duplicate-fleet-plus-extractor-research",
       "items": {
-        "nullius-extractor-1": 3,
+        "nullius-extractor-1": 5,
         "nullius-hydro-plant-1": 5,
         "nullius-distillery-1": 4,
         "nullius-air-filter-1": 4,
