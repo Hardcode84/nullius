@@ -168,7 +168,7 @@ Players can manually delete excess fluid until automated disposal is available.
 ### Mineral recovery comparison
 
 The recipe now returns 3 items per successful drop, with a 25% chance for each
-mineral. The boxed recipe returns 3 boxes. The planner compares absolute drop amounts.
+mineral. There is no boxed crude filtration recipe. The planner compares absolute drop amounts.
 Starter machines, research, and buffer allocation stay fixed.
 
 | Items per drop | First science, 100% vents | Expansion + science, 100% vents | Expansion + science, sampled vents |
@@ -282,7 +282,17 @@ mineral dust + acid -> sludge -> mineral recovery
 ```
 
 Primitive Filtration requires probe access and Geology 2: 5 of each early science pack,
-15 seconds per unit. It unlocks these recipes and their boxed equivalents.
+15 seconds per unit. It unlocks the ordinary recipes below and boxed slurry climatology.
+Mass Production 4 unlocks boxed ice melting, salt crushing, and salt dissolution.
+Packaging 3 unlocks ice packaging and unpacking. Crude sludge filtration has no
+boxed recipe.
+
+| Specialized research | Prerequisites | Total cost | Unlock |
+|---|---|---|---|
+| Bulk slurry filtration | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed slurry filtration |
+| Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
+
+Each research has 10 units at 45 seconds per unit.
 
 | Recipe | Input | Output | Time | Machine |
 |---|---|---|---|---|
@@ -875,20 +885,20 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 
 | Packs/min each | Stations, including labs | Labs | Average demand | Installed demand | Research supply bound |
 |---:|---:|---:|---:|---:|---:|
-| 30 | 603 | 20 | 187 MW | 293 MW | 32.57 h |
-| 60 | 957 | 40 | 368 MW | 465 MW | 16.29 h |
-| 120 | 1,689 | 80 | 731 MW | 821 MW | 8.14 h |
-| 240 | 3,167 | 160 | 1,456 MW | 1,542 MW | 4.07 h |
+| 30 | 604 | 20 | 187 MW | 293 MW | 32.57 h |
+| 60 | 956 | 40 | 368 MW | 465 MW | 16.29 h |
+| 120 | 1,688 | 80 | 731 MW | 820 MW | 8.14 h |
+| 240 | 3,168 | 160 | 1,456 MW | 1,541 MW | 4.07 h |
 
 Physics research alone after Primitive Filtration needs 58,126 geology, 56,594
 climatology, 55,451 mechanical, 50,977 electrical, and 46,341 chemical packs.
-The selected factory routes raise these totals to 58,626 geology, 57,594
-climatology, 55,951 mechanical, 51,477 electrical, and 47,342 chemical packs.
+The selected factory routes raise these totals to 58,626 geology, 57,674
+climatology, 55,991 mechanical, 51,597 electrical, 47,422 chemical, and 600 EM packs.
 Times in the table include the selected routes and assume
 all lines operate from the start. They exclude construction, checkpoint work,
 transport, and power interruptions. They are not arrival-to-physics timings.
 
-At 60/min: 174 extractors, 96 distilleries, 86 hydro plants, 55 medium furnaces,
+At 60/min: 174 extractors, 96 distilleries, 85 hydro plants, 55 medium furnaces,
 50 electrolyzers, 56 chemical plants, 40 air filters, and 40 labs, plus assembly
 and support. Gross flows: 104,029 slurry/min, 94,216 water/min, 86,314 oxygen/min.
 Boric acid for operation and process construction comes from local sludge.
@@ -924,10 +934,10 @@ Boundary islands can extend outside the sample. Rocks are assumed cleared.
 
 | Packs/min each | Bare island machines | Full tier-1 batteries | Compact site | Roomy site |
 |---:|---:|---:|---:|---:|
-| 30 | 6,606 tiles | 318 | 23,245 tiles | 49,004 tiles |
-| 60 | 10,531 tiles | 625 | 37,865 tiles | 77,988 tiles |
-| 120 | 18,695 tiles | 1,238 | 68,029 tiles | 138,070 tiles |
-| 240 | 35,145 tiles | 2,466 | 128,787 tiles | 259,236 tiles |
+| 30 | 6,605 tiles | 318 | 23,254 tiles | 49,039 tiles |
+| 60 | 10,489 tiles | 625 | 37,768 tiles | 77,800 tiles |
+| 120 | 18,653 tiles | 1,238 | 67,932 tiles | 137,882 tiles |
+| 240 | 35,128 tiles | 2,466 | 128,765 tiles | 259,222 tiles |
 
 Both site estimates include batteries for a 30-second ordinary-load gap.
 Compact: one tile around each machine and 20% shared space.
@@ -936,7 +946,7 @@ Shared space allows for transport, buffers, and stations; no layout is routed.
 No construction mall or inter-island rail route is included.
 
 The landing island cannot hold these factories. At 60/min, distilleries and
-hydro plants alone occupy 4,550 bare tiles. Pylons, coils, and extractors can use
+hydro plants alone occupy 4,525 bare tiles. Pylons, coils, and extractors can use
 sediment; batteries, belts, and processing machines need islands.
 
 A conservative allocation of complete 32×32 blocks needs 1–2 large islands for
@@ -972,7 +982,7 @@ Audit at `60c9b0b` on Factorio 2.1.20: all local flow and process-construction
 cases passed at 30, 60, 120, and 240 packs/min. Seven native scenarios passed:
 physics executors (2714 assertions), checkpoints (64), filtration (309), borate
 leaching (36), gypsum recovery (32), water recovery (70), and well placement (17).
-The fresh executor fixture matches the tested fixture. Early science, starter
+The executor fixture was regenerated after the bulk research changes. Early science, starter
 processing machines, and independent-acid prerequisite checks passed.
 The research query is `tests/progression/balance/fulgora-research.json`, used
 with `tools/audit_vulcanus_progression.py`. These checks do not execute a connected

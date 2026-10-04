@@ -1,3 +1,30 @@
+for _,process in ipairs({
+    {name="slurry-filtration", recipe="hydrocarbon-slurry-filtration", icon="fluid-handling"},
+    {name="hydrocarbon-cracking", recipe="hydrocarbon-cracking", icon="oil-processing"},
+}) do
+  data:extend({{
+    type="technology", name="nullius-bulk-"..process.name,
+    icon="__base__/graphics/technology/"..process.icon..".png", icon_size=256,
+    order="nullius-dg-bulk-"..process.name,
+    prerequisites={"nullius-overcharged-assembly-2", "nullius-packaging-3"},
+    effects={{type="unlock-recipe", recipe="nullius-boxed-"..process.recipe}},
+    unit={count=10, time=45, ingredients={
+      {"nullius-electromagnetic-pack",20}, {"nullius-climatology-pack",4},
+      {"nullius-electrical-pack",4}, {"nullius-chemical-pack",4},
+    }},
+  }})
+end
+
+for _,name in ipairs({"ice-melting", "salt-disposal", "salt-dissolution"}) do
+  table.insert(data.raw.technology["nullius-mass-production-4"].effects,
+    {type="unlock-recipe",recipe="nullius-boxed-"..name})
+end
+
+for _,name in ipairs({"nullius-box-ice", "nullius-unbox-ice"}) do
+  table.insert(data.raw.technology["nullius-packaging-3"].effects,
+    {type="unlock-recipe",recipe=name})
+end
+
 for _,name in ipairs({"nullius-borate-leaching","nullius-boxed-borate-leaching",
     "nullius-gypsum-recovery","nullius-boxed-gypsum-recovery",
     "nullius-boxed-limestone-recovery","nullius-boxed-stone-recovery"}) do

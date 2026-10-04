@@ -19,8 +19,7 @@
     "contract": "tests/progression/planner/fulgora-bootstrap-timing.args"
   },
   "expected_recipes": [
-    "nullius-crude-sludge-filtration",
-    "nullius-boxed-crude-sludge-filtration"
+    "nullius-crude-sludge-filtration"
   ],
   "fleet": {
     "nullius-extractor-1": 3,

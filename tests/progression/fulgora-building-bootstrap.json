@@ -38,8 +38,7 @@
     "nullius-liquid-void"
   ],
   "probabilistic_recipes": [
-    "nullius-crude-sludge-filtration",
-    "nullius-boxed-crude-sludge-filtration"
+    "nullius-crude-sludge-filtration"
   ],
   "checkpoint_products": {
     "nullius-checkpoint-aluminum-carbide": [

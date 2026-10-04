@@ -23,7 +23,9 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
   }
   if modern then recipe.categories={category} else recipe.category=category end
   data:extend({recipe})
-  unlocks[#unlocks+1]={type="unlock-recipe",recipe=recipe.name}
+  if not boxed or name == "climatology-pack-fulgora" then
+    unlocks[#unlocks+1]={type="unlock-recipe",recipe=recipe.name}
+  end
 end
 for _,boxed in ipairs({false,true}) do
   local scale = boxed and 5 or 1
@@ -39,14 +41,16 @@ for _,boxed in ipairs({false,true}) do
     {fluid("filtered-hydrocarbons",50),fluid("sludge",40),
       item("ice",2),item("salt",1)},
     "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
-  local minerals={}
-  for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","gypsum"}) do
-    local result=item(name,3)
-    result[probability]=0.25
-    minerals[#minerals+1]=result
+  if not boxed then
+    local minerals={}
+    for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","gypsum"}) do
+      local result=item(name,3)
+      result[probability]=0.25
+      minerals[#minerals+1]=result
+    end
+    add("crude-sludge-filtration","nullius-water-treatment",2*scale,
+      {fluid("sludge",50)},minerals,"__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
   end
-  add("crude-sludge-filtration","nullius-water-treatment",2*scale,
-    {fluid("sludge",50)},minerals,"__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
   data:extend({{
     type="recipe", name="nullius-"..(boxed and "boxed-" or "").."gypsum-recovery",
     localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name.nullius-gypsum-recovery"}}

@@ -262,8 +262,7 @@
   "lab": "nullius-lab-1",
   "electric_grid": true,
   "expected_recipes": [
-    "nullius-crude-sludge-filtration",
-    "nullius-boxed-crude-sludge-filtration"
+    "nullius-crude-sludge-filtration"
   ],
   "science_analysis": {
     "packs": [

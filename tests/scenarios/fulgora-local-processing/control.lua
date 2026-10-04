@@ -1,7 +1,7 @@
 -- given: ordinary/boxed cells, 3 ice, 6 salt, 50/250 filtered hydrocarbons.
 -- place: distilleries and hydro plants on Nauvis; declared debug electric power.
 -- connect: ice melting outputs to salt dissolution inputs through real pipes.
--- act: research Primitive Filtration; execute one cracking and dissolution batch.
+-- act: research Primitive Filtration, Mass Production 4, and bulk cracking; execute one cracking and dissolution batch.
 -- run: until both cells complete, at most 3900 ticks.
 -- expect: exact ordinary/boxed yields, native fluid transfer, local research gate.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
@@ -64,7 +64,21 @@ script.on_nth_tick(1,function()
   end
   force.technologies['nullius-primitive-filtration'].researched=true
   for _,row in ipairs(storage.rows) do for _,name in ipairs({'ice-melting','salt-dissolution','hydrocarbon-cracking'}) do
-    check(force.recipes[row.prefix..name].enabled,'research did not unlock '..name)
+    check(force.recipes[row.prefix..name].enabled==(row.scale==1),'incorrect primitive unlock '..row.prefix..name)
+  end end
+  force.technologies['nullius-mass-production-4'].researched=true
+  check(not force.recipes['nullius-boxed-hydrocarbon-cracking'].enabled,'generic mass production unlocked cracking')
+  local bulk=force.technologies['nullius-bulk-hydrocarbon-cracking']
+  check(bulk.prerequisites['nullius-overcharged-assembly-2']~=nil,'cracking requires overcharged assembly')
+  check(bulk.prerequisites['nullius-packaging-3']~=nil,'cracking requires packaging')
+  local em=false
+  for _,ingredient in pairs(bulk.research_unit_ingredients) do
+    if ingredient.name=='nullius-electromagnetic-pack' then em=true end
+  end
+  check(em,'cracking requires EM science')
+  bulk.researched=true
+  for _,row in ipairs(storage.rows) do for _,name in ipairs({'ice-melting','salt-dissolution','hydrocarbon-cracking'}) do
+    check(force.recipes[row.prefix..name].enabled,'missing bulk unlock '..name)
   end end
 end)
 script.on_nth_tick(60,function()

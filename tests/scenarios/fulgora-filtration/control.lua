@@ -1,8 +1,8 @@
 -- given: basic hydro plants/crushers, pipes, substations and debug electric grids.
--- inputs per ordinary/boxed line: 100/500 slurry, 1000/5000 sludge, 1 salt/box salt.
--- place: six independent cells on Nauvis, fluid outputs connected to pipes;
+-- inputs per ordinary/boxed line: 100/500 slurry, 1000 sludge on the ordinary line, 1 salt/box salt.
+-- place: five independent cells on Nauvis, fluid outputs connected to pipes;
 -- crude recovery cells unload through powered inserters into wooden chests.
--- act: research probe access then Primitive Filtration; execute all six recipes.
+-- act: research probe access then Primitive Filtration; research bulk processing for boxed recipes; execute all five recipes.
 -- run: scheduled input feeds every 60 ticks, exact 20-batch crude recovery budget.
 -- expect: deterministic slurry/salt outputs, bounded random minerals, boxed parity,
 -- research gates, no productivity, and no planet restrictions.
@@ -29,6 +29,14 @@ script.on_nth_tick(1,function()
   check(tech.prerequisites['nullius-probe-fulgora']~=nil,'probe prerequisite')
   check(not force.recipes['nullius-crude-sludge-filtration'].enabled,'probe unlocked filtration')
   tech.researched=true
+  check(not prototypes.recipe['nullius-boxed-crude-sludge-filtration'],'boxed crude filtration must not exist')
+  check(not force.recipes['nullius-box-ice'].enabled and not force.recipes['nullius-unbox-ice'].enabled,
+    'ice packaging unlocked before Packaging 3')
+  local function research_closure(technology)
+    if technology.researched then return end
+    for _,prerequisite in pairs(technology.prerequisites) do research_closure(prerequisite) end
+    technology.researched=true
+  end
   storage.rows={}
   local cell=0
   for _,boxed in ipairs({false,true}) do
@@ -36,7 +44,26 @@ script.on_nth_tick(1,function()
     local scale=boxed and 5 or 1
     local function item(name) return boxed and 'nullius-box-'..name or
       (name=='stone' and 'stone' or 'nullius-'..name) end
-    for _,kind in ipairs({'hydrocarbon-slurry-filtration','crude-sludge-filtration','salt-disposal'}) do
+    local kinds=boxed and {'hydrocarbon-slurry-filtration','salt-disposal'} or
+      {'hydrocarbon-slurry-filtration','crude-sludge-filtration','salt-disposal'}
+    if boxed then
+      for _,kind in ipairs(kinds) do check(not force.recipes[prefix..kind].enabled,'boxed recipe unlocked early') end
+      research_closure(force.technologies['nullius-mass-production-4'])
+      check(not force.recipes['nullius-boxed-hydrocarbon-slurry-filtration'].enabled,'generic mass production unlocked slurry')
+      research_closure(force.technologies['nullius-bulk-slurry-filtration'])
+      local em=false
+      for _,ingredient in pairs(force.technologies['nullius-bulk-slurry-filtration'].research_unit_ingredients) do
+        if ingredient.name=='nullius-electromagnetic-pack' then em=true end
+      end
+      check(em,'slurry research requires EM science')
+      check(force.technologies['nullius-packaging-3'].researched,'bulk gate must include Packaging 3')
+      for _,product in ipairs({'ice','salt','graphite','mineral-dust'}) do
+        for _,action in ipairs({'box','unbox'}) do
+          check(force.recipes['nullius-'..action..'-'..product].enabled,'missing packaging '..action..' '..product)
+        end
+      end
+    end
+    for _,kind in ipairs(kinds) do
       local name=prefix..kind
       check(force.recipes[name].enabled,'missing unlock '..name)
       local recipe=prototypes.recipe[name]

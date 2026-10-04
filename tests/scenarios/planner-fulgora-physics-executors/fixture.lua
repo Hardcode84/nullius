@@ -32,6 +32,8 @@ return {
     "nullius-braking-5",
     "nullius-broadcasting-1",
     "nullius-broadcasting-2",
+    "nullius-bulk-hydrocarbon-cracking",
+    "nullius-bulk-slurry-filtration",
     "nullius-carbon-sequestration-1",
     "nullius-carbon-sequestration-2",
     "nullius-casting-productivity-1",
@@ -1997,6 +1999,54 @@ return {
       ingredients = {
         {
           amount = 20,
+          name = "nullius-crushed-bauxite",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-crushed-bauxite",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-crushed-bauxite",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-crushed-iron-ore",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-crushed-iron-ore",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-crushed-iron-ore",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
           name = "nullius-glass",
           type = "item",
         },
@@ -2261,6 +2311,30 @@ return {
       ingredients = {
         {
           amount = 20,
+          name = "stone",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-stone",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-stone",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
           name = "express-underground-belt",
           type = "item",
         },
@@ -2512,61 +2586,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-caustic-solution",
       seconds_per_cycle = 2.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 250,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-hydro-plant-2",
-      outputs = {
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-crushed-iron-ore",
-          type = "item",
-        },
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-crushed-bauxite",
-          type = "item",
-        },
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-        {
-          amount = 3,
-          independent_probability = 0.25,
-          name = "nullius-box-gypsum",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-crude-sludge-filtration",
-      seconds_per_cycle = 5.0,
     },
     {
       cycles = 5,
@@ -2841,30 +2860,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-glycerol",
       seconds_per_cycle = 2.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-box-gravel",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-gravel",
-      seconds_per_cycle = 1.25,
     },
     {
       cycles = 5,
@@ -9372,30 +9367,6 @@ return {
       },
       productivity = 0,
       recipe = "nullius-unbox-geology-pack",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "nullius-box-gypsum",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-gypsum",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-gypsum",
       seconds_per_cycle = 0.4,
     },
     {
