@@ -298,7 +298,7 @@ Design change pending: move boxed recipe unlocks from Primitive Filtration to
 much later mass-production research.
 Salt and ice come directly from slurry. They supply hydrochloric acid without
 mineral recovery. Crude filtration supplies the first gypsum without acid.
-Selective gypsum recovery uses hydrochloric acid; it needs no sulfuric acid.
+Selective gypsum recovery uses oxygen from water electrolysis; it needs no acid.
 Cracking supplies organic feedstocks and graphite for metal smelting.
 
 Planner capacity at 60 climatology packs/min, with tier-1 machines:
@@ -405,7 +405,7 @@ After research, use separate recovery lines to adjust the material mix. Existing
 | Bauxite | Sulfuric acid | 8 crushed bauxite + 4 sand |
 | Sand | Hydrochloric acid | 8 sand + 4 crushed iron ore |
 | Limestone | Soda ash + freshwater | 8 calcium carbonate + 4 crushed bauxite |
-| Gypsum | 180 hydrochloric acid | 8 gypsum + 4 sand; also 150 wastewater |
+| Gypsum | 180 oxygen | 8 gypsum + 4 sand; also 150 wastewater |
 
 Prioritize recovered wastewater and sludge before fresh extraction. Send surplus
 iron through gravel to mineral dust; bauxite and calcium carbonate can become
@@ -414,7 +414,7 @@ route. This changes the output mix at a reagent and energy cost. Fixed ratios
 remain within each recipe; include all surplus outputs in the material balance.
 Keep paired recovery outputs. Recycle the unwanted output through dust and
 sludge. Dissolution acid must not depend on that mineral pair: salt and ice
-supply hydrochloric acid; gypsum recovery with hydrochloric acid supplies sulfur.
+supply hydrochloric acid; gypsum recovery with oxygen supplies sulfur.
 The acid contract is `tests/progression/fulgora-independent-acids.args`. It assumes
 Waste Reclamation and Limestone Processing 2, powered starter machines, and
 supplied salt, ice, and sludge. It proves an acid route without mineral inputs;
@@ -428,7 +428,7 @@ The research boundary is checked with Nauvis inputs; Fulgora still needs a plann
 balance for local supplies, outputs, reagents, and recycle streams.
 
 Crude sludge filtration supplies gypsum without acid. Selective recovery uses
-hydrochloric acid from salt and water. Existing
+oxygen from water electrolysis. Existing
 recipes provide `2 gypsum -> 1 lime + 10 SO2`, then
 `8 SO2 + 16 water + 4 oxygen -> 20 sulfuric acid`. Decomposition unlocks at
 limestone processing 2, before chemical science; a boxed recipe also exists.

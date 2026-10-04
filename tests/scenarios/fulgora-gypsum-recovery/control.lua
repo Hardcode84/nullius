@@ -1,6 +1,6 @@
--- given: one ordinary/boxed batch: 200/1000 sludge and 180/900 hydrochloric acid.
+-- given: one ordinary/boxed batch: 200/1000 sludge and 180/900 oxygen.
 -- place/connect: flotation cell 1, two input pipes and a wastewater pipe bank per cell.
--- act: unlock Waste Reclamation; connect acid at tick 600 on Fulgora.
+-- act: unlock Waste Reclamation; connect oxygen at tick 600 on Fulgora.
 -- run: finite reagent feeds and explicit 10 MW electric grids.
 -- expect: 8 gypsum and 4 sand items/boxes, 150/750 wastewater, no early craft.
 local CASE='fulgora-gypsum-recovery'
@@ -58,8 +58,8 @@ script.on_nth_tick(30,function()
   end
   for _,row in ipairs(storage.rows) do
     if game.tick==600 then
-      check(row.machine.products_finished==0,'must wait for acid connection')
-      row.feeds[#row.feeds+1]={pipe=build(storage.surface,storage.force,'pipe',row.x-2.5,-0.5),name='nullius-acid-hydrochloric',left=180*row.scale}
+      check(row.machine.products_finished==0,'must wait for oxygen connection')
+      row.feeds[#row.feeds+1]={pipe=build(storage.surface,storage.force,'pipe',row.x-2.5,-0.5),name='nullius-oxygen',left=180*row.scale}
     end
     for _,feed in ipairs(row.feeds) do
       if feed.left>0 then feed.left=feed.left-feed.pipe.insert_fluid{name=feed.name,amount=feed.left} end

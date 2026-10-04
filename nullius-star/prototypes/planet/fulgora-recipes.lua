@@ -54,7 +54,7 @@ for _,boxed in ipairs({false,true}) do
     icons=table.deepcopy(data.raw.item["nullius-gypsum"].icons),
     subgroup="waste-management", order="nullius-fulgora-gypsum-recovery"..(boxed and "-boxed" or ""),
     enabled=false, categories={"ore-flotation"}, energy_required=20*scale,
-    ingredients={fluid("sludge",200),fluid("acid-hydrochloric",180)},
+    ingredients={fluid("sludge",200),fluid("oxygen",180)},
     results={item("gypsum",8),item("sand",4),fluid("wastewater",150)},
     main_product=boxed and "nullius-box-gypsum" or "nullius-gypsum",
     allow_productivity=false, no_productivity=true,
