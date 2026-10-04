@@ -797,6 +797,23 @@ Argon is available through local residual-gas separation. Sand and sulfuric acid
 supply rutile. Borate leaching supplies boric acid. All materials for physics
 and process construction are locally available in the declared research model.
 
+### Building bootstrap
+
+`tools/audit_factorio_building_bootstrap.py` with
+`tests/progression/fulgora-building-bootstrap.json` checks the wreck fleet,
+physics-plan machines, logistics, power equipment, and checkpoint materials.
+Pass a fresh factory plan with `--plan` and an output path with `--output`.
+All 88 targets pass, including 63 placeable items. Research and crafting machines
+become available in dependency order; no later machine is supplied as a seed.
+
+Extractor construction needs a well item, but does not need to place the well.
+Water canisters come from burning hydrogen canisters in a compatible vehicle.
+Construction-only relays use the normal relay item.
+
+This checks material and research order with external electricity and manual
+surplus disposal. Crude filtration permits probabilistic drops. It does not
+measure finite starter quantities, checkpoint actions, or power supply.
+
 ### Factory capacity
 
 The following case uses only local slurry and assumes research checkpoints are

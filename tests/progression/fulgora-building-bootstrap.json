@@ -1,0 +1,292 @@
+{
+  "stage": "first-physics",
+  "research_roots": [
+    "nullius-physics"
+  ],
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "surface": {
+    "pressure": 800,
+    "magnetic-field": 99,
+    "nullius-ambient-temperature": 25
+  },
+  "character": "character",
+  "raw": {
+    "nullius-hydrocarbon-slurry": {"resource": "nullius-hydrocarbon-vent", "machine": "nullius-extractor-1"}
+  },
+  "starter_items": [
+    "nullius-extractor-1",
+    "nullius-hydro-plant-1",
+    "nullius-distillery-1",
+    "nullius-air-filter-1",
+    "nullius-chemical-plant-1",
+    "nullius-electrolyzer-1",
+    "nullius-crusher-1",
+    "nullius-small-furnace-1",
+    "nullius-medium-furnace-1",
+    "nullius-foundry-1",
+    "nullius-small-assembler-1",
+    "nullius-flotation-cell-1",
+    "nullius-combustion-chamber-1",
+    "nullius-chimney-1",
+    "nullius-lab-1"
+  ],
+  "forbid_categories": [
+    "water-pumping",
+    "seawater-pumping",
+    "nullius-liquid-void"
+  ],
+  "probabilistic_recipes": [
+    "nullius-crude-sludge-filtration",
+    "nullius-boxed-crude-sludge-filtration"
+  ],
+  "checkpoint_products": {
+    "nullius-checkpoint-aluminum-carbide": [
+      [
+        "nullius-aluminum-carbide"
+      ]
+    ],
+    "nullius-checkpoint-battery": [
+      [
+        "nullius-battery-1"
+      ]
+    ],
+    "nullius-checkpoint-bauxite": [
+      [
+        "nullius-crushed-bauxite"
+      ]
+    ],
+    "nullius-checkpoint-benzene": [
+      [
+        "nullius-benzene"
+      ]
+    ],
+    "nullius-checkpoint-ceramic-powder": [
+      [
+        "nullius-ceramic-powder"
+      ]
+    ],
+    "nullius-checkpoint-chemical-engineering": [
+      [
+        "nullius-chemical-plant-2"
+      ]
+    ],
+    "nullius-checkpoint-compressed-nitrogen": [
+      [
+        "nullius-compressed-nitrogen"
+      ]
+    ],
+    "nullius-checkpoint-concrete": [
+      [
+        "concrete"
+      ]
+    ],
+    "nullius-checkpoint-construction-robot": [
+      [
+        "nullius-construction-bot-1"
+      ],
+      [
+        "nullius-relay-2"
+      ]
+    ],
+    "nullius-checkpoint-crushed-iron-ore": [
+      [
+        "nullius-crushed-iron-ore"
+      ]
+    ],
+    "nullius-checkpoint-exploration": [
+      [
+        "nullius-scout-drone-1"
+      ]
+    ],
+    "nullius-checkpoint-explosive": [
+      [
+        "cliff-explosives"
+      ]
+    ],
+    "nullius-checkpoint-freight-logistics": [
+      [
+        "nullius-locomotive-1"
+      ],
+      [
+        "train-stop"
+      ],
+      [
+        "rail"
+      ]
+    ],
+    "nullius-checkpoint-freight-transportation": [
+      [
+        "nullius-hydrogen-canister"
+      ],
+      [
+        "nullius-water-canister"
+      ]
+    ],
+    "nullius-checkpoint-heat-pipe": [
+      [
+        "nullius-heat-pipe-1"
+      ]
+    ],
+    "nullius-checkpoint-iron-ore": [
+      [
+        "nullius-crushed-iron-ore"
+      ]
+    ],
+    "nullius-checkpoint-lab-2": [
+      [
+        "nullius-lab-2"
+      ]
+    ],
+    "nullius-checkpoint-large-beacon": [
+      [
+        "nullius-large-beacon-1"
+      ],
+      [
+        "nullius-beacon-2"
+      ]
+    ],
+    "nullius-checkpoint-large-furnace": [
+      [
+        "nullius-box-iron-ingot"
+      ]
+    ],
+    "nullius-checkpoint-large-tank": [
+      [
+        "nullius-large-tank-2"
+      ]
+    ],
+    "nullius-checkpoint-limestone": [
+      [
+        "nullius-crushed-limestone"
+      ]
+    ],
+    "nullius-checkpoint-logistic-robot": [
+      [
+        "nullius-logistic-bot-1"
+      ],
+      [
+        "nullius-small-supply-chest-1"
+      ]
+    ],
+    "nullius-checkpoint-logistic-robot-2": [
+      [
+        "nullius-logistic-bot-1"
+      ],
+      [
+        "nullius-charger-2"
+      ],
+      [
+        "nullius-small-demand-chest-1"
+      ]
+    ],
+    "nullius-checkpoint-logistics-2": [
+      [
+        "bulk-inserter"
+      ],
+      [
+        "express-underground-belt"
+      ]
+    ],
+    "nullius-checkpoint-monocrystalline-silicon": [
+      [
+        "nullius-monocrystalline-silicon"
+      ]
+    ],
+    "nullius-checkpoint-optimization": [
+      [
+        "nullius-haste-module-1"
+      ],
+      [
+        "nullius-efficiency-module-1"
+      ]
+    ],
+    "nullius-checkpoint-plumbing": [
+      [
+        "nullius-pump-1"
+      ],
+      [
+        "nullius-medium-tank-2"
+      ],
+      [
+        "nullius-one-way-valve"
+      ]
+    ],
+    "nullius-checkpoint-productivity-module": [
+      [
+        "nullius-productivity-module-1"
+      ]
+    ],
+    "nullius-checkpoint-propene": [
+      [
+        "nullius-propene"
+      ]
+    ],
+    "nullius-checkpoint-robotics": [
+      [
+        "nullius-hangar-1"
+      ],
+      [
+        "nullius-robot-frame-1"
+      ]
+    ],
+    "nullius-checkpoint-sandstone": [
+      [
+        "nullius-sand"
+      ]
+    ],
+    "nullius-checkpoint-sensor": [
+      [
+        "nullius-sensor-1"
+      ]
+    ],
+    "nullius-checkpoint-soda-ash": [
+      [
+        "nullius-soda-ash"
+      ]
+    ],
+    "nullius-checkpoint-stirling-engine": [
+      [
+        "nullius-stirling-engine-2"
+      ]
+    ],
+    "nullius-checkpoint-substation": [
+      [
+        "nullius-substation-2"
+      ]
+    ],
+    "nullius-checkpoint-titanium-ingot": [
+      [
+        "nullius-titanium-ingot"
+      ]
+    ],
+    "nullius-checkpoint-truck": [
+      [
+        "nullius-truck-1"
+      ]
+    ],
+    "nullius-checkpoint-volcanic-gas": [
+      [
+        "nullius-hydrocarbon-slurry"
+      ]
+    ]
+  },
+  "extra_targets": [
+    "small-electric-pole",
+    "big-electric-pole",
+    "pipe",
+    "pipe-to-ground",
+    "inserter",
+    "transport-belt",
+    "splitter",
+    "underground-belt",
+    "wooden-chest",
+    "iron-chest",
+    "nullius-small-tank-1",
+    "nullius-one-way-valve",
+    "nullius-grid-battery-1",
+    "nullius-grounding-coil",
+    "nullius-extractor-1"
+  ]
+}
