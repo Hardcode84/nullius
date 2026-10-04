@@ -72,9 +72,9 @@ local function check_replacement_statistics()
     script.on_nth_tick(2000, nil)
     check(force.technologies["nullius-checkpoint-furnace"].researched,
       "scheduled checkpoint polling did not complete the furnace checkpoint")
-    for _, name in ipairs({"iron-ore","bauxite"}) do
+    for _, name in ipairs({"iron-ore","bauxite","volcanic-gas"}) do
       check(force.technologies["nullius-checkpoint-"..name].researched,
-        "scheduled crushed-only checkpoint did not complete: "..name)
+        "scheduled local-resource checkpoint did not complete: "..name)
     end
     finish({surfaces = {nauvis.name, vulcanus.name, "nullius-fulgora"},
       adjustment_tick = storage.adjustment_tick,
@@ -136,6 +136,9 @@ script.on_nth_tick(1, function()
   check(close(progress(force, "water"), 1),
     "fluid consumption checkpoint did not aggregate surfaces")
 
+  local fulgora = game.planets["nullius-fulgora"].surface or
+    game.planets["nullius-fulgora"].create_surface()
+  local fulgora_fluids = force.get_fluid_production_statistics(fulgora)
   local gas = "nullius-volcanic-gas"
   local compressed = "nullius-compressed-volcanic-gas"
   split_statistic(nauvis_fluids, gas, 0, 0)
@@ -166,6 +169,30 @@ script.on_nth_tick(1, function()
   split_statistic(vulcanus_fluids, compressed, 750, 0)
   check(close(progress(force, "volcanic-gas"), 1),
     "volcanic gas analysis did not aggregate compressed gas across surfaces")
+
+  -- given: slurry production on Fulgora, with no gas production elsewhere.
+  split_statistic(nauvis_fluids, compressed, 0, 0)
+  split_statistic(vulcanus_fluids, compressed, 0, 0)
+  local slurry = "nullius-hydrocarbon-slurry"
+  split_statistic(fulgora_fluids, slurry, 0, 9000)
+  check(close(progress(force, "volcanic-gas"), 0),
+    "subsurface extraction counted slurry consumption")
+  split_statistic(fulgora_fluids, slurry, 4999, 9000)
+  check(close(progress(force, "volcanic-gas"), 4999 / 5000),
+    "subsurface extraction has the wrong slurry weight below threshold")
+  split_statistic(fulgora_fluids, slurry, 5000, 9000)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "subsurface extraction rejected 5000 slurry")
+  split_statistic(fulgora_fluids, slurry, 2000, 9000)
+  split_statistic(nauvis_fluids, gas, 1000, 0)
+  split_statistic(vulcanus_fluids, compressed, 500, 0)
+  check(close(progress(force, "volcanic-gas"), 1),
+    "subsurface extraction did not combine all three alternatives across surfaces")
+  -- act/run/expect: let normal polling complete the slurry-only checkpoint.
+  split_statistic(nauvis_fluids, gas, 0, 0)
+  split_statistic(vulcanus_fluids, compressed, 0, 0)
+  split_statistic(fulgora_fluids, slurry, 5000, 9000)
+  research_prerequisites(force.technologies["nullius-checkpoint-volcanic-gas"])
 
   split_statistic(nauvis_items, "nullius-limestone", 0, 0)
   split_statistic(nauvis_items, "nullius-crushed-limestone", 319, 0)
@@ -223,8 +250,6 @@ script.on_nth_tick(1, function()
 
   -- given: declared production/consumption histories on Nauvis and Fulgora.
   -- act/expect: crushed-only thresholds, mixed resources, and consumption exclusion.
-  local fulgora = game.planets["nullius-fulgora"].surface or
-    game.planets["nullius-fulgora"].create_surface()
   local fulgora_items = force.get_item_production_statistics(fulgora)
   for _, row in ipairs({
     {checkpoint="iron-ore", raw="iron-ore", crushed="nullius-crushed-iron-ore",
@@ -297,7 +322,7 @@ script.on_nth_tick(1, function()
   local checkpoint = force.technologies["nullius-checkpoint-furnace"]
   research_prerequisites(checkpoint)
   -- given: prerequisites are researched, but each tested checkpoint is pending.
-  for _, name in ipairs({"furnace", "iron-ore", "bauxite"}) do
+  for _, name in ipairs({"furnace", "iron-ore", "bauxite", "volcanic-gas"}) do
     local pending = force.technologies["nullius-checkpoint-"..name]
     pending.researched = false
     check(not pending.researched, name.." checkpoint completed before polling")

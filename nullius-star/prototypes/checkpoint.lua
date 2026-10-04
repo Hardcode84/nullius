@@ -674,11 +674,9 @@ data:extend({
   {
     type = "technology",
     name = "nullius-checkpoint-volcanic-gas",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-analysis",
-	    {"fluid-name.nullius-volcanic-gas"}}},
-    localised_description = {"technology-description.nullius-produce",
-	    {"technology-description.nullius-fluid-compressible", tostring(5000), "nullius-volcanic-gas",
-            "nullius-compressed-volcanic-gas", {"fluid-name.nullius-volcanic-gas"}}},
+    localised_name = {"technology-name.nullius-checkpoint",
+        {"technology-name.nullius-subsurface-fluid-extraction"}},
+    localised_description = {"technology-description.nullius-subsurface-fluid-extraction"},
     order = "nullius-yd",
     icons = {
       {

@@ -52,7 +52,8 @@ local checkpoint_data = {
 			{ CHK_BUILD, STT_NET, 3, {{"nullius-one-way-valve"}} }},
 
   ["volcanic-gas"] = {{ CHK_FLUID, STT_PRODUCE, 5000,
-            {{"nullius-volcanic-gas"}, {"nullius-compressed-volcanic-gas", 4}} }},
+            {{"nullius-volcanic-gas"}, {"nullius-compressed-volcanic-gas", 4},
+             {"nullius-hydrocarbon-slurry"}} }},
   ["lab"] = {{ CHK_BUILD, STT_NET, 3, {{"nullius-lab-1"}} }},
   ["sensor"] = {{ CHK_ITEM, STT_CONSUME, 100, {{"nullius-sensor-1"}} }},
   ["freight-logistics"] = {{ CHK_BUILD, STT_NET, 1, {{"nullius-locomotive-1"}} },

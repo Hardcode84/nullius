@@ -162,6 +162,7 @@ allocation cannot support this batch with arrival recipes. Allowing more filtere
 hydrocarbon storage makes it feasible; the fixed-fleet work bound is 260.1 min
 at 100% yield. This is not a progression schedule with expansion and recipe upgrades.
 No zero-liquid-surplus solution exists for these targets at the arrival boundary.
+Players can manually delete excess fluid until automated disposal is available.
 
 ### Mineral recovery comparison
 
@@ -772,14 +773,13 @@ Factorio 2.1.20; fresh resolved prototypes. Repeat with
 `tools/plan_factorio_factory.py`. Use `tools/analyze_fulgora_industry.py` for
 machine, material, and power details. The factory skill lists the commands.
 
-| Blocker | Cause | Required change |
-|---|---|---|
-| Volcanic gas checkpoint | Requires 5000 gas or 1250 compressed gas. No local source is available before this checkpoint. | Add a local equivalent. Checkpoints sum all force surfaces; Nauvis production can mask the failure. |
-| Initial liquid storage | The fixed arrival fleet, recipes, and tank allocation cannot supply extractor research. | Establish the disposal unlock order or build more storage. Extra hydrocarbon storage alone gives a 260.1-minute fixed-fleet work bound. |
+Subsurface fluid extraction accepts 5000 slurry or volcanic gas, or 1250
+compressed volcanic gas. Mixed production counts proportionally across all force
+surfaces. Slurry extraction satisfies the local gate before Climatology 2 →
+Water Filtration 3 → Distillation 2 → Sulfur Processing 1 → Waste Reclamation.
 
-The checkpoint blocks Climatology 2 → Water Filtration 3 → Distillation 2 →
-Sulfur Processing 1 → Waste Reclamation. Trace separation produces volcanic gas,
-but Air Separation 3 requires the same checkpoint. It cannot bypass the gate.
+Players can manually delete excess fluid during startup. Storage pressure is
+not a progression blocker. No-void checks assess automated waste handling.
 
 The fixed-arrival batch model also cannot supply Water Filtration 3,
 Distillation 2, Limestone Processing 2, or Waste Reclamation within the starter
@@ -799,7 +799,7 @@ and process construction are locally available in the declared research model.
 ### Factory capacity
 
 The following case uses only local slurry and assumes research checkpoints are
-complete. Checkpoint and startup constraints still prevent a progression proof.
+complete. It does not prove the order of research and factory construction.
 Targets are equal rates of geology, climatology, mechanical, electrical, chemical, physics, and EM packs.
 EM production is included for planet development; the ordinary physics unlock
 does not require EM packs. The catalog uses tier-1 extractors, tier-1/2 processing,
@@ -815,7 +815,7 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 Research after Primitive Filtration: 58,626 geology, 57,594 climatology,
 55,951 mechanical, 51,477 electrical, and 47,342 chemical packs. Times assume
 all lines operate from the start. They exclude construction, checkpoint work,
-transport, and power interruptions. Actual local completion is blocked above.
+transport, and power interruptions. They are not arrival-to-physics timings.
 
 At 60/min: 174 extractors, 96 distilleries, 86 hydro plants, 55 medium furnaces,
 50 electrolyzers, 56 chemical plants, 40 air filters, and 40 labs, plus assembly
