@@ -195,7 +195,7 @@
       ]
     },
     {
-      "name": "physics-with-boric-acid-overcharged-2",
+      "name": "physics-overcharged-2",
       "products": {
         "nullius-chemical-pack": 1,
         "nullius-geology-pack": 1,
@@ -248,9 +248,6 @@
         "nullius-small-assembler-2-overcharged",
         "nullius-medium-assembler-2-overcharged",
         "nullius-large-assembler-1-overcharged"
-      ],
-      "raw": [
-        "nullius-acid-boric"
       ]
     }
   ],
@@ -296,9 +293,10 @@
       ]
     },
     "factory_stages": [
+      "first-physics",
       "pre-physics-science",
       "physics-with-supplied-boric-acid",
-      "physics-with-boric-acid-overcharged-2"
+      "physics-overcharged-2"
     ]
   }
 }

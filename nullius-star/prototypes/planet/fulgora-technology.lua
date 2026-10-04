@@ -1,3 +1,8 @@
+for _,name in ipairs({"nullius-borate-leaching","nullius-boxed-borate-leaching"}) do
+  table.insert(data.raw.technology["nullius-waste-reclamation"].effects,
+    {type="unlock-recipe",recipe=name})
+end
+
 local function overcharged(tier, count, seconds, ingredients, prerequisites)
   local description = {"technology-description.nullius-overcharged-assembly-" .. tier}
   return {

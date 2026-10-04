@@ -1,4 +1,4 @@
--- Cold data-stage path: probe-era separation, before selective recovery research.
+-- Cold data-stage path: slurry separation and selective mineral recovery.
 local modern = require("factorio-version").is_2_1
 local probability = modern and "independent_probability" or "probability"
 local unlocks = {}
@@ -47,6 +47,19 @@ for _,boxed in ipairs({false,true}) do
   end
   add("crude-sludge-filtration","nullius-water-treatment",2*scale,
     {fluid("sludge",50)},minerals,"__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  local leaching = {
+    type="recipe", name="nullius-"..(boxed and "boxed-" or "").."borate-leaching",
+    localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name.nullius-borate-leaching"}}
+      or {"recipe-name.nullius-borate-leaching"},
+    icons=table.deepcopy(data.raw.item["nullius-acid-boric"].icons),
+    subgroup="waste-management", order="nullius-fulgora-borate-leaching"..(boxed and "-boxed" or ""),
+    enabled=false, categories={"basic-chemistry"}, energy_required=10*scale,
+    ingredients={fluid("sludge",100),fluid("acid-sulfuric",20),fluid("water",20)},
+    results={item("acid-boric",1),item("gypsum",1),fluid("wastewater",80)},
+    main_product=boxed and "nullius-box-acid-boric" or "nullius-acid-boric",
+    allow_productivity=false, no_productivity=true,
+  }
+  data:extend({leaching})
   add("salt-disposal","ore-crushing",scale,
     {item("salt",1)},{item("mineral-dust",1)},
     "__angelssmeltinggraphics__/graphics/icons/powder-tungsten.png",boxed)

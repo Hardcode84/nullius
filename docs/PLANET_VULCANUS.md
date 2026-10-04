@@ -454,9 +454,9 @@ for Nauvis climatology 2. These are gross recipe inputs, including circulation.
 
 | Packs/min each | Stations | Labs | Fuel gas/min | Process heat MW | Supply hours | Scheduled hours |
 |---:|---:|---:|---:|---:|---:|---:|
-| 60 | 903 | 40 | 427,427 | 141.82 | 16.358 | 16.410 |
-| 120 | 1531 | 80 | 854,853 | 283.63 | 8.179 | 8.205 |
-| 240 | 2797 | 160 | 1,709,707 | 567.26 | 4.090 | 4.103 |
+| 60 | 895 | 40 | 431,958 | 136.59 | 16.358 | 16.410 |
+| 120 | 1518 | 80 | 863,916 | 273.19 | 8.179 | 8.205 |
+| 240 | 2776 | 160 | 1,727,832 | 546.37 | 4.090 | 4.103 |
 
 Research for the 120/min factory, including selected recipe and construction unlocks:
 

@@ -1,4 +1,4 @@
--- given: declared pre-physics research and recipe inputs, including boric acid.
+-- given: declared pre-physics research and isolated recipe inputs, including local borate leaching.
 -- place/connect: isolated recipe stations and explicit electric grids on Fulgora properties.
 -- act/run: execute the fixture batches; transfer crafted physics boxes to unpacking.
 -- expect: compatible recipes complete; deterministic outputs and productivity match.

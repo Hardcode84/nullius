@@ -297,7 +297,9 @@ python tools/plan_factorio_bootstrap.py \
 ## Fulgora through physics
 
 `fulgora-science-scale.json` checks local physics, the preceding science factory,
-and explicit boric-acid supply cases at 30, 60, 120, and 240 packs/min.
+local tier-2 overcharged assembly, and a supplied-boric-acid reference at
+30, 60, 120, and 240 packs/min. Borate leaching closes the local material route;
+checkpoint completion remains a separate contract.
 `expected_recipes` permits mean independent drops only for the named crude
 filtration recipes. All other uncertain outputs retain the guaranteed policy.
 The report separates expected-output recipes from guaranteed-output recipes.
@@ -307,7 +309,7 @@ stages are listed in `science_analysis.infeasible_stages`.
 ```bash
 python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-science-scale.json --output /tmp/fulgora-science.json --overview
 python tools/analyze_fulgora_industry.py --plan /tmp/fulgora-science.json --output /tmp/fulgora-industry.json --table
-python tools/analyze_fulgora_industry.py --read-report /tmp/fulgora-industry.json --output /tmp/fulgora-industry.json --stage physics-with-supplied-boric-acid --rate 60 --field machines
+python tools/analyze_fulgora_industry.py --read-report /tmp/fulgora-industry.json --output /tmp/fulgora-industry.json --stage first-physics --rate 60 --field machines
 ```
 
 The industry report requires a fresh matching prototype dump. It reports gross

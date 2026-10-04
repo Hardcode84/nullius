@@ -1769,6 +1769,50 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 100,
+          name = "nullius-sludge",
+          type = "fluid",
+        },
+        {
+          amount = 20,
+          name = "nullius-acid-sulfuric",
+          type = "fluid",
+        },
+        {
+          amount = 20,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-chemical-plant-2",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-acid-boric",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-gypsum",
+          type = "item",
+        },
+        {
+          amount = 80,
+          name = "nullius-wastewater",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-borate-leaching",
+      seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 4,
           name = "nullius-acid-boric",
           type = "item",
@@ -5807,7 +5851,7 @@ return {
           type = "item",
         },
       },
-      machine = "nullius-large-assembler-1",
+      machine = "nullius-small-assembler-1-overcharged",
       outputs = {
         {
           amount = 2,
@@ -5815,9 +5859,9 @@ return {
           type = "item",
         },
       },
-      productivity = 0,
+      productivity = 0.2,
       recipe = "nullius-insulation",
-      seconds_per_cycle = 1.5,
+      seconds_per_cycle = 12.0,
     },
     {
       cycles = 5,

@@ -349,6 +349,16 @@ chemical science. Select earlier local unlocks before these are bootstrap routes
 Local salt dissolution uses pure water. Existing salination produces seawater
 from freshwater and salt.
 
+Waste Reclamation unlocks borate leaching in chemical plant 1:
+
+| Input | Output | Time |
+|---|---|---|
+| 100 sludge + 20 sulfuric acid + 20 water | 1 boric acid + 1 gypsum + 80 wastewater | 10 s |
+
+Deep fluids carry fine borate minerals into the slurry; sludge retains them.
+The boxed recipe uses five times the fluids and time and returns one box of each
+solid. Both recipes work on all planets and exclude productivity.
+
 Sludge resource recovery is permitted. The metal recovery constraint applies to
 recycling shared replacement components, not to processing factory sludge.
 Mineral dust acid disposal returns sludge; it is not a final solid sink.
@@ -747,48 +757,47 @@ machine, material, and power details. The factory skill lists the commands.
 
 | Blocker | Cause | Required change |
 |---|---|---|
-| Boric acid | All ordinary and boxed producers require volcanic gas. Fulgora has no source. Glass and ceramics stop physics equipment production. | Add local pre-physics recovery, with a boxed recipe. |
 | Local checkpoints | Iron ore accepts raw ore or iron bloom; bauxite accepts raw ore or aluminum bloom; volcanic gas accepts ordinary or compressed gas. Slurry and crushed minerals do not count. | Add local equivalents. Checkpoints currently sum all force surfaces; Nauvis production can mask the failure. |
 | Initial liquid storage | Extractor research is infeasible with arrival recipes and starter tanks. | Establish the disposal unlock order. Extra hydrocarbon storage alone gives a 260.1-minute fixed-fleet work bound. |
 
 Argon is available through local residual-gas separation. Sand and sulfuric acid
-supply rutile. Neither needs an import. Without boric acid, local physics
-production is infeasible at every tested rate.
+supply rutile. Borate leaching supplies boric acid. All materials for physics
+and process construction are locally available in the declared research model.
 
 ### Factory capacity
 
-The following case **supplies boric acid** and assumes research checkpoints are
-complete. It is not a self-contained progression proof. Targets are equal rates
-of geology, climatology, mechanical, electrical, chemical, physics, and EM packs.
+The following case uses only local slurry and assumes research checkpoints are
+complete. Checkpoint and startup constraints still prevent a progression proof.
+Targets are equal rates of geology, climatology, mechanical, electrical, chemical, physics, and EM packs.
 EM production is included for planet development; the ordinary physics unlock
 does not require EM packs. The catalog uses tier-1 extractors, tier-1/2 processing,
 large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 
 | Packs/min each | Stations, including labs | Labs | Average demand | Installed demand | Research supply bound |
 |---:|---:|---:|---:|---:|---:|
-| 30 | 607 | 20 | 189 MW | 297 MW | 32.57 h |
-| 60 | 961 | 40 | 372 MW | 471 MW | 16.29 h |
-| 120 | 1,695 | 80 | 738 MW | 830 MW | 8.14 h |
-| 240 | 3,176 | 160 | 1,471 MW | 1,556 MW | 4.07 h |
+| 30 | 609 | 20 | 189 MW | 297 MW | 32.57 h |
+| 60 | 963 | 40 | 372 MW | 471 MW | 16.29 h |
+| 120 | 1,698 | 80 | 739 MW | 830 MW | 8.14 h |
+| 240 | 3,185 | 160 | 1,472 MW | 1,558 MW | 4.07 h |
 
 Research after Primitive Filtration: 58,626 geology, 57,594 climatology,
 55,951 mechanical, 51,477 electrical, and 47,342 chemical packs. Times assume
 all lines operate from the start. They exclude construction, checkpoint work,
 transport, and power interruptions. Actual local completion is blocked above.
 
-At 60/min: 171 extractors, 96 distilleries, 86 hydro plants, 57 medium furnaces,
-55 electrolyzers, 54 chemical plants, 40 air filters, and 40 labs, plus assembly
-and support. Gross flows: 102,210 slurry/min, 103,424 water/min, 96,688 oxygen/min.
-Boric-acid supply: 4.861/min for operation and 216.49 for process construction.
+At 60/min: 172 extractors, 96 distilleries, 86 hydro plants, 57 medium furnaces,
+54 electrolyzers, 55 chemical plants, 40 air filters, and 40 labs, plus assembly
+and support. Gross flows: 102,823 slurry/min, 101,669 water/min, 94,694 oxygen/min.
+Boric acid for operation and process construction comes from local sludge.
 Climatology alone uses 30 hydro plants, 300,000 air/min, and 6,000 slurry/min.
 
 The six-line case without physics needs 610 stations and 244 MW at 60/min.
 Allowing tier-2 overcharged machines across the seven-line factory reduces it to
-688 stations, but raises average demand to 1.65 GW and installed demand to
-9.84 GW. The solver minimizes active machine time, not electricity or rounded
+688 stations, but raises average demand to 1.67 GW and installed demand to
+10.02 GW. The solver minimizes active machine time, not electricity or rounded
 station count. Use overcharged modes selectively.
 
-Fresh Vulcanus reference: 903 stations at 60/min and 1,531 at 120/min; research
+Fresh Vulcanus reference: 895 stations at 60/min and 1,518 at 120/min; research
 supply bounds are 16.36 h and 8.18 h. That catalog uses pneumatic and thermal
 machines and includes metallurgic science instead of EM. Entrance research also
 differs. These are factory-scale references, not identical progression starts.
@@ -797,20 +806,21 @@ differs. These are factory-scale references, not identical progression starts.
 
 At 60/min, 316 MW is battery-compatible and 56 MW uses surge priority. Grid
 batteries cannot supply the surge load. The ideal full-strike requirement is
-111.6 tier-1 captures/min before clipping, grounding losses, and charge limits.
+111.7 tier-1 captures/min before clipping, grounding losses, and charge limits.
 To cover the battery-compatible load, a full tier-1 bank needs 633 batteries
 for a 30-second gap or 1,265 for 60 seconds. These gaps are sensitivity inputs,
 not measured storm intervals. Logistics and power infrastructure are excluded.
 
 Crude filtration uses mean independent yields. Other uncertain outputs use their
 guaranteed yields. All liquid and solid outputs balance through real recipes;
-there is no external waste sink. Process construction is feasible in the
-boric-acid case. The solve does not establish startup order, buffer capacity,
+there is no external waste sink. Process construction is feasible with
+local materials. The solve does not establish startup order, buffer capacity,
 vent availability, or a connected factory layout. Vents remain at 100% yield.
 
-Validation: 129 Python tests; native filtration, starter power, and 2,709
-executor assertions for the selected physics recipes. Executors use declared
-inputs and a continuous test grid at Fulgora surface properties. The starter
+Validation: native borate leaching checks both recipe sizes, the research gate,
+delayed water connection, exact outputs, and productivity restrictions. The
+physics executor fixture checks the selected local production recipes. Executors
+use declared inputs and a continuous test grid at Fulgora surface properties. The starter
 power test covers 500 kW, not this industrial load. To validate industrial
 throughput, place the selected factory and power network, supply finite starter
 stock, and measure production, storage, surge duty, and checkpoint completion.
