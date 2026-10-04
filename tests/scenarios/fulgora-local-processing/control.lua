@@ -94,7 +94,11 @@ script.on_nth_tick(60,function()
     local function equal(actual,expected,message) check(math.abs(actual-expected)<0.01,message..': '..actual) end
     equal(amount(row.water,'nullius-water'),15*row.scale,'net melting water')
     equal(amount({row.dissolve},'nullius-brine'),65*row.scale,'brine yield')
-    equal(amount(row.products,'nullius-methane'),60*row.scale,'methane yield')
+    local compressed=row.scale==5
+    equal(amount(row.products,compressed and 'nullius-compressed-methane' or 'nullius-methane'),
+      compressed and 75 or 60,'methane yield')
+    equal(amount(row.products,compressed and 'nullius-methane' or 'nullius-compressed-methane'),
+      0,'wrong methane form')
     equal(amount(row.products,'nullius-benzene'),12*row.scale,'benzene yield')
     equal(row.crack.get_item_count(row.item..'graphite'),2,'graphite yield')
     check(row.melt.get_item_count(row.item..'ice')==0 and row.dissolve.get_item_count(row.item..'salt')==0,'unconsumed inputs')

@@ -10,3 +10,5 @@ nullius-boxed-salt-dissolution
 nullius-hydrocarbon-cracking
 --describe-recipe
 nullius-boxed-hydrocarbon-cracking
+--describe-recipe
+nullius-decompress-methane

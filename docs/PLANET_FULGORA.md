@@ -293,6 +293,7 @@ boxed recipe.
 | Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
 
 Each research has 10 units at 45 seconds per unit.
+Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
 
 | Recipe | Input | Output | Time | Machine |
 |---|---|---|---|---|
@@ -886,9 +887,9 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 | Packs/min each | Stations, including labs | Labs | Average demand | Installed demand | Research supply bound |
 |---:|---:|---:|---:|---:|---:|
 | 30 | 604 | 20 | 187 MW | 293 MW | 32.57 h |
-| 60 | 956 | 40 | 368 MW | 465 MW | 16.29 h |
-| 120 | 1,688 | 80 | 731 MW | 820 MW | 8.14 h |
-| 240 | 3,168 | 160 | 1,456 MW | 1,541 MW | 4.07 h |
+| 60 | 955 | 40 | 367 MW | 464 MW | 16.29 h |
+| 120 | 1,686 | 80 | 728 MW | 818 MW | 8.14 h |
+| 240 | 3,164 | 160 | 1,451 MW | 1,537 MW | 4.07 h |
 
 Physics research alone after Primitive Filtration needs 58,126 geology, 56,594
 climatology, 55,451 mechanical, 50,977 electrical, and 46,341 chemical packs.
@@ -935,9 +936,9 @@ Boundary islands can extend outside the sample. Rocks are assumed cleared.
 | Packs/min each | Bare island machines | Full tier-1 batteries | Compact site | Roomy site |
 |---:|---:|---:|---:|---:|
 | 30 | 6,605 tiles | 318 | 23,254 tiles | 49,039 tiles |
-| 60 | 10,489 tiles | 625 | 37,768 tiles | 77,800 tiles |
-| 120 | 18,653 tiles | 1,238 | 67,932 tiles | 137,882 tiles |
-| 240 | 35,128 tiles | 2,466 | 128,765 tiles | 259,222 tiles |
+| 60 | 10,473 tiles | 625 | 37,723 tiles | 77,702 tiles |
+| 120 | 18,621 tiles | 1,238 | 67,842 tiles | 137,685 tiles |
+| 240 | 35,064 tiles | 2,466 | 128,585 tiles | 258,828 tiles |
 
 Both site estimates include batteries for a 30-second ordinary-load gap.
 Compact: one tile around each machine and 20% shared space.
@@ -965,9 +966,9 @@ python tools/analyze_fulgora_area.py --plan fulgora-area-plan.json --survey fulg
 
 ### Power and model boundaries
 
-At 60/min, 312 MW is battery-compatible and 56 MW uses surge priority. Grid
+At 60/min, 312 MW is battery-compatible and 55 MW uses surge priority. Grid
 batteries cannot supply the surge load. The ideal full-strike requirement is
-110.4 tier-1 captures/min before clipping, grounding losses, and charge limits.
+about 110 tier-1 captures/min before clipping, grounding losses, and charge limits.
 To cover the battery-compatible load, a full tier-1 bank needs 625 batteries
 for a 30-second gap or 1,249 for 60 seconds. These gaps are sensitivity inputs,
 not measured storm intervals. Logistics and power infrastructure are excluded.

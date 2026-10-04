@@ -2955,8 +2955,8 @@ return {
       machine = "nullius-distillery-2",
       outputs = {
         {
-          amount = 300,
-          name = "nullius-methane",
+          amount = 75,
+          name = "nullius-compressed-methane",
           type = "fluid",
         },
         {

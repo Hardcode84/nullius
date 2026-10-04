@@ -88,7 +88,8 @@ for _,boxed in ipairs({false,true}) do
     "__nullius-star__/graphics/icons/salt.png",boxed)
   add("hydrocarbon-cracking","distillation",4*scale,
     {fluid("filtered-hydrocarbons",50)},
-    {fluid("methane",60),fluid("benzene",12),item("graphite",2)},
+    {fluid(boxed and "compressed-methane" or "methane",boxed and 15 or 60),
+      fluid("benzene",12),item("graphite",2)},
     "__base__/graphics/icons/fluid/heavy-oil.png",boxed)
   add("climatology-pack-fulgora","nullius-water-treatment",60*scale,
     {fluid("air",5000),fluid("hydrocarbon-slurry",100)},
