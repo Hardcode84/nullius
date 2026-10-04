@@ -1,0 +1,21 @@
+{
+  "stage": "first-physics",
+  "minimum_island_tiles": 256,
+  "block_size": 32,
+  "battery": "nullius-grid-battery-1",
+  "storage_seconds": 30,
+  "layouts": {
+    "compact": {"machine_margin": 1, "shared_space_fraction": 0.2},
+    "roomy": {"machine_margin": 2, "shared_space_fraction": 0.35}
+  },
+  "power_reference": {"pylons": 256, "columns": 16, "pitch": 24, "coils": 32},
+  "assumptions": [
+    "Seven science packs at the stated rate each, including physics and electromagnetic science; all pre-physics routes available; no modules or beacons.",
+    "Resolved collision boxes rounded up to tile footprints. Machine margins allow local pipes, belts and inserters. Shared space reserves allow corridors, buffers and stations; these are layout assumptions, not a routed blueprint.",
+    "Tier-1 batteries start full and cover a 30-second gap for ordinary loads only. Batteries are packed without per-machine margins; shared space reserves still apply.",
+    "Island area excludes sediment. Rocks can be cleared. Cliff-free area conservatively subtracts cliff bounding boxes; clearable area assumes cliff explosives.",
+    "32x32 blocks are disjoint squares on a fixed grid. Boundary islands are truncated; their measured area is a lower bound.",
+    "The sand power grid is a measured reference layout, not a proven power solution for the requested factory. Do not scale its generation as guaranteed power.",
+    "No island filling is assumed. No construction mall, expansion stock, train length, or inter-island rail route is sized. Shared-space allowances do not prove station geometry fits."
+  ]
+}

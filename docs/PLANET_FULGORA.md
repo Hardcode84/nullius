@@ -905,6 +905,54 @@ supply bounds are 16.36 h and 8.18 h. That catalog uses pneumatic and thermal
 machines and includes metallurgic science instead of EM. Entrance research also
 differs. These are factory-scale references, not identical progression starts.
 
+### Island space
+
+Measured on Factorio 2.1.20: seeds 0, 42, and 1729; 1024×1024 windows at
+(0, 0) and (4096, 0). Native terrain and cliffs remain unchanged.
+
+| Measure | Range across samples |
+|---|---:|
+| Island land | 24.7–35.8% |
+| Landing island | 2,366–2,800 tiles |
+| Median complete island, at least 256 tiles | 2,800–5,621 tiles |
+| Largest observed island portion | 60,348–113,441 tiles |
+| Land in complete 32×32 blocks, after cliff removal | 95,232–156,672 tiles/window |
+| Same blocks without cliff removal | 58,368–96,256 tiles/window |
+
+The current island size control is 2. Sediment retains the native ocean shapes.
+Boundary islands can extend outside the sample. Rocks are assumed cleared.
+
+| Packs/min each | Bare island machines | Full tier-1 batteries | Compact site | Roomy site |
+|---:|---:|---:|---:|---:|
+| 30 | 6,606 tiles | 318 | 23,245 tiles | 49,004 tiles |
+| 60 | 10,531 tiles | 625 | 37,865 tiles | 77,988 tiles |
+| 120 | 18,695 tiles | 1,238 | 68,029 tiles | 138,070 tiles |
+| 240 | 35,145 tiles | 2,466 | 128,787 tiles | 259,236 tiles |
+
+Both site estimates include batteries for a 30-second ordinary-load gap.
+Compact: one tile around each machine and 20% shared space.
+Roomy: two tiles around each machine and 35% shared space.
+Shared space allows for transport, buffers, and stations; no layout is routed.
+No construction mall or inter-island rail route is included.
+
+The landing island cannot hold these factories. At 60/min, distilleries and
+hydro plants alone occupy 4,550 bare tiles. Pylons, coils, and extractors can use
+sediment; batteries, belts, and processing machines need islands.
+
+A conservative allocation of complete 32×32 blocks needs 1–2 large islands for
+compact 60/min, or 2–8 for roomy 60/min. This is not a placement proof or a minimum
+for a flexible layout. Roomy 120/min exceeds this block capacity in four of six
+windows; roomy 240/min exceeds it in all six. Plan a wider rail network at those
+rates. Power delivery remains constrained by the measured surge deficit.
+
+Repeat with:
+
+```sh
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-science-scale.json --stage first-physics --output fulgora-area-plan.json --overview
+python tools/run_factorio_tests.py fulgora-island-survey -n auto --result-json fulgora-islands.json
+python tools/analyze_fulgora_area.py --plan fulgora-area-plan.json --survey fulgora-islands.json --output fulgora-area-report.json --plot fulgora-islands.png
+```
+
 ### Power and model boundaries
 
 At 60/min, 312 MW is battery-compatible and 56 MW uses surge priority. Grid
