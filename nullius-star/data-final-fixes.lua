@@ -115,10 +115,10 @@ end
 
 -- Reassign Space Age music to the corresponding Nullius planets.
 for _, sound in pairs(data.raw["ambient-sound"]) do
-  if sound.planet == "vulcanus" then
-    sound.planet = "nullius-vulcanus"
-  elseif sound.planet == "fulgora" then
-    sound.planet = "nullius-fulgora"
+  for index, planet in ipairs(sound.planets or {}) do
+    if planet == "vulcanus" or planet == "fulgora" then
+      sound.planets[index] = "nullius-" .. planet
+    end
   end
 end
 
