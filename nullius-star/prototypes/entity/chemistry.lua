@@ -1258,6 +1258,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-surge-electrolyzer-1",
+    use_mirroring = true,
 	  icons = {{
       icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
       icon_size = 32,
@@ -1383,6 +1384,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-priority-electrolyzer-1",
+    use_mirroring = true,
 	  icons = {{
       icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
       icon_size = 32,
@@ -1472,6 +1474,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-surge-electrolyzer-2",
+    use_mirroring = true,
 	  icons = {{
       icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
       icon_size = 32,
@@ -1593,6 +1596,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-priority-electrolyzer-2",
+    use_mirroring = true,
 	  icons = {{
       icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
       icon_size = 32,
@@ -1684,6 +1688,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-surge-electrolyzer-3",
+    use_mirroring = true,
     icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
     icon_size = 32,
 	  order = data.raw.item["nullius-electrolyzer-3"].order .. "d",
@@ -1797,6 +1802,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-priority-electrolyzer-3",
+    use_mirroring = true,
 	  icons = {{
       icon = "__angelspetrochemgraphics__/graphics/icons/electrolyser.png",
       icon_size = 32,

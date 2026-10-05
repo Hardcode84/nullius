@@ -58,6 +58,7 @@ end
 function replace_fluid_entity(entity, newname, force, dir)
   if (prototypes.entity[newname] == nil) then return nil end
   if (dir == nil) then dir = entity.direction end
+  local mirrored = entity.mirroring
   if (entity.type == "entity-ghost") then
     local pos = entity.position
 	  local surface = entity.surface
@@ -68,7 +69,7 @@ function replace_fluid_entity(entity, newname, force, dir)
 	  end
 	  entity.destroy()
     entity = surface.create_entity{
-        name = "entity-ghost", force = force, direction = dir,
+        name = "entity-ghost", force = force, direction = dir, mirror = mirrored,
 	      position = pos, inner_name = newname,
 	      fast_replace = true, create_build_effect_smoke = false}
     if ((entity ~= nil) and entity.valid) then
@@ -94,7 +95,7 @@ function replace_fluid_entity(entity, newname, force, dir)
     end
     update_build_statistics(entity, force, true)
     entity = entity.surface.create_entity{
-      name = newname, force = force, direction = dir,
+      name = newname, force = force, direction = dir, mirror = mirrored,
 	    position = entity.position, spill = false, raise_built = true,
 	    fast_replace = true, create_build_effect_smoke = false}
     if ((entity ~= nil) and entity.valid) then
