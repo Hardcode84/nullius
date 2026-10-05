@@ -1077,6 +1077,10 @@ if require("factorio-version").is_2_1 then
       shadow.x = (i-1) * 261
       shadow.shift = util.by_pixel(-2, -5)
       local layers = animation[direction].layers
+      if direction == "east" or direction == "west" then
+        layers[1].filename = BASEENTITY .. "pumpjack/pumpjack-base-flipped.png"
+        shadow.filename = BASEENTITY .. "pumpjack/pumpjack-base-flipped-shadow.png"
+      end
       layers[4] = pumpjack_shadow(layers[3], layers[4])
     end
   end

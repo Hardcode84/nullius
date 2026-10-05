@@ -1,7 +1,7 @@
 -- given: eight finite resources with 10000 units each; each mining cycle gives
 -- 10 water. Both extractor tiers use void power and their production geometry.
 -- place: one pair per tier and cardinal direction, 12 tiles apart
--- connect: none; output stays in the extractor
+-- connect: one pipe at each visible output
 -- act: mine for 120 ticks
 -- expect: 20 water at tier 1 and 40 water at tier 2, in every direction
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
@@ -25,7 +25,11 @@ script.on_nth_tick(1,function()
       check(drill ~= nil,"extractor placed")
       check(drill.direction == direction,"direction retained")
       check(drill.prototype.mining_speed == tier,"mining speed retained")
-      storage.rows[#storage.rows+1] = {drill=drill,tier=tier}
+      local offset=({{1.5,-2.5},{2.5,-1.5},{-1.5,2.5},{-2.5,1.5}})[i]
+      local collector=surface.create_entity{name="pipe",force="player",
+        position={drill.position.x+offset[1],drill.position.y+offset[2]}}
+      check(collector~=nil,"collector placed at visible outlet")
+      storage.rows[#storage.rows+1] = {drill=drill,tier=tier,collector=collector}
     end
   end
   storage.assertions = assertions
@@ -35,9 +39,10 @@ script.on_nth_tick(121,function(event)
   script.on_nth_tick(121,nil)
   assertions = storage.assertions
   for _,row in ipairs(storage.rows) do
-    local fluid = fluid_api.get(row.drill,1)
-    check(fluid and fluid.name == "water","water extracted")
-    check(math.abs(fluid.amount - row.tier*20)<0.0001,"extraction rate: " .. fluid.amount)
+    local contents = fluid_api.segment_contents(row.collector,1)
+    local amount = contents.water or 0
+    check(amount>0,"water reaches visible outlet")
+    check(math.abs(amount - row.tier*20)<0.0001,"extraction rate: " .. amount)
   end
   helpers.write_file("factorio-tests/extractor-pictures.json",helpers.table_to_json({
     schema=1,case="extractor-pictures",status="pass",factorio_version=script.active_mods.base,

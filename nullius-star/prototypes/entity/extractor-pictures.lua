@@ -5,6 +5,10 @@ return function(extractor)
     secondary_draw_order=-1}
   for i, direction in ipairs({"north_animation", "east_animation", "south_animation", "west_animation"}) do
     local layers = table.deepcopy(extractor.base_picture.sheets)
+    if i == 2 or i == 4 then
+      layers[1].filename = "__base__/graphics/entity/pumpjack/pumpjack-base-flipped.png"
+      layers[2].filename = "__base__/graphics/entity/pumpjack/pumpjack-base-flipped-shadow.png"
+    end
     local shadow = layers[2]
     -- The 2.1 sheet has larger frames and a different origin. Apply the native
     -- origin change at the extractor scale; retain its custom placement.
