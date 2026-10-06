@@ -1889,6 +1889,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-chemical-plant-1",
+    use_mirroring = true,
     icons = data.raw.item["nullius-chemical-plant-1"].icons,
 	  order = "z-nullius-bbb",
     localised_description = {"entity-description.nullius-chemical-plant"},
@@ -2117,6 +2118,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-chemical-plant-2",
+    use_mirroring = true,
 	  order = "z-nullius-bcb",
     icons = data.raw.item["nullius-chemical-plant-2"].icons,
     localised_description = {"entity-description.nullius-chemical-plant"},
@@ -2219,6 +2221,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-chemical-plant-3",
+    use_mirroring = true,
 	  order = "z-nullius-bdb",
     icons = data.raw.item["nullius-chemical-plant-3"].icons,
     localised_description = {"entity-description.nullius-chemical-plant"},
