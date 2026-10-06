@@ -345,8 +345,9 @@ Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
 
 Boxed recipes consume five times the input and time; each solid output is a box
 of five. Productivity is disabled. These recipes work on every planet.
-Design change pending: move boxed recipe unlocks from Primitive Filtration to
-much later mass-production research.
+Gypsum crushing uses a crusher: `1 gypsum -> 1 mineral dust` in 1 second.
+Waste Management unlocks it; Mass Production 7 unlocks the boxed recipe.
+Dissolve surplus dust with hydrochloric acid and return the sludge to filtration.
 Salt and ice come directly from slurry. They supply hydrochloric acid without
 mineral recovery. Crude filtration supplies the first gypsum without acid.
 Selective gypsum recovery uses oxygen from water electrolysis; it needs no acid.

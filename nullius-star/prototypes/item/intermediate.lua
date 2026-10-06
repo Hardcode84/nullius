@@ -8434,3 +8434,25 @@ for _,boxed in ipairs({false,true}) do
   recipe.no_productivity = true
   data:extend({recipe})
 end
+
+-- Cold data-stage path: gypsum disposal with matching bulk processing.
+for _,boxed in ipairs({false,true}) do
+  local prefix = boxed and "nullius-boxed-" or "nullius-"
+  local item = boxed and "nullius-box-" or "nullius-"
+  local recipe = table.deepcopy(data.raw.recipe[prefix.."limestone-disposal"])
+  recipe.name = prefix.."gypsum-disposal"
+  recipe.order = "nullius-ma"
+  recipe.localised_name = boxed and
+    {"recipe-name.nullius-boxed", {"recipe-name.nullius-gypsum-disposal"}} or
+    {"recipe-name.nullius-gypsum-disposal"}
+  local overlay = table.deepcopy(data.raw.item["nullius-gypsum"].icons[1])
+  overlay.scale = boxed and 0.225 or 0.25
+  overlay.shift = boxed and {9, -8} or {10, -9}
+  recipe.icons[#recipe.icons] = overlay
+  recipe.energy_required = boxed and 5 or 1
+  recipe.ingredients = {{type="item",name=item.."gypsum",amount=1}}
+  recipe.results = {{type="item",name=item.."mineral-dust",amount=1}}
+  recipe.allow_productivity = false
+  recipe.no_productivity = true
+  data:extend({recipe})
+end

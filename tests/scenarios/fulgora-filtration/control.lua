@@ -1,10 +1,10 @@
 -- given: basic hydro plants/crushers, pipes, substations and debug electric grids.
--- inputs per ordinary/boxed line: 100/500 slurry, 1000 sludge on the ordinary line, 1 salt/box salt.
--- place: five independent cells on Nauvis, fluid outputs connected to pipes;
+-- inputs per ordinary/boxed line: 100/500 slurry, 1000 sludge on the ordinary line, 1 salt/box salt, 1 gypsum/box gypsum.
+-- place: seven independent cells on Nauvis, fluid outputs connected to pipes;
 -- crude recovery cells unload through powered inserters into wooden chests.
--- act: research probe access then Primitive Filtration; research bulk processing for boxed recipes; execute all five recipes.
+-- act: research probe access then Primitive Filtration; research bulk processing for boxed recipes; execute all seven recipes.
 -- run: scheduled input feeds every 60 ticks, exact 20-batch crude recovery budget.
--- expect: deterministic slurry/salt outputs, bounded random minerals, boxed parity,
+-- expect: deterministic slurry/salt/gypsum outputs, bounded random minerals, boxed parity,
 -- research gates, no productivity, and no planet restrictions.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
 local assertions=0
@@ -19,9 +19,9 @@ script.on_nth_tick(1,function()
   local surface=game.surfaces.nauvis
   check(surface.get_property('pressure')==1000,'Nauvis pressure fixture')
   surface.request_to_generate_chunks({0,0},4); surface.force_generate_chunk_requests()
-  for _,e in pairs(surface.find_entities_filtered{area={{-16,-16},{120,16}}}) do e.destroy() end
+  for _,e in pairs(surface.find_entities_filtered{area={{-16,-16},{160,16}}}) do e.destroy() end
   local tiles={}
-  for x=-16,119 do for y=-16,15 do tiles[#tiles+1]={name='fulgoran-rock',position={x,y}} end end
+  for x=-16,159 do for y=-16,15 do tiles[#tiles+1]={name='fulgoran-rock',position={x,y}} end end
   surface.set_tiles(tiles,true)
   force.technologies['nullius-probe-fulgora'].researched=true
   local tech=force.technologies['nullius-primitive-filtration']
@@ -29,6 +29,9 @@ script.on_nth_tick(1,function()
   check(tech.prerequisites['nullius-probe-fulgora']~=nil,'probe prerequisite')
   check(not force.recipes['nullius-crude-sludge-filtration'].enabled,'probe unlocked filtration')
   tech.researched=true
+  check(not force.recipes['nullius-gypsum-disposal'].enabled,'primitive filtration unlocked gypsum crushing')
+  force.technologies['nullius-waste-management'].researched=true
+  check(force.recipes['nullius-gypsum-disposal'].enabled,'waste management must unlock gypsum crushing')
   check(not prototypes.recipe['nullius-boxed-crude-sludge-filtration'],'boxed crude filtration must not exist')
   check(not force.recipes['nullius-box-ice'].enabled and not force.recipes['nullius-unbox-ice'].enabled,
     'ice packaging unlocked before Packaging 3')
@@ -44,12 +47,14 @@ script.on_nth_tick(1,function()
     local scale=boxed and 5 or 1
     local function item(name) return boxed and 'nullius-box-'..name or
       (name=='stone' and 'stone' or 'nullius-'..name) end
-    local kinds=boxed and {'hydrocarbon-slurry-filtration','salt-disposal'} or
-      {'hydrocarbon-slurry-filtration','crude-sludge-filtration','salt-disposal'}
+    local kinds=boxed and {'hydrocarbon-slurry-filtration','salt-disposal','gypsum-disposal'} or
+      {'hydrocarbon-slurry-filtration','crude-sludge-filtration','salt-disposal','gypsum-disposal'}
     if boxed then
       for _,kind in ipairs(kinds) do check(not force.recipes[prefix..kind].enabled,'boxed recipe unlocked early') end
       research_closure(force.technologies['nullius-mass-production-4'])
       check(not force.recipes['nullius-boxed-hydrocarbon-slurry-filtration'].enabled,'generic mass production unlocked slurry')
+      check(not force.recipes['nullius-boxed-gypsum-disposal'].enabled,'mass production 4 unlocked gypsum crushing')
+      research_closure(force.technologies['nullius-mass-production-7'])
       research_closure(force.technologies['nullius-bulk-slurry-filtration'])
       local em=false
       for _,ingredient in pairs(force.technologies['nullius-bulk-slurry-filtration'].research_unit_ingredients) do
@@ -57,7 +62,7 @@ script.on_nth_tick(1,function()
       end
       check(em,'slurry research requires EM science')
       check(force.technologies['nullius-packaging-3'].researched,'bulk gate must include Packaging 3')
-      for _,product in ipairs({'ice','salt','graphite','mineral-dust'}) do
+      for _,product in ipairs({'ice','salt','gypsum','graphite','mineral-dust'}) do
         for _,action in ipairs({'box','unbox'}) do
           check(force.recipes['nullius-'..action..'-'..product].enabled,'missing packaging '..action..' '..product)
         end
@@ -70,7 +75,7 @@ script.on_nth_tick(1,function()
       check(not recipe.allowed_effects.productivity,'productivity enabled '..name)
       check(not recipe.surface_conditions or #recipe.surface_conditions==0,'planet restriction '..name)
       local x=cell*20; cell=cell+1
-      local machine=surface.create_entity{name=kind=='salt-disposal' and 'nullius-crusher-1' or 'nullius-hydro-plant-1',position={x,0},force=force}
+      local machine=surface.create_entity{name=(kind=='salt-disposal' or kind=='gypsum-disposal') and 'nullius-crusher-1' or 'nullius-hydro-plant-1',position={x,0},force=force}
       machine.set_recipe(name)
       check(machine.get_recipe() and machine.get_recipe().name==name,'basic machine cannot execute '..name)
       local power=surface.create_entity{name='factorio-test-planner-grid',position={x+7,0},force=force}
@@ -99,7 +104,8 @@ script.on_nth_tick(1,function()
         end
         check(gypsum,'crude filtration must recover gypsum')
       else
-        check(machine.insert{name=item('salt'),count=1}==1,'salt fixture')
+        local input=kind=='gypsum-disposal' and 'gypsum' or 'salt'
+        check(machine.insert{name=item(input),count=1}==1,input..' fixture')
       end
       storage.rows[#storage.rows+1]=row
     end
@@ -137,8 +143,8 @@ script.on_nth_tick(60,function()
       local seen={}
       for _,pipe in ipairs(row.pipes) do local f=fluids.get(pipe,1); check(f and f.amount>0,'unconnected output'); seen[f.name]=true end
       check(seen['nullius-filtered-hydrocarbons'] and seen['nullius-sludge'],'two independent fluid outputs')
-    elseif row.kind=='salt-disposal' then
-      check(m.products_finished==1 and m.get_item_count(item('mineral-dust'))==1,'salt to dust yield')
+    elseif row.kind=='salt-disposal' or row.kind=='gypsum-disposal' then
+      check(m.products_finished==1 and m.get_item_count(item('mineral-dust'))==1,row.kind..' dust yield')
     else
       check(m.products_finished==20 and row.remaining==0,'crude batch budget')
       local total=0

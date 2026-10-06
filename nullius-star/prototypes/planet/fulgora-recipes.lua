@@ -26,6 +26,7 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
   if not boxed or name == "climatology-pack-fulgora" then
     unlocks[#unlocks+1]={type="unlock-recipe",recipe=recipe.name}
   end
+  return recipe
 end
 for _,boxed in ipairs({false,true}) do
   local scale = boxed and 5 or 1
@@ -36,11 +37,12 @@ for _,boxed in ipairs({false,true}) do
   local function fluid(name, amount)
     return {type="fluid",name="nullius-"..name,amount=amount*scale}
   end
-  add("hydrocarbon-slurry-filtration","nullius-water-treatment",4*scale,
+  local filtration = add("hydrocarbon-slurry-filtration","nullius-water-treatment",4*scale,
     {fluid("hydrocarbon-slurry",100)},
     {fluid("filtered-hydrocarbons",50),fluid("sludge",40),
       item("ice",2),item("salt",1)},
     "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
+  filtration.icons = table.deepcopy(data.raw.fluid["nullius-hydrocarbon-slurry"].icons)
   if not boxed then
     local minerals={}
     for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","gypsum"}) do

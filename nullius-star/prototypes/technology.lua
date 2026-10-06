@@ -1459,6 +1459,10 @@ data:extend({
       },
       {
         type = "unlock-recipe",
+        recipe = "nullius-gypsum-disposal"
+      },
+      {
+        type = "unlock-recipe",
         recipe = "nullius-land-fill-sludge"
       }
     },
@@ -9292,6 +9296,10 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-limestone-disposal"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-boxed-gypsum-disposal"
       },
 	  {
         type = "unlock-recipe",
