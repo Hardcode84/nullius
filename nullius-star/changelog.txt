@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+Date: 23.10.2026
+  Features:
+    - Explore Fulgora and build industry from hydrocarbon slurry.
+    - Harness lightning with power poles and protect factories with grounding coils.
+    - Added electromagnetic science, overcharged assemblers, and supercapacitors.
+  Changes:
+    - Elevated rail bridges and waste reclamation are available earlier.
+    - Added more ways to recycle surplus minerals.
+    - Ore checkpoints now accept crushed ores.
+  Bugfixes:
+    - Fixed construction robots blocking building placement.
+    - Fixed upgrade planning for thermal and overcharged buildings.
+    - Fixed extractor and well pipe graphics.
+    - Chemical plants and electrolyzers can now be flipped.
+    - Restored planet music on Vulcanus and Fulgora.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.4
 Date: 22.09.2026
   Features:
