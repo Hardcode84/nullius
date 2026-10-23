@@ -31,7 +31,7 @@ for kind in pairs(require("collision-mask-defaults")) do
     local extractor = kind=="mining-drill" and
       (name:find("nullius-extractor-",1,true)==1 or name=="pumpjack")
     local elevated = kind:find("elevated-",1,true)==1
-    if kind~="tile" and not allowed[kind] and not extractor and not elevated and
+    if defines.prototypes.entity[kind] and not allowed[kind] and not extractor and not elevated and
         name~="nullius-hydrocarbon-vent" and not coils[name] and
         (mask.layers.water_tile or mask.layers.ground_tile or buildable[name]~=nil) then
       entity.collision_mask = table.deepcopy(mask)

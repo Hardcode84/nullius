@@ -5,6 +5,12 @@ require("prototypes.item.module_limitation")
 require("prototypes.item.box_icons")
 require("prototypes.custom_tooltip_fields")
 
+for _, name in ipairs({"configurable-valve-guage-input", "configurable-valve-guage-output"}) do
+  local box = data.raw["storage-tank"][name].fluid_box
+  require("prototypes.entity.hide-fluid-connections")(box)
+  box.hide_connection_info = nil
+end
+
 for _, recipe in pairs(data.raw.recipe) do
     if recipe.GCKI_ignore ~= nil then
         recipe.GCKI_ignore = nil
