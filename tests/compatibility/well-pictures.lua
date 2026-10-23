@@ -19,7 +19,9 @@ for _,prefix in ipairs({"nullius-well-", "nullius-legacy-well-"}) do
       local width,height=modern and 261 or 220,modern and 273 or 220
       assert(shadow.width==width and shadow.height==height,"shadow dimensions")
       assert((shadow.x or 0)==(i-1)*width and (shadow.y or 0)==0,"shadow direction")
-      assert(shadow.filename=="__base__/graphics/entity/pumpjack/pumpjack-base-shadow.png","shadow sheet")
+      local flipped = modern and (i==2 or i==4)
+      assert(base.filename=="__base__/graphics/entity/pumpjack/pumpjack-base"..(flipped and "-flipped" or "")..".png","base sheet")
+      assert(shadow.filename=="__base__/graphics/entity/pumpjack/pumpjack-base"..(flipped and "-flipped" or "").."-shadow.png","shadow sheet")
       assert(shadow.shift[1]==(modern and -2 or 6)/32 and shadow.shift[2]==(modern and -5 or 0.5)/32,"shadow origin")
       assert(shadow.scale==0.5 and shadow.draw_as_shadow,"shadow rendering")
       assert(shadow.repeat_count==40 and shadow.animation_speed==(tier==1 and 0.4 or 0.6),"shadow timing")

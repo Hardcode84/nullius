@@ -1,6 +1,6 @@
 -- given: a fresh force with no research or supplied items.
 -- act: research the prerequisite closure, then Waste Reclamation.
--- expect: only early science; all six recipes, including stone, unlock together.
+-- expect: only early science; all recovery recipes, including stone, unlock together.
 local count=0
 local function check(v,m) count=count+1; assert(v,m) end
 script.on_nth_tick(1,function()
@@ -28,10 +28,13 @@ script.on_nth_tick(1,function()
     check(seen[name], 'missing ingredient or machine technology '..name)
   end
   local recipes={'nullius-limestone-recovery','nullius-iron-recovery',
-    'nullius-bauxite-recovery','nullius-sand-recovery','stone','nullius-barrel-recycling'}
+    'nullius-bauxite-recovery','nullius-sand-recovery','stone','nullius-barrel-recycling',
+    'nullius-borate-leaching','nullius-boxed-borate-leaching',
+    'nullius-gypsum-recovery','nullius-boxed-gypsum-recovery',
+    'nullius-boxed-limestone-recovery','nullius-boxed-stone-recovery'}
   for _,name in ipairs(recipes) do check(not force.recipes[name].enabled,'premature unlock '..name) end
   research(tech)
-  check(#tech.prototype.effects==6,'recovery effects changed')
+  check(#tech.prototype.effects==#recipes,'recovery effects changed')
   for _,name in ipairs(recipes) do check(force.recipes[name].enabled,'missing unlock '..name) end
   helpers.write_file('factorio-tests/waste-reclamation-access.json',helpers.table_to_json{
     schema=1,case='waste-reclamation-access',status='pass',failure_count=0,

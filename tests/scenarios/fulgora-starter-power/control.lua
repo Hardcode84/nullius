@@ -78,7 +78,7 @@ script.on_nth_tick(30,function()
     for _,coil in ipairs(row.coils) do coil.destroy{raise_destroy=true} end
     for _,battery in ipairs(row.batteries) do battery.energy=battery.electric_buffer_size end
     storage.surface.execute_lightning{name='nullius-fulgora-lightning',position=row.poles[1].position}
-  elseif game.tick==73860 then
+  elseif game.tick==73920 then
     check(remote.call('nullius-test-overload','offline',storage.rows[1].poles[1]),'ungrounded full-storage grid did not trip')
     local observations={}
     for i,row in ipairs(storage.rows) do observations[i]={day=row.day,night=row.night} end

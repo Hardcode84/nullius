@@ -6,6 +6,46 @@ Factory Planner requires version 2.1.16 or later for this engine API.
 2.1.20 validation: 165 scenarios, 126 Python tests, and a clean locale audit.
 The comparisons below record the earlier port checks.
 
+## Factorio 2.1.23 check, 2026-10-23
+
+Installed engine: 2.1.23, build 87750. The mod loads with the installed
+dependencies, including Bob library 3.0.1 and Bob logistics 3.0.2.
+Scenario tests: 177 pass across the full suite and focused reruns. The long
+switched-grounding repeat was stopped before its shorter replacement passed.
+Python tests: 140 pass. Locale audit: no missing names, missing keys, or unused
+UI keys. The isolated compatibility suite passes. The strict prototype check
+reports no ignored Nullius fields.
+
+Changes since 2.1.20:
+
+| Version | Engine change | Effect on this checkout |
+|---|---|---|
+| 2.1.21 | Electric buffer capacity now applies to crafting machines, labs, drills, and agricultural towers | Check native power scenarios; these Nullius machines do not set custom buffer capacities |
+| 2.1.21 | Boiler filters cannot change at runtime; boiler target temperatures are validated | No runtime boiler-filter writes found; full prototype load passes |
+| 2.1.22 | Fluid filters return a fluid ID; fluid-box temperature limits move to machine prototypes | Update the scenario fluid helper; production entity sources have no removed fluid-box temperature limits |
+| 2.1.22 | Water texture fields and build-preview tint fields change | Full prototype load and strict Nullius field checks pass |
+| 2.1.23 | Fix fuel inserters, mobile-roboport alerts, remote-view position events, and a desync | No mod code change required by these API changes |
+
+Source: [Factorio 2.1 release history](https://wiki.factorio.com/Version_history/2.1.0).
+
+Corrected test contracts: gypsum and borate reclamation, purified-water recovery,
+five starter extractors, Fulgora well exclusion, three overload checks, and
+flipped extractor/well sprites. Power audit scenarios use 60 seconds of warmup
+and 30 seconds per day/night sample, with a 180-second wall-clock limit. They
+check native capture, network isolation, and circuit switching. Earlier
+ten-minute measurements remain separate balance evidence. Switched grounding
+passes 7,625 assertions in 53.4 seconds; the power audit passes 2,661 assertions
+in 17.9 seconds.
+The isolated pump test now loads the production
+fluid wagon. The recipe-display test disables only the cleanup under test.
+
+The Vulcanus physics contract now declares pressure 4000 and magnetic field 25.
+Regenerate its executor fixture with the factory planner. This excludes Fulgora
+recipes from that production plan.
+
+The Bob logistics 3.0.1 patch test requires the original 3.0.1 archive. The
+installed 3.0.2 archive fails that test's input-version check.
+
 Checked 2026-09-22: Nullius* `8faa697`, Factorio 2.0.77 and 2.1.19.
 The staged 2.1 mod loads, renders, and passes multiplayer checks. Full
 compatibility is not established. The original audit found 38 failing

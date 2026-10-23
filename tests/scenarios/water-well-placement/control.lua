@@ -47,13 +47,13 @@ local function check_condition(name)
   check(prototype ~= nil, "missing entity prototype " .. name)
   if not prototype then return end
   local conditions = prototype.surface_conditions or {}
-  check(#conditions == 1, name .. " does not have exactly one surface condition")
-  local condition = conditions[1]
-  if not condition then return end
-  check(condition.property == AMBIENT_TEMPERATURE,
-    name .. " is not restricted by ambient temperature")
-  check(condition.max == 50,
-    name .. " does not have the exact cool-surface boundary")
+  check(#conditions == 2, name .. " must have temperature and magnetic field limits")
+  local limits = {}
+  for _,condition in pairs(conditions) do limits[condition.property] = condition end
+  check(limits[AMBIENT_TEMPERATURE] and limits[AMBIENT_TEMPERATURE].max == 50,
+    name .. " must require ambient temperature at most 50")
+  check(limits["magnetic-field"] and limits["magnetic-field"].max == 98,
+    name .. " must require magnetic field at most 98")
 end
 
 script.on_nth_tick(1, function()
@@ -68,6 +68,9 @@ script.on_nth_tick(1, function()
   check(vulcanus ~= nil, "failed to create Nullius Vulcanus surface")
   if not vulcanus then finish({}) return end
 
+  local fulgora_planet = game.planets["nullius-fulgora"]
+  local fulgora = fulgora_planet.surface or fulgora_planet.create_surface()
+  prepare(fulgora, "fulgoran-rock")
   prepare(nauvis, "lab-dark-1")
   prepare(vulcanus, "volcanic-soil-dark")
 
@@ -90,6 +93,9 @@ script.on_nth_tick(1, function()
       check(not vulcanus.can_place_entity{
           name = name, position = {100, 100}, force = force},
         name .. " can be placed on Vulcanus")
+      check(not fulgora.can_place_entity{
+          name = name, position = {100, 100}, force = force},
+        name .. " can be placed on Fulgora")
     end
 
     local recipe = prototypes.recipe[current]

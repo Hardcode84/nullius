@@ -25,7 +25,7 @@ for tier=1,2 do
     end
     assert(#layers == 2, "foundation and shadow")
     for j,layer in ipairs(layers) do
-      assert(layer.filename == "__base__/graphics/entity/pumpjack/pumpjack-base" .. (j==2 and "-shadow" or "") .. ".png", "image")
+      assert(layer.filename == "__base__/graphics/entity/pumpjack/pumpjack-base" .. ((modern and (i==2 or i==4)) and "-flipped" or "") .. (j==2 and "-shadow" or "") .. ".png", "image")
       assert(layer.scale == 0.66667, "scale")
       local width = (modern or j==1) and 261 or 220
       local height = (modern or j==1) and 273 or 220

@@ -170,6 +170,11 @@ def stage_pump_wagons(mod):
     if body.count('type = "pump"') != 5:
         raise TestFailure("Expected five full-size pump prototypes")
     (mod / "pump-prototypes.lua").write_text(header + 'data:extend({\n' + body + '})\n')
+    trains = (ROOT / "nullius-star/prototypes/entity/train.lua").read_text()
+    start = trains.index('  {\n    type = "fluid-wagon",\n    name = "nullius-fluid-wagon-1",')
+    end = trains.index('\n})', start)
+    wagon = trains[:trains.index('data:extend({')] + 'data:extend({\n' + trains[start:end] + '})\n'
+    (mod / "pump-wagon-prototype.lua").write_text(wagon)
     (mod / "pump-wagons.lua").symlink_to(ROOT / "tests/compatibility/pump-wagons.lua")
     (mod / "pump-test.lua").symlink_to(ROOT / "tests/factorio-test-support/pump-wagons.lua")
     (mod / "scenarios/pump-wagons").symlink_to(ROOT / "tests/scenarios/pump-wagons", target_is_directory=True)

@@ -18,6 +18,8 @@ if require("__nullius-star__/factorio-version").is_2_1 then
   function api.filter(entity, index)
     local filter = entity.get_fluid_filter(index)
     if not filter then return nil end
+    if type(filter) == "string" then return {name=filter} end
+    if filter.object_name == "LuaFluidPrototype" then return {name=filter.name} end
     local fluid = filter.fluid
     return {name=type(fluid) == "string" and fluid or (fluid and fluid.name),
       minimum_temperature=filter.minimum_temperature,

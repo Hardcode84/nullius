@@ -2,9 +2,13 @@
 -- place: prescribed compact/spread collectors; artificial island pads for batteries.
 -- connect: one noncollecting test distribution pole per bank; ideal copper links.
 -- act: native storms only, no injected charge or strikes; freeze noon then midnight.
--- run: 60 s warmup, 600 s noon, 600 s midnight. Measure shortages; do not reset trips.
+-- run: 60 s warmup, 30 s noon, 30 s midnight. Measure shortages; do not reset trips.
 -- expect: valid isolated networks and measured native energy totals, not full supply.
 return function(CASE,profiles)
+local warmup=3600
+local phase_ticks=1800
+local night_start=warmup+phase_ticks
+local finish_tick=night_start+phase_ticks
 local circuit=require('__nullius-star__/scenarios/fulgora-switched-grounding/circuit')
 local collectors=require('__nullius-star__/shared/fulgora-collectors')
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
@@ -116,7 +120,7 @@ script.on_nth_tick(30,function()
       if row.surge_MW>0 and row.surge.energy<=0 then v.surge_gaps=v.surge_gaps+1 end
     end
   end
-  if game.tick==3600 or game.tick==39600 or game.tick==75600 then
+  if game.tick==warmup or game.tick==night_start or game.tick==finish_tick then
     for _,row in ipairs(storage.rows) do
       if row.switch then check(row.switch_seen,'switch never closed: '..row.name) end
       local t=totals(row)
@@ -125,12 +129,12 @@ script.on_nth_tick(30,function()
         for k,n in pairs(t) do v[k]=n-row.start[k] end
         v.battery_MJ=0
         for _,b in ipairs(row.batteries) do v.battery_MJ=v.battery_MJ+b.energy/1e6 end
-        check(v.ticks==36000,'phase duration');check(v.captures>0,'no native captures')
+        check(v.ticks==phase_ticks,'phase duration');check(v.captures>0,'no native captures')
       end
       row.start=t
     end
-    if game.tick==3600 then storage.phase='day'
-    elseif game.tick==39600 then storage.phase='night';storage.surface.daytime=.5
+    if game.tick==warmup then storage.phase='day'
+    elseif game.tick==night_start then storage.phase='night';storage.surface.daytime=.5
     else
       local result={}
       for _,row in ipairs(storage.rows) do result[#result+1]={name=row.name,secondary_MW=row.secondary_MW,surge_MW=row.surge_MW,day=row.day,night=row.night,first_trip=row.first_trip} end

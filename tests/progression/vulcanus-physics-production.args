@@ -78,6 +78,10 @@ nullius-water-filtration-4
 --require-no-electricity
 --surface-property
 nullius-ambient-temperature=200
+--surface-property
+magnetic-field=25
+--surface-property
+pressure=4000
 --forbid-category
 seawater-pumping
 --raw
