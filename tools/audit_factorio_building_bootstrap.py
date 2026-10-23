@@ -191,6 +191,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--plan', type=Path)
+    parser.add_argument('--data-raw', type=Path, help='Resolved prototype dump matching the factory plan')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--read-report', type=Path)
     parser.add_argument('--target')
@@ -212,9 +213,15 @@ def main():
         for row in stage['plans']:
             roots.update(t['name'] for t in row['research']['technologies'])
             targets.update(row['construction']['items'])
-        data, directory = prereqs.dump_resolved_data(prereqs.parse_arguments([]))
+        directory = None
+        if args.data_raw:
+            dump_path = args.data_raw
+            data = json.loads(dump_path.read_text())
+        else:
+            data, directory = prereqs.dump_resolved_data(prereqs.parse_arguments([]))
+            dump_path = directory / 'script-output/data-raw-dump.json'
         try:
-            digest = hashlib.sha256((directory / 'script-output/data-raw-dump.json').read_bytes()).hexdigest()
+            digest = hashlib.sha256(dump_path.read_bytes()).hexdigest()
             if digest != plan['provenance']['dump_sha256']:
                 raise prereqs.TestFailure('Factory plan prototype snapshot differs; regenerate the plan')
             report = audit(data, config, targets, roots)

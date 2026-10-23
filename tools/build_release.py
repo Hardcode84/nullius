@@ -70,6 +70,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--factorio-version", choices=("2.1",), default="2.1")
     parser.add_argument("--upgrade-factorio", type=Path,
                         help="engine used to create prior-release saves")
+    parser.add_argument("--upgrade-factorio-2-1", type=Path,
+                        help="historical 2.1 engine for the 0.0.4 upgrade fixture")
     parser.add_argument("--upgrade-dependency-mod-directory", type=Path,
                         help="dependencies used to create prior-release saves")
     parser.add_argument(
@@ -309,7 +311,8 @@ def validate_factorio_archive(
 
 
 def run_progression_contracts(data_raw: Path, timeout: int) -> int:
-    contracts = sorted(PROGRESSION_CONTRACTS.glob("*.args"))
+    contract_names = json.loads((PROGRESSION_CONTRACTS / "release.json").read_text())["contracts"]
+    contracts = [PROGRESSION_CONTRACTS / name for name in contract_names]
     if not contracts:
         raise TestFailure("no progression contracts found")
     analyzer = REPOSITORY / "tools" / "analyze_factorio_prereqs.py"
@@ -327,6 +330,32 @@ def run_progression_contracts(data_raw: Path, timeout: int) -> int:
             timeout,
         )
     return len(contracts)
+
+
+
+def run_bootstrap_checks(data_raw: Path, timeout: int, directory: Path) -> list[dict]:
+    checks = json.loads((PROGRESSION_CONTRACTS / "release.json").read_text())["bootstrap"]
+    if not checks:
+        raise TestFailure("no staged bootstrap checks found")
+    results = []
+    for check in checks:
+        plan = directory / (check["name"] + "-plan.json")
+        output = directory / (check["name"] + "-bootstrap.json")
+        run_checked([sys.executable, str(REPOSITORY / "tools/plan_factorio_factory.py"),
+                     "--config", str(PROGRESSION_CONTRACTS / check["planner"]),
+                     "--data-raw", str(data_raw), "--output", str(plan)],
+                    check["name"] + " factory plan", timeout)
+        run_checked([sys.executable, str(REPOSITORY / "tools/audit_factorio_building_bootstrap.py"),
+                     "--config", str(PROGRESSION_CONTRACTS / check["config"]),
+                     "--plan", str(plan), "--data-raw", str(data_raw), "--output", str(output)],
+                    check["name"] + " staged bootstrap", timeout)
+        report = json.loads(output.read_text())
+        if report["blocked_targets"] or report["unreached_research"]:
+            raise TestFailure(check["name"] + " bootstrap has blocked targets or research")
+        results.append({"name": check["name"], "status": "pass",
+                        "targets": len(report["targets"]), "buildings": len(report["building_targets"]),
+                        "dump_sha256": report["dump_sha256"]})
+    return results
 
 
 def extract_release(release_archive: Path, destination: Path) -> Path:
@@ -350,6 +379,7 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
             factorio, dependencies, archive, args.timeout_seconds, root / "factorio"
         )
         contract_count = run_progression_contracts(data_raw, args.timeout_seconds)
+        bootstrap = run_bootstrap_checks(data_raw, args.timeout_seconds, root)
         extracted_mod = extract_release(archive, root / "extracted")
         run_checked(
             [
@@ -378,8 +408,6 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
                 str(factorio),
                 "--dependency-mod-directory",
                 str(dependencies),
-                "--timeout-seconds",
-                str(args.timeout_seconds),
                 "-n",
                 args.workers,
                 "--result-json",
@@ -400,7 +428,10 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
     upgrade = [check_upgrade(archive, factorio, dependencies, args.timeout_seconds, version,
                             args.upgrade_factorio, args.upgrade_dependency_mod_directory)
                for version in ("0.0.1", "0.0.2", "0.0.3")]
+    upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.4",
+                                 args.upgrade_factorio_2_1, dependencies))
     return {
+        "bootstrap": bootstrap,
         "upgrade": upgrade,
         "progression_contracts": contract_count,
         "scenario_tests": scenario_suite["passed"],

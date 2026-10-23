@@ -54,8 +54,9 @@ python tools/build_release.py -n auto
 
 The only release target is Factorio 2.1, minimum version 2.1.20. Select matching
 `--factorio` and `--dependency-mod-directory` paths. Use `--upgrade-factorio`
-and `--upgrade-dependency-mod-directory` only when prior-release fixtures need
-an older engine. The prior payload stays unchanged.
+and `--upgrade-dependency-mod-directory` for historical 2.0 fixtures. Use
+`--upgrade-factorio-2-1` when the 0.0.4 fixture needs its original 2.1 engine.
+The prior payload stays unchanged.
 
 The command must pass every gate and produce a ZIP plus JSON manifest.
 
@@ -78,8 +79,28 @@ The command must pass every gate and produce a ZIP plus JSON manifest.
 | Scenarios | Every independent Factorio scenario passes against packaged payload |
 | Output | ZIP and JSON manifest contain matching name, version, commit, size, and SHA-256 |
 
-Stop on any failed gate. Report the exact command, failure, and generated
-artifact state. Do not tag or publish a failed candidate.
+A failed gate blocks tagging. Investigate the exact failure, fix the cause,
+and rerun the candidate gate. Continue routine fixes within the release task.
+Stop only when a concrete blocker needs user input or unavailable resources.
+Report that blocker and the candidate artifact state. Never tag a failed candidate.
+
+## Progression checks
+
+`tests/progression/release.json` declares the release checks. Do not glob every
+`.args` file: the directory also contains inspection queries, shared boundaries,
+and arrival-only diagnostics that intentionally report missing research.
+Preserve each diagnostic's assumptions.
+
+Fulgora must pass `audit_factorio_building_bootstrap.py` with its maintained
+building-bootstrap config. Use the exact packaged prototype dump for both the
+factory plan and bootstrap audit. Require no blocked targets or unreached
+research. The audit must start with the wreck equipment and entrance research,
+then unlock recipes and machines in dependency order. Do not replace this with
+all-research access or require all equipment to be craftable on arrival.
+
+Keep scenario wall-clock limits from each `test.json`. Repeat only checks made
+stale by a correction during diagnosis; the final candidate gate validates the
+complete packaged payload.
 
 ## Correctness review
 

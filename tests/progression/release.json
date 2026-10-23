@@ -1,0 +1,41 @@
+{
+  "contracts": [
+    "carbothermic-sodium.args",
+    "nauvis-physics-pack-titanium.args",
+    "nauvis-thermal-furnace-sizes.args",
+    "pneumatic-boxer.args",
+    "temperature-sensor.args",
+    "vulcanus-anfo-bulk.args",
+    "vulcanus-anfo-ordinary.args",
+    "vulcanus-barrel.args",
+    "vulcanus-basic-science.args",
+    "vulcanus-boric-acid.args",
+    "vulcanus-caustic-bootstrap.args",
+    "vulcanus-chemical-acid.args",
+    "vulcanus-chemical-alkali.args",
+    "vulcanus-chemical-concrete-barrels.args",
+    "vulcanus-chemical-glass-lubricant.args",
+    "vulcanus-chemical-pack.args",
+    "vulcanus-chemical-science.args",
+    "vulcanus-compressed-nitrogen.args",
+    "vulcanus-construction.args",
+    "vulcanus-efficient-pack.args",
+    "vulcanus-hot-casting.args",
+    "vulcanus-pack.args",
+    "vulcanus-physics-production.args",
+    "vulcanus-primitive-robotics.args",
+    "vulcanus-refractory-production.args",
+    "vulcanus-renewable-graphite.args",
+    "vulcanus-thermite.args",
+    "vulcanus-titanium-construction.args",
+    "vulcanus-titanium-pilot.args",
+    "vulcanus-water-quenching.args"
+  ],
+  "bootstrap": [
+    {
+      "name": "fulgora",
+      "planner": "planner/fulgora-science-scale.json",
+      "config": "fulgora-building-bootstrap.json"
+    }
+  ]
+}
