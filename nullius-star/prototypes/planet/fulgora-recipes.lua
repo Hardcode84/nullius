@@ -28,6 +28,25 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
   end
   return recipe
 end
+for _,fluid in ipairs({"filtered-hydrocarbons","sludge","wastewater","brine"}) do
+  local recipe=add("reinject-"..fluid,"nullius-reinjection",2,
+    {{type="fluid",name="nullius-"..fluid,amount=20}},
+    {{type="item",name="nullius-gas-void",amount=1,[probability]=0}},
+    "__nullius-star__/graphics/icons/fluid/sludge.png",false)
+  recipe.localised_name={"recipe-name.nullius-reinjection",{"fluid-name.nullius-"..fluid}}
+  recipe.icons=table.deepcopy(data.raw.fluid["nullius-"..fluid].icons)
+  recipe.surface_conditions={{property="magnetic-field",min=99}}
+end
+local magnetic={}
+for _,name in ipairs({"crushed-iron-ore","crushed-bauxite","sand","crushed-limestone","stone","gypsum"}) do
+  magnetic[#magnetic+1]={type="item",name=name=="stone" and name or "nullius-"..name,
+    amount=3,[probability]=(name=="crushed-iron-ore" or name=="crushed-bauxite") and 1/3 or 1/6}
+end
+local magnetic_recipe=add("magnetic-sludge-filtration","nullius-water-treatment",2,
+  {{type="fluid",name="nullius-sludge",amount=50}},magnetic,
+  "__nullius-star__/graphics/icons/fluid/sludge.png",false)
+magnetic_recipe.surface_conditions={{property="magnetic-field",min=99}}
+
 for _,boxed in ipairs({false,true}) do
   local scale = boxed and 5 or 1
   local function item(name, amount)

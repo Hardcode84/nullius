@@ -19,10 +19,11 @@
     "contract": "tests/progression/planner/fulgora-bootstrap-timing.args"
   },
   "expected_recipes": [
-    "nullius-crude-sludge-filtration"
+    "nullius-crude-sludge-filtration",
+    "nullius-magnetic-sludge-filtration"
   ],
   "fleet": {
-    "nullius-extractor-1": 5,
+    "nullius-extractor-1": 7,
     "nullius-hydro-plant-1": 5,
     "nullius-distillery-1": 4,
     "nullius-air-filter-1": 4,
@@ -105,11 +106,11 @@
   "assumptions": [
     "Independent targets from zero materials, using only the supplied processing machines. Targets are not cumulative.",
     "Primitive Filtration and its prerequisites researched before arrival. No imported materials. Vents stay at 100 percent yield.",
-    "Only named crude filtration recipes use mean independent yields. This is an average-yield work estimate, not an exact batch or completion-time expectation.",
+    "Only named mineral filtration recipes use mean independent yields. This is an average-yield work estimate, not an exact batch or completion-time expectation.",
     "Continuous electricity, no modules, beacons or research productivity. Half-power duty is a sensitivity case, not measured lightning availability.",
     "Shared machine time allows free recipe changes. Fractional crafts, no dependency delays, placement, transport or player time. Results are work lower bounds.",
     "Eight small and two medium starter tanks bound final liquid surplus, not peak intermediate volume. Solid surplus is retained without a chest-capacity constraint and is reported.",
-    "Liquid voiding is forbidden. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
+    "Only reservoir reinjection may discard liquids. Native compatible gas disposal is permitted. Research triggers are assumed met; checkpoint actions are not timed.",
     "Research costs subtract the entrance closure. Production keeps entrance recipes throughout. Research time uses one lab and overlaps production optimistically.",
     "One probe android can hand craft solid recipes in its resolved categories, at base speed. Equipment and research speed bonuses are excluded.",
     "Both starter small assemblers use overcharged mode. The slow and light recipes are hypothetical; the basic recipe is resolved from the mod."
@@ -118,5 +119,10 @@
   "prototype_overlay": "tests/progression/planner/fulgora-em-candidates.json",
   "machine_modes": {
     "nullius-small-assembler-1": "nullius-small-assembler-1-overcharged"
+  },
+  "shared_modes": {
+    "nullius-extractor-1": [
+      "nullius-extractor-1-reinjection"
+    ]
   }
 }

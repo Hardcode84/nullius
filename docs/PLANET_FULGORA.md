@@ -5,7 +5,7 @@
 | Fact | Authority |
 |---|---|
 | Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, primitive filtration, salt crushing, and sand construction rules implemented |
-| Design only | Extractor reinjection mode and magnetic sludge filtration; see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) |
+| Reservoir processing | Extractor reinjection mode and magnetic sludge filtration implemented; see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -56,7 +56,7 @@ Supplied once per force when the probe is activated.
 
 | Equipment | Count | First use |
 |---|---:|---|
-| Extractor 1 | 5 | Slurry for materials and science; seven with reinjection mode, which returns surplus liquids (design) |
+| Extractor 1 | 7 | Slurry extraction or surplus liquid reinjection |
 | Hydro plant 1 | 5 | Slurry filtration, crude filtration, brine, climatology |
 | Distillery 1 | 4 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
 | Air filter 1 | 4 | Nitrogen and climatology |
@@ -137,7 +137,7 @@ imports. Liquids leave only through recipes or extractor reinjection.
 
 `tools/plan_factorio_bootstrap.py` uses
 `tests/progression/planner/fulgora-bootstrap-timing.json` and fresh prototypes.
-The results below use the five-extractor kit and one android, from zero stock,
+The results below use the seven-extractor kit and one android, from zero stock,
 on Factorio 2.1.23.
 Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 10 inserters, and 8 poles. New machines do not operate during these batches.
@@ -145,10 +145,10 @@ Expansion kit: 1 hydro plant, 1 distillery, 4 air filters, 50 pipes, 50 belts,
 <!-- bootstrap-timing:start -->
 | Target | 100% vent yield | Survey high yield | Survey low yield |
 |---|---:|---:|---:|
-| 20 iron plates + 20 aluminum plates | 4.1 min | 3.0 min | 4.3 min |
-| Expansion kit | 7.6 min | 5.5 min | 7.9 min |
-| 10 of each early science pack | 5.8 min | 5.6 min | 6.1 min |
-| Expansion kit + first science | 13.3 min | 11.0 min | 13.9 min |
+| 20 iron plates + 20 aluminum plates | 2.5 min | 2.3 min | 2.6 min |
+| Expansion kit | 4.6 min | 4.3 min | 4.8 min |
+| 10 of each early science pack | 4.9 min | 4.9 min | 4.9 min |
+| Expansion kit + first science | 9.1 min | 9.1 min | 9.1 min |
 <!-- bootstrap-timing:end -->
 
 These are fractional-work bounds with mean mineral yields and continuous power.
@@ -157,31 +157,25 @@ and startup order. Tanks limit final surplus, not peak fluid volume. The survey
 uses the nearest three usable vents from the origin in twelve seeds on 2.1:
 94.0–199.2% mean yield. It does not cover every map or probe landing position.
 
-Extractors, flotation cells, and the android limit these 100% cases. At half
-machine duty, expansion plus first science requires 26.5 min of work.
+At half machine duty, expansion plus first science requires 17.6 min of work.
 
 ### Building bootstrap time
 
-The results below use the five-extractor kit and one android, on Factorio 2.1.23.
+The results below use the seven-extractor kit and one android, on Factorio 2.1.23.
 The eight small tanks and two medium tanks provide 50,000 filtered-hydrocarbon
 storage and 10,000 each for six other liquids. No imported materials.
 
 | Independent target | 100% vents | Sampled yield range | 50% machine duty |
 |---|---:|---:|---:|
-| First medium assembler | 1.2 min | 0.8–1.2 min | 2.3 min |
-| One of each arrival building/logistics type, plus medium assembler | 11.9 min | 8.7–12.4 min | 23.8 min |
-| Reproduce the supplied processing fleet, excluding extractors | 20.2 min | 14.7–21.1 min | 40.3 min |
+| First medium assembler | 0.7 min | 0.6–0.7 min | 1.4 min |
+| One of each arrival building/logistics type, plus medium assembler | 7.3 min | 6.8–7.6 min | 14.5 min |
+| Reproduce the supplied processing fleet, excluding extractors | 12.7 min | 11.8–13.1 min | 24.0 min |
 
 The arrival-type target excludes extractors and grid batteries. Extractors need
 motor 2 through pump 2 and well 1; build a medium assembler for the lubricant
 input. With that assembler's construction and research included, one additional
-extractor needs 99.2 lab-minutes and is infeasible within the starter tanks.
-With unlimited fluid storage it needs a 150.8 min work bound and retains 151,448
-filtered hydrocarbons and 15,211 benzene, above the 50,000 and 10,000 starter
-capacities. Every research target after first science in
-`fulgora-building-timing.json` is infeasible with starter tanks.
-[Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) removes
-that block.
+extractor needs 99.2 lab-minutes and a 121.4 min production work bound.
+Reinjection keeps the surplus within the starter tank allocation.
 
 Reproducing every starter building type also needs grid-battery research,
 a compressor, a barrel pump, and medium furnace 2. The deliberately fixed-fleet
@@ -190,10 +184,8 @@ capacity warning: expand extraction, processing, and labs before that research.
 It is not a normal-play duration. All 63 building types used through physics
 have a local material and research path in the separate reachability audit.
 
-At 100% yield, extractors, flotation cells, and the android run at full duty for
-processing-fleet reproduction; medium furnaces use 81%, hydro plants 67%,
-distilleries 51%, and chemical plants 21%. Stored surplus includes about
-28,085 hydrocarbons, 625 benzene, and 580 wastewater.
+The processing-fleet batch saturates the extractor, flotation-cell, medium-furnace,
+small-assembler, and android work budgets. See the shared-pool table below.
 
 These are mean-yield work bounds. They omit recipe startup order, fluid fill,
 transport, placement, and power interruptions. Research-bound cases permit the
@@ -268,7 +260,7 @@ Slurry climatology uses the captured air without seawater.
 |---|---|
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
-| Buildings permitted on sand | Extractors, including reinjection mode (design), power poles, pipes, underground pipes, pumps, elevated rail supports, and grounding coils only |
+| Buildings permitted on sand | Extractors, including reinjection mode, power poles, pipes, underground pipes, pumps, elevated rail supports, and grounding coils only |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
@@ -322,9 +314,9 @@ hydrogen + chlorine -> hydrogen chloride
 oxygen + fuel -> combustion -> heat or power
 surplus salt -> mineral dust
 mineral dust + acid -> sludge -> mineral recovery
-sludge -> magnetic sludge filtration -> iron- and bauxite-rich minerals [design]
+sludge -> magnetic sludge filtration -> iron- and bauxite-rich minerals
 surplus filtered hydrocarbons, sludge, wastewater, brine
-  -> extractor reinjection mode -> returned to the vent [design]
+  -> extractor reinjection mode -> returned to the vent
 ```
 
 Primitive Filtration requires probe access and Geology 2: 5 of each early science pack,
@@ -391,7 +383,7 @@ Before implementation, check recipe access and the first electrolyzer's
 materials at probe-era research.
 
 Fulgora has no outfall voiding. The only liquid sink is extractor reinjection of
-four reservoir liquids (design; see
+four reservoir liquids (see
 [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing)). Use
 existing chimney recipes for gases; no new venting whitelist is required.
 Storage does not remove a continuous surplus.
@@ -505,13 +497,13 @@ the lime output in the mineral balance; surplus SO2 can use the existing vent.
 
 ## Reservoir reinjection and stream balancing
 
-Status: design; not implemented. Planner evidence uses candidate prototypes in
-`tests/progression/planner/fulgora-reinjection-candidates.json`.
+Status: implemented. Planner evidence uses resolved prototypes with
+`tests/progression/planner/fulgora-reinjection-timing.json`.
 
 ### Coupled streams
 
-Measured in the `fulgora-building-timing.json` extractor-research case with
-unbounded hydrocarbon storage, Factorio 2.1.23:
+Historical five-extractor baseline before magnetic filtration and reinjection,
+with unbounded hydrocarbon storage on Factorio 2.1.23:
 
 | Coupling | Mechanism | Evidence |
 |---|---|---|
@@ -571,7 +563,7 @@ between extraction and reinjection mode (`shared_modes`). Mode switches are free
 as recipe changes are in every planner case. All values are work lower bounds;
 they exclude startup, transport, placement, switch delays, and power interruptions.
 
-| Target | Current kit: five extractors, no reinjection or magnetic filtration | Seven extractors | Five extractors |
+| Target | Previous kit: five extractors, no reinjection or magnetic filtration | Seven extractors | Five extractors |
 |---|---:|---:|---:|
 | Expansion kit + first science | 13.3 min | 9.1 min | 10.6 min |
 | Processing-fleet reproduction | 20.2 min | 12.7 min | 16.0 min |
@@ -634,16 +626,16 @@ Condensation and wastewater filtration reduce that extraction.
 
 | Check | Expected result |
 |---|---|
-| Starter kit | `probe.lua` supplies seven extractors; `fulgora-activation` expects seven; Fulgora planner fleets use seven |
+| Starter kit | `probe.lua` supplies seven extractors; `fulgora-activation` checks seven; Fulgora planner fleets use seven |
 | Mode switch | Hydrocarbon vent on Fulgora after Primitive Filtration only; no mode on Vulcanus gas vents |
 | Recipes | Exact 20 units per 2 s for each accepted liquid on every tier; non-accepted liquids rejected |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements follow the blueprint contract above |
 | Sand | Reinjection variants place on sediment |
 | Magnetic filtration | Exact probabilities, no productivity, Fulgora only |
-| Planner | Replace candidate prototypes with resolved prototypes; Volcanism 1 feasible with starter tanks |
+| Planner | Resolved prototypes; Volcanism 1 feasible with starter tanks |
 
-Stop condition: Volcanism 1 remains infeasible with starter tanks on resolved
-prototypes.
+Validation: `fulgora-reinjection` checks mode switches, pipes, research gates,
+placement, robot upgrades, and recipe execution on Factorio 2.1.
 
 Repeat the planner evidence with:
 
@@ -1018,7 +1010,7 @@ Ctrl+R also switches unlocked grid batteries to supercapacitor mode.
 |---|---|
 | Grid battery, each tier | Normal accumulator ↔ supercapacitor |
 | Assembler, each size and tier | Ordinary ↔ overcharged |
-| Extractor, each tier (design) | Extraction ↔ reinjection, on Fulgora hydrocarbon vents only |
+| Extractor, each tier | Extraction ↔ reinjection, on Fulgora hydrocarbon vents only |
 
 Each pair shares its construction item and footprint. Blueprints retain unlocked
 modes. Locked variants become ordinary buildings when placed, revived, or cloned.
@@ -1045,12 +1037,13 @@ Water Filtration 3 → Distillation 2 → Sulfur Processing 1 → Waste Reclamat
 Manual fluid deletion is not a design sink. No-void checks assess automated
 waste handling.
 
-Without reinjection, the fixed-arrival batch model cannot supply Volcanism 1,
+The historical five-extractor model without magnetic filtration or reinjection
+could not supply Volcanism 1,
 Water Filtration 3, Distillation 2, Limestone Processing 2, or Waste Reclamation
 within the starter tank allocation. These cases exclude intermediate research
 and fleet expansion. The extractor-research case with unrestricted hydrocarbon
 storage retains 163,228 filtered hydrocarbons, 10,000 benzene, and 9,606
-wastewater. With the proposed reinjection mode all five cases are feasible;
+wastewater. With reinjection all five cases are feasible;
 see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing).
 
 Iron-ore and bauxite checkpoints accept crushed ore at their crushing ratios

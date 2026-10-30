@@ -1,7 +1,9 @@
+local reinjection = require("scripts.fulgora_reinjection")
 local supercapacitors = require("scripts.supercapacitors")
 local overcharged_assemblers = require("scripts.overcharged_assemblers")
 
 function entity_added(entity, handbuilt)
+  if reinjection.built(entity) ~= entity then return end
   if overcharged_assemblers.built(entity) ~= entity then return end
   if supercapacitors.built(entity) ~= entity then return end
   fulgora_collectors.add(entity)
@@ -115,7 +117,9 @@ end
 function entity_cloned(event)
   if grounding_coils.cloned(event.destination) then return end
   if fulgora_overload.cloned(event.destination) then return end
-  local entity = supercapacitors.built(overcharged_assemblers.built(event.destination))
+  local destination = reinjection.built(event.destination)
+  if not destination then return end
+  local entity = supercapacitors.built(overcharged_assemblers.built(destination))
   fulgora_collectors.cloned(entity)
   if entity and entity.valid and
       string.sub(entity.name, -10) == "-pneumatic" then
