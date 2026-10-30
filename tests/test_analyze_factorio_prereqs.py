@@ -70,7 +70,9 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                 "nullius-machine": {
                     "collision_box": [[-1, -1], [1, 1]],
                     "crafting_categories": ["z", "a"],
-                    "energy_source": {"type": "fluid"},
+                    "crafting_speed": 2,
+                    "energy_usage": "390kW",
+                    "energy_source": {"type": "fluid", "drain": "10kW"},
                 },
                 "other-machine": {
                     "collision_box": [[-1, -1], [1, 1]],
@@ -86,6 +88,11 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                     "prototype_type": "assembling-machine",
                     "place_items": ["nullius-machine"],
                     "energy_source_type": "fluid",
+                    "energy_usage": "390kW",
+                    "drain": "10kW",
+                    "collision_box": [[-1, -1], [1, 1]],
+                    "crafting_speed": 2,
+                    "mining_speed": None,
                     "crafting_categories": ["a", "z"],
                     "resource_categories": [],
                     "hidden": True,

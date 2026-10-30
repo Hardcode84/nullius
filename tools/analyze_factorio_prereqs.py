@@ -328,6 +328,11 @@ def describe_placeable_entities(data: Prototype, prefix: str) -> list[Prototype]
                     "prototype_type": prototype_type,
                     "place_items": sorted(place_items[name]),
                     "energy_source_type": energy_source.get("type"),
+                    "energy_usage": prototype.get("energy_usage"),
+                    "drain": energy_source.get("drain"),
+                    "collision_box": prototype.get("collision_box"),
+                    "crafting_speed": prototype.get("crafting_speed"),
+                    "mining_speed": prototype.get("mining_speed"),
                     "crafting_categories": sorted(
                         prototype.get("crafting_categories") or []
                     ),
@@ -1866,6 +1871,14 @@ def main() -> int:
                     )
                     print("  items: " + ", ".join(entity["place_items"]))
                     print("  categories: " + (", ".join(categories) or "none"))
+                    print(
+                        f"  energy: {entity['energy_usage'] or 'none'}; "
+                        f"drain: {entity['drain'] or 'none'}"
+                    )
+                    print("  collision box: " + json.dumps(entity["collision_box"]))
+                    for speed in ("crafting_speed", "mining_speed"):
+                        if entity[speed] is not None:
+                            print(f"  {speed.replace('_', ' ')}: {entity[speed]}")
             elif args.describe_technology:
                 for technology in descriptions:
                     prerequisites = ", ".join(technology["prerequisites"])

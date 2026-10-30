@@ -41,11 +41,17 @@ def character_catalog(data, boundary, name):
     return executor, rows
 
 
-def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1):
-    """Minimize shared fleet work duration while conserving all products."""
+def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1, pools=None):
+    """Minimize shared fleet work duration while conserving all products.
+
+    Pools map a mode entity to the fleet entity whose machines it shares.
+    """
+    pools = pools or {}
     if not 0 < duty <= 1 or any(n <= 0 for n in fleet.values()):
         raise planner.TestFailure('positive fleet counts and duty in (0,1] required')
-    catalog = [r for r in catalog if r['machine'] in fleet]
+    if set(pools) & set(fleet) or set(pools.values()) - set(fleet):
+        raise planner.TestFailure('mode pools must map new modes onto supplied fleet machines')
+    catalog = [r for r in catalog if r['machine'] in fleet or r['machine'] in pools]
     products = sorted(set(demands) | {p for r in catalog for p in r['flows']})
     index = {p: i for i, p in enumerate(products)}
     columns = [('recipe', r) for r in catalog] + [('raw', p) for p in raw]
@@ -61,7 +67,7 @@ def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1):
         if kind == 'recipe':
             for p, v in entry['flows'].items():
                 material[index[p], j] = v
-            work[machine_index[entry['machine']], j] = entry['seconds']
+            work[machine_index[pools.get(entry['machine'], entry['machine'])], j] += entry['seconds']
         elif kind in ('raw', 'store'):
             if entry in index:
                 material[index[entry], j] = 1 if kind == 'raw' else -1
@@ -102,9 +108,16 @@ def batch_bound(catalog, demands, raw, fleet, buffers, stored_solids, duty=1):
                             'machine_seconds': n * entry['seconds']})
         elif kind == 'store':
             stored[entry] = float(n)
+    utilization = {m: t / (seconds * fleet[pools.get(m, m)] * (1 if m.startswith('<character:') else duty))
+                   for m, t in sorted(usage.items())}
+    # Modes share their pool's machine time, so saturation is a pool property.
+    pooled = defaultdict(float)
+    for m, u in utilization.items():
+        pooled[pools.get(m, m)] += u
     return {'status': 'optimal', 'production_minutes_lower_bound': seconds / 60,
             'active_energy_mj': energy / 1e6, 'conservation_max_error': error,
-            'machine_utilization': {m: t / (seconds * fleet[m] * (1 if m.startswith('<character:') else duty)) for m, t in sorted(usage.items())},
+            'machine_utilization': utilization, 'fleet_utilization': dict(sorted(pooled.items())),
+            'bottlenecks': [m for m, u in sorted(pooled.items()) if u > .9999],
             'stored_surplus': stored, 'recipes': recipes,
             'machine_work': {m: sorted([r for r in recipes if r['machine'] == m],
                 key=lambda r: -r['machine_seconds']) for m in usage}}
@@ -116,11 +129,29 @@ def fleet_placements(data, fleet, modes):
         raise planner.TestFailure('machine mode requires a supplied fleet item')
     placements = {item: data['item'][item]['place_result'] for item in fleet}
     for item, name in modes.items():
-        machine = planner.entity(data, name)[1]
-        if planner.place_item(data, machine) != item:
-            raise planner.TestFailure('machine mode changes the supplied build item: ' + item)
+        check_mode(data, item, name)
         placements[item] = name
     return placements
+
+
+def check_mode(data, item, name):
+    machine = planner.entity(data, name)[1]
+    if planner.place_item(data, machine) != item:
+        raise planner.TestFailure('machine mode changes the supplied build item: ' + item)
+
+
+def mode_pools(data, placements, shared):
+    """Map switchable modes onto the supplied machines whose time they share."""
+    if set(shared) - set(placements):
+        raise planner.TestFailure('shared mode requires a supplied fleet item')
+    pools = {}
+    for item, names in shared.items():
+        for name in names:
+            check_mode(data, item, name)
+            if name in pools or name in placements.values():
+                raise planner.TestFailure('shared mode is already supplied: ' + name)
+            pools[name] = placements[item]
+    return pools
 
 
 def buffer_capacities(data, allocation):
@@ -144,7 +175,8 @@ def analyze(data, config):
         raise planner.TestFailure('bootstrap catalog requires guaranteed outputs before explicit mean-yield opt-in')
     placements = fleet_placements(data, config['fleet'], config.get('machine_modes', {}))
     base_fleet = {placements[item]: n for item, n in config['fleet'].items()}
-    stage = dict(config['boundary'], machines=list(base_fleet))
+    pools = mode_pools(data, placements, config.get('shared_modes', {}))
+    stage = dict(config['boundary'], machines=list(base_fleet) + list(pools))
     boundary = planner.boundary_from_config(data, config, stage)
     catalog, excluded, technologies = planner.recipe_catalog(data, boundary)
     android, hand_rows = character_catalog(data, boundary, config['character'])
@@ -189,7 +221,7 @@ def analyze(data, config):
                             recipe['flows'][p] *= case.get('vent_yield_multiplier', 1)
             try:
                 result = batch_bound(case_catalog, demand, raw, fleet, storage, solids,
-                                     case.get('duty', 1))
+                                     case.get('duty', 1), pools)
             except planner.TestFailure as error:
                 raise planner.TestFailure(f"{target['name']} / {case['name']}: {error}") from error
             result['name'] = case['name']
@@ -205,7 +237,6 @@ def analyze(data, config):
             if case['status'] == 'optimal':
                 case['solid_storage_slots'] = sum(int(np.ceil(n / (data.get('item', {}).get(p) or data.get('tool', {}).get(p))['stack_size'] - 1e-9))
                     for p, n in case['stored_surplus'].items() if p in solids)
-                case['bottlenecks'] = [m for m, u in case['machine_utilization'].items() if u > .9999]
         results.append(row)
     return {'assumptions': config['assumptions'], 'buffer_capacities': buffers,
             'allowed_technologies': sorted(technologies), 'excluded': excluded, 'targets': results}
@@ -297,7 +328,7 @@ def main():
             report = report[key]
     elif not args.target:
         report = [{'name': t['name'], 'demands': t['demands'], 'lab_minutes': t['lab_minutes_lower_bound'],
-                   'cases': [{k: v for k, v in c.items() if k not in ('recipes', 'stored_surplus', 'machine_utilization', 'machine_work')} for c in t['cases']]}
+                   'cases': [{k: v for k, v in c.items() if k not in ('recipes', 'stored_surplus', 'machine_utilization', 'fleet_utilization', 'machine_work')} for c in t['cases']]}
                   for t in report['targets']]
     print(json.dumps(report, indent=2, sort_keys=True))
 

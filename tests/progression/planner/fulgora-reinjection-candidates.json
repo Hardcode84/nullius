@@ -1,0 +1,214 @@
+{
+  "recipe": {
+    "candidate-reinject-filtered-hydrocarbons": {
+      "type": "recipe",
+      "name": "candidate-reinject-filtered-hydrocarbons",
+      "enabled": true,
+      "category": "candidate-reinjection",
+      "energy_required": 2,
+      "allow_productivity": false,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-filtered-hydrocarbons",
+          "amount": 20
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-gas-void",
+          "amount": 1,
+          "independent_probability": 0
+        }
+      ]
+    },
+    "candidate-reinject-sludge": {
+      "type": "recipe",
+      "name": "candidate-reinject-sludge",
+      "enabled": true,
+      "category": "candidate-reinjection",
+      "energy_required": 2,
+      "allow_productivity": false,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-sludge",
+          "amount": 20
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-gas-void",
+          "amount": 1,
+          "independent_probability": 0
+        }
+      ]
+    },
+    "candidate-reinject-wastewater": {
+      "type": "recipe",
+      "name": "candidate-reinject-wastewater",
+      "enabled": true,
+      "category": "candidate-reinjection",
+      "energy_required": 2,
+      "allow_productivity": false,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-wastewater",
+          "amount": 20
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-gas-void",
+          "amount": 1,
+          "independent_probability": 0
+        }
+      ]
+    },
+    "candidate-reinject-brine": {
+      "type": "recipe",
+      "name": "candidate-reinject-brine",
+      "enabled": true,
+      "category": "candidate-reinjection",
+      "energy_required": 2,
+      "allow_productivity": false,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-brine",
+          "amount": 20
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-gas-void",
+          "amount": 1,
+          "independent_probability": 0
+        }
+      ]
+    },
+    "candidate-magnetic-sludge-filtration": {
+      "type": "recipe",
+      "name": "candidate-magnetic-sludge-filtration",
+      "enabled": true,
+      "category": "nullius-water-treatment",
+      "energy_required": 2,
+      "allow_productivity": false,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-sludge",
+          "amount": 50
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-crushed-iron-ore",
+          "amount": 3,
+          "probability": 0.3333333333333333
+        },
+        {
+          "type": "item",
+          "name": "nullius-crushed-bauxite",
+          "amount": 3,
+          "probability": 0.3333333333333333
+        },
+        {
+          "type": "item",
+          "name": "nullius-sand",
+          "amount": 3,
+          "probability": 0.16666666666666666
+        },
+        {
+          "type": "item",
+          "name": "nullius-crushed-limestone",
+          "amount": 3,
+          "probability": 0.16666666666666666
+        },
+        {
+          "type": "item",
+          "name": "stone",
+          "amount": 3,
+          "probability": 0.16666666666666666
+        },
+        {
+          "type": "item",
+          "name": "nullius-gypsum",
+          "amount": 3,
+          "probability": 0.16666666666666666
+        }
+      ]
+    }
+  },
+  "assembling-machine": {
+    "candidate-extractor-1-reinjection": {
+      "type": "assembling-machine",
+      "name": "candidate-extractor-1-reinjection",
+      "crafting_categories": [
+        "candidate-reinjection"
+      ],
+      "crafting_speed": 1,
+      "energy_usage": "390kW",
+      "energy_source": {
+        "type": "electric",
+        "usage_priority": "secondary-input",
+        "drain": "10kW"
+      },
+      "fluid_boxes": [
+        {
+          "production_type": "input"
+        }
+      ],
+      "placeable_by": {
+        "item": "nullius-extractor-1",
+        "count": 1
+      },
+      "collision_box": [
+        [
+          -1.7,
+          -1.7
+        ],
+        [
+          1.7,
+          1.7
+        ]
+      ]
+    }
+  }
+}

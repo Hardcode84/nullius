@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog, fleet_placements, buffer_capacities
+from plan_factorio_bootstrap import batch_bound, expected_catalog, character_catalog, fleet_placements, buffer_capacities, mode_pools
 from plan_factorio_factory import TestFailure
 
 
@@ -33,6 +33,35 @@ class BootstrapPlannerTest(unittest.TestCase):
         r = batch_bound(catalog, {'gear': 12}, ['ore'], {'machine': 2}, {}, set())
         self.assertAlmostEqual(r['production_minutes_lower_bound'], .5, places=6)
         self.assertAlmostEqual(r['machine_utilization']['machine'], 1, places=6)
+        self.assertEqual(r['bottlenecks'], ['machine'])
+
+    def test_shared_modes_split_one_machine_pool(self):
+        data = {'item': {'drill': {'place_result': 'extract'}},
+                'mining-drill': {'extract': {'name': 'extract'}},
+                'assembling-machine': {
+                    'inject': {'name': 'inject', 'placeable_by': {'item': 'drill', 'count': 1}},
+                    'other': {'name': 'other', 'placeable_by': {'item': 'other-item', 'count': 1}}}}
+        self.assertEqual(mode_pools(data, {'drill': 'extract'}, {'drill': ['inject']}), {'inject': 'extract'})
+        with self.assertRaisesRegex(TestFailure, 'build item'):
+            mode_pools(data, {'drill': 'extract'}, {'drill': ['other']})
+        with self.assertRaisesRegex(TestFailure, 'supplied fleet item'):
+            mode_pools(data, {}, {'drill': ['inject']})
+        catalog = [recipe('mine', 'extract', 1, {'slurry': 1, 'waste': 1}),
+                   recipe('return', 'inject', 1, {'waste': -1})]
+        args = (catalog, {'slurry': 10}, [], {'extract': 2}, {}, set())
+        self.assertEqual(batch_bound(*args)['status'], 'infeasible')
+        r = batch_bound(*args, 1, {'inject': 'extract'})
+        self.assertAlmostEqual(r['production_minutes_lower_bound'], 1 / 6, places=6)
+        self.assertAlmostEqual(r['machine_utilization']['extract'], .5, places=6)
+        self.assertAlmostEqual(r['machine_utilization']['inject'], .5, places=6)
+        self.assertEqual(list(r['fleet_utilization']), ['extract'])
+        self.assertAlmostEqual(r['fleet_utilization']['extract'], 1, places=6)
+        self.assertEqual(r['bottlenecks'], ['extract'])
+        r = batch_bound(catalog[:1], {'slurry': 10}, [], {'extract': 2}, {'waste': 10}, set(), 1,
+                        {'inject': 'extract'})
+        self.assertAlmostEqual(r['production_minutes_lower_bound'], 1 / 12, places=6)
+        with self.assertRaisesRegex(TestFailure, 'mode pools'):
+            batch_bound(*args, 1, {'inject': 'missing'})
 
     def test_different_machines_overlap_and_duty_scales(self):
         catalog = [recipe('a', 'a', 2, {'ore': -1, 'plate': 1}),
