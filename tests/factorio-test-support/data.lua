@@ -251,6 +251,7 @@ data:extend({planner_grid})
 require("lightning-poles")
 require("fulgora-storms")
 require("network-trip")
+require("accumulator-meter")
 
 require("fluid-preservation")
 
