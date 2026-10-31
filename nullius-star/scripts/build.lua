@@ -130,7 +130,27 @@ function entity_cloned(event)
     vulcanus_heat.add_heat_interface(entity)
   end
 end
+local refundable_burnt_results = {
+  ["nullius-uncharged-battery-1"] = true,
+  ["nullius-uncharged-battery-2"] = true,
+  ["nullius-uncharged-battery-3"] = true,
+  ["nullius-canister"] = true,
+  ["nullius-water-canister"] = true,
+}
+
 function entity_mined(event)
+  local burner = event.entity.burner
+  local fuel = burner and burner.currently_burning
+  if fuel then
+    local result = fuel.name.burnt_result
+    if result and refundable_burnt_results[result.name] then
+      local stack = {name = result.name, quality = fuel.quality, count = 1}
+      if not event.buffer.can_insert(stack) then
+        event.buffer.resize(#event.buffer + 1)
+      end
+      assert(event.buffer.insert(stack) == 1, "Cannot return mined entity's spent fuel")
+    end
+  end
   entity_removed(event.entity, false)
 end
 function entity_died(event)
