@@ -25,7 +25,6 @@ local function has_item(name)
 end
 local initially_enabled={}
 for _,case in ipairs(cases) do
-  assert(data.raw.recipe[case.name].enabled==(initially_enabled[case.name] or false),case.name.." research required")
   for _,parts in ipairs({case.ingredients,case.products}) do
     for _,part in ipairs(parts) do
       if part.type=="item" and not has_item(part.name) then
@@ -33,4 +32,10 @@ for _,case in ipairs(cases) do
       end
     end
   end
+end
+
+require("automatic-boxing-map")
+require("automatic-boxing")
+for _,case in ipairs(cases) do
+  assert(data.raw.recipe[case.name].enabled==(initially_enabled[case.name] or false),case.name.." research required")
 end

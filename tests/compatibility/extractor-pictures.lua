@@ -1,3 +1,4 @@
+data:extend({{type="resource-category",name="nullius-fumarole"}})
 for tier=1,2 do
   local name = "nullius-extractor-" .. tier
   data:extend({{type="item", name=name, stack_size=50, place_result=name,

@@ -4,6 +4,8 @@
 import argparse
 import json
 import re
+import shutil
+from generate_factorio_scenario_manifest import lua
 from pathlib import Path
 import tempfile
 import zipfile
@@ -171,9 +173,11 @@ def stage_pump_wagons(mod):
         raise TestFailure("Expected five full-size pump prototypes")
     (mod / "pump-prototypes.lua").write_text(header + 'data:extend({\n' + body + '})\n')
     trains = (ROOT / "nullius-star/prototypes/entity/train.lua").read_text()
-    start = trains.index('  {\n    type = "fluid-wagon",\n    name = "nullius-fluid-wagon-1",')
-    end = trains.index('\n})', start)
-    wagon = trains[:trains.index('data:extend({')] + 'data:extend({\n' + trains[start:end] + '})\n'
+    wagons = re.findall(r'^  \{\n    type = "fluid-wagon",.*?^  \}', trains, re.M | re.S)
+    if len(wagons) != 3:
+        raise TestFailure("Expected all three fluid wagon prototypes")
+    wagon = trains[:trains.index('data:extend({')] + "\n".join(
+        'data:extend({\n' + block + '\n})' for block in wagons) + "\n"
     (mod / "pump-wagon-prototype.lua").write_text(wagon)
     (mod / "pump-wagons.lua").symlink_to(ROOT / "tests/compatibility/pump-wagons.lua")
     (mod / "pump-test.lua").symlink_to(ROOT / "tests/factorio-test-support/pump-wagons.lua")
@@ -321,11 +325,33 @@ def stage_primitive_recipes(mod):
         (mod / target).symlink_to(ROOT / source, target_is_directory=(ROOT / source).is_dir())
 
 
-def stage_intermediate_recipes(mod, mods, dependency_mod_directory):
+def stage_intermediate_recipes(mod, mods, dependency_mod_directory, factorio):
     source = (ROOT / "nullius-star/prototypes/item/intermediate.lua").read_text()
     blocks = re.findall(r'^  \{\n    type = "recipe",.*?^  \}', source, re.M | re.S)
-    if len(blocks) != 293:
-        raise TestFailure("Expected 293 intermediate recipe records")
+    if len(blocks) + sum("auto_boxed = {" in block for block in blocks) != 293:
+        raise TestFailure("Expected 293 ordinary and generated intermediate recipes")
+    raw, dump_directory = prereqs.dump_resolved_data(SimpleNamespace(
+        data_raw=None, factorio=factorio, dependency_mod_directory=dependency_mod_directory,
+        mod_under_test=ROOT / "nullius-star", timeout_seconds=120))
+    try:
+        mapping, double_ratio = {}, {}
+        for name, recipe in raw["recipe"].items():
+            if not name.startswith("nullius-unbox-"):
+                continue
+            inputs, outputs = recipe["ingredients"], recipe["results"]
+            if len(inputs) != 1 or len(outputs) != 1:
+                raise TestFailure(f"Unboxing must have one input and output: {name}")
+            ratio = prereqs.deterministic_amount(outputs[0]) / prereqs.deterministic_amount(inputs[0])
+            if ratio not in (5, 10):
+                raise TestFailure(f"Unexpected unboxing ratio: {name}={ratio}")
+            mapping[outputs[0]["name"]] = inputs[0]["name"]
+            if ratio == 10:
+                double_ratio[outputs[0]["name"]] = True
+        (mod / "automatic-boxing-map.lua").write_text(
+            "BOXED_ITEM_MAPPING = " + lua(mapping) + "\nDOUBLE_RATIO_BOX = " + lua(double_ratio) + "\n")
+    finally:
+        shutil.rmtree(dump_directory)
+    (mod / "automatic-boxing.lua").symlink_to(ROOT / "nullius-star/prototypes/boxed_recipes.lua")
     header = source.split("extend_intermediate_prototypes({", 1)[0]
     (mod / "intermediate-source.lua").write_text(header + "extend_intermediate_prototypes({\n" + ",\n".join(blocks) + "\n})\n")
     source = "\n".join(blocks)
@@ -638,7 +664,7 @@ def stage_miner_connectors(mod):
     (mod / "miner-connectors.lua").symlink_to(ROOT / "tests/compatibility/miner-connectors.lua")
 
 
-def run(factorio, dependency_mod_directory):
+def run(factorio, dependency_mod_directory, scenarios=()):
     work = Path(tempfile.mkdtemp(prefix="factorio-tool-compat-"))
     metadata = json.loads((factorio.resolve().parents[2] / "data/base/info.json").read_text())
     version = supported_factorio_version(".".join(metadata["version"].split(".")[:2]))
@@ -676,7 +702,7 @@ def run(factorio, dependency_mod_directory):
     stage_equipment_recipes(mod, mods, dependency_mod_directory)
     stage_biology_recipes(mod, mods, dependency_mod_directory)
     stage_fluid_recipes(mod, mods, dependency_mod_directory)
-    stage_intermediate_recipes(mod, mods, dependency_mod_directory)
+    stage_intermediate_recipes(mod, mods, dependency_mod_directory, factorio)
     stage_primitive_recipes(mod)
     with (mod / "settings.lua").open("a") as settings_file:
         settings_file.write('data:extend({{type="bool-setting",name="nullius-hide-recipe-signals",setting_type="startup",default_value=false}})\n')
@@ -749,7 +775,7 @@ def run(factorio, dependency_mod_directory):
     data = json.loads((work / "script-output/data-raw-dump.json").read_text())
     report = check_data(data)
     planner.write_executor_fixture(report, "compat", scenario / "fixture.lua")
-    for namespace, name in (("nullius-star", "tool-compat"),
+    scenario_entries = (("nullius-star", "tool-compat"),
                             ("nullius-star", "recipe-productivity-family"),
                             ("nullius-star", "fluid-preservation"),
                             ("nullius-star", "helper-mining"),
@@ -786,10 +812,31 @@ def run(factorio, dependency_mod_directory):
                             ("nullius-star", "salvage-research"),
                             ("nullius-star", "reactor-neighbours"),
                             ("nullius-star", "solar-neighbours"),
-                            ("recipe-ui-audit-support", "audit")):
+                            ("recipe-ui-audit-support", "audit"))
+    unknown = set(scenarios) - {name for _, name in scenario_entries}
+    if unknown:
+        raise TestFailure(f"Unknown compatibility scenarios: {sorted(unknown)}")
+    for namespace, name in scenario_entries:
+        if scenarios and name not in scenarios:
+            continue
         execute(f"compile-{name}", ["--scenario2map", f"{namespace}/{name}"])
         execute(f"run-{name}", ["--load-game", str(work / "saves" / namespace / f"{name}.zip"),
                                "--until-tick", "4000"])
+    if scenarios:
+        reports = {}
+        for name in scenarios:
+            if name == "audit":
+                result = json.loads((work / "script-output/recipe-ui-audit.json").read_text())
+                if set(result["recipes"]["compat-recipe"]["categories"]) != {"compat-primary", "compat-secondary"}:
+                    raise TestFailure("Recipe UI audit lost alternate categories")
+                reports[name] = result
+                continue
+            result_path = work / "script-output/factorio-tests" / f"{name}.json"
+            result = json.loads(result_path.read_text())
+            if result["status"] != "pass":
+                raise TestFailure(f"Compatibility scenario failed: {name}")
+            reports[name] = result
+        return {"status": "pass", "scenarios": reports, "artifacts": str(work)}
     result = json.loads((work / "script-output/factorio-tests/tool-compat.json").read_text())
     assert result["status"] == "pass", result
     productivity = json.loads((work / "script-output/factorio-tests/recipe-productivity-family.json").read_text())
@@ -824,7 +871,7 @@ def run(factorio, dependency_mod_directory):
     wells = json.loads((work / "script-output/factorio-tests/well-pictures.json").read_text())
     assert wells["status"] == "pass" and wells["wells"] == 16, wells
     pumps = json.loads((work / "script-output/factorio-tests/pump-wagons.json").read_text())
-    assert pumps["status"] == "pass" and pumps["cases"] == 64, pumps
+    assert pumps["status"] == "pass" and pumps["cases"] == 192, pumps
     salvage = json.loads((work / "script-output/factorio-tests/salvage-research.json").read_text())
     assert salvage["status"] == "pass", salvage
     reactors = json.loads((work / "script-output/factorio-tests/reactor-neighbours.json").read_text())
@@ -921,8 +968,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--factorio", type=Path, required=True)
     parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
+    parser.add_argument("--scenario", action="append", default=[], help="Run only this scenario (repeatable)")
     args = parser.parse_args()
-    print(json.dumps(run(args.factorio.expanduser().resolve(), args.dependency_mod_directory.expanduser().resolve()), indent=2))
+    print(json.dumps(run(args.factorio.expanduser().resolve(), args.dependency_mod_directory.expanduser().resolve(), args.scenario), indent=2))
 
 
 if __name__ == "__main__":
