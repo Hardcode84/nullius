@@ -301,7 +301,8 @@ python tools/plan_factorio_bootstrap.py \
 ## Fulgora through physics
 
 `fulgora-science-scale.json` checks local physics, the preceding science factory,
-local tier-2 overcharged assembly, and a supplied-boric-acid reference at
+an isolated climatology line, local tier-2 overcharged assembly, and a
+supplied-boric-acid reference at
 30, 60, 120, and 240 packs/min. Borate leaching closes the local material route;
 checkpoint completion remains a separate contract.
 `expected_recipes` permits mean independent drops only for the named crude

@@ -7,6 +7,7 @@
 | Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, primitive filtration, salt crushing, and sand construction rules implemented |
 | Reservoir processing | Extractor reinjection mode and magnetic sludge filtration implemented; see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) |
 | Surge power | Lightning collectors, overload protection, and circuit-controlled grounding; see [Metered grounding](#metered-grounding) |
+| Tier-2 climatology | Design only; see [Storm climatology](#storm-climatology) |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -964,35 +965,114 @@ large assembler 1, and tier-1 overcharged assembly. No modules or beacons.
 
 | Packs/min each | Stations, including labs | Labs | Average demand | Installed demand | Research supply bound |
 |---:|---:|---:|---:|---:|---:|
-| 30 | 604 | 20 | 187 MW | 293 MW | 32.57 h |
-| 60 | 955 | 40 | 367 MW | 464 MW | 16.29 h |
-| 120 | 1,686 | 80 | 728 MW | 818 MW | 8.14 h |
-| 240 | 3,164 | 160 | 1,451 MW | 1,537 MW | 4.07 h |
+| 30 | 599 | 20 | 184 MW | 290 MW | 33.01 h |
+| 60 | 950 | 40 | 362 MW | 460 MW | 16.51 h |
+| 120 | 1,673 | 80 | 718 MW | 810 MW | 8.25 h |
+| 240 | 3,138 | 160 | 1,431 MW | 1,519 MW | 4.13 h |
 
-Physics research alone after Primitive Filtration needs 58,126 geology, 56,594
-climatology, 55,451 mechanical, 50,977 electrical, and 46,341 chemical packs.
-The selected factory routes raise these totals to 58,626 geology, 57,674
-climatology, 55,991 mechanical, 51,597 electrical, 47,422 chemical, and 600 EM packs.
+Physics research alone after Primitive Filtration needs 58,926 geology, 57,394
+climatology, 56,251 mechanical, 51,777 electrical, and 47,141 chemical packs.
+The selected factory routes raise these totals to 59,426 geology, 58,474
+climatology, 56,791 mechanical, 52,397 electrical, 48,222 chemical, and 600 EM packs.
 Times in the table include the selected routes and assume
 all lines operate from the start. They exclude construction, checkpoint work,
 transport, and power interruptions. They are not arrival-to-physics timings.
 
-At 60/min: 174 extractors, 96 distilleries, 85 hydro plants, 55 medium furnaces,
-50 electrolyzers, 56 chemical plants, 40 air filters, and 40 labs, plus assembly
-and support. Gross flows: 104,029 slurry/min, 94,216 water/min, 86,314 oxygen/min.
+At 60/min: 174 extractors, 97 distilleries, 85 hydro plants, 51 medium furnaces,
+47 electrolyzers, 58 chemical plants, 40 air filters, and 40 labs, plus assembly
+and support. Gross flows: 104,038 slurry/min, 88,797 water/min, 80,149 oxygen/min.
 Boric acid for operation and process construction comes from local sludge.
 Climatology alone uses 30 hydro plants, 300,000 air/min, and 6,000 slurry/min.
 
-The six-line case without physics needs 615 stations and 242 MW at 60/min.
+The six-line case without physics needs 608 stations and 239 MW at 60/min.
 Allowing tier-2 overcharged machines across the seven-line factory reduces it to
-686 stations, but raises average demand to 1.66 GW and installed demand to
+685 stations, but raises average demand to 1.67 GW and installed demand to
 9.92 GW. The solver minimizes active machine time, not electricity or rounded
 station count. Use overcharged modes selectively.
 
-Fresh Vulcanus reference: 895 stations at 60/min and 1,518 at 120/min; research
-supply bounds are 16.36 h and 8.18 h. That catalog uses pneumatic and thermal
+Fresh Vulcanus reference: 954 stations at 60/min and 1,631 at 120/min; research
+supply bounds are 16.57 h and 8.29 h. That catalog uses pneumatic and thermal
 machines and includes metallurgic science instead of EM. Entrance research also
 differs. These are factory-scale references, not identical progression starts.
+
+### Storm climatology
+
+Status: design only. Fulgora has no tier-2 climatology recipe.
+
+| Recipe | Fulgora blocker |
+|---|---|
+| Climatology 2 | 5 volcanic gas per pack; Fulgora trace gas needs volcanic or generic residual separation, both unavailable |
+| Local climatology 2 | `nullius-ambient-temperature >= 100`; Fulgora is 25 |
+| Boxed slurry climatology | 5x inputs and 5x time; same packs per station |
+
+Storm climatology samples a lightning discharge through nitrogen, ammonia, and
+hydrocarbons: the Miller-Urey atmosphere of a primordial storm world. Inputs
+follow Nauvis climatology 2 with Fulgora sources: atmosphere, a reactive trace,
+and the hydrocarbon ocean.
+
+| Recipe | Inputs | Output | Time | Category | Surface | Unlock |
+|---|---|---|---:|---|---|---|
+| Storm climatology | 200 nitrogen + 5 ammonia + 20 hydrocarbon slurry | 1 climatology pack | 10 s | basic-chemistry | `magnetic-field = 99` | Climatology 2 |
+| Boxed storm climatology | 1000 nitrogen + 25 ammonia + 100 hydrocarbon slurry | 1 box of climatology packs | 50 s | basic-chemistry | `magnetic-field = 99` | Mass Production 7 |
+
+Ammonia unlocks with Nitrogen Chemistry 1, a Climatology 2 prerequisite.
+Slurry climatology remains the bootstrap recipe.
+
+#### Climatology line capacity
+
+Isolated climatology stages with each planet's physics-plan catalog and all
+pre-physics recipes. Storm climatology rows use the planner overlay; they are
+not shipping prototypes. Research to physics needs 57,394 climatology packs on
+every planet: 15.94 h at 60/min.
+
+| Packs/min | Fulgora slurry stations | Fulgora storm stations | Nauvis stations | Vulcanus stations | Fulgora slurry MW | Fulgora storm MW | Nauvis MW | Vulcanus fuel gas/min |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 30 | 37 | 39 | - | - | 16.2 | 3.3 | - | - |
+| 60 | 74 | 44 | 24 | 24 | 32.3 | 5.9 | 6.2 | 13,796 |
+| 120 | 147 | 54 | 41 | 35 | 64.7 | 11.0 | 12.2 | 27,592 |
+| 240 | 294 | 76 | 80 | 55 | 129.3 | 21.3 | 24.4 | 55,185 |
+
+| Planet route | Pack stations at 60/min | Upstream at 60/min |
+|---|---:|---|
+| Fulgora slurry climatology | 30 hydro plant 2 | 34 air filter 2, 10 extractors; 300,000 air + 6,000 slurry/min |
+| Fulgora storm climatology | 5 chemical plant 2 | 2 air filter 2, 3 extractors, 3 electrolyzers; 15,000 air + 1,200 slurry/min |
+| Nauvis climatology 2 | 5 chemical plant 2 | Seawater, nitrogen, 300 volcanic gas/min |
+| Vulcanus local climatology 2 | 3 chemical plant 2 | Compressed CO2 + nitrogen, sulfuric acid |
+
+Storm climatology carries a fixed support overhead: ammonia hydrogen, ice water,
+and slurry byproduct closure. At 30/min it needs 39 stations against 37 for
+slurry climatology, at one-fifth of the power. Ideal captured strikes/min for
+the line: 9.7 slurry, 1.8 storm at 60/min.
+
+#### First-physics factory at 60/min
+
+| Metric | Slurry climatology | Storm climatology |
+|---|---:|---:|
+| Stations, including labs | 950 | 881 |
+| Average demand | 362 MW | 332 MW |
+| Installed demand | 460 MW | 429 MW |
+| Ideal captured strikes/min | 108.6 | 99.7 |
+| Gross air/min | 353,260 | 53,260 |
+| Gross slurry/min | 104,038 | 99,238 |
+| Research supply time | 16.51 h | 16.51 h |
+
+At 120 and 240/min storm climatology reduces the factory from 1,673 to 1,538
+and from 3,138 to 2,869 stations.
+
+| Rejected candidate | Reason |
+|---|---|
+| 5 nitric acid instead of ammonia | Nitric acid unlocks with Nitrogen Chemistry 2; Climatology 2 requires only Nitrogen Chemistry 1; 49 stations and 11.0 MW at 60/min; full factory 890 stations, 339 MW |
+| Imported volcanic gas for climatology 2 | Weather science depends on another planet's volcanism |
+| Surge-power climatology | No surge machine runs chemistry; needs a new machine mode |
+| Faster slurry climatology | No new process; keeps the 300,000 air/min filter field |
+
+```bash
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-science-scale.json --output /tmp/fulgora-science.json --overview
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-climatology-candidate-scale.json --output /tmp/fulgora-climatology-candidate.json --overview
+python tools/analyze_fulgora_industry.py --plan /tmp/fulgora-climatology-candidate.json --output /tmp/fulgora-climatology-industry.json --table
+python tools/analyze_factorio_prereqs.py @tests/progression/climatology-routes.args
+python tools/analyze_factorio_prereqs.py @tests/progression/climatology-inputs.args
+```
 
 ### Island space
 

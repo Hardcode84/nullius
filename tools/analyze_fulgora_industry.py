@@ -72,7 +72,10 @@ def markdown(report):
              '|---|---:|---:|---:|---:|---:|---:|']
     for r in report['rows']:
         if r['flow'] != 'optimal':
-            lines.append(f"| {r['stage']} | {r['rate']} | Blocked | — | — | — | — |")
+            lines.append(f"| {r['stage']} | {r['rate']} | Blocked | - | - | - | - |")
+        elif r['labs'] is None:
+            # Standalone pack lines have no labs and no research schedule.
+            lines.append(f"| {r['stage']} | {r['rate']} | {r['stations']} | - | {r['electric_mw']:.1f} | {r['installed_mw']:.1f} | - |")
         else:
             lines.append(f"| {r['stage']} | {r['rate']} | {r['stations']} | {r['labs']} | {r['electric_mw']:.1f} | {r['installed_mw']:.1f} | {r['supply_hours']:.2f} |")
     return '\n'.join(lines) + '\n'

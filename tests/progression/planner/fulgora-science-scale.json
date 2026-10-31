@@ -94,6 +94,46 @@
       ]
     },
     {
+      "name": "industrial-climatology",
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ]
+    },
+    {
       "name": "pre-physics-science",
       "products": {
         "nullius-chemical-pack": 1,
