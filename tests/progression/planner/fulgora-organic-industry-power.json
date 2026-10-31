@@ -1,0 +1,26 @@
+{
+  "lightning": "nullius-fulgora-lightning",
+  "collector": "nullius-pole-lightning-collector",
+  "battery": "nullius-grid-battery-1",
+  "calm_seconds": [
+    10,
+    30,
+    60
+  ],
+  "materials": [
+    "nullius-hydrocarbon-slurry",
+    "nullius-filtered-hydrocarbons",
+    "nullius-sludge",
+    "nullius-water",
+    "nullius-air",
+    "nullius-oxygen",
+    "nullius-acid-boric",
+    "nullius-iron-ingot",
+    "nullius-steel-ingot",
+    "nullius-aluminum-ingot",
+    "nullius-plastic",
+    "nullius-carbon-fiber",
+    "nullius-graphite",
+    "nullius-epoxy"
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "recipe": {
+    "candidate-polymer-gear": {
+      "type": "recipe",
+      "name": "candidate-polymer-gear",
+      "enabled": true,
+      "categories": [
+        "small-crafting"
+      ],
+      "energy_required": 4,
+      "allow_productivity": true,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99,
+          "max": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-plastic",
+          "amount": 3
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-iron-gear",
+          "amount": 2
+        }
+      ]
+    },
+    "candidate-reinforced-polymer-gear": {
+      "type": "recipe",
+      "name": "candidate-reinforced-polymer-gear",
+      "enabled": true,
+      "categories": [
+        "small-crafting"
+      ],
+      "energy_required": 6,
+      "allow_productivity": true,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99,
+          "max": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-plastic",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "nullius-carbon-fiber",
+          "amount": 1
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-steel-gear",
+          "amount": 2
+        }
+      ]
+    },
+    "candidate-composite-beam": {
+      "type": "recipe",
+      "name": "candidate-composite-beam",
+      "enabled": true,
+      "categories": [
+        "machine-casting"
+      ],
+      "energy_required": 2,
+      "allow_productivity": true,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99,
+          "max": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-carbon-composite",
+          "amount": 1
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-steel-beam",
+          "amount": 2
+        }
+      ]
+    },
+    "candidate-fiber-cable": {
+      "type": "recipe",
+      "name": "candidate-fiber-cable",
+      "enabled": true,
+      "categories": [
+        "large-fluid-assembly"
+      ],
+      "energy_required": 5,
+      "allow_productivity": true,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99,
+          "max": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-acrylic-fiber",
+          "amount": 7
+        },
+        {
+          "type": "fluid",
+          "name": "nullius-lubricant",
+          "amount": 2
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "nullius-steel-cable",
+          "amount": 2
+        }
+      ]
+    },
+    "candidate-polymer-wire": {
+      "type": "recipe",
+      "name": "candidate-polymer-wire",
+      "enabled": true,
+      "categories": [
+        "small-crafting"
+      ],
+      "energy_required": 6,
+      "allow_productivity": true,
+      "surface_conditions": [
+        {
+          "property": "magnetic-field",
+          "min": 99,
+          "max": 99
+        }
+      ],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "nullius-graphite",
+          "amount": 3
+        },
+        {
+          "type": "item",
+          "name": "nullius-plastic",
+          "amount": 2
+        }
+      ],
+      "results": [
+        {
+          "type": "item",
+          "name": "copper-cable",
+          "amount": 4
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "entrance_technologies": [
+    "nullius-primitive-filtration"
+  ],
+  "science_rates_per_minute": [
+    60
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [],
+  "prime_stock": {},
+  "solid_discard": [],
+  "wreck_machines": {
+    "nullius-extractor-1": 7,
+    "nullius-hydro-plant-1": 5,
+    "nullius-distillery-1": 4,
+    "nullius-air-filter-1": 4,
+    "nullius-chemical-plant-1": 4,
+    "nullius-electrolyzer-1": 2,
+    "nullius-crusher-1": 4,
+    "nullius-small-furnace-1": 4,
+    "nullius-medium-furnace-1": 1,
+    "nullius-foundry-1": 2,
+    "nullius-small-assembler-1": 2,
+    "nullius-flotation-cell-1": 2,
+    "nullius-combustion-chamber-1": 1,
+    "nullius-chimney-1": 3,
+    "nullius-lab-1": 1
+  },
+  "assumptions": {
+    "resources": "Local hydrocarbon vents at 100 percent yield; no ore patches or seed stock. Diagnostic stages explicitly supply boric acid without modeling its local production cost.",
+    "waste": "No solid discard or liquid voiding. Gases use real compatible recipes.",
+    "capacity": "All pre-physics research available for route selection. Continuous external grid; generation, storage, distribution and logistics excluded. No modules, beacons or research productivity.",
+    "time": "Research costs subtract Primitive Filtration closure. All lines online at time zero; triggers assumed met. Not elapsed player progression.",
+    "construction": "Starter process fleet supplied; other process machines must be constructed. Continuous flow is not a finite startup schedule.",
+    "minerals": "Only crude filtration uses mean independent mineral yields. Not deterministic startup or an expected completion time."
+  },
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "extractors": {
+    "nullius-hydrocarbon-slurry": {
+      "machine": "nullius-extractor-1",
+      "resource": "nullius-hydrocarbon-vent",
+      "yield_fraction": 1
+    }
+  },
+  "lab": "nullius-lab-1",
+  "electric_grid": true,
+  "expected_recipes": [
+    "nullius-crude-sludge-filtration"
+  ],
+  "stages": [
+    {
+      "name": "industrial-climatology",
+      "products": {
+        "nullius-climatology-pack": 1
+      },
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ]
+    }
+  ],
+  "science_analysis": {
+    "packs": [
+      "nullius-chemical-pack",
+      "nullius-geology-pack",
+      "nullius-climatology-pack",
+      "nullius-mechanical-pack",
+      "nullius-electrical-pack",
+      "nullius-physics-pack",
+      "nullius-electromagnetic-pack"
+    ],
+    "rates": [
+      60
+    ],
+    "hours": [
+      8
+    ],
+    "research_roots": {
+      "nullius-insulation-1": [
+        "nullius-insulation-1"
+      ],
+      "nullius-iron-working-2": [
+        "nullius-iron-working-2"
+      ],
+      "nullius-organic-chemistry-1": [
+        "nullius-organic-chemistry-1"
+      ],
+      "nullius-organic-chemistry-3": [
+        "nullius-organic-chemistry-3"
+      ],
+      "nullius-steelworking": [
+        "nullius-steelworking"
+      ],
+      "nullius-weaving-1": [
+        "nullius-weaving-1"
+      ],
+      "nullius-weaving-2": [
+        "nullius-weaving-2"
+      ],
+      "nullius-composites-1": [
+        "nullius-composites-1"
+      ],
+      "nullius-composites-2": [
+        "nullius-composites-2"
+      ],
+      "nullius-overcharged-assembly-2": [
+        "nullius-overcharged-assembly-2"
+      ],
+      "nullius-electronics-4": [
+        "nullius-electronics-4"
+      ],
+      "nullius-climatology-2": [
+        "nullius-climatology-2"
+      ],
+      "nullius-physics": [
+        "nullius-physics"
+      ]
+    },
+    "factory_stages": []
+  }
+}

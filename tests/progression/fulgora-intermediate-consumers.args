@@ -39,3 +39,7 @@ nullius-box-glass-fiber
 nullius-fiberglass
 --describe-consumers
 nullius-box-fiberglass
+--describe-consumers
+copper-cable
+--describe-consumers
+nullius-box-insulated-wire

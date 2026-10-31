@@ -780,6 +780,86 @@ Conductive polymer wire connects the industry to the ocean setting. Imported
 Vulcanus iron chloride is a proposed dopant after cargo; local bootstrap wiring
 must not depend on that import.
 
+### Substitute capacity
+
+Planner experiment with hypothetical substitutes. Each keeps the metal recipe's
+category, time, and output, and changes only its inputs:
+
+| Substitute | Candidate inputs | Output |
+|---|---|---|
+| Polymer gear | 3 plastic | 2 gears, 4 s |
+| Reinforced polymer gear | 2 plastic + 1 carbon fiber | 2 reinforced gears, 6 s |
+| Composite beam | 1 carbon composite | 2 structural beams, 2 s |
+| Fiber cable | 7 acrylic fiber + 2 lubricant | 2 tension cables, 5 s |
+| Polymer insulated wire | 3 graphite + 2 plastic | 4 insulated wires, 6 s |
+
+First-physics factory at 60 packs/min each, without research productivity:
+
+| Allowed substitute | Stations | Average MW | Ideal strikes/min | Extractors | Slurry/min | Iron ingot/min | Aluminum ingot/min | Plastic/min |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| None | 881 | 332.4 | 99.7 | 166 | 99,237 | 835 | 313 | 285 |
+| Polymer gear | 837 | 307.1 | 92.1 | 142 | 85,159 | 653 | 245 | 493 |
+| Reinforced polymer gear | 869 | 324.0 | 97.2 | 160 | 95,711 | 775 | 302 | 314 |
+| Composite beam | 881 | 332.4 | 99.7 | 166 | 99,237 | 835 | 313 | 285 |
+| Fiber cable | 880 | 331.9 | 99.6 | 166 | 99,046 | 831 | 313 | 285 |
+| Polymer insulated wire | 810 | 292.5 | 87.7 | 145 | 86,501 | 836 | 169 | 512 |
+| All | 745 | 252.7 | 75.8 | 122 | 72,821 | 524 | 176 | 670 |
+
+At 240/min, all substitutes reduce the factory from 2,869 to 2,279 stations,
+1,313 to 993 MW, and 394 to 298 ideal strikes/min. Research supply time stays
+16.51-16.52 h.
+
+| Finding | Mechanism |
+|---|---|
+| Insulated wire has the largest effect | Aluminum wire needs bauxite from slurry sludge; graphite and plastic come from cracking |
+| Gears are second | Mechanical science uses about 180 gears/min; their iron comes from crude filtration |
+| Composite beam is not selected | Carbon composite unlocks with Composites 2, which costs physics packs |
+| Fiber cable has no effect | The factory crafts 0.6 cables/min |
+| Effects are nearly additive | Individual reductions sum to 128 stations; all together reduce 136 |
+| Metal remains | Motors, plates, and basic EM packs still use 524 iron, 176 aluminum, and 95 steel ingots/min |
+
+Priority: polymer insulated wire, then polymer gears. Reinforced gears are
+optional. Tension cable and structural beam do not affect pre-physics capacity.
+
+Substitutes produce the existing item IDs, so production statistics combine
+metal and polymer output. No checkpoint or research trigger counts gears,
+beams, cables, or insulated wire. Plastic checkpoints count production only.
+Insulated wire consumers feed boxing and red wire; red wire remains in the
+metal recovery audit.
+
+```bash
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-organic-substitutes.json --output /tmp/fulgora-organic.json --overview
+python tools/analyze_fulgora_industry.py --plan /tmp/fulgora-organic.json --config tests/progression/planner/fulgora-organic-industry-power.json --output /tmp/fulgora-organic-industry.json --table
+python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-organic-substitutes.args
+python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-intermediate-consumers.args
+python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-substitute-unlocks.json --output /tmp/fulgora-unlocks.json
+python tools/plan_factorio_factory.py --read-plan /tmp/fulgora-unlocks.json --field science_analysis.budgets
+python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-substitute-boxed.args --json
+python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-bootstrap-boundary.args --compact nullius-plastic nullius-graphite copper-cable nullius-iron-gear
+```
+
+### Substitute unlocks
+
+Each substitute unlocks when its last missing input becomes available. Metal
+versions of all five, except tension cable, are researched before Fulgora
+arrival. Costs are remaining packs beyond the Primitive Filtration closure.
+
+| Recipe | Unlock | Remaining packs | Metal recipe unlock | Boxed unlock |
+|---|---|---:|---|---|
+| Polymer insulated wire | Primitive Filtration | 0 | Insulation 1 | None; insulated wire has only packing |
+| Polymer gear | Primitive Filtration | 0 | Iron Working 2 | Mass Production 4 |
+| Reinforced polymer gear | Weaving 2 | 26,102 | Steelworking | Mass Production 4 |
+| Fiber cable | Weaving 2 | 26,102 | Weaving 1: 1,165 remaining | Mass Production 4 |
+| Composite beam | Composites 2 | 277,889, including 1,600 physics | Steelworking | Mass Production 4 |
+
+References: Climatology 2 has 2,132 remaining packs; Physics has 271,489.
+
+Plastic, graphite, insulated wire, and gears are reachable at Primitive
+Filtration with the starter machines and no further research. Basic EM science
+needs insulated wire at arrival, and crude filtration is then the only metal
+source. Carbon fiber and acrylic fiber unlock with Weaving 2. Carbon composite
+needs physics science, so pre-physics bridges keep steel beams.
+
 ## Science and research
 
 | Research or product | Proposed local route or reward |
@@ -789,8 +869,40 @@ must not depend on that import.
 | Electrical science | Conductive polymer circuits |
 | Electromagnetic science | Basic, improved, and improved boxed recipes below |
 | Global electromagnetic rewards | Overcharged assemblers; polymers and organic electronics supply their components |
+| Organic process optimization | Infinite productivity research for organic chemistry; see below |
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
+
+### Organic process optimization
+
+Design only. Fulgora's counterpart to Vulcanus industrial optimization:
+repeatable productivity research for organic chemistry, effective on every planet.
+
+| Branch | Eligible recipes produce | Process technology |
+|---|---|---|
+| Hydrocarbon processing | Filtered hydrocarbons, methane, ethylene, propene, benzene, butadiene, styrene | Primitive Filtration |
+| Polymerization | Plastic, rubber, epoxy, BPA, ECH, acrylonitrile | Organic Chemistry 1 |
+| Fibers | Acrylic fiber, carbon fiber, textile | Weaving 2 |
+
+| Contract | Value |
+|---|---|
+| Effect per level | +1% recipe productivity |
+| Cost | `100*L^2` units of electromagnetic science, 30 s |
+| Prerequisites | Overcharged Assembly 2 (454 remaining packs, 200 EM) and the branch's process technology |
+| Levels | Infinite; branches are independent |
+| Eligibility | Recipe produces a listed item or fluid and permits productivity |
+| Excluded | Recipes with `maximum_productivity = 0`, unboxing, voiding, reinjection, and recycling |
+
+Organic chemistry spans several crafting categories: plastic uses basic
+chemistry, polypropylene ore flotation, cracking distillation, and carbon fiber
+wet smelting. Basic chemistry also contains inorganic acids. A category-based
+family therefore cannot select organic chemistry. Extend
+`prototypes/recipe-productivity.lua` with a product-based selector; keep the
+category selector for Vulcanus.
+
+Vulcanus smelting and casting research raises the metal routes for gears and
+wire. These branches give their polymer substitutes an equivalent upstream
+bonus. The substitute assembly recipes themselves remain outside both families.
 
 ### Electromagnetic science recipes
 
