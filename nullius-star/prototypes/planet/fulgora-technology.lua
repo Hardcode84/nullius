@@ -96,7 +96,27 @@ for tier=2,3 do
   }})
 end
 
-for _, boxed in ipairs({false,true}) do
-  table.insert(data.raw.technology[boxed and "nullius-mass-production-7" or "nullius-climatology-2"].effects,
-    {type="unlock-recipe",recipe="nullius-"..(boxed and "boxed-" or "").."climatology-pack-fulgora-2"})
-end
+data:extend({
+  {
+    type="technology", name="nullius-storm-climatology",
+    icon="__base__/graphics/technology/chemical-science-pack.png", icon_size=256,
+    order="nullius-dg-storm-climatology",
+    prerequisites={"nullius-primitive-filtration", "nullius-climatology-2"},
+    effects={{type="unlock-recipe", recipe="nullius-climatology-pack-fulgora-2"}},
+    unit={count=10, time=30, ingredients={
+      {"nullius-electromagnetic-pack",10}, {"nullius-climatology-pack",4},
+      {"nullius-electrical-pack",4},
+    }},
+  },
+  {
+    type="technology", name="nullius-bulk-storm-climatology",
+    icon="__base__/graphics/technology/chemical-science-pack.png", icon_size=256,
+    order="nullius-dg-bulk-storm-climatology",
+    prerequisites={"nullius-storm-climatology", "nullius-overcharged-assembly-2", "nullius-mass-production-7"},
+    effects={{type="unlock-recipe", recipe="nullius-boxed-climatology-pack-fulgora-2"}},
+    unit={count=10, time=45, ingredients={
+      {"nullius-electromagnetic-pack",20}, {"nullius-climatology-pack",4},
+      {"nullius-electrical-pack",4}, {"nullius-chemical-pack",4},
+    }},
+  },
+})

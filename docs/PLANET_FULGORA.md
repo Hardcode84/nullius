@@ -964,12 +964,14 @@ It does not measure arrival-to-physics time.
 
 ### Storm climatology
 
-Slurry climatology is the bootstrap recipe. Climatology 2 unlocks storm
+Slurry climatology is the bootstrap recipe. Fulgora-specific Storm Climatology research unlocks storm
 climatology, which uses nitrogen, ammonia, and hydrocarbon slurry in a chemical
 plant on Fulgora. The process models a lightning discharge through a primordial
 atmosphere. Nitrogen Chemistry supplies the ammonia route.
 
-Mass Production 7 unlocks boxed storm climatology. Basic slurry climatology
+Storm Climatology follows Climatology 2 and uses electromagnetic science.
+Bulk Storm Climatology follows it, Overcharged Assembly 2, and Mass Production 7
+to unlock boxed storm climatology. Basic slurry climatology
 has no boxed recipe.
 
 ### Island space

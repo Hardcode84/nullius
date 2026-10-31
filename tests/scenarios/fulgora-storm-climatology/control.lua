@@ -4,9 +4,9 @@
 -- expect: one product per Fulgora craft; no crafts on Nauvis.
 local CASE = "fulgora-storm-climatology"
 local specs = {
-  {recipe="nullius-climatology-pack-fulgora-2", tech="nullius-climatology-2", machine="nullius-chemical-plant-2", product="nullius-climatology-pack", seconds=10,
+  {recipe="nullius-climatology-pack-fulgora-2", tech="nullius-storm-climatology", machine="nullius-chemical-plant-2", product="nullius-climatology-pack", seconds=10,
     inputs={{"nullius-nitrogen",200},{"nullius-ammonia",5},{"nullius-hydrocarbon-slurry",20}}},
-  {recipe="nullius-boxed-climatology-pack-fulgora-2", tech="nullius-mass-production-7", machine="nullius-chemical-plant-2", product="nullius-box-climatology-pack", seconds=50,
+  {recipe="nullius-boxed-climatology-pack-fulgora-2", tech="nullius-bulk-storm-climatology", machine="nullius-chemical-plant-2", product="nullius-box-climatology-pack", seconds=50,
     inputs={{"nullius-nitrogen",1000},{"nullius-ammonia",25},{"nullius-hydrocarbon-slurry",100}}},
 }
 local function check(ok, message)
@@ -25,6 +25,12 @@ script.on_nth_tick(30,function()
   if not storage.rows then
     storage.rows={};storage.failures={};storage.assertions=0
     local force=game.create_force("science-tier2-test")
+    force.technologies["nullius-climatology-2"].researched=true
+    force.technologies["nullius-mass-production-7"].researched=true
+    local bulk=force.technologies["nullius-bulk-storm-climatology"]
+    check(bulk.prerequisites["nullius-mass-production-7"]~=nil,"bulk requires Mass Production 7")
+    check(bulk.prerequisites["nullius-storm-climatology"]~=nil,"bulk requires ordinary storm research")
+    check(bulk.prerequisites["nullius-overcharged-assembly-2"]~=nil,"bulk requires later EM research")
     for _,spec in ipairs(specs) do
       force.technologies[spec.tech].researched=false
       check(not force.recipes[spec.recipe].enabled,"recipe enabled before research: "..spec.recipe)
