@@ -294,6 +294,17 @@ for name, recipe in pairs(data.raw.recipe) do
   if string.find(name, "%-recycling$") then
     recipe.hidden = true
     recipe.enabled = false
+    recipe.results = {{type="item",name="nullius-gas-void",amount=1,independent_probability=0}}
+    recipe.main_product = nil
+    recipe.maximum_productivity = 0
+  end
+end
+for _, technology in pairs(data.raw.technology) do
+  for index=#(technology.effects or {}),1,-1 do
+    local effect=technology.effects[index]
+    if effect.type=="unlock-recipe" and effect.recipe:match("%-recycling$") then
+      table.remove(technology.effects,index)
+    end
   end
 end
 
@@ -343,3 +354,5 @@ variant_upgrades.apply("-pneumatic")
 variant_upgrades.apply("-thermal")
 require("prototypes.planet.fulgora-reinjection")
 require("prototypes.planet.fulgora-placement")
+
+require("prototypes.planet.fulgora-organic-productivity")

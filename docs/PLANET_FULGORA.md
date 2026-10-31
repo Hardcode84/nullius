@@ -731,8 +731,9 @@ periods. Stored oxygen and fuel provide a combustion option.
 
 ## Organic industry
 
-Design only: change display names, keep item IDs, and add local recipes for the
-same output. Preserve separate grades. Apply each change to boxed products too.
+Gear, reinforced gear, structural beam, tension cable, and fiber composite use
+material-neutral display names. The recipes below preserve their item IDs and
+grades. Other equipment alternatives in the table remain proposals.
 
 | Current intermediate | Naming decision | Fulgora route or restriction |
 |---|---|---|
@@ -780,121 +781,22 @@ Conductive polymer wire connects the industry to the ocean setting. Local iron
 plates dope it from arrival. Imported Vulcanus iron chloride is a proposed
 dopant after cargo; local bootstrap wiring must not depend on that import.
 
-### Substitute capacity
+### Organic substitutes
 
-Planner experiment with hypothetical substitutes. Each keeps the metal recipe's
-category. Gear and insulated wire substitutes are doped, so no metal-free route
-replaces them. Starting doped recipes use 1 iron plate per 10 products; improved
-recipes use iron chloride or a mixed-metal filler for 50% more output at twice
-the crafting speed.
+Fulgora recipes use plastic and graphite with iron dopants for gears and
+insulated wire. Primitive Filtration unlocks these starter recipes. Improved
+Polymer Doping follows Explosives 1 and unlocks mixed-metal gears, iron-chloride
+wire, and local iron chlorination. Fulgora does not need Pneumatic Technology
+for this route.
 
-| Substitute | Candidate inputs | Output |
-|---|---|---|
-| Doped polymer gear | 15 plastic + 1 iron plate | 10 gears, 20 s |
-| Reinforced polymer gear | 2 plastic + 1 carbon fiber | 2 reinforced gears, 6 s |
-| Composite beam | 1 carbon composite | 2 structural beams, 2 s |
-| Fiber cable | 7 acrylic fiber + 2 lubricant | 2 tension cables, 5 s |
-| Doped polymer insulated wire | 15 graphite + 10 plastic + 2 iron plates | 20 insulated wires, 30 s |
-| Improved doped polymer gear | 15 plastic + 1 iron plate + 1 aluminum powder | 15 gears, 10 s |
-| Improved doped polymer insulated wire | 15 graphite + 10 plastic + 1 iron chloride | 30 insulated wires, 15 s |
-| Fulgora iron chlorination | 2 iron ingots + 30 chlorine | 4 iron chloride, 4 s, chemical plant |
+Weaving 2 unlocks reinforced polymer gears and fiber cables. Composites 2 unlocks
+composite beams. Mass Production 4 unlocks the bulk recipes, including boxed
+wire. Input research still controls when each bulk recipe can run. Iron chloride
+has no box item; bulk recipes use loose iron chloride.
 
-Iron chloride now comes only from the Vulcanus high-temperature radiator, unlocked
-by Pneumatic Technology. Fulgora iron chlorination keeps that ratio in a chemical
-plant with Fulgora chlorine, so Fulgora does not depend on that research.
-
-Boxed doped recipes use five times the inputs and time: 15 boxes of plastic and
-1 box of iron plates make 10 boxes of gears. Insulated wire has no boxed recipe.
-
-First-physics factory at 60 packs/min each, without research productivity:
-
-| Allowed substitute | Stations | Average MW | Ideal strikes/min | Extractors | Slurry/min | Iron ingot/min | Aluminum ingot/min | Plastic/min |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| None | 881 | 332.4 | 99.7 | 166 | 99,237 | 835 | 313 | 285 |
-| Doped polymer gear | 848 | 308.7 | 92.6 | 146 | 87,207 | 676 | 249 | 484 |
-| Reinforced polymer gear | 869 | 324.0 | 97.2 | 160 | 95,711 | 775 | 302 | 314 |
-| Composite beam | 881 | 332.4 | 99.7 | 166 | 99,237 | 835 | 313 | 285 |
-| Fiber cable | 880 | 331.9 | 99.6 | 166 | 99,046 | 831 | 313 | 285 |
-| Doped polymer insulated wire | 826 | 300.6 | 90.2 | 148 | 88,634 | 889 | 168 | 511 |
-| Doped gear and wire | 781 | 266.2 | 79.9 | 135 | 80,535 | 667 | 200 | 650 |
-| Starting and improved doping, no iron chloride | 775 | 263.5 | 79.1 | 134 | 80,241 | 659 | 198 | 555 |
-| Starting and improved doping, Fulgora chlorination | 765 | 257.2 | 77.2 | 131 | 78,290 | 613 | 198 | 481 |
-| Starting and improved doping, imported iron chloride | 763 | 256.5 | 76.9 | 130 | 77,968 | 605 | 198 | 481 |
-| All | 765 | 256.3 | 76.9 | 130 | 77,986 | 599 | 207 | 672 |
-
-At 240/min, all substitutes reduce the factory from 2,869 to 2,345 stations,
-1,313 to 1,007 MW, and 394 to 302 ideal strikes/min. Starting and improved
-doping with Fulgora chlorination reduces it to 2,332 stations and 1,010 MW.
-Research supply time stays 16.51 h.
-
-| Finding | Mechanism |
-|---|---|
-| Insulated wire has the largest effect | Aluminum wire needs bauxite from slurry sludge; graphite and plastic come from cracking |
-| Doped wire raises iron demand | It replaces aluminum with 0.1 iron plate per wire: 889 iron ingots/min against 835 without substitutes |
-| Gears are second | Mechanical science uses about 180 gears/min; doping keeps 0.1 iron plate per gear |
-| Composite beam is not selected | Carbon composite unlocks with Composites 2, which costs physics packs |
-| Fiber cable has no effect | The factory crafts 0.6 cables/min |
-| Doping keeps most of the reduction | Undoped gear and wire saved 115 stations at 60/min; doped versions save 100 |
-| Improved recipes replace starting recipes | Improved gear is selected with local metal; improved wire needs iron chloride |
-| Improved speed affects only their assemblers | Twice the speed removes 3 stations at 60/min and 12 at 240/min; inputs are unchanged |
-| Iron chloride demand is small | 15 iron chloride/min at 60/min; Fulgora chlorination needs 4 cycles/min |
-| Metal remains | Motors, plates, dopant, and basic EM packs use 599 iron, 207 aluminum, and 94 steel ingots/min |
-
-Priority: doped insulated wire, then doped gears. Reinforced gears are
-optional. Tension cable and structural beam do not affect pre-physics capacity.
-
-Rejected: metal-free gear and wire beside separate doped recipes with a speed or
-yield bonus. With local iron, the planner selected doped gear only at double
-yield and never selected doped wire, even at triple yield. With imported iron
-plates, doped recipes replaced the metal-free ones. Metal-free routes would
-therefore remain the local default and remove iron demand from both products.
-
-Substitutes produce the existing item IDs, so production statistics combine
-metal and polymer output. Doping does not change the metal recovery constraint:
-a recipe that recovers more than 0.1 iron plate per gear or wire still creates
-metal. No checkpoint or research trigger counts gears,
-beams, cables, or insulated wire. Plastic checkpoints count production only.
-Insulated wire consumers feed boxing and red wire; red wire remains in the
-metal recovery audit.
-
-```bash
-python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-organic-substitutes.json --output /tmp/fulgora-organic.json --overview
-python tools/analyze_fulgora_industry.py --plan /tmp/fulgora-organic.json --config tests/progression/planner/fulgora-organic-industry-power.json --output /tmp/fulgora-organic-industry.json --table
-python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-organic-substitutes.args
-python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-intermediate-consumers.args
-python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-substitute-unlocks.json --output /tmp/fulgora-unlocks.json
-python tools/plan_factorio_factory.py --read-plan /tmp/fulgora-unlocks.json --field science_analysis.budgets
-python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-substitute-boxed.args --json
-python tools/analyze_factorio_prereqs.py @tests/progression/fulgora-bootstrap-boundary.args --compact nullius-plastic nullius-graphite nullius-iron-plate copper-cable nullius-iron-gear
-```
-
-### Substitute unlocks
-
-Each substitute unlocks when its last missing input becomes available. Metal
-versions of all five, except tension cable, are researched before Fulgora
-arrival. Costs are remaining packs beyond the Primitive Filtration closure.
-
-| Recipe | Unlock | Remaining packs | Metal recipe unlock | Boxed unlock |
-|---|---|---:|---|---|
-| Doped polymer insulated wire | Primitive Filtration | 0 | Insulation 1 | None; insulated wire has only packing |
-| Doped polymer gear | Primitive Filtration | 0 | Iron Working 2 | Mass Production 4 |
-| Improved doped gear, improved doped wire, Fulgora iron chlorination | Improved Polymer Doping: Explosives 1 | 769 | - | Mass Production 4 for improved gear |
-| Reinforced polymer gear | Weaving 2 | 26,102 | Steelworking | Mass Production 4 |
-| Fiber cable | Weaving 2 | 26,102 | Weaving 1: 1,165 remaining | Mass Production 4 |
-| Composite beam | Composites 2 | 277,889, including 1,600 physics | Steelworking | Mass Production 4 |
-
-References: Climatology 2 has 2,132 remaining packs; Physics has 271,489.
-Explosives 1 first unlocks aluminum powder. Aluminum Working 2, the other
-aluminum powder unlock, has 64,977 remaining packs. Fulgora iron chlorination
-unlocks with Improved Polymer Doping; no Fulgora recipe requires Pneumatic
-Technology.
-
-Plastic, graphite, iron plates, insulated wire, and gears are reachable at
-Primitive Filtration with the starter machines and no further research. Basic
-EM science needs insulated wire at arrival, and crude filtration is then the
-only metal source. Doped wire adds 0.4 iron plate per basic EM pack, which
-already uses 2. Carbon fiber and acrylic fiber unlock with Weaving 2. Carbon composite
-needs physics science, so pre-physics bridges keep steel beams.
+The substitutes retain the existing item IDs and separate grades. Recipe values
+are in `shared/fulgora-organics.lua`. Use the Fulgora science planner for factory
+capacity and the organic recovery audit for downstream metal outputs.
 
 ## Science and research
 
@@ -911,34 +813,14 @@ needs physics science, so pre-physics bridges keep steel beams.
 
 ### Organic process optimization
 
-Design only. Fulgora's counterpart to Vulcanus industrial optimization:
-repeatable productivity research for organic chemistry, effective on every planet.
+Independent repeatable research improves hydrocarbon processing, polymerization,
+and fibers on every planet. Each branch requires Overcharged Assembly 2 and its
+process technology: Primitive Filtration, Organic Chemistry 1, or Weaving 2.
 
-| Branch | Eligible recipes produce | Process technology |
-|---|---|---|
-| Hydrocarbon processing | Filtered hydrocarbons, methane, ethylene, propene, benzene, butadiene, styrene | Primitive Filtration |
-| Polymerization | Plastic, rubber, epoxy, BPA, ECH, acrylonitrile | Organic Chemistry 1 |
-| Fibers | Acrylic fiber, carbon fiber, textile | Weaving 2 |
-
-| Contract | Value |
-|---|---|
-| Effect per level | +1% recipe productivity |
-| Cost | `100*L^2` units of electromagnetic science, 30 s |
-| Prerequisites | Overcharged Assembly 2 (454 remaining packs, 200 EM) and the branch's process technology |
-| Levels | Infinite; branches are independent |
-| Eligibility | Recipe produces a listed item or fluid and permits productivity |
-| Excluded | Recipes with `maximum_productivity = 0`, unboxing, voiding, reinjection, and recycling |
-
-Organic chemistry spans several crafting categories: plastic uses basic
-chemistry, polypropylene ore flotation, cracking distillation, and carbon fiber
-wet smelting. Basic chemistry also contains inorganic acids. A category-based
-family therefore cannot select organic chemistry. Extend
-`prototypes/recipe-productivity.lua` with a product-based selector; keep the
-category selector for Vulcanus.
-
-Vulcanus smelting and casting research raises the metal routes for gears and
-wire. These branches give their polymer substitutes an equivalent upstream
-bonus. The substitute assembly recipes themselves remain outside both families.
+Recipe outputs select the branch. Boxed products and compressed fluids receive
+the same coverage. Packaging, unboxing, fluid transfer, voiding, reinjection,
+recycling, and recipes that forbid productivity are excluded. Substitute
+assembly receives neither organic nor Vulcanus industrial research bonuses.
 
 ### Electromagnetic science recipes
 
