@@ -18,6 +18,13 @@ data:extend({{
   effects={}, unit={count=10,time=30,ingredients={
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},{"nullius-mechanical-pack",4},
   }}, order="nullius-dg-polymer-doping",
+}, {
+  type="technology", name="nullius-bulk-polymer-processing",
+  icon="__base__/graphics/technology/plastics.png", icon_size=256,
+  prerequisites={"nullius-mass-production-4","nullius-improved-polymer-doping"},
+  effects={}, unit={count=10,time=45,ingredients={
+    {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
+  }}, order="nullius-dg-bulk-polymer-processing",
 }})
 
 for _, spec in ipairs(specs) do
@@ -63,9 +70,8 @@ for _, spec in ipairs(specs) do
       subgroup=subgroup, order="nullius-fulgora-"..name,
       energy_required=spec.seconds*(boxed and 5 or 1)/divisor,ingredients=ingredients,results=results,
       allow_productivity=true, auto_recycle=false,
-      surface_conditions={{property="magnetic-field",min=99,max=99}},
     }})
-    table.insert(data.raw.technology[boxed and "nullius-mass-production-4" or spec.technology].effects,
+    table.insert(data.raw.technology[boxed and "nullius-bulk-polymer-processing" or spec.technology].effects,
       {type="unlock-recipe",recipe=name})
   end
 end

@@ -777,9 +777,8 @@ Direct-consumer inspection is not proof of this condition. Use the repeatable
 [producer audit](../tests/progression/fulgora-component-producers.args) as inputs
 to the implementation checks.
 
-Conductive polymer wire connects the industry to the ocean setting. Local iron
-plates dope it from arrival. Imported Vulcanus iron chloride is a proposed
-dopant after cargo; local bootstrap wiring must not depend on that import.
+Conductive polymer wire uses local iron plates from arrival. Improved Polymer
+Doping permits local iron chloride production. Imports from Vulcanus are optional.
 
 ### Organic substitutes
 
@@ -787,11 +786,13 @@ Fulgora recipes use plastic and graphite with iron dopants for gears and
 insulated wire. Primitive Filtration unlocks these starter recipes. Improved
 Polymer Doping follows Explosives 1 and unlocks mixed-metal gears, iron-chloride
 wire, and local iron chlorination. Fulgora does not need Pneumatic Technology
-for this route.
+for this route. These recipes can run on any planet after research.
 
 Weaving 2 unlocks reinforced polymer gears and fiber cables. Composites 2 unlocks
-composite beams. Mass Production 4 unlocks the bulk recipes, including boxed
-wire. Input research still controls when each bulk recipe can run. Iron chloride
+composite beams. Bulk Polymer Processing follows Mass Production 4 and Improved
+Polymer Doping. It uses electromagnetic science and unlocks all bulk variants,
+including wire and chemical iron chlorination. Input research still controls
+when each bulk recipe can run. Iron chloride
 has no box item; bulk recipes use loose iron chloride.
 
 The substitutes retain the existing item IDs and separate grades. Recipe values
