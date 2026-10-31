@@ -1,3 +1,9 @@
+local stock={}
+for _,container in ipairs(require('__nullius-star__/shared/fulgora-starter')) do
+  for _,stack in ipairs(container) do stock[stack[1]]=(stock[stack[1]] or 0)+stack[2] end
+end
+data:extend({{type='mod-data',name='factorio-test-fulgora-starter',data={
+  stock=stock,collectors=require('__nullius-star__/shared/fulgora-collectors').by_pole}}})
 local original_battery=table.deepcopy(data.raw.accumulator['nullius-grid-battery-1'])
 original_battery.name='factorio-test-power-original-battery'
 original_battery.energy_source.input_flow_limit='200kW'
@@ -52,7 +58,15 @@ fast_battery.energy_source.input_flow_limit='50MW'
 data:extend({fast_battery})
 
 -- Constant audit loads use the planner's average priority split; no debug generation.
-for _,profile in ipairs(require('__nullius-star__/scenarios/fulgora-power-audit/fixture')) do
+local loads={}
+for _,profile in ipairs(require('__nullius-star__/scenarios/fulgora-power-audit/fixture')) do loads[profile.name]=profile end
+for _,profile in ipairs(require('__nullius-star__/scenarios/fulgora-power-audit/historical-fixture')) do
+  if profile.layout~='starter' then
+    loads['historical-'..profile.name]=table.deepcopy(profile)
+    loads['historical-'..profile.name].name='historical-'..profile.name
+  end
+end
+for _,profile in pairs(loads) do
   for _,priority in ipairs({'secondary','surge'}) do
     local watts=profile[priority..'_MW']*1000000
     local load=table.deepcopy(data.raw['electric-energy-interface']['factorio-test-trip-load'])

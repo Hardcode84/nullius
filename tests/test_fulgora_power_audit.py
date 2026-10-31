@@ -34,6 +34,21 @@ class NativePowerAuditTest(unittest.TestCase):
         self.assertEqual(result['first_trip_tick'],90)
         self.assertEqual(result['trip_samples'],2)
 
+    def test_starter_acceptance_checks_both_phases_and_trips(self):
+        phase=dict(ticks=60,secondary_J=1e6,surge_J=0,captures=1,
+                   collector_J=1e6,coil_J=0,trips=0,secondary_gaps=0,
+                   surge_gaps=0,battery_MJ=1)
+        row=dict(name='starter',secondary_MW=1,surge_MW=0,
+                 day=phase,night=phase,minimum_supply_percent=99.99)
+        def result():
+            return summarize_native(dict(factorio_version='test',observations=[row]))['acceptance']['starter']
+        self.assertTrue(result()['passed'])
+        row['day']=dict(phase,secondary_J=.9e6)
+        self.assertFalse(result()['checks']['day_supply'])
+        row['day']=phase
+        row['first_trip']=30
+        self.assertFalse(result()['checks']['no_trips'])
+
     def test_absent_surge_is_not_reported_as_full_supply(self):
         phase=dict(ticks=60,secondary_J=1e6,surge_J=0,captures=0,
                    collector_J=0,coil_J=0,trips=0,secondary_gaps=0,surge_gaps=0,battery_MJ=14)

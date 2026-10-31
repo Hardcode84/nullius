@@ -1,7 +1,5 @@
 {
   "fleet_config": "tests/progression/planner/fulgora-em-bootstrap.json",
-  "batteries": 4,
-  "grounding_coils": 4,
   "ratio": 2,
   "excess_floor_MW": 1,
   "candidate_output_MW": [100, 50, 25, 10, 0.5],

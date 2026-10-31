@@ -26,6 +26,15 @@ def flow_watts(value):
 
 
 def report(data, config):
+    starter = data['mod-data']['factorio-test-fulgora-starter']['data']
+    stock = starter['stock']
+    config = dict(config, batteries=stock['nullius-grid-battery-1'],
+                  grounding_coils=stock['nullius-grounding-coil'])
+    pole_counts = {name: count for name, count in stock.items()
+                   if name in data['electric-pole']}
+    pole_output = sum(count * parse_energy(data['lightning-attractor'][
+        starter['collectors'][name]['name']]['energy_source']['output_flow_limit'], 'W')
+        for name, count in pole_counts.items())
     collector = data['lightning-attractor']['nullius-pole-lightning-collector']
     bolt = data['lightning']['nullius-fulgora-lightning']
     coil = data['electric-energy-interface']['nullius-grounding-coil']
@@ -40,6 +49,17 @@ def report(data, config):
     fleet_config = json.loads(Path(config['fleet_config']).read_text())
     fleet = dict(fleet_config['fleet'])
     fleet[fleet_config['lab']] = fleet_config['labs']
+    for name, count in fleet.items():
+        if stock.get(name) != count:
+            raise ValueError(f'Starter fleet differs from production stock: {name}: {count} vs {stock.get(name)}')
+    for name, count in stock.items():
+        if name not in data['item']:
+            continue
+        entity_name = data['item'][name].get('place_result')
+        if any(entity_name in data.get(kind, {}) for kind in
+               ('assembling-machine', 'furnace', 'mining-drill', 'lab')):
+            if fleet.get(name) != count:
+                raise ValueError(f'Starter processing machine missing from fleet: {name}')
     machines = []
     for name, count in fleet.items():
         entity_name = data['item'][name]['place_result']
@@ -86,7 +106,8 @@ def report(data, config):
                         'full_output_ticks': duration * 60,
                         'matching_buffer_J_at_current_output': output * duration,
                         'matching_output_MW_at_current_buffer': capacity / duration / 1e6})
-    return {'vanilla': vanilla, 'collector': {'potential_capture_MJ_per_strike': energy / 1e6,
+    return {'starter_stock': stock, 'pole_counts': pole_counts,
+        'collector_output_MW': pole_output / 1e6, 'vanilla': vanilla, 'collector': {'potential_capture_MJ_per_strike': energy / 1e6,
             'captured_MJ_per_strike': min(energy, capacity) / 1e6,
             'buffer_MJ': capacity / 1e6, 'output_MW': output / 1e6,
             'full_rate_seconds_per_strike': min(energy, capacity) / output},

@@ -52,52 +52,53 @@ each early science pack. Waste Reclamation improves recovery after this point; i
 
 ### Starter inventory
 
-Supplied once per force when the probe is activated.
+Supplied once per force when the probe is activated. Equipment quantities are
+defined in the shared starter inventory used by probe reactivation.
 
-| Equipment | Count | First use |
-|---|---:|---|
-| Extractor 1 | 7 | Slurry extraction or surplus liquid reinjection |
-| Hydro plant 1 | 5 | Slurry filtration, crude filtration, brine, climatology |
-| Distillery 1 | 4 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
-| Air filter 1 | 4 | Nitrogen and climatology |
-| Chemical plant 1 | 4 | Acids and polymers |
-| Electrolyzer 1 | 2 | Water and brine electrolysis |
-| Crusher 1 | 4 | Mineral processing and surplus crushing |
-| Small furnace 1 | 4 | Early smelting |
-| Medium furnace 1 | 1 | Smelting with gas output, including gypsum decomposition |
-| Foundry 1 | 2 | Metal parts |
-| Small assembler 1 | 2 | Equipment and science |
-| Flotation cell 1 | 2 | Silica and dust treatment |
-| Combustion chamber 1 | 1 | Consume surplus benzene with oxygen |
-| Chimney 1 | 3 | Vent permitted gases; reuse for different gases |
-| Lab 1 | 1 | Local research |
-| Cliff explosives | 30 | Clear cliffs for the starter factory |
-| Small electric pole | 40 | Lightning capture and distribution |
-| Pylon 1 | 6 | Wider lightning capture and longer power connections |
-| Pump 1 | 5 | Move fluids between processing lines |
-| Pipe / underground pipe | 200 / 40 | Connect separate fluid networks |
-| Small tank 1 | 8 | Buffer fluids during construction and recipe changes |
-| Medium tank 1 | 2 | Store surplus fluids |
-| One-way valve | 8 | Direct recovered fluids |
-| Transport belt / inserter | 100 / 24 | Solid transport |
-| Splitter / underground belt | 8 / 20 | Split belts and cross processing lines |
-| Grid battery 1 | 10 | Additional electric storage |
-| Grounding coil | 4 | Discharge surplus power; one coil protects eight poles |
-| Small chest 1 | 12 | Two placed salvage chests, ten packed; separate filtration outputs and equipment |
-| Small chest 2 | 4 | Packed in the wreck; extra storage |
+| Equipment | First use |
+|---|---|
+| Extractor 1 | Slurry extraction or surplus liquid reinjection |
+| Hydro plant 1 | Slurry filtration, crude filtration, brine, climatology |
+| Distillery 1 | Ice melting, hydrocarbon cracking, air separation; reuse for other recipes |
+| Air filter 1 | Nitrogen and climatology |
+| Chemical plant 1 | Acids and polymers |
+| Electrolyzer 1 | Water and brine electrolysis |
+| Crusher 1 | Mineral processing and surplus crushing |
+| Small furnace 1 | Early smelting |
+| Medium furnace 1 | Smelting with gas output, including gypsum decomposition |
+| Foundry 1 | Metal parts |
+| Small assembler 1 | Equipment and science |
+| Flotation cell 1 | Silica and dust treatment |
+| Combustion chamber 1 | Consume surplus benzene with oxygen |
+| Chimney 1 | Vent permitted gases; reuse for different gases |
+| Lab 1 | Local research |
+| Cliff explosives | Clear cliffs for the starter factory |
+| Small electric pole | Lightning capture and distribution |
+| Pylon 1 | Wider lightning capture and longer power connections |
+| Pump 1 | Move fluids between processing lines |
+| Pipe / underground pipe | Connect separate fluid networks |
+| Small tank 1 | Buffer fluids during construction and recipe changes |
+| Medium tank 1 | Store surplus fluids |
+| One-way valve | Direct recovered fluids |
+| Transport belt / inserter | Solid transport |
+| Splitter / underground belt | Split belts and cross processing lines |
+| Grid battery 1 | Additional electric storage |
+| Grounding coil | Discharge surplus power |
+| Small chest 1 | Placed salvage chests and packed chests; separate filtration outputs and equipment |
+| Small chest 2 | Packed in the wreck; extra storage |
 
-Keep processing machines in the wreck. Put logistics supplies in the two
-salvage chests; the wreck has only 20 inventory slots.
+Keep processing machines in the wreck. Put logistics supplies in the
+salvage chests so the kit fits in the available inventory.
 
 No ore, science packs, fuel, or bottled fluids. Keep the equipped probe android.
-Poles include lightning energy buffers; the ten grid batteries add storage.
+Poles include lightning energy buffers; grid batteries add storage.
 Spread the collectors and connect them before processing.
 Build filters and other restricted machines on islands; route pipes to sand vents.
 
 This is seed equipment, not a complete science factory. Reproduce ordinary
 buildings locally, then research extractor expansion. Support-machine routes
-pass `@tests/progression/fulgora-bootstrap-support.args`. Validate these exact
-counts with a finite-inventory scenario before treating them as a proven kit.
+pass `@tests/progression/fulgora-bootstrap-support.args`. Validate the kit with a finite-inventory scenario before treating the complete
+bootstrap as proven.
 
 ### Bootstrap audit
 

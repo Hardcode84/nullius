@@ -15,7 +15,8 @@ def summarize_native(case):
     for row in case['observations']:
         for phase in ('day','night'):
             v=row[phase]; seconds=v['ticks']/60
-            rows.append(dict(name=row['name'],phase=phase,
+            rows.append(dict(name=row['name'],phase=phase,batteries=row.get('batteries'),poles=row.get('poles'),
+                mean_connected_coils=v['connected_coils']/(v['ticks']/30) if 'connected_coils' in v else None,
                 first_trip_tick=row.get('controller',{}).get('trip_tick',row.get('first_trip')),
                 grounding_switch_on_percent=100*v.get('switch_on',0)/(v['ticks']/30),
                 sensor_mean_percent=v.get('sensor_sum',0)/(v['ticks']/30),
@@ -37,6 +38,13 @@ def summarize_native(case):
                     no_trips=row['first_trip_tick'] is None,
                     switch_changes=control['max_changes_per_sample']<=1)
         acceptance[row['name']]=dict(passed=all(checks.values()),checks=checks)
+    for observation in case['observations']:
+        threshold=observation.get('minimum_supply_percent')
+        if threshold is not None:
+            phases=[r for r in rows if r['name']==observation['name']]
+            checks={r['phase']+'_supply':r['secondary_delivered_percent']>=threshold for r in phases}
+            checks['no_trips']=all(r['first_trip_tick'] is None for r in phases)
+            acceptance[observation['name']]=dict(passed=all(checks.values()),checks=checks)
     return dict(factorio=case['factorio_version'],rows=rows,controllers=controllers,acceptance=acceptance)
 
 
@@ -79,17 +87,23 @@ def main():
             full_secondary=sum(r['active_MW']+r['drain_MW'] for r in budget['machines'] if r['priority']!='tertiary')
             full_surge=sum(r['active_MW']+r['drain_MW'] for r in budget['machines'] if r['priority']=='tertiary')
             if full_surge: raise ValueError('Starter mean profile needs a separate surge-energy calculation')
-            profiles=[dict(name='starter-mean',layout='starter',batteries=4,secondary_MW=average,surge_MW=0),
-                      dict(name='starter-full',layout='starter',batteries=4,secondary_MW=full_secondary,surge_MW=full_surge),
+            profiles=[dict(name='starter-mean',layout='starter',batteries=budget['battery']['count'],secondary_MW=average,surge_MW=0),
+                      dict(name='starter-full',layout='starter',batteries=budget['battery']['count'],secondary_MW=full_secondary,surge_MW=full_surge),
                       dict(name='starter-full-storage',layout='starter',batteries=0,secondary_MW=full_secondary,surge_MW=full_surge),
                       dict(name='science-60-compact',layout='compact',batteries=science['storage']['30']['minimum_full_batteries'],secondary_MW=secondary,surge_MW=surge),
                       dict(name='science-60-spread',layout='spread',batteries=science['storage']['30']['minimum_full_batteries'],secondary_MW=secondary,surge_MW=surge)]
             # Derive discharge counts from the resolved battery, not a fixed tier assumption.
             discharge=budget['battery']['total_discharge_MW']/budget['battery']['count']
+            profiles[0]['current_stock']=True
+            profiles[1]['current_stock']=True
+            profiles[0]['minimum_supply_percent']=99.99
             profiles[2]['batteries']=math.ceil(full_secondary/discharge)
+            profiles.append(dict(name='starter-mean-storage',layout='starter',
+                batteries=math.ceil(average/discharge),secondary_MW=average,surge_MW=0))
             for profile in profiles:
-                profile['poles']=36 if profile['layout']=='starter' else 256 if profile['layout']=='spread' else 32
-                profile['coils']=4 if profile['layout']!='spread' else 32
+                profile['poles']=sum(budget['pole_counts'].values()) if profile['layout']=='starter' else 256 if profile['layout']=='spread' else 32
+                profile['coils']=budget['grounding']['count'] if profile['layout']=='starter' else 32 if profile['layout']=='spread' else 4
+                if profile['layout']=='starter': profile['pole_counts']=budget['pole_counts']
                 profile['grounding_MW']=profile['coils']*budget['grounding']['per_coil_MW']
                 profile['generation_for_full_demand_MW']=profile['secondary_MW']+profile['surge_MW']+profile['grounding_MW']
                 profile['surge_share_of_tertiary_demand']=profile['surge_MW']/(profile['surge_MW']+profile['grounding_MW'])
@@ -97,7 +111,7 @@ def main():
                                       for path in (args.bootstrap,args.industry)},
                         starter=budget,first_science_mean_MW=average,
                         minimum_batteries_for_mean_discharge=math.ceil(average/discharge),profiles=profiles,
-                        starter_worst_case_coils=math.ceil(36*budget['collector']['output_MW']/2/budget['grounding']['per_coil_MW']))
+                        starter_worst_case_coils=math.ceil(budget['collector_output_MW']/2/budget['grounding']['per_coil_MW']))
             if args.fixture:
                 def lua(value):
                     if isinstance(value,dict):return '{'+','.join('['+json.dumps(k)+']='+lua(v) for k,v in value.items())+'}'

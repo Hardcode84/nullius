@@ -1,3 +1,4 @@
+local starter_supplies=require('__nullius-star__/shared/fulgora-starter')
 -- given: default Alignment mode and one real multiplayer client.
 -- place: the production Alignment landing and probe activation create entities.
 -- connect: the runner joins the first client.
@@ -42,6 +43,20 @@ script.on_nth_tick(30, function()
       "faction must receive one probe wreck")
     local wreck = body.surface.find_entities_filtered{name = "nullius-landing-main", force = force}[1]
     check(wreck.get_item_count("iron-chest") == 4, "wreck must supply four small chests 2")
+    local delivered={}
+    for _,container in pairs(body.surface.find_entities_filtered{
+        name={'nullius-landing-main','wooden-chest'},force=force}) do
+      for _,group in ipairs(starter_supplies) do
+        for _,stack in ipairs(group) do
+          delivered[stack[1]]=(delivered[stack[1]] or 0)+container.get_item_count(stack[1])
+        end
+      end
+    end
+    for _,group in ipairs(starter_supplies) do
+      for _,stack in ipairs(group) do
+        check(delivered[stack[1]]==stack[2],'probe delivered wrong stock: '..stack[1])
+      end
+    end
     check(body.surface.count_entities_filtered{name = "nullius-landing-main", force = "player"} == 0,
       "lobby force received probe supplies")
     helpers.write_file("factorio-tests/" .. CASE .. ".json", helpers.table_to_json{
