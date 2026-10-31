@@ -11,14 +11,15 @@ local function check(ok,message)
 end
 script.on_nth_tick(1,function()
   script.on_nth_tick(1,nil)
-  local surface=game.create_surface("pump-wagons-test",{width=160,height=800,autoplace_controls={}})
+  local surface=game.create_surface("pump-wagons-test",{width=480,height=800,autoplace_controls={}})
   surface.request_to_generate_chunks({0,240},12)
   surface.force_generate_chunk_requests()
   for _,entity in pairs(surface.find_entities()) do entity.destroy() end
   storage.rows={}
+  for wagon_tier=1,3 do
   for offset_index, offset in ipairs({0, 0.0625, 0.5, 8}) do
   for tier=1,2 do for rotation=0,3 do for mode=0,1 do
-    local ox=(rotation-2)*24
+    local ox=(rotation-2)*24 + (wagon_tier-2)*144
     local oy=((tier-1)*2+mode-2)*24 + (offset_index-1)*96
     local function position(x,y)
       for _=1,rotation do x,y=-y,x end
@@ -28,7 +29,7 @@ script.on_nth_tick(1,function()
       check(surface.create_entity{name="straight-rail",position=position(1,y),
         direction=rotation*4,force="player"}~=nil,"rail placed")
     end
-    local wagon=surface.create_entity{name="nullius-fluid-wagon-1",position=position(1,1+offset),direction=rotation*4,force="player"}
+    local wagon=surface.create_entity{name="nullius-fluid-wagon-" .. wagon_tier,position=position(1,1+offset),direction=rotation*4,force="player"}
     check(wagon~=nil,"wagon placed")
     wagon.train.manual_mode=true
     local pump=surface.create_entity{name="factorio-test-nullius-pump-" .. tier,
@@ -39,8 +40,8 @@ script.on_nth_tick(1,function()
     local source=mode==0 and pipe or wagon
     check(source.insert_fluid{name="water",amount=100}==100,"declared water inserted")
     storage.rows[#storage.rows+1]={wagon=wagon,pipe=pipe,pump=pump,mode=mode,
-      offset=offset, label="tier "..tier.." rotation "..rotation.." mode "..mode.." offset "..offset}
-  end end end end
+      offset=offset, label="wagon "..wagon_tier.." tier "..tier.." rotation "..rotation.." mode "..mode.." offset "..offset}
+  end end end end end
   storage.assertions=assertions
 end)
 script.on_nth_tick(600,function(event)
