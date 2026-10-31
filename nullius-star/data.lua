@@ -30,6 +30,8 @@ require("prototypes.item.landfill")
 require("prototypes.planet.primitive-robotics-items")
 require("prototypes.planet.grounding-coils")
 require("prototypes.item.boxing")
+require("prototypes.boxed_recipes")
+require("prototypes.item.mineral-disposal")
 require("prototypes.planet.fulgora-recipes")
 require("prototypes.planet.fulgora-science")
 
