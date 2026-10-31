@@ -1,8 +1,15 @@
 local specs = require("shared.fulgora-organics")
-local boxed_categories = {
-  ["small-crafting"]="medium-assembly", ["large-fluid-assembly"]="huge-fluid-assembly",
-  ["machine-casting"]="machine-casting", ["basic-chemistry"]="basic-chemistry",
+local boxed_references = {
+  ["nullius-iron-gear"]="nullius-boxed-iron-gear",
+  ["nullius-steel-gear"]="nullius-boxed-steel-gear",
+  ["nullius-steel-beam"]="nullius-boxed-steel-beam",
+  ["nullius-steel-cable"]="nullius-boxed-steel-cable",
+  ["copper-cable"]="nullius-boxed-insulated-wire-1",
 }
+local function gcd(a, b)
+  while b ~= 0 do a, b = b, a % b end
+  return a
+end
 
 data:extend({{
   type="technology", name="nullius-improved-polymer-doping",
@@ -17,6 +24,7 @@ for _, spec in ipairs(specs) do
   for _, boxed in ipairs({false,true}) do
     local name = boxed and spec.name:gsub("^nullius%-", "nullius-boxed-") or spec.name
     local ingredients, results = table.deepcopy(spec.ingredients), table.deepcopy(spec.results)
+    local divisor = 1
     if boxed then
       for _, entries in ipairs({ingredients,results}) do
         for _, entry in ipairs(entries) do
@@ -29,14 +37,31 @@ for _, spec in ipairs(specs) do
         end
       end
     end
+    if boxed then
+      divisor = 0
+      for _, entries in ipairs({ingredients,results}) do
+        for _, entry in ipairs(entries) do divisor = gcd(divisor,entry.amount) end
+      end
+      for _, entries in ipairs({ingredients,results}) do
+        for _, entry in ipairs(entries) do entry.amount=entry.amount/divisor end
+      end
+    end
     local product=results[1].name
-    local item=data.raw.item[product]
+    local category, subgroup = spec.category, nil
+    if boxed then
+      if spec.results[1].name == "nullius-iron-chloride" then
+        category, subgroup = "basic-chemistry", "boxed-iron"
+      else
+        local reference=assert(data.raw.recipe[assert(boxed_references[spec.results[1].name])])
+        category, subgroup = reference.categories[1], reference.subgroup
+      end
+    end
     data:extend({{
-      type="recipe",name=name, enabled=false, categories={boxed and assert(boxed_categories[spec.category]) or spec.category},
+      type="recipe",name=name, enabled=false, categories={category},
       localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name."..spec.name}} or {"recipe-name."..spec.name},
-      icons=table.deepcopy(item.icons), icon=item.icon, icon_size=item.icon_size,
-      subgroup=item.subgroup, order="nullius-fulgora-"..name,
-      energy_required=spec.seconds*(boxed and 5 or 1),ingredients=ingredients,results=results,
+      main_product=product,
+      subgroup=subgroup, order="nullius-fulgora-"..name,
+      energy_required=spec.seconds*(boxed and 5 or 1)/divisor,ingredients=ingredients,results=results,
       allow_productivity=true, auto_recycle=false,
       surface_conditions={{property="magnetic-field",min=99,max=99}},
     }})

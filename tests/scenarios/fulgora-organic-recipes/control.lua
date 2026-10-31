@@ -43,7 +43,7 @@ script.on_nth_tick(1,function()
     local bulk=prototypes.recipe[spec.name:gsub('^nullius%-','nullius-boxed-')]
     for _,field in ipairs({'ingredients','products'}) do
       local normal,boxed=amounts(ordinary[field]),amounts(bulk[field])
-      for name,n in pairs(normal) do check(boxed[name]==n*5,'boxed parity '..spec.name..' '..name) end
+      for name,n in pairs(normal) do check(math.abs(boxed[name]/bulk.energy-n/ordinary.energy)<0.000001,'boxed parity '..spec.name..' '..name) end
       for name in pairs(boxed) do check(normal[name]~=nil,'extra boxed material '..name) end
     end
     for _,boxed in ipairs({false,true}) do
@@ -54,11 +54,23 @@ script.on_nth_tick(1,function()
       force.technologies[tech].researched=true
       check(force.recipes[name].enabled,'missing unlock '..name)
       local recipe=prototypes.recipe[name]
-      check(recipe.energy==spec.seconds*(boxed and 5 or 1),'craft time '..name)
+      if not boxed then check(recipe.energy==spec.seconds,'craft time '..name) end
+      if boxed then
+        check(recipe.subgroup.name:match('^boxed%-')~=nil,'bulk subgroup '..name)
+        local divisor=0
+        for _,entries in ipairs({recipe.ingredients,recipe.products}) do
+          for _,entry in pairs(entries) do
+            check(entry.amount%1==0,'integer batch '..name)
+            local b=entry.amount
+            while b~=0 do divisor,b=b,divisor%b end
+          end
+        end
+        check(divisor==1,'batch not reduced '..name)
+      end
       check(#recipe.surface_conditions==1 and recipe.surface_conditions[1].property=='magnetic-field','planet gate '..name)
       local machine_name=spec.category=='machine-casting' and 'nullius-foundry-1' or
         spec.category=='basic-chemistry' and 'nullius-chemical-plant-2' or
-        spec.category=='small-crafting' and (boxed and 'nullius-medium-assembler-1' or 'nullius-small-assembler-1') or 'nullius-large-assembler-1'
+        spec.category=='small-crafting' and (boxed and 'nullius-large-assembler-1' or 'nullius-small-assembler-1') or 'nullius-large-assembler-1'
       local x,y=i*20,boxed and 22 or 0
       local machine=assert(surface.create_entity{name=machine_name,position={x,y},force=force})
       machine.set_recipe(name)
