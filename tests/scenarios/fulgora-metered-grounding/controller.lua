@@ -1,6 +1,7 @@
 -- Native combinators select binary banks from sampled offered power and demand.
 -- Each bank changes at most once per sample, after the selection pipeline settles.
-return function(sensor,place,wire,step,banks)
+return function(sensor,place,wire,step,banks,reserve)
+  reserve=reserve or 0
   local ids=defines.wire_connector_id
   local function sig(letter) return {type='virtual',name='signal-'..letter} end
   local count=0
@@ -31,7 +32,7 @@ return function(sensor,place,wire,step,banks)
   local bankload=arith('H','*',2*step,'Y')
   wire(sensor,ids.circuit_red,offered,ids.combinator_input_red)
   wire(sensor,ids.circuit_red,demand,ids.combinator_input_red)
-  local numerator=arith('Y','+',2*step+1,'W')
+  local numerator=arith('Y','+',2*step+1+2*reserve,'W')
   red(offered,numerator);red(demand,numerator);red(bankload,numerator)
   local positive=decider({condition('W','>',0)},'W')
   local divide=arith('W','/',2*step,'N')

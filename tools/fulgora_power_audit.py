@@ -47,8 +47,11 @@ def main():
     p.add_argument('--fixture',type=Path)
     p.add_argument('--results',type=Path)
     p.add_argument('--case',default='fulgora-power-audit')
+    p.add_argument('--overview',action='store_true',help='Print delivery and trip metrics for native results')
     p.add_argument('--output',type=Path,required=True)
     args=p.parse_args()
+    if args.overview and not args.results:
+        p.error('--overview requires --results')
     if args.results:
         run=json.loads(args.results.read_text())
         if run['status']!='pass': raise ValueError('Native audit failed')
@@ -104,7 +107,15 @@ def main():
         finally:
             if work:shutil.rmtree(work)
     args.output.write_text(json.dumps(result,indent=2)+'\n')
-    print(json.dumps(result if args.results else {k:v for k,v in result.items() if k!='starter'},indent=2))
+    if args.overview:
+        print('case | phase | ordinary % | surge % | grounded MW | first trip')
+        for row in result['rows']:
+            surge=row['surge_delivered_percent']
+            print(f"{row['name']} | {row['phase']} | {row['secondary_delivered_percent']:.2f} | "
+                  f"{surge if surge is None else round(surge,2)} | {row['grounding_MW']:.2f} | {row['first_trip_tick']}")
+        print(json.dumps(result['acceptance']))
+    else:
+        print(json.dumps(result if args.results else {k:v for k,v in result.items() if k!='starter'},indent=2))
 
 
 if __name__=='__main__':main()

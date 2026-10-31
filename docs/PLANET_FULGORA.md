@@ -1005,10 +1005,32 @@ in offered power, before each new bank selection could take effect:
 | 5490 | 3.400 GW | 1.568 GW | 3 |
 | 5520 | 4.500 GW | 1.968 GW | 4 |
 
-The minimum-demand controller fails acceptance. It needs a reserve margin that
-covers increases between samples, with a new supply measurement, or a revised
-trip rule. The 100 MW retry condition requires a run with no trips and was not
-met. No coil or trip setting changed for this experiment.
+Reserve tests add demand headroom to the same controller; coil ratings and
+production trip settings stay unchanged. Each run uses the same seed, layout,
+empty batteries, and timing. The fixture switches instantly from noon to
+midnight at tick 5400; this is a stress input, not the normal day cycle.
+
+| Demand reserve | Noon surge supplied | Midnight surge supplied | First trip |
+|---|---:|---:|---|
+| 0 MW | 98.48% | 6.67% | Tick 5520 |
+| 100 MW | 93.45% | 6.67% | Tick 5520 |
+| 200 MW | 87.48% | 6.67% | Tick 5520 |
+| 400 MW | 68.80% | 99.74% | None |
+| 800 MW | 44.20% | 99.24% | None |
+| 1600 MW | 26.63% | 94.44% | None |
+
+All no-trip runs supply 100% of ordinary demand. Each switch changes at most
+once per sample. A 400 MW reserve passes the stated night target in this fixture
+but reduces daytime surge supply. Larger reserves increase that loss.
+The 100 MW coil-rating retry condition is not met: the 400 MW reserve already
+passes the night target with no trips.
+
+These runs use constant-load test consumers and ideal distribution links.
+They do not prove supply to a placed production factory or reliability across
+other map seeds. Keep the production rule unchanged until that contract passes.
+Reproduce with `fulgora-metered-grounding` and
+`fulgora-metered-reserve-{100,200,400,800,1600}`; summarize with
+`tools/fulgora_power_audit.py --results REPORT --case CASE --output SUMMARY --overview`.
 
 Validation: `fulgora-grid-meter` checks GUI selection, native charge signals,
 mode changes, cloning, blueprint revive, settings paste, and reload.

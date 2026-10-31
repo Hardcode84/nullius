@@ -31,7 +31,7 @@ return function(rows,check)
         if not offline then
           local section=remote.call('nullius-test-grid-meter','output',row.sensor).get_control_behavior().get_section(1)
           local o,d=section.get_slot(1).min,section.get_slot(2).min
-          c.target=math.max(0,math.min(31,math.ceil((o-2*d+800000*mask+2)/800000)))
+          c.target=math.max(0,math.min(31,math.ceil((o-2*d+800000*mask+2+2*(row.reserve_kW or 0))/800000)))
         end
       elseif game.tick%30==16 and c.target and not offline then
         check(mask==c.target,'native controller did not select calculated bank target')

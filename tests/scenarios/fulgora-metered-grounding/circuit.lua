@@ -36,8 +36,9 @@ return function(surface,x,profile,row,place,check)
   row.sensor=place('nullius-grid-battery-1-supercapacitor',420,24,true)
   remote.call('nullius-test-grid-meter','set',row.sensor,{offered={type='virtual',name='signal-O'},
     demand={type='virtual',name='signal-D'}})
+  row.reserve_kW=profile.reserve_kW or 0
   local outputs,hold=controller(
-    row.sensor,place,wire,400000,5)
+    row.sensor,place,wire,400000,5,row.reserve_kW)
   row.memory=hold;row.switches={};row.bank_coils={};row.bank_poles={}
   local trunk=main
   for i=1,5 do
