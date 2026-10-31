@@ -50,7 +50,7 @@
     "time": "Research costs subtract Primitive Filtration closure. All lines online at time zero; triggers assumed met. Not elapsed player progression.",
     "construction": "Starter process fleet supplied; other process machines must be constructed. Continuous flow is not a finite startup schedule.",
     "minerals": "Only crude filtration uses mean independent mineral yields. Not deterministic startup or an expected completion time.",
-    "candidates": "Hypothetical organic substitutes keep the metal recipe's category, time and output and swap inputs: gear 3 plastic; reinforced gear 2 plastic + 1 carbon fiber; beam 1 carbon composite; cable 7 acrylic fiber + 2 lubricant; insulated wire 3 graphite + 2 plastic. Enabled in the overlay; inputs keep their own unlocks. Each stage excludes the other candidates."
+    "candidates": "Hypothetical organic substitutes. Doped gear: 15 plastic + 1 iron plate -> 10 gears in 20 s. Reinforced gear: 2 plastic + 1 carbon fiber -> 2 in 6 s. Beam: 1 carbon composite -> 2 in 2 s. Cable: 7 acrylic fiber + 2 lubricant -> 2 in 5 s. Doped insulated wire: 15 graphite + 10 plastic + 2 iron plate -> 20 in 30 s. Each keeps the metal recipe's category. Enabled in the overlay; inputs keep their own unlocks. Each stage excludes the other candidates. Improved doped wire: 15 graphite + 10 plastic + 1 iron chloride -> 30 in 15 s. Improved doped gear: 15 plastic + 1 iron plate + 1 aluminum powder -> 15 in 10 s. Improved stages also allow the starting doped recipes; one supplies iron chloride without local production cost. Local chlorination candidate: 2 iron ingots + 30 chlorine -> 4 iron chloride in 4 s, basic chemistry, magnetic-field 99."
   },
   "stages": [
     {
@@ -107,14 +107,17 @@
       ],
       "excluded_recipes": [
         "candidate-composite-beam",
+        "candidate-doped-polymer-gear",
+        "candidate-doped-polymer-wire",
         "candidate-fiber-cable",
-        "candidate-polymer-gear",
-        "candidate-polymer-wire",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
         "candidate-reinforced-polymer-gear"
       ]
     },
     {
-      "name": "first-physics-gear",
+      "name": "first-physics-doped-gear",
       "products": {
         "nullius-chemical-pack": 1,
         "nullius-geology-pack": 1,
@@ -167,8 +170,11 @@
       ],
       "excluded_recipes": [
         "candidate-composite-beam",
+        "candidate-doped-polymer-wire",
         "candidate-fiber-cable",
-        "candidate-polymer-wire",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
         "candidate-reinforced-polymer-gear"
       ]
     },
@@ -226,9 +232,12 @@
       ],
       "excluded_recipes": [
         "candidate-composite-beam",
+        "candidate-doped-polymer-gear",
+        "candidate-doped-polymer-wire",
         "candidate-fiber-cable",
-        "candidate-polymer-gear",
-        "candidate-polymer-wire"
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire"
       ]
     },
     {
@@ -284,9 +293,12 @@
         "nullius-small-assembler-1-overcharged"
       ],
       "excluded_recipes": [
+        "candidate-doped-polymer-gear",
+        "candidate-doped-polymer-wire",
         "candidate-fiber-cable",
-        "candidate-polymer-gear",
-        "candidate-polymer-wire",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
         "candidate-reinforced-polymer-gear"
       ]
     },
@@ -344,13 +356,78 @@
       ],
       "excluded_recipes": [
         "candidate-composite-beam",
-        "candidate-polymer-gear",
-        "candidate-polymer-wire",
+        "candidate-doped-polymer-gear",
+        "candidate-doped-polymer-wire",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
         "candidate-reinforced-polymer-gear"
       ]
     },
     {
-      "name": "first-physics-wire",
+      "name": "first-physics-doped-wire",
+      "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-physics-pack": 1,
+        "nullius-electromagnetic-pack": 1
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ],
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ],
+      "excluded_recipes": [
+        "candidate-composite-beam",
+        "candidate-doped-polymer-gear",
+        "candidate-fiber-cable",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
+        "candidate-reinforced-polymer-gear"
+      ]
+    },
+    {
+      "name": "first-physics-doped-gear-wire",
       "products": {
         "nullius-chemical-pack": 1,
         "nullius-geology-pack": 1,
@@ -404,7 +481,9 @@
       "excluded_recipes": [
         "candidate-composite-beam",
         "candidate-fiber-cable",
-        "candidate-polymer-gear",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire",
         "candidate-reinforced-polymer-gear"
       ]
     },
@@ -460,7 +539,190 @@
         "nullius-small-furnace-1",
         "nullius-small-assembler-1-overcharged"
       ],
-      "excluded_recipes": []
+      "excluded_recipes": [
+        "candidate-fulgora-iron-chlorination",
+        "candidate-improved-doped-polymer-gear",
+        "candidate-improved-doped-polymer-wire"
+      ]
+    },
+    {
+      "name": "first-physics-improved-doped",
+      "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-physics-pack": 1,
+        "nullius-electromagnetic-pack": 1
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ],
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ],
+      "excluded_recipes": [
+        "candidate-composite-beam",
+        "candidate-fiber-cable",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-reinforced-polymer-gear"
+      ]
+    },
+    {
+      "name": "first-physics-improved-doped-imported-iron-chloride",
+      "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-physics-pack": 1,
+        "nullius-electromagnetic-pack": 1
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ],
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ],
+      "excluded_recipes": [
+        "candidate-composite-beam",
+        "candidate-fiber-cable",
+        "candidate-fulgora-iron-chlorination",
+        "candidate-reinforced-polymer-gear"
+      ],
+      "raw": [
+        "nullius-iron-chloride"
+      ]
+    },
+    {
+      "name": "first-physics-improved-doped-local-chlorination",
+      "products": {
+        "nullius-chemical-pack": 1,
+        "nullius-geology-pack": 1,
+        "nullius-climatology-pack": 1,
+        "nullius-mechanical-pack": 1,
+        "nullius-electrical-pack": 1,
+        "nullius-physics-pack": 1,
+        "nullius-electromagnetic-pack": 1
+      },
+      "executor_cycles": {
+        "nullius-physics-pack": 1,
+        "nullius-unbox-physics-pack": 25
+      },
+      "executor_transfers": [
+        "nullius-box-physics-pack"
+      ],
+      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
+      "technologies": [
+        "nullius-physics"
+      ],
+      "allow_all_pre_physics": true,
+      "machines": [
+        "nullius-air-filter-1",
+        "nullius-air-filter-2",
+        "nullius-barrel-pump-1",
+        "nullius-chemical-plant-1",
+        "nullius-chemical-plant-2",
+        "nullius-chimney-1",
+        "nullius-crusher-1",
+        "nullius-crusher-2",
+        "nullius-distillery-1",
+        "nullius-distillery-2",
+        "nullius-flotation-cell-1",
+        "nullius-flotation-cell-2",
+        "nullius-foundry-1",
+        "nullius-foundry-2",
+        "nullius-hydro-plant-1",
+        "nullius-hydro-plant-2",
+        "nullius-large-assembler-1",
+        "nullius-medium-assembler-1",
+        "nullius-medium-assembler-2",
+        "nullius-medium-furnace-2",
+        "nullius-nanofabricator-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-small-assembler-1",
+        "nullius-surge-compressor-1",
+        "nullius-combustion-chamber-1",
+        "nullius-small-furnace-1",
+        "nullius-small-assembler-1-overcharged"
+      ],
+      "excluded_recipes": [
+        "candidate-composite-beam",
+        "candidate-fiber-cable",
+        "candidate-reinforced-polymer-gear"
+      ]
     }
   ]
 }
