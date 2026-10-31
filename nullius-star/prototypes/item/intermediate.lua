@@ -5236,12 +5236,11 @@ extend_intermediate_prototypes({
       {
         icon = "__angelssmeltinggraphics__/graphics/icons/roll-zinc.png",
         icon_size = 64,
-
+        scale = 0.5
       },
       {
-        icon = "__base__/graphics/decorative/brown-asterisk/brown-asterisk-11.png",
-        icon_size = 54,
-        scale = 0.35,
+        icon = "__nullius-star__/graphics/icons/cellulose.png",
+        scale = 0.28,
         shift = {7, -10}
       }
     },

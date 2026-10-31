@@ -1148,9 +1148,8 @@ data:extend({
     type = "technology",
     name = "nullius-energy-storage-1",
     order = "nullius-cf",
-    icon_size = 64,
-    
-    icon = "__base__/graphics/icons/steam-turbine.png",
+    icon = "__base__/graphics/technology/steam-power.png",
+    icon_size = 256,
     effects = {
       {
         type = "unlock-recipe",
@@ -1872,7 +1871,7 @@ data:extend({
     type = "technology",
     name = "nullius-electronics-1",
     order = "nullius-cl",
-    icon = "__base__/graphics/technology/electronics.png",
+    icon = "__base__/graphics/technology/advanced-combinators.png",
     icon_size = 256,
     
     effects = {
@@ -2470,7 +2469,7 @@ data:extend({
     type = "technology",
     name = "nullius-mining-2",
     order = "nullius-de",
-    icon = "__base__/graphics/technology/mining-productivity.png",
+    icon = "__base__/graphics/technology/electric-mining-drill.png",
     icon_size = 256,
     
     effects = {
@@ -5842,7 +5841,7 @@ data:extend({
     type = "technology",
     name = "nullius-electronics-2",
     order = "nullius-ei",
-    icon = "__base__/graphics/technology/advanced-circuit.png",
+    icon = "__base__/graphics/technology/electronics.png",
     icon_size = 256,
     
     effects = {
@@ -7202,7 +7201,7 @@ data:extend({
     type = "technology",
     name = "nullius-optimization-4",
     order = "nullius-el",
-    icon = "__base__/graphics/technology/productivity-module-2.png",
+    icon = "__base__/graphics/technology/productivity-module-1.png",
     icon_size = 256,
     
     effects = {
@@ -9737,7 +9736,7 @@ data:extend({
     type = "technology",
     name = "nullius-mining-3",
     order = "nullius-fd",
-    icon = "__base__/graphics/technology/mining-productivity.png",
+    icon = "__base__/graphics/technology/electric-mining-drill.png",
     icon_size = 256,
     
     effects = {
@@ -10871,7 +10870,7 @@ data:extend({
     type = "technology",
     name = "nullius-battery-storage-3",
     order = "nullius-fj",
-    icon = "__base__/graphics/technology/battery.png",
+    icon = "__base__/graphics/technology/battery-mk2-equipment.png",
     icon_size = 256,
     
     effects = {
@@ -11320,7 +11319,7 @@ data:extend({
     type = "technology",
     name = "nullius-electronics-3",
     order = "nullius-fm",
-    icon = "__base__/graphics/technology/processing-unit.png",
+    icon = "__base__/graphics/technology/advanced-circuit.png",
     icon_size = 256,
     
     effects = {
@@ -12017,7 +12016,6 @@ data:extend({
     order = "nullius-fq",
     icon = "__base__/graphics/technology/electronics.png",
     icon_size = 256,
-    
     effects = {
       {
         type = "unlock-recipe",
@@ -14003,7 +14001,7 @@ data:extend({
     type = "technology",
     name = "nullius-miniaturization-2",
     order = "nullius-gg",
-    icon = "__base__/graphics/technology/electronics.png",
+    icon = "__base__/graphics/technology/advanced-circuit.png",
     icon_size = 256,
     
     effects = {

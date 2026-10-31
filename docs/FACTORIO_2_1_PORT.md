@@ -413,3 +413,20 @@ The fuel plans use shipping recipes and local material supply. They include wast
 processing, process energy, and machine construction. Fulgora uses an external
 grid. Only named probabilistic recipes use mean outputs. The plans exclude
 layout, modules, beacons, and startup scheduling.
+
+### Upstream help and presentation
+
+- Import German translations from `origin/main`, Russian diesel and oil fixes,
+  and the corrected cloning achievement text. Remove obsolete translated keys.
+- Import the tips from `add82b4` and the path fix from `f2b59bf`. Adapt liquid
+  disposal, power priorities, pump modes, and solar neighbours to Nullius*.
+- Import cellulose icons (`29c7617`, `16ae155`), research icons (`0726476`), and
+  checkpoint number formatting (`a387b14`). Checkpoint requirements stay the same.
+- Import the repaired menu saves and the train and early-power scenes
+  (`7f824cf`, `da605b3`, `968858b`).
+
+Use `tools/check_factorio_help.py` to check tip links and German keys against
+resolved prototypes. Use `tools/check_factorio_simulations.py` to run the saved
+scenes in the native simulation environment on a private virtual display. This
+check covers scene loading, initialization, and 60 ticks; it does not measure
+factory throughput. Normal game-save loading is not a simulation test.
