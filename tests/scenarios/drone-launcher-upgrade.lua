@@ -1,6 +1,6 @@
 -- given: old 3/5-slot launchers, ten drones in every slot, five drone types.
 -- act: save, then load with the one-slot production prototypes.
--- expect: every drone remains in an inventory or is returned to the ground.
+-- expect: the first slot survives; drones in removed slots are lost (accepted save break).
 local resumed=false
 script.on_load(function() resumed=true end)
 script.on_init(function() storage.prepared=false end)
@@ -27,17 +27,21 @@ script.on_nth_tick(30,function()
   elseif resumed then
     local actual={}
     for _,e in ipairs(storage.rows) do
-      for _,stack in pairs(e.get_inventory(defines.inventory.artillery_turret_ammo).get_contents()) do
+      local inventory=e.get_inventory(defines.inventory.artillery_turret_ammo)
+      assert(#inventory==1,'upgraded launcher must have one slot')
+      assert(inventory.get_item_count('nullius-scout-drone-1')==10,'first slot must survive')
+      for _,stack in pairs(inventory.get_contents()) do
         actual[stack.name]=(actual[stack.name] or 0)+stack.count
       end
     end
     for _,e in pairs(game.surfaces.nauvis.find_entities_filtered{type='item-entity'}) do
       local stack=e.stack;actual[stack.name]=(actual[stack.name] or 0)+stack.count
     end
-    for name,count in pairs(storage.expected) do
-      assert(actual[name]==count,'launcher upgrade lost '..name..': expected '..count..', got '..(actual[name] or 0))
+    for name in pairs(storage.expected) do
+      local expected=name=='nullius-scout-drone-1' and 20 or 0
+      assert((actual[name] or 0)==expected,'unexpected upgrade inventory for '..name)
     end
-    log('LAUNCHER_UPGRADE_PASS: all 80 drones preserved')
+    log('LAUNCHER_UPGRADE_PASS: 20 drones retained; 60 removed-slot drones lost')
     script.on_nth_tick(30,nil)
   end
 end)

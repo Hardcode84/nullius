@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check loaded launcher inventories after the upstream slot-count change."""
+"""Verify the accepted launcher save break after the upstream slot-count change."""
 import argparse
 import json
 from pathlib import Path
@@ -74,7 +74,7 @@ end
     support.write_text(json.dumps(value))
     log=run('upgrade',['--load-game',str(save),'--until-tick','120'])
     if 'LAUNCHER_UPGRADE_PASS' not in log.read_text(): raise RuntimeError('Upgrade witness did not finish')
-    print('PASS: all 80 drones preserved')
+    print('PASS: accepted save break confirmed; 20 drones retained, 60 removed-slot drones lost')
 
 
 if __name__=='__main__':main()

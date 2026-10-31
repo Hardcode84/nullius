@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+  Changes:
+    - Drone launchers now hold one drone type with the same total capacity.
+  Compatibility:
+    - Loading older saves removes drones from the deleted launcher slots.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.5
 Date: 23.10.2026
   Features:

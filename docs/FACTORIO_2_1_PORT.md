@@ -458,3 +458,13 @@ to compare the working tree with upstream. Add `--baseline-ref 516046c` to repea
 the before-and-after measurement. The original acceptance gate requires unchanged
 forests; the approved port accepts these differences for faster planting.
 The contract and compact results are in `tests/experiments/arboriculture*.json`.
+
+### Launcher ammunition
+
+Port `b88d662`: one slot holds 30 drones in tier 1 and 50 in tier 2.
+The automatic ammunition limit stays at 10. The approved save break removes
+ammunition from deleted slots; the first slot survives. No migration is added.
+
+`drone-launchers` checks capacity and native firing for both tiers.
+`tools/test_drone_launcher_upgrade.py` checks the accepted save break:
+20 drones survive and 60 are removed from the populated legacy fixture.
