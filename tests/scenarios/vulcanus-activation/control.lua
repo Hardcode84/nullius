@@ -2,26 +2,10 @@ local CASE = "vulcanus-activation"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local research = require("__nullius-star__/scripts/research")
 
-local expected_wreck = {
-  ["nullius-seawater-intake-1"] = 2,
-  ["nullius-hydro-plant-1"] = 4,
-  ["nullius-small-furnace-1"] = 4,
-  pipe = 50,
-  ["nullius-heat-pipe-1"] = 50,
-  ["pipe-to-ground"] = 10,
-  ["nullius-extractor-1"] = 2,
-  ["nullius-air-filter-1"] = 2,
-  ["nullius-distillery-1"] = 2,
-  ["nullius-chemical-plant-1"] = 2,
-  ["nullius-foundry-1"] = 4,
-  ["nullius-small-assembler-1"] = 4,
-  inserter = 12,
-  ["iron-chest"] = 4,
-  ["nullius-lab-1"] = 1,
-  ["transport-belt"] = 50,
-  splitter = 4,
-  ["cliff-explosives"] = 30,
-}
+local expected_wreck = {}
+for _, stack in ipairs(require("__nullius-star__/shared/vulcanus-starter")) do
+  expected_wreck[stack[1]] = (expected_wreck[stack[1]] or 0) + stack[2]
+end
 
 local expected_equipment = {
   ["nullius-charger-1"] = 1,

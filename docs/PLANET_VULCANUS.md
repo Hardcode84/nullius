@@ -7,7 +7,7 @@
 | Theme, mechanics, progression intent, and constraints | This document |
 | Progression order and validation witnesses | This document |
 | Recipe, technology, item, fluid, and entity values | Factorio resolved prototypes |
-| Starting inventory | Probe activation code and `vulcanus-activation` scenario |
+| Starting inventory | `nullius-star/shared/vulcanus-starter.lua` and `vulcanus-activation` scenario |
 | Runtime behavior | Mod control scripts and scenarios |
 | Reachability | Checked-in prerequisite contracts |
 

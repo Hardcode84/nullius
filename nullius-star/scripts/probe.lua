@@ -3,6 +3,7 @@
 -- spawn a dormant android and probe wreckage, then offer body switch.
 
 local probe = {}
+local vulcanus_supplies = require("shared.vulcanus-starter")
 local fulgora_supplies = require("shared.fulgora-starter")
 
 local destinations = {
@@ -59,45 +60,10 @@ local function vulcanus_landing_site(surface, pos, force)
   if not wreck or not wreck.valid then
     error("Vulcanus probe could not create its supply wreck")
   end
-  if wreck and wreck.valid then
-    -- Vulcanus probe supplies.
-    -- Bootstrap sequence: no electricity. One free/void lava intake provides
-    -- lava; another intake toggled to free-gas mode (Ctrl+R) vents compressed
-    -- gas for free (diminishing returns), powering the first pneumatic hydro
-    -- plant. Once lava processing runs, its net-positive gas surplus sustains
-    -- the factory.
-
-    -- Phase A: Pneumatic bootstrap (no Stirling, no electrical grid).
-    -- Two intakes: one free lava, one toggled to free-gas.
-    wreck.insert({name = "nullius-seawater-intake-1", count = 2})
-
-    -- Phase B: First gas loop (hydro-plant processes lava + piping).
-    wreck.insert({name = "nullius-hydro-plant-1", count = 4})
-    wreck.insert({name = "nullius-small-furnace-1", count = 4})
-    wreck.insert({name = "pipe", count = 50})
-    wreck.insert({name = "nullius-heat-pipe-1", count = 50})
-    wreck.insert({name = "pipe-to-ground", count = 10})
-
-    -- Phase C: Basic manufacturing.
-    wreck.insert({name = "nullius-extractor-1", count = 2})
-    wreck.insert({name = "nullius-air-filter-1", count = 2})
-    wreck.insert({name = "nullius-distillery-1", count = 2})
-    wreck.insert({name = "nullius-chemical-plant-1", count = 2})
-    wreck.insert({name = "nullius-foundry-1", count = 4})
-    wreck.insert({name = "nullius-small-assembler-1", count = 4})
-    wreck.insert({name = "inserter", count = 12})
-    wreck.insert({name = "iron-chest", count = 4})
-
-    -- Phase D: Electronics rebuild requires silicon insulation.
-    -- No electronics in wreck (melted). Player must craft from scratch.
-
-    -- Phase E: Science.
-    wreck.insert({name = "nullius-lab-1", count = 1})
-
-    -- Misc: belts/splitters for cooling conveyors and explosives for cliffs.
-    wreck.insert({name = "transport-belt", count = 50})
-    wreck.insert({name = "splitter", count = 4})
-    wreck.insert({name = "cliff-explosives", count = 30})
+  for _, stack in ipairs(vulcanus_supplies) do
+    if wreck.insert{name = stack[1], count = stack[2]} ~= stack[2] then
+      error("Vulcanus probe could not store all starter " .. stack[1])
+    end
   end
 end
 
