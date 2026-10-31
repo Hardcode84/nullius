@@ -1727,16 +1727,16 @@ extend_intermediate_prototypes({
     categories = {"machine-casting"},
     subgroup = "boxed-iron",
     order = "nullius-ee",
-    energy_required = 25,
+    energy_required = 30,
     ingredients = {
-      {type="item", name="nullius-box-iron-oxide", amount = 13},
-      {type="item", name="nullius-box-aluminum-ingot", amount = 10},
+      {type="item", name="nullius-box-iron-oxide", amount = 17},
+      {type="item", name="nullius-box-aluminum-ingot", amount = 12},
       {type="item", name="nullius-box-graphite", amount = 1}
     },
     results = {
-      {type="item", name="nullius-box-iron-ingot", amount=16},
-      {type="item", name="nullius-box-alumina", amount=5},
-      {type="item", name="nullius-box-mineral-dust", amount=1}
+      {type="item", name="nullius-box-iron-ingot", amount=21},
+      {type="item", name="nullius-box-alumina", amount=6},
+      {type="item", name="nullius-box-mineral-dust", amount=2}
     },
     main_product = "nullius-box-iron-ingot"
   },
@@ -4550,11 +4550,11 @@ extend_intermediate_prototypes({
     order = "nullius-cc",
     energy_required = 60,
     ingredients = {
-      {type="item", name="nullius-box-insulated-wire", amount=3},
-      {type="item", name="nullius-box-steel-plate", amount=2},
+      {type="item", name="nullius-box-insulated-wire", amount=2},
+      {type="item", name="nullius-box-steel-plate", amount=1},
       {type="item", name="nullius-box-steel-gear", amount=1},
       {type="item", name="nullius-box-steel-rod", amount=1},
-      {type="fluid", name="nullius-lubricant", amount=30, fluidbox_index=1}
+      {type="fluid", name="nullius-lubricant", amount=25, fluidbox_index=1}
     },
     results = {
       {type = "item", name = "nullius-box-motor-2", amount = 1}

@@ -1459,6 +1459,35 @@ end
 -- boxed recipe still consumes boxed plastic or rubber.  Five unboxed units
 -- equal one boxed unit; intermediates without boxed prototypes are scaled by 5.
 extend_vulcanus_prototypes({
+  vulcanus_substitute_recipe("nullius-boxed-motor-2",
+    "nullius-boxed-motor-2-vulcanus", {
+      ["nullius-lubricant"] = {
+        {type = "item", name = "nullius-box-silica", amount = 3},
+      },
+    }, {
+      enabled = false,
+      energy_required = 50,
+      categories = {"huge-crafting"},
+      localised_name = {"recipe-name.nullius-boxed",
+        {"recipe-name.nullius-motor-2-vulcanus"}},
+    }),
+  vulcanus_substitute_recipe("nullius-boxed-heat-pipe-2",
+    "nullius-boxed-heat-pipe-2-vulcanus", {
+      ["nullius-box-pipe-3"] = {
+        {type = "item", name = "nullius-box-pipe-2", amount = 2},
+      },
+      ["nullius-box-ceramic-powder"] = {
+        {type = "item", name = "nullius-box-aluminum-sheet", amount = 4},
+        {type = "item", name = "nullius-refractory-brick", amount = 20},
+      },
+      ["nullius-box-insulation"] = {
+        {type = "item", name = "nullius-silicon-insulation", amount = 10},
+      },
+    }, {
+      enabled = false,
+      localised_name = {"recipe-name.nullius-boxed",
+        {"recipe-name.nullius-heat-pipe-2-vulcanus"}},
+    }),
   vulcanus_boxed_plastic_recipe("nullius-boxed-barrel-1",
     "nullius-boxed-barrel-vulcanus", {
       {type = "item", name = "nullius-box-aluminum-sheet", amount = 2},

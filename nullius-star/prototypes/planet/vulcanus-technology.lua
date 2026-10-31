@@ -45,6 +45,7 @@ local mass_production = data.raw.technology["nullius-mass-production-5"]
 if not mass_production then error("Missing nullius-mass-production-5") end
 mass_production.effects = mass_production.effects or {}
 for _, recipe in ipairs({
+    "nullius-boxed-motor-2-vulcanus",
     "nullius-boxed-barrel-vulcanus",
     "nullius-boxed-thermite-explosive",
     "nullius-boxed-logic-circuit-vulcanus",
@@ -394,3 +395,7 @@ table.insert(data.raw.technology["nullius-geology-2"].effects, {type = "unlock-r
 table.insert(data.raw.technology["nullius-mass-production-7"].effects, {type = "unlock-recipe", recipe = "nullius-boxed-geology-pack-vulcanus-2"})
 table.insert(data.raw.technology["nullius-climatology-2"].effects, {type = "unlock-recipe", recipe = "nullius-climatology-pack-vulcanus-2"})
 table.insert(data.raw.technology["nullius-mass-production-7"].effects, {type = "unlock-recipe", recipe = "nullius-boxed-climatology-pack-vulcanus-2"})
+
+table.insert(data.raw.technology["nullius-mass-production-6"].effects, {
+  type = "unlock-recipe", recipe = "nullius-boxed-heat-pipe-2-vulcanus",
+})
