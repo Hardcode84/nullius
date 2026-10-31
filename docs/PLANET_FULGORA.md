@@ -830,7 +830,8 @@ to check coil construction, removal, and reload.
 
 ### Metered grounding
 
-Design only. API paths verified by
+The grid meter is implemented. The native bank controller fails the no-trip
+acceptance test below. API paths are also checked by
 [`experiment-accumulator-meter`](#accumulator-grid-meter-experiment).
 
 #### Starvation mechanism
@@ -916,7 +917,7 @@ Mode switching closes the battery GUI; reopening shows the panel.
 
 Binary banks give 400 MW steps up to 12.4 GW. A connected coil requests its
 nameplate power: 32 coils and 56 MW surge requested 12.856 GW. The reference
-control below validates the design; players build their own.
+control below tests the design; players build their own.
 
 `D` includes the coils the controller closed. The controller keeps its bank
 selection `h` in a memory cell and computes the load without coils from the
@@ -962,24 +963,57 @@ a coil tier change invalidates the 400 MW step constant.
 
 Each bank's poles also collect lightning and add to `O` while its switch is
 closed. Their total output must not exceed the bank's coil demand; bank 1 then
-allows four tier-1 poles. A charged bank pole empties within 2 s, so that term
-decays within four samples.
+allows four tier-1 poles. Its buffer holds 2 s of nameplate output. Shared demand can reduce its actual
+output and extend the discharge time.
 
-When `L + n × 400 MW > O`, no combination fits the band. The selection still
-prevents a trip, and surge consumers receive `O / D`: three charged tier-1
+When `L + n × 400 MW > O`, no combination fits the band. The selection satisfies the sampled trip ratio, and surge consumers receive
+`O / D`: three charged tier-1
 collectors and 56 MW load give `n = 1` and 300 / 456 = 66% until the collectors
-drain. This happens only while `O < 800 MW`.
+drain. The coarse bank step causes this case below 800 MW. A rise in offered power
+before the next selection can still cause consecutive overload checks.
 
 #### Acceptance experiment
 
 | Field | Value |
 |---|---|
-| Base case | `fulgora-switched-grounding`: 256 pylons, 625 batteries, 32 tier-1 coils, 60 packs/min, seed 1729, ten minutes at noon and midnight |
+| Base case | `fulgora-switched-grounding`: 256 pylons, 625 batteries, 32 tier-1 coils, 60 packs/min, seed 1729, 60 s warmup, then 30 s each at noon and midnight |
 | Change | Metered supercapacitor; 31 coils in the five binary banks; stateful reference control circuit; no scripted switching |
 | Metrics | Surge supplied, ordinary load supplied, trips, energy grounded, bank switch states, switch changes per sample |
 | Pass | Night surge supplied at least 95%; ordinary load 100%; no trips; at most one change per switch per sample |
 | Day | Report surge supplied; strike cadence limits day surge |
 | Stop condition | Night surge below 95% with no trips: rerun with 100 MW tier-1 coils in six binary banks (63 coils, 6.3 GW). Below 95% again: metered grounding does not remove starvation; return to scripted grounding demand or a strike-overflow trip rule |
+
+#### Measured result
+
+`fulgora-metered-grounding`, Factorio 2.1.24: 31 coils, five binary banks,
+one collecting pylon per bank. Test distribution poles provide copper and
+circuit links. Native storms supply all energy; batteries start empty.
+No script switches banks or resets a trip.
+
+| Phase | Ordinary supplied | Surge supplied | Grounded mean power | Result |
+|---|---:|---:|---:|---|
+| Noon | 100% | 98.48% | 434.70 MW | No trip |
+| Midnight | 6.67% | 6.67% | 115.61 MW | Trip at tick 5520; 28 s offline |
+
+All 183 online sample checks selected the calculated bank value. Each switch
+changed at most once per sample. The trip came from three successive increases
+in offered power, before each new bank selection could take effect:
+
+| Tick | Offered | Demand | Connected coils |
+|---:|---:|---:|---:|
+| 5460 | 2.518 GW | 0.768 GW | 1 |
+| 5490 | 3.400 GW | 1.568 GW | 3 |
+| 5520 | 4.500 GW | 1.968 GW | 4 |
+
+The minimum-demand controller fails acceptance. It needs a reserve margin that
+covers increases between samples, with a new supply measurement, or a revised
+trip rule. The 100 MW retry condition requires a run with no trips and was not
+met. No coil or trip setting changed for this experiment.
+
+Validation: `fulgora-grid-meter` checks GUI selection, native charge signals,
+mode changes, cloning, blueprint revive, settings paste, and reload.
+`fulgora-grid-meter-flow` checks all battery tiers, movement, destruction,
+and frozen readings across a trip and reset.
 
 #### Rejected alternatives
 

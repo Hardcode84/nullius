@@ -1,3 +1,4 @@
+local grid_meter = require("scripts.fulgora_meter")
 local supercapacitors = require("scripts.supercapacitors")
 local recipe_filter = require("scripts.recipe_filter")
 
@@ -170,6 +171,7 @@ script.on_init(
     fulgora_collectors.rebuild()
     fulgora_overload.rebuild()
     supercapacitors.rebuild()
+    grid_meter.rebuild()
 	  surface_config.configure_existing()
 	  reset_config()
     if (remote.interfaces["freeplay"] ~= nil) then
@@ -202,6 +204,7 @@ script.on_configuration_changed(
     fulgora_collectors.rebuild()
     fulgora_overload.rebuild()
     supercapacitors.rebuild()
+    grid_meter.rebuild()
     if not storage.nullius_gasvents then
       vulcanus_gasvent.init()
     end

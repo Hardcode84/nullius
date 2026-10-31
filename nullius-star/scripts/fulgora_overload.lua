@@ -1,4 +1,5 @@
 local overload={}
+local meter=require("scripts.fulgora_meter")
 local config=require("shared.fulgora-overload")
 local PANEL="nullius_fulgora_grid"
 local BUTTON="nullius_fulgora_grid_reset"
@@ -129,12 +130,16 @@ local function refresh_panels(nodes)
 end
 function overload.update()
   local nodes,groups=topology()
+  local samples={}
+  for id,n in pairs(nodes) do
+    if not n.group.offline then samples[id]=n.network.flow_last_tick end
+  end
   local tripped_forces={}
   for _,group in pairs(groups) do
     local excessive=false
     if not group.offline and game.tick>=group.grace then
       for _,n in ipairs(group.nodes) do
-        local flow=n.network.flow_last_tick
+        local flow=samples[n.id]
         local offered=flow.primary_output+flow.secondary_output+flow.solar_output
         local demand=flow.primary_demand+flow.secondary_demand+flow.tertiary_demand
         if offered>config.demand_ratio*demand and offered-demand>config.minimum_excess_watts/60 then
@@ -150,6 +155,7 @@ function overload.update()
     end
   end
   apply(nodes,groups);refresh_panels(nodes)
+  meter.update(nodes,samples)
   for _,player in pairs(game.connected_players) do
     if tripped_forces[player.force.index] then
       player.play_sound{path="utility/alert_destroyed"}
@@ -167,11 +173,13 @@ function overload.reset(pole,force)
   return true
 end
 function overload.open(event)
+  meter.open(event)
   local player=game.get_player(event.player_index)
   local nodes=topology()
   panel(player,event.entity,nodes)
 end
 function overload.close(event)
+  meter.close(event)
   local frame=game.get_player(event.player_index).gui.relative[PANEL]
   if frame then frame.destroy() end
 end

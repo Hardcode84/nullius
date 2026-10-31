@@ -15,7 +15,8 @@ def summarize_native(case):
     for row in case['observations']:
         for phase in ('day','night'):
             v=row[phase]; seconds=v['ticks']/60
-            rows.append(dict(name=row['name'],phase=phase,first_trip_tick=row.get('first_trip'),
+            rows.append(dict(name=row['name'],phase=phase,
+                first_trip_tick=row.get('controller',{}).get('trip_tick',row.get('first_trip')),
                 grounding_switch_on_percent=100*v.get('switch_on',0)/(v['ticks']/30),
                 sensor_mean_percent=v.get('sensor_sum',0)/(v['ticks']/30),
                 sensor_above_80_percent=100*v.get('sensor_high',0)/(v['ticks']/30),
@@ -26,7 +27,17 @@ def summarize_native(case):
                 grounding_MW=v['coil_J']/seconds/1e6,
                 trip_samples=v['trips'],secondary_gap_seconds=v['secondary_gaps']/2,
                 surge_gap_seconds=v['surge_gaps']/2,end_battery_MJ=v['battery_MJ']))
-    return dict(factorio=case['factorio_version'],rows=rows)
+    controllers={r['name']:r['controller'] for r in case['observations'] if r.get('controller')}
+    acceptance={}
+    for row in rows:
+        if row['name'] not in controllers or row['phase']!='night': continue
+        control=controllers[row['name']]
+        checks=dict(night_surge=row['surge_delivered_percent']>=95,
+                    ordinary_load=row['secondary_delivered_percent']>=100-1e-5,
+                    no_trips=row['first_trip_tick'] is None,
+                    switch_changes=control['max_changes_per_sample']<=1)
+        acceptance[row['name']]=dict(passed=all(checks.values()),checks=checks)
+    return dict(factorio=case['factorio_version'],rows=rows,controllers=controllers,acceptance=acceptance)
 
 
 def main():

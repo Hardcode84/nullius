@@ -1,8 +1,10 @@
+local meter = require("scripts.fulgora_meter")
 local reinjection = require("scripts.fulgora_reinjection")
 local supercapacitors = require("scripts.supercapacitors")
 local overcharged_assemblers = require("scripts.overcharged_assemblers")
 
-function entity_added(entity, handbuilt)
+function entity_added(entity, handbuilt, tags)
+  meter.built(entity,tags)
   if reinjection.built(entity) ~= entity then return end
   if overcharged_assemblers.built(entity) ~= entity then return end
   if supercapacitors.built(entity) ~= entity then return end
@@ -71,6 +73,7 @@ function entity_added(entity, handbuilt)
 end
 
 function entity_removed(entity, died)
+  meter.remove(entity)
   if grounding_coils.is_coil(entity.name) then remove_wind_mod_entity(entity) end
   if entity.type=="electric-pole" then fulgora_collectors.remove(entity.unit_number) end
   -- Clean up heat interface for any pneumatic machine (before prefix check).
@@ -106,15 +109,16 @@ end
 
 
 function entity_hand_built(event)
-  entity_added(event.entity, event)
+  entity_added(event.entity, event, event.tags)
 end
 function entity_bot_built(event)
-  entity_added(event.entity, nil)
+  entity_added(event.entity, nil, event.tags)
 end
 function entity_raised(event)
-  entity_added(event.entity, nil)
+  entity_added(event.entity, nil, event.tags)
 end
 function entity_cloned(event)
+  if meter.cloned(event) then return end
   if grounding_coils.cloned(event.destination) then return end
   if fulgora_overload.cloned(event.destination) then return end
   local destination = reinjection.built(event.destination)
@@ -134,6 +138,7 @@ function entity_died(event)
   entity_removed(event.entity, true)
 end
 function entity_destroyed(event)
+  if meter.destroyed(event) then return end
   if fulgora_collectors.destroyed(event) then return end
   if (script_kill or (event.type ~= defines.target_type.entity)) then return end
   local unit_number = event.useful_id

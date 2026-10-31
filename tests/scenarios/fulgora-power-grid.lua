@@ -10,9 +10,19 @@ local phase_ticks=1800
 local night_start=warmup+phase_ticks
 local finish_tick=night_start+phase_ticks
 local circuit=require('__nullius-star__/scenarios/fulgora-switched-grounding/circuit')
+local metered=require('__nullius-star__/scenarios/fulgora-metered-grounding/circuit')
 local collectors=require('__nullius-star__/shared/fulgora-collectors')
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
 local function blank() return {ticks=0,captures=0,trips=0,secondary_gaps=0,surge_gaps=0,switch_on=0,sensor_sum=0,sensor_high=0} end
+local observe=require('__nullius-star__/scenarios/fulgora-metered-grounding/observe')
+for _,profile in ipairs(profiles) do
+  if profile.metered then
+    script.on_event(defines.events.on_tick,function()
+      if game.tick<=finish_tick then observe(storage.rows,check) end
+    end)
+    break
+  end
+end
 local function totals(row)
   local stats=row.poles[1].electric_network_statistics
   local t={secondary_J=stats.get_input_count(row.secondary.name),surge_J=stats.get_input_count(row.surge.name),
@@ -92,7 +102,8 @@ script.on_nth_tick(1,function()
     row.surge=place('factorio-test-audit-'..row.load_name..'-surge',-72,113,false)
     for _,p in ipairs(row.poles) do check(p.electric_network_id==distribution.electric_network_id,'disconnected collector '..profile.name..' '..p.position.x..','..p.position.y) end
     if profile.switched then
-      circuit(s,x,profile,row,place,check)
+      if profile.metered then metered(s,x,profile,row,place,check)
+      else circuit(s,x,profile,row,place,check) end
     end
     row.network=distribution.electric_network_id
     for _,other in ipairs(storage.rows) do if other~=row then check(other.network~=row.network,'overlapping grids') end end
@@ -137,7 +148,7 @@ script.on_nth_tick(30,function()
     elseif game.tick==night_start then storage.phase='night';storage.surface.daytime=.5
     else
       local result={}
-      for _,row in ipairs(storage.rows) do result[#result+1]={name=row.name,secondary_MW=row.secondary_MW,surge_MW=row.surge_MW,day=row.day,night=row.night,first_trip=row.first_trip} end
+      for _,row in ipairs(storage.rows) do result[#result+1]={name=row.name,secondary_MW=row.secondary_MW,surge_MW=row.surge_MW,day=row.day,night=row.night,first_trip=row.first_trip,controller=row.controller} end
       helpers.write_file('factorio-tests/'..CASE..'.json',helpers.table_to_json{schema=1,case=CASE,status='pass',failure_count=0,
         assertions=storage.assertions,tick=game.tick,factorio_version=script.active_mods.base,observations=result},false)
       script.on_nth_tick(30,nil)

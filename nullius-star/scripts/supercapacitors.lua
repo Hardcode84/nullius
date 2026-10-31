@@ -1,4 +1,5 @@
 local capacitors = {}
+local meter = require("scripts.fulgora_meter")
 local config = require("shared.supercapacitors")
 local bases = {}
 for _, base in ipairs(config.machines) do bases[base .. "-supercapacitor"] = base end
@@ -39,6 +40,8 @@ end
 
 -- Switching retains settings and stored joules, capped at the new capacity.
 function capacitors.replace(entity, name, force)
+  local meter_settings = meter.settings(entity)
+  meter.remove(entity)
   local ghost = entity.type == "entity-ghost"
   local behavior = entity.get_control_behavior()
   local signal = behavior and behavior.output_signal
@@ -78,6 +81,7 @@ function capacitors.replace(entity, name, force)
     control.output_signal = signal
     control.read_charge = read_charge
   end
+  meter.set(replacement,meter_settings)
   return replacement
 end
 

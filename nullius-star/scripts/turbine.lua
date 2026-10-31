@@ -1,3 +1,4 @@
+local grid_meter = require("scripts.fulgora_meter")
 local connector_offset = {
   [defines.direction.north] = {x = 0, y = -2.15},
   [defines.direction.east] = {x = 2.15, y = 0},
@@ -446,6 +447,7 @@ local function handle_togglable_pump_paste(target, tname, sname, source, force)
 end
 
 function entity_paste_event(event)
+  grid_meter.pasted(event)
   local player = game.players[event.player_index]
   if ((player == nil) or (not player.valid)) then return end
   local source = event.source
