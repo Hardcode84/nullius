@@ -121,6 +121,10 @@ for i = 1, 3 do
   register_pneumatic_pair("nullius-flotation-cell-" .. i,
     "nullius-flotation-cell-" .. i .. "-pneumatic")
 end
+for _, name in ipairs(pneumatic_families.solid_miners(prototypes.entity)) do
+  register_pneumatic_pair(name, name .. "-pneumatic")
+end
+register_pneumatic_pair("nullius-chimney-3", "nullius-chimney-3-pneumatic")
 register_pneumatic_pair("nullius-extractor-1", "nullius-extractor-1-pneumatic")
 register_pneumatic_pair("nullius-extractor-2", "nullius-extractor-2-pneumatic")
 for i = 1, 3 do

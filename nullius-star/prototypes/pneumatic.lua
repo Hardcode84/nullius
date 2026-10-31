@@ -65,6 +65,11 @@ for _, name in ipairs({
   register_pneumatic("inserter", name)
 end
 
+for _, name in ipairs(pneumatic_families.solid_miners(data.raw["mining-drill"])) do
+  register_pneumatic("mining-drill", name)
+end
+register_pneumatic("furnace", "nullius-chimney-3")
+
 -- Register extractors (mining-drill type, for geysers).
 register_pneumatic("mining-drill", "nullius-extractor-1")
 register_pneumatic("mining-drill", "nullius-extractor-2")

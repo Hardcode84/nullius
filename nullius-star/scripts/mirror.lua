@@ -81,7 +81,7 @@ function replace_fluid_entity(entity, newname, force, dir)
     local recipe_fluids
     local source_fuel = entity.prototype.fluid_energy_source_prototype ~= nil
     local target_fuel = prototypes.entity[newname].fluid_energy_source_prototype ~= nil
-    if entity.type == "assembling-machine" and source_fuel ~= target_fuel then
+    if source_fuel ~= target_fuel then
       -- Fuel occupies a separate runtime slot (first in 2.1). Recipe and fuel
       -- prototypes can both have index 1. Map recipe stores by their prototype,
       -- not their runtime slot. Removing the engine releases its residual fuel.

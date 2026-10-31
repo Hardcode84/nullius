@@ -38,4 +38,12 @@ function pneumatic_machine_families.boxers(prototypes_by_name)
     pneumatic_machine_families.is_boxer)
 end
 
+function pneumatic_machine_families.solid_miners(prototypes_by_name)
+  return matching_names(prototypes_by_name, function(name)
+    return string.match(name, "^nullius%-small%-miner%-%d+$") ~= nil or
+      string.match(name, "^nullius%-medium%-miner%-%d+$") ~= nil or
+      string.match(name, "^nullius%-large%-miner%-%d+$") ~= nil
+  end)
+end
+
 return pneumatic_machine_families

@@ -304,6 +304,9 @@ consumers:
 sensor: circuit-readable temperature sensor
 ```
 
+Solid miners and the powered chimney support pneumatic mode. Mode changes keep
+the same placement item; miner upgrades keep the selected power mode.
+
 Working pneumatic machines own hidden heat interfaces. Updates are amortized;
 heat generation follows actual energy use. Ownership cleanup must cover every
 build, replacement, mining, and destruction path.
@@ -567,7 +570,7 @@ failure: unfed demolisher ceases operation or dies
 | Lava materials | Self-powered gas production is available | Local iron, aluminum, calcite, silica, stone, and sulfur-bearing gas paths operate | `vulcanus-lava-separation-*`, `vulcanus-bloom-cooldown-*` | — |
 | Heat chemistry | Lava materials and wreck machinery are available | Aluminum reduction, sulfur catalysis, pneumatic heat, and thermal HCl cracking operate | `vulcanus-aluminum-reduction`, `vulcanus-sulfur-catalysis`, `vulcanus-pneumatic-heat-production`, `vulcanus-hcl-thermal-cracking` | — |
 | Bootstrap metallurgy | Local metals and chemistry are available | Bootstrap metallurgic science can be crafted | `vulcanus-metallurgic-pack-recipe`, `vulcanus-metallurgic-pack-10` | `vulcanus-pack.args` |
-| Construction closure | Bootstrap production is available | Core pneumatic factory and inorganic fluid handling can be reproduced locally | `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `pneumatic-assemblers`, `pneumatic-barrel-pumps`, `pneumatic-boxer`, `vulcanus-pneumatic-compressor` | `vulcanus-construction.args`, `vulcanus-barrel.args`, `pneumatic-boxer.args` |
+| Construction closure | Bootstrap production is available | Core pneumatic factory and inorganic fluid handling can be reproduced locally | `vulcanus-construction-closure`, `vulcanus-inorganic-barrel`, `pneumatic-assemblers`, `pneumatic-barrel-pumps`, `pneumatic-boxer`, `vulcanus-pneumatic-compressor`, `pneumatic-miners-chimney` | `vulcanus-construction.args`, `vulcanus-barrel.args`, `pneumatic-boxer.args` |
 | Renewable graphite | Construction closure is available | Atmosphere and HCl chemistry replace rock-mined graphite | `vulcanus-hcl-thermal-cracking` | `vulcanus-renewable-graphite.args` |
 | Basic science | Renewable graphite and construction closure are available | Local geology, climatology, mechanical, and electrical science operate | `vulcanus-basic-science-10` | `vulcanus-basic-science.args` |
 | Chemical science and thermite | Basic science is available | Local alkali, acids, glass, lubricant, barrels, chemical science, and thermite operate | `vulcanus-caustic-bootstrap`, `vulcanus-chemical-*`, `vulcanus-thermite` | `vulcanus-caustic-bootstrap.args`, `vulcanus-chemical-*.args`, `vulcanus-thermite.args` |
