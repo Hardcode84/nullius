@@ -196,18 +196,14 @@ data:extend({
     },
     module_slots = 2,
     icons_positioning = {
-      {
-        inventory_index = defines.inventory.lab_modules,
-        shift = {0, 0.9}
-      },
-      {
-        inventory_index = defines.inventory.lab_input,
-        shift = {0, -0.2},
-        max_icons_per_row = 4,
-        separation_multiplier = 1/1.1
-      }
+      {inventory_index = defines.inventory.lab_modules, shift = {0, 0.9}},
+      {inventory_index = defines.inventory.lab_input, shift = {0, -0.2}, max_icons_per_row = 4, separation_multiplier = 1/1.1}
     },
+
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
+    circuit_wire_max_distance = data.raw.lab["lab"].circuit_wire_max_distance,
+    circuit_connector = data.raw.lab["lab"].circuit_connector,
+    default_technology_level_signal = {type = "virtual", name = "signal-L"},
 
     on_animation = {
       layers = {
@@ -341,6 +337,9 @@ data:extend({
       }
     },
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
+    circuit_wire_max_distance = data.raw.lab["lab"].circuit_wire_max_distance,
+    circuit_connector = data.raw.lab["lab"].circuit_connector,
+    default_technology_level_signal = {type = "virtual", name = "signal-L"},
 
     on_animation = {
       layers = {
@@ -456,6 +455,9 @@ data:extend({
       }
     },
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
+    circuit_wire_max_distance = data.raw.lab["lab"].circuit_wire_max_distance,
+    circuit_connector = data.raw.lab["lab"].circuit_connector,
+    default_technology_level_signal = {type = "virtual", name = "signal-L"},
 
     on_animation = {
       layers = {
@@ -576,6 +578,9 @@ data:extend({
       }
     },
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
+    circuit_wire_max_distance = data.raw.lab["lab"].circuit_wire_max_distance,
+    circuit_connector = data.raw.lab["lab"].circuit_connector,
+    default_technology_level_signal = {type = "virtual", name = "signal-L"},
 
     on_animation = {
       layers = {
