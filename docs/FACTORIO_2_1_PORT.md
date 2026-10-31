@@ -384,3 +384,43 @@ Authorities: shipped 2.1.19 changelog and API docs,
 [Mod Portal API](https://wiki.factorio.com/Mod_portal_API),
 [Bob's source tag](https://github.com/modded-factorio/bobsmods/tree/v3.0-patch1),
 [2.1 item science capacity](https://lua-api.factorio.com/latest/prototypes/ItemPrototype.html#science_capacity).
+
+## Upstream progression review
+
+Assessment on Factorio 2.1.24. No gameplay changes applied.
+
+| Upstream change | Decision | Local effect |
+|---|---|---|
+| Boxing, `646d16f` | Adopted | Generated recipes preserve the local recipe and research contracts. |
+| Tank tiers, `1888803` | Adapt | Add Small Tank 3 and Medium Tank 4 at Plumbing 6. Keep the current Large Tank 3 recipe. These tiers improve storage density after physics on both planets; they do not help bootstrap. Check upgrade connections, stored fluid, and boxed recipes before release. |
+| Hydrogen checkpoint, `365cea4`, `5cf1b74` | Reject | A fixed tank volume adds a storage task to both planet routes. The implementation scans Nauvis only and uses the old fluid API. Keep the current energy-storage checkpoint. |
+| Diesel, `ad1c4b4`, `f4d01e8` | Adapt as a separate optional feature | The synthetic recipe is feasible on both planets at the declared pre-physics boundary. Keep existing fluid IDs and avoid the added mandatory research dependency. Any different unlock needs a new plan. Do not claim a power-generation benefit from these production costs. |
+| Solar thermal, `91ae21c`, `5ca89b1`, `3cd29bd`, `0bf3743` | Reject for this port batch | The new light curve and removal of the temperature taper change heat output. The prototype also assigns `max_health` from an unbound name. These changes need a separate native energy comparison. |
+| Robot radar, `cd97b84` | Reject | All twelve affected buildings have nonzero radar range on 2.1.24. Keep their live map visibility on both planets. Robot construction range is a separate property. |
+
+The diesel overlay keeps the current biodiesel ID to test the upstream recipe.
+The planner includes local material supply, waste processing, process energy,
+and machine construction. Fulgora uses an external grid and mean outputs for
+only the named probabilistic recipes. The plans exclude layout, modules, beacons,
+and startup scheduling. Current biodiesel is unavailable at these boundaries.
+
+Reproduce the checks:
+
+```bash
+REPORT_DIR=$(mktemp -d)
+python tools/review_upstream_progression.py --factorio "$FACTORIO" --config tests/progression/upstream/progression-review.json --output "$REPORT_DIR/progression-review.json" --field storage
+python tools/plan_factorio_factory.py --config tests/progression/upstream/fulgora-fuels.json --output "$REPORT_DIR/fulgora-fuels.json" --overview
+python tools/plan_factorio_factory.py --config tests/progression/upstream/vulcanus-fuels.json --output "$REPORT_DIR/vulcanus-fuels.json" --overview
+python tools/run_factorio_tests.py upstream-progression-audit
+```
+
+A solar comparison must measure whole-day heat at fixed loads and temperatures
+on Nauvis, Vulcanus, and Fulgora. Match initial and final stored heat. Set a 5%
+daily-energy tolerance before the test; larger changes require a balance decision.
+Test night output, warmup, neighbouring collectors, and save reloads. The measured
+surfaces all expose a solar multiplier of 1, with different day lengths. Higher
+runtime multipliers need a separate fluid-temperature-limit test.
+
+The diesel patch also corrects canister flushing: filling uses 25 biodiesel;
+flushing currently returns 32. Port that correction separately. Test ordinary
+and boxed round trips and retain the productivity exclusion.

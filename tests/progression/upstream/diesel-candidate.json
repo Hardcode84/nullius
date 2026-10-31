@@ -1,0 +1,28 @@
+{
+  "recipe": {
+    "candidate-upstream-diesel": {
+      "type": "recipe", "name": "candidate-upstream-diesel", "enabled": false,
+      "categories": ["basic-chemistry"], "energy_required": 12,
+      "ingredients": [
+        {"type": "fluid", "name": "nullius-compressed-hydrogen", "amount": 25},
+        {"type": "fluid", "name": "nullius-compressed-oxygen", "amount": 8},
+        {"type": "fluid", "name": "nullius-propene", "amount": 100},
+        {"type": "item", "name": "nullius-box-aluminum-powder", "amount": 3}
+      ],
+      "results": [
+        {"type": "fluid", "name": "nullius-biodiesel", "amount": 15},
+        {"type": "fluid", "name": "nullius-methanol", "amount": 12},
+        {"type": "item", "name": "nullius-aluminum-hydroxide", "amount": 1}
+      ],
+      "main_product": "nullius-biodiesel"
+    }
+  },
+  "technology": {
+    "candidate-hydrocarbon-combustion-3": {
+      "type": "technology", "name": "candidate-hydrocarbon-combustion-3",
+      "prerequisites": ["nullius-braking-4", "nullius-mass-production-5", "nullius-packaging-4"],
+      "unit": {"count": 800, "time": 30, "ingredients": [["nullius-geology-pack",1],["nullius-climatology-pack",1],["nullius-mechanical-pack",1],["nullius-electrical-pack",1],["nullius-chemical-pack",1]]},
+      "effects": [{"type":"unlock-recipe","recipe":"candidate-upstream-diesel"}]
+    }
+  }
+}

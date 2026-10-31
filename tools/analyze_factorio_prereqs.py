@@ -302,7 +302,7 @@ def describe_placeable_entities(data: Prototype, prefix: str) -> list[Prototype]
             if not isinstance(prototype, dict) or "place_result" not in prototype:
                 continue
             place_items[prototype["place_result"]].append(item_name)
-            if "hidden" in (prototype.get("flags") or []):
+            if prototype.get("hidden") or "hidden" in (prototype.get("flags") or []):
                 hidden_items.add(item_name)
 
     result = []
@@ -339,8 +339,15 @@ def describe_placeable_entities(data: Prototype, prefix: str) -> list[Prototype]
                     "resource_categories": sorted(
                         prototype.get("resource_categories") or []
                     ),
+                    "fluid_capacity": (prototype.get("fluid_box") or {}).get("volume"),
+                    "radar_range": prototype.get("radar_range"),
+                    "heat_buffer": {key: prototype["heat_buffer"][key] for key in
+                                    ("max_temperature", "specific_heat", "max_transfer")
+                                    if key in prototype.get("heat_buffer", {})},
+                    "consumption": prototype.get("consumption"),
                     "hidden": (
-                        "hidden" in (prototype.get("flags") or [])
+                        bool(prototype.get("hidden"))
+                        or "hidden" in (prototype.get("flags") or [])
                         or all(item in hidden_items for item in place_items[name])
                     ),
                 }

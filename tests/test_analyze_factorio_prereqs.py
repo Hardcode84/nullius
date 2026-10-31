@@ -95,10 +95,23 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                     "mining_speed": None,
                     "crafting_categories": ["a", "z"],
                     "resource_categories": [],
+                    "fluid_capacity": None,
+                    "radar_range": None,
+                    "heat_buffer": {},
+                    "consumption": None,
                     "hidden": True,
                 }
             ],
         )
+
+    def test_placeable_visibility_uses_native_hidden_fields(self) -> None:
+        data = {"item": {"machine": {"place_result": "machine", "hidden": True}},
+                "assembling-machine": {"machine": {"collision_box": [[-1, -1], [1, 1]]}}}
+        self.assertTrue(describe_placeable_entities(data, "machine")[0]["hidden"])
+        data["item"]["machine"]["hidden"] = False
+        self.assertFalse(describe_placeable_entities(data, "machine")[0]["hidden"])
+        data["assembling-machine"]["machine"]["hidden"] = True
+        self.assertTrue(describe_placeable_entities(data, "machine")[0]["hidden"])
 
     def test_reports_paths_to_electric_executors(self) -> None:
         selected = [
