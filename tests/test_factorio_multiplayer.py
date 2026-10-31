@@ -1,16 +1,38 @@
 """Isolation and error cleanup for software-only multiplayer displays."""
 
 import os
+import json
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.factorio_multiplayer import client_environment, prepare_client_mods, validate_client_log, virtual_display
+from tools.factorio_multiplayer import force_configuration_change, client_environment, prepare_client_mods, validate_client_log, virtual_display
 from tools.run_factorio_tests import TestFailure
 
 
 class MultiplayerDisplayTests(unittest.TestCase):
+    def test_configuration_reload_changes_only_private_manifests(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = root / "original.json"
+            original.write_text('{"version":"0.0.5"}')
+            mods = root / "mods"
+            subject = mods / "nullius-star"
+            support = mods / "factorio-test-support"
+            subject.mkdir(parents=True)
+            support.mkdir()
+            (subject / "info.json").symlink_to(original)
+            (support / "info.json").write_text(json.dumps({
+                "dependencies": ["base", "nullius-star = 0.0.5"]}))
+            force_configuration_change(mods)
+            self.assertEqual(json.loads(original.read_text())["version"], "0.0.5")
+            self.assertEqual(json.loads((subject / "info.json").read_text())["version"], "999.0.0")
+            self.assertEqual(json.loads((support / "info.json").read_text())["dependencies"],
+                             ["base", "nullius-star = 999.0.0"])
+            with self.assertRaisesRegex(TestFailure, "already requested"):
+                force_configuration_change(mods)
+
     def test_clients_have_independent_writable_mod_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

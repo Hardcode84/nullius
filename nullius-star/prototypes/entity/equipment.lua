@@ -2441,6 +2441,7 @@ data:extend({
       usage_priority = "secondary-output"
     },
     burner = {
+      auto_refuel = false,
       type = "burner",
       fuel_categories = {"vehicle"},
       effectivity = 1,
@@ -2473,6 +2474,7 @@ data:extend({
       usage_priority = "secondary-output"
     },
     burner = {
+      auto_refuel = false,
       type = "burner",
       fuel_categories = {"vehicle"},
       effectivity = 1,
@@ -2503,6 +2505,7 @@ data:extend({
       usage_priority = "tertiary"
     },
     burner = {
+      auto_refuel = false,
       type = "burner",
       fuel_categories = {"vehicle"},
       effectivity = 1,
@@ -2532,6 +2535,7 @@ data:extend({
       usage_priority = "secondary-output"
     },
     burner = {
+      auto_refuel = false,
       type = "burner",
       fuel_categories = {"nullius-nuclear"},
       effectivity = 1,

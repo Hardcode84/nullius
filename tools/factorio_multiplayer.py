@@ -144,6 +144,25 @@ def prepare_client_mods(source: Path, destination: Path) -> None:
             target.symlink_to(entry.resolve(), target_is_directory=entry.is_dir())
 
 
+def force_configuration_change(mods: Path) -> None:
+    """Give the private test mod a new version on its next load."""
+    from tools.run_factorio_tests import TestFailure
+
+    subject = mods / "nullius-star" / "info.json"
+    support = mods / "factorio-test-support" / "info.json"
+    manifest = json.loads(subject.read_text())
+    if manifest["version"] == "999.0.0":
+        raise TestFailure("A configuration-change reload was already requested")
+    manifest["version"] = "999.0.0"
+    dependencies = json.loads(support.read_text())
+    dependencies["dependencies"] = [
+        "nullius-star = 999.0.0" if value.split()[0] == "nullius-star" else value
+        for value in dependencies["dependencies"]]
+    for path, value in ((subject, manifest), (support, dependencies)):
+        path.unlink()
+        path.write_text(json.dumps(value))
+
+
 def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path) -> None:
     with virtual_display(run_directory, min(20, args.timeout_seconds)) as (display, environment):
         _execute_multiplayer(args, common, save, run_directory, display, environment)
@@ -240,8 +259,10 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
             except json.JSONDecodeError as error:
                 raise TestFailure(f"invalid multiplayer action JSON: {error}") from error
             if (not isinstance(action, dict) or
-                    set(action) - {"id", "action", "player"} or
+                    set(action) - {"id", "action", "player", "configuration_change"} or
                     not isinstance(action.get("id"), int) or
+                    ("configuration_change" in action and
+                     (action.get("action") != "reload" or type(action["configuration_change"]) is not bool)) or
                     action.get("action") not in {"join", "leave", "reload"} or
                     (action["action"] != "reload" and not isinstance(action.get("player"), str))):
                 raise TestFailure(f"invalid multiplayer action: {action!r}")
@@ -269,6 +290,8 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
                     stop_process(client)
                 clients.clear()
                 stop_process(server)
+                if action.get("configuration_change"):
+                    force_configuration_change(run_directory / "mods")
                 generation += 1
                 server = start_server(resumed)
                 wait_for(ready, "reloading server")

@@ -211,7 +211,7 @@ script.on_configuration_changed(
 	  init_alignment()
     init_techs()
     init_mission_global()
-	  update_all_upgrades()
+    refresh_refuelers()
     artillery_remote.reset_remote_gui()
   end
 )
