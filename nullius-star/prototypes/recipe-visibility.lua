@@ -1,4 +1,5 @@
 local visibility = {}
+local find_item = require("prototypes.find-item")
 
 local function is_testing_tool(recipe)
   local categories = recipe.categories
@@ -39,7 +40,7 @@ function visibility.hide(recipe, prototypes)
   end
   for _, product in pairs(recipe.results or {}) do
     if product.name and product.type ~= "fluid" then
-      local item = prototypes[product.type][product.name]
+      local item = find_item(prototypes, product.name)
       if item then visibility.unmark(item) end
     end
   end

@@ -6,7 +6,10 @@ for _, name in ipairs({"miniloader","fast-miniloader","express-miniloader","ulti
 end
 for _, name in ipairs({"aai-signal-sender","aai-signal-receiver"}) do
   fixture.raw.roboport[name]=table.deepcopy(native.raw.roboport.roboport)
+  fixture.raw.item[name]={name=name,order="signal"}
 end
+fixture.raw.item["factory-1"]={name="factory-1",order="factory"}
+fixture.raw["item-with-tags"]={["factory-1-instantiated"]={name="factory-1-instantiated"}}
 for _, name in ipairs({"nullius-pump-1","nullius-pump-2"}) do
   fixture.raw.pump[name]=table.deepcopy(native.raw.pump.pump)
 end

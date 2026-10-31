@@ -226,6 +226,8 @@ extend_mod_prototypes({
     prerequisites = {"nullius-checkpoint-sensor", "nullius-mass-production-3"}
   }
 })
+data.raw.item["aai-signal-sender"].order = "nullius-z-a"
+data.raw.item["aai-signal-receiver"].order = "nullius-z-b"
 data.raw.roboport["aai-signal-sender"].energy_source.input_flow_limit = "5MW"
 data.raw.roboport["aai-signal-sender"].energy_source.buffer_capacity = "1.2MJ"
 data.raw.roboport["aai-signal-sender"].energy_usage = "2.5MW"
@@ -297,6 +299,13 @@ extend_mod_prototypes({
     enabled = false
   }
 })
+
+for _, name in ipairs({"factory-1", "factory-1-instantiated", "factory-2", "factory-2-instantiated",
+    "factory-3", "factory-3-instantiated", "factory-circuit-connector", "factory-requester-chest",
+    "factory-input-pipe", "factory-output-pipe", "factory-circuit-input", "factory-circuit-output"}) do
+  local item = require("prototypes.find-item")(data.raw, name)
+  if item then item.order = "nullius-" .. (item.order or "") end
+end
 
 if mods["factorissimo-2-notnotmelon"] then
 extend_mod_prototypes({

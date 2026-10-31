@@ -40,6 +40,8 @@ def run(engine, mode, enabled, settings, source):
     work = Path(tempfile.mkdtemp(prefix=f"mod-recipes-{major}-{mode}-"))
     mod = work / "mods/nullius-star"
     (mod / "scenarios").mkdir(parents=True)
+    (mod / "prototypes").mkdir()
+    (mod / "prototypes/find-item.lua").symlink_to(ROOT / "nullius-star/prototypes/find-item.lua")
     (mod / "info.json").write_text(json.dumps(dict(
         name="nullius-star", version="0.0.3", factorio_version=major,
         title="Optional recipe fixture", author="tests", dependencies=["base", "space-age"],
@@ -63,6 +65,17 @@ def run(engine, mode, enabled, settings, source):
     prefix += "local mods=" + lua(dict.fromkeys(sorted(enabled), "1.0.0")) + "\n"
     prefix += "local settings=" + lua({"startup": {k: {"value": v} for k, v in settings.items()}}) + "\n"
     (mod / "integration.lua").write_text(prefix + source)
+    with (mod / "integration.lua").open("a") as output:
+        output.write('''
+if mods["aai-signal-transmission"] then
+  assert(data.raw.item["aai-signal-sender"].order == "nullius-z-a")
+  assert(data.raw.item["aai-signal-receiver"].order == "nullius-z-b")
+end
+if mods["Factorissimo2"] or mods["factorissimo-2-notnotmelon"] then
+  assert(data.raw.item["factory-1"].order == "nullius-factory")
+  assert(data.raw["item-with-tags"]["factory-1-instantiated"].order == "nullius-")
+end
+''')
     (mod / "data.lua").write_text('require("integration")\nrequire("register")\n')
     with (mod / "data.lua").open("a") as output:
         output.write('local pumps=require("fixture-data").raw.pump\n')
@@ -94,16 +107,27 @@ def run(engine, mode, enabled, settings, source):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--factorio-2-0", type=Path, required=True)
-    parser.add_argument("--factorio-2-1", type=Path, required=True)
+    parser.add_argument("--factorio", type=Path, help="Run only this engine")
+    parser.add_argument("--factorio-2-0", type=Path)
+    parser.add_argument("--factorio-2-1", type=Path)
+    parser.add_argument("--mode", action="append", choices=[mode[0] for mode in modes()])
     parser.add_argument("--baseline-source", type=Path, help="Optional unmodified 2.0 source for before/after comparison")
     args = parser.parse_args()
+    if args.factorio:
+        if args.factorio_2_0 or args.factorio_2_1 or args.baseline_source:
+            parser.error("--factorio cannot be combined with comparison arguments")
+    elif not (args.factorio_2_0 and args.factorio_2_1):
+        parser.error("Specify --factorio or both comparison engines")
     source = (ROOT / "nullius-star/prototypes/mods.lua").read_text()
     baseline_source = args.baseline_source.read_text() if args.baseline_source else source
     results = []
     covered = set()
     for mode, enabled, settings in modes():
+        if args.mode and mode not in args.mode:
+            continue
         specifications = [(args.factorio_2_0, baseline_source), (args.factorio_2_1, source)]
+        if args.factorio:
+            specifications = [(args.factorio, source)]
         if args.baseline_source:
             specifications.append((args.factorio_2_0, source))
         with ThreadPoolExecutor(max_workers=len(specifications)) as pool:
@@ -121,7 +145,7 @@ def main():
     print(json.dumps(dict(unique_recipes=len(covered), configurations=len(results))), flush=True)
     # These two legacy mods use prototype names that both supported engines
     # reject. Keep the failure explicit until the dependency exposes valid names.
-    for engine in (args.factorio_2_0, args.factorio_2_1):
+    for engine in ([args.factorio] if args.factorio else (args.factorio_2_0, args.factorio_2_1)):
         for name in sorted(LEGACY_COMBINATORS):
             try:
                 run(engine.resolve(), "legacy-" + name, {name}, {}, source)

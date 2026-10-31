@@ -733,6 +733,7 @@ def run(factorio, dependency_mod_directory, scenarios=()):
         ROOT / "nullius-star/prototypes/entity/hide-fluid-connections.lua")
     (mod / "prototypes/entity/assembler-pipe-pictures.lua").symlink_to(ROOT / "nullius-star/prototypes/entity/assembler-pipe-pictures.lua")
     (mod / "prototypes/recipe-visibility.lua").symlink_to(ROOT / "nullius-star/prototypes/recipe-visibility.lua")
+    (mod / "prototypes/find-item.lua").symlink_to(ROOT / "nullius-star/prototypes/find-item.lua")
     (mod / "prototypes/recipe-productivity.lua").symlink_to(
         ROOT / "nullius-star/prototypes/recipe-productivity.lua")
     (mod / "scenarios/recipe-productivity-family").symlink_to(

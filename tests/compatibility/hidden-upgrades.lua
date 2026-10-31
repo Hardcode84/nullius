@@ -16,6 +16,7 @@ local cases = {
   {"mining-return", false}, {"explicit-visible", false},
   {"explicit-hidden", true}, {"explicit-list", true}, {"explicit-list-visible-first", false},
   {"not-minable", true}, {"results-list", true},
+  {"mixed-results", false}, {"fluid-results", false},
 }
 for _, case in ipairs(cases) do
   local name = "upgrade-test-" .. case[1]
@@ -51,6 +52,13 @@ for _, case in ipairs(cases) do
       target.minable = nil
     elseif case[1] == "results-list" then
       target.minable = {mining_time=1, results={{type="item", name="iron-plate", amount=1}}}
+    elseif case[1] == "mixed-results" then
+      item(name .. "-scrap", nil, true, "item-with-tags")
+      target.minable = {mining_time=1, results={
+        {type="item", name="iron-plate", amount=1},
+        {type="item", name=name .. "-scrap", amount=1}}}
+    elseif case[1] == "fluid-results" then
+      target.minable = {mining_time=1, results={{type="fluid", name="water", amount=1}}}
     end
   end
 end
@@ -63,7 +71,8 @@ for _, case in ipairs(cases) do
   local name = "upgrade-test-" .. case[1]
   local source, target = data.raw.container[name], data.raw.container[name .. "-target"]
   assert((source.next_upgrade == nil) == case[2], name .. " upgrade")
-  assert((target.hidden == true) == (case[1] == "mining-return"), name .. " visibility")
+  assert((target.hidden == true) == (case[1] == "mining-return" or case[1] == "alternate" or
+    case[1] == "mixed-results"), name .. " visibility")
   assert(not source.hidden, name .. " source visibility")
 end
 assert(not data.raw.container["upgrade-test-no-builder"].hidden)

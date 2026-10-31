@@ -27,6 +27,7 @@ def isolated(engine):
     (work / "mods/mod-list.json").write_text(json.dumps({"mods": [
         dict(name=name, enabled=name in {"base", "upgrade-test"}) for name in names]}))
     (mod / "prototypes/visible-build-items.lua").symlink_to(ROOT / "nullius-star/prototypes/visible-build-items.lua")
+    (mod / "prototypes/find-item.lua").symlink_to(ROOT / "nullius-star/prototypes/find-item.lua")
     source = (ROOT / "nullius-star/prototypes/hidden.lua").read_text()
     start = source.index('local visible_build_items = require("prototypes.visible-build-items")()')
     end = source.index("for _,type in pairs(hide_entity_list) do", start)
@@ -35,13 +36,14 @@ def isolated(engine):
     data = dump(work, engine)
     cases = {"plain": True, "entity-data": True, "alternate": False,
              "mining-return": False, "explicit-visible": False, "explicit-hidden": True,
-             "explicit-list": True, "explicit-list-visible-first": False, "not-minable": True, "results-list": True}
+             "explicit-list": True, "explicit-list-visible-first": False, "not-minable": True, "results-list": True,
+             "mixed-results": False, "fluid-results": False}
     for name, hidden in cases.items():
         source = data["container"]["upgrade-test-" + name]
         target = data["container"][source["name"] + "-target"]
         assert source.get("next_upgrade") == (None if hidden else target["name"]), name
-        assert target.get("hidden", False) == (name == "mining-return"), name
-    print(f"PASS {version}: 10 upgrade cases, 1 non-buildable helper; {work}", flush=True)
+        assert target.get("hidden", False) == (name in {"mining-return", "alternate", "mixed-results"}), name
+    print(f"PASS {version}: {len(cases)} upgrade cases, 1 non-buildable helper; {work}", flush=True)
 
 
 def full_mod(engine, dependencies, baseline_ref):

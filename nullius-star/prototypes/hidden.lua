@@ -132,17 +132,30 @@ for _,fluid in pairs(data.raw.fluid) do
 end
 
 local visible_build_items = require("prototypes.visible-build-items")()
+local find_item = require("prototypes.find-item")
+local function hidden_mining_result(entity)
+  local minable = entity.minable
+  if not minable then return false end
+  if minable.result then
+    local item = find_item(data.raw, minable.result)
+    return item and item.hidden
+  end
+  for _, product in pairs(minable.results or {}) do
+    if product.type ~= "fluid" then
+      local item = find_item(data.raw, product.name)
+      if item and item.hidden then return true end
+    end
+  end
+  return false
+end
 for _,type in pairs(building_types_list) do
   for _,entity in pairs(data.raw[type]) do
     if visible_build_items[entity.next_upgrade] == false then
       entity.next_upgrade = nil
     end
-    if entity.minable ~= nil then
-      local item = data.raw.item[entity.minable.result]
-      if (item ~= nil) and item.hidden then
-        entity.next_upgrade = nil
-        entity.hidden = true
-      end
+    if hidden_mining_result(entity) then
+      entity.next_upgrade = nil
+      entity.hidden = true
     end
   end
 end
