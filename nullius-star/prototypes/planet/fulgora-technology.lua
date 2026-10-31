@@ -95,3 +95,8 @@ for tier=2,3 do
          {'nullius-chemical-pack',16},{'nullius-physics-pack',8}}},
   }})
 end
+
+for _, boxed in ipairs({false,true}) do
+  table.insert(data.raw.technology[boxed and "nullius-mass-production-7" or "nullius-climatology-2"].effects,
+    {type="unlock-recipe",recipe="nullius-"..(boxed and "boxed-" or "").."climatology-pack-fulgora-2"})
+end

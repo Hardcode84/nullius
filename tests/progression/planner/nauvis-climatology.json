@@ -37,8 +37,7 @@
         "nullius-seawater-intake-1"
       ],
       "excluded_recipes": [
-        "nullius-climatology-pack-fulgora",
-        "nullius-boxed-climatology-pack-fulgora"
+        "nullius-climatology-pack-fulgora"
       ]
     }
   ]

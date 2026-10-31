@@ -23,7 +23,7 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
   }
   if modern then recipe.categories={category} else recipe.category=category end
   data:extend({recipe})
-  if not boxed or name == "climatology-pack-fulgora" then
+  if not boxed then
     unlocks[#unlocks+1]={type="unlock-recipe",recipe=recipe.name}
   end
   return recipe
@@ -112,14 +112,27 @@ for _,boxed in ipairs({false,true}) do
     {fluid(boxed and "compressed-methane" or "methane",boxed and 15 or 60),
       fluid("benzene",12),item("graphite",2)},
     "__base__/graphics/icons/fluid/heavy-oil.png",boxed)
-  add("climatology-pack-fulgora","nullius-water-treatment",60*scale,
-    {fluid("air",5000),fluid("hydrocarbon-slurry",100)},
-    {item("climatology-pack",1)},
-    "__nullius-star__/graphics/icons/fluid/sludge.png",boxed)
-  local science = data.raw.recipe["nullius-"..(boxed and "boxed-" or "").."climatology-pack-fulgora"]
+  if not boxed then
+    local science = add("climatology-pack-fulgora","nullius-water-treatment",60,
+      {fluid("air",5000),fluid("hydrocarbon-slurry",100)},
+      {item("climatology-pack",1)},
+      "__nullius-star__/graphics/icons/fluid/sludge.png",false)
+    science.subgroup = data.raw.tool["nullius-climatology-pack"].subgroup
+    science.icons = table.deepcopy(data.raw.tool["nullius-climatology-pack"].icons)
+  end
   local product = boxed and data.raw.item["nullius-box-climatology-pack"] or data.raw.tool["nullius-climatology-pack"]
-  science.subgroup = product.subgroup
-  science.icons = table.deepcopy(product.icons)
+  local name = "nullius-"..(boxed and "boxed-" or "").."climatology-pack-fulgora-2"
+  data:extend({{
+    type="recipe", name=name, enabled=false,
+    localised_name=boxed and {"recipe-name.nullius-boxed",{"recipe-name.nullius-climatology-pack-fulgora-2"}}
+      or {"recipe-name.nullius-climatology-pack-fulgora-2"},
+    icons=table.deepcopy(product.icons), subgroup=product.subgroup,
+    order="nullius-fulgora-storm"..(boxed and "-boxed" or ""),
+    categories={"basic-chemistry"}, energy_required=10*scale,
+    ingredients={fluid("nitrogen",200),fluid("ammonia",5),fluid("hydrocarbon-slurry",20)},
+    results={item("climatology-pack",1)}, allow_productivity=true,
+    surface_conditions={{property="magnetic-field",min=99,max=99}},
+  }})
 end
 
 for _,mineral in ipairs({"limestone","stone"}) do

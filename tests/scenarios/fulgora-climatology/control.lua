@@ -1,15 +1,16 @@
--- given: each ordinary/boxed cell has 5000/25000 air and 100/500 slurry;
+-- given: each basic cell has 5000 air and 100 slurry;
 -- declared debug electricity and finite medium-tank-2 input fixtures.
 -- place/connect: native hydro plants with separate piped fluid supplies.
 -- act: research Primitive Filtration; run one batch on Nauvis and Fulgora.
 -- run: at most 20400 ticks.
--- expect: one pack/box, no remaining inputs or byproducts, correct unlock.
+-- expect: one pack, no remaining inputs or byproducts, correct unlock.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
 local function check(ok,message) storage.assertions=storage.assertions+1; assert(ok,message) end
 script.on_nth_tick(1,function()
   if game.tick==0 then return end
   script.on_nth_tick(1,nil)
   storage.rows={}; storage.assertions=0
+  check(prototypes.recipe['nullius-boxed-climatology-pack-fulgora']==nil,'basic boxed recipe removed')
   local force=game.create_force('slurry-climatology')
   local tech=force.technologies['nullius-primitive-filtration']
   check(tech.prerequisites['nullius-geology-2']~=nil,'Geology 2 preparation')
@@ -20,7 +21,7 @@ script.on_nth_tick(1,function()
     local tiles={}
     for x=-16,48 do for y=-16,16 do tiles[#tiles+1]={name='fulgoran-rock',position={x,y}} end end
     surface.set_tiles(tiles,true)
-    for _,boxed in ipairs({false,true}) do
+    for _,boxed in ipairs({false}) do
       local x=boxed and 32 or 0
       local scale=boxed and 5 or 1
       local name='nullius-'..(boxed and 'boxed-' or '')..'climatology-pack-fulgora'
