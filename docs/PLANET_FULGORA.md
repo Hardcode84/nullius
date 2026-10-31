@@ -6,11 +6,10 @@
 |---|---|
 | Status | Planet, terrain, probe access, hydrocarbon vents, slurry extraction, primitive filtration, salt crushing, and sand construction rules implemented |
 | Reservoir processing | Extractor reinjection mode and magnetic sludge filtration implemented; see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) |
-| Surge power | Metered grounding: design only; see [Metered grounding](#metered-grounding) |
+| Surge power | Lightning collectors, overload protection, and circuit-controlled grounding; see [Metered grounding](#metered-grounding) |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
-| API candidates below | Inherited design notes; require current engine tests before implementation |
 
 ## Role
 
@@ -662,410 +661,71 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 
 ## Lightning and overload
 
-Power poles collect lightning; there is no separate player-built collector.
-Each pole has one native collector. Collection reach is 10 tiles for ordinary
-poles, 20 for substations, and 30 for pylons.
-Other mods' poles use the ordinary tier-1 profile.
+Storms remain active by day and night, with weaker activity by day.
+Power poles collect lightning and supply their electrical network. Larger poles
+cover more ground; higher tiers capture and deliver more energy. Pole upgrades
+retain stored energy up to the new capacity. Lightning does not damage buildings
+or androids.
 
-| Pole tier | Strike energy captured | Buffer | Maximum output |
-|---|---:|---:|---:|
-| 1 | 20% | 200 MJ | 100 MW |
-| 2 | 40% | 400 MJ | 200 MW |
-| 3 | 60% | 600 MJ | 300 MW |
-| 4 (ordinary poles only) | 80% | 800 MJ | 400 MW |
+A grid trips when offered generation persistently exceeds its ability to absorb
+power. Brief surges and small excesses do not trigger a shutdown. Factory demand,
+storage charging, and grounding coils provide absorption. Full storage provides
+no charging headroom. Stored energy alone cannot compensate for insufficient
+charge or discharge rates.
 
-There is no idle drain. Each full buffer supplies maximum output for 2 seconds.
-Fast replacement retains stored energy up to the new capacity. Larger outputs
-need more storage charge capacity or grounding coils to prevent overload.
-`fulgora-collector-tiers` checks native collection reach, energy, discharge,
-and charged replacements for all ten pole tiers.
-Pole placement, blueprint revival, replacement, cloning, movement, and removal
-maintain the collector. Existing poles receive collectors when the mod updates.
-Native supply areas determine electricity sharing, including between forces.
-Overload protection is active on Fulgora. Overlapping unwired grids form one
-shutdown group. Each affected force receives map alerts. A player can reset the
-whole group from any pole owned by their force.
-A trip plays an alarm for connected players in each affected force. Alert
-refreshes do not repeat the sound; simultaneous trips play one alarm per player.
-Lightning must interrupt production without destroying the factory.
-
-```text
-lightning -> pole collector -> electrical network
-  -> sufficient absorption: store energy or consume it
-  -> overload: switch the network offline
-  -> manual reset from any pole in the affected network
-```
-
-| Protection | Role | Cost or constraint |
-|---|---|---|
-| Grounding coil | Discharge excess electricity into conductive slurry beneath the sand | Tertiary priority; sand placement; spaced like wind turbines |
-| Priority sink | Maintain storage headroom through steady consumption | Secondary priority; can cause calm-period shortages |
-| Reset grace period | Prevent immediate repeat trips | Allow 120 ticks after manual reset |
-
-Absorption must account for both available capacity and charge rate. Too few
-sinks cause overloads; excessive consumption leaves insufficient stored power.
-
-Check each network every 30 ticks. On 2.1, compare offered primary, secondary,
-and solar energy against twice the requested energy across all input priorities.
-Trip only if offered power also exceeds requested power by more than 1 MW.
-Exclude accumulator discharge from the offered sum. This uses the latest tick,
-not the whole 30-tick interval. Short pulses between samples can be missed.
+A trip interrupts production and gives affected players an alarm and map alert.
+Reset the grid from an owned power pole. A short grace period allows recovery
+before overload detection resumes. Splitting, merging, or replacing poles does
+not clear a fault. Overlapping unwired grids share shutdown and reset because
+their supply areas can power the same consumers.
 
 ### Grounding coils
 
-| Property | Value |
-|---|---|
-| Function | An electrode conducts excess electricity into buried slurry; the energy becomes underground heat |
-| Visual target | Low ceramic base, thick conductive windings, and a central ground electrode; small arcs and a dull orange glow under load |
-| Temporary graphics | Reuse the vanilla lightning collector graphics for the grounding coil |
-| Placement | Fulgora sand only; use the wind-turbine collision fields, including mutual exclusion with turbines |
-| Power | 400 MW / 1.6 GW / 6.4 GW surge demand; no power output |
-| Unlock | Primitive Filtration for tier 1; Grounding Coils 2 and 3 for higher tiers; no boxed recipes |
-| Inputs and outputs | Electricity only; no fluid supply or waste-disposal chain |
-| Recipe | 20 stone bricks, 20 aluminum wire, and 10 aluminum plates; 5 seconds; hand crafting or small assembler |
-| Insufficient capacity | The shared grid trips when its overload thresholds are exceeded |
-| Upgrades | Default planner: 1 → 2 → 3; custom mappings permit replacement between tiers |
+Grounding coils conduct electricity into the buried slurry as heat. They need
+no fluid supply and produce no waste. Place them on Fulgora sand, with the same
+spacing restrictions as wind turbines. Higher tiers absorb more power and
+support the upgrade planner.
 
-All tiers have the same footprint and wind-turbine spacing. Higher tiers use
-blue and violet tints. Each upgrade recipe consumes one previous-tier coil.
+Coils share surge priority with overcharged machines and storage charging.
+Permanently connected coils can take power that those machines need. Divide
+coils into banks and use power switches to connect more banks as generation
+rises, then disconnect them as it falls. Leave absorption headroom for changes
+before the controller responds.
 
-| Tier | Other recipe inputs | Research prerequisites | Science cost |
-|---|---|---|---|
-| 2 | 80 aluminum wire, 40 steel plates, 20 glass | Overcharged Assembly 2; Steelmaking 1 | 200 EM, 40 electrical; 10 × 45 s |
-| 3 | 160 aluminum wire, 80 steel plates, 40 insulation | Grounding Coils 2; Overcharged Assembly 3; Insulation 2 | 800 EM, 160 electrical, 320 chemical, 160 physics; 20 × 60 s |
-
-Recipes take 10 seconds in medium crafting and 20 seconds in large assembly.
-The `fulgora-coil-upgrades` scenario checks native robot upgrades, custom
-planner downgrades, spacing, recipe execution, power demand, and removal.
-
-### Starter power balance
-
-The measurements below use the earlier starter kit with 32 small poles and four
-batteries. The current inventory is listed above.
-
-| Property | Value |
-|---|---:|
-| Tier-1 collector capacity / maximum output, per pole | 200 MJ / 100 MW |
-| Full-buffer discharge at maximum output | 2 seconds |
-| Grounding coil demand | 400 MW |
-| Four coils: protection with full batteries and no factory load | 32 charged tier-1 poles |
-| Four starter batteries: capacity / charge / discharge | 60 MJ / 200 MW / 2 MW |
-| Battery tiers 1 / 2 / 3: charge rate | 50 / 100 / 200 MW |
-| Starter process machines and lab, all active | 7.13 MW |
-| Same machines, idle drain | 0.247 MW |
-
-The charge rates apply on all planets. Battery capacity and discharge rates
-stay the same. Supercapacitors retain their charge-rate multiplier.
-Coils and batteries share tertiary power. Faster charging lets batteries store
-a useful part of each pulse before coils discharge the remaining energy.
-A trip requires three consecutive checks above twice demand and more than
-1 MW excess. Checks run every 0.5 seconds. A safe check or manual reset clears
-the count. Reset grace does not count toward a trip. Shared grids count once
-per check; a split retains the count and a merge takes the highest count.
-
-The four batteries cannot supply the 3.56 MW mean first-science load between
-strikes. Eight batteries meet that discharge rate; fifteen meet the full fleet's
-7.13 MW rate. These counts do not guarantee supply through every storm gap.
-Four coils protect 32 simultaneously full tier-1 collectors; the pack has 36
-collectors including pylons. Five coils cover that worst case.
-
-`fulgora-power-audit`: Factorio 2.1.20, seed 1729, native storms only, empty
-batteries, 60 seconds warmup, then ten minutes each at noon and midnight.
-Loads represent the planner's constant average demand; they are not crafting
-machines. Test poles connect the battery banks without additional collectors.
-
-| Load and grid | Day: demand supplied | Night: demand supplied |
-|---|---:|---:|
-| First-science mean, 3.56 MW, starter collectors and 4 batteries | 75.3% | 94.5% |
-| Full starter fleet, 7.13 MW, 4 batteries | 57.3% | 90.6% |
-| Full starter fleet, 7.13 MW, 15 batteries | 100% | 100% |
-| Science at 60/min, 32 compact pylons, 625 batteries: ordinary / surge | 9.7% / 0% | 45.6% / 0.02% |
-| Science at 60/min, 256 spread pylons, 625 batteries: ordinary / surge | 100% / 3.9% | 100% / 22.2% |
-
-No grid tripped. The 256-pylon grid uses 24-tile spacing and 32 coils. It delivered
-813 MW by day and 3161 MW at night, but coils consumed 499 MW and 2836 MW.
-Coils and surge machines share tertiary priority. With full batteries, the
-56 MW surge load receives only 0.436% of their combined 12.856 GW demand.
-More battery capacity cannot remove this competition. Sustained science needs
-surge consumers to receive power before surplus is grounded, or a grid design
-that separates their supply. The measured grid does not sustain 60 packs/min.
-
-`fulgora-switched-grounding` tests the same 60/min load, 256 pylons, 625
-batteries, and 32 coils. A tier-1 supercapacitor controls a real switch through
-a decider latch. Each run uses ten minutes at noon and ten at midnight, seed
-1729. Connect the switched coils above the high threshold; disconnect them at
-or below the low threshold. No charge injection or trip resets.
-
-| Permanent coils / switched coils | Charge thresholds | Surge supplied, day / night | Switch connected, day / night |
-|---|---|---|---|
-| 32 / 0 | None | 4.09% / 22.04% | — |
-| 0 / 32 | 80% / 30% | 4.07% / 22.26% | 100% / 100% |
-| 4 / 28 | 80% / 30% | 4.03% / 22.14% | 99.00% / 100% |
-| 8 / 24 | 80% / 30% | 3.97% / 22.27% | 99.58% / 100% |
-| 4 / 28 | 98% / 90% | 4.16% / 22.42% | 97.83% / 100% |
-
-Switch percentages use sampled states. All grids supplied the ordinary load
-and had no trips. Mean capacitor charge
-was 98.09–99.08% by day and at least 99.99% at night. A nearly full capacitor
-does not show that surge demand is satisfied. These controls leave grounding
-connected and do not remove starvation. Different grids receive different
-native strikes; small differences in supply do not establish an improvement.
-
-Run `python tools/run_factorio_tests.py fulgora-switched-grounding -n auto`
-and use `--case fulgora-switched-grounding` when reading its results below.
-
-Generate load profiles and read native results with `tools/fulgora_power_audit.py`.
-Use `--bootstrap` and `--industry` planner reports, `--fixture` for the scenario
-fixture, or `--results` for the native runner report; always specify `--output`.
-The older `fulgora-starter-power` scenario still passes its 500 kW load test.
-
-The `fulgora-power-budget` experiment retains the old charging baseline and
-compares two-second pulses with different coil and charging rates. Slow charging
-with large coils can prevent trips but leave the factory without power.
-Run `tools/analyze_fulgora_power.py` with
-`tests/progression/planner/fulgora-power.json` and `--output REPORT.json`.
-Pass the experiment runner JSON with `--native-results` for measured results.
-Run `python tools/test_fulgora_overload.py --case fulgora-grounding-coils`
-to check coil construction, removal, and reload.
+Keep switched banks outside the factory grid's supply areas so power cannot
+bypass the switches. The poles in each bank also collect lightning; include
+their output when sizing protection.
 
 ### Metered grounding
 
-The grid meter is implemented. The native bank controller fails the no-trip
-acceptance test below. API paths are also checked by
-[`experiment-accumulator-meter`](#accumulator-grid-meter-experiment).
+Grid batteries and supercapacitors can report offered generation and requested
+power through circuit signals on Fulgora. Select the signals in the battery
+interface; leave them unset to disable the meter. Players build the control
+circuit and choose which coil banks to connect.
 
-#### Starvation mechanism
+The meter reports the connected network, including any coil banks whose
+switches are closed. Account for those banks when estimating factory demand;
+otherwise the controller can repeatedly connect and disconnect the same load.
+Battery charge alone does not show whether surge machines receive enough power.
 
-| Link | Mechanism | Evidence |
-|---|---|---|
-| Trip rule | A charged collector offers its full output limit until empty; each charged tier-1 pole needs at least 50 MW demand within three checks | `fulgora-collector-drain`; 2.1 offered-energy fixture |
-| Absorption | Only coils supply that demand: 400 MW each against 0.59–1,500 MW overcharged machines | Coil and overcharged prototypes |
-| Distribution | Coils, battery charging, and overcharged machines share tertiary input in proportion to requested power | 0.436% surge share of 12.856 GW |
-| Storage | Accumulator discharge is tertiary; it never supplies tertiary consumers | Energy storage section |
-| Charge sensor | On a grid of tertiary consumers, supercapacitors discharge only through 1%/s leakage; one strike refills them | Switch connected 97.83–100%; mean charge 98.09–99.99% |
-
-Night supply was 3,161 MW; surge needed 56 MW and received 22.04–22.42%. Supply is
-sufficient. Starvation comes from the distribution step: grounding demand
-exceeds collector output.
-
-#### Contract
-
-Keep overload, tertiary overcharged assemblers, and tertiary coils. Players
-separate the coil grid and switch coil banks from measured network flow. The
-meter reports raw flow only; players derive state, thresholds, and control.
-
-```text
-O = offered primary + secondary + solar power of the meter's parent network
-D = primary + secondary + tertiary demand of the same network
-no trip:        O <= 2 * D, or O - D <= 1 MW
-full surge:     D <= O
-target band:    O / 2 <= D <= O
-```
-
-| Grid | Contents |
-|---|---|
-| Surge grid | Poles with collectors, overcharged assemblers, supercapacitors, metered accumulator |
-| Coil grid | Grounding coils and their own poles; outside every surge-grid supply area |
-| Coupling | Power switches, one per coil bank, controlled by meter signals |
-
-The coil-grid poles also collect lightning. Coils consume that energy locally.
-A closed switch joins both grids; the meter then reads the joined parent network.
-
-#### Grid meter
-
-| Property | Value |
-|---|---|
-| Host | Every grid battery tier, in battery and supercapacitor modes; no new building |
-| Surface | Fulgora only; elsewhere the panel is absent and no output exists |
-| Interface | Relative frame anchored to `accumulator_gui`, right of the native circuit panel |
-| Pickers | `choose-elem-button`, `elem_type="signal"`: offered `O`, demand `D`; empty by default |
-| Opt-in | A meter exists only while at least one picker has a signal |
-| Output | Hidden constant combinator at the battery, joined by script-origin red and green wires |
-| Offered, demand | Parent network `flow_last_tick` × 60, in kW, rounded; kW keeps values within signed 32-bit range |
-| Network | `LuaEntity.electric_network`; parent key is the lowest sub-network id, as in overload detection |
-| Update | In `fulgora_overload.update`, every 30 ticks, from the same sample as overload detection |
-| Offline group | Not sampled; offered and demand keep their last values; overload alerts report the trip |
-| Combination | Several metered batteries on one wire add their signals, as charge signals do |
-
-A battery inside two unwired grids reads only its primary network. Its charge
-demand appears in both grids, and it carries energy between them.
-
-#### Lifecycle
-
-| Event | Required behavior |
-|---|---|
-| Build, revive, robot build | Restore pickers from entity or ghost tags; create the output when any signal is set |
-| Picker change | Create, update, or remove the output; clear slots for removed signals |
-| Battery mode switch | Move settings to the replacement and reconnect script wires; the native switch drops them |
-| Settings paste | Copy pickers on `on_entity_settings_pasted` between grid batteries; verified between battery and supercapacitor modes |
-| Blueprint setup | Write pickers to blueprint entity tags; the output and its wires stay out of blueprints |
-| Clone | Destroy the copied output; build a new one for the clone |
-| Mine, die, destroy | Destroy the output and its storage row |
-| Configuration change | Rebuild rows and outputs from existing batteries and stored settings |
-
-Mode switching closes the battery GUI; reopening shows the panel.
-
-#### Coil banks
-
-| Bank | Tier-1 coils | Demand |
-|---|---:|---:|
-| 1 | 1 | 400 MW |
-| 2 | 2 | 800 MW |
-| 3 | 4 | 1.6 GW |
-| 4 | 8 | 3.2 GW |
-| 5 | 16 | 6.4 GW |
-
-Binary banks give 400 MW steps up to 12.4 GW. A connected coil requests its
-nameplate power: 32 coils and 56 MW surge requested 12.856 GW. The reference
-control below tests the design; players build their own.
-
-`D` includes the coils the controller closed. The controller keeps its bank
-selection `h` in a memory cell and computes the load without coils from the
-selection active when the sample was measured:
-
-```text
-all values in integer kW
-L = D - 400,000 * h
-Y = O - 2 * L                     exact: no halving
-n = 0                             if Y + 2 <= 0
-n = min(31, ceil((Y + 2) / 800,000))   otherwise
-on a new sample:  h = n
-bank k closed  <=>  bit k - 1 of h is 1
-```
-
-The no-trip condition `O <= 2 * (L + 400,000 * n)` is `Y <= 800,000 * n`.
-Halving `O` first loses up to 0.5 kW to truncation. The meter rounds `O` and
-`D` to the nearest kW, so the true `Y` can exceed the sampled `Y` by 1.5 kW;
-the 2 kW margin covers it.
-
-| Stage | Combinators |
-|---|---|
-| Sample edge | Delay `O` and `D` one tick; pulse when either differs |
-| Selection | `L = D - 400,000 * h`, `Y = O - 2 * L`, `W = Y + 800,001`, `W > 0` gate, `n = W / 800,000`, cap at 31 |
-| Memory | Latch `n` into `h` on the edge, delayed by the selection latency |
-| Banks | `(h >> (k - 1)) AND 1` drives the switch of bank `k` |
-
-`h` changes only on a sample edge, and `L` uses the `h` that was active during
-that sample, so a bank change cannot change the next selection; switches change
-at most once per 30-tick sample. An identical consecutive sample produces no
-edge; the next differing sample updates `h`.
-
-| O, kW | L, kW | Y + 2, kW | n | D with coils, kW | Within O / 2 to O |
-|---:|---:|---:|---:|---:|---|
-| 1,000,000 | 56,000 | 888,002 | 2 | 856,000 | Yes |
-| 912,001 | 56,000 | 800,003 | 2 | 856,000 | Yes; truncating `O / 2` selects 1 coil and 456,000 kW, which trips |
-| 911,998 | 56,000 | 800,000 | 1 | 456,000 | Yes |
-| 300,000 | 56,000 | 188,002 | 1 | 456,000 | No combination; surge receives 300 / 456 |
-
-With 1,000 MW offered and 56 MW load, bank 2 alone gives 856 MW. A stateless rule on `D` closes bank 1
-(456 MW), then bank 2 (1,256 MW), then opens bank 2 and repeats. Coil damage or
-a coil tier change invalidates the 400 MW step constant.
-
-Each bank's poles also collect lightning and add to `O` while its switch is
-closed. Their total output must not exceed the bank's coil demand; bank 1 then
-allows four tier-1 poles. Its buffer holds 2 s of nameplate output. Shared demand can reduce its actual
-output and extend the discharge time.
-
-When `L + n × 400 MW > O`, no combination fits the band. The selection satisfies the sampled trip ratio, and surge consumers receive
-`O / D`: three charged tier-1
-collectors and 56 MW load give `n = 1` and 300 / 456 = 66% until the collectors
-drain. The coarse bank step causes this case below 800 MW. A rise in offered power
-before the next selection can still cause consecutive overload checks.
-
-#### Acceptance experiment
-
-| Field | Value |
-|---|---|
-| Base case | `fulgora-switched-grounding`: 256 pylons, 625 batteries, 32 tier-1 coils, 60 packs/min, seed 1729, 60 s warmup, then 30 s each at noon and midnight |
-| Change | Metered supercapacitor; 31 coils in the five binary banks; stateful reference control circuit; no scripted switching |
-| Metrics | Surge supplied, ordinary load supplied, trips, energy grounded, bank switch states, switch changes per sample |
-| Pass | Night surge supplied at least 95%; ordinary load 100%; no trips; at most one change per switch per sample |
-| Day | Report surge supplied; strike cadence limits day surge |
-| Stop condition | Night surge below 95% with no trips: rerun with 100 MW tier-1 coils in six binary banks (63 coils, 6.3 GW). Below 95% again: metered grounding does not remove starvation; return to scripted grounding demand or a strike-overflow trip rule |
-
-#### Measured result
-
-`fulgora-metered-grounding`, Factorio 2.1.24: 31 coils, five binary banks,
-one collecting pylon per bank. Test distribution poles provide copper and
-circuit links. Native storms supply all energy; batteries start empty.
-No script switches banks or resets a trip.
-
-| Phase | Ordinary supplied | Surge supplied | Grounded mean power | Result |
-|---|---:|---:|---:|---|
-| Noon | 100% | 98.48% | 434.70 MW | No trip |
-| Midnight | 6.67% | 6.67% | 115.61 MW | Trip at tick 5520; 28 s offline |
-
-All 183 online sample checks selected the calculated bank value. Each switch
-changed at most once per sample. The trip came from three successive increases
-in offered power, before each new bank selection could take effect:
-
-| Tick | Offered | Demand | Connected coils |
-|---:|---:|---:|---:|
-| 5460 | 2.518 GW | 0.768 GW | 1 |
-| 5490 | 3.400 GW | 1.568 GW | 3 |
-| 5520 | 4.500 GW | 1.968 GW | 4 |
-
-Reserve tests add demand headroom to the same controller; coil ratings and
-production trip settings stay unchanged. Each run uses the same seed, layout,
-empty batteries, and timing. The fixture switches instantly from noon to
-midnight at tick 5400; this is a stress input, not the normal day cycle.
-
-| Demand reserve | Noon surge supplied | Midnight surge supplied | First trip |
-|---|---:|---:|---|
-| 0 MW | 98.48% | 6.67% | Tick 5520 |
-| 100 MW | 93.45% | 6.67% | Tick 5520 |
-| 200 MW | 87.48% | 6.67% | Tick 5520 |
-| 400 MW | 68.80% | 99.74% | None |
-| 800 MW | 44.20% | 99.24% | None |
-| 1600 MW | 26.63% | 94.44% | None |
-
-All no-trip runs supply 100% of ordinary demand. Each switch changes at most
-once per sample. A 400 MW reserve passes the stated night target in this fixture
-but reduces daytime surge supply. Larger reserves increase that loss.
-The 100 MW coil-rating retry condition is not met: the 400 MW reserve already
-passes the night target with no trips.
-
-These runs use constant-load test consumers and ideal distribution links.
-They do not prove supply to a placed production factory or reliability across
-other map seeds. Keep the production rule unchanged until that contract passes.
-Reproduce with `fulgora-metered-grounding` and
-`fulgora-metered-reserve-{100,200,400,800,1600}`; summarize with
-`tools/fulgora_power_audit.py --results REPORT --case CASE --output SUMMARY --overview`.
-
-Validation: `fulgora-grid-meter` checks GUI selection, native charge signals,
-mode changes, cloning, blueprint revive, settings paste, and reload.
-`fulgora-grid-meter-flow` checks all battery tiers, movement, destruction,
-and frozen readings across a trip and reset.
-
-#### Rejected alternatives
-
-| Alternative | Reason |
-|---|---|
-| Load or grounding-demand signal | Mod-side processing; the controller derives load from its own bank state |
-| Trip-count signal | One decider gives the per-sample condition from `O` and `D`; overload alerts and the alarm report trips |
-| Coils as fast-charging leaking accumulators | Full storage provides no trip protection; demand while charging is the input limit; scripted leakage creates one-tick refill spikes between overload samples |
-| Supercapacitor charge as the switch signal | Measured: switch connected 97.83–100%; surge supplied unchanged |
-| Meter mode on poles | Poles have no circuit behavior in 2.1; ten hidden pole variants; chained pole wires would add every pole's values |
-| Overcharged assemblers at secondary priority | They would discharge battery banks at up to 1,000× power and share deficits with ordinary machines |
+Meter settings survive mode changes, blueprints, settings paste, and save/load.
+An offline grid retains its last readings; use the overload alert to identify
+a trip. Meters on the same circuit wire add their signals. A battery covered by
+overlapping unwired grids reports its primary network.
 
 ## Energy storage
 
-Supercapacitors are an alternate mode of all three grid battery tiers.
-Research costs 100 EM and 40 electrical science packs. It requires Primitive
-Filtration and Battery Storage 2; each mode also requires its ordinary battery recipe.
+Grid batteries store lightning energy to supply ordinary machines between
+strikes. Supercapacitors are a research-gated alternate mode: faster charging
+and discharging, lower capacity, and greater leakage. Leakage continues while
+idle or disconnected.
 
-| Storage | Charge/discharge rate | Capacity | Loss | Role |
-|---|---|---|---|---|
-| Supercapacitor | 10× normal rate | 20% of normal capacity | 1% of full capacity per second | Handle short power bursts |
-| Accumulator | Fast charge; normal discharge | Medium | Low | Supply the gaps between strikes |
-| Thermal storage | Slow | High | Low storage loss; conversion loss | Supply extended calm periods through Stirling conversion |
+Both modes use native accumulator behavior. They cannot supply surge consumers
+or charge other accumulators. Overcharged machines therefore need active
+generation, while grounding control must leave enough of that power available.
 
-Both modes use native accumulator charge and discharge. Neither supplies surge
-consumers nor charges other accumulators. Supercapacitor leakage also applies
-when idle or disconnected.
-
-Thermal storage and Stirling conversion remain a separate proposal. Stored oxygen
-and fuel provide a combustion option; combustion is not required to start it.
+Thermal storage with Stirling conversion remains a separate proposal for calm
+periods. Stored oxygen and fuel provide a combustion option.
 
 ## Organic industry
 
@@ -1383,34 +1043,13 @@ python tools/analyze_fulgora_area.py --plan fulgora-area-plan.json --survey fulg
 
 ### Power and model boundaries
 
-At 60/min, 312 MW is battery-compatible and 55 MW uses surge priority. Grid
-batteries cannot supply the surge load. The ideal full-strike requirement is
-about 110 tier-1 captures/min before clipping, grounding losses, and charge limits.
-To cover the battery-compatible load, a full tier-1 bank needs 625 batteries
-for a 30-second gap or 1,249 for 60 seconds. These gaps are sensitivity inputs,
-not measured storm intervals. Logistics and power infrastructure are excluded.
+Separate ordinary demand from surge demand when planning the grid. Storage can
+bridge gaps for ordinary consumers; surge machines need active generation.
+Allow for collector coverage, grounding losses, and storage transfer limits.
 
-Crude filtration uses mean independent yields. Other uncertain outputs use their
-guaranteed yields. All liquid and solid outputs balance through real recipes;
-there is no external waste sink. Process construction is feasible with
-local materials. The solve does not establish startup order, buffer capacity,
-vent availability, or a connected factory layout. Vents remain at 100% yield.
-
-Audit at `60c9b0b` on Factorio 2.1.20: all local flow and process-construction
-cases passed at 30, 60, 120, and 240 packs/min. Seven native scenarios passed:
-physics executors (2714 assertions), checkpoints (64), filtration (309), borate
-leaching (36), gypsum recovery (32), water recovery (70), and well placement (17).
-The executor fixture was regenerated after the bulk research changes. Early science, starter
-processing machines, and independent-acid prerequisite checks passed.
-The research query is `tests/progression/balance/fulgora-research.json`, used
-with `tools/audit_vulcanus_progression.py`. These checks do not execute a connected
-arrival-to-physics campaign or prove that local lightning supplies the full load.
-
-Validation: native borate leaching checks both recipe sizes, the research gate,
-delayed water connection, exact outputs, and productivity restrictions. The
-physics executor fixture checks the selected local production recipes. Executors
-use declared inputs and a continuous test grid at Fulgora surface properties. The power audit above measures equivalent electrical loads and shows that
-surge supply falls short. It does not execute the connected crafting factory.
+Recipe feasibility does not prove startup order, buffer capacity, vent supply,
+or a connected factory layout. The source recipes and planner contracts define
+quantities; this document defines the mechanics.
 
 ## Nuclear geoengineering
 
@@ -1436,181 +1075,3 @@ The shared endgame also proposes repurposing these charges for orbital defence.
 Vulcanus supplies metals with pneumatic and thermal industry. Fulgora supplies
 organics and late-game copper with intermittent electricity. Both lack natural
 surface water.
-
-## Pole collector experiment
-
-`experiment-lightning-poles`: Factorio 2.0.77, 31 assertions, tick 240.
-This experiment established the native mechanism used by gameplay collectors.
-
-| Case | Measured result |
-|---|---|
-| Ordinary pole | Lightning targets the pole; no energy is collected |
-| Invisible attractor at the pole position | A 1 MJ strike at 50% efficiency supplies exactly 500 kJ through the native grid |
-| Strike callbacks | Ordinary target uses `strike_effect`; collector uses `attractor_hit_effect` |
-| Network split and rejoin | Collector retains 500 kJ while disconnected, then supplies it after reconnection |
-| Pole removal, death, and replacement | Object-destruction registration removes the helper; replacement collects without duplicates |
-| Different forces | Nearby poles auto-connect. Overlapping supply areas still share energy after wire disconnection; separated coverage receives none |
-| Visual selection and damage | Helper is not selectable; zero-damage strikes preserve poles |
-
-Use a normal pole with one invisible `lightning-attractor`. The engine handles
-capture, efficiency, buffering, and network delivery. Script ownership is needed
-for helper creation and removal, not for energy transfer. The fixture uses
-`execute_lightning` with ambient storms disabled; it does not measure storm rates.
-Gameplay coverage: `fulgora-pole-collectors` tests native power delivery, robot
-builds, replacement, cloning, force changes, movement, removal, and surface clear/deletion.
-`fulgora-pole-players` tests player builds, blueprints, mining, and multiplayer reload.
-
-```bash
-python tools/run_factorio_tests.py experiment-lightning-poles -n auto
-```
-
-## Engine candidates and validation questions
-
-### Overload checks
-
-Run `python tools/test_fulgora_overload.py` for the production scenario and a
-reload from tick 102. Use `--checkpoint-tick 62` to check a pending trip across
-a reload. Run `fulgora-grid-threshold` for the eight threshold cases and
-`fulgora-grid-debounce` for brief spikes, interrupted excess, and shared counts.
-Run `fulgora-grid-alerts` for two-client alerts, force changes, reload, and the
-pole reset panel. The client test needs a display socket and loopback networking.
-
-| Case | Required result |
-|---|---|
-| Trip threshold | Offered power > 2× requested power and excess > 1 MW; equality does not trip |
-| Storage | Charging demand protects the grid; full storage does not; discharge does not trigger overload |
-| Native lightning | Stored collector energy trips the grid if excess lasts for three checks |
-| Split / merge | Both split parts retain the fault; merging propagates it |
-| Remove anchor / sink | Restore one sink per faulted native network |
-| Replace pole | Retain the fault after fast replacement |
-| Clone sink | Remove the copied consumer |
-| Save / reload | Retain faults and complete the same topology and reset checks |
-| Reset | Clear the fault and pending count; wait 120 ticks before counting again |
-| Alert | Anchor the map alert to the sink; refresh while offline and remove on reset |
-| Alert ownership | Notify every force with a pole in the shared group; follow relocation and force changes |
-| Overlapping unwired grids | Shut down together; allow reset from any owned pole in the group |
-| Short pulse | An 8-tick pulse between samples is missed |
-
-Each faulted native network gets a hidden 1 TW primary consumer at one of its
-poles. Keep that anchor until it is removed or changes networks. Overlapping
-coverage joins shutdown groups, including through intermediate grids. Native
-supply areas cannot isolate a consumer from other grids that cover its position.
-The check reads pole connections and aggregate flow; it does not read collector
-buffers or use strike callbacks.
-
-### Accumulator grid meter experiment
-
-`experiment-accumulator-meter`: Factorio 2.1.24, one graphical client, 46 assertions,
-tick 2220. Fulgora surface, declared 1 MW sources and 100 kW / 1.2 MW loads, no
-collectors or lightning. A hidden constant combinator (`factorio-test-meter-output`)
-writes parent-network offered and demand in kW every 30 ticks.
-
-| Question | Measured result |
-|---|---|
-| Signal pickers | A relative frame anchored to `accumulator_gui` docks right of the native circuit panel for battery and supercapacitor; `choose-elem-button` with `elem_type="signal"` matches the native output-signal picker (client screenshots) |
-| Signal path | Script-origin red/green wires from the battery to the hidden combinator put O and D on the player's wire beside the charge signal; signals appear one tick after the write |
-| Switch control | O > 1,500 kW closes a power switch; the meter then reads the merged parent network: 2,000 kW offered, 1,300 kW demand |
-| Network identity | `electric_network` is a `LuaElectricSubNetwork`; parent networks have no id, so key them by the lowest sub-network id |
-| Overlapping unwired grids | The battery joins both sub-networks with separate parents; `electric_network` returns one of them. Its 50 MW charge demand appears in both (50,000 and 49,100 kW). It nets 0.9 MW: 1 MW from C less 100 kW discharged to D |
-| Battery to supercapacitor switch | Player wires and charge settings survive; script wires are dropped and the hidden combinator stays valid but unconnected; the open GUI closes |
-| Blueprints | The hidden combinator and its script wires are excluded; entity tags reach the ghost and `script_raised_revive` |
-| Copy settings | `copy_settings` with a player raises `on_entity_settings_pasted` and copies charge settings between battery modes |
-| Reload | Writes stop before the save; after loading, slots and wire signals equal the saved snapshot (stale D = 100 kW), script wires and the relative frame persist; the next write restores D = 1,300 kW |
-
-Implementation contract derived from these results: reconnect the hidden
-combinator in the battery mode transition; carry meter settings through
-blueprint tags, ghost tags, and the settings-paste event; read only the primary
-network; document that overlapping grids double-count storage charge demand.
-
-```bash
-python tools/run_factorio_tests.py experiment-accumulator-meter
-```
-
-### Factorio 2.1 API experiment
-
-Isolated Space Age fixtures, not the full Nullius mod: 2.1.19, 81 assertions
-across the three electrical scenarios. Use
-`pole.electric_network.parent_network.flow_last_tick`.
-
-| Fixture at tick 90 | Offered primary energy | Requested secondary / tertiary energy |
-|---|---|---|
-| 1 MW generator, 100 kW load | 16.667 kJ | 1.667 / 0 kJ |
-| Same with accumulator charging | 16.667 kJ | 1.667 / 10 kJ |
-| Charged lightning collector, 100 kW load | 453.333 kJ | 1.667 / 0 kJ |
-
-`get_accumulators_energy{}` returns current energy and capacity: 0.9 MJ and
-10 MJ in the charging fixture. `flow_last_tick.accumulator_energy` is the
-pre-transfer value, 0.89 MJ. Collector buffers still do not appear in storage
-statistics. The 1 TW sink and native lightning capture tests pass on 2.1.
-
-Full-mod loading requires the [2.1 port](FACTORIO_2_1_PORT.md), including dependency
-upgrades and prototype/runtime changes. Fixture changes needed for 2.1: lightning damage
-uses `{amount=0,type="electric"}`; disable entities with `disabled_by_script`
-because `active` is read-only.
-
-```bash
-python tools/test_factorio_network_api.py --factorio "$HOME/factorio-2.1.19/bin/x64/factorio"
-```
-
-### Factorio 2.0 API experiments
-
-`experiment-network-trip`: Factorio 2.0.77, 22 assertions, tick 450.
-Test fixtures only; reset is scripted, not a tested player click.
-
-| Case | Measured result |
-|---|---|
-| 1 MW source, 100 kW load, 30 ticks | Production and consumption both 50 kJ |
-| Same source with 600 kW storage charging | Production and consumption both 350 kJ |
-| 1 MJ strike, 50% collection | 48.33 kJ delivered; 451.67 kJ remains in the collector |
-| Collector buffer statistics, primary-output and tertiary | Both retain 451.67 kJ; storage totals and latest storage samples both return zero |
-| Pole or collector `active=false` | Electricity still flows |
-| Replace connected poles with zero-area variants | Wires remain; adjacent loads lose power until reset |
-| Load built while offline | Remains unpowered outside the pole centre |
-| Source and load overlap the pole centre | Still powered; zero area does not isolate hidden helpers |
-
-`experiment-network-sink`: Factorio 2.0.77, 19 assertions, tick 450.
-One hidden 1 TW `primary-input` consumer per network; no repeated energy writes.
-
-| Supply during shutdown | Ordinary 100 kW load | Primary 100 kW load | Sink |
-|---|---|---|---|
-| 1 MW generator | 0 W | Approximately 0.1 W | Approximately 1 MW |
-| Generator plus two 600 kW accumulator discharges | 0 W | Approximately 0.22 W | Approximately 2.2 MW |
-
-Use the hidden consumer for shutdown; remove it on manual reset. Both load
-priorities recover, and poles, wires, and network identity remain unchanged.
-Existing consumer buffers can run down; accumulators discharge at their output
-limit. This causes power starvation, not complete isolation of primary loads.
-The 1 TW demand must exceed the network supply. Zero-area pole replacement is
-not required for this design.
-
-Read aggregate accumulator charge with `get_flow_count`: `category="storage"`,
-`precision_index=defines.flow_precision_index.five_seconds`, `sample_index=1`,
-and the accumulator prototype name. The latest sample matches the sum of two
-accumulator charges in joules. Sum prototype types, not individual entities.
-`get_storage_count` accumulates history; it is not current charge. This read does
-not provide total capacity or include the hidden collectors' buffers.
-
-The API provides `on_gui_opened`, `electric_network_gui` relative GUI anchoring,
-and `on_gui_click` for a reset button at any pole.
-
-Production checks cover sink ownership after save/load, pole removal, network
-splits, merges, and pole replacement. Fault state follows poles; native network
-IDs identify only the current topology. Offline groups are not sampled. Reset
-removes their consumers and starts the grace period.
-
-| Area | Inherited candidate | Required check |
-|---|---|---|
-| Pole collectors | Implemented native hidden attractor | Lifecycle and native power delivery covered by collector scenarios |
-| Storm control | `nullius-storm-intensity`, `LightningProperties.multiplier_surface_property`, `LuaSurface.set_property()` | Verify runtime frequency changes and select an update interval |
-| Lightning tuning | Native night rate; 25% day rate; zero damage | Day/night activity and direct strikes tested on both engines |
-| Strike effects | Native callbacks are available | Overload detection uses aggregate flow, with no strike callback |
-| No destruction | Zero-damage Fulgora bolt | Direct strikes preserve both android tiers, hydro plants, crushers, poles, pipes, and chests |
-| Overload detection | 2.1 aggregate offered energy versus requested energy | Test short surges between samples and tune the threshold |
-| Network state | Pole fault state and current native parent networks | Split, merge, replacement, and reload checks |
-| Offline network | Hidden 1 TW primary consumer per native network | Shared shutdown and reset for overlapping grids |
-| Supercapacitors | Native accumulator rates and capacity; scripted stored-energy loss | Verified idle leakage; no surge supply or transfer to other storage |
-| Sinks | `ElectricEnergyInterface` with surge or secondary priority | Verify actual excess-power absorption and spacing rules |
-| Fountain filtration | Four fixed recipe products: two fluids and two solids | Check filter fluid connections and output slots; set yields and prove a complete local bootstrap |
-
-No engine performance, production-rate, or completion-time claim is established
-by these inherited candidates.

@@ -1008,8 +1008,8 @@ Analysis based on the actual `prototype-api.json` and `runtime-api.json` from Fa
 
 ### 9.2 Lightning System (Space Age DLC)
 
-Fulgora-specific API candidates and validation questions are in
-[Fulgora design](PLANET_FULGORA.md#engine-candidates-and-validation-questions).
+Lightning collection, overload protection, and grounding are described in
+[Fulgora design](PLANET_FULGORA.md#lightning-and-overload).
 
 ### 9.3 Probabilistic Recipe Outputs -- FEASIBLE (Base 2.0)
 

@@ -346,9 +346,8 @@ python tools/test_boblogistics_tungsten.py --factorio /path/to/factorio-2.1 --de
   contracts, and every discovered scenario. Preserve ingredients, yields, machine
   eligibility, and the Nauvis/Vulcanus research supply comparison.
 
-The [electrical API experiment](PLANET_FULGORA.md#factorio-21-api-experiment)
-already passes 81 assertions on isolated Space Age fixtures. It establishes the
-Fulgora API benefit, not full-mod compatibility.
+Fulgora uses aggregate network flow for [overload protection and metered
+grounding](PLANET_FULGORA.md#lightning-and-overload).
 
 ## Reproduce
 
