@@ -468,3 +468,28 @@ ammunition from deleted slots; the first slot survives. No migration is added.
 `drone-launchers` checks capacity and native firing for both tiers.
 `tools/test_drone_launcher_upgrade.py` checks the accepted save break:
 20 drones survive and 60 are removed from the populated legacy fixture.
+
+Include this warning in the next release changelog: Loading older saves removes
+drones from the deleted launcher slots.
+
+### Integrated upstream validation
+
+Validated on Factorio 2.1.24 after the launcher port.
+
+| Check | Result |
+|---|---|
+| Focused native scenarios | 20 passed, including multiplayer, boxing, fuel recovery, and neighbour bonuses |
+| Python unit tests | 151 passed |
+| Strict prototype load, fresh map creation, and save load | Passed |
+| Prototype locale and help links | No missing, unused, or invalid keys |
+| Native menu and tip simulations | All 13 passed |
+| Diesel, tank, and solar save upgrade | Passed |
+| Launcher save upgrade | Confirmed the approved ammunition loss |
+| Planet contracts | Fulgora basic/electrical and Vulcanus construction/titanium passed |
+| Ordinary and boxed recipe inspection | Fresh resolved data checked |
+| Combined source review | No upstream namespace or package metadata imported |
+
+Keep the hydrogen checkpoint unchanged. Keep the declared optional-mod
+integrations: replacement forks and the separately packaged Train Upgrader are
+excluded. GCKI changes require a tested 2.1 package. Optional integration checks
+use contract fixtures where the external package is absent.

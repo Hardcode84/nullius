@@ -67,7 +67,10 @@ class ReleaseBuilderTests(unittest.TestCase):
             self.assertTrue(all(name.startswith("nullius-star/") for name in names))
             self.assertFalse(any(name.startswith("tests/") for name in names))
             self.assertFalse(any(name.startswith("tools/") for name in names))
-            self.assertFalse(any("/migrations/" in name for name in names))
+            self.assertEqual({name for name in names if "/migrations/" in name}, {
+                "nullius-star/migrations/upstream-progression.json",
+                "nullius-star/migrations/upstream-progression.lua",
+            })
             self.assertNotIn("nullius-star/scripts/migrate.lua", names)
             self.assertNotIn("nullius-star/legacyMirror.lua", names)
             self.assertNotIn("nullius-star/legacyValves.lua", names)
