@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare exact and upstream-interpolated arboriculture on native Factorio surfaces."""
+"""Compare baseline and upstream arboriculture on native Factorio surfaces."""
 import argparse
 import hashlib
 import json
@@ -71,7 +71,7 @@ def display(report, overview):
     if not overview:
         print(json.dumps({key:report[key] for key in ('summary','totals','acceptance')}, indent=2))
         return
-    print('case | changed forests | trees exact/upstream | queries exact/upstream | median ms exact/upstream | speedup')
+    print('case | changed forests | trees baseline/upstream | queries baseline/upstream | median ms baseline/upstream | speedup')
     for row in report['summary']:
         old, new = row['baseline'], row['upstream']
         print(f"{row['case']} | {row['changed_forests']}/{row['comparisons']} | "
@@ -94,6 +94,7 @@ def main():
     parser.add_argument('--config', type=Path, default=REPOSITORY/'tests/experiments/arboriculture.json')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--overview', action='store_true')
+    parser.add_argument('--baseline-ref', help='Use a committed baseline instead of the working tree')
     parser.add_argument('--summary-output', type=Path, help='Write compact evidence without local artifact paths')
     parser.add_argument('--factorio', type=Path, default=default_factorio())
     parser.add_argument('--dependency-mod-directory', type=Path, default=default_dependency_mods())
@@ -118,7 +119,10 @@ def main():
         (scenarios/source.name).symlink_to(source.resolve(), target_is_directory=source.is_dir())
     scenario = scenarios/'arboriculture-assessment';scenario.mkdir()
     shutil.copyfile(REPOSITORY/'tests/scenarios/arboriculture-assessment.lua',scenario/'control.lua')
-    sources = {'baseline':(MOD_UNDER_TEST/'scripts/drone.lua').read_text(),
+    baseline = (subprocess.check_output(['git', 'show', args.baseline_ref +
+        ':nullius-star/scripts/drone.lua'], cwd=REPOSITORY, text=True)
+        if args.baseline_ref else (MOD_UNDER_TEST/'scripts/drone.lua').read_text())
+    sources = {'baseline':baseline,
         'upstream':subprocess.check_output(['git','show',contract['upstream_ref']+':nullius/scripts/drone.lua'],cwd=REPOSITORY,text=True)}
     for variant, source in sources.items(): (scenario/(variant+'.lua')).write_text(effect(source))
     (scenario/'contract.lua').write_text('return '+lua(contract)+'\n')

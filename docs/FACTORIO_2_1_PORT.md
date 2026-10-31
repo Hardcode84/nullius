@@ -433,13 +433,14 @@ factory throughput. Normal game-save loading is not a simulation test.
 
 ### Arboriculture assessment
 
-Do not port `06a1836` as an equivalent optimization. On Factorio 2.1.24,
+Port `06a1836` with the approved changes to tree placement and species.
+In the comparison against the previous code on Factorio 2.1.24,
 17 of 40 comparisons changed: 64 trees changed species, and 124 positions were
-replaced. The candidate queries 16 climate samples once per effect and interpolates
-at tree positions. The current code queries the selected nearby tile exactly.
+replaced. The new code queries 16 climate samples once per effect and interpolates
+at tree positions. The previous code queried the selected nearby tile exactly.
 Changed planting decisions also change later random draws and positions.
 
-| Site | Current median | Upstream median | Trees, four seeds: current / upstream |
+| Site | Previous median | Upstream median | Trees, four seeds: previous / upstream |
 |---|---:|---:|---:|
 | Nauvis grass | 44.989 ms | 1.522 ms | 122 / 125 |
 | Nauvis grass with obstacles, worms, and ore | 210.677 ms | 5.447 ms | 690 / 692 |
@@ -452,5 +453,8 @@ from timing. It measures the effect body, excluding drone flight, mission credit
 and interactions with the shared map random generator. All timed runs reproduce
 the corresponding instrumented forest.
 
-Run `tools/assess_arboriculture.py --output "$REPORT_DIR/arboriculture.json" --overview`.
+Run `tools/assess_arboriculture.py --output "$REPORT_DIR/arboriculture.json" --overview`
+to compare the working tree with upstream. Add `--baseline-ref 516046c` to repeat
+the before-and-after measurement. The original acceptance gate requires unchanged
+forests; the approved port accepts these differences for faster planting.
 The contract and compact results are in `tests/experiments/arboriculture*.json`.
