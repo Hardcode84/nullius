@@ -125,6 +125,9 @@ function entity_cloned(event)
   if not destination then return end
   local entity = supercapacitors.built(overcharged_assemblers.built(destination))
   fulgora_collectors.cloned(entity)
+  local solar_level = entity and entity.valid and
+    string.match(entity.name, "^nullius%-solar%-collector%-(%d)$")
+  if solar_level then build_solar_collector(entity, tonumber(solar_level)) end
   if entity and entity.valid and
       string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.add_heat_interface(entity)

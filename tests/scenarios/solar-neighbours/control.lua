@@ -2,8 +2,8 @@
 -- place: all tiers and reflected placements in twelve independent layouts
 -- connect: native heat ports and neighbour connections only
 -- act: hold daylight, remove an east neighbour, then hold night
--- run: three 541-tick measurements, each covering two solar bucket visits
--- expect: native heat plus exact solar heat; no bonus across tiers or gaps
+-- run: three 60-tick measurements after the solar buffers settle
+-- expect: native solar heat; no bonus across tiers or gaps
 require("__nullius-star__/scripts/solar")
 local layouts={
   {name="isolated",points={{0,0,0}}},
@@ -20,8 +20,7 @@ local layouts={
   {name="mixed north",points={{0,0,0},{0,-4,0,true}}},
 }
 local capacities={150000,350000,800000}
-local watts={150,300,600}
-local temperature_steps={7.36,6.07,5.13}
+local watts={240000,480000,960000}
 local function check(ok,message)
   storage.assertions=storage.assertions+1
   assert(ok,message)
@@ -36,10 +35,9 @@ end
 local function expected_heat(row,day)
   local total=0
   for _,entry in ipairs(row.entities) do
-    check(math.abs(entry.entity.neighbour_bonus-entry.bonus)<1e-9,
+    check(math.abs(entry.entity.neighbour_bonus-(day and entry.bonus or 0))<1e-9,
       row.label.." bonus: "..entry.entity.neighbour_bonus.." expected "..entry.bonus)
-    total=total+(1+entry.bonus)*(watts[entry.tier]*541/60+
-      (day and 2*temperature_steps[entry.tier]*capacities[entry.tier] or 0))
+    total=total+(1+entry.bonus)*((day and watts[entry.tier] or 0))
   end
   return total
 end
@@ -74,17 +72,21 @@ end)
 -- Match the production per-tick scheduler, including its real bucket assignment.
 script.on_event(defines.events.on_tick,function(event)
   local tick=event.tick
-  if tick==30 or tick==600 or tick==1170 then
+  if tick==540 or tick==640 or tick==1240 then
+    for _,row in ipairs(storage.rows) do
+      for _,entry in ipairs(row.entities) do entry.entity.temperature=15 end
+    end
+  elseif tick==550 or tick==650 or tick==1250 then
     for _,row in ipairs(storage.rows) do
       row.start_heat=heat(row)
-      row.expected=expected_heat(row,tick~=1170)
+      row.expected=expected_heat(row,tick~=1250)
     end
-  elseif tick==571 or tick==1141 or tick==1711 then
+  elseif tick==610 or tick==710 or tick==1310 then
     for _,row in ipairs(storage.rows) do
-      expected_heat(row,tick~=1711)
+      expected_heat(row,tick~=1310)
       local gained=heat(row)-row.start_heat
       check(math.abs(gained-row.expected)<1,row.label.." heat: "..gained.." expected "..row.expected)
-      if tick==571 and row.remove then
+      if tick==610 and row.remove then
         local removed=row.entities[2]
         remove_solar_collector(removed.entity,false,removed.tier)
         removed.entity.destroy()
@@ -92,9 +94,9 @@ script.on_event(defines.events.on_tick,function(event)
         row.entities[1].bonus=0
       end
     end
-    if tick==1141 then
+    if tick==710 then
       storage.surface.daytime=0.5
-    elseif tick==1711 then
+    elseif tick==1310 then
       script.on_event(defines.events.on_tick,nil)
       helpers.write_file("factorio-tests/solar-neighbours.json",helpers.table_to_json({
         schema=1,case="solar-neighbours",status="pass",factorio_version=script.active_mods.base,

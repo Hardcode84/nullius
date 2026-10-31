@@ -1,6 +1,31 @@
 {
-  "products": ["nullius-biodiesel", "nullius-biodiesel-canister", "nullius-box-biodiesel-canister", "nullius-large-tank-3", "nullius-medium-tank-3", "nullius-small-tank-2"],
-  "technologies": ["nullius-energy-storage-1", "nullius-energy-storage-2", "nullius-checkpoint-energy-storage", "nullius-storage-3", "nullius-plumbing-6", "nullius-hydrocarbon-combustion-2"],
-  "entity_prefixes": ["nullius-small-tank-", "nullius-medium-tank-", "nullius-large-tank-", "nullius-solar-collector-", "nullius-relay-", "nullius-hangar-", "nullius-charger-"],
+  "products": [
+    "nullius-diesel",
+    "nullius-diesel-canister",
+    "nullius-box-diesel-canister",
+    "nullius-large-tank-3",
+    "nullius-medium-tank-3",
+    "nullius-small-tank-2",
+    "nullius-small-tank-3",
+    "nullius-medium-tank-4"
+  ],
+  "technologies": [
+    "nullius-energy-storage-1",
+    "nullius-energy-storage-2",
+    "nullius-checkpoint-energy-storage",
+    "nullius-storage-3",
+    "nullius-plumbing-6",
+    "nullius-hydrocarbon-combustion-2",
+    "nullius-hydrocarbon-combustion-3"
+  ],
+  "entity_prefixes": [
+    "nullius-small-tank-",
+    "nullius-medium-tank-",
+    "nullius-large-tank-",
+    "nullius-solar-collector-",
+    "nullius-relay-",
+    "nullius-hangar-",
+    "nullius-charger-"
+  ],
   "storage_target": 60000
 }

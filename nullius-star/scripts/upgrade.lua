@@ -58,4 +58,14 @@ function upgrade.from_0_0_1(event)
   for _, player in pairs(game.players) do probe.attach_player(player) end
 end
 
+function upgrade.tank_recipes()
+  if not storage.nullius_legacy_tanks then return end
+  for index, researched in pairs(storage.nullius_legacy_tanks) do
+    if researched then
+      game.forces[index].recipes["nullius-legacy-large-tank-3"].enabled = true
+    end
+  end
+  storage.nullius_legacy_tanks = nil
+end
+
 return upgrade

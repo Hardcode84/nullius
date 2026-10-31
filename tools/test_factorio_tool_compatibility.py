@@ -118,23 +118,21 @@ def stage_chest_graphics(mods, version, dependency_mod_directory):
 
 
 def stage_solar_neighbours(mod):
-    source = (ROOT / "nullius-star/prototypes/entity/energy.lua").read_text()
-    start = source.index('  {\n    type = "reactor",\n    name = "nullius-solar-collector-1",')
-    end = source.index('  {\n    type = "assembling-machine",\n    name = "nullius-heat-exchanger-1",', start)
-    setup = source[source.index("local function solar_neighbours("):source.index("local reactor_neighbours\n")]
+    source = (ROOT / "nullius-star/prototypes/entity/solar_thermal.lua").read_text()
+    shutil.copyfile(ROOT / "nullius-star/constants.lua", mod / "constants.lua")
     (mod / "solar-prototypes.lua").write_text(
-        'local ENTITYPATH="__nullius-star__/graphics/entity/"\n'
+        'data:extend({{type="item-subgroup",name="compressed-air",group="fluids"}})\n'
         'for tier=1,3 do local name="nullius-solar-collector-"..tier; '
         'data:extend({{type="item",name=name,stack_size=10,place_result=name,'
         'icons={{icon="__base__/graphics/icons/solar-panel.png",icon_size=64}}}}); end\n'
-        + setup + 'data:extend({\n' + source[start:end] + '})\n')
+        + source)
     (mod / "scenarios/solar-neighbours").symlink_to(ROOT / "tests/scenarios/solar-neighbours", target_is_directory=True)
 
 
 def stage_reactor_neighbours(mod):
     source = (ROOT / "nullius-star/prototypes/entity/energy.lua").read_text()
     start = source.index('  {\n    type = "reactor",\n    name = "nullius-reactor",')
-    end = source.index('  {\n    type = "reactor",\n    name = "nullius-solar-collector-1",', start)
+    end = source.index('  {\n    type = "assembling-machine",\n    name = "nullius-heat-exchanger-1",', start)
     setup = source.index("local reactor_neighbours\n")
     connections = source[setup:source.index("data:extend({", setup)]
     (mod / "reactor-prototype.lua").write_text(
@@ -266,8 +264,8 @@ def stage_metallurgic_products(mod, version):
 def stage_plumbing_recipes(mod, mods, dependency_mod_directory):
     source = (ROOT / "nullius-star/prototypes/item/plumbing.lua").read_text()
     blocks = re.findall(r'^  \{\n    type = "recipe",.*?^  \}', source, re.M | re.S)
-    if len(blocks) != 113:
-        raise TestFailure("Expected 113 plumbing recipe records")
+    if len(blocks) != 117:
+        raise TestFailure("Expected 117 plumbing recipe records")
     header = source.split("extend_plumbing_prototypes({", 1)[0]
     (mod / "plumbing-source.lua").write_text(header + "extend_plumbing_prototypes({\n" + ",\n".join(blocks) + "\n})\n")
     source = "\n".join(blocks)
@@ -402,8 +400,8 @@ def stage_equipment_recipes(mod, mods, dependency_mod_directory):
 def stage_fluid_recipes(mod, mods, dependency_mod_directory):
     source = (ROOT / "nullius-star/prototypes/item/fluid.lua").read_text()
     blocks = re.findall(r'^  \{\n    type = "recipe",.*?^  \}', source, re.M | re.S)
-    if len(blocks) != 223:
-        raise TestFailure("Expected 223 fluid recipe records")
+    if len(blocks) != 224:
+        raise TestFailure("Expected 224 fluid recipe records")
     header = source.split("extend_fluid_prototypes({", 1)[0]
     fluids = re.findall(r'^  \{\n    type = "fluid",.*?^  \}', source, re.M | re.S)
     # Register fluids first, then recipes in source order for icon references.
@@ -880,7 +878,7 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     solar = json.loads((work / "script-output/factorio-tests/solar-neighbours.json").read_text())
     assert solar["status"] == "pass" and solar["layouts"] == 144, solar
     plumbing = json.loads((work / "script-output/factorio-tests/plumbing-recipes.json").read_text())
-    assert plumbing["status"] == "pass" and plumbing["recipes"] == 113, plumbing
+    assert plumbing["status"] == "pass" and plumbing["recipes"] == 117, plumbing
     building = json.loads((work / "script-output/factorio-tests/building-recipes.json").read_text())
     assert building["status"] == "pass" and building["recipes"] == 137, building
     equipment = json.loads((work / "script-output/factorio-tests/equipment-recipes.json").read_text())
@@ -890,7 +888,7 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     intermediate = json.loads((work / "script-output/factorio-tests/intermediate-recipes.json").read_text())
     assert intermediate["status"] == "pass" and intermediate["recipes"] == 293, intermediate
     fluid_recipes = json.loads((work / "script-output/factorio-tests/fluid-recipes.json").read_text())
-    assert fluid_recipes["status"] == "pass" and fluid_recipes["recipes"] == 223, fluid_recipes
+    assert fluid_recipes["status"] == "pass" and fluid_recipes["recipes"] == 224, fluid_recipes
     biology = json.loads((work / "script-output/factorio-tests/biology-recipes.json").read_text())
     assert biology["status"] == "pass" and biology["recipes"] == 152, biology
     general = json.loads((work / "script-output/factorio-tests/general-recipes.json").read_text())

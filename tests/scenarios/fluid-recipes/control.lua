@@ -1,5 +1,5 @@
 -- given: one declared input batch per recipe and void power
--- place: 223 independent executors at crafting speed 60
+-- place: 224 independent executors at crafting speed 60
 -- connect: one finite buffer and pump per fluid input
 -- act: reject the other category, select the recipe, and insert its ingredients
 -- run: 960 ticks

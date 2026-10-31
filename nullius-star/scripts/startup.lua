@@ -197,6 +197,8 @@ script.on_configuration_changed(
     save_lineage.validate(event)
     probe.migrate_landings()
     upgrade.from_0_0_1(event)
+    upgrade.tank_recipes()
+    rebuild_solar()
     reset_config()
     surface_config.configure_existing()
     vulcanus_heat.rebuild()

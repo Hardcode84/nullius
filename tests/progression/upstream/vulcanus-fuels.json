@@ -37,50 +37,12 @@
     "nullius-lab-1": 1
   },
   "assumptions": {
-    "scope": "Pre-physics material and process-energy comparison. Candidate keeps the existing biodiesel fluid ID to isolate the upstream synthetic recipe. All pre-physics technologies are permitted, including candidate research. No claim of net generator output, elapsed bootstrap time, or native candidate execution.",
+    "scope": "Pre-physics material and process-energy comparison using shipping recipes. All pre-physics technologies are permitted. Excludes generator output and startup scheduling.",
     "boundary": "Inherited planet raw supplies, waste rules, seed stock, machine catalog and construction model. Fulgora declares an external electric grid. No modules or beacons.",
-    "upstream": "Synthetic recipe and research cost from ad1c4b4 and f4d01e8. Existing biodiesel ID retained to isolate the recipe. Canister, combustion, renaming, and later research-prerequisite changes are excluded.",
+    "upstream": "Synthetic diesel and research from ad1c4b4 and f4d01e8.",
     "uncertainty": "Guaranteed outputs except explicitly listed expected_recipes, which use mean independent drops. This is continuous capacity, not startup scheduling or measured completion time."
   },
   "stages": [
-    {
-      "name": "current-diesel",
-      "contract": "tests/progression/vulcanus-physics-production.args",
-      "allow_all_pre_physics": true,
-      "technologies": [
-        "nullius-physics",
-        "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
-      ],
-      "extra_machines": [
-        "nullius-air-filter-2-pneumatic",
-        "nullius-chemical-plant-2-pneumatic",
-        "nullius-chimney-1",
-        "nullius-crusher-2-thermal",
-        "nullius-distillery-2-pneumatic",
-        "nullius-flotation-cell-2-pneumatic",
-        "nullius-foundry-2-thermal",
-        "nullius-hydro-plant-2-pneumatic",
-        "nullius-large-assembler-1-pneumatic",
-        "nullius-medium-assembler-2-pneumatic",
-        "nullius-medium-furnace-2-thermal",
-        "nullius-outfall-1"
-      ],
-      "products": {
-        "nullius-biodiesel": 1
-      },
-      "executor_cycles": {
-        "nullius-physics-pack": 1,
-        "nullius-unbox-physics-pack": 25
-      },
-      "executor_transfers": [
-        "nullius-box-physics-pack"
-      ],
-      "excluded_recipes": [
-        "candidate-upstream-diesel"
-      ],
-      "research_roots": []
-    },
     {
       "name": "synthetic-diesel",
       "contract": "tests/progression/vulcanus-physics-production.args",
@@ -105,7 +67,7 @@
         "nullius-outfall-1"
       ],
       "products": {
-        "nullius-biodiesel": 1
+        "nullius-diesel": 1
       },
       "executor_cycles": {
         "nullius-physics-pack": 1,
@@ -151,7 +113,7 @@
         "nullius-box-physics-pack"
       ],
       "excluded_recipes": [
-        "candidate-upstream-diesel"
+        "nullius-diesel"
       ],
       "research_roots": []
     }
@@ -164,6 +126,5 @@
       "yield_fraction": 1.0
     }
   },
-  "lab": "nullius-lab-1-pneumatic",
-  "prototype_overlay": "tests/progression/upstream/diesel-candidate.json"
+  "lab": "nullius-lab-1-pneumatic"
 }

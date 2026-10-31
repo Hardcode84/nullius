@@ -397,7 +397,7 @@ Storage does not remove a continuous surplus.
 | Wastewater filtration | Saline + sludge; boiling saline produces steam + brine |
 | Wastewater boiling | Steam + sludge; does not remove the sludge problem |
 | Sludge dehydration | Mineral dust + steam + CO; requires high-pressure chemistry 2 and physics science |
-| Organic combustion | Existing ethylene, propene, benzene, methanol, and biodiesel recipes consume oxygen and produce steam + CO2 |
+| Organic combustion | Existing ethylene, propene, benzene, methanol, and diesel recipes consume oxygen and produce steam + CO2 |
 | Ethylene / propene pyrolysis | Methane plus other organics; not a complete disposal route |
 | Benzene reforming | Steam input; hydrogen + CO + CO2 outputs, all ventable |
 | Carbon gasification | Graphite + steam → CO + hydrogen, both ventable; basic recipe unlocks at Organic Chemistry 2; boxed recipe remains at bulk processing |

@@ -1,3 +1,11 @@
+local function copy_icon_resize_and_shift(icon, scale, shift)
+  local result = table.deepcopy(icon)
+  result.scale = (result.scale or 1) * scale
+  local previous = result.shift or {0, 0}
+  result.shift = {(previous[1] or 0) + shift[1], (previous[2] or 0) + shift[2]}
+  return result
+end
+
 local modern = require("factorio-version").is_2_1
 
 local function extend_biology_prototypes(prototypes)
@@ -300,6 +308,15 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-biodiesel",
+    icons = {
+      {
+        icon = "__base__/graphics/icons/fluid/heavy-oil.png",
+        icon_size = 64,
+      },
+      copy_icon_resize_and_shift(data.raw.fluid["nullius-fatty-acids"].icons[2], 0.33, {-9, -9}),
+      copy_icon_resize_and_shift(data.raw.fluid["nullius-fatty-acids"].icons[3], 0.33, {-9, -9}),
+      copy_icon_resize_and_shift(data.raw.fluid["nullius-fatty-acids"].icons[4], 0.33, {-9, -9}),
+    },
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
@@ -312,10 +329,10 @@ extend_biology_prototypes({
       {type="fluid", name="nullius-methanol", amount=8}
     },
     results = {
-      {type="fluid", name="nullius-biodiesel", amount=24},
+      {type="fluid", name="nullius-diesel", amount=24},
       {type="fluid", name="nullius-wastewater", amount=5}
     },
-    main_product = "nullius-biodiesel"
+    main_product = "nullius-diesel"
   },
   {
     type = "recipe",
@@ -2285,7 +2302,7 @@ extend_biology_prototypes({
     ingredients = {
       {type="item", name="nullius-graphite", amount=12},
 	    {type="item", name="nullius-rubber", amount=1},
-      {type="fluid", name="nullius-biodiesel", amount=10},
+      {type="fluid", name="nullius-diesel", amount=10},
       {type="fluid", name="nullius-compressed-nitrogen", amount=50}
     },
     results = {
@@ -2310,7 +2327,7 @@ extend_biology_prototypes({
     ingredients = {
       {type="item", name="nullius-box-graphite", amount=12},
 	    {type="item", name="nullius-box-rubber", amount=1},
-      {type="fluid", name="nullius-biodiesel", amount=50},
+      {type="fluid", name="nullius-diesel", amount=50},
       {type="fluid", name="nullius-compressed-nitrogen", amount=250}
     },
     results = {

@@ -29,67 +29,16 @@
     "nullius-lab-1": 1
   },
   "assumptions": {
-    "scope": "Pre-physics material and process-energy comparison. Candidate keeps the existing biodiesel fluid ID to isolate the upstream synthetic recipe. All pre-physics technologies are permitted, including candidate research. No claim of net generator output, elapsed bootstrap time, or native candidate execution.",
+    "scope": "Pre-physics material and process-energy comparison using shipping recipes. All pre-physics technologies are permitted. Excludes generator output and startup scheduling.",
     "boundary": "Inherited planet raw supplies, waste rules, seed stock, machine catalog and construction model. Fulgora declares an external electric grid. No modules or beacons.",
-    "upstream": "Synthetic recipe and research cost from ad1c4b4 and f4d01e8. Existing biodiesel ID retained to isolate the recipe. Canister, combustion, renaming, and later research-prerequisite changes are excluded.",
+    "upstream": "Synthetic diesel and research from ad1c4b4 and f4d01e8.",
     "uncertainty": "Guaranteed outputs except explicitly listed expected_recipes, which use mean independent drops. This is continuous capacity, not startup scheduling or measured completion time."
   },
   "stages": [
     {
-      "name": "current-diesel",
-      "products": {
-        "nullius-biodiesel": 1
-      },
-      "executor_cycles": {
-        "nullius-physics-pack": 1,
-        "nullius-unbox-physics-pack": 25
-      },
-      "executor_transfers": [
-        "nullius-box-physics-pack"
-      ],
-      "contract": "tests/progression/planner/fulgora-bootstrap-timing.args",
-      "technologies": [
-        "nullius-physics"
-      ],
-      "allow_all_pre_physics": true,
-      "machines": [
-        "nullius-air-filter-1",
-        "nullius-air-filter-2",
-        "nullius-barrel-pump-1",
-        "nullius-chemical-plant-1",
-        "nullius-chemical-plant-2",
-        "nullius-chimney-1",
-        "nullius-crusher-1",
-        "nullius-crusher-2",
-        "nullius-distillery-1",
-        "nullius-distillery-2",
-        "nullius-flotation-cell-1",
-        "nullius-flotation-cell-2",
-        "nullius-foundry-1",
-        "nullius-foundry-2",
-        "nullius-hydro-plant-1",
-        "nullius-hydro-plant-2",
-        "nullius-large-assembler-1",
-        "nullius-medium-assembler-1",
-        "nullius-medium-assembler-2",
-        "nullius-medium-furnace-2",
-        "nullius-nanofabricator-1",
-        "nullius-priority-electrolyzer-1",
-        "nullius-small-assembler-1",
-        "nullius-surge-compressor-1",
-        "nullius-combustion-chamber-1",
-        "nullius-small-furnace-1",
-        "nullius-small-assembler-1-overcharged"
-      ],
-      "excluded_recipes": [
-        "candidate-upstream-diesel"
-      ],
-      "research_roots": []
-    },
-    {
       "name": "synthetic-diesel",
       "products": {
-        "nullius-biodiesel": 1
+        "nullius-diesel": 1
       },
       "executor_cycles": {
         "nullius-physics-pack": 1,
@@ -182,7 +131,7 @@
         "nullius-small-assembler-1-overcharged"
       ],
       "excluded_recipes": [
-        "candidate-upstream-diesel"
+        "nullius-diesel"
       ],
       "research_roots": []
     }
@@ -199,6 +148,5 @@
   "electric_grid": true,
   "expected_recipes": [
     "nullius-crude-sludge-filtration"
-  ],
-  "prototype_overlay": "tests/progression/upstream/diesel-candidate.json"
+  ]
 }
