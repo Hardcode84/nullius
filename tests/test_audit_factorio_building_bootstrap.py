@@ -69,6 +69,7 @@ class BuildingBootstrapTest(unittest.TestCase):
 
     def test_disallowed_machine_surface(self):
         self.config['surface'] = {'magnetic-field':99}
+        self.data['surface-property'] = {'magnetic-field': {'default_value': 90}}
         self.data['assembling-machine']['nullius-machine']['surface_conditions'] = [{'property':'magnetic-field','max':98}]
         self.config['starter_items'].append('nullius-machine')
         self.data['recipe']['part'] = recipe('part', [], ['part'], 'machine-work')

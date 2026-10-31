@@ -16,7 +16,7 @@ from plan_factorio_factory import fluid_ports_fit, place_item
 
 
 def audit(data, config, targets, research_roots):
-    surface = config['surface']
+    surface = prereqs.resolve_surface(data, config['surface'])
     technologies = data['technology']
     permitted = prereqs.technology_closure(technologies, set(research_roots))
     known_products = {n for entries in data.values() if isinstance(entries, dict)

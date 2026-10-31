@@ -491,13 +491,23 @@ def minable_results(prototype: Prototype) -> list[Prototype]:
     return []
 
 
+def resolve_surface(data: Prototype, declared: dict[str, float]) -> dict[str, float]:
+    """Complete declared values with defaults, as Factorio does for a surface."""
+    properties: dict[str, Prototype] = data.get("surface-property", {})
+    unknown = sorted(set(declared) - set(properties))
+    if unknown:
+        raise TestFailure("unknown surface properties: " + ", ".join(unknown))
+    surface = {name: float(prototype["default_value"]) for name, prototype in properties.items()}
+    surface.update(declared)
+    return surface
+
+
 def allowed_on_surface(
     recipe: Prototype, surface_properties: dict[str, float]
 ) -> bool:
+    """Check conditions against a surface completed by resolve_surface."""
     for condition in recipe.get("surface_conditions") or []:
-        value = surface_properties.get(condition["property"])
-        if value is None:
-            continue
+        value = surface_properties[condition["property"]]
         if value < condition.get("min", float("-inf")):
             return False
         if value > condition.get("max", float("inf")):
@@ -532,7 +542,7 @@ def find_dependency_paths(
     assumed_technologies = technology_closure(
         technologies, set(args.technology)
     )
-    surface_properties = dict(args.surface_property)
+    surface_properties = resolve_surface(data, dict(args.surface_property))
     forbidden_categories = set(getattr(args, "forbid_category", []))
     known_recipe_categories = {
         category for recipe in recipes.values() for category in recipe_categories(recipe)
@@ -692,7 +702,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     assumed_technologies = technology_closure(
         technologies, set(args.technology)
     )
-    surface_properties = dict(args.surface_property)
+    surface_properties = resolve_surface(data, dict(args.surface_property))
     forbidden_categories = set(getattr(args, "forbid_category", []))
     known_recipe_categories = {
         category for recipe in recipes.values() for category in recipe_categories(recipe)

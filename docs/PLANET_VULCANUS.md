@@ -417,12 +417,12 @@ factory. Planner executor scenarios check the selected upstream recipe set.
 
 | Line | Packs/min each | Nauvis stations | Vulcanus stations | Nauvis electric MW | Vulcanus fuel gas/min | Vulcanus heat MW |
 |---|---:|---:|---:|---:|---:|---:|
-| geology | 120 | 47 | 64 | 8.96 | 15,628 | 3.06 |
-| geology | 240 | 85 | 81 | 17.88 | 31,256 | 6.12 |
+| geology | 120 | 67 | 54 | 9.99 | 15,903 | 2.90 |
+| geology | 240 | 102 | 71 | 19.70 | 31,806 | 5.79 |
 | climatology | 120 | 41 | 35 | 12.22 | 27,592 | 0.88 |
 | climatology | 240 | 80 | 55 | 24.37 | 55,185 | 1.76 |
-| combined | 120 | 93 | 86 | 20.81 | 41,988 | 3.91 |
-| combined | 240 | 168 | 122 | 41.48 | 83,975 | 7.83 |
+| combined | 120 | 82 | 78 | 21.49 | 39,684 | 3.93 |
+| combined | 240 | 150 | 111 | 42.72 | 79,368 | 7.85 |
 <!-- tier2-capacity:end -->
 
 The comparison permits all pre-physics supply recipes and the declared machine
@@ -457,19 +457,19 @@ for Nauvis climatology 2. These are gross recipe inputs, including circulation.
 
 | Packs/min each | Stations | Labs | Fuel gas/min | Process heat MW | Supply hours | Scheduled hours |
 |---:|---:|---:|---:|---:|---:|---:|
-| 60 | 895 | 40 | 431,958 | 136.59 | 16.358 | 16.410 |
-| 120 | 1518 | 80 | 863,916 | 273.19 | 8.179 | 8.205 |
-| 240 | 2776 | 160 | 1,727,832 | 546.37 | 4.090 | 4.103 |
+| 60 | 954 | 40 | 540,685 | 111.70 | 16.571 | 16.623 |
+| 120 | 1631 | 80 | 1,081,370 | 223.41 | 8.285 | 8.311 |
+| 240 | 2996 | 160 | 2,162,739 | 446.81 | 4.143 | 4.156 |
 
 Research for the 120/min factory, including selected recipe and construction unlocks:
 
 | Science | Required packs |
 |---|---:|
-| nullius-chemical-pack | 47,472 |
-| nullius-climatology-pack | 57,679 |
-| nullius-electrical-pack | 51,583 |
-| nullius-geology-pack | 58,889 |
-| nullius-mechanical-pack | 56,077 |
+| nullius-chemical-pack | 48,272 |
+| nullius-climatology-pack | 58,444 |
+| nullius-electrical-pack | 52,348 |
+| nullius-geology-pack | 59,654 |
+| nullius-mechanical-pack | 56,842 |
 | nullius-metallurgic-pack | 1,410 |
 
 Largest geology and climatology research costs:

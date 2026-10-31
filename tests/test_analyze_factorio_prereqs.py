@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from analyze_factorio_prereqs import (
     TestFailure,
     add_raw_bootstrap_for_execution,
+    allowed_on_surface,
     analyze,
     build_production_manifest,
     describe_consumers,
@@ -28,6 +29,7 @@ from analyze_factorio_prereqs import (
     merge_prototype_overlay,
     parse_target,
     print_human,
+    resolve_surface,
 )
 
 
@@ -48,6 +50,16 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                          "resource:ore", "Selected production steps: 1",
                          "Crafting categories: 1", "1 paths"):
             self.assertIn(expected, output.getvalue())
+
+    def test_undeclared_surface_property_uses_prototype_default(self):
+        data = {"surface-property": {"magnetic-field": {"default_value": 90},
+                                     "pressure": {"default_value": 1000}}}
+        magnetic = {"surface_conditions": [{"property": "magnetic-field", "min": 99}]}
+        self.assertEqual(resolve_surface(data, {}), {"magnetic-field": 90, "pressure": 1000})
+        self.assertFalse(allowed_on_surface(magnetic, resolve_surface(data, {})))
+        self.assertTrue(allowed_on_surface(magnetic, resolve_surface(data, {"magnetic-field": 99})))
+        with self.assertRaisesRegex(TestFailure, "unknown surface properties: gravity"):
+            resolve_surface(data, {"gravity": 10})
 
     def test_omitted_enabled_uses_factorio_default(self):
         data = {"recipe": {"vent": {"ingredients": [], "results": []},

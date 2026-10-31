@@ -58,7 +58,8 @@ Declare the starting contract explicitly:
   speed and energy source define the manifest.
 - `--machine-category CATEGORY` forbids hand crafting for that category.
 - `--surface-property NAME=VALUE` excludes recipes incompatible with a declared
-  surface property.
+  surface property. Undeclared properties use the prototype `default_value`,
+  as Factorio does; an unknown property name fails.
 - `--forbid-category CATEGORY` excludes an operation unavailable at the
   campaign boundary even when a shared machine item can execute it elsewhere.
   For example, forbid `seawater-pumping` on a surface without seawater while

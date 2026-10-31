@@ -479,7 +479,7 @@ def boundary_from_config(data, config, stage):
     # Explicit machine catalog; every hand category must have a real executor.
     return {"technologies": stage.get("technologies", args.technology),
             "allow_all_pre_physics": stage.get("allow_all_pre_physics", False),
-            "surface": stage.get("surface", dict(args.surface_property)),
+            "surface": prereqs.resolve_surface(data, stage.get("surface", dict(args.surface_property))),
             "fuel": config["fuel"], "machines": sorted(stage.get("machines", machines)),
             "electric_grid": config.get("electric_grid", False),
             "forbid_categories": args.forbid_category,
@@ -639,7 +639,8 @@ def compare_argon(data, spec):
     for row in rows:
         row["available_before_physics"] = row["enabled"] or bool(set(row["unlock_technologies"]) & allowed)
         row["surface_availability"] = {str(t): prereqs.allowed_on_surface(data["recipe"][row["name"]],
-            {"nullius-ambient-temperature": t}) for t in spec["surface_temperatures"]}
+            prereqs.resolve_surface(data, {"nullius-ambient-temperature": t}))
+            for t in spec["surface_temperatures"]}
     return rows
 
 
