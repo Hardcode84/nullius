@@ -985,6 +985,17 @@ This checks material and research order with external electricity and manual
 surplus disposal. Crude filtration permits probabilistic drops. It does not
 measure finite starter quantities, checkpoint actions, or power supply.
 
+`tools/audit_factorio_checkpoints.py` checks the pre-physics checkpoints against
+live definitions from the `checkpoint-contracts` scenario. It checks local
+production, consumption, and building surface conditions before each research
+unlock. Recipes with hidden statistics cannot satisfy production or consumption
+requirements. The audit uses the landing boundary in
+`tests/progression/fulgora-building-bootstrap.json`. It reports checkpoints
+already researched before landing separately. The
+`fulgora-exploration-checkpoint` scenario checks actual scout-drone consumption
+and checkpoint completion on Fulgora. These checks do not measure campaign time,
+power supply, or finite starter stock.
+
 ### Factory capacity
 
 Use the factory planner with `tests/progression/planner/fulgora-science-scale.json`

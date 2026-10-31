@@ -369,6 +369,7 @@ end
 
 if script.active_mods["factorio-test-support"] then
   remote.add_interface("nullius-test-checkpoints", {
+    definitions = function() return table.deepcopy(checkpoint_data) end,
     progress = function(force_name, checkpoint, requirement)
       local force = game.forces[force_name]
       if not force then error("Unknown force " .. force_name) end

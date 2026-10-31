@@ -15,7 +15,7 @@ import analyze_factorio_prereqs as prereqs
 from plan_factorio_factory import fluid_ports_fit, place_item
 
 
-def audit(data, config, targets, research_roots):
+def audit(data, config, targets, research_roots, checkpoint_check=None):
     surface = prereqs.resolve_surface(data, config['surface'])
     technologies = data['technology']
     permitted = prereqs.technology_closure(technologies, set(research_roots))
@@ -152,6 +152,9 @@ def audit(data, config, targets, research_roots):
                 continue
             if not all(any(p in products for p in alternatives) for alternatives in checkpoints.get(name, [])):
                 continue
+            if checkpoint_check and name.startswith('nullius-checkpoint-'):
+                if not checkpoint_check(name, products, executed, supplied, step):
+                    continue
             new_techs.append(name)
         if not added and not new_techs:
             break
