@@ -1,0 +1,21 @@
+{
+  "upstream_ref": "06a1836e16fc43408d013e172f2d9389811955ae",
+  "map_seed": 1729,
+  "random_seeds": [1234567, 987654321, 2147483647, 4000000001],
+  "repetitions": 3,
+  "until_tick": 2,
+  "timeout_seconds": 60,
+  "minimum_speedup": 1.2,
+  "cases": [
+    {"name": "nauvis-native", "planet": "nauvis", "center": [0, 0]},
+    {"name": "nauvis-grass", "planet": "nauvis", "center": [0, 0], "tile": "grass-1"},
+    {"name": "nauvis-distant-grass", "planet": "nauvis", "center": [2048, -1024], "tile": "grass-1"},
+    {"name": "nauvis-obstacles", "planet": "nauvis", "center": [0, 0], "tile": "grass-1", "obstacles": true},
+    {"name": "nauvis-suppressed", "planet": "nauvis", "center": [0, 0], "tile": "grass-1", "fumaroles": 20},
+    {"name": "nauvis-water", "planet": "nauvis", "center": [0, 0], "tile": "deepwater"},
+    {"name": "vulcanus-native", "planet": "nullius-vulcanus", "center": [0, 0]},
+    {"name": "vulcanus-grass", "planet": "nullius-vulcanus", "center": [0, 0], "tile": "grass-1"},
+    {"name": "fulgora-native", "planet": "nullius-fulgora", "center": [0, 0]},
+    {"name": "fulgora-grass", "planet": "nullius-fulgora", "center": [0, 0], "tile": "grass-1"}
+  ]
+}

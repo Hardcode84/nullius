@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "factorio_version": "2.1.24",
+  "contract": {
+    "upstream_ref": "06a1836e16fc43408d013e172f2d9389811955ae",
+    "map_seed": 1729,
+    "random_seeds": [
+      1234567,
+      987654321,
+      2147483647,
+      4000000001
+    ],
+    "repetitions": 3,
+    "until_tick": 2,
+    "timeout_seconds": 60,
+    "minimum_speedup": 1.2,
+    "cases": [
+      {
+        "name": "nauvis-native",
+        "planet": "nauvis",
+        "center": [
+          0,
+          0
+        ]
+      },
+      {
+        "name": "nauvis-grass",
+        "planet": "nauvis",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "grass-1"
+      },
+      {
+        "name": "nauvis-distant-grass",
+        "planet": "nauvis",
+        "center": [
+          2048,
+          -1024
+        ],
+        "tile": "grass-1"
+      },
+      {
+        "name": "nauvis-obstacles",
+        "planet": "nauvis",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "grass-1",
+        "obstacles": true
+      },
+      {
+        "name": "nauvis-suppressed",
+        "planet": "nauvis",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "grass-1",
+        "fumaroles": 20
+      },
+      {
+        "name": "nauvis-water",
+        "planet": "nauvis",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "deepwater"
+      },
+      {
+        "name": "vulcanus-native",
+        "planet": "nullius-vulcanus",
+        "center": [
+          0,
+          0
+        ]
+      },
+      {
+        "name": "vulcanus-grass",
+        "planet": "nullius-vulcanus",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "grass-1"
+      },
+      {
+        "name": "fulgora-native",
+        "planet": "nullius-fulgora",
+        "center": [
+          0,
+          0
+        ]
+      },
+      {
+        "name": "fulgora-grass",
+        "planet": "nullius-fulgora",
+        "center": [
+          0,
+          0
+        ],
+        "tile": "grass-1"
+      }
+    ]
+  },
+  "source_hashes": {
+    "baseline": "07169596e0388a189d0ddf27149acdad3a403676401284c8fdc3231d7537907b",
+    "upstream": "82a4d5c36e267b804e2c7a5e0d9b0815f8cad137a37e5117fe328972851e8db6"
+  },
+  "assertions": 341,
+  "summary": [
+    {
+      "case": "nauvis-native",
+      "comparisons": 4,
+      "changed_forests": 2,
+      "changed_species": 4,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 50,
+        "queries": 79,
+        "sampled_positions": 79,
+        "median_ms": 20.839704
+      },
+      "upstream": {
+        "trees": 50,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 2.5842775
+      },
+      "speedup": 8.064034918850627
+    },
+    {
+      "case": "nauvis-grass",
+      "comparisons": 4,
+      "changed_forests": 4,
+      "changed_species": 4,
+      "removed_positions": 3,
+      "added_positions": 6,
+      "baseline": {
+        "trees": 122,
+        "queries": 189,
+        "sampled_positions": 189,
+        "median_ms": 44.989495000000005
+      },
+      "upstream": {
+        "trees": 125,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 1.5220135
+      },
+      "speedup": 29.55919576271827
+    },
+    {
+      "case": "nauvis-distant-grass",
+      "comparisons": 4,
+      "changed_forests": 3,
+      "changed_species": 4,
+      "removed_positions": 39,
+      "added_positions": 35,
+      "baseline": {
+        "trees": 134,
+        "queries": 192,
+        "sampled_positions": 192,
+        "median_ms": 29.378131
+      },
+      "upstream": {
+        "trees": 130,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 1.2374615
+      },
+      "speedup": 23.74064243614852
+    },
+    {
+      "case": "nauvis-obstacles",
+      "comparisons": 4,
+      "changed_forests": 4,
+      "changed_species": 24,
+      "removed_positions": 52,
+      "added_positions": 54,
+      "baseline": {
+        "trees": 690,
+        "queries": 1016,
+        "sampled_positions": 1016,
+        "median_ms": 210.6771445
+      },
+      "upstream": {
+        "trees": 692,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 5.447143499999999
+      },
+      "speedup": 38.676628309865535
+    },
+    {
+      "case": "nauvis-suppressed",
+      "comparisons": 4,
+      "changed_forests": 0,
+      "changed_species": 0,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 0,
+        "queries": 0,
+        "sampled_positions": 0,
+        "median_ms": 0.0348025
+      },
+      "upstream": {
+        "trees": 0,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 0.9997349999999999
+      },
+      "speedup": 0.0348117251071534
+    },
+    {
+      "case": "nauvis-water",
+      "comparisons": 4,
+      "changed_forests": 0,
+      "changed_species": 0,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 0,
+        "queries": 0,
+        "sampled_positions": 0,
+        "median_ms": 9.820906
+      },
+      "upstream": {
+        "trees": 0,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 11.0388085
+      },
+      "speedup": 0.8896708372103748
+    },
+    {
+      "case": "vulcanus-native",
+      "comparisons": 4,
+      "changed_forests": 0,
+      "changed_species": 0,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 0,
+        "queries": 0,
+        "sampled_positions": 0,
+        "median_ms": 0.5241910000000001
+      },
+      "upstream": {
+        "trees": 0,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 1.7941315000000002
+      },
+      "speedup": 0.29216977685303447
+    },
+    {
+      "case": "vulcanus-grass",
+      "comparisons": 4,
+      "changed_forests": 4,
+      "changed_species": 28,
+      "removed_positions": 30,
+      "added_positions": 29,
+      "baseline": {
+        "trees": 130,
+        "queries": 193,
+        "sampled_positions": 193,
+        "median_ms": 54.823355500000005
+      },
+      "upstream": {
+        "trees": 129,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 1.751458
+      },
+      "speedup": 31.30155304894551
+    },
+    {
+      "case": "fulgora-native",
+      "comparisons": 4,
+      "changed_forests": 0,
+      "changed_species": 0,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 0,
+        "queries": 0,
+        "sampled_positions": 0,
+        "median_ms": 4.2108435
+      },
+      "upstream": {
+        "trees": 0,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 5.2420755
+      },
+      "speedup": 0.8032779192134871
+    },
+    {
+      "case": "fulgora-grass",
+      "comparisons": 4,
+      "changed_forests": 0,
+      "changed_species": 0,
+      "removed_positions": 0,
+      "added_positions": 0,
+      "baseline": {
+        "trees": 131,
+        "queries": 192,
+        "sampled_positions": 192,
+        "median_ms": 39.198085500000005
+      },
+      "upstream": {
+        "trees": 131,
+        "queries": 4,
+        "sampled_positions": 64,
+        "median_ms": 1.5586335
+      },
+      "speedup": 25.149007447870204
+    }
+  ],
+  "totals": {
+    "comparisons": 40,
+    "changed_forests": 17,
+    "changed_species": 64,
+    "removed_positions": 124,
+    "added_positions": 124
+  },
+  "acceptance": {
+    "exact_forests": false,
+    "minimum_speedup": 1.2,
+    "productive_cases_meet_speedup": true,
+    "adopt": false
+  }
+}
