@@ -19,9 +19,16 @@ data:extend({{
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},{"nullius-mechanical-pack",4},
   }}, order="nullius-dg-polymer-doping",
 }, {
+  type="technology", name="nullius-fiber-reinforced-polymers",
+  icon="__base__/graphics/technology/plastics.png", icon_size=256,
+  prerequisites={"nullius-primitive-filtration","nullius-weaving-2"},
+  effects={}, unit={count=10,time=30,ingredients={
+    {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},{"nullius-mechanical-pack",4},
+  }}, order="nullius-dg-fiber-reinforced-polymers",
+}, {
   type="technology", name="nullius-bulk-polymer-processing",
   icon="__base__/graphics/technology/plastics.png", icon_size=256,
-  prerequisites={"nullius-mass-production-4","nullius-improved-polymer-doping"},
+  prerequisites={"nullius-mass-production-4","nullius-improved-polymer-doping","nullius-fiber-reinforced-polymers"},
   effects={}, unit={count=10,time=45,ingredients={
     {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
   }}, order="nullius-dg-bulk-polymer-processing",

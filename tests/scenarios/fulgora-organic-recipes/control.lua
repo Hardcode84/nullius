@@ -46,6 +46,24 @@ script.on_nth_tick(1,function()
     local bulk_tech=prototypes.technology['nullius-bulk-polymer-processing']
     check(bulk_tech.prerequisites['nullius-mass-production-4']~=nil,'bulk requires mass production')
     check(bulk_tech.prerequisites['nullius-improved-polymer-doping']~=nil,'bulk requires doping')
+    check(bulk_tech.prerequisites['nullius-fiber-reinforced-polymers']~=nil,'bulk requires reinforced polymers')
+    local fiber=force.technologies['nullius-fiber-reinforced-polymers']
+    check(fiber.prerequisites['nullius-weaving-2']~=nil,'fiber research requires weaving')
+    check(fiber.prerequisites['nullius-primitive-filtration']~=nil,'fiber research requires Fulgora access')
+    local em=false
+    for _,pack in pairs(fiber.research_unit_ingredients) do
+      if pack.name=='nullius-electromagnetic-pack' then em=true end
+    end
+    check(em,'fiber research requires EM science')
+    force.technologies['nullius-weaving-2'].researched=true
+    for _,name in ipairs({'nullius-reinforced-polymer-gear','nullius-fiber-cable'}) do
+      check(not force.recipes[name].enabled,'weaving unlocked Fulgora substitute '..name)
+    end
+    fiber.researched=true
+    for _,name in ipairs({'nullius-reinforced-polymer-gear','nullius-fiber-cable'}) do
+      check(force.recipes[name].enabled,'fiber research missing unlock '..name)
+      check(not force.recipes[name:gsub('^nullius%-','nullius-boxed-')].enabled,'fiber research unlocked bulk '..name)
+    end
     force.technologies['nullius-mass-production-4'].researched=true
     for i,spec in ipairs(specs) do
       check(not force.recipes[spec.name:gsub('^nullius%-','nullius-boxed-')].enabled,'mass production bypass '..spec.name)
