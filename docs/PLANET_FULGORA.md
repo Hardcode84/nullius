@@ -396,7 +396,7 @@ Storage does not remove a continuous surplus.
 | Gas vents | Hydrogen, oxygen, nitrogen, air, argon, helium, CO, CO2, SO2, methane, ammonia, steam, residual gas, trace gas, volcanic gas, and deuterium; compressed vents exist for several gases |
 | Chlorine, HCl, ethylene, propene, benzene | No direct chimney recipe |
 | HCl + caustic solution | Brine; boil brine to salt + ventable steam |
-| Caustic solution + CO₂ | Caustic carbonation in a chemical plant produces wastewater for reinjection; Primitive Filtration unlocks this route before landing |
+| Caustic solution + CO₂ | Caustic carbonation in a chemical plant produces wastewater for reinjection; Inorganic Chemistry 1 unlocks this route |
 | Wastewater filtration | Saline + sludge; boiling saline produces steam + brine |
 | Wastewater boiling | Steam + sludge; does not remove the sludge problem |
 | Sludge dehydration | Mineral dust + steam + CO; requires high-pressure chemistry 2 and physics science |

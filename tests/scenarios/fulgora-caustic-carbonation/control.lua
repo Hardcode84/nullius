@@ -1,6 +1,6 @@
 -- given: 100 caustic solution, 50 carbon dioxide, and 900 kW debug electric power.
 -- place/connect: a starter chemical plant and substation on Fulgora island ground.
--- act: research Primitive Filtration and process one finite batch.
+-- act: research Inorganic Chemistry 1 and process one finite batch.
 -- run: 600 ticks.
 -- expect: wastewater only, no productivity, and net alkali loss in bootstrap recycling.
 local count=0
@@ -25,11 +25,15 @@ script.on_nth_tick(1,function()
   for x=-12,12 do for y=-12,12 do tiles[#tiles+1]={name='fulgoran-rock',position={x,y}} end end
   surface.set_tiles(tiles,true)
   local force=game.forces.player
-  check(not force.recipes[name].enabled,'carbonation unlocked before filtration')
+  check(not force.recipes[name].enabled,'carbonation unlocked before research')
   force.technologies['nullius-primitive-filtration'].researched=true
-  check(force.recipes[name].enabled,'filtration must unlock carbonation')
+  check(not force.recipes[name].enabled,'primitive filtration must not unlock carbonation')
+  force.technologies['nullius-primitive-filtration'].researched=false
+  force.technologies['nullius-inorganic-chemistry-1'].researched=true
+  check(force.recipes[name].enabled,'inorganic chemistry must unlock carbonation')
   check(not force.technologies['nullius-waste-reclamation'].researched,'bootstrap needs waste reclamation')
   local recipe=prototypes.recipe[name]
+  check(not recipe.surface_conditions or #recipe.surface_conditions==0,'carbonation restricted to a planet')
   check(not recipe.allowed_effects.productivity,'carbonation allows productivity')
   check(#recipe.products==1 and recipe.products[1].name=='nullius-wastewater','unexpected carbonation product')
   check(not prototypes.recipe['nullius-boxed-caustic-carbonation'],'fluid-only recipe has a boxed variant')

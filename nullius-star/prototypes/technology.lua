@@ -650,6 +650,10 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-hydrogen-chloride-neutralization"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-caustic-carbonation"
       }
     },
     unit = {

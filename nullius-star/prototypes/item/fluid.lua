@@ -1551,6 +1551,27 @@ extend_fluid_prototypes({
   },
   {
     type = "recipe",
+    name = "nullius-caustic-carbonation",
+    localised_name = {"recipe-name.nullius-caustic-carbonation"},
+    icons = angelsLegacy.functions.create_liquid_fluid_icon(
+      {FLUIDPATH .. "sodium-hydroxide.png", 64, nil, 0.18},
+      {element_tint["sodium"], element_tint["oxygen"], element_tint["hydrogen"]}
+    ),
+    enabled = false,
+    categories = {"basic-chemistry"},
+    subgroup = "inorganic-chemistry",
+    order = "nullius-cb-carbonation",
+    energy_required = 4,
+    allow_productivity = false,
+    no_productivity = true,
+    ingredients = {
+      {type="fluid", name="nullius-caustic-solution", amount=100},
+      {type="fluid", name="nullius-carbon-dioxide", amount=50}
+    },
+    results = {{type="fluid", name="nullius-wastewater", amount=80}}
+  },
+  {
+    type = "recipe",
     name = "nullius-hydrochloric-neutralization",
     localised_name = {"recipe-name.nullius-hydrochloric-neutralization"},
     show_amount_in_title = false,
