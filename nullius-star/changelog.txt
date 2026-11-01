@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+Date: 01.11.2026
+  Features:
+    - Expanded Fulgora polymer production, climate science, and waste reclamation.
+    - Added battery grid meters and Fulgora tips and tricks.
+  Upstream changes:
+    - Added larger storage tanks, lab circuit connections, and more building upgrades.
+    - Updated solar thermal power, fuels, and tree planting.
+    - Compressors and large furnaces can now be flipped.
+    - Drone launchers now hold one drone type.
+    - Improved equipment refuelling and recovery of spent batteries and canisters.
+  Bugfixes:
+    - Fixed missing bulk recipes and incorrect research unlocks.
+  Compatibility:
+    - Loading older saves removes drones from the deleted launcher slots.
+    - Quality is now marked as incompatible.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.5
 Date: 23.10.2026
   Features:
