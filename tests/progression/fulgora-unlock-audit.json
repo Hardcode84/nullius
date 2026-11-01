@@ -110,13 +110,17 @@
       "name": "nullius-composite-beam",
       "classification": "Fulgora reward",
       "requires": [
-        "nullius-primitive-filtration"
+        "nullius-composite-construction",
+        "nullius-composites-2",
+        "nullius-bulk-polymer-processing"
       ]
     },
     {
       "name": "nullius-boxed-composite-beam",
       "classification": "bulk Fulgora reward",
       "requires": [
+        "nullius-composite-construction",
+        "nullius-composites-2",
         "nullius-bulk-polymer-processing"
       ],
       "ordinary": "nullius-composite-beam"

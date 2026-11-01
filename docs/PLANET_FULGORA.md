@@ -791,10 +791,13 @@ wire, and local iron chlorination. Fulgora does not need Pneumatic Technology
 for this route. These recipes can run on any planet after research.
 
 Fiber-reinforced Polymers unlocks reinforced polymer gears and fiber cables. It
-requires Primitive Filtration, Weaving 2, and electromagnetic science. Composites 2 unlocks
-composite beams. Bulk Polymer Processing follows Mass Production 4, Improved
-Polymer Doping, and Fiber-reinforced Polymers. It uses electromagnetic science and unlocks all bulk variants,
-including wire and chemical iron chlorination. Input research still controls
+requires Primitive Filtration, Weaving 2, and electromagnetic science.
+Bulk Polymer Processing follows Mass Production 4, Improved Polymer Doping,
+and Fiber-reinforced Polymers. It uses electromagnetic science and unlocks the
+bulk gears, cables, wire, and chemical iron chlorination.
+Composite Construction follows Composites 2 and Bulk Polymer Processing. It
+uses electromagnetic and physics science and unlocks ordinary and boxed composite
+beams. Input research still controls
 when each bulk recipe can run. Iron chloride
 has no box item; bulk recipes use loose iron chloride.
 

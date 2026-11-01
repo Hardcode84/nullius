@@ -47,6 +47,29 @@ script.on_nth_tick(1,function()
     check(bulk_tech.prerequisites['nullius-mass-production-4']~=nil,'bulk requires mass production')
     check(bulk_tech.prerequisites['nullius-improved-polymer-doping']~=nil,'bulk requires doping')
     check(bulk_tech.prerequisites['nullius-fiber-reinforced-polymers']~=nil,'bulk requires reinforced polymers')
+    local composite=force.technologies['nullius-composite-construction']
+    check(composite.prerequisites['nullius-composites-2']~=nil,'composite construction requires carbon composite')
+    check(composite.prerequisites['nullius-bulk-polymer-processing']~=nil,'composite construction requires Fulgora bulk research')
+    local beam_force=game.create_force(force.name..'-beam-unlocks')
+    beam_force.technologies['nullius-composites-2'].researched=true
+    beam_force.technologies['nullius-bulk-polymer-processing'].researched=true
+    for _,name in ipairs({'nullius-composite-beam','nullius-boxed-composite-beam'}) do
+      check(not beam_force.recipes[name].enabled,'beam recipe bypasses composite construction '..name)
+    end
+    beam_force.technologies['nullius-composite-construction'].researched=true
+    for _,name in ipairs({'nullius-composite-beam','nullius-boxed-composite-beam'}) do
+      check(beam_force.recipes[name].enabled,'composite construction missing unlock '..name)
+    end
+    local visited={}
+    local function prephysics(technology)
+      if visited[technology.name] then return end
+      visited[technology.name]=true
+      for _,pack in pairs(technology.research_unit_ingredients) do
+        check(pack.name~='nullius-physics-pack','early bulk polymers require physics: '..technology.name)
+      end
+      for _,prerequisite in pairs(technology.prerequisites) do prephysics(prerequisite) end
+    end
+    prephysics(force.technologies['nullius-bulk-polymer-processing'])
     local fiber=force.technologies['nullius-fiber-reinforced-polymers']
     check(fiber.prerequisites['nullius-weaving-2']~=nil,'fiber research requires weaving')
     check(fiber.prerequisites['nullius-primitive-filtration']~=nil,'fiber research requires Fulgora access')
@@ -78,7 +101,7 @@ script.on_nth_tick(1,function()
       end
       for _,boxed in ipairs({false,true}) do
         local name=boxed and spec.name:gsub('^nullius%-','nullius-boxed-') or spec.name
-        local tech=boxed and 'nullius-bulk-polymer-processing' or spec.technology
+        local tech=boxed and (spec.boxed_technology or 'nullius-bulk-polymer-processing') or spec.technology
         force.technologies[tech].researched=false
         check(not force.recipes[name].enabled,'early unlock '..name)
         force.technologies[tech].researched=true
