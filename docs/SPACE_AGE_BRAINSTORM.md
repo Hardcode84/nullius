@@ -619,7 +619,7 @@ The player cannot jump straight to The Solution. A series of intermediate techno
 
 | Technology | Description | Effect | Actual Name |
 |---|---|---|---|
-| **"Defensive Orbital Repositioning"** | Redirect asteroid mining platforms to intercept incoming raid ships | Reduces raid frequency by ~20% | Point-defense space platform |
+| **"Defensive Orbital Repositioning"** | Redirect space platforms to intercept incoming raid ships | Reduces raid frequency by ~20% | Point-defense space platform |
 | **"Offensive Use of Geoengineering Tools"** | Fulgora's nuclear geoengineering charges repurposed. MIRV-equipped space platform. | Significantly reduces raid strength. Can destroy raid ships in transit. | Nuclear-armed orbital bombardment platform |
 | **"Proactive Diplomatic Communication"** | Extremely high-power signal broadcast aimed at Rogue, attempting to negotiate. | Delays next raid wave. Rogue responds with increased hostility after each attempt. | Screaming into the void |
 | **"Biological Containment Protocols"** | Gleba-bred organisms deployed as orbital minefields around player planets | Raid ships take attrition damage on approach | Living space mines |
@@ -880,11 +880,99 @@ ROGUE (endgame antagonist --> shattered debris):
 
 ### 4.4 Space Platforms
 
-Space platforms in Nullius context could be:
-- **Orbital assembly stations** for asteroid mining (replaces current abstract asteroid mechanic)
-- **Transit hubs** with hydrogen/oxygen life support (Nullius already has these fluids)
-- **Solar power collection** above atmosphere (no wind, but constant solar at higher output)
-- **Zero-gravity manufacturing** for specific recipes (nanotechnology in microgravity?)
+Design only. Platforms carry cargo, correlate astronomy, and host microgravity
+processes. They do not process asteroids, so every material comes from planets.
+The android needs no life support or habitat.
+
+```yaml
+current_state:
+  platform_prototypes: vanilla foundation, starter pack, thruster, cargo bay, collector, crusher
+  unlocks: vanilla rocket-silo and space-platform technologies; unreachable
+  vanilla_foundation: 20 steel + 20 copper cable
+  connections: Nauvis-Vulcanus and Nauvis-Fulgora, 15,000 km each, no asteroid spawns
+  vulcanus_fulgora_connection: none
+  solar_power_in_space: Vulcanus 600, Nauvis 300, Fulgora 120
+  vacuum_placement: Nullius buildings have no pressure or gravity conditions
+  platform_ambient_temperature: default 25
+constraints:
+  first_platform: Nauvis materials only; it launches before any cargo exists
+  copper: none in tier-1 platform recipes
+  asteroid_processing: collector and crusher recipes hidden
+```
+
+#### Components
+
+| Component | Nullius role | Draft inputs |
+|---|---|---|
+| Foundation | One foundation item; aluminum truss recipe | Aluminum sheet + aluminum rod + insulation |
+| Foundation, titanium recipe | Same foundation item; composite truss recipe under the titanium contract | Titanium sheet + carbon composite + polymer film |
+| Platform core | Starter kit: hub and android relay node | Foundation + sensor node + grid battery + processors |
+| Cargo bay | Hold | Aluminum sheet + carbon composite + structural beam |
+| Thruster | Vanilla two-fluid thruster | Heat-resistant metal + titanium + motor |
+| Propellant conditioning | Platform recipes unpack shipped canisters | Fuel from hydrogen, methane, or carbon monoxide; oxidizer from oxygen or nitrous oxide |
+| Power | Solar panels and grid batteries | Existing items |
+| Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
+| Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
+| Waste | Chimneys and voids work in vacuum | Existing |
+
+#### Titanium recipes
+
+Titanium alternatives for platform foundations, thrusters, cargo bays, platform
+cores, and rockets produce the same items as the default recipes. They improve
+input cost and crafting time only; item weight and entity health are unchanged.
+
+| Titanium source | Required planner result |
+|---|---|
+| Vulcanus rutile or titanium | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
+| Nauvis synthetic rutile | Total raw cost no lower than the default recipe, so the default stays the pre-cargo route |
+
+#### Vacuum placement
+
+| Buildings | Rule |
+|---|---|
+| Wind turbines, air filters, extractors, wells, offshore pumps | Pressure above 0 |
+| Pneumatic and gas-powered machines | Pressure above 0 |
+| Electric assemblers, chemistry, electrolysis, labs | Permitted |
+| Chimneys and voids | Permitted |
+| Hot Vulcanus processes | Excluded by the default ambient temperature of 25 |
+
+#### Microgravity processing
+
+Recipes require gravity 0. Gravity is fixed per surface, so selection-time
+surface-condition checks enforce it.
+
+| Recipe | Product |
+|---|---|
+| Float-zone crystal growth | Higher monocrystalline silicon yield |
+| ZBLAN fiber drawing | Improved optical cable |
+| Protein crystallography | Cheaper genome recipes |
+
+#### Asteroid hazards
+
+| Route | Hazard |
+|---|---|
+| Nauvis-Vulcanus | Dust |
+| Nauvis-Fulgora | Medium; Fulgora's magnetosphere captures debris |
+| Debris prototypes | `nullius-debris-*`; destruction splits them into smaller debris and drops no chunks |
+
+#### Progression
+
+| Research | Unlocks | Gate |
+|---|---|---|
+| Orbital construction | Platform core, aluminum foundation recipe, cargo bay, platform solar | Rocket Science 2; Nauvis orbit |
+| Orbital propulsion | Thruster, propellant conditioning | Travel to Vulcanus and Fulgora |
+| Debris mitigation | Bumper, trajectory adjuster | Medium-hazard routes |
+| Composite structures | Titanium foundation recipe | Vulcanus titanium and Fulgora polymers |
+| Microgravity processing | Microgravity recipes | Orbital propulsion |
+
+#### Engine checks before implementation
+
+| Check | Decides |
+|---|---|
+| Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
+| Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
+| Item weights for the foundation, canisters, and rocket fuel | Launches per platform and propellant per trip; needs an analyzer weight mode |
+| Space-platform surface properties | Vacuum placement conditions |
 
 ### 4.5 Astronomy: Interplanetary Interferometry
 
@@ -927,6 +1015,18 @@ array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 | `nullius-blank-recording-module` | Dish input; crafted locally on every array planet |
 | Spoilage | Recording spoils to a blank module. Spoil time is 1.5 times the longest one-way transit between array planets, from the cargo design |
 | Correlator | Any surface, including platforms; returns every consumed blank module |
+
+Correlator location is a player choice. Single-planet correlation runs on the
+ground before platforms exist. For k planets with labs on home planet H, one
+correlation cycle launches:
+
+| Location | Recordings launched | Blank media returned | Total launched sets |
+|---|---|---|---|
+| Ground correlator on H | k - 1 | H reuses 1 set; k - 1 sets are launched back | 2(k - 1): 4 for 3 planets, 8 for 5 |
+| Platform correlator | k | Dropped to each array planet | k: 3 for 3 planets, 5 for 5 |
+
+Platforms win from three planets because drops are free. Correlator power on a
+platform comes from orbital solar: Vulcanus 600, Nauvis 300, Fulgora 120.
 
 #### Correlation ladder
 

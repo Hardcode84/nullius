@@ -143,7 +143,7 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Current Tier 5 | SA Tier 5 |
 |---|---|
 | Nuclear power 1-4 (all on Nauvis) | Nuclear power 1-2 on Nauvis, 3-4 benefit from Aquilo |
-| Asteroid mining (abstract, Nauvis) | Asteroid mining moved to space platform / Rogue aftermath; excludes copper |
+| Asteroid mining (abstract, Nauvis) | Removed; platforms do not process asteroids. See [Space platforms](SPACE_AGE_BRAINSTORM.md#44-space-platforms) |
 | Copper from asteroids | Import copper from Fulgora, its sole primary source; see [Fulgora design](PLANET_FULGORA.md#late-game-copper) |
 | Rocket science (Nauvis) | Rocket science enables cargo rockets (cross-planet logistics) |
 | Physics pack (complex machines) | Physics pack stays on Nauvis |
@@ -235,7 +235,6 @@ Once cargo rockets are available, Nauvis exports:
 ## 6. Open Questions (Nauvis-specific)
 
 - Should existing Nullius biology packs remain fully producible on Nauvis, or should advanced bio-packs (dendrology, zoology, evolution) require Gleba inputs?
-- Should Nauvis asteroid mining be removed/relocated to space platforms, or kept as a parallel path?
 - Should the oxygen mission remain Nauvis-only, or extend to terraforming other planets?
 - How does the Rogue scout spawning interact with Nauvis's existing minimal-combat design?
 - Should probe reactivation require a physical item (transmitter building) or just be a tech unlock?
