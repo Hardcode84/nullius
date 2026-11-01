@@ -32,7 +32,8 @@
     "construction": "All process placement items are produced. Continuous fractional construction flow is not a startup schedule. Rutile and graphite seed stock is declared separately.",
     "comparison": "Same post-pneumatic research entrance as the Vulcanus comparison. Comparable first/second-tier processing machines. All pre-physics recipes are eligible. No modules or beacons. Guaranteed outputs only.",
     "waste": "Only listed solid waste is removed. Fluid disposal uses real recipes.",
-    "time": "All science lines and labs are available at time zero. Research triggers are assumed satisfied. Times exclude construction, checkpoints and exploration."
+    "time": "All science lines and labs are available at time zero. Research triggers are assumed satisfied. Times exclude construction, checkpoints and exploration.",
+    "research_access": "Exclude research requiring science that cannot be produced locally, and all dependent research. No imported planetary science."
   },
   "stages": [
     {
@@ -222,5 +223,9 @@
       "first-physics"
     ]
   },
-  "electric_grid": true
+  "electric_grid": true,
+  "unavailable_science": [
+    "nullius-electromagnetic-pack",
+    "nullius-metallurgic-pack"
+  ]
 }

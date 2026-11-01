@@ -184,17 +184,40 @@ def heat_output(data, machine, seconds, contract):
     return min(generated_watts, transfer) * seconds / 1e6
 
 
+def available_technologies(data, boundary):
+    """Return research that does not require a declared unavailable science pack."""
+    technologies = set(boundary["technologies"])
+    if boundary.get("allow_all_pre_physics"):
+        technologies = pre_physics_technologies(data["technology"])
+    else:
+        technologies = prereqs.technology_closure(data["technology"], technologies)
+    unavailable = set(boundary.get("unavailable_science", []))
+    science = {ingredient[0] for technology in data["technology"].values()
+               for ingredient in technology.get("unit", {}).get("ingredients", [])}
+    if unavailable - science:
+        raise TestFailure("unknown unavailable science: " + ", ".join(sorted(unavailable - science)))
+    blocked = {name for name, technology in data["technology"].items()
+               if any(ingredient[0] in unavailable
+                      for ingredient in technology.get("unit", {}).get("ingredients", []))}
+    while True:
+        descendants = {name for name, technology in data["technology"].items()
+                       if set(technology.get("prerequisites", [])) & blocked}
+        if descendants <= blocked:
+            break
+        blocked.update(descendants)
+    if set(boundary["technologies"]) & blocked:
+        raise TestFailure("requested research requires unavailable science: " +
+                          ", ".join(sorted(set(boundary["technologies"]) & blocked)))
+    return technologies - blocked
+
+
 def recipe_catalog(data, boundary):
     """Compile the cold planning path; never add hand-crafting executors."""
     excluded_names = set(boundary.get("excluded_recipes", []))
     unknown = excluded_names - data["recipe"].keys()
     if unknown:
         raise TestFailure("unknown excluded recipes: " + ", ".join(sorted(unknown)))
-    technologies = set(boundary["technologies"])
-    if boundary.get("allow_all_pre_physics"):
-        technologies = pre_physics_technologies(data["technology"])
-    else:
-        technologies = prereqs.technology_closure(data["technology"], technologies)
+    technologies = available_technologies(data, boundary)
     unlocked = {effect["recipe"] for name in technologies
                 for effect in data["technology"][name].get("effects", [])
                 if effect.get("type") == "unlock-recipe"}
@@ -479,6 +502,7 @@ def boundary_from_config(data, config, stage):
     # Explicit machine catalog; every hand category must have a real executor.
     return {"technologies": stage.get("technologies", args.technology),
             "allow_all_pre_physics": stage.get("allow_all_pre_physics", False),
+            "unavailable_science": stage.get("unavailable_science", config.get("unavailable_science", [])),
             "surface": prereqs.resolve_surface(data, stage.get("surface", dict(args.surface_property))),
             "fuel": config["fuel"], "machines": sorted(stage.get("machines", machines)),
             "electric_grid": config.get("electric_grid", False),

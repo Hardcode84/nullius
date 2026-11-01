@@ -8,6 +8,7 @@ example. The schema version is `1`.
 | `science_rates_per_minute` | Positive production rates to compare. |
 | `fuel`, `lab` | Exact fluid fuel and lab prototype names. |
 | `entrance_technologies` | Research already completed at the start. |
+| `unavailable_science` | Exclude research that consumes these packs and all its dependent research. A stage can override this list. |
 | `raw` | Explicit external material supplies. |
 | `extractors` | Product to resource, machine, and resource yield fraction. |
 | `prime_stock` | Finite starting material, separate from continuous supply. |
@@ -100,6 +101,23 @@ outputs. It does not connect the full material or heat network. Use a connected
 campaign scenario to measure factory throughput and elapsed progression time.
 
 ## Compare production paths
+
+For local planetary industry, run each `industry-PLANET.json` configuration in
+`tests/progression/planner`. Save each report as `industry-PLANET.json` in one
+directory. These profiles exclude unavailable planetary science and use each
+planet's disposal rules, including solid disposal into lava on Vulcanus.
+Compare the reports with:
+
+```bash
+python tools/compare_factorio_industry.py \
+  --config tests/progression/planner/planet-industry-comparison.json \
+  --plan-directory /tmp --output /tmp/industry-comparison.json
+```
+
+Counts include labs and extraction. Each planet supplies the six common science
+packs; Vulcanus also supplies metallurgic science and Fulgora supplies EM science
+at the same rate. These are production-capacity comparisons, not equal research
+budgets or elapsed campaign times.
 
 ```bash
 python tools/plan_factorio_factory.py \

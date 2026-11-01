@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory,
+from plan_factorio_factory import (TestFailure, amount, solve_flow, size_factory, available_technologies,
                                   startup_reachability, fluid_ports_fit, read_heat_contract,
                                   research_schedule, validate_config, recipe_catalog, material_consumption, research_supply_hours, analyze_science_scale, write_executor_fixture, update_markdown_section)
 
@@ -18,6 +18,25 @@ def recipe(name, flows, seconds=1, inputs=None, **kwargs):
 
 
 class FactoryPlannerTest(unittest.TestCase):
+    def test_unavailable_science_excludes_dependent_research(self):
+        data = {"technology": {
+            "local": {"unit": {"ingredients": [["basic", 1]]}},
+            "foreign": {"unit": {"ingredients": [["em", 1]]}},
+            "child": {"prerequisites": ["foreign"]},
+            "grandchild": {"prerequisites": ["child", "local"]},
+        }}
+        boundary = {"technologies": ["local"], "allow_all_pre_physics": True,
+                    "unavailable_science": ["em"]}
+        self.assertEqual(available_technologies(data, boundary), {"local"})
+        boundary["unavailable_science"] = []
+        self.assertEqual(available_technologies(data, boundary), set(data["technology"]))
+        boundary["unavailable_science"] = ["typo"]
+        with self.assertRaisesRegex(TestFailure, "unknown unavailable science"):
+            available_technologies(data, boundary)
+        boundary.update(technologies=["grandchild"], unavailable_science=["em"])
+        with self.assertRaisesRegex(TestFailure, "requested research requires unavailable science"):
+            available_technologies(data, boundary)
+
     def test_doc_update_preserves_other_sections_and_rejects_missing_markers(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "planet.md"

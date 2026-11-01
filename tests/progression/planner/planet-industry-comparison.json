@@ -1,0 +1,10 @@
+{
+  "stage": "first-physics",
+  "rates": [60, 120, 240],
+  "reference": "Nauvis",
+  "plans": {
+    "Nauvis": "industry-nauvis.json",
+    "Vulcanus": "industry-vulcanus.json",
+    "Fulgora": "industry-fulgora.json"
+  }
+}

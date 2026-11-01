@@ -37,7 +37,8 @@
     "capacity": "All pre-physics research available for route selection. Continuous external grid; generation, storage, distribution and logistics excluded. No modules, beacons or research productivity.",
     "time": "Research costs subtract Primitive Filtration closure. All lines online at time zero; triggers assumed met. Not elapsed player progression.",
     "construction": "Starter process fleet supplied; other process machines must be constructed. Continuous flow is not a finite startup schedule.",
-    "minerals": "Only crude filtration uses mean independent mineral yields. Not deterministic startup or an expected completion time."
+    "minerals": "Only crude filtration uses mean independent mineral yields. Not deterministic startup or an expected completion time.",
+    "research_access": "Exclude research requiring science that cannot be produced locally, and all dependent research. No imported planetary science."
   },
   "stages": [
     {
@@ -377,5 +378,8 @@
       "physics-with-supplied-boric-acid",
       "physics-overcharged-2"
     ]
-  }
+  },
+  "unavailable_science": [
+    "nullius-metallurgic-pack"
+  ]
 }

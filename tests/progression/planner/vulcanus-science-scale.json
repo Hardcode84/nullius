@@ -49,7 +49,8 @@
     "construction": "Compute placement-item demand beyond wreck stock and its production flow. Supplied machine catalog is not a timed startup sequence.",
     "time": "Base research supply bound at the configured simultaneous pack rates, not human construction time. Checkpoints are separate.",
     "labs": "Size speed-1 pneumatic labs for the fastest supplied research cycle. Reserve full-load lab fuel in the flow; do not credit lab waste heat.",
-    "standalone": "Starter and industrial single-pack rows are independent full supply networks without labs; shared factory co-products can change these costs. Industrial rows allow all pre-physics recipes and the declared second-tier machine catalog."
+    "standalone": "Starter and industrial single-pack rows are independent full supply networks without labs; shared factory co-products can change these costs. Industrial rows allow all pre-physics recipes and the declared second-tier machine catalog.",
+    "research_access": "Exclude research requiring science that cannot be produced locally, and all dependent research. No imported planetary science."
   },
   "stages": [
     {
@@ -250,5 +251,8 @@
     "factory_stages": [
       "first-physics"
     ]
-  }
+  },
+  "unavailable_science": [
+    "nullius-electromagnetic-pack"
+  ]
 }
