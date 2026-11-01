@@ -7,10 +7,23 @@ import zipfile
 from unittest.mock import patch
 
 from tools.build_release import (build_archive, read_metadata, run_progression_contracts,
-                                 run_bootstrap_checks, TestFailure)
+                                 run_bootstrap_checks, prepare_release_mods, TestFailure)
 
 
 class ReleaseBuilderTests(unittest.TestCase):
+    def test_release_disables_quality_but_historical_fixtures_enable_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            archive = root / "nullius-star_0.0.6.zip"
+            archive.touch()
+            with patch("tools.build_release.DEPENDENCY_MODS", []):
+                for historical in (False, True):
+                    mods = root / str(historical)
+                    prepare_release_mods(mods, root, archive, historical_quality=historical)
+                    entries = json.loads((mods / "mod-list.json").read_text())["mods"]
+                    self.assertEqual([row for row in entries if row["name"] == "quality"],
+                                     [{"name": "quality", "enabled": historical}])
+
     def test_progression_runs_declared_contracts_only(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

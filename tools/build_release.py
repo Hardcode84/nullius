@@ -212,7 +212,8 @@ def build_archive(output_directory: Path, metadata: dict[str, object]) -> Path:
     return destination
 
 
-def prepare_release_mods(mods: Path, dependencies: Path, release_archive: Path) -> None:
+def prepare_release_mods(mods: Path, dependencies: Path, release_archive: Path,
+                         *, historical_quality: bool = False) -> None:
     mods.mkdir(parents=True)
     enabled = list(BUILTIN_MODS)
     for dependency in DEPENDENCY_MODS:
@@ -223,7 +224,8 @@ def prepare_release_mods(mods: Path, dependencies: Path, release_archive: Path) 
     enabled.append("nullius-star")
     (mods / "mod-list.json").write_text(
         json.dumps(
-            {"mods": [{"name": name, "enabled": True} for name in enabled]},
+            {"mods": [{"name": name, "enabled": True} for name in enabled] +
+             [{"name": "quality", "enabled": historical_quality}]},
             indent=2,
         )
         + "\n",
@@ -430,6 +432,7 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
                for version in ("0.0.1", "0.0.2", "0.0.3")]
     upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.4",
                                  args.upgrade_factorio_2_1, dependencies))
+    upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.5"))
     return {
         "bootstrap": bootstrap,
         "upgrade": upgrade,

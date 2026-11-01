@@ -40,7 +40,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         origin_config = prepare_config(origin, previous_factorio)
         config = prepare_config(target, factorio)
         mods = origin / "mods"
-        prepare_release_mods(mods, previous_dependencies, candidate)
+        prepare_release_mods(mods, previous_dependencies, candidate, historical_quality=True)
         (mods / candidate.name).unlink()
         target_mods = target / "mods"
         prepare_release_mods(target_mods, dependencies, candidate)
