@@ -219,8 +219,10 @@ motors, filters, pumps, belts, logistics, vehicles, electrical components, and
 their boxed production families. Resolved prerequisite contracts define the
 current closure; this document does not duplicate their ingredient lists.
 
-Rocket fuel remains a post-cargo polymer consumer rather than a local
-pre-cargo requirement.
+Rocket fuel: design only. Vulcanus launch fuel burns aluminum powder in
+compressed atmospheric CO2 and needs no polymer, water, or organic input. The
+route compensates for low propellant performance with large input amounts per
+fuel unit. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#46-launch-fuel).
 
 Thermite cliff explosives replace the ordinary organic explosive route. They
 tie aluminum powder to barreled chlorine and sulfur chemistry; unstable

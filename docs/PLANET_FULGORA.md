@@ -814,6 +814,7 @@ capacity and the organic recovery audit for downstream metal outputs.
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
 | Radio astronomy | Interferometric recordings for astronomy correlation; see below |
+| Rocket fuel | Plasma-fixed ammonium nitrate composite; see below |
 
 ### Radio astronomy
 
@@ -827,6 +828,49 @@ Design only. The shared design is
 | Interference | `min(1, nullius-storm-intensity / 100)`: 0.25 by day, 1 by night |
 | Controller | Amortized error-diffusion duty cycle through `disabled_by_script`; 443 buckets |
 | Lightning | Native frequency multiplied by `nullius-storm-intensity / 100`; day and night multipliers become 1 |
+
+### Rocket fuel
+
+Design only. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#46-launch-fuel).
+Storm surplus fixes atmospheric nitrogen as the oxidizer.
+
+| Step | Machine | Draft recipe |
+|---|---|---|
+| Plasma nitrogen fixation | Overcharged medium or large assembler, `nullius-electromagnetism-1` | 10 nitrogen + 20 water -> 1 ammonium nitrate, 4 s; N2 + 2 H2O -> NH4NO3, no byproduct |
+| Composite casting | Ordinary assembler; productivity disabled | Ammonium nitrate + rubber + aluminum powder -> rocket fuel |
+
+| Rule | Value |
+|---|---|
+| Inputs | Nitrogen from air separation, water from ice melting, rubber from fountain chemistry, aluminum from sludge bauxite |
+| Fixation productivity | Built-in overcharged productivity is permitted; fuel aluminum comes only from casting |
+| Casting aluminum | At least the no-mint minimum per fuel; see the shared alumina rule |
+| Small assemblers | Excluded: no fluid boxes |
+| Bulk fixation | Boxed recipe in medium or large overcharged assemblers |
+
+Energy per recipe-second, before built-in productivity:
+
+| Overcharged machine | Crafting speed | Power | MJ per recipe-second |
+|---|---:|---:|---:|
+| Medium 1 | 1 | 1.44 MW | 1.44 |
+| Medium 2 | 2 | 28.5 MW | 14.25 |
+| Large 1 | 4 | 65 MW | 16.25 |
+| Medium 3 | 4 | 670 MW | 167.5 |
+| Large 2 | 8 | 1.5 GW | 187.5 |
+
+Measured contract: `experiment-overcharged-fluids`, Factorio 2.1.24, 125 assertions.
+
+| Contract | Measurement |
+|---|---|
+| Two fluid inputs | Every medium and large overcharged tier finishes one craft of 10 nitrogen + 20 water and of 600 nitrogen + 1200 water, consuming both fluids |
+| Shipped recipe | Medium overcharged tier 1 finishes ordinary and boxed diesel canisters |
+| Fluid box capacity | Each input box holds 4 times its recipe amount, above the 500 prototype volume: 2400 nitrogen and 4800 water for the bulk case |
+| Power priority | Surge (`tertiary`) |
+| Built-in productivity | 0.2, 0.4, 0.6 by tier |
+| Small overcharged assemblers | No fluid boxes; `set_recipe` selects nothing and raises no error |
+
+```bash
+python tools/run_factorio_tests.py experiment-overcharged-fluids
+```
 
 ### Organic process optimization
 

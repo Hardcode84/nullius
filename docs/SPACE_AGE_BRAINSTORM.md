@@ -999,6 +999,40 @@ surface holds intensity 25; windows last 1200 ticks.
 python tools/run_factorio_tests.py experiment-storm-interference
 ```
 
+### 4.6 Launch Fuel
+
+Design only. Every exporting planet launches its own rockets, so each needs a
+local route to `rocket-fuel`. Platform thruster propellant is a separate design.
+
+```yaml
+current:
+  item: rocket-fuel; vehicle fuel 60 MJ; stack 20; burnt result nullius-alumina
+  recipe: >-
+    1 methanol canister + 400 ammonia + 200 HCl + 150 compressed oxygen + 5 salt
+    + 3 iron oxide + 35 aluminum powder + 14 rubber + 2 cliff explosives
+    -> 3 rocket fuel + 200 wastewater, 40 s, basic-chemistry
+  unlock: nullius-rocket-science-1
+  per_launch: nullius-rocket takes 50 boxed rocket fuel (250); the silo needs 1 rocket
+gravity_scaling: none
+```
+
+| Planet | Propellant | Local chain | Cost driver |
+|---|---|---|---|
+| Nauvis | Ammonium perchlorate composite (current recipe) | Unchanged | Ammonia and HCl volume |
+| Vulcanus | Aluminum burned in compressed atmospheric CO2 | Aluminum powder and CO2; no organics or water | Low performance: large input amounts per fuel unit |
+| Fulgora | Aluminized ammonium nitrate composite | Overcharged plasma fixation makes ammonium nitrate from nitrogen and water; rubber binder from fountain chemistry | Surge electricity |
+
+| Rule | Value |
+|---|---|
+| Item | One `rocket-fuel` item; each chemistry is an alternative recipe |
+| Planet restriction | None; local inputs decide which recipe a planet uses |
+| Alumina | Every recipe carries at least the aluminum recovered from 1 alumina per fuel, after all permitted productivity. The planner no-mint check sets the minimum |
+| Productivity | Disabled on fuel casting recipes |
+| Boxed parity | Each new route has a boxed bulk recipe, checked with resolved-prototype tools |
+
+Fulgora details: [Fulgora rocket fuel](PLANET_FULGORA.md#rocket-fuel). Vulcanus
+details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
+
 ---
 
 ## 5. Quality Mechanic
