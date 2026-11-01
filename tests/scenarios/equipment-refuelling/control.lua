@@ -1,5 +1,5 @@
 -- given: a real player, chassis 6, three mechas, generators, reactors, refuelers,
--- declared normal/rare fuel and spent items. No external fuel supply.
+-- declared normal fuel and spent items. No external fuel supply.
 -- act: run production refuelling, empty and refill inventories, remove equipment
 -- and mechas, then save/reload through a native configuration change.
 -- expect: five stored fuels, quality and item conservation, retained selections,
@@ -47,22 +47,21 @@ script.on_nth_tick(30,function()
     local grid=armor[1].grid
     equip(grid,"nullius-refueler")
     local generator=equip(grid,"nullius-portable-generator-1")
-    player.insert{name="processed-fuel",quality="rare",count=20}
+    player.insert{name="processed-fuel",quality="normal",count=20}
     call("player",player.index)
     call("update")
     check(generator.burner.inventory.is_empty(),"unselected generator remains empty")
-    generator.burner.inventory.insert{name="processed-fuel",quality="rare",count=2}
+    generator.burner.inventory.insert{name="processed-fuel",quality="normal",count=2}
     call("update")
-    check(count(generator.burner.inventory,"processed-fuel","rare")==5,"character fuel limit")
-    check(total(player,generator,"processed-fuel","rare")==22,"character fuel conservation")
-    check(count(generator.burner.inventory,"processed-fuel")==0,"fuel quality")
+    check(count(generator.burner.inventory,"processed-fuel","normal")==5,"character fuel limit")
+    check(total(player,generator,"processed-fuel","normal")==22,"character fuel conservation")
     return_fuel(player,generator)
     call("player",player.index)
     call("update")
-    check(count(generator.burner.inventory,"processed-fuel","rare")==5,"character remembers empty fuel after refresh")
-    generator.burner.burnt_result_inventory.insert{name="nullius-canister",quality="rare",count=2}
+    check(count(generator.burner.inventory,"processed-fuel","normal")==5,"character remembers empty fuel after refresh")
+    generator.burner.burnt_result_inventory.insert{name="nullius-canister",quality="normal",count=2}
     call("update")
-    check(count(player,"nullius-canister","rare")==2,"spent fuel quality")
+    check(count(player,"nullius-canister","normal")==2,"spent fuel quality")
     check(generator.burner.burnt_result_inventory.is_empty(),"spent fuel moved once")
     storage.player_generator=generator
     storage.player_total=24
@@ -86,12 +85,12 @@ script.on_nth_tick(30,function()
     return_fuel(row.entity,row.generator)
     row.generator.burner.inventory.insert{name="processed-fuel",count=2}
     row.entity.remove_item{name="processed-fuel",count=2}
-    row.entity.insert{name="processed-fuel",quality="rare",count=20}
-    row.generator.burner.inventory.insert{name="processed-fuel",quality="rare",count=1}
+    row.entity.insert{name="nullius-hydrogen-canister",quality="normal",count=20}
+    row.generator.burner.inventory.insert{name="nullius-hydrogen-canister",quality="normal",count=1}
     call("update")
-    check(row.generator.burner.inventory.get_item_count()==5,"mixed quality total cap")
-    check(total(row.entity,row.generator,"processed-fuel","normal")==22,"mixed normal conserved")
-    check(total(row.entity,row.generator,"processed-fuel","rare")==21,"mixed rare conserved")
+    check(row.generator.burner.inventory.get_item_count()==5,"mixed fuel total cap")
+    check(total(row.entity,row.generator,"processed-fuel","normal")==22,"methanol conserved")
+    check(total(row.entity,row.generator,"nullius-hydrogen-canister","normal")==21,"hydrogen conserved")
 
     local reactor=equip(row.entity.grid,"nullius-portable-reactor")
     reactor.burner.inventory.insert{name="nullius-fission-cell",count=8}
@@ -133,7 +132,7 @@ script.on_nth_tick(30,function()
     call("update")
     check(storage.reload_mech.generator.burner.inventory.get_item_count()<=5,"post-reload cap "..helpers.table_to_json{equipment=storage.reload_mech.generator.name,contents=storage.reload_mech.generator.burner.inventory.get_contents()})
     check(count(storage.reload_mech.generator.burner.inventory,"processed-fuel")>0,"legacy fuel memory restored")
-    check(total(player,storage.player_generator,"processed-fuel","rare")==storage.player_total,"reload preserves player fuel and quality")
+    check(total(player,storage.player_generator,"processed-fuel","normal")==storage.player_total,"reload preserves player fuel and quality")
     local last=storage.reload_mech
     last.entity.destroy();call("update")
     check(not call("tracked",last.unit),"last mecha removed")

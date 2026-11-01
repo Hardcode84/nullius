@@ -41,7 +41,8 @@ def validate_client_log(log: Path) -> None:
     from tools.run_factorio_tests import TestFailure, tail
 
     contents = log.read_text()
-    if "InGame" not in contents or "Desync" in contents or "Error " in contents:
+    if ("InGame" not in contents or "Desync" in contents or "Error " in contents
+            or "Connection refused" in contents):
         raise TestFailure(f"multiplayer client did not run cleanly: {log}\n{tail(log)}")
     if not any("Initialised OpenGL:" in line and "llvmpipe" in line
                for line in contents.splitlines()):
@@ -177,7 +178,8 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
                                 "data/server-settings.example.json").read_text())
     server_settings.update({
         "name": "Nullius scenario test", "visibility": {"public": False, "lan": False},
-        "require_user_verification": False, "auto_pause": False,
+        "require_user_verification": False, "auto_pause": True,
+        "auto_pause_when_players_connect": True,
         "autosave_interval": 0, "allow_commands": "true",
     })
     settings.write_text(json.dumps(server_settings))
@@ -232,7 +234,8 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
             for name, client in clients.items():
                 contents = client_logs[name].read_text()
                 if (client.poll() is not None or "Error " in contents or
-                        "Desync" in contents or "InitializationFailed" in contents):
+                        "Desync" in contents or "InitializationFailed" in contents
+                        or "Connection refused" in contents):
                     raise TestFailure(f"multiplayer client failed while {label}: {name}\n" +
                                       tail(client_logs[name]))
             if time.monotonic() >= deadline:

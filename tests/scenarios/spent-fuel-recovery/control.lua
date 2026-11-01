@@ -1,5 +1,5 @@
 -- given: production cars with declared half-consumed fuel, two unused fuel items,
--- and three spent items; normal and rare quality; debug power and fifty robots.
+-- and three spent items; normal quality; debug power and fifty robots.
 -- place/connect: cars, a storage chest, and a powered roboport on clear land.
 -- act: mine with the native player API or construction robots; kill other cars.
 -- run: allow 1800 ticks for robot collection.
@@ -42,7 +42,7 @@ script.on_nth_tick(1,function()
   local inventory=character.get_main_inventory()
   inventory.clear()
   storage.character=character
-  for _,quality in ipairs{"normal","rare"} do
+  for _,quality in ipairs{"normal"} do
     for _,fuel in ipairs(fuels) do
       local e=car(s,{0,-16},fuel,quality)
       local result=prototypes.item[fuel].burnt_result.name
@@ -71,7 +71,7 @@ script.on_nth_tick(1,function()
   local power=assert(s.create_entity{name="factorio-test-planner-grid",position={8,12},force="player"})
   power.power_production=1000000000;power.electric_buffer_size=1000000000;power.energy=1000000000
   storage.chest=assert(s.create_entity{name="storage-chest",position={4,16},force="player"})
-  for q,quality in ipairs{"normal","rare"} do
+  for q,quality in ipairs{"normal"} do
     for i,fuel in ipairs(fuels) do
       local e=car(s,{(i-3)*6,(q-1)*6},fuel,quality)
       check(e.order_deconstruction("player"),"robot deconstruction ordered")
@@ -89,8 +89,8 @@ script.on_nth_tick(60,function()
     check(count(inventory,row.result,row.quality)==(row.spent or 4),"player spent return "..row.fuel.." "..row.quality.." actual "..count(inventory,row.result,row.quality))
     check(count(inventory,row.fuel,row.quality)==(row.unused or 2),"player unused fuel")
   end
-  check(storage.player_events==12,"native player mining events")
-  check(count(inventory,"nullius-car-1","normal")==12,"player car and empty burner returns")
+  check(storage.player_events==7,"native player mining events")
+  check(count(inventory,"nullius-car-1","normal")==7,"player car and empty burner returns")
 end)
 script.on_nth_tick(30,function()
   if not storage.start_tick or game.tick<storage.start_tick+1800 then return end
@@ -101,8 +101,8 @@ script.on_nth_tick(30,function()
     check(count(inventory,row.result,row.quality)==4,"robot spent return "..row.fuel.." "..row.quality)
     check(count(inventory,row.fuel,row.quality)==2,"robot unused fuel "..row.fuel)
   end
-  check(storage.robot_events==10,"native robot mining events")
-  check(count(inventory,"nullius-car-1","normal")==10,"robot car returns")
+  check(storage.robot_events==5,"native robot mining events")
+  check(count(inventory,"nullius-car-1","normal")==5,"robot car returns")
   helpers.write_file("factorio-tests/"..CASE..".json",helpers.table_to_json{
     schema=1,case=CASE,status="pass",assertions=storage.assertions,failure_count=0,
     tick=game.tick,factorio_version=script.active_mods.base},false)

@@ -125,10 +125,6 @@ script.on_nth_tick(1, function()
   elseif storage.phase == "missing" and elapsed >= 35 then
     check(player.crafting_queue_size == 0, "craft queued without ingredients")
     inputs(player, {["nullius-iron-plate"] = 2, ["nullius-iron-rod"] = 1})
-    request(player, GEAR, 2, "uncommon")
-    phase("quality")
-  elseif storage.phase == "quality" and elapsed >= 35 then
-    check(player.crafting_queue_size == 0, "normal handcraft queued for uncommon request")
     request(player, GEAR, 2)
     player.character.get_requester_point().get_section(1).active = false
     phase("section-off")

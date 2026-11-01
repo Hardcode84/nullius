@@ -135,6 +135,8 @@
     "nullius-sludge"
   ],
   "mineral_feed": [
+    "barrel",
+    "nullius-box-barrel",
     "stone",
     "nullius-box-stone",
     "nullius-sand",
@@ -156,6 +158,7 @@
     "nullius-worm"
   ],
   "boundary_notes": {
+    "barrel": "Barrels remain metal containers. Their production consumes steel sheet, metal tanks and valves, or Vulcanus iron. Returned petroleum containers are not polymer-derived metal. Remove this boundary before adding metal-free container production.",
     "nullius-magazine": "Steel rods supply the ammunition used in arthropod production.",
     "nullius-worm": "Worm growth consumes mineral sludge and sand.",
     "mineral_feed": "Recipes with declared mineral feed are material conversion boundaries, not equipment-only recovery."

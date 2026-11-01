@@ -151,7 +151,9 @@ class FactorioTestRunnerTests(unittest.TestCase):
             self.assertEqual(metadata["factorio_version"], "2.1")
             self.assertEqual((support_link / "data.lua").resolve(), (TEST_SUPPORT_MOD / "data.lua").resolve())
             mod_list = json.loads((run_mods / "mod-list.json").read_text())
-            enabled = [entry["name"] for entry in mod_list["mods"]]
+            enabled = [entry["name"] for entry in mod_list["mods"] if entry["enabled"]]
+            self.assertNotIn("quality", enabled)
+            self.assertIn({"name": "quality", "enabled": False}, mod_list["mods"])
             self.assertEqual(enabled[-2:], ["nullius-star", "factorio-test-support"])
 
     def test_prepare_mods_accepts_release_archive(self) -> None:

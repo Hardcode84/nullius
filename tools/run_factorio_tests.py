@@ -20,7 +20,7 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 MOD_UNDER_TEST = REPOSITORY / "nullius-star"
 SCENARIOS = REPOSITORY / "tests" / "scenarios"
 TEST_SUPPORT_MOD = REPOSITORY / "tests" / "factorio-test-support"
-BUILTIN_MODS = ("base", "elevated-rails", "quality", "space-age")
+BUILTIN_MODS = ("base", "elevated-rails", "space-age")
 DEPENDENCY_MODS = (
     "alien-biomes",
     "alien-biomes-graphics",
@@ -159,6 +159,7 @@ def prepare_mods(
     (support / "info.json").write_text(json.dumps(metadata, indent=2) + "\n")
     enabled.append("factorio-test-support")
     mod_list = {"mods": [{"name": name, "enabled": True} for name in enabled]}
+    mod_list["mods"].append({"name": "quality", "enabled": False})
     (run_mods / "mod-list.json").write_text(
         json.dumps(mod_list, indent=2) + "\n", encoding="utf-8"
     )

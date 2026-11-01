@@ -7,6 +7,7 @@ return function(destination)
 -- run: bounded multiplayer ticks, followed by a server save and reload.
 -- expect: shared idle access, occupied exclusion, stable stock, tags, and queues.
 local research = require("__nullius-star__/scripts/research")
+local fulgora_starter = require("__nullius-star__/shared/fulgora-starter")
 local CASE = destination .. "-shared-body"
 local planet_name = "nullius-" .. destination
 local other_destination = destination == "vulcanus" and "fulgora" or "vulcanus"
@@ -36,8 +37,9 @@ local function stock()
   if destination == "vulcanus" then
     check(wreck.get_item_count("nullius-seawater-intake-1") == 2, "wreck supplies changed")
   else
-    check(wreck.get_item_count("nullius-extractor-1") == 5, "Fulgora starter extractors")
-    check(wreck.get_item_count("cliff-explosives") == 30, "Fulgora starter explosives")
+    for _, stack in ipairs(fulgora_starter[1]) do
+      check(wreck.get_item_count(stack[1]) == stack[2], "Fulgora starter " .. stack[1])
+    end
   end
 end
 local function queue(player)

@@ -53,6 +53,7 @@
 	"(?) stack-inserters >= 1.0.1",
 
 	"! nullius",
+    "! quality",
     "! aai-industry",
 	"! angelsbioprocessing",
 	"! angelsinfiniteores",

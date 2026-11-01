@@ -32,6 +32,10 @@ return {
     "nullius-braking-5",
     "nullius-broadcasting-1",
     "nullius-broadcasting-2",
+    "nullius-bulk-hydrocarbon-cracking",
+    "nullius-bulk-polymer-processing",
+    "nullius-bulk-slurry-filtration",
+    "nullius-bulk-storm-climatology",
     "nullius-carbon-sequestration-1",
     "nullius-carbon-sequestration-2",
     "nullius-casting-productivity-1",
@@ -146,6 +150,7 @@ return {
     "nullius-explosives-1",
     "nullius-explosives-2",
     "nullius-fabrication-tools",
+    "nullius-fiber-productivity-1",
     "nullius-filtration-1",
     "nullius-flotation-1",
     "nullius-flotation-2",
@@ -159,13 +164,17 @@ return {
     "nullius-geothermal-power-2",
     "nullius-glassmaking-1",
     "nullius-glassmaking-2",
+    "nullius-grounding-coils-2",
     "nullius-high-pressure-chemistry",
     "nullius-hot-metalworking",
     "nullius-hydrocarbon-combustion-1",
     "nullius-hydrocarbon-combustion-2",
+    "nullius-hydrocarbon-combustion-3",
+    "nullius-hydrocarbon-productivity-1",
     "nullius-hydrology-1",
     "nullius-illumination-1",
     "nullius-illumination-2",
+    "nullius-improved-polymer-doping",
     "nullius-inorganic-chemistry-1",
     "nullius-inorganic-chemistry-2",
     "nullius-inserter-capacity-1",
@@ -245,6 +254,7 @@ return {
     "nullius-organic-chemistry-4",
     "nullius-organic-chemistry-5",
     "nullius-organic-chemistry-6",
+    "nullius-overcharged-assembly-2",
     "nullius-packaging-1",
     "nullius-packaging-2",
     "nullius-packaging-3",
@@ -263,8 +273,11 @@ return {
     "nullius-plumbing-4",
     "nullius-plumbing-5",
     "nullius-pneumatic-technology",
+    "nullius-polymerization-productivity-1",
     "nullius-pressure-containment",
+    "nullius-primitive-filtration",
     "nullius-primitive-robotics",
+    "nullius-probe-fulgora",
     "nullius-probe-vulcanus",
     "nullius-projection-1",
     "nullius-pumping-1",
@@ -296,8 +309,10 @@ return {
     "nullius-storage-1",
     "nullius-storage-2",
     "nullius-storage-3",
+    "nullius-storm-climatology",
     "nullius-sulfur-processing-1",
     "nullius-sulfur-processing-2",
+    "nullius-supercapacitors",
     "nullius-thermal-engineering-2",
     "nullius-thermal-storage-1",
     "nullius-thermal-storage-2",
@@ -328,43 +343,9 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
-  deadline = 17100,
+  deadline = 18600,
   electric_grid_watts_per_executor = 1000000000,
   executors = {
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "medium-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "copper-cable",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-steel-beam",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "big-electric-pole",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "big-electric-pole",
-      seconds_per_cycle = 1.0,
-    },
     {
       cycles = 5,
       electric = true,
@@ -426,6 +407,158 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 8,
+          name = "fast-transport-belt",
+          type = "item",
+        },
+        {
+          amount = 4,
+          name = "nullius-textile",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-bearing",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-fiberglass",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 6,
+          name = "express-transport-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "express-transport-belt",
+      seconds_per_cycle = 2.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 12,
+          name = "express-transport-belt",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "fast-underground-belt",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-underground-pipe-3",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "express-underground-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "express-underground-belt",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 10,
+          name = "transport-belt",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-motor-2",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-steel-gear",
+          type = "item",
+        },
+        {
+          amount = 4,
+          name = "nullius-rubber",
+          type = "item",
+        },
+        {
+          amount = 12,
+          fluidbox_index = 1,
+          name = "nullius-lubricant",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 8,
+          name = "fast-transport-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "fast-transport-belt",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 10,
+          name = "fast-transport-belt",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "underground-belt",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-underground-pipe-2",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "fast-underground-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "fast-underground-belt",
+      seconds_per_cycle = 1.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 1,
           name = "stone-wall",
           type = "item",
@@ -476,6 +609,40 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-motor-1",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-iron-gear",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-iron-rod",
+          type = "item",
+        },
+      },
+      machine = "nullius-medium-assembler-2",
+      outputs = {
+        {
+          amount = 4,
+          name = "inserter",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "inserter",
+      seconds_per_cycle = 4.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "wooden-chest",
           type = "item",
         },
@@ -505,40 +672,6 @@ return {
       },
       productivity = 0,
       recipe = "iron-chest",
-      seconds_per_cycle = 0.75,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "small-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "copper-cable",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-aluminum-rod",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "medium-electric-pole",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "medium-electric-pole",
       seconds_per_cycle = 0.75,
     },
     {
@@ -1264,30 +1397,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 5,
-          name = "nullius-crushed-bauxite",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-mineral-dust",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-bauxite-disposal",
-      seconds_per_cycle = 1.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 4,
           name = "nullius-crushed-bauxite",
           type = "item",
@@ -1585,6 +1694,30 @@ return {
       ingredients = {
         {
           amount = 20,
+          name = "nullius-cement",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-cement",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-cement",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
           name = "nullius-ceramic-powder",
           type = "item",
         },
@@ -1608,8 +1741,8 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 40,
-          name = "concrete",
+          amount = 20,
+          name = "nullius-crushed-iron-ore",
           type = "item",
         },
       },
@@ -1617,12 +1750,36 @@ return {
       outputs = {
         {
           amount = 4,
-          name = "nullius-box-concrete",
+          name = "nullius-box-crushed-iron-ore",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-box-concrete",
+      recipe = "nullius-box-crushed-iron-ore",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-crushed-limestone",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-crushed-limestone",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-crushed-limestone",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1729,6 +1886,30 @@ return {
       ingredients = {
         {
           amount = 20,
+          name = "inserter",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-inserter-1",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-inserter-1",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
           name = "nullius-iron-ingot",
           type = "item",
         },
@@ -1743,30 +1924,6 @@ return {
       },
       productivity = 0,
       recipe = "nullius-box-iron-ingot",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
-          name = "iron-ore",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-iron-ore",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-iron-ore",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1801,78 +1958,6 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-limestone",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-limestone",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-limestone",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
-          name = "nullius-mineral-dust",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-mineral-dust",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-mineral-dust",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
-          name = "nullius-motor-2",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-motor-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-motor-2",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 20,
           name = "nullius-polycrystalline-silicon",
           type = "item",
         },
@@ -1897,7 +1982,7 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "small-electric-pole",
+          name = "nullius-sand",
           type = "item",
         },
       },
@@ -1905,12 +1990,12 @@ return {
       outputs = {
         {
           amount = 4,
-          name = "nullius-box-power-pole-1",
+          name = "nullius-box-sand",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-box-power-pole-1",
+      recipe = "nullius-box-sand",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1921,7 +2006,7 @@ return {
       ingredients = {
         {
           amount = 20,
-          name = "nullius-sandstone",
+          name = "nullius-soda-ash",
           type = "item",
         },
       },
@@ -1929,12 +2014,36 @@ return {
       outputs = {
         {
           amount = 4,
-          name = "nullius-box-sandstone",
+          name = "nullius-box-soda-ash",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-box-sandstone",
+      recipe = "nullius-box-soda-ash",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "nullius-steel-beam",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-steel-beam",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-steel-beam",
       seconds_per_cycle = 2.0,
     },
     {
@@ -1992,30 +2101,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 20,
-          name = "stone",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-box-stone",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 40,
           name = "stone-brick",
           type = "item",
@@ -2031,6 +2116,30 @@ return {
       },
       productivity = 0,
       recipe = "nullius-box-stone-brick",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "express-underground-belt",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-underground-belt-3",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-underground-belt-3",
       seconds_per_cycle = 2.0,
     },
     {
@@ -2060,6 +2169,35 @@ return {
       },
       productivity = 0,
       recipe = "nullius-boxed-acrylic-fiber",
+      seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-box-aluminum-wire",
+          type = "item",
+        },
+        {
+          amount = 60,
+          name = "nullius-nitrogen",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-crusher-2",
+      outputs = {
+        {
+          amount = 3,
+          name = "nullius-box-aluminum-powder",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-aluminum-powder",
       seconds_per_cycle = 7.5,
     },
     {
@@ -2298,129 +2436,6 @@ return {
       ingredients = {
         {
           amount = 1,
-          name = "nullius-box-motor-1",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-iron-gear",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-steel-sheet",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-steel-rod",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 18,
-          name = "nullius-box-belt-1",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-belt-1",
-      seconds_per_cycle = 3.75,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 10,
-          name = "nullius-box-belt-1",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-motor-2",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-steel-gear",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-box-rubber",
-          type = "item",
-        },
-        {
-          amount = 60,
-          fluidbox_index = 1,
-          name = "nullius-lubricant",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 8,
-          name = "nullius-box-belt-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-belt-2",
-      seconds_per_cycle = 10.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 8,
-          name = "nullius-box-belt-2",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-box-textile",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-bearing",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-box-fiberglass",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 6,
-          name = "nullius-box-belt-3",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-belt-3",
-      seconds_per_cycle = 12.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
           name = "nullius-box-barrel",
           type = "item",
         },
@@ -2446,6 +2461,50 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-canister",
       seconds_per_cycle = 20.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 3,
+          name = "nullius-box-cement",
+          type = "item",
+        },
+        {
+          amount = 7,
+          name = "nullius-box-sand",
+          type = "item",
+        },
+        {
+          amount = 15,
+          name = "nullius-box-gravel",
+          type = "item",
+        },
+        {
+          amount = 25,
+          name = "nullius-calcium-chloride-solution",
+          type = "fluid",
+        },
+        {
+          amount = 75,
+          name = "nullius-water",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2",
+      outputs = {
+        {
+          amount = 10,
+          name = "nullius-box-concrete",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-concrete",
+      seconds_per_cycle = 50.0,
     },
     {
       cycles = 5,
@@ -2480,93 +2539,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-crushed-bauxite",
       seconds_per_cycle = 12.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 6,
-          name = "nullius-box-iron-ore",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-box-crushed-iron-ore",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-crushed-iron-ore",
-      seconds_per_cycle = 12.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 8,
-          name = "nullius-box-limestone",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-box-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-crushed-limestone-1",
-      seconds_per_cycle = 10.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 5,
-          name = "nullius-box-sandstone",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-crushed-sandstone",
-      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,
@@ -2768,6 +2740,35 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 7,
+          name = "nullius-box-acrylic-fiber",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-lubricant",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "nullius-box-steel-cable",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-fiber-cable",
+      seconds_per_cycle = 6.25,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 2,
           name = "nullius-box-glass-fiber",
           type = "item",
@@ -2876,30 +2877,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "nullius-box-stone",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-box-gravel",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-gravel",
-      seconds_per_cycle = 1.25,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-box-red-wire",
           type = "item",
@@ -2916,42 +2893,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-green-wire",
       seconds_per_cycle = 3.75,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 3,
-          name = "nullius-box-sodium-sulfate",
-          type = "item",
-        },
-        {
-          amount = 125,
-          fluidbox_index = 1,
-          name = "nullius-calcium-chloride-solution",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-flotation-cell-2",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-gypsum",
-          type = "item",
-        },
-        {
-          amount = 100,
-          fluidbox_index = 1,
-          name = "nullius-brine",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-gypsum-2",
-      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -3029,42 +2970,32 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "nullius-box-heat-pipe-1",
+          amount = 15,
+          name = "nullius-box-plastic",
           type = "item",
         },
         {
           amount = 1,
-          name = "nullius-box-pipe-3",
+          name = "nullius-box-iron-plate",
           type = "item",
         },
         {
-          amount = 3,
-          name = "nullius-box-ceramic-powder",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-insulation",
-          type = "item",
-        },
-        {
-          amount = 5,
-          name = "nullius-box-eutectic-salt",
+          amount = 1,
+          name = "nullius-box-aluminum-powder",
           type = "item",
         },
       },
-      machine = "nullius-foundry-2",
+      machine = "nullius-large-assembler-1",
       outputs = {
         {
-          amount = 3,
-          name = "nullius-box-heat-pipe-2",
+          amount = 15,
+          name = "nullius-box-iron-gear",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-boxed-heat-pipe-2",
-      seconds_per_cycle = 15.0,
+      recipe = "nullius-boxed-improved-doped-polymer-gear",
+      seconds_per_cycle = 12.5,
     },
     {
       cycles = 5,
@@ -3073,32 +3004,32 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "nullius-box-motor-1",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-steel-gear",
+          amount = 3,
+          name = "nullius-box-graphite",
           type = "item",
         },
         {
           amount = 2,
-          name = "nullius-box-steel-rod",
+          name = "nullius-box-plastic",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-iron-chloride",
           type = "item",
         },
       },
       machine = "nullius-large-assembler-1",
       outputs = {
         {
-          amount = 5,
-          name = "nullius-box-inserter-1",
+          amount = 6,
+          name = "nullius-box-insulated-wire",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-boxed-inserter-1",
-      seconds_per_cycle = 6.25,
+      recipe = "nullius-boxed-improved-doped-polymer-wire",
+      seconds_per_cycle = 3.75,
     },
     {
       cycles = 5,
@@ -3187,103 +3118,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-inserter-3",
       seconds_per_cycle = 8.75,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 3,
-          name = "nullius-box-aluminum-wire",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-rubber",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 4,
-          name = "nullius-box-insulated-wire",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-insulated-wire-1",
-      seconds_per_cycle = 7.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 3,
-          name = "nullius-box-gypsum",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-glass-fiber",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-plastic",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-textile",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-insulation",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-insulation",
-      seconds_per_cycle = 7.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 2,
-          name = "nullius-box-iron-plate",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-iron-rod",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-iron-gear",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-iron-gear",
-      seconds_per_cycle = 5.0,
     },
     {
       cycles = 5,
@@ -3727,6 +3561,51 @@ return {
       ingredients = {
         {
           amount = 2,
+          name = "nullius-box-insulated-wire",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-steel-plate",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-steel-gear",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-steel-rod",
+          type = "item",
+        },
+        {
+          amount = 25,
+          fluidbox_index = 1,
+          name = "nullius-lubricant",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-motor-2",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-motor-2",
+      seconds_per_cycle = 15.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
           name = "nullius-box-pipe-2",
           type = "item",
         },
@@ -3887,6 +3766,35 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 2,
+          name = "nullius-box-insulated-wire",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-steel-rod",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "nullius-box-power-pole-1",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-power-pole-1",
+      seconds_per_cycle = 1.25,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 1,
           name = "nullius-box-power-pole-1",
           type = "item",
@@ -3913,6 +3821,45 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-power-pole-2",
       seconds_per_cycle = 3.75,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-2",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-red-wire",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-fiberglass",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-ceramic-powder",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-3",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-power-pole-3",
+      seconds_per_cycle = 6.25,
     },
     {
       cycles = 5,
@@ -4073,6 +4020,89 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-box-power-pole-2",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-insulated-wire",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-steel-beam",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-pylon-1",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-pylon-1",
+      seconds_per_cycle = 5.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-pylon-1",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-3",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-aluminum-wire",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-steel-cable",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-transformer",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-concrete",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-pylon-2",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-pylon-2",
+      seconds_per_cycle = 7.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-box-logic-circuit",
           type = "item",
         },
@@ -4132,6 +4162,35 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-red-wire",
       seconds_per_cycle = 12.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-box-plastic",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-carbon-fiber",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "nullius-box-steel-gear",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-reinforced-polymer-gear",
+      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -4209,6 +4268,30 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-box-salt",
+          type = "item",
+        },
+      },
+      machine = "nullius-crusher-2",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-mineral-dust",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-salt-disposal",
+      seconds_per_cycle = 2.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-box-arithmetic-circuit",
           type = "item",
         },
@@ -4257,27 +4340,33 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 8,
-          name = "nullius-box-gravel",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2",
-      outputs = {
-        {
           amount = 3,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-        {
-          amount = 6,
           name = "nullius-box-mineral-dust",
           type = "item",
         },
+        {
+          amount = 40,
+          fluidbox_index = 1,
+          name = "nullius-acid-sulfuric",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2",
+      outputs = {
+        {
+          amount = 100,
+          name = "nullius-sludge",
+          type = "fluid",
+        },
+        {
+          amount = 90,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
       },
       productivity = 0,
-      recipe = "nullius-boxed-slag-reprocessing",
-      seconds_per_cycle = 15.0,
+      recipe = "nullius-boxed-sludge-2",
+      seconds_per_cycle = 2.5,
     },
     {
       cycles = 5,
@@ -4339,100 +4428,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 4,
-          name = "nullius-box-sodium-sulfate",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-box-graphite",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-box-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 400,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-        {
-          amount = 250,
-          name = "nullius-oxygen",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-distillery-2",
-      outputs = {
-        {
-          amount = 7,
-          name = "nullius-box-soda-ash",
-          type = "item",
-        },
-        {
-          amount = 300,
-          name = "nullius-calcium-chloride-solution",
-          type = "fluid",
-        },
-        {
-          amount = 400,
-          name = "nullius-carbon-dioxide",
-          type = "fluid",
-        },
-        {
-          amount = 50,
-          name = "nullius-sulfur-dioxide",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-soda-ash",
-      seconds_per_cycle = 12.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 75,
-          fluidbox_index = 1,
-          name = "nullius-acid-sulfuric",
-          type = "fluid",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-salt",
-          type = "item",
-        },
-      },
-      machine = "nullius-chemical-plant-2",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-box-sodium-sulfate",
-          type = "item",
-        },
-        {
-          amount = 50,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-sodium-sulfate-1",
-      seconds_per_cycle = 5.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 2,
           name = "nullius-box-haste-module-1",
           type = "item",
@@ -4454,35 +4449,6 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-speed-module-1",
       seconds_per_cycle = 20.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 2,
-          name = "nullius-box-steel-plate",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-steel-rod",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-steel-gear",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-steel-gear",
-      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -4554,13 +4520,28 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 10,
-          name = "nullius-box-acrylic-fiber",
+          amount = 1,
+          name = "nullius-box-pylon-1",
           type = "item",
         },
         {
           amount = 1,
-          name = "nullius-box-sodium-sulfate",
+          name = "nullius-box-power-pole-2",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-power-switch",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-box-concrete",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-transformer",
           type = "item",
         },
       },
@@ -4568,13 +4549,96 @@ return {
       outputs = {
         {
           amount = 5,
-          name = "nullius-box-textile",
+          name = "substation",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-boxed-textile-1",
-      seconds_per_cycle = 43.75,
+      recipe = "nullius-boxed-substation-1",
+      seconds_per_cycle = 12.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 5,
+          name = "substation",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-pylon-2",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-3",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-sensor-1",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-battery-1",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-substation-2",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-substation-2",
+      seconds_per_cycle = 22.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-box-iron-plate",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-heat-pipe-1",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-insulated-wire",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-box-plastic",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-box-transformer",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-transformer",
+      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -4734,103 +4798,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 10,
-          name = "nullius-box-belt-1",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-underground-pipe-1",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-underground-belt-1",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-underground-belt-1",
-      seconds_per_cycle = 3.75,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 10,
-          name = "nullius-box-belt-2",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-underground-belt-1",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-underground-pipe-2",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-underground-belt-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-underground-belt-2",
-      seconds_per_cycle = 7.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 12,
-          name = "nullius-box-belt-3",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-box-underground-belt-2",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-box-underground-pipe-3",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-box-underground-belt-3",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-underground-belt-3",
-      seconds_per_cycle = 10.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-box-pipe-1",
           type = "item",
@@ -4952,33 +4919,62 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "nullius-crushed-limestone",
-          type = "item",
-        },
-        {
-          amount = 25,
-          fluidbox_index = 1,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-chemical-plant-2",
-      outputs = {
-        {
-          amount = 16,
+          amount = 33,
           name = "nullius-calcium-chloride-solution",
           type = "fluid",
         },
+      },
+      machine = "nullius-distillery-2",
+      outputs = {
         {
-          amount = 10,
-          name = "nullius-carbon-dioxide",
+          amount = 2,
+          name = "nullius-calcium-chloride",
+          type = "item",
+        },
+        {
+          amount = 30,
+          fluidbox_index = 2,
+          name = "nullius-steam",
           type = "fluid",
         },
       },
       productivity = 0,
-      recipe = "nullius-calcium-chloride-solution",
+      recipe = "nullius-calcium-chloride",
       seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-calcium-chloride",
+          type = "item",
+        },
+        {
+          amount = 100,
+          name = "nullius-steam",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-medium-furnace-2",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-lime",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-hydrogen-chloride",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-calcium-chloride-decomposition",
+      seconds_per_cycle = 1.0,
     },
     {
       cycles = 5,
@@ -5221,7 +5217,7 @@ return {
           type = "item",
         },
         {
-          amount = 5,
+          amount = 6,
           name = "concrete",
           type = "item",
         },
@@ -5999,6 +5995,69 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-canister",
+          type = "item",
+        },
+        {
+          amount = 25,
+          name = "nullius-diesel",
+          type = "fluid",
+        },
+        {
+          amount = 120,
+          name = "nullius-compressed-oxygen",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-medium-assembler-2",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-diesel-canister",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-diesel-canister",
+      seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-diesel-canister",
+          type = "item",
+        },
+      },
+      machine = "nullius-barrel-pump-1",
+      outputs = {
+        {
+          amount = 1,
+          name = "nullius-canister",
+          type = "item",
+        },
+        {
+          amount = 25,
+          name = "nullius-diesel",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-diesel-canister-flushing",
+      seconds_per_cycle = 1.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-small-furnace-1",
           type = "item",
         },
@@ -6135,6 +6194,41 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 3,
+          name = "nullius-mineral-dust",
+          type = "item",
+        },
+        {
+          amount = 8,
+          fluidbox_index = 1,
+          name = "nullius-acid-sulfuric",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2",
+      outputs = {
+        {
+          amount = 20,
+          name = "nullius-sludge",
+          type = "fluid",
+        },
+        {
+          amount = 18,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-dust-disposal-2",
+      seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 16,
           name = "nullius-propene",
           type = "fluid",
@@ -6249,6 +6343,80 @@ return {
       productivity = 0,
       recipe = "nullius-electrolyzer-2",
       seconds_per_cycle = 6.25,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
+          name = "nullius-crushed-limestone",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-soda-ash",
+          type = "item",
+        },
+        {
+          amount = 80,
+          fluidbox_index = 2,
+          name = "nullius-acid-nitric",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-chemical-plant-2",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-eutectic-salt",
+          type = "item",
+        },
+        {
+          amount = 100,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+        {
+          amount = 50,
+          name = "nullius-wastewater",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-eutectic-salt",
+      seconds_per_cycle = 4.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 7,
+          name = "nullius-acrylic-fiber",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-lubricant",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "nullius-steel-cable",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-fiber-cable",
+      seconds_per_cycle = 1.25,
     },
     {
       cycles = 5,
@@ -6429,6 +6597,35 @@ return {
       ingredients = {
         {
           amount = 2,
+          name = "nullius-iron-ingot",
+          type = "item",
+        },
+        {
+          amount = 30,
+          name = "nullius-chlorine",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-chemical-plant-2",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-iron-chloride",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-fulgora-iron-chlorination",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 2,
           name = "nullius-hard-glass",
           type = "item",
         },
@@ -6566,63 +6763,37 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 3,
-          name = "nullius-sodium-sulfate",
-          type = "item",
+          amount = 200,
+          name = "nullius-sludge",
+          type = "fluid",
         },
         {
-          amount = 25,
-          fluidbox_index = 1,
-          name = "nullius-calcium-chloride-solution",
+          amount = 180,
+          name = "nullius-oxygen",
           type = "fluid",
         },
       },
       machine = "nullius-flotation-cell-2",
       outputs = {
         {
-          amount = 2,
+          amount = 8,
           name = "nullius-gypsum",
           type = "item",
         },
         {
-          amount = 20,
-          fluidbox_index = 1,
-          name = "nullius-brine",
+          amount = 4,
+          name = "nullius-sand",
+          type = "item",
+        },
+        {
+          amount = 150,
+          name = "nullius-wastewater",
           type = "fluid",
         },
       },
       productivity = 0,
-      recipe = "nullius-gypsum-2",
-      seconds_per_cycle = 1.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 2,
-          name = "nullius-gypsum",
-          type = "item",
-        },
-      },
-      machine = "nullius-medium-furnace-2",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-lime",
-          type = "item",
-        },
-        {
-          amount = 10,
-          name = "nullius-sulfur-dioxide",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-gypsum-decomposition",
-      seconds_per_cycle = 1.5,
+      recipe = "nullius-gypsum-recovery",
+      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,
@@ -6715,6 +6886,50 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-heat-pipe-1",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-pipe-3",
+          type = "item",
+        },
+        {
+          amount = 3,
+          name = "nullius-ceramic-powder",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-insulation",
+          type = "item",
+        },
+        {
+          amount = 5,
+          name = "nullius-eutectic-salt",
+          type = "item",
+        },
+      },
+      machine = "nullius-foundry-2",
+      outputs = {
+        {
+          amount = 2,
+          name = "nullius-heat-pipe-2",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-heat-pipe-2",
+      seconds_per_cycle = 3.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-distillery-1",
           type = "item",
         },
@@ -6764,6 +6979,40 @@ return {
       productivity = 0,
       recipe = "nullius-hydrogen-chloride",
       seconds_per_cycle = 0.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 15,
+          name = "nullius-graphite",
+          type = "item",
+        },
+        {
+          amount = 10,
+          name = "nullius-plastic",
+          type = "item",
+        },
+        {
+          amount = 1,
+          name = "nullius-iron-chloride",
+          type = "item",
+        },
+      },
+      machine = "nullius-medium-assembler-2",
+      outputs = {
+        {
+          amount = 30,
+          name = "copper-cable",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-improved-doped-polymer-wire",
+      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -6922,6 +7171,46 @@ return {
       productivity = 0,
       recipe = "nullius-iron-plate-2",
       seconds_per_cycle = 1.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 200,
+          name = "nullius-sludge",
+          type = "fluid",
+        },
+        {
+          amount = 160,
+          name = "nullius-caustic-solution",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2",
+      outputs = {
+        {
+          amount = 8,
+          name = "nullius-crushed-iron-ore",
+          type = "item",
+        },
+        {
+          amount = 4,
+          name = "nullius-crushed-limestone",
+          type = "item",
+        },
+        {
+          amount = 150,
+          fluidbox_index = 1,
+          name = "nullius-wastewater",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-iron-recovery",
+      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,
@@ -7902,45 +8191,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "medium-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-red-wire",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-fiberglass",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-ceramic-powder",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-power-pole-3",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-power-pole-3",
-      seconds_per_cycle = 1.25,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 100,
           name = "nullius-compressed-air",
           type = "fluid",
@@ -8259,6 +8509,37 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 1600,
+          name = "nullius-steam",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-priority-electrolyzer-1",
+      outputs = {
+        {
+          amount = 160,
+          fluidbox_index = 1,
+          name = "nullius-compressed-hydrogen",
+          type = "fluid",
+        },
+        {
+          amount = 80,
+          fluidbox_index = 3,
+          name = "nullius-compressed-oxygen",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-pressure-steam-electrolysis",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 55,
           name = "nullius-water",
           type = "fluid",
@@ -8372,55 +8653,6 @@ return {
       productivity = 0,
       recipe = "nullius-propene-pyrolysis",
       seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "big-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-power-pole-3",
-          type = "item",
-        },
-        {
-          amount = 3,
-          name = "nullius-aluminum-wire",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-steel-cable",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-transformer",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "concrete",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-pylon-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-pylon-2",
-      seconds_per_cycle = 1.5,
     },
     {
       cycles = 5,
@@ -8568,40 +8800,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 40,
-          name = "nullius-brine",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-distillery-2",
-      outputs = {
-        {
-          amount = 3,
-          name = "nullius-salt",
-          type = "item",
-        },
-        {
-          amount = 40,
-          name = "nullius-steam",
-          type = "fluid",
-        },
-        {
-          amount = 15,
-          name = "nullius-saline",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-salt",
-      seconds_per_cycle = 1.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-sandstone",
           type = "item",
@@ -8667,35 +8865,6 @@ return {
       productivity = 0,
       recipe = "nullius-sand-recovery",
       seconds_per_cycle = 10.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 3,
-          name = "nullius-sandstone",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 10,
-          name = "stone-brick",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-sand",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-sandstone-block",
-      seconds_per_cycle = 1.0,
     },
     {
       cycles = 5,
@@ -9221,27 +9390,33 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 3,
-          name = "nullius-salt",
+          amount = 4,
+          name = "nullius-sodium-hydroxide",
           type = "item",
         },
       },
       machine = "nullius-priority-electrolyzer-1",
       outputs = {
         {
-          amount = 2,
+          amount = 3,
           name = "nullius-sodium",
           type = "item",
         },
         {
-          amount = 25,
+          amount = 30,
+          fluidbox_index = 3,
+          name = "nullius-oxygen",
+          type = "fluid",
+        },
+        {
+          amount = 15,
           fluidbox_index = 1,
-          name = "nullius-chlorine",
+          name = "nullius-water",
           type = "fluid",
         },
       },
       productivity = 0,
-      recipe = "nullius-sodium",
+      recipe = "nullius-sodium-hydroxide-electrolysis",
       seconds_per_cycle = 4.0,
     },
     {
@@ -9251,32 +9426,32 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 15,
+          amount = 30,
           fluidbox_index = 1,
           name = "nullius-acid-sulfuric",
           type = "fluid",
         },
         {
-          amount = 2,
-          name = "nullius-salt",
+          amount = 5,
+          name = "nullius-sodium-hydroxide",
           type = "item",
         },
       },
       machine = "nullius-chemical-plant-2",
       outputs = {
         {
-          amount = 1,
+          amount = 2,
           name = "nullius-sodium-sulfate",
           type = "item",
         },
         {
-          amount = 10,
-          name = "nullius-acid-hydrochloric",
+          amount = 15,
+          name = "nullius-wastewater",
           type = "fluid",
         },
       },
       productivity = 0,
-      recipe = "nullius-sodium-sulfate",
+      recipe = "nullius-sodium-sulfate-2",
       seconds_per_cycle = 1.0,
     },
     {
@@ -9302,36 +9477,6 @@ return {
       productivity = 0,
       recipe = "nullius-steel-beam",
       seconds_per_cycle = 1.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 7,
-          name = "nullius-steel-wire",
-          type = "item",
-        },
-        {
-          amount = 2,
-          fluidbox_index = 1,
-          name = "nullius-lubricant",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 2,
-          name = "nullius-steel-cable",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-steel-cable",
-      seconds_per_cycle = 1.25,
     },
     {
       cycles = 5,
@@ -9600,50 +9745,6 @@ return {
       ingredients = {
         {
           amount = 1,
-          name = "substation",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-pylon-2",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-power-pole-3",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-sensor-1",
-          type = "item",
-        },
-        {
-          amount = 2,
-          name = "nullius-battery-1",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-substation-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-substation-2",
-      seconds_per_cycle = 4.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
           name = "nullius-transformer",
           type = "item",
         },
@@ -9902,54 +10003,6 @@ return {
       ingredients = {
         {
           amount = 1,
-          name = "nullius-box-belt-1",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "transport-belt",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-belt-1",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "nullius-box-belt-2",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "fast-transport-belt",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-belt-2",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
           name = "nullius-box-electrical-pack",
           type = "item",
         },
@@ -10022,6 +10075,30 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-box-gravel",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-gravel",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-gravel",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-box-green-wire",
           type = "item",
         },
@@ -10070,54 +10147,6 @@ return {
       ingredients = {
         {
           amount = 1,
-          name = "nullius-box-heat-pipe-2",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "nullius-heat-pipe-2",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-heat-pipe-2",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "nullius-box-inserter-1",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "inserter",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-inserter-1",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
           name = "nullius-box-inserter-2",
           type = "item",
         },
@@ -10156,30 +10185,6 @@ return {
       },
       productivity = 0,
       recipe = "nullius-unbox-inserter-3",
-      seconds_per_cycle = 0.4,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1,
-          name = "nullius-box-insulated-wire",
-          type = "item",
-        },
-      },
-      machine = "nullius-small-assembler-1",
-      outputs = {
-        {
-          amount = 5,
-          name = "copper-cable",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-unbox-insulated-wire",
       seconds_per_cycle = 0.4,
     },
     {
@@ -10406,6 +10411,78 @@ return {
       ingredients = {
         {
           amount = 1,
+          name = "nullius-box-pipe-3",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-pipe-3",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-pipe-3",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-1",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "small-electric-pole",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-power-pole-1",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-power-pole-2",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "medium-electric-pole",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-power-pole-2",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
           name = "nullius-box-power-switch",
           type = "item",
         },
@@ -10468,6 +10545,30 @@ return {
       },
       productivity = 0,
       recipe = "nullius-unbox-pump-2",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-pylon-1",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "big-electric-pole",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-pylon-1",
       seconds_per_cycle = 0.4,
     },
     {
@@ -10688,28 +10789,51 @@ return {
     },
     {
       cycles = 5,
-      electric = false,
+      electric = true,
       fuel_per_cycle = 0,
       heat = false,
       ingredients = {
         {
-          amount = 200,
-          name = "nullius-brine",
-          type = "fluid",
+          amount = 1,
+          name = "nullius-box-underground-pipe-2",
+          type = "item",
         },
       },
-      machine = "nullius-outfall-1",
+      machine = "nullius-small-assembler-1",
       outputs = {
         {
-          amount = 1,
-          name = "nullius-liquid-void",
-          probability = 0,
+          amount = 5,
+          name = "nullius-underground-pipe-2",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "nullius-void-brine",
-      seconds_per_cycle = 2.0,
+      recipe = "nullius-unbox-underground-pipe-2",
+      seconds_per_cycle = 0.4,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 1,
+          name = "nullius-box-underground-pipe-3",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-underground-pipe-3",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-unbox-underground-pipe-3",
+      seconds_per_cycle = 0.4,
     },
     {
       cycles = 5,
@@ -10727,38 +10851,13 @@ return {
       outputs = {
         {
           amount = 1,
+          independent_probability = 0,
           name = "nullius-gas-void",
-          probability = 0,
           type = "item",
         },
       },
       productivity = 0,
       recipe = "nullius-void-compressed-nitrogen",
-      seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 100,
-          name = "nullius-compressed-oxygen",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-chimney-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "nullius-gas-void",
-          probability = 0,
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-void-compressed-oxygen",
       seconds_per_cycle = 2.0,
     },
     {
@@ -10777,8 +10876,8 @@ return {
       outputs = {
         {
           amount = 1,
+          independent_probability = 0,
           name = "nullius-gas-void",
-          probability = 0,
           type = "item",
         },
       },
@@ -10802,8 +10901,8 @@ return {
       outputs = {
         {
           amount = 1,
+          independent_probability = 0,
           name = "nullius-gas-void",
-          probability = 0,
           type = "item",
         },
       },
@@ -11132,31 +11231,26 @@ return {
       ingredients = {
         {
           amount = 2,
-          name = "nullius-iron-wire",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-iron-rod",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-plastic",
+          name = "stone",
           type = "item",
         },
       },
       machine = "nullius-large-assembler-1",
       outputs = {
         {
+          amount = 5,
+          name = "stone-brick",
+          type = "item",
+        },
+        {
           amount = 1,
-          name = "small-electric-pole",
+          name = "nullius-gravel",
           type = "item",
         },
       },
       productivity = 0,
-      recipe = "small-electric-pole",
-      seconds_per_cycle = 0.5,
+      recipe = "stone-brick",
+      seconds_per_cycle = 1.0,
     },
     {
       cycles = 5,
@@ -11238,50 +11332,6 @@ return {
       heat = false,
       ingredients = {
         {
-          amount = 1,
-          name = "big-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "medium-electric-pole",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "power-switch",
-          type = "item",
-        },
-        {
-          amount = 6,
-          name = "concrete",
-          type = "item",
-        },
-        {
-          amount = 1,
-          name = "nullius-transformer",
-          type = "item",
-        },
-      },
-      machine = "nullius-large-assembler-1",
-      outputs = {
-        {
-          amount = 1,
-          name = "substation",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "substation",
-      seconds_per_cycle = 2.5,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
           amount = 5,
           name = "nullius-steel-sheet",
           type = "item",
@@ -11321,6 +11371,74 @@ return {
       heat = false,
       ingredients = {
         {
+          amount = 1,
+          name = "nullius-motor-1",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-iron-gear",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-iron-sheet",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-iron-rod",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 15,
+          name = "transport-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "transport-belt",
+      seconds_per_cycle = 1.25,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 10,
+          name = "transport-belt",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "pipe-to-ground",
+          type = "item",
+        },
+      },
+      machine = "nullius-large-assembler-1",
+      outputs = {
+        {
+          amount = 2,
+          name = "underground-belt",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "underground-belt",
+      seconds_per_cycle = 0.75,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
           amount = 2,
           name = "nullius-iron-sheet",
           type = "item",
@@ -11346,6 +11464,16 @@ return {
   },
   fuel = "nullius-compressed-volcanic-gas",
   schema = 1,
+  surface_properties = {
+    ["day-night-cycle"] = 300.0,
+    ["factorio-test-storm-intensity"] = 100.0,
+    gravity = 10.0,
+    ["magnetic-field"] = 90.0,
+    ["nullius-ambient-temperature"] = 15.0,
+    pressure = 1000.0,
+    ["robot-energy-usage"] = 1.0,
+    ["solar-power"] = 100.0,
+  },
   surface_temperature = 15.0,
   transfers = {
     "nullius-box-physics-pack",

@@ -178,7 +178,7 @@ return {
     ["nullius-compressed-volcanic-gas"] = 1440.0,
   },
   initial_stock = {
-    concrete = 50.0,
+    concrete = 60.0,
     ["nullius-acid-sulfuric"] = 200.0,
     ["nullius-ammonia-barrel"] = 10.0,
     ["nullius-compressed-volcanic-gas"] = 1440.0,
@@ -195,7 +195,6 @@ return {
         alternatives = {
           "nullius-chemical-plant-1",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -224,7 +223,7 @@ return {
           type = "item",
         },
         {
-          amount = 50.0,
+          amount = 60.0,
           name = "concrete",
           type = "item",
         },

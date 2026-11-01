@@ -336,8 +336,8 @@ python tools/test_boblogistics_tungsten.py --factorio /path/to/factorio-2.1 --de
 
 - Fluid ingredient/product buffer multipliers now default to 3. Recheck
   pneumatic startup, starvation, fluid capacity, and throughput contracts.
-- Recycling is a separate built-in mod in 2.1. Check that Nullius still disables
-  generated recycling and unwanted quality behavior.
+- Quality is incompatible with Nullius*. Space Age still requires Recycler.
+  Suppress generated recycling recipes and retain Nullius recovery recipes.
 - Science packs can remain tools: 2.1 still uses tool durability for labs.
   Converting every pack into an item is not required.
 - Body ownership, personal autocrafting, and probe alignment pass their real

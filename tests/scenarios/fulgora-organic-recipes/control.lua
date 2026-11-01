@@ -24,7 +24,11 @@ script.on_nth_tick(1,function()
         unbox[recipe.ingredients[1].name]={name=recipe.products[1].name,
           ratio=recipe.products[1].amount/recipe.ingredients[1].amount}
       end
-      if name:match('%-recycling$') then
+      local recycling=false
+      for _,category in pairs(recipe.categories) do
+        recycling=recycling or category=='recycling' or category=='recycling-or-hand-crafting'
+      end
+      if recycling then
         for _,product in pairs(recipe.products) do
           check(product.probability==0 or product.name=='nullius-gas-void','recycling output '..name)
         end

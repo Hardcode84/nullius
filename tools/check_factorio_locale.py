@@ -145,7 +145,8 @@ def prepare_mods(
     enabled.append(mod_name)
     (run_mods / "mod-list.json").write_text(
         json.dumps(
-            {"mods": [{"name": name, "enabled": True} for name in enabled]},
+            {"mods": [{"name": name, "enabled": True} for name in enabled]
+             + [{"name": "quality", "enabled": False}]},
             indent=2,
         )
         + "\n",

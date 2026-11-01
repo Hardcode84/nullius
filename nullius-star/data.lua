@@ -100,8 +100,8 @@ valves["nullius-togglable-small-pump-2-pneumatic"] = { name = "nullius-togglable
 require("prototypes.pneumatic")
 require("prototypes.planet.fulgora-atmosphere")
 
--- Prevent quality mod from generating recycling recipes for nullius items.
--- Quality data-updates.lua runs after all data.lua, so this takes effect
+-- Prevent Recycler from generating recycling recipes for Nullius items.
+-- Recycler data-updates.lua runs after all data.lua, so this takes effect
 -- before recycling generation. Avoids broken icon errors on nullius items.
 -- Only target nullius-prefixed items to avoid breaking other mods.
 for type_name in pairs(defines.prototypes.item) do

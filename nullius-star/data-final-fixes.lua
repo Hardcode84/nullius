@@ -287,12 +287,16 @@ if data.raw.resource["sulfuric-acid-geyser"] then
   data.raw.resource["sulfuric-acid-geyser"].localised_name = {"entity-name.nullius-hcl-geyser"}
 end
 
--- Neuter quality and recycling. SA forces quality mod to load, but
--- Nullius* does not use quality. Disable at prototype level.
+-- Space Age requires Recycler. Disable its generated recycling recipes.
 
--- Hide and disable all recycling recipes (don't delete -- SA refs break).
+local generated_recycling = {}
 for name, recipe in pairs(data.raw.recipe) do
-  if string.find(name, "%-recycling$") then
+  for _, category in pairs(recipe.categories or {recipe.category}) do
+    if category == "recycling" or category == "recycling-or-hand-crafting" then
+      generated_recycling[name] = true
+    end
+  end
+  if generated_recycling[name] then
     recipe.hidden = true
     recipe.enabled = false
     recipe.results = {{type="item",name="nullius-gas-void",amount=1,independent_probability=0}}
@@ -303,46 +307,18 @@ end
 for _, technology in pairs(data.raw.technology) do
   for index=#(technology.effects or {}),1,-1 do
     local effect=technology.effects[index]
-    if effect.type=="unlock-recipe" and effect.recipe:match("%-recycling$") then
+    if effect.type=="unlock-recipe" and generated_recycling[effect.recipe] then
       table.remove(technology.effects,index)
     end
   end
 end
 
--- Disable quality on all recipes.
 local modern = require("factorio-version").is_2_1
 for _, recipe in pairs(data.raw.recipe) do
-  recipe.allow_quality = false
   -- Cold compatibility path: 2.1 removed these recipe display settings.
   if modern then
     recipe.always_show_products = nil
     recipe.show_amount_in_title = nil
-  end
-end
-
--- Flatten all quality tiers.
-for _, quality in pairs(data.raw.quality) do
-  quality.next_probability = 0
-  quality.default_multiplier = 1
-  quality.crafting_machine_speed_multiplier = 1
-  quality.crafting_machine_energy_usage_multiplier = 1
-  quality.inserter_speed_multiplier = 1
-  quality.inventory_size_multiplier = 1
-  quality.lab_research_speed_multiplier = 1
-  quality.mining_drill_resource_drain_multiplier = 1
-  quality.science_pack_drain_multiplier = 1
-  quality.tool_durability_multiplier = 1
-  quality.range_multiplier = 1
-  quality.beacon_power_usage_multiplier = 1
-  quality.fluid_wagon_capacity_multiplier = 1
-  quality.flying_robot_max_energy_multiplier = 1
-  quality.accumulator_capacity_multiplier = 1
-end
-
--- Hide quality modules.
-for _, module in pairs(data.raw.module) do
-  if module.effect and module.effect.quality then
-    module.hidden = true
   end
 end
 

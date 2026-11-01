@@ -8,7 +8,7 @@ drill.energy_source = {type="void"}
 drill.energy_usage = "1W"
 drill.mining_speed = 1
 drill.resource_searching_radius = 0.49
-drill.resource_categories = {"basic-fluid"}
+drill.resource_categories = {"basic-fluid", "nullius-fumarole"}
 drill.module_slots = 0
 drill.allowed_effects = {}
 drill.output_fluid_box.filter = nil
