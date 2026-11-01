@@ -28,6 +28,12 @@ local function add(name, category, seconds, ingredients, results, icon, boxed)
   end
   return recipe
 end
+local carbonation=add("caustic-carbonation","basic-chemistry",4,
+  {{type="fluid",name="nullius-caustic-solution",amount=100},
+   {type="fluid",name="nullius-carbon-dioxide",amount=50}},
+  {{type="fluid",name="nullius-wastewater",amount=80}},
+  "__nullius-star__/graphics/icons/fluid/sludge.png",false)
+carbonation.icons=table.deepcopy(data.raw.fluid["nullius-caustic-solution"].icons)
 for _,fluid in ipairs({"filtered-hydrocarbons","sludge","wastewater","brine"}) do
   local recipe=add("reinject-"..fluid,"nullius-reinjection",2,
     {{type="fluid",name="nullius-"..fluid,amount=20}},
