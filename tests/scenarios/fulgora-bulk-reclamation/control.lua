@@ -81,7 +81,8 @@ script.on_nth_tick(30,function()
       end
       check(divisor==1,'bulk recipe not reduced '..name)
       check(recipe.allowed_effects.productivity==base.allowed_effects.productivity,'productivity parity '..name)
-      check(not recipe.surface_conditions or #recipe.surface_conditions==0,'planet restricted '..name)
+      check(helpers.table_to_json(recipe.surface_conditions or {})==
+        helpers.table_to_json(base.surface_conditions or {}),'surface condition parity '..name)
       local x=(i-1)*24
       local machine=assert(surface.create_entity{name=process=='barrel-recycling' and 'nullius-foundry-1' or 'nullius-flotation-cell-1',position={x,0},force=force})
       machine.set_recipe(name);check(machine.get_recipe().name==name,'machine rejects '..name)

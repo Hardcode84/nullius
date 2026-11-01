@@ -69,6 +69,7 @@ for _, name in ipairs{
     "nullius-arthropod-egg-harvest",
     "nullius-arthropod-harvest",
     "nullius-barrel-recycling",
+    "nullius-boxed-barrel-recycling",
     "nullius-legacy-arthropod-egg-harvest",
     "nullius-legacy-barrel-recycling",
     "nullius-legacy-plastic-pex",

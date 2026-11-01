@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "unavailable_science": ["nullius-electromagnetic-pack"],
   "fuel": "nullius-compressed-volcanic-gas",
   "entrance_technologies": [
     "nullius-pneumatic-technology"

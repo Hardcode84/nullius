@@ -32,10 +32,6 @@ return {
     "nullius-braking-5",
     "nullius-broadcasting-1",
     "nullius-broadcasting-2",
-    "nullius-bulk-hydrocarbon-cracking",
-    "nullius-bulk-polymer-processing",
-    "nullius-bulk-slurry-filtration",
-    "nullius-bulk-storm-climatology",
     "nullius-carbon-sequestration-1",
     "nullius-carbon-sequestration-2",
     "nullius-casting-productivity-1",
@@ -150,7 +146,6 @@ return {
     "nullius-explosives-1",
     "nullius-explosives-2",
     "nullius-fabrication-tools",
-    "nullius-fiber-productivity-1",
     "nullius-filtration-1",
     "nullius-flotation-1",
     "nullius-flotation-2",
@@ -164,17 +159,14 @@ return {
     "nullius-geothermal-power-2",
     "nullius-glassmaking-1",
     "nullius-glassmaking-2",
-    "nullius-grounding-coils-2",
     "nullius-high-pressure-chemistry",
     "nullius-hot-metalworking",
     "nullius-hydrocarbon-combustion-1",
     "nullius-hydrocarbon-combustion-2",
     "nullius-hydrocarbon-combustion-3",
-    "nullius-hydrocarbon-productivity-1",
     "nullius-hydrology-1",
     "nullius-illumination-1",
     "nullius-illumination-2",
-    "nullius-improved-polymer-doping",
     "nullius-inorganic-chemistry-1",
     "nullius-inorganic-chemistry-2",
     "nullius-inserter-capacity-1",
@@ -254,7 +246,6 @@ return {
     "nullius-organic-chemistry-4",
     "nullius-organic-chemistry-5",
     "nullius-organic-chemistry-6",
-    "nullius-overcharged-assembly-2",
     "nullius-packaging-1",
     "nullius-packaging-2",
     "nullius-packaging-3",
@@ -273,7 +264,6 @@ return {
     "nullius-plumbing-4",
     "nullius-plumbing-5",
     "nullius-pneumatic-technology",
-    "nullius-polymerization-productivity-1",
     "nullius-pressure-containment",
     "nullius-primitive-filtration",
     "nullius-primitive-robotics",
@@ -309,10 +299,8 @@ return {
     "nullius-storage-1",
     "nullius-storage-2",
     "nullius-storage-3",
-    "nullius-storm-climatology",
     "nullius-sulfur-processing-1",
     "nullius-sulfur-processing-2",
-    "nullius-supercapacitors",
     "nullius-thermal-engineering-2",
     "nullius-thermal-storage-1",
     "nullius-thermal-storage-2",
@@ -1134,6 +1122,30 @@ return {
     {
       cycles = 5,
       electric = false,
+      fuel_per_cycle = 5.9,
+      heat = false,
+      ingredients = {
+        {
+          amount = 20,
+          name = "stone",
+          type = "item",
+        },
+      },
+      machine = "nullius-small-assembler-1-pneumatic",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-stone",
+          type = "item",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-box-stone",
+      seconds_per_cycle = 2.0,
+    },
+    {
+      cycles = 5,
+      electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
       ingredients = {
@@ -1291,7 +1303,7 @@ return {
       ingredients = {
         {
           amount = 1,
-          name = "nullius-box-gypsum",
+          name = "nullius-box-stone",
           type = "item",
         },
       },
@@ -1299,52 +1311,13 @@ return {
       outputs = {
         {
           amount = 1,
-          name = "nullius-box-mineral-dust",
+          name = "nullius-box-gravel",
           type = "item",
         },
       },
-      productivity = 0,
-      recipe = "nullius-boxed-gypsum-disposal",
-      seconds_per_cycle = 2.5,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 962.5,
-      heat = false,
-      ingredients = {
-        {
-          amount = 1000,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-        {
-          amount = 225,
-          name = "nullius-compressed-oxygen",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-flotation-cell-2-pneumatic",
-      outputs = {
-        {
-          amount = 8,
-          name = "nullius-box-gypsum",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-        {
-          amount = 750,
-          name = "nullius-wastewater",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-gypsum-recovery",
-      seconds_per_cycle = 50.0,
+      productivity = 0.4,
+      recipe = "nullius-boxed-gravel",
+      seconds_per_cycle = 1.25,
     },
     {
       cycles = 5,
@@ -1505,6 +1478,30 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-mechanical-pack-1",
       seconds_per_cycle = 18.75,
+    },
+    {
+      cycles = 5,
+      electric = false,
+      fuel_per_cycle = 0,
+      heat = true,
+      ingredients = {
+        {
+          amount = 6,
+          name = "nullius-box-gravel",
+          type = "item",
+        },
+      },
+      machine = "nullius-crusher-2-thermal",
+      outputs = {
+        {
+          amount = 5,
+          name = "nullius-box-mineral-dust",
+          type = "item",
+        },
+      },
+      productivity = 0.4,
+      recipe = "nullius-boxed-mineral-dust",
+      seconds_per_cycle = 7.5,
     },
     {
       cycles = 5,
@@ -1683,30 +1680,6 @@ return {
       },
       productivity = 0,
       recipe = "nullius-boxed-salt",
-      seconds_per_cycle = 5.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 0,
-      heat = true,
-      ingredients = {
-        {
-          amount = 4,
-          name = "nullius-box-sand",
-          type = "item",
-        },
-      },
-      machine = "nullius-crusher-2-thermal",
-      outputs = {
-        {
-          amount = 3,
-          name = "nullius-box-mineral-dust",
-          type = "item",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-boxed-sand-crushing",
       seconds_per_cycle = 5.0,
     },
     {
@@ -2223,30 +2196,6 @@ return {
       },
       productivity = 0,
       recipe = "nullius-compressed-nitrogen",
-      seconds_per_cycle = 1.0,
-    },
-    {
-      cycles = 5,
-      electric = false,
-      fuel_per_cycle = 49.75,
-      heat = false,
-      ingredients = {
-        {
-          amount = 960,
-          name = "nullius-oxygen",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-surge-compressor-1-pneumatic",
-      outputs = {
-        {
-          amount = 240,
-          name = "nullius-compressed-oxygen",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-compressed-oxygen",
       seconds_per_cycle = 1.0,
     },
     {

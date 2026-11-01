@@ -15,6 +15,31 @@ import subprocess
 import time
 
 
+def wait_for_json(path, wait_for, label):
+    """Read a complete JSON message within the caller's process and time limits."""
+    result = None
+    parse_error = None
+
+    def complete():
+        nonlocal result, parse_error
+        if not path.is_file():
+            return False
+        try:
+            result = json.loads(path.read_text())
+        except json.JSONDecodeError as error:
+            parse_error = error
+            return False
+        return True
+
+    try:
+        wait_for(complete, label)
+    except Exception as error:
+        if parse_error is not None:
+            error.add_note(f"Incomplete or invalid JSON in {path}: {parse_error}")
+        raise
+    return result
+
+
 def stop_process(process) -> None:
     if process.poll() is None:
         process.send_signal(signal.SIGINT)
@@ -257,10 +282,7 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
             wait_for(lambda: action_path.exists() or result_path.exists(), "waiting for scenario")
             if result_path.exists():
                 break
-            try:
-                action = json.loads(action_path.read_text())
-            except json.JSONDecodeError as error:
-                raise TestFailure(f"invalid multiplayer action JSON: {error}") from error
+            action = wait_for_json(action_path, wait_for, "reading multiplayer action")
             if (not isinstance(action, dict) or
                     set(action) - {"id", "action", "player", "configuration_change"} or
                     not isinstance(action.get("id"), int) or
@@ -302,19 +324,12 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
                 start_client("nullius-test-b")
             else:
                 raise TestFailure(f"unknown multiplayer action: {operation}")
-        try:
-            result = json.loads(result_path.read_text())
-        except json.JSONDecodeError as error:
-            raise TestFailure(f"invalid multiplayer result JSON: {error}") from error
+        result = wait_for_json(result_path, wait_for, "reading multiplayer result")
         if result.get("tick", 0) > args.multiplayer_until_tick:
             raise TestFailure("multiplayer scenario exceeded its tick deadline")
         for name, client in clients.items():
             peer_result = run_directory / name / "script-output" / "factorio-tests" / f"{save.stem}.json"
-            wait_for(peer_result.is_file, f"waiting for {name} final assertions")
-            try:
-                peer = json.loads(peer_result.read_text())
-            except json.JSONDecodeError as error:
-                raise TestFailure(f"invalid multiplayer client result: {name}: {error}") from error
+            peer = wait_for_json(peer_result, wait_for, f"reading {name} final assertions")
             if peer != result:
                 raise TestFailure(f"multiplayer client result differs from server: {name}")
             if client.poll() is not None:

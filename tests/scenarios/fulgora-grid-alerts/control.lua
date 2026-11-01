@@ -112,7 +112,8 @@ script.on_nth_tick(30,function()
     peer.opened=storage.foreign_pole
     overload.open{player_index=peer.index,entity=storage.foreign_pole}
     button=peer.gui.relative.nullius_fulgora_grid.nullius_fulgora_grid_reset
-    check(button.enabled,"own reset button disabled")
+    check(button.enabled,"own reset button disabled: pole force="..storage.foreign_pole.force.name..
+      ", player force="..peer.force.name..", offline="..tostring(overload.offline(storage.foreign_pole)))
     overload.click{player_index=peer.index,element=button}
     check(not overload.offline(storage.other) and not overload.offline(storage.foreign_pole),"reset did not clear shared group")
     check(#alerts(player,MESSAGE)==0 and #alerts(peer,MESSAGE)==0,"shared reset retained alerts")

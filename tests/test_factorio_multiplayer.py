@@ -7,11 +7,35 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.factorio_multiplayer import force_configuration_change, client_environment, prepare_client_mods, validate_client_log, virtual_display
+from tools.factorio_multiplayer import force_configuration_change, client_environment, prepare_client_mods, validate_client_log, virtual_display, wait_for_json
 from tools.run_factorio_tests import TestFailure
 
 
 class MultiplayerDisplayTests(unittest.TestCase):
+    def test_message_read_waits_for_complete_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            def wait(predicate, label):
+                self.assertFalse(predicate())
+                path.write_text("")
+                self.assertFalse(predicate())
+                path.write_text('{"status":')
+                self.assertFalse(predicate())
+                path.write_text('{"status":"pass"}')
+                self.assertTrue(predicate())
+            self.assertEqual(wait_for_json(path, wait, "result"), {"status": "pass"})
+
+    def test_invalid_message_retains_deadline_and_parse_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            path.write_text("invalid")
+            def wait(predicate, label):
+                self.assertFalse(predicate())
+                raise TestFailure("wall deadline")
+            with self.assertRaisesRegex(TestFailure, "wall deadline") as caught:
+                wait_for_json(path, wait, "result")
+            self.assertIn("Incomplete or invalid JSON", caught.exception.__notes__[0])
+
     def test_configuration_reload_changes_only_private_manifests(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
