@@ -1,0 +1,546 @@
+{
+  "scope": "Fulgora recipe modules, organic substitutes, ordinary reclamation references, and shared disposal additions; excludes upstream and Vulcanus-only recipes.",
+  "recipes": [
+    {
+      "name": "nullius-doped-polymer-gear",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-doped-polymer-gear",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-doped-polymer-gear"
+    },
+    {
+      "name": "nullius-doped-polymer-wire",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-doped-polymer-wire",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-doped-polymer-wire"
+    },
+    {
+      "name": "nullius-reinforced-polymer-gear",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-fiber-reinforced-polymers"
+      ]
+    },
+    {
+      "name": "nullius-boxed-reinforced-polymer-gear",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-reinforced-polymer-gear"
+    },
+    {
+      "name": "nullius-fiber-cable",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-fiber-reinforced-polymers"
+      ]
+    },
+    {
+      "name": "nullius-boxed-fiber-cable",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-fiber-cable"
+    },
+    {
+      "name": "nullius-improved-doped-polymer-gear",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-improved-polymer-doping"
+      ]
+    },
+    {
+      "name": "nullius-boxed-improved-doped-polymer-gear",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-improved-doped-polymer-gear"
+    },
+    {
+      "name": "nullius-improved-doped-polymer-wire",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-improved-polymer-doping"
+      ]
+    },
+    {
+      "name": "nullius-boxed-improved-doped-polymer-wire",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-improved-doped-polymer-wire"
+    },
+    {
+      "name": "nullius-fulgora-iron-chlorination",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-improved-polymer-doping"
+      ]
+    },
+    {
+      "name": "nullius-boxed-fulgora-iron-chlorination",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-fulgora-iron-chlorination"
+    },
+    {
+      "name": "nullius-composite-beam",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-composite-beam",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-polymer-processing"
+      ],
+      "ordinary": "nullius-composite-beam"
+    },
+    {
+      "name": "nullius-hydrocarbon-slurry-filtration",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-hydrocarbon-slurry-filtration",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-slurry-filtration"
+      ],
+      "ordinary": "nullius-hydrocarbon-slurry-filtration"
+    },
+    {
+      "name": "nullius-hydrocarbon-cracking",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-hydrocarbon-cracking",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-hydrocarbon-cracking"
+      ],
+      "ordinary": "nullius-hydrocarbon-cracking"
+    },
+    {
+      "name": "nullius-ice-melting",
+      "classification": "shared bootstrap utility",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-ice-melting",
+      "classification": "bulk shared bootstrap utility",
+      "requires": [
+        "nullius-mass-production-4"
+      ],
+      "ordinary": "nullius-ice-melting"
+    },
+    {
+      "name": "nullius-salt-disposal",
+      "classification": "shared bootstrap utility",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-salt-disposal",
+      "classification": "bulk shared bootstrap utility",
+      "requires": [
+        "nullius-mass-production-4"
+      ],
+      "ordinary": "nullius-salt-disposal"
+    },
+    {
+      "name": "nullius-salt-dissolution",
+      "classification": "shared bootstrap utility",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-boxed-salt-dissolution",
+      "classification": "bulk shared bootstrap utility",
+      "requires": [
+        "nullius-mass-production-4"
+      ],
+      "ordinary": "nullius-salt-dissolution"
+    },
+    {
+      "name": "nullius-crude-sludge-filtration",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-magnetic-sludge-filtration",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-climatology-pack-fulgora",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-electromagnetic-pack",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-grounding-coil",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-reinject-filtered-hydrocarbons",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-reinject-sludge",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-reinject-wastewater",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-reinject-brine",
+      "classification": "Fulgora bootstrap",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-limestone-recovery",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-limestone-recovery",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-limestone-recovery"
+    },
+    {
+      "name": "nullius-iron-recovery",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-iron-recovery",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-iron-recovery"
+    },
+    {
+      "name": "nullius-bauxite-recovery",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-bauxite-recovery",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-bauxite-recovery"
+    },
+    {
+      "name": "nullius-sand-recovery",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-sand-recovery",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-sand-recovery"
+    },
+    {
+      "name": "nullius-gypsum-recovery",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-gypsum-recovery",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-gypsum-recovery"
+    },
+    {
+      "name": "nullius-borate-leaching",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-borate-leaching",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-borate-leaching"
+    },
+    {
+      "name": "nullius-barrel-recycling",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-barrel-recycling",
+      "classification": "bulk shared reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "nullius-barrel-recycling"
+    },
+    {
+      "name": "stone",
+      "classification": "shared reclamation",
+      "requires": [
+        "nullius-waste-reclamation"
+      ]
+    },
+    {
+      "name": "nullius-boxed-stone-recovery",
+      "classification": "bulk reclamation",
+      "requires": [
+        "nullius-bulk-waste-reclamation"
+      ],
+      "ordinary": "stone"
+    },
+    {
+      "name": "nullius-climatology-pack-fulgora-2",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-storm-climatology"
+      ]
+    },
+    {
+      "name": "nullius-boxed-climatology-pack-fulgora-2",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-mass-production-7"
+      ],
+      "ordinary": "nullius-climatology-pack-fulgora-2"
+    },
+    {
+      "name": "nullius-electromagnetic-pack-improved",
+      "classification": "Fulgora science",
+      "requires": [
+        "nullius-overcharged-assembly-2"
+      ]
+    },
+    {
+      "name": "nullius-boxed-electromagnetic-pack",
+      "classification": "bulk Fulgora science",
+      "requires": [
+        "nullius-overcharged-assembly-3"
+      ],
+      "ordinary": "nullius-electromagnetic-pack-improved"
+    },
+    {
+      "name": "nullius-box-electromagnetic-pack",
+      "classification": "science packaging",
+      "requires": [
+        "nullius-overcharged-assembly-3"
+      ]
+    },
+    {
+      "name": "nullius-unbox-electromagnetic-pack",
+      "classification": "science packaging",
+      "requires": [
+        "nullius-overcharged-assembly-3"
+      ]
+    },
+    {
+      "name": "nullius-box-ice",
+      "classification": "shared packaging",
+      "requires": [
+        "nullius-packaging-3"
+      ]
+    },
+    {
+      "name": "nullius-unbox-ice",
+      "classification": "shared packaging",
+      "requires": [
+        "nullius-packaging-3"
+      ]
+    },
+    {
+      "name": "nullius-grounding-coil-2",
+      "classification": "Fulgora equipment",
+      "requires": [
+        "nullius-grounding-coils-2"
+      ]
+    },
+    {
+      "name": "nullius-grounding-coil-3",
+      "classification": "Fulgora equipment",
+      "requires": [
+        "nullius-grounding-coils-3"
+      ]
+    },
+    {
+      "name": "nullius-air-separation-fulgora",
+      "classification": "surface-specific atmospheric utility",
+      "requires": [
+        "nullius-primitive-filtration"
+      ]
+    },
+    {
+      "name": "nullius-air-separation-fulgora-2",
+      "classification": "surface-specific atmospheric utility",
+      "requires": [
+        "nullius-air-separation-2"
+      ]
+    },
+    {
+      "name": "nullius-residual-separation-fulgora",
+      "classification": "surface-specific atmospheric utility",
+      "requires": [
+        "nullius-air-separation-2"
+      ]
+    },
+    {
+      "name": "nullius-pressure-air-separation-fulgora",
+      "classification": "surface-specific atmospheric utility",
+      "requires": [
+        "nullius-high-pressure-chemistry"
+      ]
+    },
+    {
+      "name": "nullius-pressure-residual-separation-fulgora",
+      "classification": "surface-specific atmospheric utility",
+      "requires": [
+        "nullius-high-pressure-chemistry"
+      ]
+    },
+    {
+      "name": "nullius-gypsum-disposal",
+      "classification": "shared waste disposal",
+      "requires": [
+        "nullius-waste-management"
+      ]
+    },
+    {
+      "name": "nullius-boxed-gypsum-disposal",
+      "classification": "bulk shared waste disposal",
+      "requires": [
+        "nullius-mass-production-7"
+      ],
+      "ordinary": "nullius-gypsum-disposal"
+    },
+    {
+      "name": "nullius-carbon-gasification-1",
+      "classification": "shared waste disposal",
+      "requires": [
+        "nullius-organic-chemistry-2"
+      ]
+    },
+    {
+      "name": "nullius-boxed-carbon-gasification-1",
+      "classification": "bulk shared waste disposal",
+      "requires": [
+        "nullius-mass-production-4"
+      ],
+      "ordinary": "nullius-carbon-gasification-1"
+    },
+    {
+      "name": "nullius-carbon-gasification-2",
+      "classification": "shared chemistry",
+      "requires": [
+        "nullius-high-pressure-chemistry-2"
+      ]
+    },
+    {
+      "name": "nullius-boxed-carbon-gasification-2",
+      "classification": "bulk shared chemistry",
+      "requires": [
+        "nullius-high-pressure-chemistry-2"
+      ],
+      "ordinary": "nullius-carbon-gasification-2"
+    },
+    {
+      "name": "nullius-caustic-carbonation",
+      "classification": "shared waste disposal",
+      "requires": [
+        "nullius-inorganic-chemistry-1"
+      ]
+    }
+  ],
+  "absent": [
+    "nullius-boxed-crude-sludge-filtration",
+    "nullius-boxed-climatology-pack-fulgora"
+  ]
+}
