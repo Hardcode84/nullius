@@ -480,13 +480,12 @@ supplied salt, ice, and sludge. It proves an acid route without mineral inputs;
 it does not prove continuous disposal of its co-products.
 Waste reclamation now follows Concrete 1, Nitrogen Chemistry 1, and Sulfur
 Processing 1. It costs 220 of each early science pack, at 30 seconds per unit.
-The five original recovery recipes, gypsum recovery, and barrel recycling unlock
-together. Gypsum recovery takes 20 seconds in flotation cell 1. Its boxed recipe
-uses 1000 sludge and 225 compressed oxygen, takes 100 seconds, and returns
-8 gypsum boxes, 4 sand boxes, and 750 wastewater. Productivity is disabled.
-Limestone and stone recovery use water instead of freshwater on every planet.
-Stone recovery uses 250 sludge, 4 cement, and 200 water to make 15 stone and
-150 wastewater in 30 seconds. Both have boxed recipes at five times the scale.
+The ordinary mineral recovery recipes, borate leaching, and barrel recycling
+unlock together. Bulk Waste Reclamation unlocks boxed variants of all these
+recipes. It requires Waste Reclamation, Overcharged Assembly 2, and Packaging 4,
+and uses electromagnetic science. The recipes work on all planets. Gypsum recovery
+excludes productivity; its boxed recipe uses compressed oxygen. Limestone and stone recovery use water instead
+of freshwater.
 The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
 balance for local supplies, outputs, reagents, and recycle streams.
 

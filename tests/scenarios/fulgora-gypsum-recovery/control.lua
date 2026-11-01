@@ -1,6 +1,6 @@
 -- given: one ordinary/boxed batch: 200/1000 sludge and 180 oxygen/225 compressed oxygen.
 -- place/connect: flotation cell 1, two input pipes and a wastewater pipe bank per cell.
--- act: unlock Waste Reclamation; connect oxygen at tick 600 on Fulgora.
+-- act: unlock ordinary and bulk waste reclamation; connect oxygen at tick 600 on Fulgora.
 -- run: finite reagent feeds and explicit 10 MW electric grids.
 -- expect: 8 gypsum and 4 sand items/boxes, 150/750 wastewater, no early craft.
 local CASE='fulgora-gypsum-recovery'
@@ -21,6 +21,8 @@ script.on_nth_tick(30,function()
       check(not force.recipes[prefix..'gypsum-recovery'].enabled,'primitive filtration must not unlock recovery')
     end
     force.technologies['nullius-waste-reclamation'].researched=true
+    check(not force.recipes['nullius-boxed-gypsum-recovery'].enabled,'ordinary research unlocked bulk gypsum-recovery')
+    force.technologies['nullius-bulk-waste-reclamation'].researched=true
     local planet=game.planets['nullius-fulgora']
     local surface=planet.surface or planet.create_surface()
     surface.request_to_generate_chunks({0,0},3);surface.force_generate_chunk_requests()
@@ -29,7 +31,7 @@ script.on_nth_tick(30,function()
       local scale=boxed and 5 or 1
       local name='nullius-'..(boxed and 'boxed-' or '')..'gypsum-recovery'
       local recipe=prototypes.recipe[name]
-      check(force.recipes[name].enabled,'Waste Reclamation unlock '..name)
+      check(force.recipes[name].enabled,'reclamation research unlock '..name)
       check(recipe.energy==20*scale,'craft duration '..name)
       check(not recipe.allowed_effects.productivity,'no productivity '..name)
       check(not recipe.surface_conditions or #recipe.surface_conditions==0,'no planet restriction '..name)

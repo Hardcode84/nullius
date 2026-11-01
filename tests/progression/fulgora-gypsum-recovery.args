@@ -1,6 +1,6 @@
 @tests/progression/planner/fulgora-bootstrap-timing.args
 --technology
-nullius-waste-reclamation
+nullius-bulk-waste-reclamation
 --available
 nullius-sludge
 --available

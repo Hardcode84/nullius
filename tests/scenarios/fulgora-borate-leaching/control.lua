@@ -1,6 +1,6 @@
 -- given: one ordinary/boxed batch: 100/500 sludge, 20/100 acid, 20/100 water.
 -- place/connect: chemical plant 1, three input pipes and a wastewater pipe bank per cell.
--- act: unlock Waste Reclamation; connect water at tick 600 on Fulgora.
+-- act: unlock ordinary and bulk waste reclamation; connect water at tick 600 on Fulgora.
 -- run: finite reagent feeds and explicit 10 MW electric grids.
 -- expect: one boric acid and gypsum item/box, 80/400 wastewater, no early craft.
 local CASE='fulgora-borate-leaching'
@@ -21,6 +21,8 @@ script.on_nth_tick(30,function()
       check(not force.recipes[prefix..'borate-leaching'].enabled,'primitive filtration must not unlock leaching')
     end
     force.technologies['nullius-waste-reclamation'].researched=true
+    check(not force.recipes['nullius-boxed-borate-leaching'].enabled,'ordinary research unlocked bulk borate-leaching')
+    force.technologies['nullius-bulk-waste-reclamation'].researched=true
     local planet=game.planets['nullius-fulgora']
     local surface=planet.surface or planet.create_surface()
     surface.request_to_generate_chunks({0,0},3);surface.force_generate_chunk_requests()
@@ -29,7 +31,7 @@ script.on_nth_tick(30,function()
       local scale=boxed and 5 or 1
       local name='nullius-'..(boxed and 'boxed-' or '')..'borate-leaching'
       local recipe=prototypes.recipe[name]
-      check(force.recipes[name].enabled,'Waste Reclamation unlock '..name)
+      check(force.recipes[name].enabled,'reclamation research unlock '..name)
       check(recipe.energy==10*scale,'craft duration '..name)
       check(not recipe.allowed_effects.productivity,'no productivity '..name)
       check(not recipe.surface_conditions or #recipe.surface_conditions==0,'no planet restriction '..name)

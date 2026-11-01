@@ -135,10 +135,15 @@ for _,boxed in ipairs({false,true}) do
   }})
 end
 
-for _,mineral in ipairs({"limestone","stone"}) do
-  local base=data.raw.recipe["nullius-"..mineral.."-recovery"]
+local function gcd(a,b)
+  while b~=0 do a,b=b,a%b end
+  return a
+end
+for _,process in ipairs({"limestone-recovery","stone-recovery","iron-recovery",
+    "bauxite-recovery","sand-recovery","barrel-recycling"}) do
+  local base=data.raw.recipe["nullius-"..process]
   local boxed=table.deepcopy(base)
-  boxed.name="nullius-boxed-"..mineral.."-recovery"
+  boxed.name="nullius-boxed-"..process
   boxed.localised_name={"recipe-name.nullius-boxed",base.localised_name}
   boxed.energy_required=base.energy_required*5
   for _,entries in ipairs({boxed.ingredients,boxed.results}) do
@@ -146,10 +151,21 @@ for _,mineral in ipairs({"limestone","stone"}) do
       if entry.type=="fluid" then
         entry.amount=entry.amount*5
       else
-        entry.name="nullius-box-"..entry.name:gsub("^nullius%-","")
+        local original=entry.name
+        entry.name=assert(BOXED_ITEM_MAPPING[original],"Missing box for "..original)
+        if DOUBLE_RATIO_BOX[original] then entry.amount=entry.amount/2 end
       end
     end
   end
-  boxed.main_product="nullius-box-"..base.main_product:gsub("^nullius%-","")
+  if base.main_product then boxed.main_product=assert(BOXED_ITEM_MAPPING[base.main_product]) end
+  boxed.categories={process=="barrel-recycling" and "machine-casting" or "ore-flotation"}
+  local divisor=0
+  for _,entries in ipairs({boxed.ingredients,boxed.results}) do
+    for _,entry in ipairs(entries) do divisor=gcd(divisor,entry.amount) end
+  end
+  for _,entries in ipairs({boxed.ingredients,boxed.results}) do
+    for _,entry in ipairs(entries) do entry.amount=entry.amount/divisor end
+  end
+  boxed.energy_required=boxed.energy_required/divisor
   data:extend({boxed})
 end

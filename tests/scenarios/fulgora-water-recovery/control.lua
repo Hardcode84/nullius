@@ -2,7 +2,7 @@
 -- and 5 soda ash items/boxes; stone uses 250/1250 sludge, 200/1000 water,
 -- and 4 cement items/boxes. Supply 10 MW per cell, no freshwater.
 -- place/connect: four flotation cells on Fulgora with pipes for both inputs and waste.
--- act: unlock Waste Reclamation, delay water connection until tick 600.
+-- act: unlock ordinary and bulk waste reclamation, delay water connection until tick 600.
 -- run: finite reagent feeds until tick 12000.
 -- expect: exact ordinary/boxed outputs, complete consumption, no early craft.
 local CASE='fulgora-water-recovery'
@@ -26,6 +26,9 @@ script.on_nth_tick(30,function()
       end
     end
     force.technologies['nullius-waste-reclamation'].researched=true
+    check(not force.recipes['nullius-boxed-limestone-recovery'].enabled,'ordinary research unlocked bulk limestone-recovery')
+    check(not force.recipes['nullius-boxed-stone-recovery'].enabled,'ordinary research unlocked bulk stone-recovery')
+    force.technologies['nullius-bulk-waste-reclamation'].researched=true
     local planet=game.planets['nullius-fulgora']
     local surface=planet.surface or planet.create_surface()
     surface.request_to_generate_chunks({0,0},3);surface.force_generate_chunk_requests()
@@ -39,7 +42,7 @@ script.on_nth_tick(30,function()
       local name='nullius-'..(boxed and 'boxed-' or '')..kind..'-recovery'
       if not boxed and stone then name='stone' end
       local recipe=prototypes.recipe[name]
-      check(force.recipes[name].enabled,'Waste Reclamation unlock '..name)
+      check(force.recipes[name].enabled,'reclamation research unlock '..name)
       check(recipe.energy==(stone and 30 or 20)*scale,'craft duration '..name)
       check(recipe.allowed_effects.productivity==prototypes.recipe[stone and 'stone' or 'nullius-limestone-recovery'].allowed_effects.productivity,'productivity parity '..name)
       check(not recipe.surface_conditions or #recipe.surface_conditions==0,'no planet restriction '..name)

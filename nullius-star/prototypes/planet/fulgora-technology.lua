@@ -25,12 +25,27 @@ for _,name in ipairs({"nullius-box-ice", "nullius-unbox-ice"}) do
     {type="unlock-recipe",recipe=name})
 end
 
-for _,name in ipairs({"nullius-borate-leaching","nullius-boxed-borate-leaching",
-    "nullius-gypsum-recovery","nullius-boxed-gypsum-recovery",
-    "nullius-boxed-limestone-recovery","nullius-boxed-stone-recovery"}) do
+for _,name in ipairs({"nullius-borate-leaching","nullius-gypsum-recovery"}) do
   table.insert(data.raw.technology["nullius-waste-reclamation"].effects,
     {type="unlock-recipe",recipe=name})
 end
+
+local bulk_recovery={}
+for _,name in ipairs({"limestone-recovery","stone-recovery","iron-recovery",
+    "bauxite-recovery","sand-recovery","gypsum-recovery","borate-leaching","barrel-recycling"}) do
+  bulk_recovery[#bulk_recovery+1]={type="unlock-recipe",recipe="nullius-boxed-"..name}
+end
+data:extend({{
+  type="technology",name="nullius-bulk-waste-reclamation",
+  icon="__nullius-star__/graphics/icons/fluid/sludge.png",icon_size=64,
+  order="nullius-dg-bulk-waste-reclamation",
+  prerequisites={"nullius-waste-reclamation","nullius-overcharged-assembly-2","nullius-packaging-4"},
+  effects=bulk_recovery,
+  unit={count=10,time=45,ingredients={
+    {"nullius-electromagnetic-pack",20},{"nullius-climatology-pack",4},
+    {"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
+  }},
+}})
 
 local function overcharged(tier, count, seconds, ingredients, prerequisites)
   local description = {"technology-description.nullius-overcharged-assembly-" .. tier}
