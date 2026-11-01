@@ -13,7 +13,10 @@
   },
   "character": "character",
   "raw": {
-    "nullius-hydrocarbon-slurry": {"resource": "nullius-hydrocarbon-vent", "machine": "nullius-extractor-1"}
+    "nullius-hydrocarbon-slurry": {
+      "resource": "nullius-hydrocarbon-vent",
+      "machine": "nullius-extractor-1"
+    }
   },
   "starter_items": [
     "nullius-extractor-1",
@@ -286,6 +289,13 @@
     "nullius-one-way-valve",
     "nullius-grid-battery-1",
     "nullius-grounding-coil",
-    "nullius-extractor-1"
+    "nullius-extractor-1",
+    "nullius-geology-pack",
+    "nullius-climatology-pack",
+    "nullius-mechanical-pack",
+    "nullius-electrical-pack",
+    "nullius-chemical-pack",
+    "nullius-electromagnetic-pack",
+    "nullius-physics-pack"
   ]
 }

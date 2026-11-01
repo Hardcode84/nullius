@@ -36,6 +36,7 @@ return {
     "nullius-bulk-polymer-processing",
     "nullius-bulk-slurry-filtration",
     "nullius-bulk-storm-climatology",
+    "nullius-bulk-waste-reclamation",
     "nullius-carbon-sequestration-1",
     "nullius-carbon-sequestration-2",
     "nullius-casting-productivity-1",
@@ -151,6 +152,7 @@ return {
     "nullius-explosives-2",
     "nullius-fabrication-tools",
     "nullius-fiber-productivity-1",
+    "nullius-fiber-reinforced-polymers",
     "nullius-filtration-1",
     "nullius-flotation-1",
     "nullius-flotation-2",
@@ -3674,6 +3676,50 @@ return {
       productivity = 0,
       recipe = "nullius-boxed-salt-dissolution",
       seconds_per_cycle = 2.5,
+    },
+    {
+      cycles = 5,
+      electric = true,
+      fuel_per_cycle = 0,
+      heat = false,
+      ingredients = {
+        {
+          amount = 500,
+          name = "nullius-sludge",
+          type = "fluid",
+        },
+        {
+          amount = 450,
+          name = "nullius-acid-hydrochloric",
+          type = "fluid",
+        },
+      },
+      machine = "nullius-flotation-cell-2",
+      outputs = {
+        {
+          amount = 4,
+          name = "nullius-box-sand",
+          type = "item",
+        },
+        {
+          amount = 2,
+          name = "nullius-box-crushed-iron-ore",
+          type = "item",
+        },
+        {
+          amount = 375,
+          name = "nullius-wastewater",
+          type = "fluid",
+        },
+        {
+          amount = 250,
+          name = "nullius-carbon-dioxide",
+          type = "fluid",
+        },
+      },
+      productivity = 0,
+      recipe = "nullius-boxed-sand-recovery",
+      seconds_per_cycle = 25.0,
     },
     {
       cycles = 5,
@@ -8181,50 +8227,6 @@ return {
       productivity = 0,
       recipe = "nullius-saline-electrolysis",
       seconds_per_cycle = 2.0,
-    },
-    {
-      cycles = 5,
-      electric = true,
-      fuel_per_cycle = 0,
-      heat = false,
-      ingredients = {
-        {
-          amount = 200,
-          name = "nullius-sludge",
-          type = "fluid",
-        },
-        {
-          amount = 180,
-          name = "nullius-acid-hydrochloric",
-          type = "fluid",
-        },
-      },
-      machine = "nullius-flotation-cell-2",
-      outputs = {
-        {
-          amount = 8,
-          name = "nullius-sand",
-          type = "item",
-        },
-        {
-          amount = 4,
-          name = "nullius-crushed-iron-ore",
-          type = "item",
-        },
-        {
-          amount = 150,
-          name = "nullius-wastewater",
-          type = "fluid",
-        },
-        {
-          amount = 100,
-          name = "nullius-carbon-dioxide",
-          type = "fluid",
-        },
-      },
-      productivity = 0,
-      recipe = "nullius-sand-recovery",
-      seconds_per_cycle = 10.0,
     },
     {
       cycles = 5,

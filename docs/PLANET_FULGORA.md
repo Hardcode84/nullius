@@ -486,8 +486,8 @@ recipes. It requires Waste Reclamation, Overcharged Assembly 2, and Packaging 4,
 and uses electromagnetic science. The recipes work on all planets. Gypsum recovery
 excludes productivity; its boxed recipe uses compressed oxygen. Limestone and stone recovery use water instead
 of freshwater.
-The research boundary is checked with Nauvis inputs; Fulgora still needs a planner
-balance for local supplies, outputs, reagents, and recycle streams.
+The Fulgora science planner checks local supplies, reagents, and recycle streams
+without imports, solid discard, or liquid outfall disposal.
 
 Crude sludge filtration supplies gypsum without acid. Selective recovery uses
 oxygen from water electrolysis. Existing
@@ -1036,9 +1036,10 @@ and process construction are locally available in the declared research model.
 
 `tools/audit_factorio_building_bootstrap.py` with
 `tests/progression/fulgora-building-bootstrap.json` checks the wreck fleet,
-physics-plan machines, logistics, power equipment, and checkpoint materials.
+physics-plan machines, logistics, power equipment, checkpoint materials, and all
+science packs through physics.
 Pass a fresh factory plan with `--plan` and an output path with `--output`.
-All 88 targets pass, including 63 placeable items. Research and crafting machines
+The targets pass from the landing research boundary. Research and crafting machines
 become available in dependency order; no later machine is supplied as a seed.
 
 Extractor construction needs a well item, but does not need to place the well.
