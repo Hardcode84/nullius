@@ -886,6 +886,119 @@ Space platforms in Nullius context could be:
 - **Solar power collection** above atmosphere (no wind, but constant solar at higher output)
 - **Zero-gravity manufacturing** for specific recipes (nanotechnology in microgravity?)
 
+### 4.5 Astronomy: Interplanetary Interferometry
+
+Design only. The storm controller mechanism is validated by
+`experiment-storm-interference`; see [Measured engine contracts](#measured-engine-contracts).
+
+The astronomy pack decodes the progenitor's interstellar signal. One planet's
+array cannot separate it from noise; baselines between planets can. Raw
+recordings are too large to transmit, so cargo carries them to a correlator.
+Every array keeps time with a local hydrogen maser.
+
+```yaml
+removed_sources:
+  satellite_launch: 100 boxed astronomy packs (500)
+  probe_launch: 1000 boxed astronomy packs (5000); 10 probes are a mission objective
+retained: satellite and probe remain ingredients and mission items; launches return nothing
+new_source: correlation of interferometric recordings
+unlock: nullius-astronomy; prerequisites unchanged, including rocket-science-2
+array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
+```
+
+#### Dish
+
+| Property | Rule |
+|---|---|
+| Spacing | Dishes reserve space only against other dishes, using the wind turbine mechanism: script-owned hidden fields on a dish-only collision layer. Other buildings may fill the gaps |
+| Field geometry | Wind turbine geometry: four fields reaching 30.5 tiles from the dish centre |
+| Collision layer | Dedicated layer; dishes do not interact with wind turbines or grounding coils, which share `layer_43` |
+| Recipe | One local dish recipe per planet: 1 blank recording module -> 1 planet recording; planet identity uses the existing selection-time recipe surface-condition contract |
+| Time reference | Hydrogen maser component in each planet's dish building recipe |
+| Nauvis | Electric |
+| Vulcanus | Pneumatic energy source; receiver coolant input |
+| Fulgora | Electric; permitted on sand; storm interference below |
+
+#### Recordings and media
+
+| Item or machine | Rule |
+|---|---|
+| `nullius-<planet>-interferometric-recording` | Produced only by that planet's dish recipe |
+| `nullius-blank-recording-module` | Dish input; crafted locally on every array planet |
+| Spoilage | Recording spoils to a blank module. Spoil time is 1.5 times the longest one-way transit between array planets, from the cargo design |
+| Correlator | Any surface, including platforms; returns every consumed blank module |
+
+#### Correlation ladder
+
+Sensitivity grows with the baseline count, k(k-1)/2 for k distinct planets.
+Each multi-planet recipe takes 10 recordings per planet and yields 10 packs per
+baseline. The single-planet recipe is the bootstrap.
+
+| Planets k | Recordings in | Baselines | Packs out | Packs per recording | Versus single |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 20 | 0 | 1 | 0.05 | 1x |
+| 2 | 20 | 1 | 10 | 0.5 | 10x |
+| 3 | 30 | 3 | 30 | 1.0 | 20x |
+| 4 | 40 | 6 | 60 | 1.5 | 30x |
+| 5 | 50 | 10 | 100 | 2.0 | 40x |
+
+| Rule | Value |
+|---|---|
+| Recipe set | One recipe per non-empty set of distinct array planets, generated in Lua |
+| Recipe names | Planet names in order, e.g. `nullius-correlate-fulgora-nauvis-vulcanus` |
+| Recipe count | 2^P - 1: 7 for 3 planets, 31 for 5 |
+| Subgroups | One per k |
+| Rejected | Pairwise fringe intermediates: they lose planet identity and allow a repeated planet to count as a new station |
+
+Diminishing returns:
+
+| Mechanism | Rule |
+|---|---|
+| Research cost | Astronomy per research unit doubles by tier: 1, 2, 4, 8. Tier assignment uses the planner's measured astronomy demand per technology |
+| Array spread | Mutual spacing spreads single-planet scaling over growing area, and spoiling recordings travel farther to the correlator |
+| Crafting consumers | Genome recipes consume astronomy packs, so the ladder also prices Nauvis terraforming |
+
+#### Fulgora storm interference
+
+```yaml
+property: nullius-storm-intensity          # default 100
+lightning:
+  multiplier_surface_property: nullius-storm-intensity
+  lightning_multiplier_at_day: 1
+  lightning_multiplier_at_night: 1
+driver:
+  cadence: 60 ticks
+  value: 25 by day, 100 by night, linear from dusk to evening and from morning to dawn
+  storm_cycles: later cycles change this value only
+interference: min(1, intensity / 100)      # day 0.25, night 1
+dish_controller:
+  buckets: unit_number % 443, one bucket per tick, as Vulcanus heat
+  duty: 1 - interference
+  dither: accumulator += duty; enable for the next interval when accumulator >= 1, then subtract 1
+  writes: disabled_by_script and custom_status, only on change
+  latency: up to 443 ticks, 4.1% of the 10,800-tick Fulgora day
+dish_recipe: no storm surface condition
+```
+
+#### Measured engine contracts
+
+`experiment-storm-interference`, Factorio 2.1.24, 78 assertions. The control
+surface holds intensity 25; windows last 1200 ticks.
+
+| Contract | Measurement |
+|---|---|
+| Lightning frequency follows value / default | Experiment at 25, 100, 0, 200, 25: strike ratios 1.00, 3.86, 0, 8.40, 0.99 |
+| No clamp above the default | 200 gives 8.40x the control |
+| Property scope | Control surface property and strike rate unchanged |
+| Recipe surface conditions | Checked only at native recipe selection. Running recipes continue at 100 and 200; Lua `set_recipe` accepts failing conditions; refused circuit selection is not retried after the condition clears |
+| `disabled_by_script` | 0 crafts while disabled; 20 crafts per window after re-enabling |
+| Progress across disables | Dithered work equals enabled time: 22.5 of 22.5 crafts (1 s recipe, duty 0.4); 3.0 of 3.0 (10 s recipe, duty 0.5) |
+| Dish acceptance | Assert the power draw of a script-disabled dish in the dish scenario |
+
+```bash
+python tools/run_factorio_tests.py experiment-storm-interference
+```
+
 ---
 
 ## 5. Quality Mechanic
@@ -917,7 +1030,7 @@ Rationale:
 | Electrical | Nauvis electronics | Fulgora (advanced electronics) |
 | Chemical | Nauvis chemistry | Nauvis (stays) or Vulcanus |
 | Physics | Nauvis (complex machines) | Could split: Nauvis + Vulcanus |
-| Astronomy | Nauvis (space program) | Space platform production |
+| Astronomy | Nauvis satellite launch | Interplanetary interferometry; see [4.5](#45-astronomy-interplanetary-interferometry) |
 | Biology packs (7) | Nauvis farming | Gleba (primary) + Nauvis (deployment) |
 
 ### New Packs for SA Planets?

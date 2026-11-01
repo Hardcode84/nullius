@@ -263,6 +263,7 @@ Slurry climatology uses the captured air without seawater.
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
 | Buildings permitted on sand | Extractors, including reinjection mode, power poles, pipes, underground pipes, pumps, elevated rail supports, and grounding coils only |
+| Radio dishes | Design: permitted on sand; see [Radio astronomy](#radio-astronomy) |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
@@ -660,6 +661,7 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 | Cycle candidates | Sine cycle, random superstorms, and longer seasons above the day/night baseline |
 | Baseline metric candidates | Extraction rate, machine count, or cumulative hydrocarbons processed |
 | Forecast | Expose storm information so the player can prepare |
+| Storm intensity | Design: surface property `nullius-storm-intensity` scales native lightning and radio interference; cycles change only this value. See [Radio astronomy](#radio-astronomy) |
 
 ## Lightning and overload
 
@@ -811,6 +813,20 @@ capacity and the organic recovery audit for downstream metal outputs.
 | Organic process optimization | Infinite productivity research for organic chemistry; see below |
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
+| Radio astronomy | Interferometric recordings for astronomy correlation; see below |
+
+### Radio astronomy
+
+Design only. The shared design is
+[interplanetary interferometry](SPACE_AGE_BRAINSTORM.md#45-astronomy-interplanetary-interferometry).
+
+| Fulgora rule | Value |
+|---|---|
+| Dish placement | Island ground or sand; mutual spacing against other dishes only |
+| Power | Electric |
+| Interference | `min(1, nullius-storm-intensity / 100)`: 0.25 by day, 1 by night |
+| Controller | Amortized error-diffusion duty cycle through `disabled_by_script`; 443 buckets |
+| Lightning | Native frequency multiplied by `nullius-storm-intensity / 100`; day and night multipliers become 1 |
 
 ### Organic process optimization
 
