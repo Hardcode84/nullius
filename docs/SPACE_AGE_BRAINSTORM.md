@@ -59,7 +59,7 @@ This reframes Space Age's planet travel as:
   - **Fulgora probe**: Electromagnetic storms fried most equipment. Surviving extractors, a filter, power equipment, pipes, one distillation column, and inserters start local production. See [Fulgora design](PLANET_FULGORA.md).
   - **Gleba probe**: Biological contamination. Organisms overran the probe. Must study and control native life.
   - **Aquilo probe**: Froze solid. Cryogenically preserved but needs heating infrastructure to thaw and restart.
-- **Defers bulk logistics**: Physical cargo rockets come much later (rocket science tier). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer is a late-game unlock that transforms the economy.
+- **Defers bulk logistics**: Physical cargo comes much later (rocket science tier, then space platforms). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer is a late-game unlock that transforms the economy.
 
 ### 2.3 Progression Timeline
 
@@ -75,8 +75,8 @@ MID GAME (Nauvis Tier 3-4):
   Begin: Planet-specific research using local resources
 
 LATE GAME (Nauvis Tier 5+):
-  Research: Interplanetary Cargo (rocket science tier)
-  Effect: Launch cargo rockets between planets
+  Research: Orbital Construction, then Orbital Propulsion (rocket science tier)
+  Effect: Rockets lift cargo to orbit; space platforms carry it between planets and drop it
   Transform: Planets shift from independent outposts to integrated supply chain
 
 ENDGAME:
@@ -92,12 +92,12 @@ Each planet needs enough local resources to get started without imports. The bro
 
 | Planet | Local Power | Local Materials | Local Chemistry | Missing (import later) |
 |---|---|---|---|---|
-| **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Fully pneumatic, no electrical grid. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
+| **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Pneumatic and thermal bootstrap; electricity comes later. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
 | **Fulgora** | Lightning (massive peaks, zero baseload) | Fixed filtration outputs: hydrocarbons, sludge, ice, salt, gypsum. Recover metals from sludge. | Hydrocarbon chemistry; filtered ice supplies water. Combustion uses manufactured oxygen. | Bulk metals, bulk oxygen and water |
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
-**Key design constraint**: Each planet must be playable (if painful) with zero imports. The fun comes from solving "how do I make X with only what's here?" Then later, cargo rockets remove the pain and enable specialization.
+**Key design constraint**: Each planet must be playable (if painful) with zero imports. The fun comes from solving "how do I make X with only what's here?" Then later, cargo removes the pain and enables specialization.
 
 **Broken equipment per planet** (initial probe salvage):
 
@@ -475,7 +475,7 @@ EXPORTS: Tritium, deuterium, lithium, fusion fuel cells, ammonia, cryogenic comp
 IMPORTS: Heat (fuel/energy), metals, electronics, construction materials
 ```
 
-Aquilo solves Nauvis's nuclear endgame bottleneck. Once cargo rockets connect, bulk tritium import transforms fusion from "tritium-starved supplement" to "reliable baseload power."
+Aquilo solves Nauvis's nuclear endgame bottleneck. Once cargo connects, bulk tritium import transforms fusion from "tritium-starved supplement" to "reliable baseload power."
 
 #### Power Question
 
@@ -717,24 +717,47 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 
 ### 4.1 Two Phases of Multi-Planet Play
 
-**Phase 1: Independent Outposts (mid game)**
+**Independent outposts (mid game)**
 - Consciousness transfer only -- no physical cargo
 - Each planet bootstraps from broken probe equipment + local resources
 - Players switch between planets like switching android bodies
 - Painful but possible -- forces creative problem-solving with limited resources
 - **Research is the cross-planet contribution** (see 4.2 below)
 
-**Phase 2: Integrated Supply Chain (late game)**
-- Cargo rockets unlock bulk material transfer
+**Integrated supply chain (late game)**
+- Rockets lift cargo to orbit; space platforms carry it between planets and drop it to the surface
 - Planets specialize: each exports what it's rich in, imports what it lacks
 - Boxing system becomes critical for efficient interplanetary shipping (compressed cargo)
-- Rocket cargo capacity creates natural throughput limits -- cannot just belt everything between planets
+- Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
+- A planet receives before it exports: it needs a landing pad to receive and a silo with rockets to export; see [Cargo closure](#cargo-closure)
 
 ### 4.2 Pre-Cargo Research: How Isolated Planets Contribute
 
 Factorio research is **global per force**. Any lab on any surface contributes to the same tech tree. Science packs are physical items that stay on-planet. This means:
 
 **Each planet produces local science packs from local resources, researches in local labs, and the unlocks apply everywhere.**
+
+#### Research Engine Contracts
+
+`experiment-research-lab-ingredients`, Factorio 2.1.24, 30 assertions, 300-tick windows.
+
+| Contract | Measurement |
+|---|---|
+| A lab needs every ingredient of the active technology | Geology-only lab on Nauvis plus climatology-only lab on a second surface: progress 0, both `missing_science_packs` |
+| Labs do not pool packs across surfaces or entities | Same fixture; progress starts only after one lab holds both packs, and the other lab keeps all its packs |
+| One technology progresses at a time, force-wide | With a climatology technology active, only the climatology lab works; the other technology's progress is unchanged |
+| Idle labs keep their packs | The geology stock survives the idle window |
+| Asymmetric units consume the full ratio | Geology x20 + climatology x1 per unit: one unit from exactly those packs gives 0.1 of a 10-unit technology, then the lab stops |
+
+```bash
+python tools/run_factorio_tests.py experiment-research-lab-ingredients
+```
+
+| Design consequence | Rule |
+|---|---|
+| Planets do not research in parallel | While a Vulcanus-pack technology is active, labs elsewhere idle unless they hold metallurgic packs. Local labs set the pace; the research queue is a player decision |
+| Planets accumulate in parallel | Pack lines keep filling local buffers while another planet's technology runs, so generic trickle lines build a stock between that planet's research turns |
+| No scripted pooling | Research stays native; no script merges progress between labs |
 
 #### Planet-Specific Science Packs
 
@@ -751,20 +774,16 @@ Each planet can produce one or more science packs from purely local materials:
 #### Technology Gating by Pack Availability
 
 ```
-TIER 1-3 (Nauvis only, pre-planets):
-  Requires: Nauvis packs only (geology through chemical)
+TIER 1-4 (Nauvis packs only):
   [Current Nullius progression unchanged]
-
-TIER 4 (Probe reactivation, first planet access):
-  Requires: Nauvis physics pack
-  Unlocks: Probe reactivation tech
+  Probe reactivation sits in this range: geology, climatology, mechanical,
+  electrical; see PLANET_NAUVIS.md
 
 TIER 5 (Single-planet research, no cargo needed):
-  Some techs require: Nauvis packs + ONE off-world pack
-  Example: "Volcanic Metallurgy" needs physics + metallurgic pack
-           --> Research physics portion in Nauvis lab
-           --> Research metallurgic portion in Vulcanus lab
-           --> Both contribute to same tech progress
+  Some techs require: ONE off-world pack + generic packs
+  Every ingredient must be in the same lab, so all are made on that planet
+  Example: "Volcanic Metallurgy" needs metallurgic + local generic packs
+           --> Research in a Vulcanus lab fed only by Vulcanus production
 
   Each planet unlocks globally-useful technologies:
     Vulcanus metallurgic --> advanced alloys, heat-resistant equipment
@@ -772,17 +791,16 @@ TIER 5 (Single-planet research, no cargo needed):
     Gleba biological --> advanced organisms, bio-catalysts
     Aquilo cryogenic --> fusion improvements, exotic physics
 
-TIER 6 (Multi-planet research, some cargo helps):
-  Some techs require packs from 2-3 planets
-  CAN be done without cargo (just slow -- switch consciousness,
-    produce packs locally, research locally)
-  Cargo rockets make it faster by shipping packs to centralized lab
+TIER 6 (Cross-planet chains, no cargo needed):
+  Theory on planet A, then Application on planet B
+  Each technology uses ONE off-world pack + local generic packs
+  Cargo helps only by shipping generic packs
 
-TIER 7+ (Endgame, cargo required):
-  Techs require packs from 4+ planets simultaneously
+TIER 7+ (Combined research, cargo required):
+  One technology uses packs from 2+ planets
   A single lab needs packs from multiple planets in its input slots
   Cannot be researched without interplanetary logistics
-  Forces cargo rocket infrastructure before endgame research
+  Forces platform cargo infrastructure before endgame research
 ```
 
 #### The Key Insight: Asymmetric Pack Multipliers
@@ -797,13 +815,13 @@ Ingredients:
   mechanical-pack x 5       (one-off craft from probe salvage parts)
 ```
 
-The 500 metallurgic packs are the real cost, and they're trivial to produce on Vulcanus. The 10 geology + 5 mechanical packs are a stretch goal -- you need to bootstrap minimal generic science production from whatever the planet offers. Painful, but you only need a trickle.
+The engine expresses this as a per-unit ratio: 5 units of 100 metallurgic + 2 geology + 1 mechanical. The 500 metallurgic packs are the real cost, and they're trivial to produce on Vulcanus. The 10 geology + 5 mechanical packs are a stretch goal -- you need to bootstrap minimal generic science production from whatever the planet offers. Painful, but you only need a trickle.
 
 **This solves several problems:**
 - **No full science infrastructure needed**: You're not replicating Nauvis's 6-pack production chain on Vulcanus. You need a tiny, ugly, inefficient line that drips out a few generic packs.
 - **Planet-specific packs carry the cost**: 95% of the research cost is the local pack. The generic packs are a gate, not a grind.
 - **Bootstrap incentive**: Even a crude 1-per-minute geology pack line on Vulcanus is enough. The player focuses on the fun planet-specific production, not on rebuilding Nauvis.
-- **Scales naturally to cargo era**: Once cargo rockets connect, generic packs flow freely. Pre-cargo, you scrape by with local production.
+- **Scales naturally to cargo era**: Once cargo connects, generic packs flow freely. Pre-cargo, you scrape by with local production.
 
 #### Three Research Scenarios
 
@@ -820,8 +838,8 @@ The 500 metallurgic packs are the real cost, and they're trivial to produce on V
 - No pack transport needed, just two research steps on two planets
 
 **Scenario C: Combined-pack techs (Tier 7+, endgame)**
-- Tech requires large amounts of 4+ pack types simultaneously in one lab
-- Cannot be satisfied by local trickle production
+- Tech requires packs from 2+ planets in one lab
+- Cannot be satisfied by local production on any one planet
 - Forces interplanetary cargo logistics
 - This IS the gating mechanism for endgame research
 
@@ -848,7 +866,11 @@ Each planet gets **alternative recipes** for generic packs using local materials
 
 **The motivation to visit each planet isn't just resources -- it's KNOWLEDGE.** Even without cargo, each planet contributes research that makes ALL planets easier. This gives the player a reason to bootstrap painful outposts: the research payoff is immediate and global, even if physical resources can't flow yet.
 
-### 4.3 What Flows Between Planets (Phase 2)
+### 4.3 What Flows Between Planets (Integrated Supply Chain)
+
+All traffic uses the [space connections](#44-space-platforms): Nauvis is the
+hub, so Vulcanus-Fulgora trade takes two legs through Nauvis. Gleba and Aquilo
+need connections defined with those planets.
 
 ```
 NAUVIS (home, terraforming target):
@@ -914,6 +936,7 @@ constraints:
 | Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
 | Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
 | Waste | Chimneys and voids work in vacuum | Existing |
+| Cargo landing pad | Planet surface; receives platform drops | One item, one local recipe per planet; see [Cargo closure](#cargo-closure) |
 
 #### Titanium recipes
 
@@ -960,10 +983,15 @@ surface-condition checks enforce it.
 | Research | Unlocks | Gate |
 |---|---|---|
 | Orbital construction | Platform core, aluminum foundation recipe, cargo bay, platform solar | Rocket Science 2; Nauvis orbit |
-| Orbital propulsion | Thruster, propellant conditioning | Travel to Vulcanus and Fulgora |
-| Debris mitigation | Bumper, trajectory adjuster | Medium-hazard routes |
+| Orbital propulsion | Thruster, propellant conditioning | Flight on any connection; survives dust routes |
+| Debris mitigation | Bumper, trajectory adjuster | Survives medium-hazard routes |
 | Composite structures | Titanium foundation recipe | Vulcanus titanium and Fulgora polymers |
 | Microgravity processing | Microgravity recipes | Orbital propulsion |
+
+Research does not lock routes. A destination becomes selectable when its probe
+activates (`force.unlock_space_location`); hazard decides whether an unprotected
+platform survives. Nauvis-Vulcanus is the first practical route, and Nauvis-Fulgora
+needs debris mitigation.
 
 #### Engine checks before implementation
 
@@ -971,7 +999,9 @@ surface-condition checks enforce it.
 |---|---|
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
 | Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
-| Item weights for the foundation, canisters, and rocket fuel | Launches per platform and propellant per trip; needs an analyzer weight mode |
+| Item weights for the foundation, canisters, rocket fuel, recordings, and blank modules | Launches per platform, propellant per trip, and launches per correlation; needs an analyzer weight mode |
+| Reference platform thrust and propellant | Reference transit for recording spoilage |
+| Platform drop onto a surface with no landing pad | Whether a planet needs a local pad recipe, or a dropped kit can bootstrap it |
 | Space-platform surface properties | Vacuum placement conditions |
 
 ### 4.5 Astronomy: Interplanetary Interferometry
@@ -1013,7 +1043,10 @@ array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 |---|---|
 | `nullius-<planet>-interferometric-recording` | Produced only by that planet's dish recipe |
 | `nullius-blank-recording-module` | Dish input; crafted locally on every array planet |
-| Spoilage | Recording spoils to a blank module. Spoil time is 1.5 times the longest one-way transit between array planets, from the cargo design |
+| Spoilage | Recording spoils to a blank module. Spoil time is a fixed prototype value: 1.5 times the reference transit |
+| Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital propulsion. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
+| Spoil clock | Starts at dish output, so silo queues and orbit waits count against it |
+| Weight | Recording and blank module weigh the same, so launched sets compare directly |
 | Correlator | Any surface, including platforms; returns every consumed blank module |
 
 Correlator location is a player choice. Single-planet correlation runs on the
@@ -1022,11 +1055,21 @@ correlation cycle launches:
 
 | Location | Recordings launched | Blank media returned | Total launched sets |
 |---|---|---|---|
-| Ground correlator on H | k - 1 | H reuses 1 set; k - 1 sets are launched back | 2(k - 1): 4 for 3 planets, 8 for 5 |
-| Platform correlator | k | Dropped to each array planet | k: 3 for 3 planets, 5 for 5 |
+| Ground correlator on H | k - 1 | H reuses 1 set; k - 1 sets are launched back | 2(k - 1): 2 for 2 planets, 4 for 3, 8 for 5 |
+| Platform correlator | k | Dropped to each array planet | k: 2 for 2 planets, 3 for 3, 5 for 5 |
 
-Platforms win from three planets because drops are free. Correlator power on a
-platform comes from orbital solar: Vulcanus 600, Nauvis 300, Fulgora 120.
+| Rule | Value |
+|---|---|
+| Blank return | Crafting a blank costs more than launching one, checked by the planner. Otherwise remote planets recraft blanks, the ground correlator launches only k - 1 sets, and returned blanks pile up on H with no consumer |
+| Launch comparison | Platforms launch less from three planets because drops are free; at two planets the counts tie |
+| Excluded from the comparison | Building and fuelling the platform, and its visits to every array planet. The platform must visit each planet to collect recordings and drop blanks |
+| Correlator power on a platform | Orbital solar: Vulcanus 600, Nauvis 300, Fulgora 120 |
+
+| Array set | Cargo prerequisite |
+|---|---|
+| One planet | None: ground correlator, no platform |
+| Nauvis + Vulcanus | Orbital propulsion and cargo closure on both planets |
+| Any set with Fulgora | The same, plus debris mitigation |
 
 #### Correlation ladder
 
@@ -1102,7 +1145,8 @@ python tools/run_factorio_tests.py experiment-storm-interference
 ### 4.6 Launch Fuel
 
 Design only. Every exporting planet launches its own rockets, so each needs a
-local route to `rocket-fuel`. Platform thruster propellant is a separate design.
+local route to `rocket-fuel`; the rest of the rocket follows
+[Cargo closure](#cargo-closure). Platform thruster propellant is a separate design.
 
 ```yaml
 current:
@@ -1133,6 +1177,31 @@ gravity_scaling: none
 Fulgora details: [Fulgora rocket fuel](PLANET_FULGORA.md#rocket-fuel). Vulcanus
 details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
 
+#### Cargo closure
+
+A landing pad receives drops, and a silo plus rockets export cargo. Neither
+exists yet on the planets that need them.
+
+| Query | Unresolved today | Traced cause |
+|---|---|---|
+| `tests/progression/vulcanus-launch-closure.args` | `cargo-landing-pad`, `rocket-fuel` | Fuel route is designed above; pad not traced |
+| `tests/progression/fulgora-launch-closure.args` | `cargo-landing-pad`, `nullius-silo`, heat pipe 3, haste module 3 | Heat pipe 3 needs `nullius-compressed-helium`, unresolved at this boundary; haste module 3 consumes heat pipe 3. Pad and silo not traced. This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+
+```bash
+python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
+python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-closure.args
+```
+
+Both queries exit 1 until closure is designed.
+
+| Step | Rule |
+|---|---|
+| Receive | Each planet gets a local `cargo-landing-pad` recipe, like launch fuel: same item, alternative recipes, boxed parity. This assumes a drop needs a pad, so the first drop cannot deliver the pad that receives it; the engine check in [4.4](#engine-checks-before-implementation) decides this |
+| Import | With a pad, a platform can drop parts that have no local route. A drop needs no local silo |
+| Export | A planet exports once its silo, rocket ingredients, and fuel are each local or a named import |
+| Fuel | Always local; importing launch fuel to launch exports defeats the export |
+| Named imports | Listed per planet in that planet's design, and declared with `--available` in its closure query |
+
 ---
 
 ## 5. Quality Mechanic
@@ -1154,16 +1223,19 @@ Rationale:
 
 ## 6. Science Pack Remapping
 
-### Current Nullius Packs --> Potential Planet Assignment
+### Current Nullius Packs --> Planet Assignment
 
-| Nullius Pack | Current Source | SA Planet Analog |
+Generic packs stay Nauvis packs with worse local recipes on other planets, as in
+[4.2](#42-pre-cargo-research-how-isolated-planets-contribute). No pack moves off Nauvis.
+
+| Nullius Pack | Current Source | SA Planet Assignment |
 |---|---|---|
-| Geology | Nauvis ores | Nauvis (stays) |
-| Climatology | Nauvis air/water | Nauvis (stays) |
-| Mechanical | Nauvis industry | Nauvis (stays) |
-| Electrical | Nauvis electronics | Fulgora (advanced electronics) |
-| Chemical | Nauvis chemistry | Nauvis (stays) or Vulcanus |
-| Physics | Nauvis (complex machines) | Could split: Nauvis + Vulcanus |
+| Geology | Nauvis ores | Nauvis; local alternatives |
+| Climatology | Nauvis air/water | Nauvis; local alternatives |
+| Mechanical | Nauvis industry | Nauvis; local alternatives |
+| Electrical | Nauvis electronics | Nauvis; local alternatives |
+| Chemical | Nauvis chemistry | Nauvis; local alternatives |
+| Physics | Nauvis (complex machines) | Nauvis; local alternatives |
 | Astronomy | Nauvis satellite launch | Interplanetary interferometry; see [4.5](#45-astronomy-interplanetary-interferometry) |
 | Biology packs (7) | Nauvis farming | Gleba (primary) + Nauvis (deployment) |
 
@@ -1174,17 +1246,23 @@ Rationale:
 | Metallurgic | Vulcanus | Titanium intermediates + calcite + volcanic alloys |
 | Electromagnetic | Fulgora | Local electrical components and polymer materials; recipe design in [Fulgora design](PLANET_FULGORA.md#science-and-research) |
 | Cryogenic | Aquilo | Lithium + tritium + ammonia compounds |
+| Biological | Gleba | Bred strains, exotic enzymes, cultured organisms; see [4.2](#planet-specific-science-packs) |
 
 ---
 
 ## 7. Migration/Compatibility Strategy
 
-### 7.1 Phased Approach
-1. **Phase 1**: Core SA support (space platforms, rocket logistics, basic planet access)
-2. **Phase 2**: Vulcanus + Fulgora integration (industrial planets, less narrative conflict)
-3. **Phase 3**: Gleba integration (biology rework, spoilage mechanics)
-4. **Phase 4**: Aquilo integration (nuclear rework, endgame)
-5. Quality compatibility -- **implemented as loaded but gameplay-neutralized**
+### 7.1 Dependency Order
+
+Planets come before cargo because each must work with zero imports. Current state
+is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+
+1. **Planet access and independent bootstrap**: probes, Vulcanus, Fulgora
+2. **Cargo**: cargo closure, launch fuel, space platforms
+3. **Astronomy**: interferometry; multi-planet correlation needs cargo
+4. **Gleba integration**: biology rework, spoilage mechanics
+5. **Aquilo integration**: nuclear rework, endgame
+6. **Quality compatibility**: implemented as loaded but gameplay-neutralized
 
 ### 7.2 Scope Estimate
 This is a massive undertaking:
@@ -1204,7 +1282,7 @@ This is a massive undertaking:
 - How many planets should be accessible at probe reactivation tier? All at once, or gated sequentially?
 - Should probe reactivation be a single tech or per-planet research?
 - What's the minimum viable bootstrap on each planet? How much frustration is fun vs. tedious?
-- Should there be a "care package" mechanic -- small one-time data/blueprint transfer before cargo rockets?
+- Should there be a "care package" mechanic -- small one-time data/blueprint transfer before cargo?
 
 ### Resources & Production
 - Does the chlorine problem exist on other planets, or is it Nauvis-specific?
@@ -1398,7 +1476,7 @@ The proposed EMP behavior and recovery checks are in
 | Lightning | **Yes** (Space Age) | Yes (Fulgora) |
 | Planets/surfaces/connections | **Yes** (Space Age) | Yes (core multi-planet) |
 | Segmented units/territories | **Yes** (Space Age) | Yes (Vulcanus demolishers) |
-| Cargo rockets/platforms | **Yes** (Space Age) | Yes (cross-planet logistics) |
+| Rockets to orbit, space platforms | **Yes** (Space Age) | Yes (cross-planet logistics) |
 
 ### 9.8 Technology Visibility Control -- FEASIBLE (Base 2.0)
 

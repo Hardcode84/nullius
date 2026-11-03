@@ -145,7 +145,7 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Nuclear power 1-4 (all on Nauvis) | Nuclear power 1-2 on Nauvis, 3-4 benefit from Aquilo |
 | Asteroid mining (abstract, Nauvis) | Removed; platforms do not process asteroids. See [Space platforms](SPACE_AGE_BRAINSTORM.md#44-space-platforms) |
 | Copper from asteroids | Import copper from Fulgora, its sole primary source; see [Fulgora design](PLANET_FULGORA.md#late-game-copper) |
-| Rocket science (Nauvis) | Rocket science enables cargo rockets (cross-planet logistics) |
+| Rocket science (Nauvis) | Rocket science enables orbital lift; space platforms carry cross-planet cargo |
 | Physics pack (complex machines) | Physics pack stays on Nauvis |
 
 ### 3.3 New Tier 6+ Content (SA additions)
@@ -153,8 +153,8 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Tier | Content | Packs Required |
 |---|---|---|
 | 5 | Planet-specific research (heavy planet pack, light generic) | 1 planet pack + generic |
-| 6 | Cross-planet techs (sequential Theory/Application) | 2 planet packs (researched separately per planet) |
-| 7 | Combined research (simultaneous multi-pack, needs cargo) | 3-4 planet packs + Nauvis packs |
+| 6 | Cross-planet chains (sequential Theory/Application) | 1 planet pack per technology, local generic packs |
+| 7 | Combined research (one lab, needs cargo) | 2+ planet packs + Nauvis packs |
 | 8 | Rogue countermeasures and The Solution | All packs |
 
 ### 3.4 Weapons Tech Branch (Hidden Until Scouts)
@@ -191,7 +191,7 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 
 ### 4.3 Proposed Nauvis Exports (Post-Cargo)
 
-Once cargo rockets are available, Nauvis exports:
+Once cargo is available, Nauvis exports:
 
 | Export | Destination | Purpose |
 |---|---|---|
@@ -224,7 +224,7 @@ Once cargo rockets are available, Nauvis exports:
 | 20-30 | Second planet | Both Vulcanus and Fulgora active. Gleba accessible. |
 | 25-40 | Chemical pack era | Aquilo accessible (requires chemical pack). Planet-specific research flowing. |
 | 30-50 | Multi-planet industry | All 4 planets bootstrapped. Planet-specific research accelerating. |
-| 40-60 | Cargo rockets | Interplanetary logistics. Cross-planet trade begins. Combined research. |
+| 40-60 | Rockets and space platforms | Interplanetary logistics. Cross-planet trade begins. Combined research. |
 | 50-80 | Scouts appear | Foreshadowing. Weapons research unlocked. Defense preparation. |
 | 60-100 | Rogue awakening | Raids begin. Countermeasure research. Multi-planet defense. |
 | 80-150 | The Solution | All-planet combined effort. Vacuum decay device construction. |
