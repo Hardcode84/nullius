@@ -729,7 +729,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 - Planets specialize: each exports what it's rich in, imports what it lacks
 - Boxing system becomes critical for efficient interplanetary shipping (compressed cargo)
 - Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
-- A planet receives before it exports: it needs a landing pad to receive and a silo with rockets to export; see [Cargo closure](#cargo-closure)
+- A planet receives before it exports: drops need no pad or silo, and exports need a silo with rockets; see [Cargo closure](#cargo-closure)
 
 ### 4.2 Pre-Cargo Research: How Isolated Planets Contribute
 
@@ -936,7 +936,7 @@ constraints:
 | Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
 | Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
 | Waste | Chimneys and voids work in vacuum | Existing |
-| Cargo landing pad | Planet surface; receives platform drops | One item, one local recipe per planet; see [Cargo closure](#cargo-closure) |
+| Cargo landing pad | Planet surface; optional drop target | Existing recipe; imported by drop where it has no local route. See [Cargo closure](#cargo-closure) |
 
 #### Titanium recipes
 
@@ -1001,7 +1001,6 @@ needs debris mitigation.
 | Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
 | Item weights for the foundation, canisters, rocket fuel, recordings, and blank modules | Launches per platform, propellant per trip, and launches per correlation; needs an analyzer weight mode |
 | Reference platform thrust and propellant | Reference transit for recording spoilage |
-| Platform drop onto a surface with no landing pad | Whether a planet needs a local pad recipe, or a dropped kit can bootstrap it |
 | Space-platform surface properties | Vacuum placement conditions |
 
 ### 4.5 Astronomy: Interplanetary Interferometry
@@ -1179,13 +1178,13 @@ details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
 
 #### Cargo closure
 
-A landing pad receives drops, and a silo plus rockets export cargo. Neither
-exists yet on the planets that need them.
+Drops need no landing pad, so any planet can receive cargo as soon as a platform
+reaches it. Exports need a silo and rockets, which do not close locally yet.
 
 | Query | Unresolved today | Traced cause |
 |---|---|---|
-| `tests/progression/vulcanus-launch-closure.args` | `cargo-landing-pad`, `rocket-fuel` | Fuel route is designed above; pad not traced |
-| `tests/progression/fulgora-launch-closure.args` | `cargo-landing-pad`, `nullius-silo`, heat pipe 3, haste module 3 | Heat pipe 3 needs `nullius-compressed-helium`, unresolved at this boundary; haste module 3 consumes heat pipe 3. Pad and silo not traced. This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+| `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
+| `tests/progression/fulgora-launch-closure.args` | `nullius-silo`, heat pipe 3, haste module 3 | Heat pipe 3 needs `nullius-compressed-helium`, unresolved at this boundary; haste module 3 consumes heat pipe 3. Silo not traced. This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
 
 ```bash
 python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
@@ -1196,8 +1195,8 @@ Both queries exit 1 until closure is designed.
 
 | Step | Rule |
 |---|---|
-| Receive | Each planet gets a local `cargo-landing-pad` recipe, like launch fuel: same item, alternative recipes, boxed parity. This assumes a drop needs a pad, so the first drop cannot deliver the pad that receives it; the engine check in [4.4](#engine-checks-before-implementation) decides this |
-| Import | With a pad, a platform can drop parts that have no local route. A drop needs no local silo |
+| Receive | A platform drops cargo with no landing pad or silo on the surface; confirmed in play, no scenario covers it |
+| Import | Parts with no local route arrive by drop, including the silo and a pad |
 | Export | A planet exports once its silo, rocket ingredients, and fuel are each local or a named import |
 | Fuel | Always local; importing launch fuel to launch exports defeats the export |
 | Named imports | Listed per planet in that planet's design, and declared with `--available` in its closure query |
