@@ -331,11 +331,11 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
-  deadline = 37350,
+  deadline = 23850,
   electric_grid_watts_per_executor = 0,
   executors = {
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -364,7 +364,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -398,7 +398,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 28.875,
       heat = false,
@@ -427,7 +427,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -466,7 +466,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 18.75,
       heat = false,
@@ -484,7 +484,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -523,7 +523,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 38.4,
       heat = false,
@@ -558,7 +558,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -592,7 +592,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -616,7 +616,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -640,7 +640,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -664,7 +664,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -693,7 +693,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
@@ -725,7 +725,7 @@ return {
       seconds_per_cycle = 0.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -754,7 +754,7 @@ return {
       seconds_per_cycle = 3.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -793,7 +793,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -832,7 +832,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -856,7 +856,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -880,7 +880,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -904,7 +904,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -928,7 +928,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -952,7 +952,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -976,7 +976,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1000,7 +1000,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1024,7 +1024,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1048,7 +1048,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1072,7 +1072,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1096,7 +1096,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1120,7 +1120,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 5.9,
       heat = false,
@@ -1144,7 +1144,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
@@ -1174,7 +1174,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 487.5,
       heat = false,
@@ -1213,7 +1213,7 @@ return {
       seconds_per_cycle = 15.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 406.25,
       heat = false,
@@ -1247,7 +1247,7 @@ return {
       seconds_per_cycle = 12.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1296,7 +1296,7 @@ return {
       seconds_per_cycle = 112.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1320,7 +1320,7 @@ return {
       seconds_per_cycle = 1.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 243.75,
       heat = false,
@@ -1349,7 +1349,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 162.5,
       heat = false,
@@ -1378,7 +1378,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 487.5,
       heat = false,
@@ -1412,7 +1412,7 @@ return {
       seconds_per_cycle = 15.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 178.125,
       heat = false,
@@ -1451,7 +1451,7 @@ return {
       seconds_per_cycle = 12.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 609.375,
       heat = false,
@@ -1480,7 +1480,7 @@ return {
       seconds_per_cycle = 18.75,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1504,7 +1504,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 243.75,
       heat = false,
@@ -1538,7 +1538,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 142.5,
       heat = false,
@@ -1567,7 +1567,7 @@ return {
       seconds_per_cycle = 10.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1591,7 +1591,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1620,7 +1620,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1649,7 +1649,7 @@ return {
       seconds_per_cycle = 10.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 137.5,
       heat = false,
@@ -1683,7 +1683,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 343.75,
       heat = false,
@@ -1742,7 +1742,7 @@ return {
       seconds_per_cycle = 12.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 96.0,
       heat = false,
@@ -1777,7 +1777,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1816,7 +1816,7 @@ return {
       seconds_per_cycle = 3.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1850,7 +1850,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -1886,7 +1886,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1920,7 +1920,7 @@ return {
       seconds_per_cycle = 10.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -1964,7 +1964,7 @@ return {
       seconds_per_cycle = 20.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 144.0,
       heat = false,
@@ -2013,7 +2013,7 @@ return {
       seconds_per_cycle = 7.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
@@ -2045,7 +2045,7 @@ return {
       seconds_per_cycle = 0.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 96.0,
       heat = false,
@@ -2079,7 +2079,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2103,7 +2103,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2127,7 +2127,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2151,7 +2151,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2175,7 +2175,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2199,7 +2199,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 49.75,
       heat = false,
@@ -2223,7 +2223,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 192.5,
       heat = false,
@@ -2267,7 +2267,7 @@ return {
       seconds_per_cycle = 10.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 6.875,
       heat = false,
@@ -2291,7 +2291,7 @@ return {
       seconds_per_cycle = 0.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2340,7 +2340,7 @@ return {
       seconds_per_cycle = 37.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.2,
       heat = false,
@@ -2364,7 +2364,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.2,
       heat = false,
@@ -2388,7 +2388,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.625,
       heat = false,
@@ -2423,7 +2423,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 55.0,
       heat = false,
@@ -2457,7 +2457,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2481,7 +2481,7 @@ return {
       seconds_per_cycle = 0.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2510,7 +2510,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2534,7 +2534,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 192.5,
       heat = false,
@@ -2573,7 +2573,7 @@ return {
       seconds_per_cycle = 10.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -2602,7 +2602,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2626,7 +2626,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 60.0,
       heat = false,
@@ -2662,7 +2662,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 24.0,
       heat = false,
@@ -2691,7 +2691,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 60.0,
       heat = false,
@@ -2727,7 +2727,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = false,
@@ -2745,7 +2745,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 36.0,
       heat = false,
@@ -2787,7 +2787,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2811,7 +2811,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 57.6,
       heat = false,
@@ -2851,7 +2851,7 @@ return {
       seconds_per_cycle = 3.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 81.25,
       heat = false,
@@ -2895,7 +2895,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 121.875,
       heat = false,
@@ -2952,7 +2952,7 @@ return {
       seconds_per_cycle = 3.75,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -2976,7 +2976,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 28.875,
       heat = false,
@@ -3016,7 +3016,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3040,7 +3040,7 @@ return {
       seconds_per_cycle = 4.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 57.6,
       heat = false,
@@ -3086,7 +3086,7 @@ return {
       seconds_per_cycle = 3.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3115,7 +3115,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 9.6,
       heat = false,
@@ -3149,7 +3149,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 137.5,
       heat = false,
@@ -3183,7 +3183,7 @@ return {
       seconds_per_cycle = 5.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3212,7 +3212,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3241,7 +3241,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3270,7 +3270,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3299,7 +3299,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 27.5,
       heat = false,
@@ -3333,7 +3333,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3357,7 +3357,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3396,7 +3396,7 @@ return {
       seconds_per_cycle = 6.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3425,7 +3425,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 40.625,
       heat = false,
@@ -3449,7 +3449,7 @@ return {
       seconds_per_cycle = 1.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3488,7 +3488,7 @@ return {
       seconds_per_cycle = 4.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 68.75,
       heat = false,
@@ -3547,7 +3547,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3596,7 +3596,7 @@ return {
       seconds_per_cycle = 22.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 19.2,
       heat = false,
@@ -3631,7 +3631,7 @@ return {
       seconds_per_cycle = 1.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3675,7 +3675,7 @@ return {
       seconds_per_cycle = 12.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3709,7 +3709,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3743,7 +3743,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -3767,7 +3767,7 @@ return {
       seconds_per_cycle = 2.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0.3,
       heat = false,
@@ -3799,7 +3799,7 @@ return {
       seconds_per_cycle = 0.25,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
@@ -3823,7 +3823,7 @@ return {
       seconds_per_cycle = 0.4,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
@@ -3847,7 +3847,7 @@ return {
       seconds_per_cycle = 0.4,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
@@ -3871,7 +3871,7 @@ return {
       seconds_per_cycle = 0.4,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 1.18,
       heat = false,
@@ -3895,7 +3895,7 @@ return {
       seconds_per_cycle = 0.4,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = false,
@@ -3920,7 +3920,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = false,
@@ -3945,7 +3945,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = false,
@@ -3970,7 +3970,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 360.0,
       heat = false,
@@ -4009,7 +4009,7 @@ return {
       seconds_per_cycle = 15.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -4043,7 +4043,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 41.25,
       heat = false,
@@ -4082,7 +4082,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -4116,7 +4116,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -4150,7 +4150,7 @@ return {
       seconds_per_cycle = 2.0,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -4184,7 +4184,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 12.0,
       heat = false,
@@ -4213,7 +4213,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 13.75,
       heat = false,
@@ -4242,7 +4242,7 @@ return {
       seconds_per_cycle = 0.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 0,
       heat = true,
@@ -4266,7 +4266,7 @@ return {
       seconds_per_cycle = 1.5,
     },
     {
-      cycles = 5,
+      cycles = 3,
       electric = false,
       fuel_per_cycle = 48.75,
       heat = false,

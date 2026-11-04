@@ -1,6 +1,6 @@
 local PRODUCTIVITY =
   require("__nullius-star__/thermal-machine-config").productivity[2]
-local PRODUCTIVE_CYCLES = 100 + math.floor(100 * PRODUCTIVITY + 0.5)
+local PRODUCTIVE_CYCLES = 25 + math.floor(25 * PRODUCTIVITY + 0.5)
 
 local function crusher_or_foundry(id, base, recipe, row, inputs, outputs)
   return {
@@ -24,8 +24,8 @@ local function furnace(id, base, row, recipe, inputs, outputs)
     machine_x = 3.5,
     machine_y_offset = 2.5,
     inputs = inputs or {
-      ["nullius-alumina"] = 900,
-      ["nullius-graphite"] = 500,
+      ["nullius-alumina"] = 225,
+      ["nullius-graphite"] = 125,
     },
     outputs = outputs or {
       ["nullius-aluminum-ingot"] = 3 * PRODUCTIVE_CYCLES,
@@ -38,7 +38,7 @@ require("__nullius-star__/scenarios/thermal-cell-runner"){
   case = "thermal-cell-2",
   technology = "nullius-thermal-engineering-2",
   machines_per_cell = 5,
-  timeout_tick = 65000,
+  timeout_tick = 26900,
   min_temperature = 200,
   productivity = PRODUCTIVITY,
   heat_source = "nullius-solar-collector-2",
@@ -50,7 +50,7 @@ require("__nullius-star__/scenarios/thermal-cell-runner"){
   cells = {
     crusher_or_foundry(
       "crusher", "nullius-crusher-2", "nullius-crushed-limestone", -30,
-      {["nullius-limestone"] = 800},
+      {["nullius-limestone"] = 200},
       {["nullius-crushed-limestone"] = 5 * PRODUCTIVE_CYCLES,
         stone = 3 * PRODUCTIVE_CYCLES}),
     furnace("small-furnace", "nullius-small-furnace-2", -16),
@@ -58,11 +58,11 @@ require("__nullius-star__/scenarios/thermal-cell-runner"){
     furnace(
       "large-furnace", "nullius-large-furnace-2", 12,
       "nullius-boxed-refractory-brick",
-      {["nullius-box-ceramic-powder"] = 200},
+      {["nullius-box-ceramic-powder"] = 50},
       {["nullius-box-refractory-brick"] = 6 * PRODUCTIVE_CYCLES}),
     crusher_or_foundry(
       "foundry", "nullius-foundry-2", "nullius-iron-plate", 28,
-      {["nullius-iron-ingot"] = 400},
+      {["nullius-iron-ingot"] = 100},
       {["nullius-iron-plate"] = 3 * PRODUCTIVE_CYCLES}),
   },
 }

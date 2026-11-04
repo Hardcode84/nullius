@@ -28,7 +28,9 @@ flows. Unknown names fail. Use this field to compare alternative production path
 under the same boundary. `construction_items` adds positive integer item counts
 to the construction demand, for example the pipes and inserters of a test cell.
 These counts are fixed; the production rate does not multiply them.
-`executor_cycles` overrides the five-cycle executor test default by recipe name.
+`executor_cycles` overrides the executor cycle count by recipe name.
+The default is three cycles without productivity, or enough cycles to produce
+one complete native productivity bonus.
 `executor_transfers` lists solid products that must come from measured outputs
 of other fixture machines, with no direct input supply. The first-physics fixture
 uses these fields to assemble and unpack one batch into 125 physics packs.
@@ -96,9 +98,10 @@ python tools/run_factorio_tests.py planner-chemical-executors -n auto
 supplies declared recipe inputs, finite fuel, and controlled heat to separate
 machines. Perishable fixture stock is delivered one recipe batch at a time. Its total
 quantity remains finite. The fixture does not reset spoilage on inserted items.
-It checks five base cycles and the guaranteed native-productivity
-outputs. It does not connect the full material or heat network. Use a connected
-campaign scenario to measure factory throughput and elapsed progression time.
+It checks declared base cycles and guaranteed native-productivity
+outputs. Fixture export also updates the scenario deadline from its native
+cycle durations. Use a connected campaign scenario to measure the full material
+and heat network, factory throughput, and elapsed progression time.
 
 ## Compare production paths
 

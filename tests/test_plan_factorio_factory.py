@@ -61,8 +61,21 @@ class FactoryPlannerTest(unittest.TestCase):
                             "research": {"technologies": [{"name": "root"}]}}]}
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "fixture.lua"
+            metadata = output.parent / "test.json"
+            metadata.write_text('{"schema": 1, "until_tick": 32000}')
             write_executor_fixture({"stages": [stage]}, "restricted", output)
             self.assertIn('"entrance-parent"', output.read_text())
+            self.assertIn('cycles = 3', output.read_text())
+            self.assertEqual(json.loads(metadata.read_text())["until_tick"], 3810)
+            row["native_productivity"] = 0.2
+            write_executor_fixture({"stages": [stage]}, "restricted", output)
+            self.assertIn('cycles = 5', output.read_text())
+            row["native_productivity"] = 0.4
+            write_executor_fixture({"stages": [stage]}, "restricted", output)
+            self.assertIn('cycles = 3', output.read_text())
+            stage["executor_cycles"] = {"make": 100000}
+            with self.assertRaisesRegex(TestFailure, "exceeds 32000 ticks"):
+                write_executor_fixture({"stages": [stage]}, "restricted", output)
 
     def test_electric_grid_is_explicit_and_counts_installed_drain(self):
         data = {"technology": {}, "fluid": {"gas": {"fuel_value": "1kJ"}},

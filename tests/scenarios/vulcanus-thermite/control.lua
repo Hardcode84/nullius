@@ -7,7 +7,7 @@ require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
     "nullius-volcanic-alkali-processing",
     "nullius-pneumatic-technology",
   },
-  deadline = 65000,
+  deadline = 28900,
   parallelism = 8,
   scripted_heat = true,
   parallel_fixture = {

@@ -111,10 +111,36 @@ env -u DISPLAY -u WAYLAND_DISPLAY -u XAUTHORITY -u FACTORIO_CLIENT_DISPLAY pytho
 python tools/run_factorio_tests.py -n auto
 ```
 
+## Bounded campaign fixtures
+
+The Vulcanus metallurgy, construction, and basic-science campaigns use
+independent stages. Each stage starts with a declared inventory copied from
+the previous stage contract. Placed equipment is recovered between stages.
+No stage loads a previous save. The generator checks all material and fuel
+balances against the complete prerequisite manifest.
+
+Each stage executes native recipes at native speeds. These material tests
+use declared heat at each craft. The pneumatic heat and HCl cracking tests
+check real heat connections separately. Their cold stages prove the minimum
+temperatures used by their independent warm stages. The stage results do
+not measure total bootstrap time.
+
+Regenerate a campaign with its argument file and stage configuration:
+
+```bash
+python tools/generate_factorio_scenario_manifest.py tests/progression/vulcanus-pack.args tests/scenarios --stages tests/progression/vulcanus-pack-stages.json
+python tools/generate_factorio_scenario_manifest.py tests/progression/vulcanus-construction.args tests/scenarios --stages tests/progression/vulcanus-construction-stages.json
+python tools/generate_factorio_scenario_manifest.py tests/progression/vulcanus-basic-science.args tests/scenarios --stages tests/progression/vulcanus-basic-science-stages.json
+```
+
+Add `--check` to verify the generated files without changing them.
+
 ## External runner
 
 Scenario deadlines and command-line overrides must not exceed 32,000 ticks.
 The runner rejects larger values before it starts Factorio.
+Set each deadline from its required work and a small margin. The ceiling is
+not a default duration.
 Use `tools/audit_factorio_test_duration.py --result SUITE.json --output AUDIT.json`
 to compare measured runs and declared deadlines with this limit and the
 five-minute parallel suite budget.

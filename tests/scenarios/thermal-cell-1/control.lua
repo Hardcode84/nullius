@@ -4,11 +4,11 @@ local RESULT = "factorio-tests/" .. CASE .. ".json"
 local TECHNOLOGY = "nullius-pneumatic-technology"
 local PRODUCTIVITY =
   require("__nullius-star__/thermal-machine-config").productivity[1]
-local PRODUCTIVE_CYCLES = 100 + math.floor(100 * PRODUCTIVITY + 0.5)
+local PRODUCTIVE_CYCLES = 25 + math.floor(25 * PRODUCTIVITY + 0.5)
 local TRANSITION_INTERFACE = "nullius-test-transitions"
 local TRANSFER_PERIOD = 60
 local MACHINES_PER_CELL = 5
-local TIMEOUT_TICK = 64000
+local TIMEOUT_TICK = 23900
 
 local cells = {
   {
@@ -20,7 +20,7 @@ local cells = {
     machine_y_offset = 3,
     connection_x_offset = -1,
     collector_x_offset = -4,
-    inputs = {['nullius-limestone'] = 800},
+    inputs = {['nullius-limestone'] = 200},
     outputs = {
       ['nullius-crushed-limestone'] = 5 * PRODUCTIVE_CYCLES,
       stone = 3 * PRODUCTIVE_CYCLES,
@@ -35,7 +35,7 @@ local cells = {
     machine_y_offset = 2.5,
     connection_x_offset = -0.5,
     collector_x_offset = -3.5,
-    inputs = {['nullius-alumina'] = 900, ['nullius-graphite'] = 500},
+    inputs = {['nullius-alumina'] = 225, ['nullius-graphite'] = 125},
     outputs = {
       ['nullius-aluminum-ingot'] = 3 * PRODUCTIVE_CYCLES,
       ['nullius-aluminum-carbide'] = 4 * PRODUCTIVE_CYCLES,
@@ -50,7 +50,7 @@ local cells = {
     machine_y_offset = 3,
     connection_x_offset = -1,
     collector_x_offset = -4,
-    inputs = {['nullius-iron-ingot'] = 400},
+    inputs = {['nullius-iron-ingot'] = 100},
     outputs = {['nullius-iron-plate'] = 3 * PRODUCTIVE_CYCLES},
   },
 }

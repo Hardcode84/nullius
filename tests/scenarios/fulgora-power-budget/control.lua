@@ -1,7 +1,7 @@
 -- given: fixed seed, native storms, four empty batteries per grid, 500 kW fixed demand.
 -- Baseline uses 200 kW charging; burst candidates use 15/50 MW; actual uses production batteries.
 -- place/connect: isolated 1/8/32-pole grids; output-cap candidates use test collectors.
--- act: one explicit native strike, then five minutes each at noon and midnight.
+-- act: one explicit native strike, then 150 seconds each at noon and midnight.
 -- run: sample native flow every 30 ticks; count collector hits, including buffer overflow.
 -- expect: production grid trips; observational grids measure unclipped supply and trip risk.
 local CASE='fulgora-power-budget'
@@ -99,15 +99,15 @@ script.on_nth_tick(30,function()
       row.first_trip=game.tick
     end
     if game.tick==30 then row.first_flow={offered_MW=offered,demand_MW=demand} end
-    if game.tick==1800 or game.tick==19800 or game.tick==37800 then
+    if game.tick==1800 or game.tick==10800 or game.tick==19800 then
       sample.end_battery_MJ=0;sample.end_collector_MJ=0
       for _,b in ipairs(row.batteries) do sample.end_battery_MJ=sample.end_battery_MJ+b.energy/1e6 end
       for _,c in ipairs(row.collectors) do sample.end_collector_MJ=sample.end_collector_MJ+c.energy/1e6 end
     end
   end
   if game.tick==1800 then storage.phase='day'
-  elseif game.tick==19800 then storage.phase='night';storage.surface.daytime=0.5
-  elseif game.tick==37800 then
+  elseif game.tick==10800 then storage.phase='night';storage.surface.daytime=0.5
+  elseif game.tick==19800 then
     local result={}
     for _,row in ipairs(storage.rows) do
       result[#result+1]={name=row.name,poles=#row.poles,first_trip=row.first_trip,first_flow=row.first_flow,

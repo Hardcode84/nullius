@@ -8,7 +8,7 @@ local INITIAL_TECHS = CONFIG.initial_technologies or {INITIAL_TECH}
 local GAS = "nullius-compressed-volcanic-gas"
 local HEAT_PIPE = "nullius-heat-pipe-1"
 local BASE_X = 32
-local MAX_STEP_WAIT = 72000
+local MAX_STEP_WAIT = CONFIG.deadline
 local POLL_TICKS = 30
 local BACKGROUND_TICKS = 127
 local CASE_DEADLINE = CONFIG.deadline
@@ -410,7 +410,7 @@ local function machine_cycle_complete()
     waiting = waiting or active.executions[1]
   end
   if waiting then
-    if step.heat and storage.gas_step_index and
+    if step.heat and not CONFIG.ordered_steps and storage.gas_step_index and
         not storage.background_gas then start_background_gas() end
     if game.tick >= active.deadline then
       local machine = waiting.machine
@@ -420,7 +420,7 @@ local function machine_cycle_complete()
         ", boxes=" .. helpers.table_to_json(fluid_box_state(machine)) ..
         ", cycle=" .. tostring(active.cycle) .. "/" .. tostring(step.cycles) ..
         ", batch=" .. tostring(#active.executions) ..
-        ", gas_cycles=" .. tostring(storage.completed_cycles[storage.gas_step_index]) ..
+        ", gas_cycles=" .. tostring(storage.gas_step_index and storage.completed_cycles[storage.gas_step_index]) ..
         ", gas_ledger=" .. tostring(storage.ledger["nullius-compressed-volcanic-gas"]) ..
         ", lava_ledger=" .. tostring(storage.ledger["nullius-lava"]) ..
         ", background=" .. tostring(storage.background_gas ~= nil) ..
@@ -561,7 +561,7 @@ local function cycle_materials_ready(step)
   end
   if not step.fuel then return true end
   local required = step.fuel.amount_per_cycle
-  if storage.gas_step_index and
+  if not CONFIG.ordered_steps and storage.gas_step_index and
       step.producer ~= "nullius-lava-gas-extraction" and
       (storage.completed_cycles[storage.gas_step_index] or 0) <
         CONTRACT.steps[storage.gas_step_index].cycles then
@@ -645,7 +645,7 @@ local function start_machine_batch(step)
     first_check = math.min(first_check, active.poll_ticks)
   end
   script.on_nth_tick(game.tick + first_check, machine_cycle_complete)
-  if step.heat and storage.gas_step_index then start_background_gas() end
+  if step.heat and storage.gas_step_index and not CONFIG.ordered_steps then start_background_gas() end
 end
 
 local function character_cycle_complete()
@@ -839,7 +839,7 @@ local function step_ready(step)
   end
   if step.fuel and (storage.ledger[step.fuel.name] or 0) + 0.00001 <
       step.fuel.amount_per_cycle then return false end
-  if step.fuel and storage.gas_step_index and
+  if not CONFIG.ordered_steps and step.fuel and storage.gas_step_index and
       step.producer ~= "nullius-lava-gas-extraction" and
       (storage.completed_cycles[storage.gas_step_index] or 0) <
         CONTRACT.steps[storage.gas_step_index].cycles and
@@ -868,6 +868,7 @@ advance = function()
       complete = false
       if step_ready(candidate) then
         selected_index = index
+        if CONFIG.ordered_steps then break end
         if candidate.producer == "nullius-lava-gas-extraction" then gas_index = index end
         if candidate.producer == "nullius-lava-pumping" then lava_index = index end
         if storage.direct_heat and candidate.executor and
@@ -877,7 +878,9 @@ advance = function()
       end
     end
   end
-  if storage.direct_heat and lava_index then
+  if CONFIG.ordered_steps then
+    -- Generated stock boundaries preserve the declared execution order.
+  elseif storage.direct_heat and lava_index then
     selected_index = lava_index
   elseif not storage.gas_bootstrapped then
     selected_index = gas_index or lava_index or selected_index
@@ -1166,7 +1169,7 @@ local function deadline()
     completed_steps .. "/" .. #CONTRACT.steps ..
     ", active=" .. tostring(active and active.step.producer) ..
     ", active_cycle=" .. tostring(active and active.cycle) ..
-    ", gas_cycles=" .. tostring(storage.completed_cycles[storage.gas_step_index]))
+    ", gas_cycles=" .. tostring(storage.gas_step_index and storage.completed_cycles[storage.gas_step_index]))
   finish()
 end
 

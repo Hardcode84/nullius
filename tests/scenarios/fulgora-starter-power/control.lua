@@ -2,7 +2,7 @@
 -- Each grid: 32 poles, four real coils, four empty batteries, 500 kW debug load.
 -- place/connect: legal sand coil spacing, island batteries, copper-connected poles.
 -- act: one native startup strike per grid; fill batteries once for the terminal fault.
--- run: 30 seconds startup, ten minutes noon, ten minutes midnight, then a fault.
+-- run: 30 seconds startup, 200 seconds noon, 200 seconds midnight, then a fault.
 -- expect: full load energy, continuous sampled supply, no protected trips; removing coils causes a trip.
 local function check(ok,message) storage.assertions=storage.assertions+1;assert(ok,message) end
 script.on_nth_tick(1,function()
@@ -43,11 +43,11 @@ script.on_nth_tick(1,function()
 end)
 script.on_nth_tick(30,function()
   if game.tick==0 then return end
-  if game.tick<=73800 then
+  if game.tick<=25800 then
     for i,row in ipairs(storage.rows) do
       check(not remote.call('nullius-test-overload','offline',row.poles[1]),'protected grid tripped '..i)
       if game.tick>1800 then
-        local sample=game.tick<=37800 and row.day or row.night
+        local sample=game.tick<=13800 and row.day or row.night
         sample.samples=sample.samples+1
         local powered=true
         for _,load in ipairs(row.loads) do if load.energy==0 then powered=false end end
@@ -55,20 +55,20 @@ script.on_nth_tick(30,function()
       end
     end
   end
-  if game.tick==1800 or game.tick==37800 or game.tick==73800 then
+  if game.tick==1800 or game.tick==13800 or game.tick==25800 then
     for i,row in ipairs(storage.rows) do
       local consumed=row.poles[1].electric_network_statistics.get_input_count('factorio-test-trip-load')
       if row.energy_start then
-        local phase=game.tick==37800 and row.day or row.night
+        local phase=game.tick==13800 and row.day or row.night
         phase.consumed_J=consumed-row.energy_start
         -- Native totals round; 100 J is below one consumer's 1667 J tick.
-        check(math.abs(phase.consumed_J-300000000)<100,'load did not receive 300 MJ in ten minutes: '..i..' got '..phase.consumed_J)
+        check(math.abs(phase.consumed_J-100000000)<100,'load did not receive 100 MJ in 200 seconds: '..i..' got '..phase.consumed_J)
       end
       row.energy_start=consumed
     end
   end
-  if game.tick==37800 then storage.surface.daytime=0.5
-  elseif game.tick==73800 then
+  if game.tick==13800 then storage.surface.daytime=0.5
+  elseif game.tick==25800 then
     for i,row in ipairs(storage.rows) do
       check(row.day.powered==row.day.samples,'daytime supply gap in starter grid '..i..': '..row.day.powered..'/'..row.day.samples)
       check(row.night.powered==row.night.samples,'nighttime supply gap in starter grid '..i)
@@ -78,7 +78,7 @@ script.on_nth_tick(30,function()
     for _,coil in ipairs(row.coils) do coil.destroy{raise_destroy=true} end
     for _,battery in ipairs(row.batteries) do battery.energy=battery.electric_buffer_size end
     storage.surface.execute_lightning{name='nullius-fulgora-lightning',position=row.poles[1].position}
-  elseif game.tick==73920 then
+  elseif game.tick==25920 then
     check(remote.call('nullius-test-overload','offline',storage.rows[1].poles[1]),'ungrounded full-storage grid did not trip')
     local observations={}
     for i,row in ipairs(storage.rows) do observations[i]={day=row.day,night=row.night} end

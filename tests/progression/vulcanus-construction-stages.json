@@ -1,0 +1,25 @@
+{
+  "case": "vulcanus-construction-closure",
+  "parallelism": 8,
+  "batch_ticks": 14000,
+  "fixture": {
+    "nullius-seawater-intake-1": 8,
+    "nullius-hydro-plant-1": 8,
+    "nullius-small-furnace-1": 8,
+    "nullius-extractor-1": 8,
+    "nullius-air-filter-1": 8,
+    "nullius-distillery-1": 8,
+    "nullius-chemical-plant-1": 8,
+    "nullius-foundry-1": 8,
+    "nullius-small-assembler-1": 8,
+    "pipe": 50,
+    "nullius-heat-pipe-1": 30,
+    "pipe-to-ground": 10,
+    "inserter": 12,
+    "iron-chest": 4,
+    "nullius-lab-1": 1,
+    "transport-belt": 50,
+    "splitter": 4,
+    "cliff-explosives": 30
+  }
+}

@@ -1,0 +1,30 @@
+local config = {
+  case = "vulcanus-construction-closure-limestone-block",
+  contract = nil,
+  deadline = 17280,
+  fixture = {
+    ["cliff-explosives"] = 30,
+    inserter = 12,
+    ["iron-chest"] = 4,
+    ["nullius-air-filter-1"] = 8,
+    ["nullius-chemical-plant-1"] = 8,
+    ["nullius-distillery-1"] = 8,
+    ["nullius-extractor-1"] = 8,
+    ["nullius-foundry-1"] = 8,
+    ["nullius-heat-pipe-1"] = 30,
+    ["nullius-hydro-plant-1"] = 8,
+    ["nullius-lab-1"] = 1,
+    ["nullius-seawater-intake-1"] = 8,
+    ["nullius-small-assembler-1"] = 8,
+    ["nullius-small-furnace-1"] = 8,
+    pipe = 50,
+    ["pipe-to-ground"] = 10,
+    splitter = 4,
+    ["transport-belt"] = 50,
+  },
+  ordered_steps = true,
+  parallelism = 8,
+  scripted_heat = true,
+}
+config.contract = require("manifest")
+require("__nullius-star__/scenarios/vulcanus-manifest-runner")(config)
