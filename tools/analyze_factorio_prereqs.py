@@ -430,6 +430,41 @@ def describe_technologies(data: Prototype, names: list[str]) -> list[Prototype]:
     return descriptions
 
 
+def describe_research_closures(data: Prototype, names: list[str]) -> list[Prototype]:
+    technologies: dict[str, Prototype] = data.get("technology", {})
+    descriptions = []
+    for name in names:
+        if name not in technologies:
+            raise TestFailure(f"technology prototype not found: {name}")
+        closure = technology_closure(technologies, {name})
+        pack_units: dict[str, float] = defaultdict(float)
+        lab_seconds = 0.0
+        triggered = []
+        for member in sorted(closure):
+            unit = technologies[member].get("unit")
+            if unit is None:
+                triggered.append(member)
+                continue
+            count = unit.get("count")
+            if count is None:
+                raise TestFailure(
+                    f"research closure of {name} has no fixed cost: {member}"
+                )
+            lab_seconds += count * unit["time"]
+            for ingredient in unit["ingredients"]:
+                pack_units[ingredient[0]] += count * ingredient[1]
+        descriptions.append(
+            {
+                "name": name,
+                "technologies": sorted(closure),
+                "triggered_technologies": triggered,
+                "pack_units": dict(sorted(pack_units.items())),
+                "lab_seconds": lab_seconds,
+            }
+        )
+    return descriptions
+
+
 def find_electric_required_paths(
     targets: list[str], selected_recipes: list[Prototype]
 ) -> list[Prototype]:
@@ -1295,6 +1330,7 @@ def build_production_manifest(
     target_quantities: dict[str, float],
     fuel_name: str | None,
     initial_stock: dict[str, float] | None = None,
+    marginal: bool = False,
 ) -> Prototype:
     if report["unresolved"] or report["invalid_raw"]:
         raise TestFailure("cannot quantify an unresolved prerequisite graph")
@@ -1303,7 +1339,7 @@ def build_production_manifest(
         step["product"]: step for step in report["selected_recipes"]
     }
     demands: dict[str, float] = defaultdict(float, target_quantities)
-    for step in report["selected_recipes"]:
+    for step in [] if marginal else report["selected_recipes"]:
         provider = step.get("provider")
         if provider and not provider.startswith("<"):
             demands[provider] = max(demands[provider], 1)
@@ -1532,7 +1568,7 @@ def build_production_manifest(
     for name, amount in deferred_surplus.items():
         stock[name] += amount
 
-    bootstrap_raw_inputs = add_raw_bootstrap_for_execution(
+    bootstrap_raw_inputs = {} if marginal else add_raw_bootstrap_for_execution(
         quantified_steps,
         raw_inputs,
         available_inputs,
@@ -1762,6 +1798,14 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         help="fluid fuel used by fluid-powered executors in --manifest mode",
     )
     parser.add_argument(
+        "--marginal",
+        action="store_true",
+        help=(
+            "price --manifest targets as a per-unit material flow: omit machine "
+            "construction and the execution-order check"
+        ),
+    )
+    parser.add_argument(
         "--stock",
         type=parse_assignment,
         action="append",
@@ -1810,6 +1854,16 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         help="describe every resolved recipe that consumes an item or fluid",
     )
     parser.add_argument(
+        "--describe-research-closure",
+        action="append",
+        default=[],
+        metavar="TECHNOLOGY",
+        help=(
+            "total the research packs and lab time of a technology and its "
+            "whole prerequisite closure"
+        ),
+    )
+    parser.add_argument(
         "--describe-technology",
         action="append",
         default=[],
@@ -1850,6 +1904,7 @@ def main() -> int:
             or args.describe_product
             or args.describe_consumers
             or args.describe_technology
+            or args.describe_research_closure
             or args.describe_placeable_prefix is not None
         ):
             if args.targets:
@@ -1863,6 +1918,7 @@ def main() -> int:
                     args.describe_product,
                     args.describe_consumers,
                     args.describe_technology,
+                    args.describe_research_closure,
                     args.describe_placeable_prefix is not None,
                 )
             )
@@ -1876,6 +1932,10 @@ def main() -> int:
                 descriptions = describe_products(data, args.describe_product)
             elif args.describe_consumers:
                 descriptions = describe_consumers(data, args.describe_consumers)
+            elif args.describe_research_closure:
+                descriptions = describe_research_closures(
+                    data, args.describe_research_closure
+                )
             elif args.describe_placeable_prefix is not None:
                 descriptions = describe_placeable_entities(
                     data, args.describe_placeable_prefix
@@ -1905,6 +1965,14 @@ def main() -> int:
                     for speed in ("crafting_speed", "mining_speed"):
                         if entity[speed] is not None:
                             print(f"  {speed.replace('_', ' ')}: {entity[speed]}")
+            elif args.describe_research_closure:
+                for closure in descriptions:
+                    print(f"{closure['name']}:")
+                    print(f"  technologies: {len(closure['technologies'])}")
+                    print(f"  triggered: {len(closure['triggered_technologies'])}")
+                    print(f"  lab seconds: {closure['lab_seconds']:g}")
+                    for pack, units in closure["pack_units"].items():
+                        print(f"  {pack}: {units:g}")
             elif args.describe_technology:
                 for technology in descriptions:
                     prerequisites = ", ".join(technology["prerequisites"])
@@ -2030,6 +2098,7 @@ def main() -> int:
                 dict(target_quantities),
                 args.fuel,
                 dict(initial_stock),
+                args.marginal,
             )
         if args.json_output:
             print(json.dumps(report, indent=2, sort_keys=True))

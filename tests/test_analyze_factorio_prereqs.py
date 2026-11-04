@@ -23,6 +23,7 @@ from analyze_factorio_prereqs import (
     describe_placeable_entities,
     describe_products,
     describe_recipes,
+    describe_research_closures,
     describe_technologies,
     find_dependency_paths,
     find_electric_required_paths,
@@ -200,6 +201,52 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(descriptions[0]["dependents"], ["dependent-tech"])
         self.assertEqual(descriptions[0]["unit"]["count"], 20)
         self.assertIsNone(descriptions[0]["research_trigger"])
+
+    def test_research_closure_totals_shared_prerequisites_once(self) -> None:
+        def technology(prerequisites, count, packs):
+            return {
+                "prerequisites": prerequisites,
+                "unit": {"count": count, "time": 10, "ingredients": packs},
+            }
+
+        data = {
+            "technology": {
+                "root": technology([], 5, [["pack-a", 1]]),
+                "left": technology(["root"], 10, [["pack-a", 2]]),
+                "right": technology(["root"], 20, [["pack-a", 1], ["pack-b", 3]]),
+                "target": technology(["left", "right"], 1, [["pack-b", 1]]),
+                "outside": technology([], 100, [["pack-c", 1]]),
+                "triggered": {"research_trigger": {"type": "craft-item"}},
+            }
+        }
+        data["technology"]["target"]["prerequisites"].append("triggered")
+
+        closure = describe_research_closures(data, ["target"])[0]
+
+        self.assertEqual(
+            closure["technologies"],
+            ["left", "right", "root", "target", "triggered"],
+        )
+        self.assertEqual(closure["triggered_technologies"], ["triggered"])
+        self.assertEqual(closure["pack_units"], {"pack-a": 45, "pack-b": 61})
+        self.assertEqual(closure["lab_seconds"], 360)
+
+    def test_research_closure_rejects_formula_costs(self) -> None:
+        data = {
+            "technology": {
+                "target": {
+                    "prerequisites": [],
+                    "unit": {
+                        "count_formula": "L",
+                        "time": 1,
+                        "ingredients": [["pack-a", 1]],
+                    },
+                }
+            }
+        }
+
+        with self.assertRaisesRegex(TestFailure, "no fixed cost: target"):
+            describe_research_closures(data, ["target"])
 
     def test_describes_all_resolved_product_producers(self) -> None:
         data = {
@@ -1101,6 +1148,60 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["unresolved"], [])
         self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
         self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
+
+    def test_marginal_manifest_omits_machines_and_execution_order(self) -> None:
+        data = {
+            "item": {
+                "ore": {"name": "ore"},
+                "machine": {"name": "machine", "place_result": "machine"},
+                "target": {"name": "target"},
+            },
+            "recipe": {
+                "make-machine": {
+                    "name": "make-machine",
+                    "enabled": True,
+                    "ingredients": [{"name": "ore", "amount": 50}],
+                    "results": [{"name": "machine", "amount": 1}],
+                },
+                "make-target": {
+                    "name": "make-target",
+                    "enabled": True,
+                    "category": "assembly",
+                    "ingredients": [{"name": "ore", "amount": 2}],
+                    "results": [{"name": "target", "amount": 1}],
+                },
+            },
+            "assembling-machine": {
+                "machine": {
+                    "name": "machine",
+                    "crafting_categories": ["assembly"],
+                    "crafting_speed": 1,
+                },
+            },
+            "resource": {"ore": {"minable": {"result": "ore"}}},
+            "character": {
+                "character": {"crafting_categories": ["crafting"]},
+            },
+        }
+        args = SimpleNamespace(
+            targets=["target"],
+            technology=[],
+            surface_property=[],
+            available=[],
+            available_machine=[],
+            recipe=[],
+            raw=["ore"],
+        )
+        report = analyze(data, args)
+
+        full = build_production_manifest(data, report, {"target": 3}, None)
+        marginal = build_production_manifest(
+            data, report, {"target": 3}, None, marginal=True
+        )
+
+        self.assertEqual(full["raw_inputs"], {"ore": 56})
+        self.assertEqual(marginal["raw_inputs"], {"ore": 6})
+        self.assertEqual(marginal["bootstrap_raw_inputs"], {})
 
     def test_manifest_aggregates_reconvergent_overridden_route(self) -> None:
         data = {

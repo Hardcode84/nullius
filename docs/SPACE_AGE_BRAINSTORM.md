@@ -910,6 +910,7 @@ The android needs no life support or habitat.
 current_state:
   platform_prototypes: vanilla foundation, starter pack, thruster, cargo bay, collector, crusher
   unlocks: vanilla rocket-silo and space-platform technologies; unreachable
+  nullius_silo: launch_to_space_platforms false; one rocket cargo slot, so it cannot supply a platform yet
   vanilla_foundation: 20 steel + 20 copper cable
   connections: Nauvis-Vulcanus and Nauvis-Fulgora, 15,000 km each, no asteroid spawns
   vulcanus_fulgora_connection: none
@@ -993,13 +994,21 @@ activates (`force.unlock_space_location`); hazard decides whether an unprotected
 platform survives. Nauvis-Vulcanus is the first practical route, and Nauvis-Fulgora
 needs debris mitigation.
 
+#### Launch cost queries
+
+| Query | Reports |
+|---|---|
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-cost.args nullius-rocket=1` | Per-unit raw cost of any item on Nauvis; machines excluded |
+| `python3 tools/analyze_factorio_prereqs.py --describe-research-closure nullius-rocket-science-2` | Research packs and lab time up to a technology |
+| `python tools/run_factorio_tests.py --keep-run-directory experiment-rocket-cargo-weights` | Engine-computed item weights and silo cargo properties |
+
 #### Engine checks before implementation
 
 | Check | Decides |
 |---|---|
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
 | Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
-| Item weights for the foundation, canisters, rocket fuel, recordings, and blank modules | Launches per platform, propellant per trip, and launches per correlation; needs an analyzer weight mode |
+| Weights of canisters, recordings, and blank modules, added to `experiment-rocket-cargo-weights` | Propellant per trip and launches per correlation |
 | Reference platform thrust and propellant | Reference transit for recording spoilage |
 | Space-platform surface properties | Vacuum placement conditions |
 
