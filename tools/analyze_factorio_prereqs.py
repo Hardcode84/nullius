@@ -1263,11 +1263,20 @@ def add_raw_bootstrap_for_execution(
                 if deficit > 1e-9:
                     candidates.append((deficit, name))
         if not candidates:
-            blocked = [
-                steps[index]["producer"]
-                for index, amount in enumerate(remaining)
-                if amount > 1e-9
-            ]
+            blocked = []
+            for index, amount in enumerate(remaining):
+                if amount <= 1e-9:
+                    continue
+                step = steps[index]
+                divisor = 1 if step.get("spoil_ticks") else float(step["cycles"])
+                missing = [
+                    f"{ingredient['name']} {ledger[ingredient['name']]:g}/"
+                    f"{float(ingredient['amount']) / divisor:g}"
+                    for ingredient in step["ingredients"]
+                    if ledger[ingredient["name"]] + 1e-9
+                    < float(ingredient["amount"]) / divisor
+                ]
+                blocked.append(f"{step['producer']} [{', '.join(missing)}]")
             raise TestFailure(
                 "quantified production manifest is not executable; blocked steps: "
                 + ", ".join(blocked)

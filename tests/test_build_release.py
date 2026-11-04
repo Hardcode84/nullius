@@ -7,7 +7,8 @@ import zipfile
 from unittest.mock import patch
 
 from tools.build_release import (build_archive, read_metadata, run_progression_contracts,
-                                 run_bootstrap_checks, prepare_release_mods, TestFailure)
+                                 run_bootstrap_checks, run_unlock_audits, prepare_release_mods,
+                                 TestFailure)
 
 
 class ReleaseBuilderTests(unittest.TestCase):
@@ -38,6 +39,21 @@ class ReleaseBuilderTests(unittest.TestCase):
                 run.side_effect = TestFailure("blocked endpoint")
                 with self.assertRaisesRegex(TestFailure, "blocked endpoint"):
                     run_progression_contracts(root / "dump.json", 10)
+
+    def test_unlock_audits_check_declared_configs_against_packaged_dump(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "release.json").write_text(json.dumps({"unlock_audits": ["planet.json"]}))
+            with patch("tools.build_release.PROGRESSION_CONTRACTS", root), \
+                 patch("tools.build_release.run_checked") as run:
+                self.assertEqual(run_unlock_audits(root / "packaged.json", 10, root), 1)
+                command = run.call_args.args[0]
+                self.assertIn("--check", command)
+                self.assertEqual(command[command.index("--data-raw") + 1], str(root / "packaged.json"))
+                self.assertEqual(command[command.index("--config") + 1], str(root / "planet.json"))
+                run.side_effect = TestFailure("bulk bypass")
+                with self.assertRaisesRegex(TestFailure, "bulk bypass"):
+                    run_unlock_audits(root / "packaged.json", 10, root)
 
     def test_bootstrap_rejects_blocked_research_and_uses_packaged_dump(self):
         with tempfile.TemporaryDirectory() as temporary:

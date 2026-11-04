@@ -30,10 +30,26 @@ for _,bulk in ipairs({false,true}) do
   }})
 end
 
-for _,name in ipairs({"ice-melting", "salt-disposal", "salt-dissolution"}) do
+-- Nauvis also crushes surplus salt, so both sizes stay on shared research.
+for _,recipe in ipairs({"nullius-salt-disposal", "nullius-boxed-salt-disposal"}) do
   table.insert(data.raw.technology["nullius-mass-production-4"].effects,
-    {type="unlock-recipe",recipe="nullius-boxed-"..name})
+    {type="unlock-recipe",recipe=recipe})
 end
+
+data:extend({{
+  type="technology",name="nullius-bulk-ice-and-salt-processing",
+  icon="__base__/graphics/technology/fluid-handling.png",icon_size=256,
+  order="nullius-dg-bulk-ice-and-salt-processing",
+  prerequisites={"nullius-overcharged-assembly-2","nullius-packaging-3","nullius-mass-production-4"},
+  effects={
+    {type="unlock-recipe",recipe="nullius-boxed-ice-melting"},
+    {type="unlock-recipe",recipe="nullius-boxed-salt-dissolution"},
+  },
+  unit={count=10,time=45,ingredients={
+    {"nullius-electromagnetic-pack",20},{"nullius-climatology-pack",4},
+    {"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
+  }},
+}})
 
 for _,name in ipairs({"nullius-box-ice", "nullius-unbox-ice"}) do
   table.insert(data.raw.technology["nullius-packaging-3"].effects,

@@ -179,22 +179,20 @@
     },
     {
       "name": "nullius-boxed-ice-melting",
-      "classification": "bulk shared bootstrap utility",
+      "classification": "bulk Fulgora reward",
       "requires": [
-        "nullius-mass-production-4"
+        "nullius-bulk-ice-and-salt-processing"
       ],
       "ordinary": "nullius-ice-melting"
     },
     {
       "name": "nullius-salt-disposal",
-      "classification": "shared bootstrap utility",
-      "requires": [
-        "nullius-primitive-filtration"
-      ]
+      "classification": "shared waste disposal",
+      "requires": []
     },
     {
       "name": "nullius-boxed-salt-disposal",
-      "classification": "bulk shared bootstrap utility",
+      "classification": "bulk shared waste disposal",
       "requires": [
         "nullius-mass-production-4"
       ],
@@ -209,9 +207,9 @@
     },
     {
       "name": "nullius-boxed-salt-dissolution",
-      "classification": "bulk shared bootstrap utility",
+      "classification": "bulk Fulgora reward",
       "requires": [
-        "nullius-mass-production-4"
+        "nullius-bulk-ice-and-salt-processing"
       ],
       "ordinary": "nullius-salt-dissolution"
     },

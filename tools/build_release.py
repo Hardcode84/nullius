@@ -335,6 +335,20 @@ def run_progression_contracts(data_raw: Path, timeout: int) -> int:
 
 
 
+def run_unlock_audits(data_raw: Path, timeout: int, directory: Path) -> int:
+    configs = json.loads((PROGRESSION_CONTRACTS / "release.json").read_text())["unlock_audits"]
+    if not configs:
+        raise TestFailure("no recipe unlock audits found")
+    for config in configs:
+        run_checked([sys.executable, str(REPOSITORY / "tools/audit_recipe_unlocks.py"),
+                     "--config", str(PROGRESSION_CONTRACTS / config),
+                     "--data-raw", str(data_raw),
+                     "--output", str(directory / (Path(config).stem + "-report.json")),
+                     "--check"],
+                    f"recipe unlock audit {config}", timeout)
+    return len(configs)
+
+
 def run_bootstrap_checks(data_raw: Path, timeout: int, directory: Path) -> list[dict]:
     checks = json.loads((PROGRESSION_CONTRACTS / "release.json").read_text())["bootstrap"]
     if not checks:
@@ -381,6 +395,7 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
             factorio, dependencies, archive, args.timeout_seconds, root / "factorio"
         )
         contract_count = run_progression_contracts(data_raw, args.timeout_seconds)
+        run_unlock_audits(data_raw, args.timeout_seconds, root)
         bootstrap = run_bootstrap_checks(data_raw, args.timeout_seconds, root)
         extracted_mod = extract_release(archive, root / "extracted")
         run_checked(

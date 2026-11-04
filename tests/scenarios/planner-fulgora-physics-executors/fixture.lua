@@ -33,6 +33,7 @@ return {
     "nullius-broadcasting-1",
     "nullius-broadcasting-2",
     "nullius-bulk-hydrocarbon-cracking",
+    "nullius-bulk-ice-and-salt-processing",
     "nullius-bulk-polymer-processing",
     "nullius-bulk-slurry-filtration",
     "nullius-bulk-storm-climatology",

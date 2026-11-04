@@ -30,7 +30,8 @@
     "vulcanus-thermite.args",
     "vulcanus-titanium-construction.args",
     "vulcanus-titanium-pilot.args",
-    "vulcanus-water-quenching.args"
+    "vulcanus-water-quenching.args",
+    "fulgora-launch-manifest.args"
   ],
   "bootstrap": [
     {
@@ -38,5 +39,8 @@
       "planner": "planner/fulgora-science-scale.json",
       "config": "fulgora-building-bootstrap.json"
     }
+  ],
+  "unlock_audits": [
+    "fulgora-unlock-audit.json"
   ]
 }

@@ -71,11 +71,14 @@ def main():
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--read-report', type=Path)
+    parser.add_argument('--data-raw', type=Path)
     parser.add_argument('--show-all', action='store_true')
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     if args.read_report:
         result = json.loads(args.read_report.read_text())
+    elif args.data_raw:
+        result = audit(json.loads(args.data_raw.read_text()), json.loads(args.config.read_text()))
     else:
         data, work = prereqs.dump_resolved_data(prereqs.parse_arguments([]))
         try:

@@ -285,6 +285,8 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 
 Validation: `tests/progression/fulgora-launch-closure-helium.args` checks that the
 local rocket path and research packs are reachable with the implemented recipes.
+`tests/progression/fulgora-launch-manifest.args` quantifies the rocket and silo;
+degassing takes a small share of cracking there, before the helium checkpoint.
 The `fulgora-helium` scenario checks research gates and production on Fulgora, for
 ordinary and bulk recipes on every distillery tier. Recipe values live in
 `nullius-star/prototypes/planet/fulgora-recipes.lua` and research values in
@@ -359,7 +361,8 @@ surplus filtered hydrocarbons, sludge, wastewater, brine
 
 Primitive Filtration requires probe access and Geology 2: 5 of each early science pack,
 15 seconds per unit. It unlocks the ordinary recipes below.
-Mass Production 4 unlocks boxed ice melting, salt crushing, and salt dissolution.
+Mass Production 4 unlocks salt crushing in both sizes, which Nauvis also uses.
+Bulk ice and salt processing unlocks boxed ice melting and salt dissolution.
 Packaging 3 unlocks ice packaging and unpacking. Crude sludge filtration has no
 boxed recipe.
 

@@ -1192,6 +1192,11 @@ python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-clo
 python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-closure.args
 ```
 
+`tests/progression/fulgora-launch-manifest.args` also quantifies Fulgora's rocket and
+silo. It declares a small chlorine prime: titanium tetrachloride consumes chlorine
+that later steps return, so the plan's first batch runs short in execution order.
+Local brine electrolysis supplies that chlorine, so it is scheduling, not an import.
+
 The Vulcanus query exits 1 until its fuel route is implemented. Gleba and Aquilo
 need the same query. The rocket consumes metals that [2.4](#24-independent-bootstrap-design)
 lists as missing there, so each needs a local metal route.

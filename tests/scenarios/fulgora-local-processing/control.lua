@@ -77,6 +77,13 @@ script.on_nth_tick(1,function()
   end
   check(em,'cracking requires EM science')
   bulk.researched=true
+  for _,name in ipairs({'ice-melting','salt-dissolution'}) do
+    check(not force.recipes['nullius-boxed-'..name].enabled,'mass production unlocked '..name)
+  end
+  local processing=force.technologies['nullius-bulk-ice-and-salt-processing']
+  check(processing.prerequisites['nullius-mass-production-4']~=nil,'bulk processing requires mass production')
+  check(processing.prerequisites['nullius-overcharged-assembly-2']~=nil,'bulk processing requires Fulgora research')
+  processing.researched=true
   for _,row in ipairs(storage.rows) do for _,name in ipairs({'ice-melting','salt-dissolution','hydrocarbon-cracking'}) do
     check(force.recipes[row.prefix..name].enabled,'missing bulk unlock '..name)
   end end
