@@ -43,6 +43,7 @@
       "type": "technology",
       "name": "candidate-hydrocarbon-degassing",
       "prerequisites": [
+        "nullius-air-separation-3",
         "nullius-overcharged-assembly-2"
       ],
       "effects": [

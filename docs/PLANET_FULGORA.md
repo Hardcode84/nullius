@@ -268,7 +268,8 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 |---|---|
 | Recipe | Degassing cracking: the hydrocarbon cracking outputs plus a small amount of helium; slower than ordinary cracking |
 | Machine | Distillery, as ordinary cracking. Helium takes its third fluid output |
-| Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). Helium compression stays with Air Separation 3 |
+| Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). It requires Air Separation 3, the normal helium unlock, which also unlocks compression |
+| Helium checkpoint | Not a prerequisite: it requires helium production, which degassing supplies on a planet with no other route |
 | Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
 | Boxed variant | None. Helium is a gas; boxed heat pipe 3 takes compressed helium from the same route |
 | Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary cracking stays the bulk route |
@@ -365,7 +366,7 @@ boxed recipe.
 |---|---|---|---|
 | Bulk slurry filtration | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed slurry filtration |
 | Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
-| Hydrocarbon degassing, design only | Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
+| Hydrocarbon degassing, design only | Air Separation 3, Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
 
 Each research has 10 units at 45 seconds per unit.
 Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
