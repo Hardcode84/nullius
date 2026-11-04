@@ -63,6 +63,8 @@ water-pumping
 --require-no-additional-technologies
 --technology
 nullius-rocket-science-2
+--technology
+nullius-empiricism-6
 nullius-silo
 nullius-box-rocket-fuel
 nullius-box-carbon-composite

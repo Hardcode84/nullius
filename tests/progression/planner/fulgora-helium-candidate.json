@@ -1,0 +1,32 @@
+{
+  "recipe": {
+    "candidate-helium-degassing": {
+      "type": "recipe",
+      "name": "candidate-helium-degassing",
+      "enabled": true,
+      "category": "distillation",
+      "energy_required": 10,
+      "allow_productivity": false,
+      "ingredients": [
+        {
+          "type": "fluid",
+          "name": "nullius-filtered-hydrocarbons",
+          "amount": 100
+        }
+      ],
+      "results": [
+        {
+          "type": "fluid",
+          "name": "nullius-helium",
+          "amount": 1
+        },
+        {
+          "type": "fluid",
+          "name": "nullius-filtered-hydrocarbons",
+          "amount": 99
+        }
+      ],
+      "main_product": "nullius-helium"
+    }
+  }
+}

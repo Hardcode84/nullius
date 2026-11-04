@@ -97,7 +97,7 @@ Each planet needs enough local resources to get started without imports. The bro
 | **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
-**Key design constraint**: Each planet must be playable (if painful) with zero imports. The fun comes from solving "how do I make X with only what's here?" Then later, cargo removes the pain and enables specialization.
+**Key design constraint**: Each planet must be playable (if painful) with zero imports, up to and including building its silo and launching its first rocket. The fun comes from solving "how do I make X with only what's here?" Then later, cargo removes the pain and enables specialization.
 
 **Broken equipment per planet** (initial probe salvage):
 
@@ -1178,28 +1178,29 @@ details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
 
 #### Cargo closure
 
-Drops need no landing pad, so any planet can receive cargo as soon as a platform
-reaches it. Exports need a silo and rockets, which do not close locally yet.
+Every planet must build its silo and launch its first rocket entirely from local
+production, with research shared across planets. Drops need no landing pad, but
+no first launch may depend on them.
 
 | Query | Unresolved today | Traced cause |
 |---|---|---|
 | `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
-| `tests/progression/fulgora-launch-closure.args` | `nullius-silo`, heat pipe 3, haste module 3 | Heat pipe 3 needs `nullius-compressed-helium`, unresolved at this boundary; haste module 3 consumes heat pipe 3. Silo not traced. This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+| `tests/progression/fulgora-launch-closure.args` | `nullius-silo`, heat pipe 3, haste module 3 | Fulgora has no helium source. Its atmosphere holds none, and adding one candidate helium recipe closes the silo and rocket (`fulgora-launch-closure-helium.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
 
 ```bash
 python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
 python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-closure.args
 ```
 
-Both queries exit 1 until closure is designed.
+Both queries exit 1 until closure is designed. Gleba and Aquilo need the same
+query. The rocket consumes metals that [2.4](#24-independent-bootstrap-design)
+lists as missing there, so each needs a local metal route.
 
 | Step | Rule |
 |---|---|
+| First launch | Silo, every rocket ingredient, and fuel have local routes; the planet's closure query exits 0 |
 | Receive | A platform drops cargo with no landing pad or silo on the surface; confirmed in play, no scenario covers it |
-| Import | Parts with no local route arrive by drop, including the silo and a pad |
-| Export | A planet exports once its silo, rocket ingredients, and fuel are each local or a named import |
-| Fuel | Always local; importing launch fuel to launch exports defeats the export |
-| Named imports | Listed per planet in that planet's design, and declared with `--available` in its closure query |
+| Import | Drops improve cost and throughput after the first launch; closure queries never declare a dropped item |
 
 ---
 
