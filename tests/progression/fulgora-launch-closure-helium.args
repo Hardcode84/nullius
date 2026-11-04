@@ -1,7 +1,7 @@
 --prototype-overlay
 tests/progression/planner/fulgora-helium-candidate.json
 --recipe
-nullius-helium=candidate-helium-degassing
+nullius-helium=candidate-degassing-slurry-filtration
 --recipe
 nullius-compressed-helium=nullius-compressed-helium
 --technology

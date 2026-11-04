@@ -1,32 +1,46 @@
 {
   "recipe": {
-    "candidate-helium-degassing": {
+    "candidate-degassing-slurry-filtration": {
       "type": "recipe",
-      "name": "candidate-helium-degassing",
+      "name": "candidate-degassing-slurry-filtration",
       "enabled": true,
       "category": "distillation",
-      "energy_required": 10,
+      "energy_required": 8,
       "allow_productivity": false,
       "ingredients": [
         {
           "type": "fluid",
-          "name": "nullius-filtered-hydrocarbons",
+          "name": "nullius-hydrocarbon-slurry",
           "amount": 100
         }
       ],
       "results": [
         {
           "type": "fluid",
+          "name": "nullius-filtered-hydrocarbons",
+          "amount": 50
+        },
+        {
+          "type": "fluid",
+          "name": "nullius-sludge",
+          "amount": 40
+        },
+        {
+          "type": "fluid",
           "name": "nullius-helium",
           "amount": 1
         },
         {
-          "type": "fluid",
-          "name": "nullius-filtered-hydrocarbons",
-          "amount": 99
+          "type": "item",
+          "name": "nullius-ice",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "nullius-salt",
+          "amount": 1
         }
-      ],
-      "main_product": "nullius-helium"
+      ]
     }
   }
 }

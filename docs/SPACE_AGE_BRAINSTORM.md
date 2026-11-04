@@ -1185,7 +1185,7 @@ no first launch may depend on them.
 | Query | Unresolved today | Traced cause |
 |---|---|---|
 | `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
-| `tests/progression/fulgora-launch-closure.args` | `nullius-silo`, heat pipe 3, haste module 3 | Fulgora has no helium source. Its atmosphere holds none, and adding one candidate helium recipe closes the silo and rocket (`fulgora-launch-closure-helium.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+| `tests/progression/fulgora-launch-closure.args` | `nullius-silo`, heat pipe 3, haste module 3 | Fulgora has no helium source yet. Adding [degassing slurry filtration](PLANET_FULGORA.md#helium) closes the silo and rocket (`fulgora-launch-closure-helium.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
 
 ```bash
 python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
