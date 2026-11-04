@@ -3,7 +3,7 @@
     "candidate-degassing-hydrocarbon-cracking": {
       "type": "recipe",
       "name": "candidate-degassing-hydrocarbon-cracking",
-      "enabled": true,
+      "enabled": false,
       "category": "distillation",
       "energy_required": 8,
       "allow_productivity": false,
@@ -36,6 +36,43 @@
           "amount": 2
         }
       ]
+    }
+  },
+  "technology": {
+    "candidate-hydrocarbon-degassing": {
+      "type": "technology",
+      "name": "candidate-hydrocarbon-degassing",
+      "prerequisites": [
+        "nullius-overcharged-assembly-2"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "candidate-degassing-hydrocarbon-cracking"
+        }
+      ],
+      "unit": {
+        "count": 10,
+        "time": 45,
+        "ingredients": [
+          [
+            "nullius-electromagnetic-pack",
+            20
+          ],
+          [
+            "nullius-climatology-pack",
+            4
+          ],
+          [
+            "nullius-electrical-pack",
+            4
+          ],
+          [
+            "nullius-chemical-pack",
+            4
+          ]
+        ]
+      }
     }
   }
 }

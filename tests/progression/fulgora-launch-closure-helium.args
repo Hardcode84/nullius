@@ -70,6 +70,8 @@ water-pumping
 --technology
 nullius-rocket-science-2
 --technology
+candidate-hydrocarbon-degassing
+--technology
 nullius-empiricism-6
 nullius-silo
 nullius-box-rocket-fuel
@@ -84,3 +86,7 @@ nullius-box-ceramic-powder
 nullius-box-logistic-bot-2
 nullius-box-gate
 nullius-rocket=1
+nullius-electromagnetic-pack=1
+nullius-climatology-pack=1
+nullius-electrical-pack=1
+nullius-chemical-pack=1

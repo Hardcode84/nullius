@@ -268,7 +268,7 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 |---|---|
 | Recipe | Degassing cracking: the hydrocarbon cracking outputs plus a small amount of helium; slower than ordinary cracking |
 | Machine | Distillery, as ordinary cracking. Helium takes its third fluid output |
-| Unlock | Air Separation 3, with helium compression |
+| Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). Helium compression stays with Air Separation 3 |
 | Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
 | Boxed variant | None. Helium is a gas; boxed heat pipe 3 takes compressed helium from the same route |
 | Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary cracking stays the bulk route |
@@ -283,7 +283,9 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 | Rejected: helium from slurry filtration | Hydro plants have two fluid outputs, both used by filtration |
 
 Acceptance: `tests/progression/fulgora-launch-closure-helium.args` exits 0 with a
-placeholder recipe in `tests/progression/planner/fulgora-helium-candidate.json`.
+placeholder recipe and technology in
+`tests/progression/planner/fulgora-helium-candidate.json`, and exits 1 if that
+technology is not declared. It also resolves all four research packs locally.
 That query does not check machine fluid outputs; implementation needs a scenario
 running the recipe in a distillery with all three fluids and the graphite.
 
@@ -363,6 +365,7 @@ boxed recipe.
 |---|---|---|---|
 | Bulk slurry filtration | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed slurry filtration |
 | Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
+| Hydrocarbon degassing, design only | Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
 
 Each research has 10 units at 45 seconds per unit.
 Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
