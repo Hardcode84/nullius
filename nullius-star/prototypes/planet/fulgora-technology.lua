@@ -15,6 +15,21 @@ for _,process in ipairs({
   }})
 end
 
+for _,bulk in ipairs({false,true}) do
+  data:extend({{
+    type="technology",name="nullius-"..(bulk and "bulk-" or "").."hydrocarbon-degassing",
+    icons=table.deepcopy(data.raw.fluid[bulk and "nullius-compressed-helium" or "nullius-helium"].icons),
+    order="nullius-dg-"..(bulk and "bulk-" or "").."hydrocarbon-degassing",
+    prerequisites=bulk and {"nullius-hydrocarbon-degassing","nullius-bulk-hydrocarbon-cracking"}
+      or {"nullius-air-separation-3","nullius-overcharged-assembly-2"},
+    effects={{type="unlock-recipe",recipe="nullius-"..(bulk and "boxed-" or "").."degassing-hydrocarbon-cracking"}},
+    unit={count=10,time=45,ingredients={
+      {"nullius-electromagnetic-pack",20},{"nullius-climatology-pack",4},
+      {"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
+    }},
+  }})
+end
+
 for _,name in ipairs({"ice-melting", "salt-disposal", "salt-dissolution"}) do
   table.insert(data.raw.technology["nullius-mass-production-4"].effects,
     {type="unlock-recipe",recipe="nullius-boxed-"..name})

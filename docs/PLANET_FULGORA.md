@@ -258,7 +258,7 @@ Slurry climatology uses the captured air without seawater.
 
 ## Helium
 
-Design only. Helium light enough to escape leaves none in the atmosphere, so it
+Helium light enough to escape leaves none in the atmosphere, so it
 comes from the primordial hydrocarbon ocean, where it stays dissolved through
 filtration. Slow, cold fractionation during cracking recovers it as the lightest
 fraction. Rocket closure needs it for heat pipe 3 and
@@ -271,7 +271,7 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 | Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). It requires Air Separation 3, the normal helium unlock, which also unlocks compression |
 | Helium checkpoint | Not a prerequisite: it requires helium production, which degassing supplies on a planet with no other route |
 | Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
-| Bulk variant | Boxed degassing cracking: the boxed cracking outputs plus compressed helium, slower than boxed cracking; compressed methane, benzene, and compressed helium fit the distillery's three fluid outputs. Requires Hydrocarbon degassing and Bulk hydrocarbon cracking. The first launch does not depend on it |
+| Bulk variant | Boxed degassing cracking: the boxed cracking outputs plus compressed helium, slower than boxed cracking; compressed methane, benzene, and compressed helium fit the distillery's three fluid outputs. Bulk hydrocarbon degassing research requires Hydrocarbon degassing and Bulk hydrocarbon cracking. The first launch does not depend on it |
 | Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary cracking stays the bulk route |
 | Cost | Helium arrives with methane and benzene. Methane can vent; benzene has no chimney, so surplus goes to combustion or reforming, both paid in water |
 
@@ -283,12 +283,10 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 | Rejected: returning filtered hydrocarbons | Feeding the output back in converts a whole batch to helium |
 | Rejected: helium from slurry filtration | Hydro plants have two fluid outputs, both used by filtration |
 
-Acceptance: `tests/progression/fulgora-launch-closure-helium.args` exits 0 with a
-placeholder recipe and technology in
-`tests/progression/planner/fulgora-helium-candidate.json`, and exits 1 if that
-technology is not declared. It also resolves all four research packs locally.
-That query does not check machine fluid outputs; implementation needs a scenario
-running the recipe in a distillery with all three fluids and the graphite.
+Validation: `tests/progression/fulgora-launch-closure-helium.args` checks the
+local rocket path and all four research packs against the implemented recipes.
+The `fulgora-helium` scenario checks research access and distillery production
+with three fluid outputs and graphite, for ordinary and bulk recipes.
 
 ## Sand construction
 
@@ -366,7 +364,7 @@ boxed recipe.
 |---|---|---|---|
 | Bulk slurry filtration | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed slurry filtration |
 | Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
-| Hydrocarbon degassing, design only | Air Separation 3, Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
+| Hydrocarbon degassing | Air Separation 3, Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
 
 Each research has 10 units at 45 seconds per unit.
 Bulk cracking returns 75 compressed methane instead of 300 methane per batch.

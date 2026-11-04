@@ -1,3 +1,9 @@
+--recipe
+nullius-helium=nullius-degassing-hydrocarbon-cracking
+--recipe
+nullius-compressed-helium=nullius-compressed-helium
+--technology
+nullius-hydrocarbon-degassing
 --technology
 nullius-primitive-filtration
 --surface-property

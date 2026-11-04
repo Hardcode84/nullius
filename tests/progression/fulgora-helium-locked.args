@@ -1,0 +1,12 @@
+--available
+nullius-filtered-hydrocarbons
+--available-machine
+nullius-distillery-1
+--technology
+nullius-air-separation-3
+--technology
+nullius-overcharged-assembly-2
+--recipe
+nullius-helium=nullius-degassing-hydrocarbon-cracking
+--require-no-additional-technologies
+nullius-helium=1

@@ -135,6 +135,20 @@ for _,boxed in ipairs({false,true}) do
   }})
 end
 
+for _,boxed in ipairs({false,true}) do
+  local prefix=boxed and "nullius-boxed-" or "nullius-"
+  local recipe=table.deepcopy(data.raw.recipe[prefix.."hydrocarbon-cracking"])
+  recipe.name=prefix.."degassing-hydrocarbon-cracking"
+  local title={"recipe-name.nullius-degassing-hydrocarbon-cracking"}
+  recipe.localised_name=boxed and {"recipe-name.nullius-boxed",title} or title
+  recipe.energy_required=recipe.energy_required*2
+  recipe.main_product=boxed and "nullius-compressed-helium" or "nullius-helium"
+  recipe.icons=table.deepcopy(data.raw.fluid[recipe.main_product].icons)
+  recipe.order=recipe.order.."-degassing"
+  table.insert(recipe.results,{type="fluid",name=recipe.main_product,amount=boxed and 2 or 1})
+  data:extend({recipe})
+end
+
 local function gcd(a,b)
   while b~=0 do a,b=b,a%b end
   return a

@@ -1,5 +1,6 @@
 {
   "contracts": [
+    "fulgora-launch-closure-helium.args",
     "carbothermic-sodium.args",
     "nauvis-physics-pack-titanium.args",
     "nauvis-thermal-furnace-sizes.args",
