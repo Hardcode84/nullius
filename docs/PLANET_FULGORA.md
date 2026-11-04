@@ -271,7 +271,7 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 | Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). It requires Air Separation 3, the normal helium unlock, which also unlocks compression |
 | Helium checkpoint | Not a prerequisite: it requires helium production, which degassing supplies on a planet with no other route |
 | Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
-| Boxed variant | None. Helium is a gas; boxed heat pipe 3 takes compressed helium from the same route |
+| Bulk variant | Boxed degassing cracking: the boxed cracking outputs plus compressed helium, slower than boxed cracking; compressed methane, benzene, and compressed helium fit the distillery's three fluid outputs. Requires Hydrocarbon degassing and Bulk hydrocarbon cracking. The first launch does not depend on it |
 | Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary cracking stays the bulk route |
 | Cost | Helium arrives with methane and benzene. Methane can vent; benzene has no chimney, so surplus goes to combustion or reforming, both paid in water |
 
