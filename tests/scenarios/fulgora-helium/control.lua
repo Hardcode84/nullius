@@ -1,7 +1,8 @@
 -- given: two cracking batches per cell, researched degassing, debug electricity.
--- place/connect: tier 1 ordinary and tier 3 bulk distilleries with separate output pipes.
+-- place/connect: ordinary and bulk cells on every distillery tier on Fulgora, with
+--   separate output pipes.
 -- act: craft, fill the helium outlet with declared debug helium, then drain it.
--- run: at most 2400 ticks.
+-- run: at most 8000 ticks; bulk on the slowest tier sets the deadline.
 -- expect: exact yields, separate research gates, full helium blocks further crafting.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
 local function check(ok,message) storage.assertions=storage.assertions+1;assert(ok,message) end
@@ -37,12 +38,13 @@ script.on_nth_tick(60,function()
   if not storage.rows then
     storage.assertions=0;storage.rows={}
     local force=game.create_force('helium-test')
-    local surface=game.surfaces.nauvis
-    surface.request_to_generate_chunks({0,0},2);surface.force_generate_chunk_requests()
-    for _,e in pairs(surface.find_entities_filtered{area={{-12,-12},{50,12}}}) do e.destroy() end
+    local surface=game.planets['nullius-fulgora'].create_surface()
+    surface.request_to_generate_chunks({0,0},4);surface.force_generate_chunk_requests()
+    for _,e in pairs(surface.find_entities_filtered{area={{-12,-12},{80,42}}}) do e.destroy() end
     local tiles={}
-    for x=-12,50 do for y=-12,12 do tiles[#tiles+1]={name='grass-1',position={x,y}} end end
+    for x=-12,80 do for y=-12,42 do tiles[#tiles+1]={name='fulgoran-rock',position={x,y}} end end
     surface.set_tiles(tiles,true)
+    check(surface.get_property('magnetic-field')==99,'Fulgora surface fixture')
     local ordinary='nullius-degassing-hydrocarbon-cracking'
     local bulk='nullius-boxed-degassing-hydrocarbon-cracking'
     for _,tech in ipairs({'nullius-primitive-filtration','nullius-air-separation-3','nullius-overcharged-assembly-2',
@@ -59,24 +61,25 @@ script.on_nth_tick(60,function()
       bulk_tech.prerequisites['nullius-bulk-hydrocarbon-cracking']~=nil,'bulk prerequisites')
     bulk_tech.researched=true
     check(force.recipes[bulk].enabled,'bulk unlock')
-    for _,boxed in ipairs({false,true}) do
-      local x=boxed and 30 or 0
+    for _,cell in ipairs({{1,false},{2,false},{3,false},{1,true},{2,true},{3,true}}) do
+      local tier,boxed=cell[1],cell[2]
+      local x,y=(tier-1)*30,boxed and 30 or 0
       local name=boxed and bulk or ordinary
       local recipe=prototypes.recipe[name]
       local base=prototypes.recipe[boxed and 'nullius-boxed-hydrocarbon-cracking' or 'nullius-hydrocarbon-cracking']
       check(recipe.energy==base.energy*2,'degassing time')
       check(not recipe.allowed_effects.productivity,'helium productivity')
       check(not recipe.surface_conditions or #recipe.surface_conditions==0,'surface restriction')
-      local machine=assert(surface.create_entity{name=boxed and 'nullius-distillery-3' or 'nullius-distillery-1',position={x,0},force=force})
+      local machine=assert(surface.create_entity{name='nullius-distillery-'..tier,position={x,y},force=force})
       machine.set_recipe(name)
       check(machine.get_recipe().name==name,'distillery recipe selection')
       local entities={machine}
       for _,dx in ipairs({-2,0,2}) do
-        entities[#entities+1]=assert(surface.create_entity{name='pipe',position={x+dx,-3},force=force})
+        entities[#entities+1]=assert(surface.create_entity{name='pipe',position={x+dx,y-3},force=force})
       end
-      local grid=surface.create_entity{name='factorio-test-planner-grid',position={x+7,0},force=force}
+      local grid=surface.create_entity{name='factorio-test-planner-grid',position={x+7,y},force=force}
       grid.power_production=100000000;grid.electric_buffer_size=100000000
-      surface.create_entity{name='substation',position={x+5,4},force=force}
+      surface.create_entity{name='substation',position={x+5,y+4},force=force}
       local input=boxed and 250 or 50
       check(machine.insert_fluid{name='nullius-filtered-hydrocarbons',amount=input}==input,'feed')
       storage.rows[#storage.rows+1]={machine=machine,entities=entities,input=input,boxed=boxed,stage='first',
@@ -107,7 +110,7 @@ script.on_nth_tick(60,function()
     end
     if row.stage~='done' then done=false end
   end
-  check(done or game.tick<2340,'degassing production stalled')
+  check(done or game.tick<7900,'degassing production stalled')
   if done then
     helpers.write_file('factorio-tests/fulgora-helium.json',helpers.table_to_json{
       schema=1,case='fulgora-helium',status='pass',failure_count=0,assertions=storage.assertions,

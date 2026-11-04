@@ -268,7 +268,7 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 |---|---|
 | Recipe | Degassing cracking: the hydrocarbon cracking outputs plus a small amount of helium; slower than ordinary cracking |
 | Machine | Distillery, as ordinary cracking. Helium takes its third fluid output |
-| Unlock | Hydrocarbon degassing, Fulgora research costed in electromagnetic packs; see [Resource model](#resource-model). It requires Air Separation 3, the normal helium unlock, which also unlocks compression |
+| Unlock | Hydrocarbon degassing, Fulgora research costed mainly in electromagnetic packs. It requires Overcharged Assembly 2 and Air Separation 3, the normal helium unlock, which also unlocks compression |
 | Helium checkpoint | Not a prerequisite: it requires helium production, which degassing supplies on a planet with no other route |
 | Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
 | Bulk variant | Boxed degassing cracking: the boxed cracking outputs plus compressed helium, slower than boxed cracking; compressed methane, benzene, and compressed helium fit the distillery's three fluid outputs. Bulk hydrocarbon degassing research requires Hydrocarbon degassing and Bulk hydrocarbon cracking. The first launch does not depend on it |
@@ -283,10 +283,12 @@ processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 | Rejected: returning filtered hydrocarbons | Feeding the output back in converts a whole batch to helium |
 | Rejected: helium from slurry filtration | Hydro plants have two fluid outputs, both used by filtration |
 
-Validation: `tests/progression/fulgora-launch-closure-helium.args` checks the
-local rocket path and all four research packs against the implemented recipes.
-The `fulgora-helium` scenario checks research access and distillery production
-with three fluid outputs and graphite, for ordinary and bulk recipes.
+Validation: `tests/progression/fulgora-launch-closure-helium.args` checks that the
+local rocket path and research packs are reachable with the implemented recipes.
+The `fulgora-helium` scenario checks research gates and production on Fulgora, for
+ordinary and bulk recipes on every distillery tier. Recipe values live in
+`nullius-star/prototypes/planet/fulgora-recipes.lua` and research values in
+`fulgora-technology.lua`.
 
 ## Sand construction
 
@@ -320,7 +322,7 @@ with three fluid outputs and graphite, for ordinary and bulk recipes.
 | Multiplayer | Same-force players share idle bodies; occupied bodies cannot be taken; Vulcanus and Fulgora records are separate |
 | Storms | Harmless native lightning all day; daytime frequency is 25% of nighttime frequency |
 | Process restrictions | Use `magnetic-field` for processes that need Fulgora's electromagnetic environment; ordinary processing has no planet restriction |
-| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products` on Factorio 2.1 |
+| Tests | `fulgora-mapgen`, `fulgora-terrain`, `fulgora-activation`, `fulgora-shared-body`, `fulgora-probe-alignment`, `fulgora-rail-supports`, `fulgora-extraction`, `fulgora-walking`, `fulgora-vent-coverage`, `fluid-resource-products`, `fulgora-helium` on Factorio 2.1 |
 
 To inspect the terrain and capture three screenshots:
 
@@ -337,6 +339,7 @@ The preview includes three fixed seeds. Screenshots and terrain maps are in
 ```text
 natural fountains -> extractors -> hydrocarbon slurry -> filtration
   -> filtered hydrocarbons -> cracking -> methane + benzene + graphite
+                           -> degassing cracking -> same products + helium [researched]
   -> sludge -> crude filtration -> low-yield random minerals
             -> waste reclamation -> selective mineral recovery [researched]
   -> ice -> melting -> water -> electrolysis -> hydrogen + oxygen
@@ -364,7 +367,6 @@ boxed recipe.
 |---|---|---|---|
 | Bulk slurry filtration | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed slurry filtration |
 | Bulk hydrocarbon cracking | Overcharged Assembly 2, Packaging 3 | 200 EM + 40 each climatology, electrical, chemical | Boxed hydrocarbon cracking |
-| Hydrocarbon degassing | Air Separation 3, Overcharged Assembly 2 | 200 EM + 40 each climatology, electrical, chemical | [Degassing cracking](#helium) |
 
 Each research has 10 units at 45 seconds per unit.
 Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
@@ -378,6 +380,9 @@ Bulk cracking returns 75 compressed methane instead of 300 methane per batch.
 | Ice melting | 1 ice | 20 water | 2 s | Distillery 1 |
 | Salt dissolution | 6 salt + 45 water | 65 brine | 1 s | Hydro plant 1 |
 | Hydrocarbon cracking | 50 filtered hydrocarbons | 60 methane + 12 benzene + 2 graphite | 4 s | Distillery 1 |
+
+Degassing cracking is a slower cracking variant that also yields helium; see
+[Helium](#helium).
 
 Boxed recipes consume five times the input and time; each solid output is a box
 of five. Productivity is disabled. These recipes work on every planet.

@@ -156,6 +156,21 @@
       "ordinary": "nullius-hydrocarbon-cracking"
     },
     {
+      "name": "nullius-degassing-hydrocarbon-cracking",
+      "classification": "Fulgora reward",
+      "requires": [
+        "nullius-hydrocarbon-degassing"
+      ]
+    },
+    {
+      "name": "nullius-boxed-degassing-hydrocarbon-cracking",
+      "classification": "bulk Fulgora reward",
+      "requires": [
+        "nullius-bulk-hydrocarbon-degassing"
+      ],
+      "ordinary": "nullius-degassing-hydrocarbon-cracking"
+    },
+    {
       "name": "nullius-ice-melting",
       "classification": "shared bootstrap utility",
       "requires": [
