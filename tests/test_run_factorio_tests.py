@@ -98,7 +98,10 @@ class FactorioTestRunnerTests(unittest.TestCase):
                 self.assertEqual(deadline_for(SimpleNamespace(until_tick=None), "shared-body"), 30000)
                 self.assertEqual(deadline_for(SimpleNamespace(until_tick=10), "shared-body"), 10)
                 with self.assertRaisesRegex(TestFailure, "maximum"):
-                    deadline_for(SimpleNamespace(until_tick=300001), "shared-body")
+                    deadline_for(SimpleNamespace(until_tick=32001), "shared-body")
+                metadata.write_text(json.dumps({"schema": 1, "until_tick": 32001}))
+                with self.assertRaisesRegex(TestFailure, "maximum 32000"):
+                    deadline_for(SimpleNamespace(until_tick=10), "shared-body")
                 metadata.write_text(json.dumps({
                     "schema": 1, "until_tick": 30000, "multiplayer": "true",
                 }))
@@ -227,6 +230,7 @@ class FactorioTestRunnerTests(unittest.TestCase):
         )
 
     def test_until_tick_accepts_repository_maximum(self) -> None:
+        self.assertEqual(MAX_UNTIL_TICK, 32000)
         self.assertEqual(validate_until_tick(MAX_UNTIL_TICK, "test"), MAX_UNTIL_TICK)
 
     def test_until_tick_rejects_value_above_repository_maximum(self) -> None:

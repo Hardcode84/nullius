@@ -113,6 +113,12 @@ python tools/run_factorio_tests.py -n auto
 
 ## External runner
 
+Scenario deadlines and command-line overrides must not exceed 32,000 ticks.
+The runner rejects larger values before it starts Factorio.
+Use `tools/audit_factorio_test_duration.py --result SUITE.json --output AUDIT.json`
+to compare measured runs and declared deadlines with this limit and the
+five-minute parallel suite budget.
+
 ```yaml
 discovery: scenario metadata
 execution: parallel Factorio processes

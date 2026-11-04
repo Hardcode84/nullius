@@ -31,7 +31,7 @@ DEPENDENCY_MODS = (
     "boblogistics",
     "configurable-valves",
 )
-MAX_UNTIL_TICK = 300_000
+MAX_UNTIL_TICK = 32_000
 
 
 class TestFailure(RuntimeError):
