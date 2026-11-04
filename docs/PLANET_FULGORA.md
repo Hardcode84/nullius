@@ -259,30 +259,33 @@ Slurry climatology uses the captured air without seawater.
 ## Helium
 
 Design only. Helium light enough to escape leaves none in the atmosphere, so it
-comes from the primordial hydrocarbon ocean, where it stays dissolved. Cold, slow
-filtration lets it boil off. Rocket closure needs it for heat pipe 3 and
+comes from the primordial hydrocarbon ocean, where it stays dissolved through
+filtration. Slow, cold fractionation during cracking recovers it as the lightest
+fraction. Rocket closure needs it for heat pipe 3 and
 processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 
 | Property | Rule |
 |---|---|
-| Recipe | Degassing slurry filtration: the slurry filtration outputs plus a small amount of helium; slower than ordinary filtration |
-| Machine | Distillery. Hydro plants have two fluid outputs, both used by filtration; distilleries have three |
+| Recipe | Degassing cracking: the hydrocarbon cracking outputs plus a small amount of helium; slower than ordinary cracking |
+| Machine | Distillery, as ordinary cracking. Helium takes its third fluid output |
 | Unlock | Air Separation 3, with helium compression |
-| Surface condition | None. Slurry exists only on Fulgora, and barreled slurry carries its helium with it |
+| Surface condition | None. Filtered hydrocarbons come only from Fulgora slurry, and shipped hydrocarbons carry their helium with them |
 | Boxed variant | None. Helium is a gas; boxed heat pipe 3 takes compressed helium from the same route |
-| Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary filtration stays the bulk route |
+| Surplus | The existing helium vent; a full helium output stalls the recipe, so ordinary cracking stays the bulk route |
+| Cost | Helium arrives with methane and benzene. Methane can vent; benzene has no chimney, so surplus goes to combustion or reforming, both paid in water |
 
 | Exploit vector | Closure |
 |---|---|
-| Reprocessing | Slurry has no producer and the recipe returns none, so each unit degasses once |
-| Reinjection | Accepts no slurry, has no outputs, and does not change vent yield |
-| Stream balance | Same output vector as ordinary filtration, so coupled-stream evidence holds |
+| Reprocessing | Only slurry filtration produces filtered hydrocarbons and the recipe returns none, so each unit degasses once |
+| Reinjection | Removes filtered hydrocarbons, has no outputs, and does not change vent yield |
+| Stream balance | Same output vector as ordinary cracking, so it opens no new ratio between methane, benzene, and graphite |
 | Rejected: returning filtered hydrocarbons | Feeding the output back in converts a whole batch to helium |
+| Rejected: helium from slurry filtration | Hydro plants have two fluid outputs, both used by filtration |
 
 Acceptance: `tests/progression/fulgora-launch-closure-helium.args` exits 0 with a
 placeholder recipe in `tests/progression/planner/fulgora-helium-candidate.json`.
 That query does not check machine fluid outputs; implementation needs a scenario
-running the recipe in a distillery with all three fluids and both items.
+running the recipe in a distillery with all three fluids and the graphite.
 
 ## Sand construction
 

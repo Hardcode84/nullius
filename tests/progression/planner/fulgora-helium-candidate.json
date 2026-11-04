@@ -1,8 +1,8 @@
 {
   "recipe": {
-    "candidate-degassing-slurry-filtration": {
+    "candidate-degassing-hydrocarbon-cracking": {
       "type": "recipe",
-      "name": "candidate-degassing-slurry-filtration",
+      "name": "candidate-degassing-hydrocarbon-cracking",
       "enabled": true,
       "category": "distillation",
       "energy_required": 8,
@@ -10,20 +10,20 @@
       "ingredients": [
         {
           "type": "fluid",
-          "name": "nullius-hydrocarbon-slurry",
-          "amount": 100
+          "name": "nullius-filtered-hydrocarbons",
+          "amount": 50
         }
       ],
       "results": [
         {
           "type": "fluid",
-          "name": "nullius-filtered-hydrocarbons",
-          "amount": 50
+          "name": "nullius-methane",
+          "amount": 60
         },
         {
           "type": "fluid",
-          "name": "nullius-sludge",
-          "amount": 40
+          "name": "nullius-benzene",
+          "amount": 12
         },
         {
           "type": "fluid",
@@ -32,13 +32,8 @@
         },
         {
           "type": "item",
-          "name": "nullius-ice",
+          "name": "nullius-graphite",
           "amount": 2
-        },
-        {
-          "type": "item",
-          "name": "nullius-salt",
-          "amount": 1
         }
       ]
     }
