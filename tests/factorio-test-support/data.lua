@@ -325,3 +325,4 @@ if settings.startup["factorio-test-controlled-lightning"].value then
 end
 
 require('fulgora-power')
+require("astronomy-effects")
