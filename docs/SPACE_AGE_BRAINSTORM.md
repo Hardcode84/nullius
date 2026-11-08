@@ -732,7 +732,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 **Integrated supply chain (from early Tier 5)**
 - Rockets lift cargo to orbit; space platforms carry it between planets and drop it to the surface
 - Planets specialize: each exports what it's rich in, imports what it lacks
-- Boxes compress cargo only once box weight follows contents; one stack of any measured box fills a whole launch, whatever the box holds (see [Engine checks](#engine-checks-before-implementation))
+- Boxes compress cargo only once box weight follows contents; most measured bulk boxes weigh one launch per stack whatever they hold (see [Measured platform contracts](#measured-platform-contracts))
 - Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
 - A planet receives before it exports: drops need no pad or silo, and exports need a silo with rockets; see [Cargo closure](#cargo-closure)
 
@@ -1015,15 +1015,27 @@ needs debris mitigation.
 | `python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-titanium-free-closure.args` | The same products close at Rocket Science 2 on Fulgora, without titanium or helium |
 | `python tools/run_factorio_tests.py --keep-run-directory experiment-rocket-cargo-weights` | Engine-computed item weights and silo cargo properties |
 
+#### Measured platform contracts
+
+`experiment-platform-transit` and `experiment-rocket-cargo-weights`, Factorio 2.1.24.
+
+| Contract | Measurement |
+|---|---|
+| Launches per component | Vanilla sets each item's weight, so Nullius recipes do not change it: starter pack 1 per launch, thruster 5, cargo bay 10, foundation 50 |
+| Thruster fluids | Fuel and oxidizer boxes filter `thruster-fuel` and `thruster-oxidizer`, so every chemistry conditions into these two fluids and one thruster prototype serves all |
+| Reference flight | Starter-pack platform with one thruster, Nauvis to Vulcanus, fill held by infinity pipes. Per fluid: 100% fill, 9,428 units in about 4,200 ticks; 40%, 5,249 in about 5,400; 25%, 3,875 in about 7,200. At 10% the platform never leaves orbit |
+| Flight power | The reference platform flies with no electric network entities |
+| Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each |
+| Box weight | Not one rule. Canister boxes weigh half their contents (5 canisters, coefficient 0.5); sheet, ingot, beam, composite, insulation, and rutile boxes weigh one launch per stack, independent of contents |
+
 #### Engine checks before implementation
 
 | Check | Decides |
 |---|---|
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
-| Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
-| Weights of canisters, recordings, and blank modules, added to `experiment-rocket-cargo-weights` | Propellant per trip and launches per correlation |
-| Box weight: one stack of any measured box fills a whole launch, independent of contents. Find the engine's weight source for boxes, then make box weight equal contents weight | Whether boxed cargo carries more per launch than loose cargo |
-| Reference platform thrust and propellant | Reference transit for recording spoilage |
+| Weights of recordings and blank modules, added to `experiment-rocket-cargo-weights` | Launches per correlation |
+| Box weight: find the engine's weight source for the boxes that weigh one launch per stack, then make box weight follow contents | Whether boxed bulk cargo carries more per launch than loose cargo |
+| Reference flight for a platform with cargo bays and more thrusters | Propellant per trip beyond the starter-pack platform |
 | Space-platform surface properties | Vacuum placement conditions |
 
 ### 4.5 Astronomy: Interplanetary Interferometry

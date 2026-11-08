@@ -22,6 +22,18 @@ local CARGO = {
   "nullius-insulation", "nullius-box-insulation",
   "nullius-sensor-node-2", "nullius-haste-module-3",
   "nullius-rocket", "nullius-silo", "nullius-satellite", "nullius-probe",
+  "nullius-rocket-stage",
+  -- Propellant carriers.
+  "nullius-canister", "nullius-hydrogen-canister", "nullius-box-hydrogen-canister",
+  "processed-fuel", "nullius-box-methanol-canister", "nullius-diesel-canister",
+  "barrel", "nullius-hydrogen-barrel", "nullius-compressed-hydrogen-barrel",
+  "nullius-oxygen-barrel", "nullius-compressed-oxygen-barrel",
+  "nullius-methane-barrel", "nullius-compressed-methane-barrel",
+  "nullius-carbon-monoxide-barrel",
+  -- Draft platform component inputs.
+  "nullius-steel-plate", "nullius-ceramic-powder", "nullius-heat-pipe-2",
+  "nullius-motor-2", "nullius-grid-battery-1", "nullius-processor-1", "radar",
+  "nullius-solar-panel-1",
 }
 
 script.on_nth_tick(30, function()
