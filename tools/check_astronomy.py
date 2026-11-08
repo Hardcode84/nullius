@@ -48,8 +48,11 @@ def ladder_violations(data):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--data-raw', type=Path)
     args = parser.parse_args()
-    data, temporary = prereqs.dump_resolved_data(prereqs.parse_arguments([]))
+    dump_args = prereqs.parse_arguments([])
+    dump_args.data_raw = args.data_raw
+    data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
         errors = ladder_violations(data)
         technologies = data['technology']

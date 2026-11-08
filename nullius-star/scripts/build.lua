@@ -190,6 +190,13 @@ script.on_event(defines.events.on_player_mined_entity, entity_mined)
 script.on_event(defines.events.on_robot_mined_entity, entity_mined)
 script.on_event(defines.events.on_entity_died, entity_died)
 script.on_event(defines.events.on_object_destroyed, entity_destroyed)
+-- One handler: a second registration of this event would replace the first.
+script.on_event(defines.events.script_raised_teleported, function(event)
+  local entity = event.entity
+  fulgora_collectors.add(entity)
+  grounding_coils.built(entity)
+  astronomy.built(entity)
+end)
 
 
 function update_tick()

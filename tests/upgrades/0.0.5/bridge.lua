@@ -3,7 +3,8 @@ remote.add_interface("release-upgrade", {
   seed = function()
     local force = game.forces.player
     for _, name in ipairs({"nullius-probe-vulcanus", "nullius-geology-2",
-        "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7", "nullius-primitive-robotics", "nullius-explosives-2", "nullius-mass-production-6"}) do
+        "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7", "nullius-primitive-robotics", "nullius-explosives-2", "nullius-mass-production-6",
+        "nullius-plumbing-6"}) do
       force.technologies[name].researched = true
     end
     probe.on_probe_researched("nullius-probe-vulcanus", force)
@@ -45,6 +46,11 @@ remote.add_interface("release-upgrade", {
       assert(force.recipes[name].enabled, "researched recipe remains locked: " .. name)
     end
     assert(force.character_logistic_requests, "primitive robotics did not enable personal logistics")
+    -- Plumbing 6 before the upstream progression keeps the legacy tank, also
+    -- through the technology resets of later mod changes.
+    assert(force.recipes["nullius-legacy-large-tank-3"].enabled, "upgrade lost the legacy tank")
+    force.reset_technology_effects()
+    assert(force.recipes["nullius-legacy-large-tank-3"].enabled, "technology reset lost the legacy tank")
     probe.on_probe_researched("nullius-probe-vulcanus", force)
     assert(body.surface.count_entities_filtered{name = "nullius-landing-main", force = force} == 1,
       "upgrade duplicated landing supplies")

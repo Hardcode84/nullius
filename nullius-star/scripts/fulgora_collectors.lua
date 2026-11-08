@@ -96,8 +96,4 @@ function collectors.rebuild()
   end
 end
 
-script.on_event(defines.events.script_raised_teleported,function(event)
-  collectors.add(event.entity)
-  grounding_coils.built(event.entity)
-end)
 return collectors

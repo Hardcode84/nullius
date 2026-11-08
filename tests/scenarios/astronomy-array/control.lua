@@ -1,8 +1,10 @@
 -- given: finite blanks, hydrogen, and pneumatic fuel; declared electric grids.
 -- place/connect: production dishes, hydrogen pipes, and grid poles on three planets.
--- act: research, build four dishes, remove three, merge forces, and cross storm edges.
+-- act: research, build four dishes, remove three, merge forces, cross storm edges,
+--   and teleport a dish through the script event.
 -- run: four short native crafting windows.
--- expect: locked planet recipes, spacing, proportional work and power, and media conservation.
+-- expect: locked planet recipes, spacing, proportional work and power, one hydrogen
+--   per recording, fields that follow a teleport, and media conservation.
 local CASE='astronomy-array'
 local spec=require('__nullius-star__/shared/astronomy')
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
@@ -80,6 +82,11 @@ script.on_nth_tick(300,function()
   check(math.abs(watts-505000)<1000,'full operating power plus drain: '..watts)
   check(math.abs(storm_watts-380000)<1000,'day operating power plus drain: '..storm_watts)
   check(math.abs(gas-25)<0.1,'pneumatic fuel follows work: '..gas)
+  local nauvis=storage.surfaces.nauvis
+  local recordings=storage.force.get_item_production_statistics(nauvis).input_counts[spec.recording('nauvis')] or 0
+  local hydrogen=storage.force.get_fluid_production_statistics(nauvis).output_counts['nullius-hydrogen'] or 0
+  check(recordings>=4 and hydrogen-recordings>=0 and hydrogen-recordings<=1,
+   'one hydrogen per recording, plus the craft in progress: '..hydrogen..' for '..recordings)
   storage.electric_start=energy(e)
   storage.start=work(e);storage.extra={};storage.pneumatic_extra={};storage.fuel_start=fuel()
   for _,p in ipairs{{64,0},{0,64},{64,64}} do
@@ -120,6 +127,13 @@ script.on_nth_tick(300,function()
   check(not storm.disabled_by_script and work(storm)>storage.stopped,'day resumes progress')
   storage.force.technologies['nullius-fulgora-radio-astronomy'].researched=false
   check(storm.get_recipe()==nil and storm.disabled_by_script,'research reversal locks dish')
+  local nauvis=storage.surfaces.nauvis
+  local fields={'nullius-dish-collision-horizontal','nullius-dish-collision-vertical'}
+  local old=storage.one.position
+  check(storage.one.teleport({-64,0}),'dish teleports')
+  script.raise_script_teleported{entity=storage.one,old_surface_index=nauvis.index,old_position=old}
+  check(nauvis.count_entities_filtered{name=fields,position={-64,0},radius=32}==4,'fields follow the teleport')
+  check(nauvis.count_entities_filtered{name=fields,position=old,radius=32}==0,'old fields removed')
   remote.call('nullius-test-astronomy','rebuild')
   check(storage.surfaces.nauvis.count_entities_filtered{name='nullius-dish-collision-horizontal'}==4,'one field set per dish after rebuild')
   helpers.write_file('factorio-tests/'..CASE..'.json',helpers.table_to_json{schema=1,case=CASE,status='pass',tick=game.tick,

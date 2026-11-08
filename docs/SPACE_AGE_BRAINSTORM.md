@@ -1090,7 +1090,7 @@ array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 | Research cost | Provisional until the research cost pass: Astronomy keeps its unit; planet technologies use `launch_research` with their planet pack |
 | Planet entry | Pneumatic Technology and Primitive Filtration unlock each planet's science pack, so each planet technology needs that planet |
 | Astronomy closure | Unchanged; `tools/check_launch_vehicle.py` already protects it |
-| Existing saves | A migration resets technology effects, so researched Astronomy grants its new unlocks |
+| Existing saves | The engine resets recipes and technologies whenever mods change, so researched Astronomy grants its new unlocks. A migration creates the dish state first, because other mods' configuration handlers raise technology events before this mod rebuilds. `tests/upgrades/0.0.6` checks both |
 
 Correlation recipes are unlocked before every source planet is available, so
 the player sees the whole ladder at Astronomy. This replaces the rule that every

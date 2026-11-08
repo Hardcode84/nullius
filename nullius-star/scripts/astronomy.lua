@@ -14,49 +14,70 @@ local function interference(surface)
   return planet_name(surface)=="fulgora" and math.min(1,math.max(0,surface.get_property(PROPERTY)/100)) or 0
 end
 
-local function select_recording(entity)
+-- Set the surface's unlocked recording and lock it. Build, research, and rebuild
+-- only; share changes leave the recipe alone.
+local function select_recording(row)
+  local entity=row.entity
   local planet=planet_name(entity.surface)
   local recipe=planet and entity.force.recipes[spec.recording(planet)]
   local name=recipe and recipe.enabled and recipe.name or nil
   local current=entity.get_recipe()
   if (current and current.name or nil)~=name then
     entity.recipe_locked=false
-    local removed=entity.set_recipe(name)
-    for _,stack in ipairs(removed) do
+    for _,stack in ipairs(entity.set_recipe(name)) do
       entity.surface.spill_item_stack{position=entity.position,stack=stack,force=entity.force,enable_looted=true,allow_belts=false}
     end
   end
-  entity.recipe_locked=true
-  return name~=nil
+  if not entity.recipe_locked then entity.recipe_locked=true end
+  row.ready=name~=nil
 end
 
--- Cold lifecycle path; the storm driver visits only Fulgora groups.
-local function refresh(surface_index, force_index)
-  local rows={}
-  for unit,row in pairs(storage.nullius_dishes) do
-    if row.surface==surface_index and row.force==force_index then
-      if row.entity.valid then rows[#rows+1]=row else
-        destroy_wind_mod_entity(unit)
-        storage.nullius_dishes[unit]=nil
-      end
-    end
+-- Members of one surface and force array, as a unit-number set.
+local function members(surface_index, force_index, create)
+  local forces=storage.nullius_dish_groups[surface_index]
+  if not forces and create then forces={};storage.nullius_dish_groups[surface_index]=forces end
+  local set=forces and forces[force_index]
+  if not set and create then set={};forces[force_index]=set end
+  return set
+end
+
+local function forget(unit)
+  local row=storage.nullius_dishes[unit]
+  if not row then return nil end
+  destroy_wind_mod_entity(unit)
+  storage.nullius_dishes[unit]=nil
+  local set=members(row.surface,row.force)
+  if set then
+    set[unit]=nil
+    if next(set)==nil then storage.nullius_dish_groups[row.surface][row.force]=nil end
   end
-  if #rows==0 then return end
-  local noise=interference(rows[1].entity.surface)
-  local share=(1-noise)/math.sqrt(#rows)
-  for _,row in ipairs(rows) do
+  return row
+end
+
+-- Apply one array's share; each write happens only when its value changes.
+local function refresh(surface_index, force_index)
+  local set=members(surface_index,force_index)
+  if not set then return end
+  local count=0
+  for unit in pairs(set) do
+    if storage.nullius_dishes[unit].entity.valid then count=count+1 else forget(unit) end
+  end
+  if count==0 then return end
+  local noise=interference(game.surfaces[surface_index])
+  local share=(1-noise)/math.sqrt(count)
+  for unit in pairs(set) do
+    local row=storage.nullius_dishes[unit]
     local entity=row.entity
-    local ready=select_recording(entity)
     if row.share~=share then
       entity.local_effect={speed=share-1,consumption=share-1}
       row.share=share
     end
-    local stopped=not ready or share==0
+    local stopped=not row.ready or share==0
     if entity.disabled_by_script~=stopped then entity.disabled_by_script=stopped end
-    local status=ready and string.format("%.2f:%.2f",share*100,noise*100) or "locked"
+    local status=row.ready and string.format("%.2f:%.2f",share*100,noise*100) or "locked"
     if row.status~=status then
       entity.custom_status={diode=stopped and defines.entity_status_diode.red or defines.entity_status_diode.green,
-        label=ready and {"nullius-astronomy.array-status",string.format("%.2f",share*100),string.format("%.2f",noise*100)}
+        label=row.ready and {"nullius-astronomy.array-status",string.format("%.2f",share*100),string.format("%.2f",noise*100)}
           or {"nullius-astronomy.no-recording"}}
       row.status=status
     end
@@ -64,11 +85,8 @@ local function refresh(surface_index, force_index)
 end
 
 function astronomy.remove(unit)
-  local row=storage.nullius_dishes[unit]
-  if not row then return end
-  destroy_wind_mod_entity(unit)
-  storage.nullius_dishes[unit]=nil
-  refresh(row.surface,row.force)
+  local row=forget(unit)
+  if row then refresh(row.surface,row.force) end
 end
 
 function astronomy.built(entity)
@@ -76,8 +94,11 @@ function astronomy.built(entity)
   astronomy.remove(entity.unit_number)
   build_wind_mod_entity(entity,spec.field_prefix)
   storage.nullius_wind_mod_entities[entity.unit_number].dish=true
-  storage.nullius_dishes[entity.unit_number]={entity=entity,surface=entity.surface.index,force=entity.force.index}
-  refresh(entity.surface.index,entity.force.index)
+  local row={entity=entity,surface=entity.surface.index,force=entity.force.index}
+  storage.nullius_dishes[entity.unit_number]=row
+  members(row.surface,row.force,true)[entity.unit_number]=true
+  select_recording(row)
+  refresh(row.surface,row.force)
 end
 
 function astronomy.cloned(entity)
@@ -86,20 +107,24 @@ function astronomy.cloned(entity)
   return false
 end
 
+-- Cold path for research and force changes: regroup, reselect, and refresh.
 function astronomy.refresh_all()
-  local groups={}
+  storage.nullius_dish_groups={}
   for unit,row in pairs(storage.nullius_dishes) do
     if row.entity.valid then
       row.surface=row.entity.surface.index;row.force=row.entity.force.index
-      local key=row.surface..":"..row.force
-      groups[key]={row.surface,row.force}
+      members(row.surface,row.force,true)[unit]=true
+      select_recording(row)
     else destroy_wind_mod_entity(unit);storage.nullius_dishes[unit]=nil end
   end
-  for _,group in pairs(groups) do refresh(group[1],group[2]) end
+  for surface,forces in pairs(storage.nullius_dish_groups) do
+    for force in pairs(forces) do refresh(surface,force) end
+  end
 end
 
 function astronomy.rebuild()
   storage.nullius_dishes={}
+  storage.nullius_dish_groups={}
   for unit,row in pairs(storage.nullius_wind_mod_entities) do
     if row.dish then destroy_wind_mod_entity(unit) end
   end
@@ -129,19 +154,11 @@ function astronomy.update_storms()
       local intensity=25+75*night
       if surface.get_property(PROPERTY)~=intensity then
         surface.set_property(PROPERTY,intensity)
-        local forces={}
-        for _,row in pairs(storage.nullius_dishes) do
-          if row.surface==surface.index then forces[row.force]=true end
-        end
-        for force in pairs(forces) do refresh(surface.index,force) end
+        for force in pairs(storage.nullius_dish_groups[surface.index] or {}) do refresh(surface.index,force) end
       end
     end
   end
 end
-
-script.on_event(defines.events.script_raised_teleported,function(event)
-  if spec.is_dish(event.entity.name) then astronomy.built(event.entity) end
-end)
 
 if script.active_mods["factorio-test-support"] then
   remote.add_interface("nullius-test-astronomy",{rebuild=astronomy.rebuild})

@@ -58,14 +58,25 @@ function upgrade.from_0_0_1(event)
   for _, player in pairs(game.players) do probe.attach_player(player) end
 end
 
-function upgrade.tank_recipes()
-  if not storage.nullius_legacy_tanks then return end
-  for index, researched in pairs(storage.nullius_legacy_tanks) do
-    if researched then
-      game.forces[index].recipes["nullius-legacy-large-tank-3"].enabled = true
+-- Forces that researched Plumbing 6 before the upstream progression keep the
+-- legacy tank. No technology unlocks it, and the engine resets recipes on every
+-- mod change (Bob's Logistics resets again), so keep the record and reapply it.
+function upgrade.tank_recipes(force)
+  for index, kept in pairs(storage.nullius_legacy_tanks or {}) do
+    local target = game.forces[index]
+    if kept and target and (force == nil or force == target) then
+      target.recipes["nullius-legacy-large-tank-3"].enabled = true
     end
   end
-  storage.nullius_legacy_tanks = nil
+end
+
+function upgrade.merge_tanks(source_index, destination)
+  local forces = storage.nullius_legacy_tanks
+  if forces and forces[source_index] then
+    forces[source_index] = nil
+    forces[destination.index] = true
+    upgrade.tank_recipes(destination)
+  end
 end
 
 return upgrade
