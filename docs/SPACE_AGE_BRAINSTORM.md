@@ -1063,7 +1063,8 @@ Design only. The storm controller mechanism is validated by
 The astronomy pack decodes the progenitor's interstellar signal. Dishes on one
 planet see it over the same short baselines, so extra dishes only average noise.
 Baselines between planets separate the signal from noise. Raw recordings are too
-large to transmit, so cargo carries them to a correlator.
+large to transmit, so cargo carries them to a correlator. Every dish keeps time
+with a hydrogen maser.
 
 ```yaml
 removed_sources:
@@ -1104,8 +1105,9 @@ unlocked recipe is craftable at its technology for these recipes only:
 | Property | Rule |
 |---|---|
 | Entity | Assembling machine; one recording recipe per planet |
-| Variants | Electric dish for Nauvis and Fulgora; pneumatic dish for Vulcanus |
-| Recipe | 1 blank recording module -> 1 planet recording |
+| Variants | Electric dish for Nauvis and Fulgora; pneumatic dish for Vulcanus, with a fuel input beside the hydrogen input |
+| Recipe | 1 blank recording module + 1 hydrogen -> 1 planet recording |
+| Hydrogen | Fluid input for the maser, charged per recording, so a throttled dish draws proportionally less. Piped, so spacing turns array growth into pipe length. Local sources: Nauvis seawater electrolysis; Fulgora electrolysis of slurry water, 1,200 slurry per 1,000 hydrogen; Vulcanus HCl cracking, 2,040 HCl per 1,000 hydrogen, competing with graphite, carbon monoxide, and water |
 | Planet identity | Each recording recipe carries the planet's exact magnetic field and positive pressure as surface conditions. On build, and when a planet technology finishes, the script sets the surface's recording recipe and `recipe_locked`. A dish on a surface without an unlocked recording gets no recipe and a custom status |
 | Modules and beacons | None; productivity and quality disabled. Productivity would create recordings, and each returns a blank at correlation |
 | Spacing | Dishes reserve space only against other dishes, using the wind turbine mechanism: script-owned hidden fields on a dish-only collision layer. Other buildings may fill the gaps |
@@ -1216,7 +1218,8 @@ The satellite stays undecided. This design only decouples it from astronomy.
 | Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
 | Correlation craftability | One progression contract per correlation recipe, as above |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
-| `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; removal raises the remaining share |
+| Recordings | Each planet's recording, with local hydrogen and its dish, closes on that planet at its radio astronomy technology; Nauvis at Astronomy |
+| `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; each recording consumes one hydrogen; removal raises the remaining share |
 | `fulgora-storm-array` | Storm interference and the square-root share multiply |
 | `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
 | `experiment-rocket-cargo-weights` | Recording and blank weigh the same |
@@ -1263,7 +1266,7 @@ python tools/run_factorio_tests.py experiment-storm-interference
 
 | Removed | Reason |
 |---|---|
-| Hydrogen maser component | No role beyond flavor |
+| Hydrogen maser component | The maser is the dish's hydrogen input; no separate item |
 | Vulcanus receiver coolant input | The coolant was never specified; the pneumatic energy source already makes the variant local |
 | Debris mitigation gate for Fulgora sets | No asteroids exist in this slice |
 | Astronomy research cost doubling by tier | Research costs are aligned in a separate pass |
