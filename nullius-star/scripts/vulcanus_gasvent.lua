@@ -1,5 +1,7 @@
 local vulcanus_gasvent = {}
 local VENTS = {"nullius-lava-intake-1-gasvent", "nullius-lava-intake-2-gasvent"}
+local LEGACY_DRILL = "nullius-gas-vent-drill"
+local LEGACY_SEAM = "nullius-gas-vent-seam"
 
 local function is_vulcanus(surface)
   return surface.planet and surface.planet.name == "nullius-vulcanus"
@@ -85,26 +87,31 @@ function vulcanus_gasvent.destroyed(event)
   return unit and vulcanus_gasvent.remove(unit) or false
 end
 
--- Preserve gas from released composite vents and restore each surface's share.
-function vulcanus_gasvent.rebuild()
-  for _, entry in pairs(storage.nullius_gasvents or {}) do
-    if entry.drill and entry.drill.valid then
-      if not (entry.shell and entry.shell.valid) then
-        error("Cannot migrate a gas vent whose intake is missing")
-      end
-      for index = 1, entry.drill.fluids_count do
-        local fluid = entry.drill.get_fluid(index)
-        if fluid then
-          local removed = entry.drill.remove_fluid(index, fluid.amount)
-          local inserted = entry.shell.insert_fluid(removed)
-          if math.abs(inserted - removed.amount) > 0.000001 then
-            error("Cannot preserve gas while converting a legacy gas vent")
-          end
+-- Move a released composite vent's gas into the vent at its position. A drill
+-- with no vent above it loses its gas, as a mined vent does.
+local function release_drill(drill)
+  local vent = drill.surface.find_entities_filtered{
+    name=VENTS, position=drill.position, radius=0.1, limit=1}[1]
+  if vent then
+    for index = 1, drill.fluids_count do
+      local fluid = drill.get_fluid(index)
+      if fluid then
+        local removed = drill.remove_fluid(index, fluid.amount)
+        if math.abs(vent.insert_fluid(removed) - removed.amount) > 0.000001 then
+          error("Cannot preserve gas while converting a legacy gas vent")
         end
       end
-      entry.drill.destroy()
     end
-    if entry.resource and entry.resource.valid then entry.resource.destroy() end
+  end
+  drill.destroy()
+end
+
+-- Cold path: remove every released composite part, including parts that no
+-- longer have a vent, then restore each surface's share.
+function vulcanus_gasvent.rebuild()
+  for _, surface in pairs(game.surfaces) do
+    for _, drill in pairs(surface.find_entities_filtered{name=LEGACY_DRILL}) do release_drill(drill) end
+    for _, seam in pairs(surface.find_entities_filtered{name=LEGACY_SEAM}) do seam.destroy() end
   end
   vulcanus_gasvent.init()
   for _, surface in pairs(game.surfaces) do
@@ -116,16 +123,7 @@ function vulcanus_gasvent.rebuild()
 end
 
 if script.active_mods["factorio-test-support"] then
-  remote.add_interface("nullius-test-gasvent", {
-    rebuild = vulcanus_gasvent.rebuild,
-    restore_legacy_entry = function(shell, drill, resource)
-      storage.nullius_gasvents[shell.unit_number] = {
-        shell=shell, drill=drill, resource=resource,
-        shell_unit_number=shell.unit_number, drill_unit_number=drill.unit_number,
-        resource_unit_number=resource.unit_number, surface_index=shell.surface.index,
-      }
-    end,
-  })
+  remote.add_interface("nullius-test-gasvent", {rebuild = vulcanus_gasvent.rebuild})
 end
 
 return vulcanus_gasvent

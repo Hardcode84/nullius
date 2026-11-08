@@ -1,9 +1,11 @@
 -- given: a Vulcanus surface and two forces, with no gas or power supply.
 -- place: one vent, then three more through production build events.
--- act: remove three vents; restore a released composite vent with 80 gas and rebuild.
+-- act: remove three vents; place a released composite vent with 80 gas, a stray
+--   drill with gas and an orphan seam with no vent, then rebuild.
 -- run: fixed windows for one vent, four vents, and one vent after removal.
 -- expect: square-root total work across both forces, both tiers at the same base
--- rate, native rotation, no hidden parts, and lossless repeatable conversion.
+-- rate, native rotation, no hidden parts, lossless repeatable conversion, and
+-- removal of composite parts that lost their vent.
 local CASE="vulcanus-gas-vent-array"
 local GAS="nullius-compressed-volcanic-gas"
 local function check(ok,message)
@@ -75,9 +77,15 @@ script.on_nth_tick(363,function()
   near(drill.productivity_bonus,1,"legacy mining productivity baseline")
   near(shell.productivity_bonus,0,"direct vent uses speed for the output bonus")
   check(drill.insert_fluid{name=GAS,amount=80}==80,"legacy gas stock")
-  remote.call("nullius-test-gasvent","restore_legacy_entry",shell,drill,resource)
+  local stray_seam=assert(storage.surface.create_entity{name="nullius-gas-vent-seam",position={70,0},amount=1000000})
+  local stray=assert(storage.surface.create_entity{name="nullius-gas-vent-drill",position={70,0},force="player"})
+  check(stray.insert_fluid{name=GAS,amount=50}==50,"stray gas stock")
+  local orphan_seam=assert(storage.surface.create_entity{name="nullius-gas-vent-seam",position={80,0},amount=1000000})
   remote.call("nullius-test-gasvent","rebuild")
   check(not drill.valid and not resource.valid,"legacy components removed")
+  check(not stray.valid and not stray_seam.valid and not orphan_seam.valid,"parts without a vent removed")
+  check(storage.surface.count_entities_filtered{name={"nullius-gas-vent-drill","nullius-gas-vent-seam"}}==0,
+    "no composite parts remain")
   near(shell.get_fluid_count(GAS),80,"legacy gas preserved")
   near(shell.crafting_speed,2/math.sqrt(2),"converted vent keeps mining output bonus")
   remote.call("nullius-test-gasvent","rebuild")

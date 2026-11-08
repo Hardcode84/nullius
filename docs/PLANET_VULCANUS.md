@@ -303,7 +303,8 @@ free lava intake + diminishing-return gas vent
 
 - The vent is a bootstrap source, not a scalable power system.
 - Each vent crafts gas directly. Its local speed effect follows the square-root
-  share of all vents on the surface, across all forces and intake tiers.
+  share of all vents on the surface, across all forces and intake tiers, because
+  every vent draws on the same subsurface gas. Radio dishes count per force instead.
   Mining-productivity research increases each owner's output as before.
 - Placement, removal, and mining-research changes update the shares. Modules
   and beacons cannot change them. The native speed floor applies, as for radio

@@ -1123,11 +1123,12 @@ as much as sqrt(N) unthrottled dishes, above the native speed floor. Thus k
 times one dish's rate needs k squared dishes.
 
 ```yaml
-count: built dishes of the force on the surface, both variants
+count: built dishes of the force on the surface, both variants; per force because
+  each team's array averages its own noise
 share: (1 - interference) / sqrt(N); interference is 0 off Fulgora
 controller:
-  refresh: on count or interference changes
-  buckets: unit_number % 443, one bucket per tick, as Vulcanus heat
+  refresh: on count changes, and at each 60-tick storm driver update for Fulgora
+    dishes whose share changed; no buckets, as each write is one local effect
   local_effect: {speed: share - 1, consumption: share - 1}
   stop: disabled_by_script only while share is zero; write at stop and restart
   status: custom_status shows the array share and interference; write only on change
@@ -1267,7 +1268,7 @@ driver:
 interference: min(1, intensity / 100)      # day 0.25, night 1
 dish_controller: local speed and consumption effects use the combined array and interference share
 full_interference: stop once on entry; resume once on exit
-latency: at most one bucket cycle after the storm driver update
+latency: none beyond the 60-tick driver cadence
 dish_recipe: no storm surface condition
 ```
 
