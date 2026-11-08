@@ -872,7 +872,7 @@ Design only. The shared design is
 | Dish placement | Island ground or sand; mutual spacing against other dishes only |
 | Power | Electric |
 | Interference | `min(1, nullius-storm-intensity / 100)`: 0.25 by day, 1 by night |
-| Controller | The square-root array controller; storm interference multiplies each dish's duty |
+| Controller | The square-root array controller sets local speed and consumption effects; full interference stops dishes until it clears |
 | Lightning | Native frequency multiplied by `nullius-storm-intensity / 100`; day and night multipliers become 1 |
 
 ### Rocket fuel

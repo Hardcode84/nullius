@@ -1057,8 +1057,8 @@ Not in the first platform implementation; connections keep no asteroid spawns.
 
 ### 4.5 Astronomy: Interplanetary Interferometry
 
-Design only. The storm controller mechanism is validated by
-`experiment-storm-interference`; see [Measured engine contracts](#measured-engine-contracts).
+Design only. `experiment-astronomy-effects` and `experiment-storm-interference`
+validate the engine mechanisms; see [Measured engine contracts](#measured-engine-contracts).
 
 The astronomy pack decodes the progenitor's interstellar signal. Dishes on one
 planet see it over the same short baselines, so extra dishes only average noise.
@@ -1109,7 +1109,7 @@ unlocked recipe is craftable at its technology for these recipes only:
 | Recipe | 1 blank recording module + 1 hydrogen -> 1 planet recording |
 | Hydrogen | Fluid input for the maser, charged per recording, so a throttled dish draws proportionally less. Piped, so spacing turns array growth into pipe length. Local sources: Nauvis seawater electrolysis; Fulgora electrolysis of slurry water, 1,200 slurry per 1,000 hydrogen; Vulcanus HCl cracking, 2,040 HCl per 1,000 hydrogen, competing with graphite, carbon monoxide, and water |
 | Planet identity | Each recording recipe carries the planet's exact magnetic field and positive pressure as surface conditions. On build, and when a planet technology finishes, the script sets the surface's recording recipe and `recipe_locked`. A dish on a surface without an unlocked recording gets no recipe and a custom status |
-| Modules and beacons | None; productivity and quality disabled. Productivity would create recordings, and each returns a blank at correlation |
+| Modules and beacons | No module slots; reject module, beacon, and surface effects. Accept only local speed and consumption effects. Disable productivity and quality; each recording returns a blank at correlation |
 | Spacing | Dishes reserve space only against other dishes, using the wind turbine mechanism: script-owned hidden fields on a dish-only collision layer. Other buildings may fill the gaps |
 | Field geometry | Wind turbine geometry: four fields reaching 30.5 tiles from the dish centre |
 | Collision layer | Dedicated layer; dishes do not interact with wind turbines or grounding coils, which share `layer_43` |
@@ -1118,20 +1118,42 @@ unlocked recipe is craftable at its technology for these recipes only:
 #### Square-root array rule
 
 The recording rate of one force's dishes on one surface grows as the square root
-of their count. N dishes produce as much as sqrt(N) unthrottled dishes, so k
+of their count. With all dishes supplied and no interference, N dishes produce
+as much as sqrt(N) unthrottled dishes, above the native speed floor. Thus k
 times one dish's rate needs k squared dishes.
 
 ```yaml
-count: built dishes of the force on the surface, both variants; updated on build and removal
-duty_per_dish: (1 - interference) / sqrt(N); interference is 0 off Fulgora
+count: built dishes of the force on the surface, both variants
+share: (1 - interference) / sqrt(N); interference is 0 off Fulgora
 controller:
+  refresh: on count or interference changes
   buckets: unit_number % 443, one bucket per tick, as Vulcanus heat
-  dither: accumulator += duty; enable for the next interval when accumulator >= 1, then subtract 1
-  writes: disabled_by_script and custom_status, only on change
-  status: the dish's array share, 1/sqrt(N)
-count_choice: built, not working; adding a dish never lowers the total, and an
-  unpowered dish loses only its own share
+  local_effect: {speed: share - 1, consumption: share - 1}
+  stop: disabled_by_script only while share is zero; write at stop and restart
+  status: custom_status shows the array share and interference; write only on change
+receiver:
+  allowed_effects: [speed, consumption]
+  module_slots: 0
+  uses_module_effects: false
+  uses_beacon_effects: false
+  uses_surface_effects: false
+  uses_local_effects: true
+  speed_limits: {low: -0.9999, high: 1000}
+  consumption_limits: {low: -0.9999, high: 1000}
 ```
+
+The engine crafts continuously between updates. Remove the dither accumulator.
+Local effects add to other accepted bonuses, so module and beacon bonuses must
+be rejected to preserve the array share. An empty `allowed_effects` also blocks
+the local speed and consumption effects.
+
+The native minimum speed is 0.0001 of base speed; positive shares below this
+value clamp to it. A zero share needs a script stop to prevent slow production.
+Consumption effects scale operating power; electrical drain is separate.
+
+Count built dishes even when they lose power or inputs. Such a dish remains in
+N and loses its own output. Adding an unpowered dish lowers the other dishes'
+shares; the total-growth rule assumes the added dish is supplied.
 
 | Dishes N | Each dish | Array total |
 |---:|---:|---:|
@@ -1224,8 +1246,8 @@ The satellite stays undecided. This design only decouples it from astronomy.
 | Correlation ladder | Unit test over the generated recipes: packs per recording strictly increases with set size, every set of 2 or more beats single-planet correlation, and each recipe takes equal recordings from distinct planets |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
 | Recordings | Each planet's recording, with local hydrogen and its dish, closes on that planet at its radio astronomy technology; Nauvis at Astronomy |
-| `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; each recording consumes one hydrogen; removal raises the remaining share |
-| `fulgora-storm-array` | Storm interference and the square-root share multiply |
+| `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce work in the ratio 1 : 2 after share updates; each recording consumes one hydrogen; removal raises the remaining share; accepted effects cannot bypass throttling |
+| `fulgora-storm-array` | Storm interference and the square-root share multiply; share changes preserve progress; zero share stops production; operating power and pneumatic fuel follow the consumption effect; measure electrical drain separately |
 | `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
 | `experiment-rocket-cargo-weights` | Recording and blank weigh 1 kg; 1,000 fit one rocket |
 | Locale | `python tools/check_factorio_locale.py` |
@@ -1243,28 +1265,36 @@ driver:
   value: 25 by day, 100 by night, linear from dusk to evening and from morning to dawn
   storm_cycles: later cycles change this value only
 interference: min(1, intensity / 100)      # day 0.25, night 1
-dish_controller: the square-root array controller; duty is multiplied by 1 - interference
-latency: up to 443 ticks, 4.1% of the 10,800-tick Fulgora day
+dish_controller: local speed and consumption effects use the combined array and interference share
+full_interference: stop once on entry; resume once on exit
+latency: at most one bucket cycle after the storm driver update
 dish_recipe: no storm surface condition
 ```
 
 #### Measured engine contracts
 
-`experiment-storm-interference`, Factorio 2.1.24, 78 assertions. The control
-surface holds intensity 25; windows last 1200 ticks.
+Factorio 2.1.24: `experiment-astronomy-effects` passes 65 assertions at tick 900;
+`experiment-storm-interference` passes 78 assertions at tick 6000.
 
 | Contract | Measurement |
 |---|---|
-| Lightning frequency follows value / default | Experiment at 25, 100, 0, 200, 25: strike ratios 1.00, 3.86, 0, 8.40, 0.99 |
-| No clamp above the default | 200 gives 8.40x the control |
-| Property scope | Control surface property and strike rate unchanged |
-| Recipe surface conditions | Checked only at native recipe selection. Running recipes continue at 100 and 200; Lua `set_recipe` accepts failing conditions; refused circuit selection is not retried after the condition clears |
-| `disabled_by_script` | 0 crafts while disabled; 20 crafts per window after re-enabling |
-| Progress across disables | Dithered work equals enabled time: 22.5 of 22.5 crafts (1 s recipe, duty 0.4); 3.0 of 3.0 (10 s recipe, duty 0.5) |
-| Dish acceptance | Assert the power draw of a script-disabled dish in the dish scenario |
+| Local speed and consumption | Electric and pneumatic recorders accept local effects with modules, beacons, and surface effects disabled; native consumption bonuses match the requested values |
+| Continuous work | Electric speeds 1, 0.5, 0.1, and 0.01 produce proportional work; pneumatic speeds 0.5 and 0.01 do the same |
+| Share change | Changing speed from 0.5 to 0.25 preserves craft progress and changes subsequent work |
+| Default speed floor | A requested speed of 0.01 clamps to 0.2 with default limits |
+| Configured speed floor | `speed = -1` still produces work at speed 0.0001; use a script stop for zero share |
+| Storm boundaries | A script stop preserves progress with no work; clearing it restores native crafting |
+| Lightning | Frequency follows the surface property, including zero and values above its default; the control surface remains unchanged |
+| Recipe surface conditions | Native recipe selection checks conditions. Running recipes continue after conditions fail; Lua `set_recipe` accepts failing conditions; refused circuit selection is not retried when conditions clear |
+| Power acceptance | The experiment checks consumption bonuses. The dish scenario must measure operating power, pneumatic fuel, and stopped electrical drain |
+
+Space Exploration 0.7.57 uses the same square-root factor by changing infinite
+core-seam resource amounts on miner creation and removal. Native mining then
+controls production. Dishes retain assembling machines to consume blank media
+and hydrogen; local effects provide continuous rate control.
 
 ```bash
-python tools/run_factorio_tests.py experiment-storm-interference
+python tools/run_factorio_tests.py experiment-astronomy-effects experiment-storm-interference -n auto
 ```
 
 #### Changes from the earlier design
