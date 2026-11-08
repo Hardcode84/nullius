@@ -1149,7 +1149,7 @@ count_choice: built, not working; adding a dish never lowers the total, and an
 | Spoilage | Recording spoils to a blank module. Spoil time is a fixed prototype value: 1.5 times the reference transit |
 | Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital construction. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
 | Spoil clock | Starts at dish output, so silo queues and orbit waits count against it |
-| Weight | Recording and blank module weigh the same, declared in `prototypes/item-weights.lua`; the rule would make a recording half a blank |
+| Weight and stack | Recording and blank module each weigh 1 kg with stack size 50, declared in `prototypes/item-weights.lua`; the rule would make a recording half a blank. The 1,000 kg lift and 20 slots of 50 both give 1,000 items per rocket |
 | Correlator | Assembling machine with its own crafting category; electric; any surface, including platforms; no productivity or modules; returns every consumed blank module |
 
 Correlator location is a player choice. Single-planet correlation runs on the
@@ -1189,6 +1189,9 @@ baseline. The single-planet recipe is the bootstrap.
 | Recipe count | 2^P - 1: 7 for 3 planets, 31 for 5 |
 | Subgroups | One per k |
 | Rejected | Pairwise fringe intermediates: they lose planet identity and allow a repeated planet to count as a new station |
+| Combining wins | Packs per recording is (k - 1) / 2 for k >= 2, strictly increasing in k and above the single-planet 0.05. Merging recordings into a larger set always beats splitting them |
+| Cargo | A pair launches 2 items per pack with either correlator: 10 recordings up and 10 blanks back, or 10 recordings from each planet. At 1,000 items per rocket that is 0.002 rockets per pack, the satellite's former 1 rocket per 500 packs |
+| Cargo-inclusive gain | Per pack, k = 2 production plus its rocket share costs less than k = 1 production on each planet pair, in every raw class. Separate processing needs no cargo because labs on any planet share research |
 
 Diminishing returns:
 
@@ -1217,12 +1220,14 @@ The satellite stays undecided. This design only decouples it from astronomy.
 |---|---|
 | Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
 | Correlation craftability | One progression contract per correlation recipe, as above |
+| Correlation ladder | Unit test over the generated recipes: packs per recording strictly increases with set size, every set of 2 or more beats single-planet correlation, and each recipe takes equal recordings from distinct planets |
+| Cargo-inclusive gain | Release cost check: per pack, the k = 2 recordings, blanks, and hydrogen plus 0.002 of the planet's rocket stage cost less than the k = 1 recordings and hydrogen, each raw class separately, for Nauvis-Vulcanus and Nauvis-Fulgora. Stage costs come from the existing launch cost contracts |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
 | Recordings | Each planet's recording, with local hydrogen and its dish, closes on that planet at its radio astronomy technology; Nauvis at Astronomy |
 | `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; each recording consumes one hydrogen; removal raises the remaining share |
 | `fulgora-storm-array` | Storm interference and the square-root share multiply |
 | `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
-| `experiment-rocket-cargo-weights` | Recording and blank weigh the same |
+| `experiment-rocket-cargo-weights` | Recording and blank weigh 1 kg; 1,000 fit one rocket |
 | Locale | `python tools/check_factorio_locale.py` |
 
 #### Fulgora storm interference
