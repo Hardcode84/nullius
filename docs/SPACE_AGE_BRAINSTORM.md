@@ -1191,7 +1191,8 @@ baseline. The single-planet recipe is the bootstrap.
 | Rejected | Pairwise fringe intermediates: they lose planet identity and allow a repeated planet to count as a new station |
 | Combining wins | Packs per recording is (k - 1) / 2 for k >= 2, strictly increasing in k and above the single-planet 0.05. Merging recordings into a larger set always beats splitting them |
 | Cargo | A pair launches 2 items per pack with either correlator: 10 recordings up and 10 blanks back, or 10 recordings from each planet. At 1,000 items per rocket that is 0.002 rockets per pack, the satellite's former 1 rocket per 500 packs |
-| Cargo-inclusive gain | Per pack, k = 2 production plus its rocket share costs less than k = 1 production on each planet pair, in every raw class. Separate processing needs no cargo because labs on any planet share research |
+| Where combining wins | Dish throughput. Labs on any planet share research, so separate processing needs no cargo. At equal dish counts a pair yields 10 times the packs; matching that separately needs 100 times the dishes on each planet under the square-root rule |
+| Raw inputs alone | Favor separate processing. Measured per pack on Vulcanus: about 41 HCl for single-planet hydrogen, against about 1,405 HCl (default stage) or 744 HCl (titanium stage) for the rocket share of one launched recording. On Nauvis, seawater hydrogen costs no raw input |
 
 Diminishing returns:
 
@@ -1221,7 +1222,6 @@ The satellite stays undecided. This design only decouples it from astronomy.
 | Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
 | Correlation craftability | One progression contract per correlation recipe, as above |
 | Correlation ladder | Unit test over the generated recipes: packs per recording strictly increases with set size, every set of 2 or more beats single-planet correlation, and each recipe takes equal recordings from distinct planets |
-| Cargo-inclusive gain | Release cost check: per pack, the k = 2 recordings, blanks, and hydrogen plus 0.002 of the planet's rocket stage cost less than the k = 1 recordings and hydrogen, each raw class separately, for Nauvis-Vulcanus and Nauvis-Fulgora. Stage costs come from the existing launch cost contracts |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
 | Recordings | Each planet's recording, with local hydrogen and its dish, closes on that planet at its radio astronomy technology; Nauvis at Astronomy |
 | `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; each recording consumes one hydrogen; removal raises the remaining share |
