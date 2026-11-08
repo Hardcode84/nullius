@@ -272,6 +272,7 @@ variant_upgrades.apply("-pneumatic")
 variant_upgrades.apply("-thermal")
 require("prototypes.planet.fulgora-reinjection")
 require("prototypes.planet.fulgora-placement")
+require("prototypes.planet.vacuum-placement")
 
 require("prototypes.planet.fulgora-organic-productivity")
 

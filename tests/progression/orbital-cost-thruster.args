@@ -1,0 +1,4 @@
+@tests/progression/nauvis-orbital-boundary.args
+--manifest
+--marginal
+thruster=5

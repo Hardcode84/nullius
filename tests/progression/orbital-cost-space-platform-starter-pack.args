@@ -1,0 +1,4 @@
+@tests/progression/nauvis-orbital-boundary.args
+--manifest
+--marginal
+space-platform-starter-pack=1

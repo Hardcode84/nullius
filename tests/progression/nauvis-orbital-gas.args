@@ -1,0 +1,8 @@
+@tests/progression/nauvis-orbital-boundary.args
+--recipe
+thruster-fuel=nullius-hydrogen-propellant
+--recipe
+thruster-oxidizer=nullius-oxygen-propellant
+thruster-fuel
+thruster-oxidizer
+nullius-chemical-plant-1

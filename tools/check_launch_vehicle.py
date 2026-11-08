@@ -29,7 +29,7 @@ STAGE_UNLOCKS = {
     'nullius-titanium-rocket-stage': TITANIUM_STRUCTURES,
 }
 MOVED = {*FORMER_PREREQUISITES, CHECKPOINT}
-NEW_TECHNOLOGIES = {'nullius-rp1-fuel', TITANIUM_STRUCTURES}
+NEW_TECHNOLOGIES = {'nullius-rp1-fuel', TITANIUM_STRUCTURES, 'nullius-orbital-construction'}
 IMPORTED_BOUND = 2 / 3
 TIME_BOUND = 1 / 2
 
@@ -111,6 +111,10 @@ def main():
             failed.extend(f'{fuel} imported {kind} ratio {value:.3f}'
                           for kind, value in costs['imported_ratio'].items() if value > IMPORTED_BOUND)
             results[fuel] = costs
+        results['orbital_components'] = {}
+        for component in ('space-platform-foundation', 'space-platform-starter-pack', 'cargo-bay', 'thruster'):
+            cost = material_cost(data, CONTRACTS / f'orbital-cost-{component}.args', nauvis_raw)
+            results['orbital_components'][component] = dict(cost, ratio_to_launch=ratios(cost, results['composite']['default']))
         recipes = data['recipe']
         results['time_ratio'] = (recipes['nullius-titanium-rocket-stage']['energy_required']
                                  / recipes['nullius-rocket-stage']['energy_required'])

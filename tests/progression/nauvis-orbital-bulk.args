@@ -1,0 +1,10 @@
+@tests/progression/nauvis-orbital-boundary.args
+--recipe
+thruster-fuel=nullius-boxed-canister-propellant
+--recipe
+thruster-oxidizer=nullius-boxed-canister-propellant
+thruster-fuel
+thruster-oxidizer
+nullius-box-space-platform-foundation
+nullius-boxer
+nullius-chemical-plant-1

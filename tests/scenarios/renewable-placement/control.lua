@@ -47,13 +47,17 @@ local function check_condition(name)
   check(prototype ~= nil, "missing entity prototype " .. name)
   if not prototype then return end
   local conditions = prototype.surface_conditions or {}
-  check(#conditions == 1, name .. " does not have exactly one surface condition")
-  local condition = conditions[1]
-  if not condition then return end
-  check(condition.property == AMBIENT_TEMPERATURE,
-    name .. " is not restricted by ambient temperature")
-  check(condition.max == 50,
-    name .. " does not have the exact cool-surface boundary")
+  local wind=name:find("nullius-wind-",1,true)==1
+  check(#conditions == (wind and 2 or 1), name .. " surface condition count")
+  local limits={}
+  for _,condition in pairs(conditions) do limits[condition.property]=condition end
+  local condition=limits[AMBIENT_TEMPERATURE]
+  check(condition and condition.max==50, name .. " must retain the cool-surface boundary")
+  if wind then
+    check(limits.pressure and limits.pressure.min==1, name .. " requires positive pressure")
+  else
+    check(limits.pressure==nil, name .. " must remain available in vacuum")
+  end
 end
 
 script.on_nth_tick(1, function()

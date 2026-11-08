@@ -22,6 +22,7 @@ end
 script.on_nth_tick(30, function()
   script.on_nth_tick(30, nil)
   local failures = {}
+  local assertions=2
   local platform = prototypes.surface["space-platform"].surface_properties
   local observations = {platform = platform, planets = {}, vacuum_allowed = {}, vacuum_blocked = {},
     thruster_fluids = {}}
@@ -62,6 +63,8 @@ script.on_nth_tick(30, function()
         end
       end
       if reason then
+        assertions=assertions+1
+        if allowed(entity.surface_conditions,platform) then failures[#failures+1]="vacuum exclusion missing: "..name end
         local list = observations.vacuum_rule[reason] or {}
         observations.vacuum_rule[reason] = list
         list[#list + 1] = name
@@ -73,6 +76,7 @@ script.on_nth_tick(30, function()
     local fluid = prototypes.fluid[name]
     if fluid then
       observations.thruster_fluids[name] = {hidden = fluid.hidden}
+      if fluid.hidden then failures[#failures+1]="hidden propellant: "..name end
     else
       failures[#failures + 1] = "missing fluid " .. name
     end
@@ -82,7 +86,7 @@ script.on_nth_tick(30, function()
   helpers.write_file(RESULT, helpers.table_to_json{
     schema = 1, case = CASE, status = (#failures == 0) and "pass" or "fail",
     factorio_version = script.active_mods.base, tick = game.tick,
-    assertions = 2, failure_count = #failures, failures = failures,
+    assertions = assertions, failure_count = #failures, failures = failures,
     observations = observations}, false)
   if #failures > 0 then error(helpers.table_to_json(failures)) end
 end)

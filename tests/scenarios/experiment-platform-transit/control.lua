@@ -1,7 +1,7 @@
 -- given: five starter-pack platforms above Nauvis with Vulcanus unlocked; each
 --   has one thruster fed thruster fuel and oxidizer from declared infinity
 --   pipes, held at one fill level per platform.
--- place: thruster and two infinity pipes on each platform's starter foundation.
+-- place: thruster and two infinity pipes on a foundation extension behind each platform hub.
 -- connect: each pipe to its thruster's west fluid connection.
 -- act: schedule every platform to Vulcanus.
 -- run: sample every 600 ticks until all arrive or the window ends.
@@ -67,9 +67,13 @@ script.on_init(function()
       name = CASE .. "-" .. variant.name, planet = "nauvis", starter_pack = "space-platform-starter-pack"})
     assert(platform.apply_starter_pack(true))
     local surface = platform.surface
-    local thruster = surface.create_entity{name = "thruster", position = {0, 2.5}, force = force}
+    local tiles={}
+    for x=-3,2 do for y=5,8 do tiles[#tiles+1]={name="space-platform-foundation",position={x,y}} end end
+    surface.set_tiles(tiles)
+    check(surface.can_place_entity{name="thruster",position={0,6.5},force=force},variant.name.." collision-free thruster")
+    local thruster = surface.create_entity{name = "thruster", position = {0, 6.5}, force = force}
     check(thruster ~= nil, variant.name .. " thruster placement")
-    for fluid, y in pairs({["thruster-fuel"] = 0.5, ["thruster-oxidizer"] = 2.5}) do
+    for fluid, y in pairs({["thruster-fuel"] = 4.5, ["thruster-oxidizer"] = 6.5}) do
       local pipe = assert(surface.create_entity{name = "infinity-pipe", position = {-2.5, y}, force = force})
       pipe.set_infinity_pipe_filter{name = fluid, percentage = variant.percentage, mode = "exactly"}
     end

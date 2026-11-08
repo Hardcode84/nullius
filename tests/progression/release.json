@@ -45,7 +45,11 @@
     "nauvis-rp1-closure.args",
     "nauvis-rp1-bulk.args",
     "fulgora-rp1-closure.args",
-    "fulgora-rp1-bulk.args"
+    "fulgora-rp1-bulk.args",
+    "nauvis-orbital-construction-closure.args",
+    "nauvis-orbital-bulk.args",
+    "nauvis-orbital-unpacking.args",
+    "nauvis-orbital-gas.args"
   ],
   "bootstrap": [
     {

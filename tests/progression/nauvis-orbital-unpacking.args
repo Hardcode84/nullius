@@ -1,0 +1,7 @@
+@tests/progression/nauvis-orbital-boundary.args
+--recipe
+space-platform-foundation=nullius-unbox-space-platform-foundation
+--available
+nullius-box-space-platform-foundation
+space-platform-foundation
+nullius-boxer
