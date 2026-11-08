@@ -3017,11 +3017,7 @@ extend_biology_prototypes({
     }},
     subgroup = "biology-tree",
     order = "nullius-fc",
-    stack_size = 200,
-    -- Factorio 2.1 floors computed weights to whole grams and turns a zero
-    -- into about 1.4e12 grams, which no rocket can lift. Wood chips compute to
-    -- two thirds of a gram, so they declare the smallest weight it keeps.
-    weight = 1
+    stack_size = 200
   },
   {
     type = "recipe",

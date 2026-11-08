@@ -732,7 +732,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 **Integrated supply chain (from early Tier 5)**
 - Rockets lift cargo to orbit; space platforms carry it between planets and drop it to the surface
 - Planets specialize: each exports what it's rich in, imports what it lacks
-- Boxes compress cargo only once box weight follows contents; packaging recipes now clamp light boxes to one stack per launch (see [Measured platform contracts](#measured-platform-contracts))
+- A box weighs half its contents, so boxed cargo carries twice as much per launch as loose cargo (see [Measured platform contracts](#measured-platform-contracts))
 - Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
 - A planet receives before it exports: drops need no pad or silo, and exports need a silo with rockets; see [Cargo closure](#cargo-closure)
 
@@ -960,7 +960,7 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 | Rule | Value |
 |---|---|
 | Nauvis carrier | Hydrogen canister; its 2:1 hydrogen and oxygen condition into equal fuel and oxidizer. Boxed canisters carry twice as many per launch. Nauvis has no ice |
-| Fulgora carrier | Loose ice, melted and electrolyzed on the platform into 2:1 hydrogen and oxygen. Per launch it gives about 1.8 times the propellant of boxed canisters, so Fulgora becomes the cheaper propellant supplier. Boxed ice weighs twice its contents and carries half as much |
+| Fulgora carrier | Loose ice, melted and electrolyzed on the platform into 2:1 hydrogen and oxygen. Boxed, it gives about 3.7 times the propellant of boxed canisters per launch, so Fulgora becomes the cheaper propellant supplier |
 | Electrolysis energy | About 2 MJ per 60 water on every electrolyzer tier; a 25% leg needs about 110 MJ, from platform solar |
 | Gas recipes | Planets launch local gas in barrels or canisters; carbon monoxide and methane cover planets without cheap hydrogen |
 | Machines | Electric chemistry on the platform, powered by platform solar |
@@ -969,10 +969,10 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 Per Nauvis-Vulcanus leg of the reference flight in
 [Measured platform contracts](#measured-platform-contracts):
 
-| Thruster fill | Canisters | Boxed canister launches | Loose canister launches | Loose ice launches |
-|---|---|---|---|---|
-| 25% | 26 | 0.31 | 0.60 | 0.17 |
-| 100% | 63 | 0.74 | 1.47 | 0.40 |
+| Thruster fill | Canisters | Boxed canister launches | Loose canister launches | Boxed ice launches | Loose ice launches |
+|---|---|---|---|---|---|
+| 25% | 26 | 0.31 | 0.60 | 0.08 | 0.17 |
+| 100% | 63 | 0.74 | 1.47 | 0.20 | 0.40 |
 
 #### Titanium recipes
 
@@ -1054,10 +1054,11 @@ needs debris mitigation.
 | Thruster fluids | Fuel and oxidizer boxes filter `thruster-fuel` and `thruster-oxidizer`, so every chemistry conditions into these two fluids and one thruster prototype serves all |
 | Reference flight | Starter-pack platform with one thruster, Nauvis to Vulcanus, fill held by infinity pipes. Per fluid: 100% fill, 9,428 units in about 4,200 ticks; 40%, 5,249 in about 5,400; 25%, 3,875 in about 7,200. At 10% the platform never leaves orbit |
 | Flight power | The reference platform flies with no electric network entities |
-| Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each. Ice: 1000 per launch loose, 500 boxed |
-| Zero-gram defect | The engine floors a computed weight to whole grams; zero becomes 2^47 / 100 grams, which no rocket lifts. Wood chips declare one gram. Recipe productivity flags also select the weight branch, so they move the weight of items far down a chain |
+| Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each. Ice: 1000 per launch loose, 2000 boxed |
 | Electrolysis machines | Priority and surge electrolyzers draw about 2 MJ per crafting second at speed 1, on every tier |
-| Box weight | A box takes its weight from its packaging recipe: contents times `ingredient_to_weight_coefficient`, default 0.5. A recipe that does not allow productivity is raised to rocket lift divided by stack size, so light boxes weigh one launch per stack; canister boxes are heavier than that and keep half their contents. Fixture contract: a 1 kg item boxed five to a box weighs 20 kg with productivity disallowed, 2.5 kg with productivity allowed and `maximum_productivity = 0`, and 5 kg with coefficient 1 |
+| Item weights | Nullius declares every weight with one rule (`prototypes/item-weights.lua`), so recipe flags cannot change cargo: item ingredients plus 100 grams per fluid unit, over expected item products, times the ingredient-to-weight coefficient, at least one gram. Declared prototype weights stay. Factorio's own calculation is unused: it clamps items whose recipe forbids productivity to one stack per launch and turns weights that floor to zero grams into 2^47 / 100 grams |
+| Engine overrides | Items with rocket launch products weigh one launch; cursor-only spawnable items weigh nothing |
+| Boxes | Half their contents, through the rule's coefficient |
 
 #### Engine checks before implementation
 

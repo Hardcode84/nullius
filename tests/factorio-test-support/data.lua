@@ -249,7 +249,6 @@ planner_grid.energy_usage = "0W"
 data:extend({planner_grid})
 
 require("lab-ingredients")
-require("box-weights")
 require("lightning-poles")
 require("fulgora-storms")
 require("storm-interference")

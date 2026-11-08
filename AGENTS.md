@@ -55,6 +55,8 @@
   prototypes or run passes that need the complete prototype set.
 - Released data-stage code must not require test-support files. Runtime test
   hooks extend the script's existing test-support remote interface.
+- Item weights come from `prototypes/item-weights.lua`. Change the rule or
+  declare a weight there; do not tune recipe flags to move rocket cargo.
 - Every recipe a technology unlocks must be craftable at that technology. Cover
   each unlocked product with a progression contract that uses
   `--require-no-additional-technologies`.

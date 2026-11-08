@@ -5,9 +5,10 @@
 --   electrolysis machine's power and speed.
 -- run: one scheduled read.
 -- expect: observations give the rocket lift and the items per launch, because
---   engine-derived weights exist only at runtime; the box fixtures follow the
---   engine's weight rule; no item weighs more than a thousand launches, and
---   the engine's zero-gram defect is still present.
+--   resolved weights exist only at runtime; Nullius items follow the declared
+--   weight rule, boxes weigh exactly half their contents, no item weighs
+--   more than a thousand launches, and non-productivity categories resolve
+--   with productivity capped at zero.
 local CASE = "experiment-rocket-cargo-weights"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local CARGO = {
@@ -64,32 +65,55 @@ script.on_nth_tick(30, function()
       failures[#failures + 1] = "unknown item " .. name
     end
   end
-  -- A 1 kg item boxed five to a box: the packaging recipe without productivity
-  -- support clamps to one stack per launch, the uncapped one takes half the
-  -- contents, and coefficient 1 takes the full contents.
-  local BOX_WEIGHTS = {
-    ["factorio-test-box-clamped"] = ROCKET_LIFT / 50,
-    ["factorio-test-box-uncapped"] = 2500,
-    ["factorio-test-box-equal"] = 5000,
-  }
-  observations.box_fixtures = {}
-  for name, expected in pairs(BOX_WEIGHTS) do
-    local weight = prototypes.item[name].weight
-    observations.box_fixtures[name] = weight
-    check(math.abs(weight - expected) <= 0.001, name .. " weight " .. weight .. ", expected " .. expected)
+  -- Nullius declares weights: item ingredients plus 100 grams per fluid unit,
+  -- over expected item products, times the coefficient, at least one gram.
+  -- Items weighed through a same-named recipe must match; an item closing a
+  -- recipe loop keeps the default weight. Boxes must weigh exactly half their
+  -- contents.
+  local DEFAULT = prototypes.utility_constants.default_item_weight
+  local DECLARED = {["nullius-align-concordance-satellite"] = true}
+  local function expected_count(product)
+    local amount = product.amount or (product.amount_min + product.amount_max) / 2
+    return amount * (product.probability or 1) + (product.extra_count_fraction or 0)
   end
-  -- Engine defect: an intermediate weight that floors to zero grams becomes
-  -- 2^47 / 100 grams.
-  -- When this check fails, the engine is fixed and declared one-gram weights
-  -- such as wood chips can return to computed weights.
-  local SUBGRAM_WEIGHT = 2 ^ 47 / 100
-  local light = prototypes.item["factorio-test-light-product"].weight
-  observations.subgram_fixture = light
-  check(math.abs(light - SUBGRAM_WEIGHT) <= 1, "sub-gram fixture weight " .. light)
+  observations.rule_items, observations.loop_defaults = 0, {}
   for name, item in pairs(prototypes.item) do
-    if name ~= "factorio-test-light-product" then
-      check(item.weight <= ROCKET_LIFT * 1000, name .. " weighs " .. item.weight)
+    local cursor_only = item.flags and item.flags["only-in-cursor"] and item.flags["spawnable"]
+    local launched = #item.rocket_launch_products > 0
+    if cursor_only then
+      check(item.weight == 0, name .. " cursor-only item weighs " .. item.weight)
+    elseif launched then
+      -- The engine makes an item with launch products fill a rocket.
+      check(item.weight == ROCKET_LIFT, name .. " launch item weighs " .. item.weight)
+    else
+      check(item.weight >= 1 and item.weight <= ROCKET_LIFT * 1000, name .. " weighs " .. item.weight)
     end
+    local recipe = prototypes.recipe[name]
+    if not cursor_only and not launched and string.sub(name, 1, 8) == "nullius-" and not DECLARED[name] and recipe
+        and not recipe.hidden and recipe.allow_decomposition then
+      local recipe_weight, products = 0, 0
+      for _, ingredient in pairs(recipe.ingredients) do
+        recipe_weight = recipe_weight + ingredient.amount *
+          (ingredient.type == "fluid" and 100 or prototypes.item[ingredient.name].weight)
+      end
+      for _, product in pairs(recipe.products) do
+        if product.type == "item" then products = products + expected_count(product) end
+      end
+      local expected = math.max(1, recipe_weight / products * item.ingredient_to_weight_coefficient)
+      observations.rule_items = observations.rule_items + 1
+      if math.abs(item.weight - expected) > expected * 1e-6 then
+        observations.loop_defaults[name] = expected
+        check(item.weight == DEFAULT, name .. " weighs " .. item.weight .. ", rule gives " .. expected)
+      end
+      if string.sub(name, 1, 12) == "nullius-box-" then
+        check(math.abs(item.weight - expected) <= expected * 1e-6, name .. " is not half its contents")
+      end
+    end
+  end
+  -- Recipes in Nullius non-productivity categories cannot gain productivity.
+  for _, name in ipairs({"nullius-water-barrel", "empty-nullius-water-barrel",
+      "nullius-water-electrolysis", "nullius-compressed-hydrogen"}) do
+    check(prototypes.recipe[name].maximum_productivity == 0, name .. " allows productivity")
   end
   observations.electrolyzers = {}
   for name, entity in pairs(prototypes.get_entity_filtered{{filter = "crafting-category", crafting_category = "nullius-electrolysis"}}) do

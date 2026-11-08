@@ -274,3 +274,6 @@ require("prototypes.planet.fulgora-reinjection")
 require("prototypes.planet.fulgora-placement")
 
 require("prototypes.planet.fulgora-organic-productivity")
+
+-- Runs last: weights read final recipe flags.
+require("prototypes.item-weights")
