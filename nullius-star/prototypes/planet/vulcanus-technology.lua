@@ -273,3 +273,21 @@ data:extend({
     "nullius-metalworking-1",
     {"machine-casting"}),
 })
+
+-- Titanium rocket stages pay off only with Vulcanus titanium; with Nauvis
+-- synthetic rutile they cost more ore than the default stage.
+data:extend({{
+  type = "technology",
+  name = "nullius-titanium-rocket-structures",
+  icon = "__angelssmeltinggraphics__/graphics/technology/smelting-titanium-tech.png",
+  icon_size = 256,
+  order = "nullius-dg-tirs",
+  prerequisites = {"nullius-rocket-science-2", "nullius-volcanic-titanium-metallurgy"},
+  effects = {
+    {type = "unlock-recipe", recipe = "nullius-titanium-rocket-stage"},
+  },
+  unit = {count = 10, time = 45, ingredients = {
+    {"nullius-metallurgic-pack", 20}, {"nullius-electrical-pack", 4},
+    {"nullius-chemical-pack", 4}, {"nullius-physics-pack", 2},
+  }},
+}})

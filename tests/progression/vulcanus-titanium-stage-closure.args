@@ -1,0 +1,12 @@
+@tests/progression/vulcanus-launch-boundary.args
+--technology
+nullius-titanium-rocket-structures
+nullius-box-titanium-sheet
+nullius-box-carbon-composite
+nullius-box-insulation
+nullius-haste-module-2
+radar
+nullius-box-heat-pipe-2
+nullius-box-ceramic-powder
+nullius-box-gate
+cliff-explosives

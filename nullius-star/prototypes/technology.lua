@@ -12982,10 +12982,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-rocket-stage"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-titanium-rocket-stage"
       }
     },
     unit = early_physics_unit(),

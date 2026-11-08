@@ -17,12 +17,19 @@ FORMER_PREREQUISITES = {
                                  'nullius-high-pressure-chemistry-2'],
     'nullius-rocket-science-2': ['nullius-braking-8', 'nullius-personal-transportation-4'],
 }
+TITANIUM_STRUCTURES = 'nullius-titanium-rocket-structures'
 PREREQUISITES = {
     'nullius-rocket-science-1': ['nullius-physics'],
     'nullius-rocket-science-2': [CHECKPOINT, 'nullius-composites-2'],
+    TITANIUM_STRUCTURES: ['nullius-rocket-science-2', 'nullius-volcanic-titanium-metallurgy'],
+}
+# Each stage recipe is unlocked by exactly this technology.
+STAGE_UNLOCKS = {
+    'nullius-rocket-stage': 'nullius-rocket-science-2',
+    'nullius-titanium-rocket-stage': TITANIUM_STRUCTURES,
 }
 MOVED = {*FORMER_PREREQUISITES, CHECKPOINT}
-NEW_TECHNOLOGIES = {'nullius-rp1-fuel'}
+NEW_TECHNOLOGIES = {'nullius-rp1-fuel', TITANIUM_STRUCTURES}
 IMPORTED_BOUND = 2 / 3
 TIME_BOUND = 1 / 2
 
@@ -34,6 +41,12 @@ def research_violations(technologies):
                   if sorted(technologies[name].get('prerequisites') or []) != sorted(expected)]
     former = {name: {**technology, 'prerequisites': FORMER_PREREQUISITES.get(name, technology.get('prerequisites'))}
               for name, technology in technologies.items()}
+    for recipe, expected in STAGE_UNLOCKS.items():
+        unlockers = sorted(name for name, technology in technologies.items()
+                           for effect in technology.get('effects') or []
+                           if effect.get('type') == 'unlock-recipe' and effect.get('recipe') == recipe)
+        if unlockers != [expected]:
+            violations.append(f'{recipe} unlocked by {unlockers}, expected {expected}')
     for name in sorted(technologies.keys() - MOVED - NEW_TECHNOLOGIES):
         current = prereqs.technology_closure(technologies, {name})
         expected = prereqs.technology_closure(former, {name})

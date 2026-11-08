@@ -985,7 +985,7 @@ for platform components would save almost nothing.
 | Titanium source | Required planner result for the titanium rocket stage |
 |---|---|
 | Vulcanus rutile or titanium | With each fuel route, at most two thirds of the default stage's Nauvis ore, and separately of its Nauvis gas; imported rutile is not Nauvis input. At most half its crafting time |
-| Nauvis synthetic rutile | No bound; both stage recipes unlock together. It costs more Nauvis ore than the default stage and less gas |
+| Nauvis synthetic rutile | No bound. It costs more Nauvis ore than the default stage and less gas, so the titanium stage unlocks only after Vulcanus titanium research |
 
 The titanium stage saves through fuel and structure. Fuel alone cannot carry
 the bound once [RP-1](#rp-1) makes fuel cheap, so titanium also replaces part
@@ -1225,14 +1225,18 @@ Rocket fuel and the default rocket need nothing later than the first physics
 technologies. `nauvis-launch-fuel-closure.args` checks fuel and its boxed recipe
 at Rocket Science 1. `nauvis-launch-titanium-free-closure.args` closes the default
 stage, silo, and their boxed inputs at Rocket Science 2. These checks reject
-titanium and helium dependencies. Titanium sheets are also available at this
-research boundary, so both stage recipes unlock together.
+titanium and helium dependencies. The titanium stage pays off only with Vulcanus
+titanium, so it waits for Volcanic Titanium Metallurgy, which comes before
+physics for a player who has reached Vulcanus.
+`nauvis-titanium-stage-closure.args` and `vulcanus-titanium-stage-closure.args`
+close it at Titanium Rocket Structures; Vulcanus still lacks only launch fuel.
 
 | Technology | Unlocks | Prerequisites | Unit cost |
 |---|---|---|---|
 | Rocket Science 1 | Rocket fuel and its boxed recipes | `nullius-physics` | That of `nullius-composites-2` |
 | Rocket fuel checkpoint | Unchanged | Rocket Science 1 | Unchanged |
-| Rocket Science 2 | Both rocket stage recipes, rocket, silo, cargo landing pad | Rocket fuel checkpoint, `nullius-composites-2` | That of `nullius-composites-2` |
+| Rocket Science 2 | Default rocket stage, rocket, silo, cargo landing pad | Rocket fuel checkpoint, `nullius-composites-2` | That of `nullius-composites-2` |
+| Titanium Rocket Structures | Titanium rocket stage | Rocket Science 2, Volcanic Titanium Metallurgy | Metallurgic science, sized like RP-1 fuel |
 
 | Rule | Value |
 |---|---|

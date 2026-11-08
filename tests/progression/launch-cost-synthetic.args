@@ -2,6 +2,8 @@
 --marginal
 --technology
 nullius-rocket-science-2
+--technology
+nullius-titanium-rocket-structures
 --require-no-additional-technologies
 @tests/progression/nauvis-launch-boundary.args
 --recipe

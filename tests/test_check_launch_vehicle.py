@@ -29,8 +29,16 @@ def launch_tree():
         "nullius-broadcasting-4": ["nullius-composites-2"],
         "nullius-astronomy": ["nullius-rocket-science-2", "nullius-braking-8",
                               "nullius-personal-transportation-4", "nullius-broadcasting-4"],
+        "nullius-volcanic-titanium-metallurgy": ["nullius-physics"],
+        "nullius-titanium-rocket-structures": ["nullius-rocket-science-2",
+                                               "nullius-volcanic-titanium-metallurgy"],
     }
-    return {name: {"name": name, "prerequisites": list(parents)}
+    unlocks = {
+        "nullius-rocket-science-2": "nullius-rocket-stage",
+        "nullius-titanium-rocket-structures": "nullius-titanium-rocket-stage",
+    }
+    return {name: {"name": name, "prerequisites": list(parents),
+                   "effects": [{"type": "unlock-recipe", "recipe": unlocks[name]}] if name in unlocks else []}
             for name, parents in prerequisites.items()}
 
 
@@ -58,6 +66,23 @@ class ResearchViolationsTest(unittest.TestCase):
         violations = research_violations(technologies)
         self.assertEqual(len(violations), 1)
         self.assertIn("nullius-rocket-science-1 prerequisites", violations[0])
+
+
+    def test_titanium_stage_unlocked_with_the_default_is_rejected(self):
+        technologies = launch_tree()
+        technologies["nullius-rocket-science-2"]["effects"].append(
+            {"type": "unlock-recipe", "recipe": "nullius-titanium-rocket-stage"})
+        violations = research_violations(technologies)
+        self.assertEqual(violations, [
+            "nullius-titanium-rocket-stage unlocked by ['nullius-rocket-science-2', "
+            "'nullius-titanium-rocket-structures'], expected nullius-titanium-rocket-structures"])
+
+    def test_titanium_structures_without_vulcanus_research_are_rejected(self):
+        technologies = launch_tree()
+        technologies["nullius-titanium-rocket-structures"]["prerequisites"] = ["nullius-rocket-science-2"]
+        violations = research_violations(technologies)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("nullius-titanium-rocket-structures prerequisites", violations[0])
 
 
 class SplitRawTest(unittest.TestCase):

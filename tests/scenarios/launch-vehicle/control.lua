@@ -2,7 +2,8 @@
 -- one probe, ten iron plates, a supplied electric grid, and an orbital starter pack.
 -- place/connect: two overcharged assemblers and two ordinary silos on Nauvis.
 -- act/run: craft both stages, transfer them to silos, launch cargo and a probe.
--- expect: stage productivity is zero; silo productivity works; cargo arrives;
+-- expect: the titanium stage unlocks only with titanium rocket structures;
+-- stage productivity is zero; silo productivity works; cargo arrives;
 -- the production mission counter records the probe.
 local CASE = "launch-vehicle"
 local function check(ok, message)
@@ -22,9 +23,13 @@ script.on_init(function()
   local force = game.forces.player
   force.technologies["nullius-rocket-science-1"].researched = true
   force.technologies["nullius-rocket-science-2"].researched = true
-  for _, name in ipairs{"nullius-rocket-stage", "nullius-titanium-rocket-stage", "nullius-rocket", "nullius-silo"} do
+  for _, name in ipairs{"nullius-rocket-stage", "nullius-rocket", "nullius-silo"} do
     check(force.recipes[name].enabled, "research unlock "..name)
   end
+  check(not force.recipes["nullius-titanium-rocket-stage"].enabled,
+    "titanium stage waits for Vulcanus titanium research")
+  force.technologies["nullius-titanium-rocket-structures"].researched = true
+  check(force.recipes["nullius-titanium-rocket-stage"].enabled, "research unlock nullius-titanium-rocket-stage")
   local platform = assert(force.create_space_platform{
     name=CASE, planet="nauvis", starter_pack="space-platform-starter-pack"})
   storage.hub = assert(platform.apply_starter_pack(true))

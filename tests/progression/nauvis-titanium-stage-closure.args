@@ -1,0 +1,8 @@
+--technology
+nullius-titanium-rocket-structures
+--require-no-additional-technologies
+@tests/progression/nauvis-launch-boundary.args
+--recipe
+nullius-rocket-stage=nullius-titanium-rocket-stage
+nullius-rocket-stage
+nullius-rocket
