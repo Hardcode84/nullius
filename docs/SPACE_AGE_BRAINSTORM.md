@@ -59,7 +59,7 @@ This reframes Space Age's planet travel as:
   - **Fulgora probe**: Electromagnetic storms fried most equipment. Surviving extractors, a filter, power equipment, pipes, one distillation column, and inserters start local production. See [Fulgora design](PLANET_FULGORA.md).
   - **Gleba probe**: Biological contamination. Organisms overran the probe. Must study and control native life.
   - **Aquilo probe**: Froze solid. Cryogenically preserved but needs heating infrastructure to thaw and restart.
-- **Defers bulk logistics**: Physical cargo comes much later (rocket science tier, then space platforms). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer is a late-game unlock that transforms the economy.
+- **Defers bulk logistics**: Physical cargo comes after probe access, at the start of the physics tier (rocket fuel, then a titanium-free rocket and silo, then space platforms). Early multi-planet play is about bootstrapping each probe independently using only local resources. Bulk material transfer then transforms the economy; see [Launch vehicle](#46-launch-vehicle).
 
 ### 2.3 Progression Timeline
 
@@ -74,10 +74,15 @@ MID GAME (Nauvis Tier 3-4):
   Effect: Access all planets, still no bulk transfer
   Begin: Planet-specific research using local resources
 
-LATE GAME (Nauvis Tier 5+):
-  Research: Orbital Construction, then Orbital Propulsion (rocket science tier)
+EARLY TIER 5 (first physics technologies):
+  Research: Rocket Science 1 (fuel), Rocket Science 2 (titanium-free rocket and silo),
+            then Orbital Construction and Orbital Propulsion
   Effect: Rockets lift cargo to orbit; space platforms carry it between planets and drop it
   Transform: Planets shift from independent outposts to integrated supply chain
+  Titanium: imported titanium makes rockets and platform parts cheaper; it gates none of them
+
+LATE GAME (Nauvis Tier 5+):
+  Research: Astronomy (interplanetary interferometry), higher-tier platform research
 
 ENDGAME:
   Full cross-planet logistics. Planetary specialization.
@@ -724,10 +729,10 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 - Painful but possible -- forces creative problem-solving with limited resources
 - **Research is the cross-planet contribution** (see 4.2 below)
 
-**Integrated supply chain (late game)**
+**Integrated supply chain (from early Tier 5)**
 - Rockets lift cargo to orbit; space platforms carry it between planets and drop it to the surface
 - Planets specialize: each exports what it's rich in, imports what it lacks
-- Boxing system becomes critical for efficient interplanetary shipping (compressed cargo)
+- Boxes compress cargo only once box weight follows contents; one stack of any measured box fills a whole launch, whatever the box holds (see [Engine checks](#engine-checks-before-implementation))
 - Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
 - A planet receives before it exports: drops need no pad or silo, and exports need a silo with rockets; see [Cargo closure](#cargo-closure)
 
@@ -918,6 +923,7 @@ current_state:
   vacuum_placement: Nullius buildings have no pressure or gravity conditions
   platform_ambient_temperature: default 25
 constraints:
+  nullius_silo: launches to space platforms with a cargo inventory; see [Launch vehicle](#46-launch-vehicle)
   first_platform: Nauvis materials only; it launches before any cargo exists
   copper: none in tier-1 platform recipes
   asteroid_processing: collector and crusher recipes hidden
@@ -931,7 +937,8 @@ constraints:
 | Foundation, titanium recipe | Same foundation item; composite truss recipe under the titanium contract | Titanium sheet + carbon composite + polymer film |
 | Platform core | Starter kit: hub and android relay node | Foundation + sensor node + grid battery + processors |
 | Cargo bay | Hold | Aluminum sheet + carbon composite + structural beam |
-| Thruster | Vanilla two-fluid thruster | Heat-resistant metal + titanium + motor |
+| Thruster | Vanilla two-fluid thruster | Steel + ceramic + heat pipe + motor |
+| Thruster, titanium recipe | Same thruster item; under the titanium contract | Titanium sheet + ceramic + heat pipe + motor |
 | Propellant conditioning | Platform recipes unpack shipped canisters | Fuel from hydrogen, methane, or carbon monoxide; oxidizer from oxygen or nitrous oxide |
 | Power | Solar panels and grid batteries | Existing items |
 | Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
@@ -941,14 +948,17 @@ constraints:
 
 #### Titanium recipes
 
-Titanium alternatives for platform foundations, thrusters, cargo bays, platform
-cores, and rockets produce the same items as the default recipes. They improve
-input cost and crafting time only; item weight and entity health are unchanged.
+Default recipes contain no titanium, because Gleba and Aquilo have no titanium
+route and every planet launches its first rocket locally. Titanium alternatives
+for platform foundations, thrusters, cargo bays, platform cores, and rocket stages
+produce the same items as the default recipes. They improve input cost and
+crafting time only; item weight and entity health are unchanged.
 
-| Titanium source | Required planner result |
-|---|---|
-| Vulcanus rutile or titanium | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
-| Nauvis synthetic rutile | Total raw cost no lower than the default recipe, so the default stays the pre-cargo route |
+| Titanium source | Recipe | Required planner result |
+|---|---|---|
+| Vulcanus rutile or titanium | Platform components | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
+| Vulcanus rutile or titanium | Rocket stage | At most two thirds of the default stage's Nauvis raw input, and at most half its crafting time. Fuel is most of the default stage's raw input, and lower dry mass cuts fuel by less than the one-third bound requires |
+| Nauvis synthetic rutile | All | Total raw cost no lower than the default recipe, so the default stays the pre-cargo route |
 
 #### Vacuum placement
 
@@ -1000,6 +1010,9 @@ needs debris mitigation.
 |---|---|
 | `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-cost.args nullius-rocket=1` | Per-unit raw cost of any item on Nauvis; machines excluded |
 | `python3 tools/analyze_factorio_prereqs.py --describe-research-closure nullius-rocket-science-2` | Research packs and lab time up to a technology |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-fuel-closure.args` | Fuel ingredients close at `nullius-physics` on Nauvis |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-titanium-free-closure.args` | Default stage and silo ingredients close at `nullius-composites-2` on Nauvis |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-titanium-free-closure.args` | The same ingredients close at `nullius-composites-2` on Fulgora, without helium |
 | `python tools/run_factorio_tests.py --keep-run-directory experiment-rocket-cargo-weights` | Engine-computed item weights and silo cargo properties |
 
 #### Engine checks before implementation
@@ -1009,6 +1022,8 @@ needs debris mitigation.
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
 | Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
 | Weights of canisters, recordings, and blank modules, added to `experiment-rocket-cargo-weights` | Propellant per trip and launches per correlation |
+| Box weight: one stack of any measured box fills a whole launch, independent of contents. Find the engine's weight source for boxes, then make box weight equal contents weight | Whether boxed cargo carries more per launch than loose cargo |
+| Silo with the Space Age cargo layout still counts satellite and probe launches | Probe mission objective after the silo change |
 | Reference platform thrust and propellant | Reference transit for recording spoilage |
 | Space-platform surface properties | Vacuum placement conditions |
 
@@ -1028,7 +1043,7 @@ removed_sources:
   probe_launch: 1000 boxed astronomy packs (5000); 10 probes are a mission objective
 retained: satellite and probe remain ingredients and mission items; launches return nothing
 new_source: correlation of interferometric recordings
-unlock: nullius-astronomy; prerequisites unchanged, including rocket-science-2
+unlock: nullius-astronomy; prerequisite closure unchanged when Rocket Science 2 moves; see Launch research
 array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 ```
 
@@ -1150,11 +1165,83 @@ surface holds intensity 25; windows last 1200 ticks.
 python tools/run_factorio_tests.py experiment-storm-interference
 ```
 
-### 4.6 Launch Fuel
+### 4.6 Launch Vehicle
 
-Design only. Every exporting planet launches its own rockets, so each needs a
-local route to `rocket-fuel`; the rest of the rocket follows
-[Cargo closure](#cargo-closure). Platform thruster propellant is a separate design.
+Design only. Every exporting planet builds its silo and rockets from local
+production; see [Cargo closure](#cargo-closure). Platform thruster propellant is a
+separate design.
+
+```yaml
+current:
+  rocket: >-
+    nullius-rocket, the silo's fixed recipe; titanium sheet, haste module 3 and
+    sensor node 2 (titanium tetrachloride), heat pipe 3, and a box of logistic bots
+  silo: six of eight ingredients are titanium-tier buildings
+  research: >-
+    fuel at nullius-rocket-science-1, after Demolitions 2, Freight Transportation 3,
+    and High Pressure Chemistry 2; rocket and silo at nullius-rocket-science-2,
+    after Braking 8 and Personal Transportation 4
+  cargo: silo launch_to_space_platforms false; one insertion slot
+```
+
+#### Launch research
+
+Rocket fuel and the default rocket need nothing later than the first physics
+technologies. `nauvis-launch-fuel-closure.args` closes the fuel ingredients at
+`nullius-physics`. `nauvis-launch-titanium-free-closure.args` closes the default
+stage and silo ingredients at `nullius-composites-2`, the only technology they add
+past `nullius-physics`. Titanium sheets, loose and boxed, also close there, so
+both stage recipes unlock together.
+
+| Technology | Unlocks | Prerequisites | Unit cost |
+|---|---|---|---|
+| Rocket Science 1 | Rocket fuel and its boxed recipes | `nullius-physics` | That of `nullius-composites-2` |
+| Rocket fuel checkpoint | Unchanged | Rocket Science 1 | Unchanged |
+| Rocket Science 2 | Both rocket stage recipes, rocket, silo, cargo landing pad | Rocket fuel checkpoint, `nullius-composites-2` | That of `nullius-composites-2` |
+
+| Rule | Value |
+|---|---|
+| Only these three move | Each dependent of a moved technology takes over the prerequisites the moved technology drops |
+| Rocket Science 1 dependents | Empiricism 6 and Robot Speed 4 take Demolitions 2, Freight Transportation 3, and High Pressure Chemistry 2 |
+| Checkpoint dependents | Braking 8 takes the same three |
+| Rocket Science 2 dependents | Astronomy takes Braking 8 and Personal Transportation 4 |
+| Check | `--describe-research-closure` reports the same technologies before and after for every technology except the three moved ones |
+
+#### Rocket stage
+
+The silo keeps `fixed_recipe = "nullius-rocket"`, so the silo cannot select
+alternative recipes. The rocket recipe consumes one stage, and the stage carries
+the alternatives. Titanium's specific strength lowers dry mass; by the rocket
+equation the same payload then needs less propellant.
+
+```yaml
+item: nullius-rocket-stage; stack 1
+rocket_recipe: 1 nullius-rocket-stage -> 1 nullius-rocket; productivity allowed (silo modules)
+stage_recipes: productivity disabled, so productivity applies once per rocket
+fuel: a stage ingredient, so the titanium stage can take less
+removed: logistic bots
+inputs: boxed bulk items, as in the current rocket recipe
+```
+
+| Recipe | Structure | Systems | Fuel |
+|---|---|---|---|
+| `nullius-rocket-stage` | Carbon composite, aluminum sheet, steel beam, insulation, ceramic | Haste module 2, sensor node 1, heat pipe 2, gate | Default amount |
+| `nullius-titanium-rocket-stage` | Titanium sheet replaces aluminum sheet and steel beam | Same as default | Less, set by the rocket stage row of [Titanium recipes](#titanium-recipes) |
+
+#### Silo
+
+```yaml
+recipe: drone launcher 1, hangar 2, beacon 1, lab 2, productivity module 1, heat pipe 2, wall, hazard concrete
+titanium_alternative: none; each planet builds few silos
+launch_to_space_platforms: true
+cargo: Space Age silo layout; a rocket cargo inventory replaces the single insertion slot
+can_launch_without_landing_pads: true, unchanged
+```
+
+#### Launch fuel
+
+Every exporting planet launches its own rockets, so each needs a local route to
+`rocket-fuel`.
 
 ```yaml
 current:
@@ -1165,6 +1252,9 @@ current:
     -> 3 rocket fuel + 200 wastewater, 40 s, basic-chemistry
   unlock: nullius-rocket-science-1
   per_launch: nullius-rocket takes 50 boxed rocket fuel (250); the silo needs 1 rocket
+target:
+  unlock: Rocket Science 1 at nullius-physics; see Launch research
+  per_launch: taken by the rocket stage recipes
 gravity_scaling: none
 ```
 
@@ -1194,7 +1284,7 @@ no first launch may depend on them.
 | Query | Unresolved today | Traced cause |
 |---|---|---|
 | `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
-| `tests/progression/fulgora-launch-closure.args` | None | [Degassing cracking](PLANET_FULGORA.md#helium) supplies helium for the silo and rocket (`fulgora-launch-closure-helium.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+| `tests/progression/fulgora-launch-closure.args` | None | [Degassing cracking](PLANET_FULGORA.md#helium) supplies helium for the current silo and rocket (`fulgora-launch-closure-helium.args`). The titanium-free default needs none (`fulgora-launch-titanium-free-closure.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
 
 ```bash
 python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
@@ -1202,13 +1292,18 @@ python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-clos
 ```
 
 `tests/progression/fulgora-launch-manifest.args` also quantifies Fulgora's rocket and
-silo. It declares a small chlorine prime: titanium tetrachloride consumes chlorine
-that later steps return, so the plan's first batch runs short in execution order.
-Local brine electrolysis supplies that chlorine, so it is scheduling, not an import.
+silo. It declares a chlorine stock; without it the execution-order check fails on
+chlorine, which titanium tetrachloride consumes. The stock is not proven to be
+a scheduling prime: on Nauvis, `nauvis-launch-cost.args` without `--marginal`
+fails the same check on chlorine for one rocket or one silo even with 200
+chlorine stocked, while two of each pass. The planner's execution-order check
+needs a trace of that failure before any stock is declared for it. The
+titanium-free default stage and silo consume no titanium tetrachloride.
 
 The Vulcanus query exits 1 until its fuel route is implemented. Gleba and Aquilo
-need the same query. The rocket consumes metals that [2.4](#24-independent-bootstrap-design)
-lists as missing there, so each needs a local metal route.
+need the same query. The default stage and silo consume aluminum, iron, and steel,
+which [2.4](#24-independent-bootstrap-design) lists as missing there, so each needs
+a local metal route. They need no titanium route.
 
 | Step | Rule |
 |---|---|
@@ -1272,7 +1367,7 @@ Planets come before cargo because each must work with zero imports. Current stat
 is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 1. **Planet access and independent bootstrap**: probes, Vulcanus, Fulgora
-2. **Cargo**: cargo closure, launch fuel, space platforms
+2. **Cargo**: cargo closure, launch vehicle, space platforms
 3. **Astronomy**: interferometry; multi-planet correlation needs cargo
 4. **Gleba integration**: biology rework, spoilage mechanics
 5. **Aquilo integration**: nuclear rework, endgame

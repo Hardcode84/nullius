@@ -1,0 +1,13 @@
+--technology
+nullius-physics
+--require-no-additional-technologies
+@tests/progression/nauvis-launch-boundary.args
+processed-fuel
+nullius-ammonia
+nullius-acid-hydrochloric
+nullius-compressed-oxygen
+nullius-salt
+nullius-iron-oxide
+nullius-aluminum-powder
+nullius-rubber
+cliff-explosives

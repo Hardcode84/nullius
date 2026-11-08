@@ -261,8 +261,9 @@ Slurry climatology uses the captured air without seawater.
 Helium light enough to escape leaves none in the atmosphere, so it
 comes from the primordial hydrocarbon ocean, where it stays dissolved through
 filtration. Slow, cold fractionation during cracking recovers it as the lightest
-fraction. Rocket closure needs it for heat pipe 3 and
-processor 2; see [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
+fraction. The current rocket and silo need it for heat pipe 3 and processor 2;
+the planned titanium-free default needs none. See
+[Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 
 | Property | Rule |
 |---|---|
@@ -876,7 +877,7 @@ Design only. The shared design is
 
 ### Rocket fuel
 
-Design only. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#46-launch-fuel).
+Design only. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
 Storm surplus fixes atmospheric nitrogen as the oxidizer.
 
 | Step | Machine | Draft recipe |

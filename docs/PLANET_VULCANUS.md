@@ -222,7 +222,7 @@ current closure; this document does not duplicate their ingredient lists.
 Rocket fuel: design only. Vulcanus launch fuel burns aluminum powder in
 compressed atmospheric CO2 and needs no polymer, water, or organic input. The
 route compensates for low propellant performance with large input amounts per
-fuel unit. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#46-launch-fuel).
+fuel unit. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
 
 Thermite cliff explosives replace the ordinary organic explosive route. They
 tie aluminum powder to barreled chlorine and sulfur chemistry; unstable
@@ -532,7 +532,7 @@ Returning to Nauvis remains available throughout the sequence.
 | Vulcanus to all planets | Industrial optimization | Process-specific productivity |
 | Vulcanus to Nauvis | Calcite and calcium products | Easier chlorine management |
 | Vulcanus to other surfaces | Rutile, titanium, and bulk metals | Remove punitive bootstrap routes |
-| Vulcanus to platform builders | Titanium | Titanium recipes need at most one third of the default Nauvis raw input; see [Titanium recipes](SPACE_AGE_BRAINSTORM.md#titanium-recipes) |
+| Vulcanus to rocket and platform builders | Titanium | Titanium recipes cut the default Nauvis raw input by the bounds in [Titanium recipes](SPACE_AGE_BRAINSTORM.md#titanium-recipes) |
 | Other surfaces to Vulcanus | Bulk water and commodity polymers | Efficient mature industry |
 | Gleba to Vulcanus | Biological inputs | Candidate demolisher operation |
 
