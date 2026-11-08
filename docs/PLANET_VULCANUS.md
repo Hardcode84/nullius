@@ -245,8 +245,10 @@ Runtime: `vulcanus-anfo` checks both unlocks and one pipe-fed craft per recipe.
 Design only. Vulcanus launch fuel burns aluminum powder in liquefied
 atmospheric CO2. The charge needs no polymer, water, or organic input, so
 Vulcanus can launch its first rocket from local production. CO2 is a weak
-oxidizer, so each fuel unit takes more aluminum than any other route. Shared
-rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
+oxidizer, so each fuel unit takes more aluminum and oxidizer than any other
+route. The recipe runs everywhere, but only Vulcanus supplies both cheaply:
+lava yields the aluminum and the atmosphere is mostly CO2. Shared rules:
+[Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
 
 Measured blocker: `vulcanus-launch-closure.args` cannot make the rocket or the
 stage on Vulcanus because both need `rocket-fuel`. The existing recipe fails only
@@ -257,7 +259,7 @@ polymer policy above.
 recipe: nullius-aluminum-co2-rocket-fuel
 category: basic-chemistry
 time: 40 s
-inputs: 60 aluminum powder + 600 compressed CO2 + 1 canister + 2 cliff explosives
+inputs: 120 aluminum powder + 1500 compressed CO2 + 1 canister + 2 cliff explosives
 outputs: 3 rocket-fuel
 roles:
   aluminum_powder: fuel; burns to alumina
@@ -267,8 +269,8 @@ roles:
 productivity: none (allow_productivity false, maximum_productivity 0)
 surface_conditions: none
 main_product: rocket-fuel
-boxed: auto_boxed nullius-boxed-aluminum-co2-rocket-fuel; 60 boxed aluminum powder
-  + 3000 compressed CO2 + 1 boxed canister + 2 boxed explosives -> 3 boxed rocket fuel, 200 s
+boxed: auto_boxed nullius-boxed-aluminum-co2-rocket-fuel; 120 boxed aluminum powder
+  + 7500 compressed CO2 + 1 boxed canister + 2 boxed explosives -> 3 boxed rocket fuel, 200 s
 icons: rocket fuel with a CO2 overlay, the RP-1 icon layout
 ```
 
@@ -287,9 +289,32 @@ icons: rocket fuel with a CO2 overlay, the RP-1 icon layout
 | Item | Existing `rocket-fuel`; launch stages are unchanged |
 | Item weight | Unchanged: the weight rule uses the recipe named `rocket-fuel` |
 | Explosives on Vulcanus | ANFO; thermite is a hand craft and cannot feed a chemical plant |
-| Aluminum floor | 20 powder per fuel, above the 4.67 that recovery of the burnt alumina returns without productivity; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1) |
+| Aluminum floor | 40 powder per fuel, above the 4.67 that recovery of the burnt alumina returns without productivity; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1) |
 | Energy floor | Machine energy to make one fuel exceeds its 60 MJ fuel value, so the fuel cannot become a power source; the same bound covers the Nauvis and RP-1 recipes |
 | Planet restriction | Research only. The recipe has no surface condition, so once researched it also runs on platforms and other planets, like RP-1 |
+| Planet differential | Local inputs, not surface conditions. CO2 per air separation: Vulcanus 80%, Nauvis 27%, Fulgora 19%. Vulcanus aluminum comes from lava; Nauvis and Fulgora use bauxite |
+
+#### Cost by planet
+
+Marginal manifests for 300 fuel, with the planned recipe as a prototype overlay.
+The default fuel uses the current recipe. Raw classes are reported separately.
+Lava and air are free.
+
+| Planet | Route | Metal | Gas or slurry | Other |
+|---|---|---:|---:|---|
+| Vulcanus | Aluminum-CO2 | none | 842k compressed volcanic gas burned by pneumatic machines | 121k HCl, nearly all for ANFO ammonia |
+| Nauvis | Default | 14,763 bauxite, 8,280 iron ore | 1.03M volcanic gas | |
+| Nauvis | RP-1 | 4,284 bauxite | 275k volcanic gas | |
+| Nauvis | Aluminum-CO2 | 38,934 bauxite, 8,280 iron ore | 830k volcanic gas | 3.9M air filter ticks |
+| Fulgora | Default | 9,888 crushed bauxite | 2.0M hydrocarbon slurry | |
+| Fulgora | RP-1 | 3,056 crushed bauxite | 441k hydrocarbon slurry | |
+| Fulgora | Aluminum-CO2 | 27,136 crushed bauxite | 1.69M hydrocarbon slurry | 3.7M air filter ticks |
+
+| Result | Value |
+|---|---|
+| Off Vulcanus | 2.6 to 2.7 times the default fuel's bauxite and about 9 times RP-1's; gas and slurry stay below the default fuel because no rubber is made |
+| On Vulcanus | 1.39 times the volcanic gas fuel of a 60 powder, 600 CO2 draft; raw inputs are unchanged |
+| Planner selection | Without pinned producers the planner takes compressed CO2 from boxed BPA and CO2 from steel ingots. Every CO2 contract pins `nullius-compressed-carbon-dioxide` and the planet's air separation |
 
 #### Validation contracts
 
@@ -301,6 +326,7 @@ icons: rocket fuel with a CO2 overlay, the RP-1 icon layout
 | Aluminum floor | `rocket-fuel-aluminum` adds this recipe; recovered powder per fuel stays below the recipe's input |
 | Energy floor | `tools/check_launch_vehicle.py`, through the manifest energy total below; fails at or below the fuel value for every `rocket-fuel` route |
 | Stage cost | `tools/check_launch_vehicle.py` prices the default and titanium stages with Vulcanus fuel against a Vulcanus boundary and reports each raw class separately |
+| Off-Vulcanus penalty | `tools/check_launch_vehicle.py` prices 300 fuel on Nauvis and Fulgora: aluminum-CO2 needs at least twice the default fuel's bauxite and is worse than RP-1 in every raw class |
 | Player path | `vulcanus-co2-fuel`: finite inputs feed pneumatic chemical plants through pipes; ordinary and boxed crafts finish; no productivity accrues |
 | Locale | `python tools/check_factorio_locale.py` |
 
