@@ -34,7 +34,7 @@ script.on_init(function()
     electrolytic=finishing*output('nullius-aluminum-ingot-electrolytic','nullius-box-aluminum-ingot')/input('nullius-aluminum-ingot-electrolytic','nullius-box-alumina'),
   }
   check(prototypes.item['rocket-fuel'].burnt_result.name=='nullius-alumina','fuel returns alumina')
-  for family,expected in pairs{rp1=5,["aluminum-co2"]=60} do
+  for family,expected in pairs{rp1=5,["aluminum-co2"]=40} do
     for _,boxed in ipairs{false,true} do
       local recipe='nullius-'..(boxed and 'boxed-' or '')..family..'-rocket-fuel'
       local powder=boxed and 'nullius-box-aluminum-powder' or 'nullius-aluminum-powder'

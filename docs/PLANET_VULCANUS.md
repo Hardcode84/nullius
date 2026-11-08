@@ -264,17 +264,14 @@ separation. This prevents the planner from selecting a polymer or steel
 byproduct as the oxidizer source.
 
 The aluminum input exceeds recovery from burnt alumina without productivity.
-The declared production routes must also consume more machine energy than the
-fuel supplies. This energy check uses the selected machines without modules;
-it does not prove the bound for other machines or productivity bonuses.
-Electric, heat, and burner energy are reported separately. Fluid-powered
-machines count through the production of their fuel to avoid double counting.
+Rocket fuel burns only in vehicles, trains, and portable generator equipment,
+so no factory power route needs an energy bound.
 
 | Check | Contract |
 |---|---|
 | Local rocket and silo | `tests/progression/vulcanus-launch-closure.args` |
 | Ordinary and boxed fuel, chemical plant, pipes, and tank at unlock | `tests/progression/vulcanus-co2-fuel-closure.args`, `tests/progression/vulcanus-co2-fuel-bulk.args` |
-| Planet costs, energy floor, research ownership, and both stage costs | `tools/check_launch_vehicle.py` |
+| Planet costs, Vulcanus research ownership, and both Vulcanus stage costs | `tools/check_launch_vehicle.py` |
 | Aluminum recovery without productivity | `tests/scenarios/rocket-fuel-aluminum/` |
 | Finite fuel batches through pneumatic chemical plants and pipes | `tests/scenarios/vulcanus-co2-fuel/` |
 
@@ -622,7 +619,7 @@ failure: unfed demolisher ceases operation or dies
 | Refractory and titanium industry | Hot casting, local chemistry, and thermal storage are available | Refractory materials and pilot titanium equipment are produced locally | `vulcanus-boric-acid`, `carbothermic-sodium`, `vulcanus-refractory-production`, `vulcanus-titanium-pilot`, `vulcanus-titanium-construction` | `vulcanus-boric-acid.args`, `carbothermic-sodium.args`, `vulcanus-refractory-production.args`, `vulcanus-titanium-pilot.args`, `vulcanus-titanium-construction.args` |
 | Tier-2 thermal industry | Refractory and tier-2 base machines are available | Tier-2 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-2` | `nauvis-thermal-furnace-sizes.args` |
 | Tier-3 thermal industry | Tier-2 thermal industry and nuclear heat are available | Tier-3 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-3` | — |
-| Local launch fuel (design) | Rocket Science 1, Pneumatic Technology, and local aluminum, CO2, and ANFO are available | Aluminum-CO2 rocket fuel is produced locally and the silo, stage, and rocket close on Vulcanus | `vulcanus-co2-fuel` | `vulcanus-launch-closure.args`, `vulcanus-co2-fuel-closure.args`, `vulcanus-co2-fuel-bulk.args` |
+| Local launch fuel | Rocket Science 1, Pneumatic Technology, and local aluminum, CO2, and ANFO are available | Aluminum-CO2 rocket fuel is produced locally and the silo, stage, and rocket close on Vulcanus | `vulcanus-co2-fuel` | `vulcanus-launch-closure.args`, `vulcanus-co2-fuel-closure.args`, `vulcanus-co2-fuel-bulk.args` |
 | Thermal nanofabrication and physics science | High-temperature industry and physics intermediates are available | Thermal nanofabricators operate. Local residual gas and pre-physics executor tests cover the first physics batch; see the physics capacity section | `thermal-nanofabricators`, `vulcanus-residual-gas`, `planner-physics-executors` | `vulcanus-physics-production.args`, `tests/test_vulcanus_physics_contract.py` |
 
 ## Cross-cutting contracts

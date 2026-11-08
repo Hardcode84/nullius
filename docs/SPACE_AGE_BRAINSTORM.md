@@ -1323,7 +1323,7 @@ excluded from this balance by design.
 |---|---|
 | Ordinary and boxed production, machines, and pipes | `tests/progression/{nauvis,fulgora}-rp1-{closure,bulk}.args` |
 | Fuel cost | `tests/progression/rp1-fuel-cost.args` |
-| Fuel energy, planet costs, and titanium stage savings | `tools/check_launch_vehicle.py` |
+| Planet fuel costs and titanium stage savings | `tools/check_launch_vehicle.py` |
 | Aluminum return without productivity | `tests/scenarios/rocket-fuel-aluminum/` |
 | Finite fuel batches through chemical plants and pipes | `tests/scenarios/rp1-fuel/` |
 | Resolved ordinary and boxed recipes | `tests/progression/rp1-aluminum-inspection.args` |

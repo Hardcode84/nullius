@@ -5976,7 +5976,7 @@ extend_fluid_prototypes({
         icon_size=72,scale=16/72,shift={10,-10}},
     },
     ingredients = {
-      {type="item",name="nullius-aluminum-powder",amount=180},
+      {type="item",name="nullius-aluminum-powder",amount=120},
       {type="fluid",name="nullius-compressed-carbon-dioxide",amount=1500},
       {type="item",name="nullius-canister",amount=1},
       {type="item",name="cliff-explosives",amount=2},
@@ -5995,7 +5995,7 @@ extend_fluid_prototypes({
       {icon="__base__/graphics/icons/fluid/light-oil.png",icon_size=64,scale=0.25,shift={10,-10}},
     },
     ingredients = {
-      {type="fluid",name="nullius-kerosene",amount=60},
+      {type="fluid",name="nullius-kerosene",amount=30},
       {type="fluid",name="nullius-compressed-oxygen",amount=150},
       {type="item",name="nullius-aluminum-powder",amount=15},
       {type="item",name="nullius-plastic",amount=1},

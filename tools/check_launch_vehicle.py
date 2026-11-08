@@ -18,18 +18,27 @@ FORMER_PREREQUISITES = {
     'nullius-rocket-science-2': ['nullius-braking-8', 'nullius-personal-transportation-4'],
 }
 TITANIUM_STRUCTURES = 'nullius-titanium-rocket-structures'
+CO2_PROPELLANT = 'nullius-aluminum-co2-propellant'
 PREREQUISITES = {
     'nullius-rocket-science-1': ['nullius-physics'],
     'nullius-rocket-science-2': [CHECKPOINT, 'nullius-composites-2'],
     TITANIUM_STRUCTURES: ['nullius-rocket-science-2', 'nullius-volcanic-titanium-metallurgy'],
+    CO2_PROPELLANT: ['nullius-rocket-science-1', 'nullius-pneumatic-technology'],
 }
-# Each stage recipe is unlocked by exactly this technology.
-STAGE_UNLOCKS = {
+# Each launch recipe is unlocked by exactly this technology.
+RECIPE_UNLOCKS = {
     'nullius-rocket-stage': 'nullius-rocket-science-2',
     'nullius-titanium-rocket-stage': TITANIUM_STRUCTURES,
+    'nullius-aluminum-co2-rocket-fuel': CO2_PROPELLANT,
+    'nullius-boxed-aluminum-co2-rocket-fuel': CO2_PROPELLANT,
 }
+# Vulcanus research: metallurgic science and the Vulcanus probe in its closure.
+VULCANUS_TECHNOLOGIES = (TITANIUM_STRUCTURES, CO2_PROPELLANT)
 MOVED = {*FORMER_PREREQUISITES, CHECKPOINT}
-NEW_TECHNOLOGIES = {'nullius-aluminum-co2-propellant', 'nullius-rp1-fuel', TITANIUM_STRUCTURES, 'nullius-orbital-construction'}
+NEW_TECHNOLOGIES = {CO2_PROPELLANT, 'nullius-rp1-fuel', TITANIUM_STRUCTURES, 'nullius-orbital-construction'}
+# Fulgora's boundary supplies these minerals without a priced local route.
+FULGORA_MINERALS = {'nullius-crushed-iron-ore', 'nullius-crushed-bauxite', 'nullius-sand',
+                    'nullius-crushed-limestone', 'stone', 'nullius-gypsum'}
 IMPORTED_BOUND = 2 / 3
 TIME_BOUND = 1 / 2
 
@@ -41,7 +50,7 @@ def research_violations(technologies):
                   if sorted(technologies[name].get('prerequisites') or []) != sorted(expected)]
     former = {name: {**technology, 'prerequisites': FORMER_PREREQUISITES.get(name, technology.get('prerequisites'))}
               for name, technology in technologies.items()}
-    for recipe, expected in STAGE_UNLOCKS.items():
+    for recipe, expected in RECIPE_UNLOCKS.items():
         unlockers = sorted(name for name, technology in technologies.items()
                            for effect in technology.get('effects') or []
                            if effect.get('type') == 'unlock-recipe' and effect.get('recipe') == recipe)
@@ -52,14 +61,19 @@ def research_violations(technologies):
         expected = prereqs.technology_closure(former, {name})
         if current != expected:
             violations.append(f'{name} closure: lost {sorted(expected - current)}, gained {sorted(current - expected)}')
+    for name in VULCANUS_TECHNOLOGIES:
+        if 'nullius-metallurgic-pack' not in (pack for pack, _ in technologies[name]['unit']['ingredients']):
+            violations.append(f'{name} does not require metallurgic science')
+        if 'nullius-probe-vulcanus' not in prereqs.technology_closure(technologies, {name}):
+            violations.append(f'{name} does not require the Vulcanus probe')
     return violations
 
 
-def split_raw(raw_inputs, nauvis_raw, fluids):
-    """Split a manifest's raw inputs into Nauvis ore, Nauvis gas, and imports."""
+def split_raw(raw_inputs, local_raw, fluids):
+    """Split a manifest's raw inputs into local ore, local gas, and imports."""
     result = {'ore': 0.0, 'gas': 0.0, 'imports': {}}
     for name, amount in raw_inputs.items():
-        if name not in nauvis_raw:
+        if name not in local_raw:
             result['imports'][name] = amount
         elif name in fluids:
             result['gas'] += amount
@@ -68,7 +82,7 @@ def split_raw(raw_inputs, nauvis_raw, fluids):
     return result
 
 
-def material_cost(data, arguments, nauvis_raw, *, mineral_boundary=False):
+def material_cost(data, arguments, local_raw, *, mineral_boundary=False):
     args = prereqs.parse_arguments(['@' + str(arguments)])
     quantities = dict(args.targets)
     args.targets = list(quantities)
@@ -79,56 +93,24 @@ def material_cost(data, arguments, nauvis_raw, *, mineral_boundary=False):
         raise prereqs.TestFailure(f'Unclosed launch cost boundary: {arguments}')
     manifest = prereqs.build_production_manifest(data, report, quantities, args.fuel, dict(args.stock), True)
     available = manifest['available_inputs']
-    minerals = {'nullius-crushed-iron-ore', 'nullius-crushed-bauxite', 'nullius-sand',
-                'nullius-crushed-limestone', 'stone', 'nullius-gypsum'}
-    if available and (not mineral_boundary or set(available) - minerals):
+    if available and (not mineral_boundary or set(available) - FULGORA_MINERALS):
         raise prereqs.TestFailure(f'Unpriced launch inputs: {available}')
     inputs = dict(manifest['raw_inputs'])
     for name, amount in available.items():
         inputs[name] = inputs.get(name, 0) + amount
     return dict(raw_inputs=manifest['raw_inputs'], mineral_inputs=available,
-                energy_joules=manifest['energy_joules'], fuel_consumption=manifest['fuel_consumption'],
-                **split_raw(inputs, nauvis_raw | set(available), data.get('fluid', {})))
+                fuel_consumption=manifest['fuel_consumption'],
+                **split_raw(inputs, local_raw | set(available), data.get('fluid', {})))
 
 
 def ratios(variant, default):
     return {kind: variant[kind] / default[kind] for kind in ('ore', 'gas')}
 
 
-CO2_TECH = 'nullius-aluminum-co2-propellant'
-
-
-def co2_research_violations(technologies):
-    """Require Vulcanus science, probe ownership, and both fuel unlocks."""
-    technology = technologies[CO2_TECH]
-    failed = []
-    expected = {'nullius-rocket-science-1', 'nullius-pneumatic-technology'}
-    if set(technology.get('prerequisites', [])) != expected:
-        failed.append('Aluminum CO2 propellant prerequisites differ from the launch design')
-    ingredients = technology['unit']['ingredients']
-    if not any((part[0] if isinstance(part, list) else part['name']) == 'nullius-metallurgic-pack'
-               for part in ingredients):
-        failed.append('Aluminum CO2 propellant requires metallurgic science')
-    if 'nullius-probe-vulcanus' not in prereqs.technology_closure(technologies, {CO2_TECH}):
-        failed.append('Aluminum CO2 propellant requires the Vulcanus probe')
-    for recipe in ('nullius-aluminum-co2-rocket-fuel', 'nullius-boxed-aluminum-co2-rocket-fuel'):
-        owners = [name for name, tech in technologies.items() for effect in tech.get('effects', [])
-                  if effect.get('type') == 'unlock-recipe' and effect.get('recipe') == recipe]
-        if owners != [CO2_TECH]:
-            failed.append(f'{recipe} must be unlocked only by {CO2_TECH}: {owners}')
-    return failed
-
-
-def fuel_cost_violations(costs, fuel_value, quantity):
-    """Check the energy floor and the off-Vulcanus material penalty."""
+def fuel_cost_violations(costs):
+    """Require aluminum-CO2 fuel to cost more than the local fuels off Vulcanus."""
     failed = []
     for planet, routes in costs.items():
-        for route, cost in routes.items():
-            energy = sum(cost['energy_joules'].values()) / quantity
-            if energy <= fuel_value:
-                failed.append(f'{planet} {route} machine energy {energy:g} J/fuel <= {fuel_value:g}')
-        if planet == 'vulcanus':
-            continue
         co2, default, rp1 = (routes[name] for name in ('co2', 'default', 'rp1'))
         bauxite = 'nullius-bauxite' if planet == 'nauvis' else 'nullius-crushed-bauxite'
         field = 'raw_inputs' if planet == 'nauvis' else 'mineral_inputs'
@@ -141,13 +123,13 @@ def fuel_cost_violations(costs, fuel_value, quantity):
 
 
 def fuel_costs(data):
+    """Price each fuel route on the planets other than Vulcanus."""
     costs = {}
-    for planet in ('nauvis', 'fulgora', 'vulcanus'):
-        boundary = 'vulcanus-co2-fuel-common.args' if planet == 'vulcanus' else f'{planet}-launch-boundary.args'
-        raw = set(prereqs.parse_arguments(['@' + str(CONTRACTS / boundary)]).raw)
-        routes = ('co2',) if planet == 'vulcanus' else ('default', 'rp1', 'co2')
+    for planet in ('nauvis', 'fulgora'):
+        raw = set(prereqs.parse_arguments(['@' + str(CONTRACTS / f'{planet}-launch-boundary.args')]).raw)
         costs[planet] = {route: material_cost(data, CONTRACTS / f'fuel-cost-{planet}-{route}.args', raw,
-                                             mineral_boundary=planet == 'fulgora') for route in routes}
+                                             mineral_boundary=planet == 'fulgora')
+                         for route in ('default', 'rp1', 'co2')}
     return costs
 
 
@@ -155,24 +137,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--data-raw', type=Path)
-    parser.add_argument('--fuel-only', action='store_true', help='check fuel costs and research without pricing stages or platform components')
     args = parser.parse_args()
     dump_args = prereqs.parse_arguments([])
     dump_args.data_raw = args.data_raw
     data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
-        violations = research_violations(data['technology']) + co2_research_violations(data['technology'])
+        violations = research_violations(data['technology'])
         if violations:
             raise prereqs.TestFailure('Launch research violations:\n' + '\n'.join(violations))
-        if args.fuel_only:
-            costs = fuel_costs(data)
-            fuel_value = prereqs.parse_energy(data['item']['rocket-fuel']['fuel_value'], 'J')
-            args.output.write_text(json.dumps(costs, indent=2) + '\n')
-            print(json.dumps(costs, indent=2))
-            failed = fuel_cost_violations(costs, fuel_value, 300)
-            if failed:
-                raise prereqs.TestFailure('Fuel bounds failed: ' + ', '.join(failed))
-            return
         nauvis_raw = set(prereqs.parse_arguments(['@' + str(BOUNDARY)]).raw)
         results = {'unchanged_research_closures': len(data['technology'].keys() - MOVED - NEW_TECHNOLOGIES)}
         failed = []
@@ -191,8 +163,7 @@ def main():
             cost = material_cost(data, CONTRACTS / f'orbital-cost-{component}.args', nauvis_raw)
             results['orbital_components'][component] = dict(cost, ratio_to_launch=ratios(cost, results['composite']['default']))
         results['fuel_costs'] = fuel_costs(data)
-        fuel_value = prereqs.parse_energy(data['item']['rocket-fuel']['fuel_value'], 'J')
-        failed.extend(fuel_cost_violations(results['fuel_costs'], fuel_value, 300))
+        failed.extend(fuel_cost_violations(results['fuel_costs']))
         vulcanus_raw = set(prereqs.parse_arguments(['@' + str(CONTRACTS / 'vulcanus-launch-boundary.args')]).raw)
         results['vulcanus_stages'] = {
             variant: material_cost(data, CONTRACTS / f'launch-cost-vulcanus-{variant}.args', vulcanus_raw)

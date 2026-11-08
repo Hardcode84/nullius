@@ -1,5 +1,5 @@
 local crafting_input = require("__nullius-star__/scenarios/inventory-api").crafting_input
--- given: each plant has 180 powder, one canister, two explosives, and 50000 fuel gas.
+-- given: each plant has 120 powder, one canister, two explosives, and 50000 fuel gas.
 -- place: two tier-1 pneumatic chemical plants on Vulcanus.
 -- connect: one CO2 tank per plant through a pipe at tick 90.
 -- act: research Aluminum-CO2 Propellant and select ordinary and boxed recipes.
@@ -34,7 +34,7 @@ script.on_nth_tick(30, function()
       local machine = assert(surface.create_entity{name="nullius-chemical-plant-1-pneumatic", position={x,0}, force=force})
       check(machine.set_recipe(recipe) ~= nil, "recipe selection")
       local prefix = boxed and "nullius-box-" or "nullius-"
-      for _, item in ipairs{{prefix.."aluminum-powder",180}, {prefix.."canister",1},
+      for _, item in ipairs{{prefix.."aluminum-powder",120}, {prefix.."canister",1},
           {boxed and "nullius-box-explosive" or "cliff-explosives",2}} do
         check(machine.insert{name=item[1],count=item[2]} == item[2], "finite solids "..item[1])
       end

@@ -7,8 +7,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
-from check_launch_vehicle import (research_violations, split_raw, co2_research_violations,
-                                  fuel_cost_violations, CO2_TECH)
+from check_launch_vehicle import (CO2_PROPELLANT, TITANIUM_STRUCTURES, fuel_cost_violations,
+                                  research_violations, split_raw)
 
 
 def launch_tree():
@@ -30,16 +30,20 @@ def launch_tree():
         "nullius-broadcasting-4": ["nullius-composites-2"],
         "nullius-astronomy": ["nullius-rocket-science-2", "nullius-braking-8",
                               "nullius-personal-transportation-4", "nullius-broadcasting-4"],
-        "nullius-volcanic-titanium-metallurgy": ["nullius-physics"],
-        "nullius-titanium-rocket-structures": ["nullius-rocket-science-2",
-                                               "nullius-volcanic-titanium-metallurgy"],
+        "nullius-probe-vulcanus": ["nullius-physics"],
+        "nullius-pneumatic-technology": ["nullius-probe-vulcanus"],
+        "nullius-volcanic-titanium-metallurgy": ["nullius-pneumatic-technology"],
+        TITANIUM_STRUCTURES: ["nullius-rocket-science-2", "nullius-volcanic-titanium-metallurgy"],
+        CO2_PROPELLANT: ["nullius-rocket-science-1", "nullius-pneumatic-technology"],
     }
     unlocks = {
-        "nullius-rocket-science-2": "nullius-rocket-stage",
-        "nullius-titanium-rocket-structures": "nullius-titanium-rocket-stage",
+        "nullius-rocket-science-2": ["nullius-rocket-stage"],
+        TITANIUM_STRUCTURES: ["nullius-titanium-rocket-stage"],
+        CO2_PROPELLANT: ["nullius-aluminum-co2-rocket-fuel", "nullius-boxed-aluminum-co2-rocket-fuel"],
     }
-    return {name: {"name": name, "prerequisites": list(parents),
-                   "effects": [{"type": "unlock-recipe", "recipe": unlocks[name]}] if name in unlocks else []}
+    vulcanus_unit = {"ingredients": [["nullius-metallurgic-pack", 20], ["nullius-physics-pack", 2]]}
+    return {name: {"name": name, "prerequisites": list(parents), "unit": vulcanus_unit,
+                   "effects": [{"type": "unlock-recipe", "recipe": recipe} for recipe in unlocks.get(name, [])]}
             for name, parents in prerequisites.items()}
 
 
@@ -80,53 +84,57 @@ class ResearchViolationsTest(unittest.TestCase):
 
     def test_titanium_structures_without_vulcanus_research_are_rejected(self):
         technologies = launch_tree()
-        technologies["nullius-titanium-rocket-structures"]["prerequisites"] = ["nullius-rocket-science-2"]
+        technologies[TITANIUM_STRUCTURES]["prerequisites"] = ["nullius-rocket-science-2"]
         violations = research_violations(technologies)
-        self.assertEqual(len(violations), 1)
-        self.assertIn("nullius-titanium-rocket-structures prerequisites", violations[0])
+        self.assertEqual(len(violations), 2)
+        self.assertIn(f"{TITANIUM_STRUCTURES} prerequisites", violations[0])
+        self.assertEqual(violations[1], f"{TITANIUM_STRUCTURES} does not require the Vulcanus probe")
 
 
-class FuelContractsTest(unittest.TestCase):
-    def test_energy_floor_checks_each_route_and_equality(self):
-        for energy, expected in ((61, []), (60, ['vulcanus co2 machine energy 60 J/fuel <= 60'])):
-            costs = {'vulcanus': {'co2': {'energy_joules': {'heat': energy * 300}}}}
-            self.assertEqual(fuel_cost_violations(costs, 60, 300), expected)
+class VulcanusResearchTest(unittest.TestCase):
+    def test_fuel_research_without_vulcanus_science_or_probe_is_rejected(self):
+        technologies = launch_tree()
+        technologies[CO2_PROPELLANT]["unit"] = {"ingredients": [["nullius-electromagnetic-pack", 20]]}
+        technologies["nullius-pneumatic-technology"]["prerequisites"] = []
+        self.assertEqual(research_violations(technologies), [
+            f"{TITANIUM_STRUCTURES} does not require the Vulcanus probe",
+            f"{CO2_PROPELLANT} does not require metallurgic science",
+            f"{CO2_PROPELLANT} does not require the Vulcanus probe"])
 
+    def test_boxed_fuel_unlocked_elsewhere_is_rejected(self):
+        technologies = launch_tree()
+        technologies[CO2_PROPELLANT]["effects"].pop()
+        technologies["nullius-rocket-science-1"]["effects"].append(
+            {"type": "unlock-recipe", "recipe": "nullius-boxed-aluminum-co2-rocket-fuel"})
+        self.assertEqual(research_violations(technologies), [
+            "nullius-boxed-aluminum-co2-rocket-fuel unlocked by ['nullius-rocket-science-1'], "
+            f"expected {CO2_PROPELLANT}"])
+
+
+class FuelCostTest(unittest.TestCase):
     def test_off_planet_penalty_keeps_solid_and_fluid_classes_separate(self):
         def cost(ore, gas):
-            return {'energy_joules': {'electric': 100}, 'ore': ore, 'gas': gas,
-                    'raw_inputs': {'nullius-bauxite': ore}}
-        routes = {'default': cost(10, 100), 'rp1': cost(5, 10), 'co2': cost(20, 11)}
-        self.assertEqual(fuel_cost_violations({'nauvis': routes}, 1, 1), [])
-        routes['co2']['gas'] = 10
-        self.assertEqual(fuel_cost_violations({'nauvis': routes}, 1, 1),
-                         ['nauvis CO2 gas cost must exceed RP-1'])
-        routes['co2']['raw_inputs']['nullius-bauxite'] = 19
-        self.assertIn('nauvis CO2 fuel requires less than twice the default bauxite',
-                      fuel_cost_violations({'nauvis': routes}, 1, 1))
+            return {"ore": ore, "gas": gas, "raw_inputs": {"nullius-bauxite": ore}}
+        routes = {"default": cost(10, 100), "rp1": cost(5, 10), "co2": cost(20, 11)}
+        self.assertEqual(fuel_cost_violations({"nauvis": routes}), [])
+        routes["co2"]["gas"] = 10
+        self.assertEqual(fuel_cost_violations({"nauvis": routes}),
+                         ["nauvis CO2 gas cost must exceed RP-1"])
+        routes["co2"]["raw_inputs"]["nullius-bauxite"] = 19
+        self.assertIn("nauvis CO2 fuel requires less than twice the default bauxite",
+                      fuel_cost_violations({"nauvis": routes}))
 
-    def test_research_requires_planet_science_probe_and_both_unlocks(self):
-        technologies = {
-            'nullius-probe-vulcanus': {},
-            'nullius-pneumatic-technology': {'prerequisites': ['nullius-probe-vulcanus']},
-            'nullius-rocket-science-1': {},
-            CO2_TECH: {'prerequisites': ['nullius-rocket-science-1', 'nullius-pneumatic-technology'],
-                      'unit': {'ingredients': [['nullius-metallurgic-pack', 20]]},
-                      'effects': [{'type': 'unlock-recipe', 'recipe': recipe} for recipe in
-                                  ('nullius-aluminum-co2-rocket-fuel', 'nullius-boxed-aluminum-co2-rocket-fuel')]}}
-        self.assertEqual(co2_research_violations(technologies), [])
-        technologies[CO2_TECH]['unit']['ingredients'] = [['nullius-electromagnetic-pack', 20]]
-        technologies['nullius-pneumatic-technology']['prerequisites'] = []
-        technologies[CO2_TECH]['effects'].pop()
-        errors = co2_research_violations(technologies)
-        self.assertEqual(len(errors), 3)
-        self.assertTrue(any('metallurgic' in error for error in errors))
-        self.assertTrue(any('probe' in error for error in errors))
-        self.assertTrue(any('boxed' in error for error in errors))
+    def test_fulgora_compares_supplied_minerals(self):
+        def cost(bauxite):
+            return {"ore": bauxite, "gas": 100, "mineral_inputs": {"nullius-crushed-bauxite": bauxite}}
+        routes = {"default": cost(10), "rp1": cost(5), "co2": cost(19)}
+        self.assertEqual(fuel_cost_violations({"fulgora": routes}),
+                         ["fulgora CO2 fuel requires less than twice the default bauxite",
+                          "fulgora CO2 gas cost must exceed RP-1"])
 
 
 class SplitRawTest(unittest.TestCase):
-    def test_imports_are_not_nauvis_input(self):
+    def test_imports_are_not_local_input(self):
         split = split_raw({"iron-ore": 10, "nullius-volcanic-gas": 100, "nullius-rutile": 4},
                           {"iron-ore", "nullius-volcanic-gas"}, {"nullius-volcanic-gas": {}})
         self.assertEqual(split, {"ore": 10.0, "gas": 100.0, "imports": {"nullius-rutile": 4}})
