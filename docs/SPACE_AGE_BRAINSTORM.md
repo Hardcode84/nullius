@@ -959,7 +959,9 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 
 | Rule | Value |
 |---|---|
-| Carrier | Hydrogen canister; its 2:1 hydrogen and oxygen condition into equal fuel and oxidizer. Boxed canisters carry twice as many per launch |
+| Nauvis carrier | Hydrogen canister; its 2:1 hydrogen and oxygen condition into equal fuel and oxidizer. Boxed canisters carry twice as many per launch. Nauvis has no ice |
+| Fulgora carrier | Loose ice, melted and electrolyzed on the platform into 2:1 hydrogen and oxygen. Per launch it gives about 1.8 times the propellant of boxed canisters, so Fulgora becomes the cheaper propellant supplier. Boxed ice weighs twice its contents and carries half as much |
+| Electrolysis energy | About 2 MJ per 60 water on every electrolyzer tier; a 25% leg needs about 110 MJ, from platform solar |
 | Gas recipes | Planets launch local gas in barrels or canisters; carbon monoxide and methane cover planets without cheap hydrogen |
 | Machines | Electric chemistry on the platform, powered by platform solar |
 | Empty canisters | Return by drop |
@@ -967,10 +969,10 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 Per Nauvis-Vulcanus leg of the reference flight in
 [Measured platform contracts](#measured-platform-contracts):
 
-| Thruster fill | Canisters | Boxed launches | Loose launches |
-|---|---|---|---|
-| 25% | 26 | 0.31 | 0.60 |
-| 100% | 63 | 0.74 | 1.47 |
+| Thruster fill | Canisters | Boxed canister launches | Loose canister launches | Loose ice launches |
+|---|---|---|---|---|
+| 25% | 26 | 0.31 | 0.60 | 0.17 |
+| 100% | 63 | 0.74 | 1.47 | 0.40 |
 
 #### Titanium recipes
 
@@ -1052,7 +1054,8 @@ needs debris mitigation.
 | Thruster fluids | Fuel and oxidizer boxes filter `thruster-fuel` and `thruster-oxidizer`, so every chemistry conditions into these two fluids and one thruster prototype serves all |
 | Reference flight | Starter-pack platform with one thruster, Nauvis to Vulcanus, fill held by infinity pipes. Per fluid: 100% fill, 9,428 units in about 4,200 ticks; 40%, 5,249 in about 5,400; 25%, 3,875 in about 7,200. At 10% the platform never leaves orbit |
 | Flight power | The reference platform flies with no electric network entities |
-| Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each |
+| Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each. Ice: 1000 per launch loose, 500 boxed |
+| Electrolysis machines | Priority and surge electrolyzers draw about 2 MJ per crafting second at speed 1, on every tier |
 | Box weight | Not one rule. Canister boxes weigh half their contents (5 canisters, coefficient 0.5); sheet, ingot, beam, composite, insulation, and rutile boxes weigh one launch per stack, independent of contents |
 
 #### Engine checks before implementation

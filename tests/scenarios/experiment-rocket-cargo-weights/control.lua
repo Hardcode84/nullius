@@ -1,7 +1,8 @@
 -- given: resolved item prototypes; no entities.
 -- place: nothing.
 -- connect: nothing.
--- act: read each candidate cargo item's engine-computed weight.
+-- act: read each candidate cargo item's engine-computed weight, and each
+--   electrolysis machine's power and speed.
 -- run: one scheduled read.
 -- expect: observations give the rocket lift and the items per launch, because
 --   engine-derived weights exist only at runtime.
@@ -30,6 +31,7 @@ local CARGO = {
   "nullius-oxygen-barrel", "nullius-compressed-oxygen-barrel",
   "nullius-methane-barrel", "nullius-compressed-methane-barrel",
   "nullius-carbon-monoxide-barrel",
+  "nullius-ice", "nullius-box-ice", "nullius-water-barrel",
   -- Draft platform component inputs.
   "nullius-steel-plate", "nullius-ceramic-powder", "nullius-heat-pipe-2",
   "nullius-motor-2", "nullius-grid-battery-1", "nullius-processor-1", "radar",
@@ -52,6 +54,13 @@ script.on_nth_tick(30, function()
     else
       failures[#failures + 1] = "unknown item " .. name
     end
+  end
+  observations.electrolyzers = {}
+  for name, entity in pairs(prototypes.get_entity_filtered{{filter = "crafting-category", crafting_category = "nullius-electrolysis"}}) do
+    observations.electrolyzers[name] = {
+      energy_usage_watts = entity.get_max_energy_usage() * 60,
+      crafting_speed = entity.get_crafting_speed(),
+    }
   end
   local silo = prototypes.entity["nullius-silo"]
   observations.silo = {
