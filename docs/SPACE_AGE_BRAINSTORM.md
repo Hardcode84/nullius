@@ -79,7 +79,7 @@ EARLY TIER 5 (first physics technologies):
             then Orbital Construction
   Effect: Rockets lift cargo to orbit; space platforms carry it between planets and drop it
   Transform: Planets shift from independent outposts to integrated supply chain
-  Titanium: imported titanium makes rockets and platform parts cheaper; it gates none of them
+  Titanium: imported titanium makes rocket stages cheaper; it gates no launch or platform component
 
 LATE GAME (Nauvis Tier 5+):
   Research: Astronomy (interplanetary interferometry), higher-tier platform research
@@ -1278,9 +1278,9 @@ can_launch_without_landing_pads: true, unchanged
 
 #### Launch fuel
 
-Every exporting planet launches its own rockets, so each needs a local route to
-`rocket-fuel`. Shipping fuel never pays: a launch carries 100 fuel, and a stage
-burns 250.
+Each exporting planet must have a local route to `rocket-fuel` for its first
+launch. This is a self-contained progression requirement. Later fuel imports
+can supply launches; titanium stages and silo productivity reduce their fuel cost.
 
 ```yaml
 current:
