@@ -21,6 +21,7 @@ script.on_init(function()
  surface.set_tiles(tiles)
  for _,name in ipairs(names) do check(not force.recipes[name].enabled,'locked '..name) end
  check(not force.is_space_platforms_unlocked(),'platform button locked')
+ check(not force.is_space_location_unlocked('nauvis'),'home route locked before research')
  force.technologies['nullius-orbital-construction'].researched=true
  check(force.is_space_platforms_unlocked(),'platform button unlocked')
  check(force.is_space_location_unlocked('nauvis'),'home route unlocked')

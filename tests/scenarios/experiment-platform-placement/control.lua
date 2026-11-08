@@ -5,8 +5,9 @@
 --   pressure, every placeable Nullius entity's surface conditions, and the
 --   thruster fluids.
 -- run: one scheduled read.
--- expect: observations list which Nullius buildings a platform accepts, so the
---   vacuum placement rules can be compared with the shipped conditions.
+-- expect: the platform rejects exactly the vacuum rule's selection plus the
+--   earlier exclusions, accepts every other Nullius building, and shows the
+--   thruster fluids.
 local CASE = "experiment-platform-placement"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 
@@ -72,6 +73,25 @@ script.on_nth_tick(30, function()
     end
   end
   for _, list in pairs(observations.vacuum_rule) do table.sort(list) end
+  -- The platform blocks exactly the vacuum rule and these earlier exclusions.
+  local EARLIER_EXCLUSIONS = {
+    ["nullius-extractor-1-reinjection"] = true, ["nullius-extractor-2-reinjection"] = true,
+    ["nullius-vulcanus-radiator-1"] = true, ["nullius-vulcanus-radiator-2"] = true,
+    ["nullius-primitive-demand-chest"] = true, ["nullius-primitive-storage-chest"] = true,
+    ["nullius-primitive-supply-chest"] = true, ["nullius-clockwork-roboport"] = true,
+  }
+  local selected = {}
+  for _, list in pairs(observations.vacuum_rule) do
+    for _, name in ipairs(list) do selected[name] = true end
+  end
+  for _, list in pairs(observations.vacuum_blocked) do
+    for _, name in ipairs(list) do
+      assertions = assertions + 1
+      if not selected[name] and not EARLIER_EXCLUSIONS[name] then
+        failures[#failures + 1] = "unexpected vacuum exclusion: " .. name
+      end
+    end
+  end
   for _, name in ipairs({"thruster-fuel", "thruster-oxidizer"}) do
     local fluid = prototypes.fluid[name]
     if fluid then

@@ -2,15 +2,5 @@
 --technology
 nullius-orbital-construction
 --require-no-additional-technologies
---forbid-product
-nullius-rutile
---forbid-product
-nullius-titanium-ingot
---forbid-product
-nullius-helium
---forbid-product
-nullius-compressed-helium
---forbid-product
-nullius-copper-ingot
---forbid-product
-copper-plate
+@tests/progression/forbid-titanium-helium.args
+@tests/progression/forbid-copper.args

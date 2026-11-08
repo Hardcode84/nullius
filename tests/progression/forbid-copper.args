@@ -1,0 +1,12 @@
+--forbid-product
+copper-ore
+--forbid-product
+nullius-copper-solution
+--forbid-product
+nullius-copper-ingot
+--forbid-product
+copper-plate
+--forbid-product
+nullius-copper-sheet
+--forbid-product
+nullius-copper-wire
