@@ -55,6 +55,30 @@ script.on_nth_tick(30, function()
       failures[#failures + 1] = "unknown item " .. name
     end
   end
+  -- A 1 kg item boxed five to a box: the packaging recipe without productivity
+  -- support clamps to one stack per launch, the uncapped one takes half the
+  -- contents, and coefficient 1 takes the full contents.
+  local BOX_WEIGHTS = {
+    ["factorio-test-box-clamped"] = ROCKET_LIFT / 50,
+    ["factorio-test-box-uncapped"] = 2500,
+    ["factorio-test-box-equal"] = 5000,
+  }
+  observations.box_fixtures = {}
+  for name, expected in pairs(BOX_WEIGHTS) do
+    local weight = prototypes.item[name].weight
+    local recipe = prototypes.recipe[name]
+    observations.box_fixtures[name] = {weight = weight, hidden = recipe.hidden,
+      allow_decomposition = recipe.allow_decomposition, item_hidden = prototypes.item[name].hidden}
+    if math.abs(weight - expected) > 0.001 then
+      failures[#failures + 1] = name .. " weight " .. weight .. ", expected " .. expected
+    end
+  end
+  observations.packaging_recipes = {}
+  for _, name in ipairs({"nullius-box-titanium-sheet", "nullius-boxed-titanium-sheet"}) do
+    local recipe = prototypes.recipe[name]
+    observations.packaging_recipes[name] = {hidden = recipe.hidden,
+      allow_decomposition = recipe.allow_decomposition, maximum_productivity = recipe.maximum_productivity}
+  end
   observations.electrolyzers = {}
   for name, entity in pairs(prototypes.get_entity_filtered{{filter = "crafting-category", crafting_category = "nullius-electrolysis"}}) do
     observations.electrolyzers[name] = {
@@ -74,7 +98,7 @@ script.on_nth_tick(30, function()
     status = (#failures == 0) and "pass" or "fail",
     factorio_version = script.active_mods.base,
     tick = game.tick,
-    assertions = #CARGO,
+    assertions = #CARGO + 3,
     failure_count = #failures,
     failures = failures,
     observations = observations,

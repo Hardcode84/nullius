@@ -732,7 +732,7 @@ EXPORTS:   (Post-shattering) Exotic alloys, advanced processors, rare materials
 **Integrated supply chain (from early Tier 5)**
 - Rockets lift cargo to orbit; space platforms carry it between planets and drop it to the surface
 - Planets specialize: each exports what it's rich in, imports what it lacks
-- Boxes compress cargo only once box weight follows contents; most measured bulk boxes weigh one launch per stack whatever they hold (see [Measured platform contracts](#measured-platform-contracts))
+- Boxes compress cargo only once box weight follows contents; packaging recipes now clamp light boxes to one stack per launch (see [Measured platform contracts](#measured-platform-contracts))
 - Rocket capacity and platform trips create natural throughput limits -- cannot just belt everything between planets
 - A planet receives before it exports: drops need no pad or silo, and exports need a silo with rockets; see [Cargo closure](#cargo-closure)
 
@@ -1056,7 +1056,7 @@ needs debris mitigation.
 | Flight power | The reference platform flies with no electric network entities |
 | Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each. Ice: 1000 per launch loose, 500 boxed |
 | Electrolysis machines | Priority and surge electrolyzers draw about 2 MJ per crafting second at speed 1, on every tier |
-| Box weight | Not one rule. Canister boxes weigh half their contents (5 canisters, coefficient 0.5); sheet, ingot, beam, composite, insulation, and rutile boxes weigh one launch per stack, independent of contents |
+| Box weight | A box takes its weight from its packaging recipe: contents times `ingredient_to_weight_coefficient`, default 0.5. A recipe that does not allow productivity is raised to rocket lift divided by stack size, so light boxes weigh one launch per stack; canister boxes are heavier than that and keep half their contents. Fixture contract: a 1 kg item boxed five to a box weighs 20 kg with productivity disallowed, 2.5 kg with productivity allowed and `maximum_productivity = 0`, and 5 kg with coefficient 1 |
 
 #### Engine checks before implementation
 
@@ -1064,7 +1064,6 @@ needs debris mitigation.
 |---|---|
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
 | Weights of recordings and blank modules, added to `experiment-rocket-cargo-weights` | Launches per correlation |
-| Box weight: find the engine's weight source for the boxes that weigh one launch per stack, then make box weight follow contents | Whether boxed bulk cargo carries more per launch than loose cargo |
 | Reference flight for a platform with cargo bays and more thrusters | Propellant per trip beyond the starter-pack platform |
 | Space-platform surface properties | Vacuum placement conditions |
 
