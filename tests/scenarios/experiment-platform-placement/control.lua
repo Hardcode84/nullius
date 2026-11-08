@@ -42,6 +42,33 @@ script.on_nth_tick(30, function()
       list[#list + 1] = name
     end
   end
+  -- Candidate vacuum rule: environment intakes, fluid-powered machines,
+  -- drills and pumps that need ground or water, and named atmosphere users.
+  local INTAKE_CATEGORIES = {["air-filtration"] = true, ["water-pumping"] = true, ["seawater-pumping"] = true}
+  local GROUND_TYPES = {["mining-drill"] = true, ["offshore-pump"] = true}
+  local NAMED = {"nullius-wind-", "nullius-stirling-engine-", "nullius-landing-"}
+  observations.vacuum_rule = {}
+  for name, entity in pairs(prototypes.get_entity_filtered{{filter = "buildable"}}) do
+    if string.sub(name, 1, 8) == "nullius-" and entity.items_to_place_this then
+      local reason
+      for category in pairs(entity.crafting_categories or {}) do
+        if INTAKE_CATEGORIES[category] then reason = "intake " .. category end
+      end
+      if not reason and entity.fluid_energy_source_prototype then reason = "fluid energy" end
+      if not reason and GROUND_TYPES[entity.type] then reason = entity.type end
+      if not reason then
+        for _, prefix in ipairs(NAMED) do
+          if string.sub(name, 1, #prefix) == prefix then reason = prefix end
+        end
+      end
+      if reason then
+        local list = observations.vacuum_rule[reason] or {}
+        observations.vacuum_rule[reason] = list
+        list[#list + 1] = name
+      end
+    end
+  end
+  for _, list in pairs(observations.vacuum_rule) do table.sort(list) end
   for _, name in ipairs({"thruster-fuel", "thruster-oxidizer"}) do
     local fluid = prototypes.fluid[name]
     if fluid then

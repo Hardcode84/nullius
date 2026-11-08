@@ -914,7 +914,7 @@ The android needs no life support or habitat.
 ```yaml
 current_state:
   platform_prototypes: vanilla foundation, starter pack, thruster, cargo bay, collector, crusher
-  unlocks: vanilla rocket-silo and space-platform technologies; unreachable
+  unlocks: vanilla rocket-silo and space-platform technologies; unreachable, so no player can build a platform
   nullius_silo: launches to space platforms; robots fill platform requests; see [Launch vehicle](#46-launch-vehicle)
   vanilla_foundation: 20 steel + 20 copper cable
   connections: Nauvis-Vulcanus and Nauvis-Fulgora, 15,000 km each, no asteroid spawns
@@ -933,20 +933,42 @@ constraints:
   asteroid_processing: collector and crusher recipes hidden
 ```
 
+#### Implementation scope
+
+```yaml
+first_platform:
+  includes: >-
+    Orbital Construction; Nullius recipes for the vanilla starter pack, foundation,
+    cargo bay, and thruster; foundation boxes; hydrogen propellant conditioning;
+    visible thruster fluids; vacuum placement; removal of vanilla platform research
+    and asteroid processing
+  excludes: asteroids, debris, Debris Mitigation, microgravity processing, carbon monoxide and methane thruster fuel
+  connections: unchanged, with no asteroid spawns
+  hub: the vanilla hub is the platform core; there is no separate relay entity
+```
+
 #### Components
 
-| Component | Nullius role | Draft inputs |
-|---|---|---|
-| Foundation | One foundation item; aluminum truss recipe | Aluminum sheet + aluminum rod + insulation |
-| Platform core | Starter kit: hub and android relay node | Foundation + sensor node + grid battery + processors |
-| Cargo bay | Hold | Aluminum sheet + carbon composite + structural beam |
-| Thruster | Vanilla two-fluid thruster | Steel + ceramic + heat pipe + motor |
-| Propellant conditioning | Platform recipes convert shipped gases into `thruster-fuel` and `thruster-oxidizer`; see [Propellant](#propellant) |
-| Power | Solar panels and grid batteries | Existing items |
-| Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
-| Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
-| Waste | Chimneys and voids work in vacuum | Existing |
-| Cargo landing pad | Planet surface; optional drop target | Titanium-free building tiers, unlocked with the silo. See [Cargo closure](#cargo-closure) |
+Components keep the vanilla item, entity, and tile names, so their declared
+weights and per-launch counts stay; Nullius replaces their recipes. Draft
+values; costs are Nauvis marginal prices at Rocket Science 2, against one
+default rocket stage launch.
+
+| Item | Draft recipe | Machine category, time | Per launch | Inputs per launch, ore / gas |
+|---|---|---|---|---|
+| `space-platform-foundation` | 4 aluminum sheet + 2 aluminum rod + 1 insulation -> 1 | medium-crafting, 5 s | 50 | 9% / 5% |
+| `space-platform-starter-pack` | 20 foundation + 20 steel beam + 1 sensor node 1 + 4 grid battery 1 + 10 processor 1 -> 1 | huge-crafting, 60 s | 1 | 9% / 10% |
+| `cargo-bay` | 10 aluminum sheet + 10 carbon composite + 10 steel beam + 2 insulation -> 1 | large-crafting, 10 s | 10 | 7% / 23% |
+| `thruster` | 20 steel plate + 20 ceramic powder + 10 heat pipe 2 + 5 motor 2 -> 1 | large-crafting, 10 s | 5 | 13% / 7% |
+| Foundation box | Packaging, five foundations per box; half their weight, so twice the foundations per launch | packaging | 20 boxes | Packaging only |
+
+| Rule | Value |
+|---|---|
+| Smallest flying platform | Starter pack plus one thruster on its foundation: two launches, then propellant and a conditioning plant with solar power |
+| Power | Existing solar panels and grid batteries; both are placeable in vacuum |
+| Waste | Electric chimneys and voids are placeable in vacuum |
+| Cargo landing pad | Planet surface; optional drop target; titanium-free building tiers, unlocked with the silo. See [Cargo closure](#cargo-closure) |
+| Productivity | Allowed on the four component recipes, as on other Nullius buildings |
 
 #### Propellant
 
@@ -954,13 +976,15 @@ Design only. Platforms do not mine asteroids, so propellant arrives as cargo.
 Platform chemistry converts it into the thruster's two fluids. One unit of
 thruster fuel is the fuel that burns one unit of oxidizer.
 
-| Recipe | Inputs | Outputs |
-|---|---|---|
-| Canister conditioning | 1 hydrogen canister | 150 thruster fuel, 150 thruster oxidizer, 1 empty canister |
-| Hydrogen fuel | 2 hydrogen | 1 thruster fuel |
-| Carbon monoxide fuel | 2 carbon monoxide | 1 thruster fuel |
-| Methane fuel | 1 methane | 2 thruster fuel |
-| Oxidizer | 1 oxygen | 1 thruster oxidizer |
+| Recipe | Inputs | Outputs | Machine category, time |
+|---|---|---|---|
+| Canister conditioning | 1 hydrogen canister | 150 thruster fuel, 150 thruster oxidizer, 1 canister | basic-chemistry, 1 s |
+| Boxed canister conditioning | 1 boxed hydrogen canister | 750 thruster fuel, 750 thruster oxidizer, 1 boxed canister | basic-chemistry, 5 s |
+| Hydrogen fuel | 20 hydrogen | 10 thruster fuel | basic-chemistry, 1 s |
+| Oxidizer | 10 oxygen | 10 thruster oxidizer | basic-chemistry, 1 s |
+
+Carbon monoxide fuel (2 per thruster fuel) and methane fuel (1 per 2 thruster
+fuel) use the same unit and land with Vulcanus and Fulgora propellant launches.
 
 | Rule | Value |
 |---|---|
@@ -968,7 +992,9 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 | Fulgora carrier | Loose ice, melted and electrolyzed on the platform into 2:1 hydrogen and oxygen. Boxed, it gives about 3.7 times the propellant of boxed canisters per launch, so Fulgora becomes the cheaper propellant supplier |
 | Electrolysis energy | About 2 MJ per 60 water on every electrolyzer tier; a 25% leg needs about 110 MJ, from platform solar |
 | Gas recipes | Planets launch local gas in barrels or canisters; carbon monoxide and methane cover planets without cheap hydrogen |
-| Machines | Electric chemistry on the platform, powered by platform solar |
+| Machines | Electric chemical plants on the platform, powered by solar panels; conditioning needs two fluid outputs |
+| Productivity | Disabled on every propellant recipe; they convert, so productivity would make propellant |
+| Fluids | `thruster-fuel` and `thruster-oxidizer` are made visible; their vanilla asteroid recipes stay hidden |
 | Empty canisters | Return by drop |
 | Why canister conditioning | Flushing a hydrogen canister returns only its hydrogen; the oxygen is lost, and the thruster needs it |
 
@@ -999,15 +1025,29 @@ of the composite overwrap and insulation.
 
 #### Vacuum placement
 
-| Buildings | Rule |
+Every placeable Nullius entity matching a row below gains the surface
+condition `pressure >= 1`. Platforms have pressure 0; every planet has more,
+and Nauvis takes the default of 1000. `experiment-platform-placement` measures
+the selection: 106 entities.
+
+| Selection | Entities | Reason |
+|---|---|---|
+| Crafting category `air-filtration`, `water-pumping`, or `seawater-pumping` | Air filters, wells, seawater intakes | Take from an atmosphere or a water body |
+| Fluid energy source | Pneumatic machines, lava intakes, solar collectors | Run on compressed atmosphere or gas; solar collector flux follows planet daylight |
+| Type `mining-drill` or `offshore-pump` | Extractors, miners, geothermal builds, legacy intakes | Need ground or water |
+| Name prefix `nullius-wind-`, `nullius-stirling-engine-`, `nullius-landing-` | Wind turbines, Stirling engines, probe wreckage | Need wind or air cooling; wreckage stays on the ground |
+
+| Already excluded | Rule |
 |---|---|
-| Wind turbines, air filters, extractors, wells, offshore pumps | Pressure above 0 |
-| Pneumatic and gas-powered machines | Pressure above 0 |
-| Electric assemblers, chemistry, electrolysis, labs | Permitted |
-| Chimneys and voids | Permitted |
-| Hot Vulcanus processes | Excluded by the default ambient temperature of 25 |
+| Vulcanus radiators, reinjection extractors, primitive chests, clockwork roboport | Existing surface conditions; hot Vulcanus processes also need the Vulcanus ambient temperature, and platforms default to 25 |
+
+Everything else stays placeable, including electric assemblers, chemical plants,
+electrolyzers, distilleries, labs, chimneys, voids, tanks, solar panels, and grid
+batteries.
 
 #### Microgravity processing
+
+Not in the first platform implementation.
 
 Recipes require gravity 0. Gravity is fixed per surface, so selection-time
 surface-condition checks enforce it.
@@ -1020,6 +1060,13 @@ surface-condition checks enforce it.
 
 #### Asteroid hazards
 
+Not in the first platform implementation; connections keep no asteroid spawns.
+
+| Component | Role | Draft inputs |
+|---|---|---|
+| Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
+| Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
+
 | Route | Hazard |
 |---|---|
 | Nauvis-Vulcanus | Dust |
@@ -1028,16 +1075,31 @@ surface-condition checks enforce it.
 
 #### Progression
 
-| Research | Unlocks | Gate |
-|---|---|---|
-| Orbital construction | Platform core, foundation, cargo bay, thruster, propellant conditioning, platform solar | Rocket Science 2. A platform needs a thruster to deliver anything, so construction and propulsion are one technology |
-| Debris mitigation | Bumper, trajectory adjuster | Survives medium-hazard routes |
-| Microgravity processing | Microgravity recipes | Orbital construction |
+| Research | Unlocks | Prerequisites | Unit cost |
+|---|---|---|---|
+| Orbital Construction | Starter pack, foundation, foundation box and unbox, cargo bay, thruster, the four propellant recipes | Rocket Science 2 | That of `nullius-composites-2` |
+| Debris Mitigation | Bumper, trajectory adjuster | Orbital Construction | Not in the first platform implementation |
+| Microgravity Processing | Microgravity recipes | Orbital Construction | Not in the first platform implementation |
+
+| Vanilla cleanup | Rule |
+|---|---|
+| Recipes | Nullius recipes replace the vanilla starter pack, foundation, cargo bay, and thruster recipes under the same names |
+| Technologies | Vanilla space platform, thruster, and asteroid technologies are hidden; Rocket Science 2 and Orbital Construction own the unlocks |
+| Asteroid processing | Collector, crusher, chunk, and vanilla thruster fuel recipes stay hidden and disabled |
 
 Research does not lock routes. A destination becomes selectable when its probe
 activates (`force.unlock_space_location`); hazard decides whether an unprotected
 platform survives. Nauvis-Vulcanus is the first practical route, and Nauvis-Fulgora
 needs debris mitigation.
+
+#### First platform contracts
+
+| Contract | Checks |
+|---|---|
+| `tests/progression/nauvis-orbital-construction-closure.args` | Starter pack, foundation, cargo bay, thruster, a chemical plant, thruster fuel, and oxidizer close at Orbital Construction on Nauvis with titanium, helium, and copper forbidden |
+| `experiment-platform-placement`, as a contract | The platform rejects exactly the vacuum selection and accepts the rest; thruster fluids are visible |
+| `platform-first-flight` scenario | Components crafted from their recipes; a starter platform with one thruster fed by canister conditioning in a solar-powered chemical plant flies Nauvis to Vulcanus, then drops cargo to a Vulcanus surface without a landing pad |
+| Vanilla cleanup check | No vanilla platform or asteroid recipe is enabled or unlockable |
 
 #### Launch cost queries
 
@@ -1073,7 +1135,6 @@ needs debris mitigation.
 | Asteroid damage to foundation tiles versus entities | Bumper effectiveness |
 | Weights of recordings and blank modules, added to `experiment-rocket-cargo-weights` | Launches per correlation |
 | Reference flight for a platform with cargo bays and more thrusters | Propellant per trip beyond the starter-pack platform |
-| Space-platform surface properties | Vacuum placement conditions |
 
 ### 4.5 Astronomy: Interplanetary Interferometry
 
