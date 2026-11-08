@@ -290,6 +290,26 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             ["target-tech"],
         )
 
+    def test_product_report_distinguishes_enabled_from_locked_recipes(self) -> None:
+        data = {
+            "item": {"ore": {}, "target": {}},
+            "recipe": {
+                name: {"enabled": enabled, "ingredients": [{"name": "ore", "amount": 1}],
+                       "results": [{"name": "target", "amount": 1}]}
+                for name, enabled in (("open", True), ("locked", False))
+            },
+            "technology": {},
+        }
+        output = StringIO()
+        with patch("sys.argv", ["analyzer", "--describe-product", "target"]), \
+                patch("analyze_factorio_prereqs.dump_resolved_data", return_value=(data, None)), \
+                redirect_stdout(output):
+            self.assertEqual(main(), 0)
+        lines = output.getvalue().splitlines()
+        unlocks = {lines[index - 3].split(":")[0].strip(): line.split(": ")[1]
+                   for index, line in enumerate(lines) if "unlocks:" in line}
+        self.assertEqual(unlocks, {"open": "enabled", "locked": "none"})
+
     def test_describes_consumers_and_net_consumption(self) -> None:
         data = {
             "fluid": {"water": {}},

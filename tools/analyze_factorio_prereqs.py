@@ -2061,7 +2061,9 @@ def main() -> int:
                             )
                         )
                         unlocks = ", ".join(recipe["unlock_technologies"])
-                        print(f"    unlocks: {unlocks or 'enabled'}")
+                        if not unlocks:
+                            unlocks = "enabled" if recipe["enabled"] else "none"
+                        print(f"    unlocks: {unlocks}")
             else:
                 for recipe in descriptions:
                     print(
