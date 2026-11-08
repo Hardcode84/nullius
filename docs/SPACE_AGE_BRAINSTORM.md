@@ -1060,49 +1060,95 @@ Not in the first platform implementation; connections keep no asteroid spawns.
 Design only. The storm controller mechanism is validated by
 `experiment-storm-interference`; see [Measured engine contracts](#measured-engine-contracts).
 
-The astronomy pack decodes the progenitor's interstellar signal. One planet's
-array cannot separate it from noise; baselines between planets can. Raw
-recordings are too large to transmit, so cargo carries them to a correlator.
-Every array keeps time with a local hydrogen maser.
+The astronomy pack decodes the progenitor's interstellar signal. Dishes on one
+planet see it over the same short baselines, so extra dishes only average noise.
+Baselines between planets separate the signal from noise. Raw recordings are too
+large to transmit, so cargo carries them to a correlator.
 
 ```yaml
 removed_sources:
-  satellite_launch: 100 boxed astronomy packs (500)
-  probe_launch: 1000 boxed astronomy packs (5000); 10 probes are a mission objective
-retained: satellite and probe remain ingredients and mission items; launches return nothing
+  satellite: item and recipe removed; see Satellite removal
+  probe_launch: 1000 boxed astronomy packs and 200 boxes each of physics, chemical,
+    and electrical packs; launches return nothing; 10 probes stay a mission objective
+  concordance_satellite_launch: 42 astronomy packs; the launch keeps its alignment role
 new_source: correlation of interferometric recordings
-unlock: nullius-astronomy; prerequisite closure unchanged when Rocket Science 2 moves; see Launch research
 array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 ```
+
+#### Research
+
+| Technology | Prerequisites | Unlocks |
+|---|---|---|
+| Astronomy (`nullius-astronomy`) | Unchanged | Radio dish, correlator, blank recording module, Nauvis recording, every correlation recipe, astronomy pack boxing and unboxing |
+| Vulcanus Radio Astronomy (`nullius-vulcanus-radio-astronomy`) | Astronomy, Pneumatic Technology | Pneumatic radio dish, Vulcanus recording |
+| Fulgora Radio Astronomy (`nullius-fulgora-radio-astronomy`) | Astronomy, Primitive Filtration | Fulgora recording |
+
+| Rule | Value |
+|---|---|
+| Research cost | Provisional until the research cost pass: Astronomy keeps its unit; planet technologies use `launch_research` with their planet pack |
+| Planet entry | Pneumatic Technology and Primitive Filtration unlock each planet's science pack, so each planet technology needs that planet |
+| Astronomy closure | Unchanged; `tools/check_launch_vehicle.py` already protects it |
+| Existing saves | A migration resets technology effects, so researched Astronomy grants its new unlocks |
+
+Correlation recipes are unlocked before every source planet is available, so
+the player sees the whole ladder at Astronomy. This replaces the rule that every
+unlocked recipe is craftable at its technology for these recipes only:
+
+| Contract | Rule |
+|---|---|
+| Correlation craftability | Each correlation recipe closes at Astronomy plus the radio astronomy technologies of its planets, with `--require-no-additional-technologies` |
+| AGENTS.md | Add the multi-planet exception with this contract in the same change |
 
 #### Dish
 
 | Property | Rule |
 |---|---|
-| Spacing | Dishes reserve space only against other dishes, using the wind turbine mechanism: script-owned hidden fields on a dish-only collision layer. Other buildings may fill the gaps |
-| Field geometry | Wind turbine geometry: four fields reaching 30.5 tiles from the dish centre |
-| Collision layer | Dedicated layer; dishes do not interact with wind turbines or grounding coils, which share `layer_43` |
-| Recipe | One local dish recipe per planet: 1 blank recording module -> 1 planet recording; planet identity uses the existing selection-time recipe surface-condition contract |
-| Time reference | Hydrogen maser component in each planet's dish building recipe |
-| Nauvis | Electric |
-| Vulcanus | Pneumatic energy source; receiver coolant input |
-| Fulgora | Electric; permitted on sand; storm interference below |
+| Entity | Assembling machine; one recording recipe per planet |
+| Variants | Electric dish for Nauvis and Fulgora; pneumatic dish for Vulcanus |
+| Recipe | 1 blank recording module -> 1 planet recording |
+| Planet identity | Each recording recipe carries the planet's exact magnetic field and positive pressure as surface conditions. On build, and when a planet technology finishes, the script sets the surface's recording recipe and `recipe_locked`. A dish on a surface without an unlocked recording gets no recipe and a custom status |
+| Modules and beacons | None; productivity and quality disabled. Productivity would create recordings, and each returns a blank at correlation |
+| Placement | No spacing; the square-root rule below limits scaling. Fulgora dishes may stand on island ground or sand |
+
+#### Square-root array rule
+
+The recording rate of one force's dishes on one surface grows as the square root
+of their count. N dishes produce as much as sqrt(N) unthrottled dishes, so k
+times one dish's rate needs k squared dishes.
+
+```yaml
+count: built dishes of the force on the surface, both variants; updated on build and removal
+duty_per_dish: (1 - interference) / sqrt(N); interference is 0 off Fulgora
+controller:
+  buckets: unit_number % 443, one bucket per tick, as Vulcanus heat
+  dither: accumulator += duty; enable for the next interval when accumulator >= 1, then subtract 1
+  writes: disabled_by_script and custom_status, only on change
+  status: the dish's array share, 1/sqrt(N)
+count_choice: built, not working; adding a dish never lowers the total, and an
+  unpowered dish loses only its own share
+```
+
+| Dishes N | Each dish | Array total |
+|---:|---:|---:|
+| 1 | 1 | 1 |
+| 4 | 0.5 | 2 |
+| 16 | 0.25 | 4 |
+| 100 | 0.1 | 10 |
 
 #### Recordings and media
 
 | Item or machine | Rule |
 |---|---|
 | `nullius-<planet>-interferometric-recording` | Produced only by that planet's dish recipe |
-| `nullius-blank-recording-module` | Dish input; crafted locally on every array planet |
+| `nullius-blank-recording-module` | Dish input. Its recipe closes on every array planet at that planet's radio astronomy technology; Nauvis closes at Astronomy |
 | Spoilage | Recording spoils to a blank module. Spoil time is a fixed prototype value: 1.5 times the reference transit |
 | Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital construction. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
 | Spoil clock | Starts at dish output, so silo queues and orbit waits count against it |
-| Weight | Recording and blank module weigh the same, so launched sets compare directly |
-| Correlator | Any surface, including platforms; returns every consumed blank module |
+| Weight | Recording and blank module weigh the same, declared in `prototypes/item-weights.lua`; the rule would make a recording half a blank |
+| Correlator | Assembling machine with its own crafting category; electric; any surface, including platforms; no productivity or modules; returns every consumed blank module |
 
 Correlator location is a player choice. Single-planet correlation runs on the
-ground before platforms exist. For k planets with labs on home planet H, one
-correlation cycle launches:
+ground. For k planets with labs on home planet H, one correlation cycle launches:
 
 | Location | Recordings launched | Blank media returned | Total launched sets |
 |---|---|---|---|
@@ -1115,12 +1161,7 @@ correlation cycle launches:
 | Launch comparison | Platforms launch less from three planets because drops are free; at two planets the counts tie |
 | Excluded from the comparison | Building and fuelling the platform, and its visits to every array planet. The platform must visit each planet to collect recordings and drop blanks |
 | Correlator power on a platform | Orbital solar: Vulcanus 600, Nauvis 300, Fulgora 120 |
-
-| Array set | Cargo prerequisite |
-|---|---|
-| One planet | None: ground correlator, no platform |
-| Nauvis + Vulcanus | Orbital construction and cargo closure on both planets |
-| Any set with Fulgora | The same, plus debris mitigation |
+| Cargo | Multi-planet sets need Orbital Construction and a local launch on each remote planet; Vulcanus and Fulgora both close their first launch |
 
 #### Correlation ladder
 
@@ -1148,9 +1189,35 @@ Diminishing returns:
 
 | Mechanism | Rule |
 |---|---|
-| Research cost | Astronomy per research unit doubles by tier: 1, 2, 4, 8. Tier assignment uses the planner's measured astronomy demand per technology |
-| Array spread | Mutual spacing spreads single-planet scaling over growing area, and spoiling recordings travel farther to the correlator |
+| Square-root array rule | One planet's output grows as the square root of its dish count |
+| Spoiling recordings | Remote recordings must reach the correlator within the spoil time |
 | Crafting consumers | Genome recipes consume astronomy packs, so the ladder also prices Nauvis terraforming |
+
+#### Satellite removal
+
+| Consumer | Replacement |
+|---|---|
+| `nullius-asteroid-miner-1` | The satellite's ingredients, inlined |
+| `nullius-probe` | Twice the satellite's ingredients, inlined |
+| `nullius-align-concordance-satellite` | The satellite's ingredients, inlined |
+| Astronomy unlock, locale, and the mission text about satellite contact | Updated for recordings and correlation |
+| `silo-compat` scenario and `tools/test_silo_compatibility.py` | Satellite launch returns no longer exist; the launch path is covered by the probe in `launch-vehicle` |
+
+Inlining keeps each consumer's material cost; only the satellite's own craft
+time disappears.
+
+#### Validation contracts
+
+| Contract | Checks |
+|---|---|
+| Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
+| Correlation craftability | One progression contract per correlation recipe, as above |
+| Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
+| `astronomy-array` | Built dishes receive and lock their planet's recipe; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; removal raises the remaining share |
+| `fulgora-storm-array` | Storm interference and the square-root share multiply |
+| `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
+| `experiment-rocket-cargo-weights` | Recording and blank weigh the same |
+| Locale | `python tools/check_factorio_locale.py` |
 
 #### Fulgora storm interference
 
@@ -1165,12 +1232,8 @@ driver:
   value: 25 by day, 100 by night, linear from dusk to evening and from morning to dawn
   storm_cycles: later cycles change this value only
 interference: min(1, intensity / 100)      # day 0.25, night 1
-dish_controller:
-  buckets: unit_number % 443, one bucket per tick, as Vulcanus heat
-  duty: 1 - interference
-  dither: accumulator += duty; enable for the next interval when accumulator >= 1, then subtract 1
-  writes: disabled_by_script and custom_status, only on change
-  latency: up to 443 ticks, 4.1% of the 10,800-tick Fulgora day
+dish_controller: the square-root array controller; duty is multiplied by 1 - interference
+latency: up to 443 ticks, 4.1% of the 10,800-tick Fulgora day
 dish_recipe: no storm surface condition
 ```
 
@@ -1192,6 +1255,16 @@ surface holds intensity 25; windows last 1200 ticks.
 ```bash
 python tools/run_factorio_tests.py experiment-storm-interference
 ```
+
+#### Changes from the earlier design
+
+| Removed | Reason |
+|---|---|
+| Dish spacing fields on a dedicated collision layer | The square-root rule limits scaling without placement machinery |
+| Hydrogen maser component | No role beyond flavor |
+| Vulcanus receiver coolant input | The coolant was never specified; the pneumatic energy source already makes the variant local |
+| Debris mitigation gate for Fulgora sets | No asteroids exist in this slice |
+| Astronomy research cost doubling by tier | Research costs are aligned in a separate pass |
 
 ### 4.6 Launch Vehicle
 

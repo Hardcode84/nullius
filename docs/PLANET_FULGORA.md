@@ -868,10 +868,11 @@ Design only. The shared design is
 
 | Fulgora rule | Value |
 |---|---|
-| Dish placement | Island ground or sand; mutual spacing against other dishes only |
+| Research | Fulgora Radio Astronomy: Astronomy and Primitive Filtration; unlocks the Fulgora recording |
+| Dish placement | Island ground or sand; no spacing |
 | Power | Electric |
 | Interference | `min(1, nullius-storm-intensity / 100)`: 0.25 by day, 1 by night |
-| Controller | Amortized error-diffusion duty cycle through `disabled_by_script`; 443 buckets |
+| Controller | The square-root array controller; storm interference multiplies each dish's duty |
 | Lightning | Native frequency multiplied by `nullius-storm-intensity / 100`; day and night multipliers become 1 |
 
 ### Rocket fuel
