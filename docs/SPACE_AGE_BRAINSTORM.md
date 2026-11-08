@@ -76,7 +76,7 @@ MID GAME (Nauvis Tier 3-4):
 
 EARLY TIER 5 (first physics technologies):
   Research: Rocket Science 1 (fuel), Rocket Science 2 (titanium-free rocket and silo),
-            then Orbital Construction and Orbital Propulsion
+            then Orbital Construction
   Effect: Rockets lift cargo to orbit; space platforms carry it between planets and drop it
   Transform: Planets shift from independent outposts to integrated supply chain
   Titanium: imported titanium makes rockets and platform parts cheaper; it gates none of them
@@ -933,32 +933,61 @@ constraints:
 | Component | Nullius role | Draft inputs |
 |---|---|---|
 | Foundation | One foundation item; aluminum truss recipe | Aluminum sheet + aluminum rod + insulation |
-| Foundation, titanium recipe | Same foundation item; composite truss recipe under the titanium contract | Titanium sheet + carbon composite + polymer film |
 | Platform core | Starter kit: hub and android relay node | Foundation + sensor node + grid battery + processors |
 | Cargo bay | Hold | Aluminum sheet + carbon composite + structural beam |
 | Thruster | Vanilla two-fluid thruster | Steel + ceramic + heat pipe + motor |
-| Thruster, titanium recipe | Same thruster item; under the titanium contract | Titanium sheet + ceramic + heat pipe + motor |
-| Propellant conditioning | Platform recipes unpack shipped canisters | Fuel from hydrogen, methane, or carbon monoxide; oxidizer from oxygen or nitrous oxide |
+| Propellant conditioning | Platform recipes convert shipped gases into `thruster-fuel` and `thruster-oxidizer`; see [Propellant](#propellant) |
 | Power | Solar panels and grid batteries | Existing items |
 | Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
 | Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
 | Waste | Chimneys and voids work in vacuum | Existing |
 | Cargo landing pad | Planet surface; optional drop target | Titanium-free building tiers, unlocked with the silo. See [Cargo closure](#cargo-closure) |
 
+#### Propellant
+
+Design only. Platforms do not mine asteroids, so propellant arrives as cargo.
+Platform chemistry converts it into the thruster's two fluids. One unit of
+thruster fuel is the fuel that burns one unit of oxidizer.
+
+| Recipe | Inputs | Outputs |
+|---|---|---|
+| Canister conditioning | 1 hydrogen canister | 150 thruster fuel, 150 thruster oxidizer, 1 empty canister |
+| Hydrogen fuel | 2 hydrogen | 1 thruster fuel |
+| Carbon monoxide fuel | 2 carbon monoxide | 1 thruster fuel |
+| Methane fuel | 1 methane | 2 thruster fuel |
+| Oxidizer | 1 oxygen | 1 thruster oxidizer |
+
+| Rule | Value |
+|---|---|
+| Carrier | Hydrogen canister; its 2:1 hydrogen and oxygen condition into equal fuel and oxidizer. Boxed canisters carry twice as many per launch |
+| Gas recipes | Planets launch local gas in barrels or canisters; carbon monoxide and methane cover planets without cheap hydrogen |
+| Machines | Electric chemistry on the platform, powered by platform solar |
+| Empty canisters | Return by drop |
+
+Per Nauvis-Vulcanus leg of the reference flight in
+[Measured platform contracts](#measured-platform-contracts):
+
+| Thruster fill | Canisters | Boxed launches | Loose launches |
+|---|---|---|---|
+| 25% | 26 | 0.31 | 0.60 |
+| 100% | 63 | 0.74 | 1.47 |
+
 #### Titanium recipes
 
 Default recipes contain no titanium, because Gleba and Aquilo have no titanium
-route and every planet launches its first rocket locally. Titanium alternatives
-for platform foundations, thrusters, cargo bays, platform cores, and rocket stages
-produce the same items as the default recipes. They improve input cost and
-crafting time only; item weight and entity health are unchanged.
+route and every planet launches its first rocket locally. The titanium rocket
+stage is the only titanium alternative: launches are most of a platform's cost,
+and component weights are fixed by their item prototypes, so titanium recipes
+for platform components would save almost nothing.
 
-| Titanium source | Recipe | Required planner result |
-|---|---|---|
-| Vulcanus rutile or titanium | Platform components | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
-| Vulcanus rutile or titanium | Rocket stage | At most two thirds of the default stage's Nauvis ore, and separately of its Nauvis gas; imported rutile is not Nauvis input. At most half its crafting time. Fuel is most of the default stage's raw input, and lower dry mass cuts fuel by less than the one-third bound requires |
-| Nauvis synthetic rutile | Platform components | Total raw cost no lower than the default recipe |
-| Nauvis synthetic rutile | Rocket stage | No bound; both stage recipes unlock together. It costs more Nauvis ore than the default stage and less gas |
+| Titanium source | Required planner result for the titanium rocket stage |
+|---|---|
+| Vulcanus rutile or titanium | With each fuel route, at most two thirds of the default stage's Nauvis ore, and separately of its Nauvis gas; imported rutile is not Nauvis input. At most half its crafting time |
+| Nauvis synthetic rutile | No bound; both stage recipes unlock together. It costs more Nauvis ore than the default stage and less gas |
+
+The titanium stage saves through fuel and structure. Fuel alone cannot carry
+the bound once [RP-1](#rp-1) makes fuel cheap, so titanium also replaces part
+of the composite overwrap and insulation.
 
 #### Vacuum placement
 
@@ -993,11 +1022,9 @@ surface-condition checks enforce it.
 
 | Research | Unlocks | Gate |
 |---|---|---|
-| Orbital construction | Platform core, aluminum foundation recipe, cargo bay, platform solar | Rocket Science 2; Nauvis orbit |
-| Orbital propulsion | Thruster, propellant conditioning | Flight on any connection; survives dust routes |
+| Orbital construction | Platform core, foundation, cargo bay, thruster, propellant conditioning, platform solar | Rocket Science 2. A platform needs a thruster to deliver anything, so construction and propulsion are one technology |
 | Debris mitigation | Bumper, trajectory adjuster | Survives medium-hazard routes |
-| Composite structures | Titanium foundation recipe | Vulcanus titanium and Fulgora polymers |
-| Microgravity processing | Microgravity recipes | Orbital propulsion |
+| Microgravity processing | Microgravity recipes | Orbital construction |
 
 Research does not lock routes. A destination becomes selectable when its probe
 activates (`force.unlock_space_location`); hazard decides whether an unprotected
@@ -1078,7 +1105,7 @@ array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 | `nullius-<planet>-interferometric-recording` | Produced only by that planet's dish recipe |
 | `nullius-blank-recording-module` | Dish input; crafted locally on every array planet |
 | Spoilage | Recording spoils to a blank module. Spoil time is a fixed prototype value: 1.5 times the reference transit |
-| Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital propulsion. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
+| Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital construction. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
 | Spoil clock | Starts at dish output, so silo queues and orbit waits count against it |
 | Weight | Recording and blank module weigh the same, so launched sets compare directly |
 | Correlator | Any surface, including platforms; returns every consumed blank module |
@@ -1102,7 +1129,7 @@ correlation cycle launches:
 | Array set | Cargo prerequisite |
 |---|---|
 | One planet | None: ground correlator, no platform |
-| Nauvis + Vulcanus | Orbital propulsion and cargo closure on both planets |
+| Nauvis + Vulcanus | Orbital construction and cargo closure on both planets |
 | Any set with Fulgora | The same, plus debris mitigation |
 
 #### Correlation ladder
@@ -1215,8 +1242,9 @@ research boundary, so both stage recipes unlock together.
 
 The silo keeps `fixed_recipe = "nullius-rocket"`, so the silo cannot select
 alternative recipes. The rocket recipe consumes one stage, and the stage carries
-the alternatives. Titanium's specific strength lowers dry mass; by the rocket
-equation the same payload then needs less propellant.
+the alternatives. Titanium carries load and heat, so it replaces the aluminum and
+steel frame and part of the composite overwrap and insulation. The lower dry mass
+needs less propellant for the same payload.
 
 ```yaml
 item: nullius-rocket-stage; stack 1
@@ -1229,8 +1257,8 @@ inputs: boxed bulk materials and loose control components
 
 | Recipe | Structure | Systems | Fuel |
 |---|---|---|---|
-| `nullius-rocket-stage` | Carbon composite, aluminum sheet, steel beam, insulation, ceramic | Haste module 2, sensor node 1, heat pipe 2, gate | Default amount |
-| `nullius-titanium-rocket-stage` | Titanium sheet replaces aluminum sheet and steel beam | Same as default | Less, set by the rocket stage row of [Titanium recipes](#titanium-recipes) |
+| `nullius-rocket-stage` | Carbon composite, aluminum sheet, steel beam, insulation | Haste module 2, sensor node 1, heat pipe 2, ceramic, gate | Default amount |
+| `nullius-titanium-rocket-stage` | Titanium sheet replaces aluminum sheet and steel beam; less composite and insulation | Same as default | Less |
 
 #### Silo
 
@@ -1248,7 +1276,8 @@ can_launch_without_landing_pads: true, unchanged
 #### Launch fuel
 
 Every exporting planet launches its own rockets, so each needs a local route to
-`rocket-fuel`.
+`rocket-fuel`. Shipping fuel never pays: a launch carries 100 fuel, and a stage
+burns 250.
 
 ```yaml
 current:
@@ -1264,20 +1293,57 @@ gravity_scaling: none
 
 | Planet | Propellant | Local chain | Cost driver |
 |---|---|---|---|
-| Nauvis | Ammonium perchlorate composite (current recipe) | Unchanged | Ammonia and HCl volume |
+| Nauvis | Ammonium perchlorate composite (current recipe) | Unchanged | Rubber binder, cliff explosives, and aluminum powder; the ammonia, HCl, and oxygen come from air and seawater |
 | Vulcanus | Aluminum burned in compressed atmospheric CO2 | Aluminum powder and CO2; no organics or water | Low performance: large input amounts per fuel unit |
-| Fulgora | Aluminized ammonium nitrate composite | Overcharged plasma fixation makes ammonium nitrate from nitrogen and water; rubber binder from fountain chemistry | Surge electricity |
+| Any planet with propene, after research | Aluminized gelled RP-1 | See [RP-1](#rp-1) | Propene |
 
 | Rule | Value |
 |---|---|
 | Item | One `rocket-fuel` item; each chemistry is an alternative recipe |
 | Planet restriction | None; local inputs decide which recipe a planet uses |
-| Alumina | Every recipe carries at least the aluminum recovered from 1 alumina per fuel, after all permitted productivity. The planner no-mint check sets the minimum |
+| Alumina | Every recipe carries at least the aluminum recovered from 1 alumina per fuel, after all permitted productivity. On Nauvis 1 alumina gives about 0.87 aluminum powder before productivity. No check enforces this yet; the first new fuel recipe needs a resolved-prototype check of the burnt alumina back to powder at maximum productivity |
 | Productivity | Disabled on fuel casting recipes |
 | Boxed parity | Each new route has a boxed bulk recipe, checked with resolved-prototype tools |
 
-Fulgora details: [Fulgora rocket fuel](PLANET_FULGORA.md#rocket-fuel). Vulcanus
-details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
+Vulcanus details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
+
+#### RP-1
+
+Design only. Fulgora polymer research makes launch fuel cheaper on every
+planet. Propene oligomerization is short-chain polymerization, so it follows
+Bulk Polymer Processing, and the recipes run anywhere after research, like the
+other Fulgora polymer substitutes. Kerosene and oxygen give more impulse per
+kilogram than the perchlorate composite, so one fuel item needs fewer inputs.
+Gelled RP-1 keeps aluminum, which the burnt alumina returns; plastic is the
+gellant.
+
+```yaml
+technology: after nullius-rocket-science-1 and nullius-bulk-polymer-processing; electromagnetic science
+new_fluid: nullius-kerosene
+recipes:
+  olefin_oligomerization: 10 propene + 5 compressed hydrogen -> 3 kerosene, 4 s, basic-chemistry
+  rp1_rocket_fuel: 30 kerosene + 150 compressed oxygen + 6 aluminum powder + 1 plastic -> 3 rocket fuel, 40 s, basic-chemistry
+  boxed: bulk RP-1 from boxed aluminum powder and plastic
+productivity: disabled on the fuel recipe; oligomerization may take organic process research
+```
+
+Draft values priced through `tests/progression/planned/rp1-rocket-fuel.json`, Nauvis:
+
+| Route | Fuel ore / gas | Default stage ore / gas | Titanium stage vs default |
+|---|---|---|---|
+| Current fuel | 1 / 1 | 1 / 1 | Within the bounds |
+| RP-1 | 0.08 / 0.23 | 0.35 / 0.68 | Within the bounds |
+| Rejected: RP-1 from existing diesel | 0.43 / 0.56 | 0.57 / 0.94 | Not measured |
+
+Diesel was rejected: its recipe consumes aluminum powder, and its propene
+comes with ethylene the stage cannot use.
+
+| Query | Reports |
+|---|---|
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/rp1-fuel-cost.args` | RP-1 fuel cost |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/launch-cost-rp1-default.args` | Default stage with RP-1 |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/launch-cost-rp1-imported.args` | Titanium stage with RP-1 and imported rutile |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/fulgora-rp1-closure.args` | Fulgora reaches RP-1 locally |
 
 #### Cargo closure
 

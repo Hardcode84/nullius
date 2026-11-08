@@ -1,18 +1,18 @@
 local modern = require("factorio-version").is_2_1
 
 -- Both rocket stages share their systems. The titanium stage replaces the
--- aluminum and steel structure and needs less fuel for its lower dry mass.
+-- aluminum and steel frame, needs less composite overwrap and insulation
+-- because titanium carries load and heat, and needs less fuel for its lower
+-- dry mass.
 local function rocket_stage_ingredients(fuel_boxes, structure)
   local ingredients = {
     {type = "item", name = "nullius-box-rocket-fuel", amount = fuel_boxes},
-    {type = "item", name = "nullius-box-carbon-composite", amount = 40},
   }
   for _, ingredient in ipairs(structure) do ingredients[#ingredients + 1] = ingredient end
   for _, ingredient in ipairs({
     {type = "item", name = "nullius-haste-module-2", amount = 2},
     {type = "item", name = "radar", amount = 3},
     {type = "item", name = "nullius-box-heat-pipe-2", amount = 6},
-    {type = "item", name = "nullius-box-insulation", amount = 12},
     {type = "item", name = "nullius-box-ceramic-powder", amount = 20},
     {type = "item", name = "nullius-box-gate", amount = 1},
   }) do
@@ -3536,8 +3536,10 @@ extend_equipment_prototypes({
     allow_productivity = false,
     maximum_productivity = 0,
     ingredients = rocket_stage_ingredients(50, {
+      {type = "item", name = "nullius-box-carbon-composite", amount = 40},
       {type = "item", name = "nullius-box-aluminum-sheet", amount = 60},
-      {type = "item", name = "nullius-box-steel-beam", amount = 20}
+      {type = "item", name = "nullius-box-steel-beam", amount = 20},
+      {type = "item", name = "nullius-box-insulation", amount = 12}
     }),
     results = {
       {type = "item", name = "nullius-rocket-stage", amount = 1}
@@ -3554,7 +3556,9 @@ extend_equipment_prototypes({
     allow_productivity = false,
     maximum_productivity = 0,
     ingredients = rocket_stage_ingredients(25, {
-      {type = "item", name = "nullius-box-titanium-sheet", amount = 30}
+      {type = "item", name = "nullius-box-carbon-composite", amount = 20},
+      {type = "item", name = "nullius-box-titanium-sheet", amount = 30},
+      {type = "item", name = "nullius-box-insulation", amount = 6}
     }),
     results = {
       {type = "item", name = "nullius-rocket-stage", amount = 1}

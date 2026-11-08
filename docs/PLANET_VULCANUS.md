@@ -532,7 +532,7 @@ Returning to Nauvis remains available throughout the sequence.
 | Vulcanus to all planets | Industrial optimization | Process-specific productivity |
 | Vulcanus to Nauvis | Calcite and calcium products | Easier chlorine management |
 | Vulcanus to other surfaces | Rutile, titanium, and bulk metals | Remove punitive bootstrap routes |
-| Vulcanus to rocket and platform builders | Titanium | Titanium recipes cut the default Nauvis raw input by the bounds in [Titanium recipes](SPACE_AGE_BRAINSTORM.md#titanium-recipes) |
+| Vulcanus to rocket builders | Titanium | The titanium rocket stage cuts the default stage's Nauvis raw input by the bounds in [Titanium recipes](SPACE_AGE_BRAINSTORM.md#titanium-recipes) |
 | Other surfaces to Vulcanus | Bulk water and commodity polymers | Efficient mature industry |
 | Gleba to Vulcanus | Biological inputs | Candidate demolisher operation |
 

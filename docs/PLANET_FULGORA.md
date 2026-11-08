@@ -859,7 +859,7 @@ capacity and the organic recovery audit for downstream metal outputs.
 | Post-scout directed-energy devices | Lasers and beam weapons using petrochemistry, organic optics, and polymer waveguides |
 | Shared endgame contribution | Exotic polymer focusing lens |
 | Radio astronomy | Interferometric recordings for astronomy correlation; see below |
-| Rocket fuel | Plasma-fixed ammonium nitrate composite; see below |
+| Rocket fuel | RP-1 for every planet from polymer research; see below |
 
 ### Radio astronomy
 
@@ -876,21 +876,12 @@ Design only. The shared design is
 
 ### Rocket fuel
 
-Design only. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
-Storm surplus fixes atmospheric nitrogen as the oxidizer.
+Design only. Bulk Polymer Processing leads to RP-1, which every planet can make
+after research; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1).
+`tests/progression/planned/fulgora-rp1-closure.args` reaches it from Fulgora's
+local inputs.
 
-| Step | Machine | Draft recipe |
-|---|---|---|
-| Plasma nitrogen fixation | Overcharged medium or large assembler, `nullius-electromagnetism-1` | 10 nitrogen + 20 water -> 1 ammonium nitrate, 4 s; N2 + 2 H2O -> NH4NO3, no byproduct |
-| Composite casting | Ordinary assembler; productivity disabled | Ammonium nitrate + rubber + aluminum powder -> rocket fuel |
-
-| Rule | Value |
-|---|---|
-| Inputs | Nitrogen from air separation, water from ice melting, rubber from fountain chemistry, aluminum from sludge bauxite |
-| Fixation productivity | Built-in overcharged productivity is permitted; fuel aluminum comes only from casting |
-| Casting aluminum | At least the no-mint minimum per fuel; see the shared alumina rule |
-| Small assemblers | Excluded: no fluid boxes |
-| Bulk fixation | Boxed recipe in medium or large overcharged assemblers |
+### Overcharged assembler fluids
 
 Energy per recipe-second, before built-in productivity:
 
