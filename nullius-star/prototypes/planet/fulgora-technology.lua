@@ -30,12 +30,6 @@ for _,bulk in ipairs({false,true}) do
   }})
 end
 
--- Nauvis also crushes surplus salt, so both sizes stay on shared research.
-for _,recipe in ipairs({"nullius-salt-disposal", "nullius-boxed-salt-disposal"}) do
-  table.insert(data.raw.technology["nullius-mass-production-4"].effects,
-    {type="unlock-recipe",recipe=recipe})
-end
-
 data:extend({{
   type="technology",name="nullius-bulk-ice-and-salt-processing",
   icon="__base__/graphics/technology/fluid-handling.png",icon_size=256,
@@ -50,16 +44,6 @@ data:extend({{
     {"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
   }},
 }})
-
-for _,name in ipairs({"nullius-box-ice", "nullius-unbox-ice"}) do
-  table.insert(data.raw.technology["nullius-packaging-3"].effects,
-    {type="unlock-recipe",recipe=name})
-end
-
-for _,name in ipairs({"nullius-borate-leaching","nullius-gypsum-recovery"}) do
-  table.insert(data.raw.technology["nullius-waste-reclamation"].effects,
-    {type="unlock-recipe",recipe=name})
-end
 
 local bulk_recovery={}
 for _,name in ipairs({"limestone-recovery","stone-recovery","iron-recovery",
@@ -80,13 +64,18 @@ data:extend({{
 
 local function overcharged(tier, count, seconds, ingredients, prerequisites)
   local description = {"technology-description.nullius-overcharged-assembly-" .. tier}
+  local effects = {{type="nothing",effect_description=description},
+    {type="unlock-recipe",recipe=tier==2 and "nullius-electromagnetic-pack-improved" or "nullius-boxed-electromagnetic-pack"}}
+  if tier==3 then
+    effects[#effects+1]={type="unlock-recipe",recipe="nullius-box-electromagnetic-pack"}
+    effects[#effects+1]={type="unlock-recipe",recipe="nullius-unbox-electromagnetic-pack"}
+  end
   return {
     type="technology",name="nullius-overcharged-assembly-" .. tier,
     localised_description=description,
     icon="__base__/graphics/technology/automation-" .. tier .. ".png",icon_size=256,
     order="nullius-dg-overcharged-" .. tier,
-    effects={{type="nothing",effect_description=description},
-      {type="unlock-recipe",recipe=tier==2 and "nullius-electromagnetic-pack-improved" or "nullius-boxed-electromagnetic-pack"}},
+    effects=effects,
     prerequisites=prerequisites,
     unit={count=count,time=seconds,ingredients=ingredients},
   }
@@ -104,11 +93,6 @@ data:extend({
   },{"nullius-overcharged-assembly-2","nullius-automation-3"}),
 })
 
-for _,name in ipairs({"nullius-box-electromagnetic-pack","nullius-unbox-electromagnetic-pack"}) do
-  table.insert(data.raw.technology["nullius-overcharged-assembly-3"].effects,
-    {type="unlock-recipe",recipe=name})
-end
-
 local capacitor_description = {"technology-description.nullius-supercapacitors"}
 data:extend({{
   type="technology",name="nullius-supercapacitors",
@@ -121,9 +105,6 @@ data:extend({{
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},
   }},
 }})
-
-table.insert(data.raw.technology['nullius-primitive-filtration'].effects,
-  {type='unlock-recipe',recipe='nullius-grounding-coil'})
 
 for tier=2,3 do
   data:extend({{

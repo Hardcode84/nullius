@@ -1,5 +1,10 @@
 {
   "contracts": [
+    "fulgora-electromagnetic-science.args",
+    "fulgora-em-improved.args",
+    "fulgora-em-boxed.args",
+    "fulgora-em-packaging.args",
+    "fulgora-em-unpacking.args",
     "fulgora-launch-closure-helium.args",
     "fulgora-launch-titanium-free-closure.args",
     "nauvis-launch-fuel-closure.args",

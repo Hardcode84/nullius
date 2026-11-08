@@ -556,6 +556,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-well-1",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = data.raw.item["nullius-well-1"].icons,
     flags = {"placeable-neutral", "player-creation"},
     crafting_categories = {"water-pumping"},
@@ -812,6 +813,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-well-2",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = data.raw.item["nullius-well-2"].icons,
     flags = {"placeable-neutral", "player-creation"},
     crafting_categories = {"water-pumping"},

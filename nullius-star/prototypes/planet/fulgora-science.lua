@@ -27,8 +27,6 @@ data:extend({
   },
   recipe,
 })
-table.insert(data.raw.technology["nullius-primitive-filtration"].effects,
-  {type="unlock-recipe",recipe=name})
 
 require("prototypes.item.boxing")("electromagnetic-pack", "science", "w", nil, "tool")
 for _, spec in ipairs({

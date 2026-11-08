@@ -2795,6 +2795,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-air-separation-1",
+    surface_conditions = {{property="magnetic-field", max=98}, {property="nullius-ambient-temperature", max=50}},
     icons = angelsLegacy.functions.create_gas_recipe_icon(
         {{"__angelspetrochemgraphics__/graphics/icons/molecules/nitrogen.png", 64},
         {"__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png", 72}},
@@ -2820,6 +2821,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-air-separation-2",
+    surface_conditions = {{property="magnetic-field", max=98}, {property="nullius-ambient-temperature", max=50}},
     icons = angelsLegacy.functions.create_gas_recipe_icon(
         {{"__angelspetrochemgraphics__/graphics/icons/molecules/nitrogen.png", 64},
         {"__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png", 72}},
@@ -2846,6 +2848,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-pressure-air-separation",
+    surface_conditions = {{property="magnetic-field", max=98}, {property="nullius-ambient-temperature", max=50}},
     icons = angelsLegacy.functions.create_liquid_recipe_icon(
         {{"__angelspetrochemgraphics__/graphics/icons/molecules/nitrogen.png", 64},
         {"__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png", 72}},
@@ -2872,6 +2875,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-oxygen-separation",
+    surface_conditions = {{property="magnetic-field", max=98}, {property="nullius-ambient-temperature", max=50}},
     icons = angelsLegacy.functions.create_gas_recipe_icon(
         {{"__angelspetrochemgraphics__/graphics/icons/molecules/oxygen.png", 72},
         {"__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png", 72}},
@@ -2898,6 +2902,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-pressure-oxygen-separation",
+    surface_conditions = {{property="magnetic-field", max=98}, {property="nullius-ambient-temperature", max=50}},
     icons = angelsLegacy.functions.create_liquid_recipe_icon(
         {{"__angelspetrochemgraphics__/graphics/icons/molecules/oxygen.png", 72},
         {"__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png", 72}},
@@ -2924,6 +2929,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-residual-gas",
+    surface_conditions = {{property="magnetic-field", max=98}},
     localised_name = {"fluid-name.nullius-residual-gas"},
     icons = angelsLegacy.functions.create_liquid_recipe_icon(nil,
       {element_tint["residual"], element_tint["air"], element_tint["residual"]},
@@ -2951,6 +2957,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-residual-separation",
+    surface_conditions = {{property="magnetic-field", max=98}},
     icons = angelsLegacy.functions.create_gas_recipe_icon(
         {{FLUIDPATH .. "atom.png", 64, nil, nil, element_tint["argon"]},
         {FLUIDPATH .. "purewater.png", 64}},
@@ -2977,6 +2984,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-pressure-residual-separation",
+    surface_conditions = {{property="magnetic-field", max=98}},
     icons = angelsLegacy.functions.create_liquid_recipe_icon(
         {{FLUIDPATH .. "atom.png", 64, nil, nil, element_tint["argon"]},
         {FLUIDPATH .. "purewater.png", 64}},
@@ -3963,6 +3971,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-rubber",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-rubber-1"},
     enabled = false,
     show_amount_in_title = false,
@@ -3986,6 +3995,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-rubber-nbr",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-rubber-2"},
     icons = {
       {
@@ -4022,6 +4032,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-rubber",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     enabled = false,
     show_amount_in_title = false,
     always_show_products = true,
@@ -6788,6 +6799,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-plastic",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-pvc"},
     icons = {
       {
@@ -6823,6 +6835,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-polypropylene",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-polypropylene"},
     icons = {
       {
@@ -6858,6 +6871,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-plastic-pc-abs",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-pc-abs"},
     icons = {
       {
@@ -6896,6 +6910,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-plastic",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-pc-abs"}},
     icons = {
       {
@@ -6938,6 +6953,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-plastic-pex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-pex"},
     icons = {
       {
@@ -6978,6 +6994,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-plastic-pex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-pex"}},
     icons = {
       {
@@ -7022,6 +7039,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-legacy-plastic-pex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-pex"},
     icons = {
       {
@@ -7064,6 +7082,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-legacy-boxed-plastic-pex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-pex"}},
     icons = {
       {
@@ -7259,6 +7278,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-bpa",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     enabled = false,
     allow_as_intermediate = false,
     categories = {"basic-chemistry"},
@@ -7283,6 +7303,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-pressure-bpa",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = {
       {
         icon = "__angelsrefininggraphics__/graphics/icons/solid-salt.png",
@@ -7321,6 +7342,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-bpa",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     enabled = false,
     allow_as_intermediate = false,
     categories = {"basic-chemistry"},
@@ -7346,6 +7368,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-pressure-bpa",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-pressure", {"item-name.nullius-box", {"item-name.nullius-bpa"}}},
     icons = {
       {
@@ -7503,6 +7526,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-epoxy",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     enabled = false,
     categories = {"basic-chemistry"},
     crafting_machine_tint = {
@@ -7524,6 +7548,7 @@ extend_fluid_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-epoxy",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"fluid-name.nullius-epoxy"}},
     icons = {
       {

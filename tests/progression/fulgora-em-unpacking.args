@@ -1,0 +1,8 @@
+@tests/progression/fulgora-bootstrap-boundary.args
+--technology
+nullius-overcharged-assembly-3
+--recipe
+nullius-box-electromagnetic-pack=nullius-boxed-electromagnetic-pack
+--recipe
+nullius-electromagnetic-pack=nullius-unbox-electromagnetic-pack
+nullius-electromagnetic-pack

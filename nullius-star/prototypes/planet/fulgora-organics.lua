@@ -1,3 +1,4 @@
+local unlocks = require("prototypes.planet.fulgora-organic-unlocks")
 local specs = require("shared.fulgora-organics")
 local boxed_references = {
   ["nullius-iron-gear"]="nullius-boxed-iron-gear",
@@ -15,28 +16,28 @@ data:extend({{
   type="technology", name="nullius-improved-polymer-doping",
   icon="__base__/graphics/technology/plastics.png", icon_size=256,
   prerequisites={"nullius-primitive-filtration","nullius-explosives-1"},
-  effects={}, unit={count=10,time=30,ingredients={
+  effects=unlocks("nullius-improved-polymer-doping"), unit={count=10,time=30,ingredients={
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},{"nullius-mechanical-pack",4},
   }}, order="nullius-dg-polymer-doping",
 }, {
   type="technology", name="nullius-fiber-reinforced-polymers",
   icon="__base__/graphics/technology/plastics.png", icon_size=256,
   prerequisites={"nullius-primitive-filtration","nullius-weaving-2"},
-  effects={}, unit={count=10,time=30,ingredients={
+  effects=unlocks("nullius-fiber-reinforced-polymers"), unit={count=10,time=30,ingredients={
     {"nullius-electromagnetic-pack",10},{"nullius-electrical-pack",4},{"nullius-mechanical-pack",4},
   }}, order="nullius-dg-fiber-reinforced-polymers",
 }, {
   type="technology", name="nullius-bulk-polymer-processing",
   icon="__base__/graphics/technology/plastics.png", icon_size=256,
   prerequisites={"nullius-mass-production-4","nullius-improved-polymer-doping","nullius-fiber-reinforced-polymers"},
-  effects={}, unit={count=10,time=45,ingredients={
+  effects=unlocks("nullius-bulk-polymer-processing"), unit={count=10,time=45,ingredients={
     {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},{"nullius-chemical-pack",4},
   }}, order="nullius-dg-bulk-polymer-processing",
 }, {
   type="technology", name="nullius-composite-construction",
   icon="__base__/graphics/technology/plastics.png", icon_size=256,
   prerequisites={"nullius-composites-2","nullius-bulk-polymer-processing"},
-  effects={}, unit={count=10,time=45,ingredients={
+  effects=unlocks("nullius-composite-construction"), unit={count=10,time=45,ingredients={
     {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},
     {"nullius-chemical-pack",4},{"nullius-physics-pack",2},
   }}, order="nullius-dg-composite-construction",
@@ -86,7 +87,5 @@ for _, spec in ipairs(specs) do
       energy_required=spec.seconds*(boxed and 5 or 1)/divisor,ingredients=ingredients,results=results,
       allow_productivity=true, auto_recycle=false,
     }})
-    table.insert(data.raw.technology[boxed and (spec.boxed_technology or "nullius-bulk-polymer-processing") or spec.technology].effects,
-      {type="unlock-recipe",recipe=name})
   end
 end

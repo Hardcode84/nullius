@@ -17,10 +17,6 @@ local function extend_vulcanus_prototypes(prototypes)
   data:extend(prototypes)
 end
 
-local cool_environment_only = {
-  {property = "nullius-ambient-temperature", max = 50},
-}
-
 local vulcanus_only = {
   {property = "nullius-ambient-temperature", min = 100},
 }
@@ -48,49 +44,6 @@ local function vulcanus_rubber_recipe(source_name, name, replacement,
   return vulcanus_substitute_recipe(source_name, name, {
     ["nullius-rubber"] = replacement,
   }, overrides)
-end
-
-for _, name in ipairs{
-    "nullius-bpa",
-    "nullius-pressure-bpa",
-    "nullius-boxed-bpa",
-    "nullius-boxed-pressure-bpa",
-    "nullius-epoxy",
-    "nullius-boxed-epoxy",
-} do
-  local recipe = data.raw.recipe[name]
-  if not recipe then error("Missing cool-environment organic recipe: " .. name) end
-  recipe.surface_conditions = table.deepcopy(cool_environment_only)
-end
-
-for _, name in ipairs{
-    "nullius-arthropod-disposal",
-    "nullius-arthropod-egg-disposal",
-    "nullius-arthropod-egg-harvest",
-    "nullius-arthropod-harvest",
-    "nullius-barrel-recycling",
-    "nullius-boxed-barrel-recycling",
-    "nullius-legacy-arthropod-egg-harvest",
-    "nullius-legacy-barrel-recycling",
-    "nullius-legacy-plastic-pex",
-    "nullius-plastic",
-    "nullius-plastic-pc-abs",
-    "nullius-plastic-pex",
-    "nullius-polypropylene",
-    "nullius-latex",
-    "nullius-rubber",
-    "nullius-rubber-nbr",
-    "nullius-boxed-arthropod-disposal",
-    "nullius-boxed-arthropod-harvest",
-    "nullius-boxed-plastic",
-    "nullius-boxed-plastic-pex",
-    "nullius-legacy-boxed-plastic-pex",
-    "nullius-boxed-latex",
-    "nullius-boxed-rubber",
-} do
-  local recipe = data.raw.recipe[name]
-  if not recipe then error("Missing polymer production recipe: " .. name) end
-  recipe.surface_conditions = table.deepcopy(cool_environment_only)
 end
 
 -- Molten bloom items: spoil into ingots after cooling.
@@ -1428,14 +1381,6 @@ if data.raw.recipe["nullius-align-identification-card"] then
     }, {enabled = false})
   extend_vulcanus_prototypes({identification_card})
 
-  local technology = data.raw.technology["nullius-alignment-1"]
-  if not technology then
-    error("Missing Alignment 1 technology for Vulcanus identification card")
-  end
-  table.insert(technology.effects, {
-    type = "unlock-recipe",
-    recipe = "nullius-align-identification-card-vulcanus",
-  })
 end
 
 local function vulcanus_boxed_plastic_recipe(source_name, name, replacement,

@@ -1,4 +1,5 @@
--- given: two real clients, separate forces, a 2 MW source and 100 kW load.
+-- given: two real clients after native faction landing, separate forces,
+-- a 2 MW source and 100 kW load.
 -- place/connect: two wired poles and one hidden consumer in the test storm surface.
 -- act: trip, wait, remove the anchor, change player force, reload and reset.
 -- expect: one current custom alert per affected player, targeted at the sink;
@@ -36,6 +37,7 @@ script.on_nth_tick(30,function()
   local player=game.get_player("nullius-test-a")
   if not player or not player.connected then return end
   if storage.stage=="setup" then
+    if not player.character or player.force.name~="faction-"..player.name then return end
     local surface=game.planets["nullius-fulgora"].create_surface()
     surface.request_to_generate_chunks({0,0},2);surface.force_generate_chunk_requests()
     for _,entity in pairs(surface.find_entities()) do entity.destroy() end
@@ -57,6 +59,7 @@ script.on_nth_tick(30,function()
   local peer=game.get_player("nullius-test-b")
   if not peer or not peer.connected then return end
   if storage.stage=="peer" then
+    if not peer.character or peer.force.name~="faction-"..peer.name then return end
     peer.force=storage.foreign
     storage.stage="refresh";storage.start=game.tick
   elseif storage.stage=="refresh" then

@@ -1389,6 +1389,7 @@ extend_general_prototypes({
   {
     type = "recipe",
     name = "nullius-barrel-recycling",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-barrel-recycling"},
     icon = "__base__/graphics/icons/fluid/barreling/barrel-empty.png",
     icon_size = 64,
@@ -1540,6 +1541,7 @@ extend_general_prototypes({
   {
     type = "recipe",
     name = "nullius-legacy-barrel-recycling",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-barrel-recycling"},
     icon = "__base__/graphics/icons/fluid/barreling/barrel-empty.png",
     icon_size = 64,

@@ -52,6 +52,7 @@ for i=1,3 do
     {
       type = "electric-energy-interface",
       name = "nullius-wind-build-"..i,
+      surface_conditions = {{property="nullius-ambient-temperature", max=50}},
       icons = data.raw.item["nullius-wind-turbine-"..i].icons,
       flags = {"placeable-neutral", "player-creation", "not-upgradable", "not-deconstructable"},
       hidden = true,
@@ -112,6 +113,7 @@ for i=1,3 do
     {
       type = "electric-energy-interface",
       name = "nullius-wind-base-"..i,
+      surface_conditions = {{property="nullius-ambient-temperature", max=50}},
       icon = ENTICONPATH .. "windturbine"..i..".png",
       icon_size = 64,
       flags = {"placeable-neutral","player-creation"},

@@ -461,6 +461,10 @@ local function alignment_tech(num, item, typ, cnt, tm, pack, ignore, item2)
     tech.effects[2] = { type = "unlock-recipe",
 	    recipe = ("nullius-" .. item2) }
   end
+  if num == 1 then
+    tech.effects[#tech.effects+1] = {type="unlock-recipe",
+      recipe="nullius-align-identification-card-vulcanus"}
+  end
   data:extend({ tech })
 end
 

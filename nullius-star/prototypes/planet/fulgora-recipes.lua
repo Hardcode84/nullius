@@ -149,6 +149,15 @@ for _,boxed in ipairs({false,true}) do
   data:extend({recipe})
 end
 
+for _,name in ipairs({"nullius-electromagnetic-pack", "nullius-grounding-coil"}) do
+  unlocks[#unlocks+1]={type="unlock-recipe",recipe=name}
+end
+
+for _,effect in ipairs(require("prototypes.planet.fulgora-organic-unlocks")("nullius-primitive-filtration")) do
+  unlocks[#unlocks+1]=effect
+end
+unlocks[#unlocks+1]={type="unlock-recipe",recipe="nullius-air-separation-fulgora"}
+
 local function gcd(a,b)
   while b~=0 do a,b=b,a%b end
   return a

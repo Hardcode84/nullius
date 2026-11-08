@@ -1936,7 +1936,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-heat-exchanger-1"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-iron-assisted-sludge-dehydration"},
     },
     unit = {
       count = 8,
@@ -2310,7 +2311,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-geology-pack-2"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-geology-pack-vulcanus-2"},
     },
     unit = {
       count = 16,
@@ -2668,7 +2670,15 @@ data:extend({
     order = "nullius-df",
     icon = "__base__/graphics/technology/fluid-handling.png",
     icon_size = 256,
-    effects = {},
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-metallurgic-pack"},
+      {type = "unlock-recipe", recipe = "nullius-vulcanus-barrel"},
+      {type = "unlock-recipe", recipe = "nullius-vulcanus-radiator-1"},
+      {type = "unlock-recipe", recipe = "nullius-vulcanus-radiator-2"},
+      {type = "unlock-recipe", recipe = "nullius-temperature-sensor"},
+      {type = "unlock-recipe", recipe = "nullius-carbochlorination"},
+      {type = "unlock-recipe", recipe = "nullius-iron-chlorination"},
+    },
     unit = {
       count = 20,
       ingredients = {
@@ -3129,7 +3139,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-climatology-pack-2"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-climatology-pack-vulcanus-2"},
     },
     unit = {
       count = 150,
@@ -4242,7 +4253,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-sodium-hydroxide-electrolysis"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-carbothermic-sodium"},
     },
     unit = {
       count = 80,
@@ -4276,7 +4288,10 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-decompress-argon"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-vulcanus-residual-gas"},
+      {type = "unlock-recipe", recipe = "nullius-air-separation-fulgora-2"},
+      {type = "unlock-recipe", recipe = "nullius-residual-separation-fulgora"},
     },
     unit = {
       count = 90,
@@ -4423,7 +4438,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-volcanic-separation-2"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-decompress-volcanic-gas"},
     },
     unit = {
       count = 100,
@@ -4937,7 +4953,9 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-barrel-recycling"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-borate-leaching"},
+      {type = "unlock-recipe", recipe = "nullius-gypsum-recovery"},
     },
     unit = {
       count = 220,
@@ -5027,7 +5045,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-plastic-pc-abs"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-high-temperature-resin"},
     },
     unit = {
       count = 360,
@@ -5440,7 +5459,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-explosive"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-anfo-explosive"},
     },
     unit = {
       count = 350,
@@ -6285,7 +6305,9 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-unbox-power-switch"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-box-ice"},
+      {type = "unlock-recipe", recipe = "nullius-unbox-ice"},
     },
     unit = {
       count = 500,
@@ -7446,7 +7468,13 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-canister-emptying"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-boxed-quenched-iron-plate"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-quenched-iron-rod"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-quenched-aluminum-plate"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-quenched-aluminum-rod"},
+      {type = "unlock-recipe", recipe = "nullius-salt-disposal"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-salt-disposal"},
     },
     unit = {
       count = 900,
@@ -8408,7 +8436,32 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-splitter-1"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-boxed-motor-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-barrel-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-thermite-explosive"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-logic-circuit-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-capacitor-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-filter-1-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-splitter-1-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-insulated-wire-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-one-way-valve-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-pump-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-display-panel-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-battery-1-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-insulation-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-repair-pack-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-levitation-field-1-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-medium-tank-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-optical-cable-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-rail-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-solar-panel-1-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-transformer-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-antenna-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-inserter-3-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-power-switch-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-box-clockwork-logistic-robot"},
+      {type = "unlock-recipe", recipe = "nullius-unbox-clockwork-logistic-robot"},
     },
     unit = {
       count = 900,
@@ -8734,7 +8787,9 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-pressure-filter-1"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-pressure-air-separation-fulgora"},
+      {type = "unlock-recipe", recipe = "nullius-pressure-residual-separation-fulgora"},
     },
     unit = {
       count = 1000,
@@ -9072,7 +9127,10 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-relay-2"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-boxed-anfo-explosive"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-belt-2-vulcanus"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-heat-pipe-2-vulcanus"},
     },
     unit = {
       count = 950,
@@ -9595,7 +9653,9 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-charger-2"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-boxed-geology-pack-vulcanus-2"},
+      {type = "unlock-recipe", recipe = "nullius-boxed-climatology-pack-vulcanus-2"},
     },
     unit = {
       count = 1000,

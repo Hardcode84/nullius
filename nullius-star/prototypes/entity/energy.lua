@@ -38,6 +38,7 @@ data:extend({
   {
     type = "solar-panel",
     name = "nullius-solar-panel-1",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_description = {"equipment-description.nullius-solar-panel-1"},
     icons = data.raw.item["nullius-solar-panel-1"].icons,
     flags = {"placeable-neutral", "player-creation"},
@@ -121,6 +122,7 @@ data:extend({
   {
     type = "solar-panel",
     name = "nullius-solar-panel-2",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_description = {"equipment-description.nullius-solar-panel-2"},
     icons = data.raw.item["nullius-solar-panel-2"].icons,
     flags = {"placeable-neutral", "player-creation"},
@@ -155,6 +157,7 @@ data:extend({
   {
     type = "solar-panel",
     name = "nullius-solar-panel-3",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_description = {"equipment-description.nullius-solar-panel-3"},
     icons = data.raw.item["nullius-solar-panel-3"].icons,
     flags = {"placeable-neutral", "player-creation"},
@@ -188,6 +191,7 @@ data:extend({
   {
     type = "solar-panel",
     name = "nullius-solar-panel-4",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_description = {"equipment-description.nullius-solar-panel-4"},
     icons = data.raw.item["nullius-solar-panel-4"].icons,
     flags = {"placeable-neutral", "player-creation"},
@@ -221,6 +225,7 @@ data:extend({
   {
     type = "accumulator",
     name = "nullius-grid-battery-1",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = data.raw.item["nullius-grid-battery-1"].icons,
     flags = {"placeable-neutral", "player-creation"},
     minable = {mining_time = 0.6, result = "nullius-grid-battery-1"},
@@ -291,6 +296,7 @@ data:extend({
   {
     type = "accumulator",
     name = "nullius-grid-battery-2",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = data.raw.item["nullius-grid-battery-2"].icons,
     flags = {"placeable-neutral", "player-creation"},
     minable = {mining_time = 0.9, result = "nullius-grid-battery-2"},
@@ -362,6 +368,7 @@ data:extend({
   {
     type = "accumulator",
     name = "nullius-grid-battery-3",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     icons = data.raw.item["nullius-grid-battery-3"].icons,
     flags = {"placeable-neutral", "player-creation"},
     minable = {mining_time = 1.2, result = "nullius-grid-battery-3"},

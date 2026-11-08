@@ -3285,6 +3285,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-latex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-latex"},
     icons = {
       {
@@ -3323,6 +3324,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-latex",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-latex"}},
     icons = {
       {
@@ -4408,6 +4410,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-arthropod-harvest",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-harvest", {"item-name.nullius-arthropod"}},
     icons = {
       {
@@ -4450,6 +4453,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-arthropod-harvest",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-harvest", {"item-name.nullius-arthropod"}}},
     icons = {
       {
@@ -4496,6 +4500,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-arthropod-disposal",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-disposal", {"item-name.nullius-arthropod"}},
     icons = {
       {
@@ -4533,6 +4538,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-boxed-arthropod-disposal",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-boxed", {"recipe-name.nullius-disposal", {"item-name.nullius-arthropod"}}},
     icons = {
       {
@@ -4575,6 +4581,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-arthropod-egg-harvest",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-harvest", {"item-name.nullius-arthropod-egg"}},
     icons = {
       data.raw.fluid["nullius-nucleotides"].icons[2],
@@ -4621,6 +4628,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-legacy-arthropod-egg-harvest",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-harvest", {"item-name.nullius-arthropod-egg"}},
     icons = {
       data.raw.fluid["nullius-nucleotides"].icons[2],
@@ -4669,6 +4677,7 @@ extend_biology_prototypes({
   {
     type = "recipe",
     name = "nullius-arthropod-egg-disposal",
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
     localised_name = {"recipe-name.nullius-disposal", {"item-name.nullius-arthropod-egg"}},
     icons = {
       {

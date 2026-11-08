@@ -1,17 +1,6 @@
 local hot_surface = {
   {property = "nullius-ambient-temperature", min = 100},
 }
-local cool_surface = {
-  {property = "nullius-ambient-temperature", max = 50},
-}
-
-for tier = 1, 4 do
-  local name = "nullius-logistic-bot-" .. tier
-  local prototype = data.raw["logistic-robot"][name]
-  if not prototype then error("Missing " .. name) end
-  prototype.surface_conditions = table.deepcopy(cool_surface)
-end
-
 local function clone(type_name, template, name)
   local result = table.deepcopy(data.raw[type_name][template])
   result.name = name
