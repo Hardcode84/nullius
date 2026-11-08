@@ -46,6 +46,12 @@ class ResearchViolationsTest(unittest.TestCase):
         self.assertIn("nullius-astronomy closure: lost", violations[0])
         self.assertIn("nullius-personal-transportation-4", violations[0])
 
+    def test_new_rp1_research_has_no_former_closure(self):
+        technologies = launch_tree()
+        technologies['nullius-rp1-fuel'] = {'name': 'nullius-rp1-fuel',
+                                           'prerequisites': ['nullius-rocket-science-1']}
+        self.assertEqual(research_violations(technologies), [])
+
     def test_late_launch_research_is_rejected(self):
         technologies = launch_tree()
         technologies["nullius-rocket-science-1"]["prerequisites"].append("nullius-demolitions-2")

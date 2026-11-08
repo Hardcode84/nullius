@@ -147,3 +147,19 @@ data:extend({
     }},
   },
 })
+
+data:extend({{
+  type="technology",name="nullius-rp1-fuel",
+  icon="__base__/graphics/technology/rocket-fuel.png",icon_size=256,
+  order="nullius-dg-rp1",
+  prerequisites={"nullius-rocket-science-1","nullius-bulk-polymer-processing"},
+  effects={
+    {type="unlock-recipe",recipe="nullius-olefin-oligomerization"},
+    {type="unlock-recipe",recipe="nullius-rp1-rocket-fuel"},
+    {type="unlock-recipe",recipe="nullius-boxed-rp1-rocket-fuel"},
+  },
+  unit={count=10,time=45,ingredients={
+    {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},
+    {"nullius-chemical-pack",4},{"nullius-physics-pack",2},
+  }},
+}})

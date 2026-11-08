@@ -1,11 +1,11 @@
 @tests/progression/fulgora-launch-boundary.args
 --technology
-nullius-rocket-science-1
---technology
-nullius-fiber-reinforced-polymers
+nullius-rp1-fuel
 --require-no-additional-technologies
---prototype-overlay
-tests/progression/planned/rp1-rocket-fuel.json
 --recipe
 rocket-fuel=nullius-rp1-rocket-fuel
 rocket-fuel
+nullius-kerosene
+nullius-chemical-plant-1
+pipe
+nullius-small-tank-1

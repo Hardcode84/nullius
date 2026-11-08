@@ -1,0 +1,7 @@
+@tests/progression/launch-cost-synthetic.args
+--technology
+nullius-rp1-fuel
+--recipe
+rocket-fuel=nullius-rp1-rocket-fuel
+--recipe
+nullius-box-rocket-fuel=nullius-box-rocket-fuel

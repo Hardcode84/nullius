@@ -876,10 +876,9 @@ Design only. The shared design is
 
 ### Rocket fuel
 
-Design only. Bulk Polymer Processing leads to RP-1, which every planet can make
-after research; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1).
-`tests/progression/planned/fulgora-rp1-closure.args` reaches it from Fulgora's
-local inputs.
+Rocket Science 1 and Bulk Polymer Processing unlock RP-1 research. It provides
+kerosene and ordinary and boxed rocket fuel; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1).
+The Fulgora RP-1 progression contracts check local production and its equipment.
 
 ### Overcharged assembler fluids
 

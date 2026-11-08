@@ -1,7 +1,7 @@
 local productivity = require("prototypes.recipe-productivity")
 for _, spec in ipairs({
   {name="hydrocarbon", prerequisite="nullius-primitive-filtration",
-    products={"filtered-hydrocarbons","methane","ethylene","propene","benzene","butadiene","styrene"}},
+    products={"filtered-hydrocarbons","methane","ethylene","propene","benzene","butadiene","styrene","kerosene"}},
   {name="polymerization", prerequisite="nullius-organic-chemistry-1",
     products={"plastic","rubber","epoxy","bpa","ech","acrylonitrile"}},
   {name="fiber", prerequisite="nullius-weaving-2",

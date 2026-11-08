@@ -531,6 +531,19 @@ extend_fluid_prototypes({
   },
   {
     type = "fluid",
+    name = "nullius-kerosene",
+    icon = "__base__/graphics/icons/fluid/light-oil.png",
+    icon_size = 64,
+    subgroup = "organic-chemistry",
+    order = "nullius-ia",
+    base_color = {r=0.65,g=0.45,b=0.15},
+    flow_color = {r=0.9,g=0.75,b=0.35},
+    heat_capacity = "0.08kJ",
+    default_temperature = 25,
+    max_temperature = 100,
+  },
+  {
+    type = "fluid",
     name = "nullius-diesel",
     icons = {{
       icon = "__base__/graphics/icons/fluid/heavy-oil.png",
@@ -5939,6 +5952,37 @@ extend_fluid_prototypes({
       {type="item", name="nullius-canister", amount=1},
       {type="fluid", name="nullius-diesel", amount=25}
     }
+  },
+
+  {
+    type = "recipe", name = "nullius-olefin-oligomerization",
+    enabled = false, categories = {"basic-chemistry"}, energy_required = 4,
+    localised_name = {"recipe-name.nullius-olefin-oligomerization"},
+    allow_productivity = true,
+    ingredients = {
+      {type="fluid",name="nullius-propene",amount=10},
+      {type="fluid",name="nullius-compressed-hydrogen",amount=5},
+    },
+    results = {{type="fluid",name="nullius-kerosene",amount=3}},
+  },
+  {
+    type = "recipe", name = "nullius-rp1-rocket-fuel",
+    localised_name = {"recipe-name.nullius-rp1-rocket-fuel"},
+    enabled = false, categories = {"basic-chemistry"}, energy_required = 40,
+    allow_productivity = false, maximum_productivity = 0,
+    icons = {
+      {icon="__base__/graphics/icons/rocket-fuel.png",icon_size=64},
+      {icon="__base__/graphics/icons/fluid/light-oil.png",icon_size=64,scale=0.25,shift={10,-10}},
+    },
+    ingredients = {
+      {type="fluid",name="nullius-kerosene",amount=30},
+      {type="fluid",name="nullius-compressed-oxygen",amount=150},
+      {type="item",name="nullius-aluminum-powder",amount=15},
+      {type="item",name="nullius-plastic",amount=1},
+    },
+    results = {{type="item",name="rocket-fuel",amount=3}},
+    main_product = "rocket-fuel",
+    auto_boxed = {name="nullius-boxed-rp1-rocket-fuel",subgroup="boxed-canister"},
   },
 
   {

@@ -1,0 +1,11 @@
+@tests/progression/nauvis-launch-boundary.args
+--technology
+nullius-rp1-fuel
+--require-no-additional-technologies
+--recipe
+nullius-box-rocket-fuel=nullius-boxed-rp1-rocket-fuel
+nullius-box-rocket-fuel
+nullius-kerosene
+nullius-chemical-plant-1
+pipe
+nullius-small-tank-1

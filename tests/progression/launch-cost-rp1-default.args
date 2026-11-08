@@ -1,8 +1,6 @@
 @tests/progression/launch-cost-default.args
---prototype-overlay
-tests/progression/planned/rp1-rocket-fuel.json
 --technology
-nullius-hydrocarbon-combustion-3
+nullius-rp1-fuel
 --recipe
 rocket-fuel=nullius-rp1-rocket-fuel
 --recipe

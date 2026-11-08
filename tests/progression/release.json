@@ -39,7 +39,11 @@
     "vulcanus-titanium-construction.args",
     "vulcanus-titanium-pilot.args",
     "vulcanus-water-quenching.args",
-    "fulgora-launch-manifest.args"
+    "fulgora-launch-manifest.args",
+    "nauvis-rp1-closure.args",
+    "nauvis-rp1-bulk.args",
+    "fulgora-rp1-closure.args",
+    "fulgora-rp1-bulk.args"
   ],
   "bootstrap": [
     {

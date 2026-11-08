@@ -22,6 +22,7 @@ PREREQUISITES = {
     'nullius-rocket-science-2': [CHECKPOINT, 'nullius-composites-2'],
 }
 MOVED = {*FORMER_PREREQUISITES, CHECKPOINT}
+NEW_TECHNOLOGIES = {'nullius-rp1-fuel'}
 IMPORTED_BOUND = 2 / 3
 TIME_BOUND = 1 / 2
 
@@ -33,7 +34,7 @@ def research_violations(technologies):
                   if sorted(technologies[name].get('prerequisites') or []) != sorted(expected)]
     former = {name: {**technology, 'prerequisites': FORMER_PREREQUISITES.get(name, technology.get('prerequisites'))}
               for name, technology in technologies.items()}
-    for name in sorted(technologies.keys() - MOVED):
+    for name in sorted(technologies.keys() - MOVED - NEW_TECHNOLOGIES):
         current = prereqs.technology_closure(technologies, {name})
         expected = prereqs.technology_closure(former, {name})
         if current != expected:
@@ -85,18 +86,23 @@ def main():
         if violations:
             raise prereqs.TestFailure('Launch research violations:\n' + '\n'.join(violations))
         nauvis_raw = set(prereqs.parse_arguments(['@' + str(BOUNDARY)]).raw)
-        results = {'unchanged_research_closures': len(data['technology'].keys() - MOVED)}
-        for variant in ('default', 'synthetic', 'imported'):
-            results[variant] = material_cost(data, CONTRACTS / f'launch-cost-{variant}.args', nauvis_raw)
-        for variant in ('synthetic', 'imported'):
-            results[variant + '_ratio'] = ratios(results[variant], results['default'])
+        results = {'unchanged_research_closures': len(data['technology'].keys() - MOVED - NEW_TECHNOLOGIES)}
+        failed = []
+        for fuel in ('composite', 'rp1'):
+            costs = {}
+            for variant in ('default', 'synthetic', 'imported'):
+                prefix = 'launch-cost-' if fuel == 'composite' else 'launch-cost-rp1-'
+                costs[variant] = material_cost(data, CONTRACTS / f'{prefix}{variant}.args', nauvis_raw)
+            for variant in ('synthetic', 'imported'):
+                costs[variant + '_ratio'] = ratios(costs[variant], costs['default'])
+            failed.extend(f'{fuel} imported {kind} ratio {value:.3f}'
+                          for kind, value in costs['imported_ratio'].items() if value > IMPORTED_BOUND)
+            results[fuel] = costs
         recipes = data['recipe']
         results['time_ratio'] = (recipes['nullius-titanium-rocket-stage']['energy_required']
                                  / recipes['nullius-rocket-stage']['energy_required'])
         args.output.write_text(json.dumps(results, indent=2) + '\n')
         print(json.dumps(results, indent=2))
-        failed = [f'imported {kind} ratio {value:.3f}' for kind, value in results['imported_ratio'].items()
-                  if value > IMPORTED_BOUND]
         if results['time_ratio'] > TIME_BOUND:
             failed.append(f'time ratio {results["time_ratio"]:.3f}')
         if failed:

@@ -1305,7 +1305,7 @@ gravity_scaling: none
 |---|---|
 | Item | One `rocket-fuel` item; each chemistry is an alternative recipe |
 | Planet restriction | None; local inputs decide which recipe a planet uses |
-| Alumina | Every recipe carries at least the aluminum recovered from 1 alumina per fuel, after all permitted productivity. On Nauvis 1 alumina gives about 0.87 aluminum powder before productivity. No check enforces this yet; the first new fuel recipe needs a resolved-prototype check of the burnt alumina back to powder at maximum productivity |
+| Alumina | RP-1 consumes more aluminum powder than the tested burnt-alumina recovery routes return without productivity. Recovery productivity is outside this bound |
 | Productivity | Disabled on fuel casting recipes |
 | Boxed parity | Each new route has a boxed bulk recipe, checked with resolved-prototype tools |
 
@@ -1313,41 +1313,30 @@ Vulcanus details: [Vulcanus polymer policy](PLANET_VULCANUS.md#polymer-policy).
 
 #### RP-1
 
-Design only. Fulgora polymer research makes launch fuel cheaper on every
-planet. Propene oligomerization is short-chain polymerization, so it follows
-Bulk Polymer Processing, and the recipes run anywhere after research, like the
-other Fulgora polymer substitutes. Kerosene and oxygen give more impulse per
-kilogram than the perchlorate composite, so one fuel item needs fewer inputs.
-Gelled RP-1 keeps aluminum, which the burnt alumina returns; plastic is the
-gellant.
+Fulgora polymer research unlocks kerosene and RP-1 after Rocket Science 1 and
+Bulk Polymer Processing. Propene and compressed hydrogen produce kerosene.
+Kerosene, compressed oxygen, aluminum powder, and plastic produce rocket fuel
+in a chemical plant. The same research unlocks the boxed recipe. Plastic gels
+the fuel; aluminum burns and returns as alumina. Propene oligomerization is
+short-chain polymerization, which places this research after polymer processing.
+Diesel was rejected because its production already consumes aluminum powder.
 
-```yaml
-technology: after nullius-rocket-science-1 and nullius-bulk-polymer-processing; electromagnetic science
-new_fluid: nullius-kerosene
-recipes:
-  olefin_oligomerization: 10 propene + 5 compressed hydrogen -> 3 kerosene, 4 s, basic-chemistry
-  rp1_rocket_fuel: 30 kerosene + 150 compressed oxygen + 6 aluminum powder + 1 plastic -> 3 rocket fuel, 40 s, basic-chemistry
-  boxed: bulk RP-1 from boxed aluminum powder and plastic
-productivity: disabled on the fuel recipe; oligomerization may take organic process research
-```
+Fuel casting has no productivity. Olefin oligomerization accepts the hydrocarbon
+process bonus. The recipes have no surface restriction.
 
-Draft values priced through `tests/progression/planned/rp1-rocket-fuel.json`, Nauvis:
+RP-1 uses 5 aluminum powder per fuel. Electrolytic recovery of its burnt alumina
+returns 4.67 powder without productivity; this sets the input floor. The check
+also covers basic smelting and carbide recovery. Recovery productivity is
+excluded from this balance by design.
 
-| Route | Fuel ore / gas | Default stage ore / gas | Titanium stage vs default |
-|---|---|---|---|
-| Current fuel | 1 / 1 | 1 / 1 | Within the bounds |
-| RP-1 | 0.08 / 0.23 | 0.35 / 0.68 | Within the bounds |
-| Rejected: RP-1 from existing diesel | 0.43 / 0.56 | 0.57 / 0.94 | Not measured |
-
-Diesel was rejected: its recipe consumes aluminum powder, and its propene
-comes with ethylene the stage cannot use.
-
-| Query | Reports |
+| Check | Contract |
 |---|---|
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/rp1-fuel-cost.args` | RP-1 fuel cost |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/launch-cost-rp1-default.args` | Default stage with RP-1 |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/launch-cost-rp1-imported.args` | Titanium stage with RP-1 and imported rutile |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/planned/fulgora-rp1-closure.args` | Fulgora reaches RP-1 locally |
+| Ordinary and boxed production, machines, and pipes | `tests/progression/{nauvis,fulgora}-rp1-{closure,bulk}.args` |
+| Fuel cost | `tests/progression/rp1-fuel-cost.args` |
+| Titanium stage savings with both fuels | `tools/check_launch_vehicle.py` |
+| Aluminum return without productivity | `tests/scenarios/rocket-fuel-aluminum/` |
+| Finite fuel batches through chemical plants and pipes | `tests/scenarios/rp1-fuel/` |
+| Resolved ordinary and boxed recipes | `tests/progression/rp1-aluminum-inspection.args` |
 
 #### Cargo closure
 

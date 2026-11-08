@@ -3493,7 +3493,7 @@ extend_equipment_prototypes({
   {
     type = "item",
     name = "nullius-rocket",
-    icon = "__base__/graphics/icons/rocket.png",
+    icon = "__base__/graphics/icons/rocket-part.png",
     icon_size = 64,
     
     subgroup = "space",
@@ -3519,7 +3519,7 @@ extend_equipment_prototypes({
   {
     type = "item",
     name = "nullius-rocket-stage",
-    icon = "__base__/graphics/icons/rocket.png",
+    icon = "__base__/graphics/icons/rocket-part.png",
     icon_size = 64,
     subgroup = "space",
     order = "nullius-bb",
@@ -3548,6 +3548,10 @@ extend_equipment_prototypes({
   {
     type = "recipe",
     name = "nullius-titanium-rocket-stage",
+    icons = {
+      {icon="__base__/graphics/icons/rocket-part.png", icon_size=64},
+      {icon="__angelssmeltinggraphics__/graphics/icons/roll-titanium.png", icon_size=64, scale=0.25, shift={10,-10}},
+    },
     localised_name = {"recipe-name.nullius-titanium-rocket-stage"},
     enabled = false,
     always_show_made_in = true,
