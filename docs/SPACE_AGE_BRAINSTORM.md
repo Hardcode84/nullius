@@ -1055,6 +1055,7 @@ needs debris mitigation.
 | Reference flight | Starter-pack platform with one thruster, Nauvis to Vulcanus, fill held by infinity pipes. Per fluid: 100% fill, 9,428 units in about 4,200 ticks; 40%, 5,249 in about 5,400; 25%, 3,875 in about 7,200. At 10% the platform never leaves orbit |
 | Flight power | The reference platform flies with no electric network entities |
 | Propellant carriers | Hydrogen canister (300 hydrogen and 150 oxygen): 43 per launch loose, 85 boxed. Fluid barrels: 100 per launch, 50 or 25 compressed units each. Ice: 1000 per launch loose, 500 boxed |
+| Zero-gram defect | The engine floors a computed weight to whole grams; zero becomes 2^47 / 100 grams, which no rocket lifts. Wood chips declare one gram. Recipe productivity flags also select the weight branch, so they move the weight of items far down a chain |
 | Electrolysis machines | Priority and surge electrolyzers draw about 2 MJ per crafting second at speed 1, on every tier |
 | Box weight | A box takes its weight from its packaging recipe: contents times `ingredient_to_weight_coefficient`, default 0.5. A recipe that does not allow productivity is raised to rocket lift divided by stack size, so light boxes weigh one launch per stack; canister boxes are heavier than that and keep half their contents. Fixture contract: a 1 kg item boxed five to a box weighs 20 kg with productivity disallowed, 2.5 kg with productivity allowed and `maximum_productivity = 0`, and 5 kg with coefficient 1 |
 

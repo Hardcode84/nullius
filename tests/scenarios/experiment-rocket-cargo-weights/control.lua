@@ -5,7 +5,9 @@
 --   electrolysis machine's power and speed.
 -- run: one scheduled read.
 -- expect: observations give the rocket lift and the items per launch, because
---   engine-derived weights exist only at runtime.
+--   engine-derived weights exist only at runtime; the box fixtures follow the
+--   engine's weight rule; no item weighs more than a thousand launches, and
+--   the engine's zero-gram defect is still present.
 local CASE = "experiment-rocket-cargo-weights"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local CARGO = {
@@ -36,12 +38,19 @@ local CARGO = {
   "nullius-steel-plate", "nullius-ceramic-powder", "nullius-heat-pipe-2",
   "nullius-motor-2", "nullius-grid-battery-1", "nullius-processor-1", "radar",
   "nullius-solar-panel-1",
+  -- Wood chain.
+  "nullius-tree", "nullius-tree-seed", "nullius-wood", "nullius-wood-chip", "nullius-box-wood-chip",
 }
 
 script.on_nth_tick(30, function()
   script.on_nth_tick(30, nil)
   local ROCKET_LIFT = prototypes.utility_constants.default_rocket_lift_weight
   local failures = {}
+  local assertions = #CARGO
+  local function check(ok, message)
+    assertions = assertions + 1
+    if not ok then failures[#failures + 1] = message end
+  end
   local observations = {rocket_lift_weight = ROCKET_LIFT, items = {}}
   for _, name in ipairs(CARGO) do
     local item = prototypes.item[name]
@@ -66,18 +75,21 @@ script.on_nth_tick(30, function()
   observations.box_fixtures = {}
   for name, expected in pairs(BOX_WEIGHTS) do
     local weight = prototypes.item[name].weight
-    local recipe = prototypes.recipe[name]
-    observations.box_fixtures[name] = {weight = weight, hidden = recipe.hidden,
-      allow_decomposition = recipe.allow_decomposition, item_hidden = prototypes.item[name].hidden}
-    if math.abs(weight - expected) > 0.001 then
-      failures[#failures + 1] = name .. " weight " .. weight .. ", expected " .. expected
-    end
+    observations.box_fixtures[name] = weight
+    check(math.abs(weight - expected) <= 0.001, name .. " weight " .. weight .. ", expected " .. expected)
   end
-  observations.packaging_recipes = {}
-  for _, name in ipairs({"nullius-box-titanium-sheet", "nullius-boxed-titanium-sheet"}) do
-    local recipe = prototypes.recipe[name]
-    observations.packaging_recipes[name] = {hidden = recipe.hidden,
-      allow_decomposition = recipe.allow_decomposition, maximum_productivity = recipe.maximum_productivity}
+  -- Engine defect: an intermediate weight that floors to zero grams becomes
+  -- 2^47 / 100 grams.
+  -- When this check fails, the engine is fixed and declared one-gram weights
+  -- such as wood chips can return to computed weights.
+  local SUBGRAM_WEIGHT = 2 ^ 47 / 100
+  local light = prototypes.item["factorio-test-light-product"].weight
+  observations.subgram_fixture = light
+  check(math.abs(light - SUBGRAM_WEIGHT) <= 1, "sub-gram fixture weight " .. light)
+  for name, item in pairs(prototypes.item) do
+    if name ~= "factorio-test-light-product" then
+      check(item.weight <= ROCKET_LIFT * 1000, name .. " weighs " .. item.weight)
+    end
   end
   observations.electrolyzers = {}
   for name, entity in pairs(prototypes.get_entity_filtered{{filter = "crafting-category", crafting_category = "nullius-electrolysis"}}) do
@@ -98,7 +110,7 @@ script.on_nth_tick(30, function()
     status = (#failures == 0) and "pass" or "fail",
     factorio_version = script.active_mods.base,
     tick = game.tick,
-    assertions = #CARGO + 3,
+    assertions = assertions,
     failure_count = #failures,
     failures = failures,
     observations = observations,

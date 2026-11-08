@@ -48,3 +48,22 @@ for _, pair in ipairs({
   for _, prototype in ipairs(pair) do prototypes[#prototypes + 1] = prototype end
 end
 data:extend(prototypes)
+
+-- A product computed below one gram: two 1 g items make three products, so
+-- the floored intermediate weight is zero.
+data:extend({
+  item("factorio-test-light-content", 100, {weight = 1}),
+  item("factorio-test-light-product", 200),
+  {
+    type = "recipe",
+    name = "factorio-test-light-product",
+    enabled = false,
+    hidden = false,
+    allow_decomposition = true,
+    order = "nullius-zz-test-factorio-test-light-product",
+    categories = {"packaging"},
+    energy_required = 1,
+    ingredients = {{type = "item", name = "factorio-test-light-content", amount = 2}},
+    results = {{type = "item", name = "factorio-test-light-product", amount = 3}},
+  },
+})
