@@ -1,0 +1,17 @@
+@tests/progression/fulgora-launch-boundary.args
+--manifest
+--marginal
+--require-no-additional-technologies
+--technology
+nullius-rocket-science-2
+--technology
+nullius-rp1-fuel
+--technology
+nullius-aluminum-co2-propellant
+--recipe
+rocket-fuel=nullius-rp1-rocket-fuel
+--recipe
+nullius-compressed-carbon-dioxide=nullius-compressed-carbon-dioxide
+--recipe
+nullius-carbon-dioxide=nullius-air-separation-fulgora
+rocket-fuel=300

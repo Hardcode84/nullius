@@ -1323,7 +1323,7 @@ excluded from this balance by design.
 |---|---|
 | Ordinary and boxed production, machines, and pipes | `tests/progression/{nauvis,fulgora}-rp1-{closure,bulk}.args` |
 | Fuel cost | `tests/progression/rp1-fuel-cost.args` |
-| Titanium stage savings with both fuels | `tools/check_launch_vehicle.py` |
+| Fuel energy, planet costs, and titanium stage savings | `tools/check_launch_vehicle.py` |
 | Aluminum return without productivity | `tests/scenarios/rocket-fuel-aluminum/` |
 | Finite fuel batches through chemical plants and pipes | `tests/scenarios/rp1-fuel/` |
 | Resolved ordinary and boxed recipes | `tests/progression/rp1-aluminum-inspection.args` |
@@ -1336,7 +1336,7 @@ no first launch may depend on them.
 
 | Query | Unresolved today | Traced cause |
 |---|---|---|
-| `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Rubber in the current recipe; see [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) |
+| `tests/progression/vulcanus-launch-closure.args` | None | [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) and ANFO supply the local launch |
 | `tests/progression/fulgora-launch-closure.args` | None | The default stage and silo need no helium. The separate helium contract also checks local degassing. Fuel uses the current Nauvis recipe |
 
 ```bash
@@ -1349,8 +1349,8 @@ production quantities. `tools/check_launch_vehicle.py` checks the launch researc
 closures, prices both titanium supply routes against the default stage, and
 enforces the ore, gas, and time bounds.
 
-The Vulcanus query exits 1 until its fuel route is implemented. Gleba and Aquilo
-need the same query. The default stage and silo consume aluminum, iron, and steel,
+The Vulcanus and Fulgora queries pass. Gleba and Aquilo need the same query.
+The default stage and silo consume aluminum, iron, and steel,
 which [2.4](#24-independent-bootstrap-design) lists as missing there, so each needs
 a local metal route. They need no titanium route.
 

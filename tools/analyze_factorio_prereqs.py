@@ -1341,6 +1341,23 @@ def add_raw_bootstrap_for_execution(
     return dict(sorted(added.items()))
 
 
+def manifest_energy(steps: list[Prototype]) -> dict[str, float]:
+    """Total machine energy by source, excluding expanded fluid fuel and spoilage."""
+    totals = {"electric": 0.0, "heat": 0.0, "burner": 0.0}
+    for step in steps:
+        if "spoil_ticks" in step:
+            continue
+        executor = step["executor"]
+        source = (executor.get("energy_source") or {}).get("type")
+        if source in ("fluid", "void") or executor.get("kind") == "character":
+            continue
+        energy = step["energy_per_cycle_joules"]
+        if source not in totals or energy is None:
+            raise TestFailure(f"cannot total energy for executor {executor['name']}")
+        totals[source] += energy * step["cycles"]
+    return totals
+
+
 def build_production_manifest(
     data: Prototype,
     report: Prototype,
@@ -1603,6 +1620,7 @@ def build_production_manifest(
         "bootstrap_raw_inputs": bootstrap_raw_inputs,
         "available_inputs": dict(sorted(available_inputs.items())),
         "fuel_consumption": dict(sorted(fuel_consumption.items())),
+        "energy_joules": manifest_energy(quantified_steps),
         "surplus": {
             name: amount
             for name, amount in sorted(stock.items())

@@ -1,3 +1,4 @@
+local launch_research = require("prototypes.planet.launch-research")
 local recipe_productivity = require("prototypes.recipe-productivity")
 
 local function productivity_technology(name, order, icon, prerequisite,
@@ -289,8 +290,21 @@ data:extend({{
   effects = {
     {type = "unlock-recipe", recipe = "nullius-titanium-rocket-stage"},
   },
-  unit = {count = 10, time = 45, ingredients = {
-    {"nullius-metallurgic-pack", 20}, {"nullius-electrical-pack", 4},
-    {"nullius-chemical-pack", 4}, {"nullius-physics-pack", 2},
-  }},
+  unit = launch_research("nullius-metallurgic-pack"),
+}})
+
+data:extend({{
+  type = "technology", name = "nullius-aluminum-co2-propellant",
+  icons = {
+    {icon="__base__/graphics/technology/rocket-fuel.png", icon_size=256},
+    {icon="__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png",
+      icon_size=72, scale=0.8, shift={36,-36}},
+  },
+  order = "nullius-dg-co2",
+  prerequisites = {"nullius-rocket-science-1", "nullius-pneumatic-technology"},
+  effects = {
+    {type="unlock-recipe", recipe="nullius-aluminum-co2-rocket-fuel"},
+    {type="unlock-recipe", recipe="nullius-boxed-aluminum-co2-rocket-fuel"},
+  },
+  unit = launch_research("nullius-metallurgic-pack"),
 }})

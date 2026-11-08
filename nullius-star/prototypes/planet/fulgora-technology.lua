@@ -1,3 +1,4 @@
+local launch_research = require("prototypes.planet.launch-research")
 for _,process in ipairs({
     {name="slurry-filtration", recipe="hydrocarbon-slurry-filtration", icon="fluid-handling"},
     {name="hydrocarbon-cracking", recipe="hydrocarbon-cracking", icon="oil-processing"},
@@ -158,8 +159,5 @@ data:extend({{
     {type="unlock-recipe",recipe="nullius-rp1-rocket-fuel"},
     {type="unlock-recipe",recipe="nullius-boxed-rp1-rocket-fuel"},
   },
-  unit={count=10,time=45,ingredients={
-    {"nullius-electromagnetic-pack",20},{"nullius-electrical-pack",4},
-    {"nullius-chemical-pack",4},{"nullius-physics-pack",2},
-  }},
+  unit = launch_research("nullius-electromagnetic-pack"),
 }})

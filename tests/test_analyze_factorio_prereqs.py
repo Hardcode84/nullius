@@ -20,6 +20,7 @@ from analyze_factorio_prereqs import (
     allowed_on_surface,
     analyze,
     build_production_manifest,
+    manifest_energy,
     describe_consumers,
     describe_placeable_entities,
     describe_products,
@@ -1172,6 +1173,20 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
         self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
 
+    def test_manifest_energy_totals_sources_without_double_counting_fluid_fuel(self):
+        steps = [{"executor": {"name": source, "energy_source": {"type": source}},
+                  "energy_per_cycle_joules": 100, "cycles": cycles}
+                 for source, cycles in (("electric", 2), ("electric", 3), ("heat", 4),
+                                        ("burner", 5), ("fluid", 100), ("void", 100))]
+        steps += [{"spoil_ticks": 600}, {"executor": {"name": "android", "kind": "character"}}]
+        self.assertEqual(manifest_energy(steps), {"electric": 500, "heat": 400, "burner": 500})
+
+    def test_manifest_energy_rejects_unknown_source_or_power(self):
+        for source, energy in (("electric", None), ("unknown", 100)):
+            with self.subTest(source=source), self.assertRaises(TestFailure):
+                manifest_energy([{"executor": {"name": "plant", "energy_source": {"type": source}},
+                                  "energy_per_cycle_joules": energy, "cycles": 1}])
+
     def test_marginal_manifest_omits_machines_and_execution_order(self) -> None:
         data = {
             "item": {
@@ -1199,6 +1214,8 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
                     "name": "machine",
                     "crafting_categories": ["assembly"],
                     "crafting_speed": 1,
+                    "energy_usage": "100kW",
+                    "energy_source": {"type": "electric"},
                 },
             },
             "resource": {"ore": {"minable": {"result": "ore"}}},

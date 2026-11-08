@@ -49,7 +49,10 @@
     "nauvis-orbital-construction-closure.args",
     "nauvis-orbital-bulk.args",
     "nauvis-orbital-unpacking.args",
-    "nauvis-orbital-gas.args"
+    "nauvis-orbital-gas.args",
+    "vulcanus-co2-fuel-closure.args",
+    "vulcanus-co2-fuel-bulk.args",
+    "vulcanus-launch-closure.args"
   ],
   "bootstrap": [
     {

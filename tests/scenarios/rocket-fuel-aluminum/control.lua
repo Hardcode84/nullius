@@ -1,7 +1,7 @@
 -- given: burnt alumina, with non-aluminum reagents and energy supplied.
 -- act: recover ingots by basic smelting, carbide recovery, and electrolysis;
 -- then make rods, wire, and powder, without productivity.
--- expect: each tested recovery route returns less powder than RP-1 consumes.
+-- expect: each tested recovery route returns less powder than either fuel consumes.
 local CASE='rocket-fuel-aluminum'
 local assertions=0
 local function check(ok,message)
@@ -34,14 +34,16 @@ script.on_init(function()
     electrolytic=finishing*output('nullius-aluminum-ingot-electrolytic','nullius-box-aluminum-ingot')/input('nullius-aluminum-ingot-electrolytic','nullius-box-alumina'),
   }
   check(prototypes.item['rocket-fuel'].burnt_result.name=='nullius-alumina','fuel returns alumina')
-  for _,boxed in ipairs{false,true} do
-    local recipe=boxed and 'nullius-boxed-rp1-rocket-fuel' or 'nullius-rp1-rocket-fuel'
-    local powder=boxed and 'nullius-box-aluminum-powder' or 'nullius-aluminum-powder'
-    local fuel=boxed and 'nullius-box-rocket-fuel' or 'rocket-fuel'
-    local consumed=input(recipe,powder)/output(recipe,fuel)
-    check(consumed==5,'five powder per fuel '..recipe)
-    check(prototypes.recipe[recipe].maximum_productivity==0,'fuel rejects all productivity '..recipe)
-    for route,returned in pairs(recovery) do check(returned<consumed,'aluminum balance '..route..' '..recipe) end
+  for family,expected in pairs{rp1=5,["aluminum-co2"]=60} do
+    for _,boxed in ipairs{false,true} do
+      local recipe='nullius-'..(boxed and 'boxed-' or '')..family..'-rocket-fuel'
+      local powder=boxed and 'nullius-box-aluminum-powder' or 'nullius-aluminum-powder'
+      local fuel=boxed and 'nullius-box-rocket-fuel' or 'rocket-fuel'
+      local consumed=input(recipe,powder)/output(recipe,fuel)
+      check(consumed==expected,'powder per fuel '..recipe)
+      check(prototypes.recipe[recipe].maximum_productivity==0,'fuel rejects all productivity '..recipe)
+      for route,returned in pairs(recovery) do check(returned<consumed,'aluminum balance '..route..' '..recipe) end
+    end
   end
   helpers.write_file('factorio-tests/'..CASE..'.json',helpers.table_to_json{
     schema=1,case=CASE,status='pass',failure_count=0,assertions=assertions,

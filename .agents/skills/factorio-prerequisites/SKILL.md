@@ -72,7 +72,9 @@ Declare the starting contract explicitly:
 Use `--manifest` with counted targets and `--fuel FLUID` to calculate integer
 recipe batches, exact deterministic inputs and outputs, byproducts, executor
 ticks, fluid-fuel demand, heat requirements, and the aggregate raw/available
-boundaries. The fuel recipe is part of the graph and is sized by net output
+boundaries. `energy_joules` totals electric, heat, and burner machine energy.
+Fluid-powered machines count through fuel production; their own energy is
+excluded from these totals to avoid double counting. The fuel recipe is part of the graph and is sized by net output
 after powering itself. The checker fails instead of averaging probabilistic or
 ranged results. Put a repeatable contract in an argument file and invoke it as
 `@path/to/file.args`.

@@ -1,0 +1,4 @@
+@tests/progression/vulcanus-co2-fuel-common.args
+--manifest
+--marginal
+rocket-fuel=300

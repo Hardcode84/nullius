@@ -1,4 +1,15 @@
 @tests/progression/vulcanus-launch-boundary.args
+--technology
+nullius-aluminum-co2-propellant
+--recipe
+rocket-fuel=nullius-aluminum-co2-rocket-fuel
+--require-no-additional-technologies
+--recipe
+cliff-explosives=nullius-anfo-explosive
+--recipe
+nullius-compressed-carbon-dioxide=nullius-compressed-carbon-dioxide
+--recipe
+nullius-carbon-dioxide=nullius-vulcanus-atmosphere-separation
 --recipe
 nullius-rocket-stage=nullius-rocket-stage
 nullius-silo

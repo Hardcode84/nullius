@@ -5966,6 +5966,26 @@ extend_fluid_prototypes({
     results = {{type="fluid",name="nullius-kerosene",amount=3}},
   },
   {
+    type = "recipe", name = "nullius-aluminum-co2-rocket-fuel",
+    localised_name = {"recipe-name.nullius-aluminum-co2-rocket-fuel"},
+    enabled = false, categories = {"basic-chemistry"}, energy_required = 40,
+    allow_productivity = false, maximum_productivity = 0,
+    icons = {
+      {icon="__base__/graphics/icons/rocket-fuel.png",icon_size=64},
+      {icon="__angelspetrochemgraphics__/graphics/icons/molecules/carbon-dioxide.png",
+        icon_size=72,scale=16/72,shift={10,-10}},
+    },
+    ingredients = {
+      {type="item",name="nullius-aluminum-powder",amount=180},
+      {type="fluid",name="nullius-compressed-carbon-dioxide",amount=1500},
+      {type="item",name="nullius-canister",amount=1},
+      {type="item",name="cliff-explosives",amount=2},
+    },
+    results = {{type="item",name="rocket-fuel",amount=3}},
+    main_product = "rocket-fuel",
+    auto_boxed = {name="nullius-boxed-aluminum-co2-rocket-fuel",subgroup="boxed-canister"},
+  },
+  {
     type = "recipe", name = "nullius-rp1-rocket-fuel",
     localised_name = {"recipe-name.nullius-rp1-rocket-fuel"},
     enabled = false, categories = {"basic-chemistry"}, energy_required = 40,
@@ -5975,7 +5995,7 @@ extend_fluid_prototypes({
       {icon="__base__/graphics/icons/fluid/light-oil.png",icon_size=64,scale=0.25,shift={10,-10}},
     },
     ingredients = {
-      {type="fluid",name="nullius-kerosene",amount=30},
+      {type="fluid",name="nullius-kerosene",amount=60},
       {type="fluid",name="nullius-compressed-oxygen",amount=150},
       {type="item",name="nullius-aluminum-powder",amount=15},
       {type="item",name="nullius-plastic",amount=1},
