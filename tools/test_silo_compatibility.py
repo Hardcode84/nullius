@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Load the production silo and craft and launch a rocket with either engine.
+"""Load the production silo, craft a rocket, and preserve its satellite cargo.
 
 The fixture uses real silo and rocket recipe source, stub ingredient items,
 and a declared electric source. It does not load the full dependency stack.
@@ -17,18 +17,16 @@ def run(engine):
     engine = engine.resolve()
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
-    if major not in {"2.0", "2.1"}:
+    if major != "2.1":
         raise TestFailure(f"Unsupported engine: {version}")
     work = Path(tempfile.mkdtemp(prefix=f"silo-{major}-"))
     mod = work / "mods/silo-test"
     (mod / "scenarios/silo").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="silo-test", version="0.0.1",
-        factorio_version=major, title="Silo test", author="tests", dependencies=["base"])))
-    names = ["base", "space-age", "quality", "elevated-rails", "silo-test"]
-    if major == "2.1":
-        names.append("recycler")
+        factorio_version=major, title="Silo test", author="tests", dependencies=["base", "space-age"])))
+    names = ["base", "space-age", "quality", "elevated-rails", "recycler", "silo-test"]
     (work / "mods/mod-list.json").write_text(json.dumps({"mods": [
-        dict(name=name, enabled=name in {"base", "silo-test"}) for name in names]}))
+        dict(name=name, enabled=name in {"base", "space-age", "elevated-rails", "recycler", "silo-test"}) for name in names]}))
     (mod / "factorio-version.lua").symlink_to(ROOT / "nullius-star/factorio-version.lua")
     vehicles = (ROOT / "nullius-star/prototypes/entity/vehicle.lua").read_text()
     start = vehicles.index('  {\n    type = "rocket-silo",')
@@ -36,11 +34,12 @@ def run(engine):
     equipment = (ROOT / "nullius-star/prototypes/item/equipment.lua").read_text()
     start = equipment.index('  {\n    type = "recipe",\n    name = "nullius-rocket",')
     end = equipment.index('\n  {\n    type = "item",\n    name = "nullius-satellite",', start)
+    rocket_end = equipment.index('\n  {\n    type = "item",\n    name = "nullius-rocket-stage",', start)
     satellite_start = end
     satellite_end = equipment.index('  {\n    type = "recipe",\n    name = "nullius-satellite",', satellite_start)
     satellite = equipment[satellite_start:satellite_end]
     prefix = equipment[:equipment.index("local ICONPATH")]
-    (mod / "rocket.lua").write_text(prefix + "extend_equipment_prototypes({\n" + equipment[start:end] + "})\n")
+    (mod / "rocket.lua").write_text(prefix + "extend_equipment_prototypes({\n" + equipment[start:rocket_end] + "})\n")
     (mod / "satellite.lua").write_text("data:extend({\n" + satellite + "})\n")
     (mod / "data.lua").write_text('''
 require("rocket")

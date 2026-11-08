@@ -1,0 +1,5 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--recipe
+nullius-astronomy-pack=nullius-correlate-nauvis
+nullius-astronomy-pack
+nullius-correlator

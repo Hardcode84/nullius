@@ -59,7 +59,9 @@
   declare a weight there; do not tune recipe flags to move rocket cargo.
 - Every recipe a technology unlocks must be craftable at that technology. Cover
   each unlocked product with a progression contract that uses
-  `--require-no-additional-technologies`.
+  `--require-no-additional-technologies`. Correlation recipes are the exception:
+  each closes at Astronomy plus the radio astronomy research of its source
+  planets, so Astronomy can show the complete correlation ladder.
 - When research moves, state what each dependent technology must keep, and
   check it with a release tool.
 

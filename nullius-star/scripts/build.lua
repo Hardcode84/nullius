@@ -10,6 +10,7 @@ function entity_added(entity, handbuilt, tags)
   if supercapacitors.built(entity) ~= entity then return end
   fulgora_collectors.add(entity)
   grounding_coils.built(entity)
+  astronomy.built(entity)
   if (entity.type == "spider-vehicle") then
 	  mecha_added(entity)
     return
@@ -18,7 +19,7 @@ function entity_added(entity, handbuilt, tags)
   if string.sub(entity.name, -10) == "-pneumatic" then
     vulcanus_heat.add_heat_interface(entity)
   end
-  -- A built gas-vent shell spawns its hidden drill + resource (the actual vent).
+  -- Restore the surface share when a gas vent is built.
   if string.sub(entity.name, -8) == "-gasvent" then
     vulcanus_gasvent.register(entity)
   end
@@ -74,6 +75,7 @@ end
 
 function entity_removed(entity, died)
   meter.remove(entity)
+  astronomy.remove(entity.unit_number)
   if grounding_coils.is_coil(entity.name) then remove_wind_mod_entity(entity) end
   if entity.type=="electric-pole" then fulgora_collectors.remove(entity.unit_number) end
   -- Clean up heat interface for any pneumatic machine (before prefix check).
@@ -119,6 +121,7 @@ function entity_raised(event)
 end
 function entity_cloned(event)
   if meter.cloned(event) then return end
+  if astronomy.cloned(event.destination) then return end
   if grounding_coils.cloned(event.destination) then return end
   if fulgora_overload.cloned(event.destination) then return end
   local destination = reinjection.built(event.destination)
@@ -166,6 +169,7 @@ function entity_destroyed(event)
   if (script_kill or (event.type ~= defines.target_type.entity)) then return end
   local unit_number = event.useful_id
   remove_body_tag(unit_number)
+  astronomy.remove(unit_number)
   if (vulcanus_gasvent.destroyed(event)) then return end
   if (vulcanus_heat.remove_heat_interface(unit_number)) then return end
   if (destroyed_stirling_engine(unit_number)) then return end

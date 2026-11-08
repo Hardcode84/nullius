@@ -1,0 +1,9 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--technology
+nullius-vulcanus-radio-astronomy
+--available
+nullius-vulcanus-interferometric-recording
+--recipe
+nullius-astronomy-pack=nullius-correlate-nauvis-vulcanus
+nullius-astronomy-pack
+nullius-correlator

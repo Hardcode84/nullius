@@ -1057,8 +1057,9 @@ Not in the first platform implementation; connections keep no asteroid spawns.
 
 ### 4.5 Astronomy: Interplanetary Interferometry
 
-Design only. `experiment-astronomy-effects` and `experiment-storm-interference`
-validate the engine mechanisms; see [Measured engine contracts](#measured-engine-contracts).
+Implemented for Nauvis, Vulcanus, and Fulgora. Dishes use vanilla radar graphics
+as a placeholder. `astronomy-array`, `astronomy-correlation`, and
+`astronomy-transit` check the production machines and transport contract.
 
 The astronomy pack decodes the progenitor's interstellar signal. Dishes on one
 planet see it over the same short baselines, so extra dishes only average noise.
@@ -1143,7 +1144,7 @@ receiver:
   consumption_limits: {low: -0.9999, high: 1000}
 ```
 
-The engine crafts continuously between updates. Remove the dither accumulator.
+The engine crafts continuously between updates. No dither accumulator is used.
 Local effects add to other accepted bonuses, so module and beacon bonuses must
 be rejected to preserve the array share. An empty `allowed_effects` also blocks
 the local speed and consumption effects.
@@ -1168,11 +1169,11 @@ shares; the total-growth rule assumes the added dish is supplied.
 | Item or machine | Rule |
 |---|---|
 | `nullius-<planet>-interferometric-recording` | Produced only by that planet's dish recipe |
-| `nullius-blank-recording-module` | Dish input. Its recipe closes on every array planet at that planet's radio astronomy technology; Nauvis closes at Astronomy |
+| `nullius-blank-recording-module` | Processor, glass, and ceramic media; no plastic. Dish input. Its recipe closes on every array planet at that planet's radio astronomy technology; Nauvis closes at Astronomy |
 | Spoilage | Recording spoils to a blank module. Spoil time is a fixed prototype value: 1.5 times the reference transit |
-| Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform is the smallest one built with Orbital construction. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
+| Reference transit | The reference platform's longest one-way trip between array planets, counted through Nauvis. The reference platform uses the Orbital Construction flight cell in `astronomy-transit`: one thruster, onboard canister conditioning, and solar power. Both directions are measured with finite fuel and no stops. Faster platforms gain margin, slower ones lose recordings; the value changes only when an array planet is added |
 | Spoil clock | Starts at dish output, so silo queues and orbit waits count against it |
-| Weight and stack | Recording and blank module each weigh 1 kg with stack size 50, declared in `prototypes/item-weights.lua`; the rule would make a recording half a blank. The 1,000 kg lift and 20 slots of 50 both give 1,000 items per rocket |
+| Weight and stack | Recording and blank module each weigh 1 kg with stack size 50, declared in `prototypes/item-weights.lua`; the rule would make a recording half a blank. The 1,000 kg lift and 20 slots of 50 both give 1,000 items per rocket. Boxed blanks retain the full weight of their contents |
 | Correlator | Assembling machine with its own crafting category; electric; any surface, including platforms; no productivity or modules; returns every consumed blank module |
 
 Correlator location is a player choice. Single-planet correlation runs on the
@@ -1245,10 +1246,11 @@ The satellite stays undecided. This design only decouples it from astronomy.
 | Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
 | Correlation craftability | One progression contract per correlation recipe, as above |
 | Correlation ladder | Unit test over the generated recipes: packs per recording strictly increases with set size, every set of 2 or more beats single-planet correlation, and each recipe takes equal recordings from distinct planets |
+| `tools/check_astronomy.py` | Fresh resolved recipes; complete correlation ladder, all planet closures, and separate solid/fluid cost checks for media return |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
 | Recordings | Each planet's recording, with local hydrogen and its dish, closes on that planet at its radio astronomy technology; Nauvis at Astronomy |
 | `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce work in the ratio 1 : 2 after share updates; each recording consumes one hydrogen; removal raises the remaining share; accepted effects cannot bypass throttling |
-| `fulgora-storm-array` | Storm interference and the square-root share multiply; share changes preserve progress; zero share stops production; operating power and pneumatic fuel follow the consumption effect; measure electrical drain separately |
+| `astronomy-array` power and storms | Storm interference and the square-root share multiply; share changes preserve progress; zero share stops production; operating power and pneumatic fuel follow the consumption effect; measure electrical drain separately |
 | `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
 | `experiment-rocket-cargo-weights` | Recording and blank weigh 1 kg; 1,000 fit one rocket |
 | Locale | `python tools/check_factorio_locale.py` |
@@ -1295,7 +1297,8 @@ controls production. Dishes retain assembling machines to consume blank media
 and hydrogen; local effects provide continuous rate control.
 
 ```bash
-python tools/run_factorio_tests.py experiment-astronomy-effects experiment-storm-interference -n auto
+python tools/check_astronomy.py --output astronomy-check.json
+python tools/run_factorio_tests.py astronomy-array astronomy-correlation astronomy-transit -n auto
 ```
 
 #### Changes from the earlier design
@@ -1317,7 +1320,7 @@ work.
 |---|---|
 | `launch-vehicle` | Both stage recipes, no stage productivity, silo productivity, script cargo launch to a platform, probe mission count |
 | `silo-platform-request` | Robots load the silo for a platform hub request, and the silo launches it unprompted |
-| `silo-compat` | Satellite launch returns science |
+| `silo-compat` | Automatic sending retains the satellite and returns no science |
 
 #### Launch research
 
@@ -1508,7 +1511,7 @@ Generic packs stay Nauvis packs with worse local recipes on other planets, as in
 | Electrical | Nauvis electronics | Nauvis; local alternatives |
 | Chemical | Nauvis chemistry | Nauvis; local alternatives |
 | Physics | Nauvis (complex machines) | Nauvis; local alternatives |
-| Astronomy | Nauvis satellite launch | Interplanetary interferometry; see [4.5](#45-astronomy-interplanetary-interferometry) |
+| Astronomy | Radio correlation | Interplanetary interferometry; see [4.5](#45-astronomy-interplanetary-interferometry) |
 | Biology packs (7) | Nauvis farming | Gleba (primary) + Nauvis (deployment) |
 
 ### New Packs for SA Planets?

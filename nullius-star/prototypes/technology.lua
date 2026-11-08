@@ -13001,20 +13001,7 @@ data:extend({
         
         tint = {0.75, 0.72, 0.78}
     }},
-    effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-satellite"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-box-astronomy-pack"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-unbox-astronomy-pack"
-      }
-    },
+    effects = require("prototypes.astronomy"),
     unit = {
       count = 5000,
       ingredients = {

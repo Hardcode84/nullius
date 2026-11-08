@@ -235,9 +235,7 @@ data:extend({
     stack_size = 1,
     weight = 1000000,
     send_to_orbit_mode = "automated",
-    rocket_launch_products = {
-      {type = "item", name = "nullius-astronomy-pack", amount = 42}
-    }
+    rocket_launch_products = {}
   },
 
   {

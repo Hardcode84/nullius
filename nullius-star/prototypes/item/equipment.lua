@@ -3581,10 +3581,7 @@ extend_equipment_prototypes({
     order = "nullius-d",
     stack_size = 1,
     weight = 1000000,
-    send_to_orbit_mode = "automated",
-    rocket_launch_products = {
-      {type = "item", name = "nullius-box-astronomy-pack", amount = 100}
-    }
+    send_to_orbit_mode = "not-sendable"
   },
   {
     type = "recipe",
@@ -3619,12 +3616,7 @@ extend_equipment_prototypes({
     stack_size = 1,
     weight = 1000000,
     send_to_orbit_mode = "automated",
-    rocket_launch_products = {
-      {type = "item", name = "nullius-box-astronomy-pack", amount = 1000},
-      {type = "item", name = "nullius-box-physics-pack", amount = 200},
-      {type = "item", name = "nullius-box-chemical-pack", amount = 200},
-      {type = "item", name = "nullius-box-electrical-pack", amount = 200}
-    }
+    rocket_launch_products = {}
   },
   {
     type = "recipe",

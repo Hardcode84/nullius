@@ -52,7 +52,17 @@
     "nauvis-orbital-gas.args",
     "vulcanus-co2-fuel-closure.args",
     "vulcanus-co2-fuel-bulk.args",
-    "vulcanus-launch-closure.args"
+    "vulcanus-launch-closure.args",
+    "correlate-fulgora-astronomy-closure.args",
+    "correlate-fulgora-nauvis-astronomy-closure.args",
+    "correlate-fulgora-nauvis-vulcanus-astronomy-closure.args",
+    "correlate-fulgora-vulcanus-astronomy-closure.args",
+    "correlate-nauvis-astronomy-closure.args",
+    "correlate-nauvis-vulcanus-astronomy-closure.args",
+    "correlate-vulcanus-astronomy-closure.args",
+    "fulgora-astronomy-closure.args",
+    "nauvis-astronomy-closure.args",
+    "vulcanus-astronomy-closure.args"
   ],
   "bootstrap": [
     {

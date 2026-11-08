@@ -311,6 +311,8 @@ free lava intake + diminishing-return gas vent
   dishes.
 - The intake owns its output connection, so rotation needs no script handler.
 - Dedicated gas extraction scales linearly and funds the factory.
+- Pneumatic radio dishes use the same continuous speed control, with a separate
+  array for each force. See [radio astronomy](SPACE_AGE_BRAINSTORM.md#45-astronomy-interplanetary-interferometry).
 - Material-separation recipes return gas coproducts but remain net consumers
   after machine fuel.
 

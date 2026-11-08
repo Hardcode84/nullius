@@ -28,11 +28,11 @@ function capacitors.rebuild()
   end
 end
 
-script.on_nth_tick(60, function()
+function capacitors.update()
   for id, row in pairs(storage.nullius_supercapacitors) do
     if row.entity.valid then settle(row) else storage.nullius_supercapacitors[id] = nil end
   end
-end)
+end
 
 function capacitors.unlocked(force, base)
   return force.technologies[config.technology].researched and force.recipes[base].enabled

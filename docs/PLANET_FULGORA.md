@@ -299,7 +299,7 @@ ordinary and bulk recipes on every distillery tier. Recipe values live in
 | Hydrocarbon vents | Native oil graphics; generate only on sediment; existing extractors produce hydrocarbon slurry |
 | Vent distribution | More, smaller clusters: 28.8 base patches/km²; total base density remains 65.6 |
 | Buildings permitted on sand | Extractors, including reinjection mode, power poles, pipes, underground pipes, pumps, elevated rail supports, and grounding coils only |
-| Radio dishes | Design: permitted on sand; see [Radio astronomy](#radio-astronomy) |
+| Radio dishes | Permitted on sand; see [Radio astronomy](#radio-astronomy) |
 | All other buildings | Require island ground, including filters, tanks, power storage, belts, and rail ramps |
 | Elevated rails | Bridge sand basins between islands on rail supports |
 | Sand | Both android tiers can walk across it; no landfill, paving, or terraforming |
@@ -702,7 +702,7 @@ dynamo and surface lightning. This is setting material, not a chemistry model.
 | Cycle candidates | Sine cycle, random superstorms, and longer seasons above the day/night baseline |
 | Baseline metric candidates | Extraction rate, machine count, or cumulative hydrocarbons processed |
 | Forecast | Expose storm information so the player can prepare |
-| Storm intensity | Design: surface property `nullius-storm-intensity` scales native lightning and radio interference; cycles change only this value. See [Radio astronomy](#radio-astronomy) |
+| Storm intensity | Surface property `nullius-storm-intensity` scales native lightning and radio interference; cycles change only this value. See [Radio astronomy](#radio-astronomy) |
 
 ## Lightning and overload
 
@@ -863,7 +863,7 @@ capacity and the organic recovery audit for downstream metal outputs.
 
 ### Radio astronomy
 
-Design only. The shared design is
+Implemented. The shared rules are in
 [interplanetary interferometry](SPACE_AGE_BRAINSTORM.md#45-astronomy-interplanetary-interferometry).
 
 | Fulgora rule | Value |

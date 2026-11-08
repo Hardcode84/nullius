@@ -9,6 +9,7 @@
 --   weight rule, boxes weigh exactly half their contents, no item weighs
 --   more than a thousand launches, and non-productivity categories resolve
 --   with productivity capped at zero.
+local astronomy = require("__nullius-star__/shared/astronomy")
 local CASE = "experiment-rocket-cargo-weights"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
 local CARGO = {
@@ -71,7 +72,19 @@ script.on_nth_tick(30, function()
   -- recipe loop keeps the default weight. Boxes must weigh exactly half their
   -- contents.
   local DEFAULT = prototypes.utility_constants.default_item_weight
-  local DECLARED = {["nullius-align-concordance-satellite"] = true}
+  local DECLARED = {["nullius-align-concordance-satellite"] = true,
+    ["nullius-satellite"]=true,["nullius-probe"]=true,["nullius-blank-recording-module"]=true,["nullius-box-blank-recording-module"]=true}
+  for _,planet in ipairs(astronomy.planets) do
+    local name="nullius-"..planet.."-interferometric-recording"
+    DECLARED[name]=true
+    check(prototypes.item[name].weight==1000 and prototypes.item[name].stack_size==50,"recording cargo "..planet)
+  end
+  check(prototypes.item["nullius-blank-recording-module"].weight==1000,"blank cargo")
+  local blank_box=prototypes.item["nullius-box-blank-recording-module"]
+  check(blank_box.weight==5000,"boxed media preserves full contents weight")
+  local slots=prototypes.entity["nullius-silo"].get_inventory_size(defines.inventory.rocket_silo_rocket)
+  check(math.min(math.floor(ROCKET_LIFT/blank_box.weight),slots*blank_box.stack_size)*5==1000,
+    "boxed media cannot increase blanks per launch")
   local function expected_count(product)
     local amount = product.amount or (product.amount_min + product.amount_max) / 2
     return amount * (product.probability or 1) + (product.extra_count_fraction or 0)
@@ -126,7 +139,7 @@ script.on_nth_tick(30, function()
   observations.silo = {
     launch_to_space_platforms = silo.launch_to_space_platforms,
     can_launch_without_landing_pads = silo.can_launch_without_landing_pads,
-    rocket_inventory_size = silo.rocket_entity_prototype.get_inventory_size(defines.inventory.cargo_unit),
+    rocket_inventory_size = silo.get_inventory_size(defines.inventory.rocket_silo_rocket),
   }
   local result = {
     schema = 1,

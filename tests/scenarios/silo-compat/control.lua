@@ -1,8 +1,8 @@
 -- given: one production rocket recipe batch, one satellite, and electric power
 -- place/connect: production silo on a powered grid, with a cargo landing pad
--- act: craft the rocket and request a launch when ready
+-- act: craft the rocket, insert a satellite, and enable automatic sending
 -- run: up to 7200 ticks; check every 60 ticks
--- expect: exact ingredient consumption, one launch, and satellite science return
+-- expect: exact ingredients; the satellite stays in the silo and yields no science
 local function expect(ok, message)
   storage.assertions = storage.assertions + 1
   assert(ok, message)
@@ -44,11 +44,13 @@ script.on_nth_tick(60, function()
     end
     expect(silo.get_inventory(defines.inventory.rocket_silo_rocket).insert{name="nullius-satellite",count=1} == 1, "satellite inserted")
     silo.send_to_orbit_automatically = true
-    storage.requested = true
+    storage.requested = game.tick
   end
   local output = storage.pad.get_inventory(defines.inventory.cargo_landing_pad_main)
-  if storage.launched and output.get_item_count("nullius-box-astronomy-pack") == 100 then
-    expect(storage.launched == 1, "one launch event")
+  if storage.requested and game.tick >= storage.requested + 120 then
+    expect(not storage.launched, "satellite cannot be sent automatically")
+    expect(output.get_item_count("nullius-box-astronomy-pack") == 0, "no satellite science")
+    expect(silo.get_inventory(defines.inventory.rocket_silo_rocket).get_item_count("nullius-satellite") == 1, "satellite retained")
     expect(silo.products_finished == 1, "no extra rocket crafted")
     helpers.write_file("factorio-tests/silo-compat.json", helpers.table_to_json{
       schema=1, case="silo-compat", failure_count=0, failures={},

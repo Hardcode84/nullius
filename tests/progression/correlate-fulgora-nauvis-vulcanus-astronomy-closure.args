@@ -1,0 +1,13 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--technology
+nullius-fulgora-radio-astronomy
+--available
+nullius-fulgora-interferometric-recording
+--technology
+nullius-vulcanus-radio-astronomy
+--available
+nullius-vulcanus-interferometric-recording
+--recipe
+nullius-astronomy-pack=nullius-correlate-fulgora-nauvis-vulcanus
+nullius-astronomy-pack
+nullius-correlator

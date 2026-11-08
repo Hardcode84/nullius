@@ -168,6 +168,7 @@ script.on_init(
     vulcanus_heat.init()
     vulcanus_gasvent.init()
     grounding_coils.rebuild()
+    astronomy.rebuild()
     fulgora_collectors.rebuild()
     fulgora_overload.rebuild()
     supercapacitors.rebuild()
@@ -203,6 +204,7 @@ script.on_configuration_changed(
     surface_config.configure_existing()
     vulcanus_heat.rebuild()
     grounding_coils.rebuild()
+    astronomy.rebuild()
     fulgora_collectors.rebuild()
     fulgora_overload.rebuild()
     supercapacitors.rebuild()
@@ -312,6 +314,7 @@ script.on_event(defines.events.on_player_created,
 script.on_event(defines.events.on_research_finished,
   function(event)
     vulcanus_gasvent.research_changed(event)
+    astronomy.research_changed(event)
     local techname = event.research.name
     if ((storage.nullius_broken_status ~= nil) and
 	    (not storage.nullius_alignment)) then
@@ -332,12 +335,15 @@ script.on_event(defines.events.on_research_finished,
 
 script.on_event(defines.events.on_research_reversed, function(event)
   vulcanus_gasvent.research_changed(event)
+  astronomy.research_changed(event)
 end)
 script.on_event({defines.events.on_technology_effects_reset, defines.events.on_force_reset}, function(event)
   vulcanus_gasvent.refresh_force(event.force)
+  astronomy.refresh_all()
 end)
 script.on_event(defines.events.on_forces_merged, function(event)
   vulcanus_gasvent.refresh_force(event.destination)
+  astronomy.refresh_all()
 end)
 
 commands.add_command("flip_valves", nil, function(command)

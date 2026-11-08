@@ -42,11 +42,12 @@ script.on_nth_tick(1, function()
       local hot = false
       for _, condition in pairs(recipe_conditions) do
         conditions = conditions + 1
-        check(condition.property == AMBIENT_TEMPERATURE or condition.property == "magnetic-field",
+        check(condition.property == AMBIENT_TEMPERATURE or condition.property == "magnetic-field" or
+          (condition.property == "pressure" and name:match("interferometric%-recording$") and condition.min == 1),
           name .. " uses unsupported surface condition " ..
           condition.property)
-        if condition.max and condition.max <= 50 then cool = true end
-        if condition.min and condition.min >= 100 then hot = true end
+        if condition.property == AMBIENT_TEMPERATURE and condition.max and condition.max <= 50 then cool = true end
+        if condition.property == AMBIENT_TEMPERATURE and condition.min and condition.min >= 100 then hot = true end
       end
       if cool then cool_recipes = cool_recipes + 1 end
       if hot then hot_recipes = hot_recipes + 1 end

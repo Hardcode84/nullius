@@ -33,7 +33,7 @@ for kind in pairs(require("collision-mask-defaults")) do
       (kind=="assembling-machine" and name:match("^nullius%-extractor%-%d+%-reinjection$"))
     local elevated = kind:find("elevated-",1,true)==1
     if defines.prototypes.entity[kind] and not allowed[kind] and not extractor and not elevated and
-        name~="nullius-hydrocarbon-vent" and not coils[name] and
+        name~="nullius-hydrocarbon-vent" and not coils[name] and not require("shared.astronomy").is_dish(name) and
         (mask.layers.water_tile or mask.layers.ground_tile or buildable[name]~=nil) then
       entity.collision_mask = table.deepcopy(mask)
       entity.collision_mask.layers.nullius_fulgora_sand = true

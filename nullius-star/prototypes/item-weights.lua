@@ -60,6 +60,13 @@ local function weight_recipe(name)
   return recipes[1]
 end
 
+items["nullius-blank-recording-module"].weight = 1000
+-- Packing returned media preserves the correlation cargo budget.
+items["nullius-box-blank-recording-module"].weight = 5000
+for _, planet in ipairs(require("shared.astronomy").planets) do
+  items[require("shared.astronomy").recording(planet)].weight = 1000
+end
+
 local weights = {}
 local visiting = {}
 

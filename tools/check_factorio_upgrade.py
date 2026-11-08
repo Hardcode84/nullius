@@ -39,16 +39,21 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
                 (run / name).mkdir(parents=True)
         origin_config = prepare_config(origin, previous_factorio)
         config = prepare_config(target, factorio)
-        mods = origin / "mods"
-        prepare_release_mods(mods, previous_dependencies, candidate, historical_quality=True)
-        (mods / candidate.name).unlink()
-        target_mods = target / "mods"
-        prepare_release_mods(target_mods, dependencies, candidate)
-        (target_mods / candidate.name).unlink()
         previous = subprocess.run(
             ["git", "archive", "--format=zip", f"v{previous_version}", "nullius-star"],
             cwd=REPOSITORY, check=True, stdout=subprocess.PIPE,
         ).stdout
+        with zipfile.ZipFile(io.BytesIO(previous)) as archive:
+            previous_info = json.loads(archive.read("nullius-star/info.json"))
+        space_age_info = json.loads((previous_factorio.parents[2] / "data/space-age/info.json").read_text())
+        quality_required = any(dependency.split()[0] == "quality" for dependency in
+                               previous_info["dependencies"] + space_age_info["dependencies"])
+        mods = origin / "mods"
+        prepare_release_mods(mods, previous_dependencies, candidate, historical_quality=quality_required)
+        (mods / candidate.name).unlink()
+        target_mods = target / "mods"
+        prepare_release_mods(target_mods, dependencies, candidate)
+        (target_mods / candidate.name).unlink()
         with zipfile.ZipFile(io.BytesIO(previous)) as archive:
             archive.extractall(mods)
 

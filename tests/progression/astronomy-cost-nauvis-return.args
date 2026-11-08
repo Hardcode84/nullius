@@ -1,0 +1,6 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--recipe
+nullius-rocket-stage=nullius-rocket-stage
+--manifest
+--marginal
+nullius-rocket=1
