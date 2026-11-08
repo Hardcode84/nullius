@@ -920,7 +920,12 @@ current_state:
   connections: Nauvis-Vulcanus and Nauvis-Fulgora, 15,000 km each, no asteroid spawns
   vulcanus_fulgora_connection: none
   solar_power_in_space: Vulcanus 600, Nauvis 300, Fulgora 120
-  vacuum_placement: Nullius buildings have no pressure or gravity conditions
+  vacuum_placement: >-
+    a platform (pressure 0, gravity 0) accepts every placeable Nullius building except
+    Vulcanus radiators, reinjection extractors, primitive chests, and the clockwork roboport;
+    see experiment-platform-placement
+  thruster_fluids: thruster-fuel and thruster-oxidizer are hidden by the vanilla hiding pass
+  surface_defaults: planets without the property get gravity 10 and pressure 1000, as Nauvis does
   platform_ambient_temperature: default 25
 constraints:
   first_platform: Nauvis materials only; it launches before any cargo exists
@@ -965,6 +970,7 @@ thruster fuel is the fuel that burns one unit of oxidizer.
 | Gas recipes | Planets launch local gas in barrels or canisters; carbon monoxide and methane cover planets without cheap hydrogen |
 | Machines | Electric chemistry on the platform, powered by platform solar |
 | Empty canisters | Return by drop |
+| Why canister conditioning | Flushing a hydrogen canister returns only its hydrogen; the oxygen is lost, and the thruster needs it |
 
 Per Nauvis-Vulcanus leg of the reference flight in
 [Measured platform contracts](#measured-platform-contracts):
