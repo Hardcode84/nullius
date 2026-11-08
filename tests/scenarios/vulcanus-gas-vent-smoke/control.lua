@@ -92,18 +92,13 @@ local function run()
 
   check(count(surface, shell_name, position) == 1,
     "expected exactly one visible gas-vent shell")
-  check(count(surface, "nullius-gas-vent-drill", position) == 1,
-    "production build event did not create exactly one hidden drill")
-  check(count(surface, "nullius-gas-vent-seam", position) == 1,
-    "production build event did not create exactly one hidden seam")
+  check(count(surface, "nullius-gas-vent-drill", position) == 0,
+    "production build event created a hidden drill")
+  check(count(surface, "nullius-gas-vent-seam", position) == 0,
+    "production build event created a hidden seam")
 
-  local seams = surface.find_entities_filtered{
-    name = "nullius-gas-vent-seam",
-    position = position,
-    radius = 0.1,
-  }
-  check(#seams == 1 and seams[1].amount == 1000000,
-    "single gas-vent seam did not receive the expected amount")
+  check(shell.get_recipe().name == "nullius-gas-venting", "vent recipe is fixed")
+  check(shell.crafting_speed == 1, "single vent runs at base speed")
 
   storage.test_position = position
   shell.destroy()

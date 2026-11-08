@@ -36,14 +36,25 @@ extend_vulcanus_entities({
     main_product = "lava",
   },
   {
-    -- Resource category mined only by the hidden gas vent drill (see below).
+    -- Retained for conversion of released gas vents.
     type = "resource-category",
     name = "nullius-gas-vent",
   },
   {
-    -- Recipe category with no recipes: the gas-vent shell never crafts.
+    -- Exclusive to the free-gas intake mode.
     type = "recipe-category",
     name = "nullius-gas-vent-shell",
+  },
+  {
+    type = "recipe", name = "nullius-gas-venting",
+    localised_name = {"entity-name.nullius-lava-gasvent"},
+    enabled = true, hidden = true, hide_from_player_crafting = true,
+    categories = {"nullius-gas-vent-shell"}, energy_required = 1,
+    ingredients = {},
+    results = {{type="fluid",name="nullius-compressed-volcanic-gas",amount=12}},
+    main_product = "nullius-compressed-volcanic-gas",
+    allow_productivity = false, maximum_productivity = 0,
+    surface_conditions = {{property="nullius-ambient-temperature",min=100}},
   },
 })
 
@@ -353,44 +364,37 @@ for i = 1, 2 do
     }
     data:extend({lava_pneumatic})
 
-    -- Free-gas vent SHELL: the intake's Ctrl+R alternate mode. This is a cosmetic
-    -- assembling machine (never crafts) that is just the intake re-skinned -- so
-    -- it places and blueprints/copy-pastes exactly like the intake (NOT a mining
-    -- drill, so blueprint ghosts don't need a resource under them first). When it
-    -- is built, vulcanus_gasvent.lua spawns a hidden mining-drill + invisible gas
-    -- resource under it; the drill does the actual venting and the engine meters
-    -- output at resource.amount/NORMAL (throttle = NORMAL/sqrt(N)). This mirrors
-    -- Space Exploration 0.5's core miner composite setup.
+    -- Free gas uses the same shore placement and output as the lava intake.
     local lava_gasvent = table.deepcopy(lava_intake)
     lava_gasvent.name = "nullius-lava-intake-" .. i .. "-gasvent"
     lava_gasvent.localised_name = {"entity-name.nullius-lava-gasvent"}
-    lava_gasvent.placeable_by = {item = "nullius-seawater-intake-" .. i, count = 1}
     lava_gasvent.next_upgrade = nil
-    lava_gasvent.energy_source = {type = "void"}
-    -- Never crafts: a recipe category with no recipes. The hidden drill vents gas.
     lava_gasvent.crafting_categories = {"nullius-gas-vent-shell"}
-    lava_gasvent.fixed_recipe = nil
-    -- Keep a directional connection so Factorio allows the shell to rotate.
-    -- Its private connection category cannot join ordinary pipes; the hidden
-    -- drill remains the sole owner of the physical gas network at this position.
+    lava_gasvent.fixed_recipe = "nullius-gas-venting"
+    lava_gasvent.crafting_speed = 1
+    lava_gasvent.module_slots = 0
+    lava_gasvent.allowed_effects = {"speed"}
+    lava_gasvent.effect_receiver = {
+      uses_module_effects=false, uses_beacon_effects=false,
+      uses_surface_effects=false, uses_local_effects=true,
+      speed_limits={low=-0.9999,high=1000},
+    }
     lava_gasvent.fluid_boxes = {hide_connections({
       production_type = "output",
-      volume = 1,
+      volume = 1000,
+      filter = "nullius-compressed-volcanic-gas",
       pipe_connections = {{
         position = {0, 1},
         direction = defines.direction.south,
         flow_direction = "output",
-        connection_category = "nullius-gasvent-shell-direction",
       }},
     })}
     data:extend({lava_gasvent})
   end
 end
 
--- Hidden gas-vent drill: void-energy fluid mining-drill spawned by the script
--- under each gas-vent shell. Invisible and intangible (the shell is what the
--- player sees/clicks/blueprints); it mines the gas seam and outputs gas to the
--- south pipe, exactly where the shell's lava output used to be.
+-- Retain the old hidden prototypes so configuration changes can transfer their
+-- gas into the intake before removing them from released saves.
 local gas_vent_drill = table.deepcopy(data.raw["mining-drill"]["nullius-extractor-1"])
 gas_vent_drill.name = "nullius-gas-vent-drill"
 gas_vent_drill.localised_name = {"entity-name.nullius-lava-gasvent"}
@@ -430,10 +434,7 @@ gas_vent_drill.output_fluid_box = {
 }
 data:extend({gas_vent_drill})
 
--- Invisible infinite gas resource mined by the hidden drill. No autoplace -- only
--- script-spawned under a shell. infinite_depletion_amount = 0 means the engine
--- never changes its amount; vulcanus_gasvent.lua owns it and throttles output by
--- rewriting amount to NORMAL/sqrt(N). NORMAL here must match the runtime script.
+-- Legacy gas seam, removed with its drill during configuration changes.
 data:extend({
   {
     type = "resource",

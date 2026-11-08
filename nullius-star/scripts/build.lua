@@ -176,14 +176,6 @@ function entity_destroyed(event)
   if (remove_transmitter(unit_number)) then return end
 end
 
-function entity_rotated(event)
-  local entity = event.entity
-  if entity and entity.valid and string.sub(entity.name, -8) == "-gasvent" then
-    vulcanus_gasvent.rotated(entity)
-  end
-end
-
-
 script.on_event(defines.events.on_built_entity, entity_hand_built)
 script.on_event(defines.events.on_robot_built_entity, entity_bot_built)
 script.on_event(defines.events.script_raised_built, entity_raised)
@@ -194,7 +186,6 @@ script.on_event(defines.events.on_player_mined_entity, entity_mined)
 script.on_event(defines.events.on_robot_mined_entity, entity_mined)
 script.on_event(defines.events.on_entity_died, entity_died)
 script.on_event(defines.events.on_object_destroyed, entity_destroyed)
-script.on_event(defines.events.on_player_rotated_entity, entity_rotated)
 
 
 function update_tick()

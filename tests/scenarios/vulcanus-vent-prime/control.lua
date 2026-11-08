@@ -66,8 +66,8 @@ local function check_production()
   local pipes = entities_at(surface, "pipe", storage.pipe_position)
 
   check(#vents == 1, "gas-vent shell disappeared during production")
-  check(#drills == 1, "vent did not retain exactly one owned hidden drill")
-  check(#seams == 1, "vent did not retain exactly one owned hidden resource")
+  check(#drills == 0, "vent created a hidden drill")
+  check(#seams == 0, "vent created a hidden resource")
   check(#tanks == 1, "gas buffer disappeared during production")
   check(#pipes == 1, "gas connection pipe disappeared during production")
 
@@ -187,21 +187,16 @@ local function setup()
 
   check(#entities_at(surface, VENT, position) == 1,
     "free-gas mode did not create exactly one visible vent")
-  check(#entities_at(surface, DRILL, position) == 1,
-    "free-gas mode did not create exactly one owned hidden drill")
-  check(#entities_at(surface, SEAM, position) == 1,
-    "free-gas mode did not create exactly one owned hidden resource")
+  check(#entities_at(surface, DRILL, position) == 0,
+    "free-gas mode created a hidden drill")
+  check(#entities_at(surface, SEAM, position) == 0,
+    "free-gas mode created a hidden resource")
 
-  local drills = entities_at(surface, DRILL, position)
-  if #drills ~= 1 then finish() return end
   check(vent.rotate(), "free-gas vent refused clockwise rotation")
   check(vent.direction == defines.direction.east,
     "free-gas vent did not rotate from north to east")
-  remote.call("nullius-test-gasvent", "rotated", vent)
-  check(drills[1].direction == vent.direction,
-    "hidden gas drill did not follow free-gas vent rotation")
   local pipe_position = nil
-  for _, connection in pairs(fluid_api.connections(drills[1], 1)) do
+  for _, connection in pairs(fluid_api.connections(vent, 1)) do
     if connection.target_position then
       pipe_position = connection.target_position
       break

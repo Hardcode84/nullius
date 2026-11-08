@@ -161,11 +161,9 @@ local pump_valve_pairs = {
 -- free lava intake -> free-gas vent -> free lava intake.
 -- The lava intake is void-powered: a shore intake can't practically take gas on
 -- its lava side (pipes cannot be placed on lava), and bootstrap has no
--- electricity. The gas vent is a cosmetic assembling-machine shell. Registering
--- it spawns the hidden drill + gas resource used for diminishing-returns
--- throttling; leaving it tears both down. replace_pump_valve is used
--- (destroy+create, no fluid carryover): the modes have differently-filtered
--- fluid boxes (lava vs gas), so the default save/restore could mishandle them.
+-- electricity. Gas mode crafts directly, with a local speed effect for its
+-- surface share. Mode changes discard the old fluid, as the two modes have
+-- different fluid filters.
 for i = 1, 2 do
   local lava = "nullius-lava-intake-" .. i
   local pneumatic = lava .. "-pneumatic"  -- legacy/dev saves only.

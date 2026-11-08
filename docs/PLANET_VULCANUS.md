@@ -302,7 +302,13 @@ free lava intake + diminishing-return gas vent
 ```
 
 - The vent is a bootstrap source, not a scalable power system.
-- Vent output scales sublinearly with the number of vents on a surface.
+- Each vent crafts gas directly. Its local speed effect follows the square-root
+  share of all vents on the surface, across all forces and intake tiers.
+  Mining-productivity research increases each owner's output as before.
+- Placement, removal, and mining-research changes update the shares. Modules
+  and beacons cannot change them. The native speed floor applies, as for radio
+  dishes.
+- The intake owns its output connection, so rotation needs no script handler.
 - Dedicated gas extraction scales linearly and funds the factory.
 - Material-separation recipes return gas coproducts but remain net consumers
   after machine fuel.

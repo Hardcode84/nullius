@@ -207,9 +207,7 @@ script.on_configuration_changed(
     fulgora_overload.rebuild()
     supercapacitors.rebuild()
     grid_meter.rebuild()
-    if not storage.nullius_gasvents then
-      vulcanus_gasvent.init()
-    end
+    vulcanus_gasvent.rebuild()
 	  init_alignment()
     init_techs()
     init_mission_global()
@@ -313,6 +311,7 @@ script.on_event(defines.events.on_player_created,
 
 script.on_event(defines.events.on_research_finished,
   function(event)
+    vulcanus_gasvent.research_changed(event)
     local techname = event.research.name
     if ((storage.nullius_broken_status ~= nil) and
 	    (not storage.nullius_alignment)) then
@@ -330,6 +329,16 @@ script.on_event(defines.events.on_research_finished,
     end
   end
 )
+
+script.on_event(defines.events.on_research_reversed, function(event)
+  vulcanus_gasvent.research_changed(event)
+end)
+script.on_event({defines.events.on_technology_effects_reset, defines.events.on_force_reset}, function(event)
+  vulcanus_gasvent.refresh_force(event.force)
+end)
+script.on_event(defines.events.on_forces_merged, function(event)
+  vulcanus_gasvent.refresh_force(event.destination)
+end)
 
 commands.add_command("flip_valves", nil, function(command)
   for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered{type = "valve"}) do
