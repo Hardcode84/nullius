@@ -219,10 +219,8 @@ motors, filters, pumps, belts, logistics, vehicles, electrical components, and
 their boxed production families. Resolved prerequisite contracts define the
 current closure; this document does not duplicate their ingredient lists.
 
-Rocket fuel: design only. Vulcanus launch fuel burns aluminum powder in
-compressed atmospheric CO2 and needs no polymer, water, or organic input. The
-route compensates for low propellant performance with large input amounts per
-fuel unit. Shared rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
+Rocket fuel uses the polymer-free route in
+[Aluminum-CO2 rocket fuel](#aluminum-co2-rocket-fuel).
 
 Thermite cliff explosives replace the ordinary organic explosive route. They
 tie aluminum powder to barreled chlorine and sulfur chemistry; unstable
@@ -241,6 +239,86 @@ Both prerequisite manifests pass with local inputs and no electricity, including
 machine construction and fuel. Contracts: `tests/progression/vulcanus-anfo-*.args`.
 Iron oxide adds wire, water, oxygen and flotation costs.
 Runtime: `vulcanus-anfo` checks both unlocks and one pipe-fed craft per recipe.
+
+### Aluminum-CO2 rocket fuel
+
+Design only. Vulcanus launch fuel burns aluminum powder in liquefied
+atmospheric CO2. The charge needs no polymer, water, or organic input, so
+Vulcanus can launch its first rocket from local production. CO2 is a weak
+oxidizer, so each fuel unit takes more aluminum than any other route. Shared
+rules: [Launch fuel](SPACE_AGE_BRAINSTORM.md#launch-fuel).
+
+Measured blocker: `vulcanus-launch-closure.args` cannot make the rocket or the
+stage on Vulcanus because both need `rocket-fuel`. The existing recipe fails only
+on rubber, and RP-1 only on plastic; both are limited to cool planets by the
+polymer policy above.
+
+```yaml
+recipe: nullius-aluminum-co2-rocket-fuel
+category: basic-chemistry
+time: 40 s
+inputs: 60 aluminum powder + 600 compressed CO2 + 1 canister + 2 cliff explosives
+outputs: 3 rocket-fuel
+roles:
+  aluminum_powder: fuel; burns to alumina
+  compressed_co2: oxidizer, liquefied in the canister
+  canister: pressure vessel, consumed with the charge
+  cliff_explosives: igniter
+productivity: none (allow_productivity false, maximum_productivity 0)
+surface_conditions: none
+main_product: rocket-fuel
+boxed: auto_boxed nullius-boxed-aluminum-co2-rocket-fuel; 60 boxed aluminum powder
+  + 3000 compressed CO2 + 1 boxed canister + 2 boxed explosives -> 3 boxed rocket fuel, 200 s
+icons: rocket fuel with a CO2 overlay, the RP-1 icon layout
+```
+
+| Technology | Value |
+|---|---|
+| Name | `nullius-aluminum-co2-propellant` |
+| Ownership | Vulcanus research, defined in `prototypes/planet/vulcanus-technology.lua` beside Titanium Rocket Structures; its metallurgic science is made only on Vulcanus |
+| Unlocks | Ordinary and boxed recipes |
+| Prerequisites | `nullius-rocket-science-1`, `nullius-pneumatic-technology` |
+| Gate choice | Pneumatic Technology is the first Vulcanus-only research: it requires the Vulcanus probe and unlocks metallurgic science. A later Vulcanus gate only delays the first local launch; the stage already waits for Rocket Science 2 |
+| Unit | Same as Titanium Rocket Structures; one unit definition shared with it and RP-1 fuel, parameterized by planet pack |
+| Closure | Rocket Science 1 already includes Pressure Containment, Aluminum Working 2, Explosives 1 and 2, Freight Transportation 1, and Packaging 4 to 6; Pneumatic Technology includes the Vulcanus probe |
+
+| Rule | Value |
+|---|---|
+| Item | Existing `rocket-fuel`; launch stages are unchanged |
+| Item weight | Unchanged: the weight rule uses the recipe named `rocket-fuel` |
+| Explosives on Vulcanus | ANFO; thermite is a hand craft and cannot feed a chemical plant |
+| Aluminum floor | 20 powder per fuel, above the 4.67 that recovery of the burnt alumina returns without productivity; see [RP-1](SPACE_AGE_BRAINSTORM.md#rp-1) |
+| Energy floor | Machine energy to make one fuel exceeds its 60 MJ fuel value, so the fuel cannot become a power source; the same bound covers the Nauvis and RP-1 recipes |
+| Planet restriction | Research only. The recipe has no surface condition, so once researched it also runs on platforms and other planets, like RP-1 |
+
+#### Validation contracts
+
+| Check | Contract |
+|---|---|
+| Vulcanus first launch | `vulcanus-launch-closure.args` exits 0 with `--recipe rocket-fuel=nullius-aluminum-co2-rocket-fuel` and `--recipe cliff-explosives=nullius-anfo-explosive` |
+| Unlock craftability | `vulcanus-co2-fuel-closure.args` and `vulcanus-co2-fuel-bulk.args` close the ordinary and boxed recipes, chemical plant, pipes, and tank at the technology with `--require-no-additional-technologies` |
+| Vulcanus ownership | `tools/check_launch_vehicle.py` requires the technology's unit to include metallurgic science and its closure to include `nullius-probe-vulcanus` |
+| Aluminum floor | `rocket-fuel-aluminum` adds this recipe; recovered powder per fuel stays below the recipe's input |
+| Energy floor | `tools/check_launch_vehicle.py`, through the manifest energy total below; fails at or below the fuel value for every `rocket-fuel` route |
+| Stage cost | `tools/check_launch_vehicle.py` prices the default and titanium stages with Vulcanus fuel against a Vulcanus boundary and reports each raw class separately |
+| Player path | `vulcanus-co2-fuel`: finite inputs feed pneumatic chemical plants through pipes; ordinary and boxed crafts finish; no productivity accrues |
+| Locale | `python tools/check_factorio_locale.py` |
+
+The energy floor needs a manifest query that does not exist yet:
+
+```yaml
+query: production manifest energy total
+input: existing --manifest --marginal arguments and target quantities
+output:
+  energy_joules:
+    electric: sum of energy_per_cycle_joules * cycles over electric executors
+    heat: same over heat executors
+    burner: same over solid-fuel executors
+  rule: fluid-fuelled executors count through the production of their fuel,
+    which the manifest already expands with --fuel; their own cycles are excluded
+    to avoid counting the same energy twice
+consumer: tools/check_launch_vehicle.py
+```
 
 ### High-temperature resin
 
@@ -586,6 +664,7 @@ failure: unfed demolisher ceases operation or dies
 | Refractory and titanium industry | Hot casting, local chemistry, and thermal storage are available | Refractory materials and pilot titanium equipment are produced locally | `vulcanus-boric-acid`, `carbothermic-sodium`, `vulcanus-refractory-production`, `vulcanus-titanium-pilot`, `vulcanus-titanium-construction` | `vulcanus-boric-acid.args`, `carbothermic-sodium.args`, `vulcanus-refractory-production.args`, `vulcanus-titanium-pilot.args`, `vulcanus-titanium-construction.args` |
 | Tier-2 thermal industry | Refractory and tier-2 base machines are available | Tier-2 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-2` | `nauvis-thermal-furnace-sizes.args` |
 | Tier-3 thermal industry | Tier-2 thermal industry and nuclear heat are available | Tier-3 thermal machines and heat storage operate | `thermal-engineering-technologies`, `thermal-machines-higher-tiers`, `thermal-cell-3` | — |
+| Local launch fuel (design) | Rocket Science 1, Pneumatic Technology, and local aluminum, CO2, and ANFO are available | Aluminum-CO2 rocket fuel is produced locally and the silo, stage, and rocket close on Vulcanus | `vulcanus-co2-fuel` | `vulcanus-launch-closure.args`, `vulcanus-co2-fuel-closure.args`, `vulcanus-co2-fuel-bulk.args` |
 | Thermal nanofabrication and physics science | High-temperature industry and physics intermediates are available | Thermal nanofabricators operate. Local residual gas and pre-physics executor tests cover the first physics batch; see the physics capacity section | `thermal-nanofabricators`, `vulcanus-residual-gas`, `planner-physics-executors` | `vulcanus-physics-production.args`, `tests/test_vulcanus_physics_contract.py` |
 
 ## Cross-cutting contracts

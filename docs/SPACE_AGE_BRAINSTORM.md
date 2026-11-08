@@ -1288,7 +1288,7 @@ gravity_scaling: none
 | Planet | Propellant | Local chain | Cost driver |
 |---|---|---|---|
 | Nauvis | Ammonium perchlorate composite (current recipe) | Unchanged | Rubber binder, cliff explosives, and aluminum powder; the ammonia, HCl, and oxygen come from air and seawater |
-| Vulcanus | Aluminum burned in compressed atmospheric CO2 | Aluminum powder and CO2; no organics or water | Low performance: large input amounts per fuel unit |
+| Vulcanus, after Vulcanus research | Aluminum burned in liquefied atmospheric CO2; design in [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) | Aluminum powder, compressed CO2, a consumed canister, and cliff explosives; no polymer, water, or organics | Low performance: the most aluminum per fuel unit |
 | Any planet with propene, after research | Aluminized gelled RP-1 | See [RP-1](#rp-1) | Propene |
 
 | Rule | Value |
@@ -1336,7 +1336,7 @@ no first launch may depend on them.
 
 | Query | Unresolved today | Traced cause |
 |---|---|---|
-| `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
+| `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Rubber in the current recipe; see [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) |
 | `tests/progression/fulgora-launch-closure.args` | None | The default stage and silo need no helium. The separate helium contract also checks local degassing. Fuel uses the current Nauvis recipe |
 
 ```bash
