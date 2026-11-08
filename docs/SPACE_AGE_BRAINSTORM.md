@@ -1261,7 +1261,7 @@ inputs: boxed bulk materials and loose control components
 
 | Recipe | Structure | Systems | Fuel |
 |---|---|---|---|
-| `nullius-rocket-stage` | Carbon composite, aluminum sheet, steel beam, insulation | Haste module 2, sensor node 1, heat pipe 2, ceramic, gate | Default amount |
+| `nullius-rocket-stage` | Carbon composite, aluminum sheet, steel beam, insulation | Haste module 2, sensor node 1, heat pipe 2, ceramic, gate, cliff explosives for ignition and separation | Default amount |
 | `nullius-titanium-rocket-stage` | Titanium sheet replaces aluminum sheet and steel beam; less composite and insulation | Same as default | Less |
 
 #### Silo

@@ -3,7 +3,8 @@ local modern = require("factorio-version").is_2_1
 -- Both rocket stages share their systems. The titanium stage replaces the
 -- aluminum and steel frame, needs less composite overwrap and insulation
 -- because titanium carries load and heat, and needs less fuel for its lower
--- dry mass.
+-- dry mass. Explosives ignite the engines and separate the stage once per
+-- flight, whatever the fuel.
 local function rocket_stage_ingredients(fuel_boxes, structure)
   local ingredients = {
     {type = "item", name = "nullius-box-rocket-fuel", amount = fuel_boxes},
@@ -15,6 +16,7 @@ local function rocket_stage_ingredients(fuel_boxes, structure)
     {type = "item", name = "nullius-box-heat-pipe-2", amount = 6},
     {type = "item", name = "nullius-box-ceramic-powder", amount = 20},
     {type = "item", name = "nullius-box-gate", amount = 1},
+    {type = "item", name = "cliff-explosives", amount = 2},
   }) do
     ingredients[#ingredients + 1] = ingredient
   end
