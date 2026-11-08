@@ -1,0 +1,8 @@
+@tests/progression/nauvis-launch-cost.args
+--prototype-overlay
+tests/progression/planned/rp1-rocket-fuel.json
+--technology
+nullius-hydrocarbon-combustion-3
+--recipe
+rocket-fuel=nullius-rp1-rocket-fuel
+rocket-fuel=300
