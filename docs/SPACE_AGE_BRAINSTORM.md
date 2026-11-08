@@ -1067,7 +1067,7 @@ large to transmit, so cargo carries them to a correlator.
 
 ```yaml
 removed_sources:
-  satellite: item and recipe removed; see Satellite removal
+  satellite_launch: 100 boxed astronomy packs; the satellite stays; see Satellite
   probe_launch: 1000 boxed astronomy packs and 200 boxes each of physics, chemical,
     and electrical packs; launches return nothing; 10 probes stay a mission objective
   concordance_satellite_launch: 42 astronomy packs; the launch keeps its alignment role
@@ -1079,7 +1079,7 @@ array_planets: Nauvis, Vulcanus, Fulgora; Gleba and Aquilo join when implemented
 
 | Technology | Prerequisites | Unlocks |
 |---|---|---|
-| Astronomy (`nullius-astronomy`) | Unchanged | Radio dish, correlator, blank recording module, Nauvis recording, every correlation recipe, astronomy pack boxing and unboxing |
+| Astronomy (`nullius-astronomy`) | Unchanged | Radio dish, correlator, blank recording module, Nauvis recording, every correlation recipe, astronomy pack boxing and unboxing, satellite |
 | Vulcanus Radio Astronomy (`nullius-vulcanus-radio-astronomy`) | Astronomy, Pneumatic Technology | Pneumatic radio dish, Vulcanus recording |
 | Fulgora Radio Astronomy (`nullius-fulgora-radio-astronomy`) | Astronomy, Primitive Filtration | Fulgora recording |
 
@@ -1108,7 +1108,10 @@ unlocked recipe is craftable at its technology for these recipes only:
 | Recipe | 1 blank recording module -> 1 planet recording |
 | Planet identity | Each recording recipe carries the planet's exact magnetic field and positive pressure as surface conditions. On build, and when a planet technology finishes, the script sets the surface's recording recipe and `recipe_locked`. A dish on a surface without an unlocked recording gets no recipe and a custom status |
 | Modules and beacons | None; productivity and quality disabled. Productivity would create recordings, and each returns a blank at correlation |
-| Placement | No spacing; the square-root rule below limits scaling. Fulgora dishes may stand on island ground or sand |
+| Spacing | Dishes reserve space only against other dishes, using the wind turbine mechanism: script-owned hidden fields on a dish-only collision layer. Other buildings may fill the gaps |
+| Field geometry | Wind turbine geometry: four fields reaching 30.5 tiles from the dish centre |
+| Collision layer | Dedicated layer; dishes do not interact with wind turbines or grounding coils, which share `layer_43` |
+| Placement | Fulgora dishes may stand on island ground or sand |
 
 #### Square-root array rule
 
@@ -1190,21 +1193,21 @@ Diminishing returns:
 | Mechanism | Rule |
 |---|---|
 | Square-root array rule | One planet's output grows as the square root of its dish count |
+| Array spread | Spacing spreads the growing dish count over growing area |
 | Spoiling recordings | Remote recordings must reach the correlator within the spoil time |
 | Crafting consumers | Genome recipes consume astronomy packs, so the ladder also prices Nauvis terraforming |
 
-#### Satellite removal
+#### Satellite
 
-| Consumer | Replacement |
+The satellite stays undecided. This design only decouples it from astronomy.
+
+| Rule | Value |
 |---|---|
-| `nullius-asteroid-miner-1` | The satellite's ingredients, inlined |
-| `nullius-probe` | Twice the satellite's ingredients, inlined |
-| `nullius-align-concordance-satellite` | The satellite's ingredients, inlined |
-| Astronomy unlock, locale, and the mission text about satellite contact | Updated for recordings and correlation |
-| `silo-compat` scenario and `tools/test_silo_compatibility.py` | Satellite launch returns no longer exist; the launch path is covered by the probe in `launch-vehicle` |
-
-Inlining keeps each consumer's material cost; only the satellite's own craft
-time disappears.
+| Item and recipe | Kept, still unlocked by Astronomy |
+| Consumers | Unchanged: asteroid miner, probe, and concordance satellite |
+| Launch | No astronomy pack return; `send_to_orbit_mode` becomes `not-sendable`, so an automatic silo cannot burn one |
+| `silo-compat` scenario and `tools/test_silo_compatibility.py` | Drop the satellite science return; the probe in `launch-vehicle` covers the launch path |
+| Locale and mission text | Satellite description and the mission's "satellite contact" text describe recordings and correlation |
 
 #### Validation contracts
 
@@ -1213,7 +1216,7 @@ time disappears.
 | Research placement | Astronomy and planet technology prerequisites and unlocks; Astronomy closure unchanged |
 | Correlation craftability | One progression contract per correlation recipe, as above |
 | Blank modules | Ordinary and boxed closure on Nauvis at Astronomy, and on Vulcanus and Fulgora at their radio astronomy technologies |
-| `astronomy-array` | Built dishes receive and lock their planet's recipe; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; removal raises the remaining share |
+| `astronomy-array` | Built dishes receive and lock their planet's recipe; a dish inside another dish's field is refused; a platform dish receives none; N = 1 and N = 4 produce totals in the ratio 1 : 2 within one dither interval; removal raises the remaining share |
 | `fulgora-storm-array` | Storm interference and the square-root share multiply |
 | `astronomy-correlation` | Ground k = 1 and platform k = 2 correlation return every blank; recordings spoil to blanks at the prototype time |
 | `experiment-rocket-cargo-weights` | Recording and blank weigh the same |
@@ -1260,7 +1263,6 @@ python tools/run_factorio_tests.py experiment-storm-interference
 
 | Removed | Reason |
 |---|---|
-| Dish spacing fields on a dedicated collision layer | The square-root rule limits scaling without placement machinery |
 | Hydrogen maser component | No role beyond flavor |
 | Vulcanus receiver coolant input | The coolant was never specified; the pneumatic energy source already makes the variant local |
 | Debris mitigation gate for Fulgora sets | No asteroids exist in this slice |

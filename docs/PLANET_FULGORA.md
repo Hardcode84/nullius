@@ -869,7 +869,7 @@ Design only. The shared design is
 | Fulgora rule | Value |
 |---|---|
 | Research | Fulgora Radio Astronomy: Astronomy and Primitive Filtration; unlocks the Fulgora recording |
-| Dish placement | Island ground or sand; no spacing |
+| Dish placement | Island ground or sand; mutual spacing against other dishes only |
 | Power | Electric |
 | Interference | `min(1, nullius-storm-intensity / 100)`: 0.25 by day, 1 by night |
 | Controller | The square-root array controller; storm interference multiplies each dish's duty |
