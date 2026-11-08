@@ -172,6 +172,7 @@ function probe.migrate_landings()
 end
 
 -- Research activation is idempotent, including after loss of the body or wreck.
+-- The probe technology's own effect unlocks the planet as a space location.
 function probe.on_probe_researched(tech_name, force)
   local planet_name = destinations[tech_name]
   if not planet_name then return end
@@ -199,7 +200,6 @@ function probe.on_probe_researched(tech_name, force)
     force.chart(surface, {{-64, -64}, {64, 64}})
     force.print({"nullius-probe.activated", {"space-location-name." .. planet_name}})
   end
-  force.unlock_space_location(planet_name)
   for _, player in pairs(force.players) do probe.attach_player(player) end
 end
 

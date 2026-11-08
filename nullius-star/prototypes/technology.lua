@@ -2653,7 +2653,9 @@ data:extend({
     order = "nullius-df",
     icon = "__space-age__/graphics/icons/vulcanus.png",
     icon_size = 64,
-    effects = {},
+    effects = {
+      {type = "unlock-space-location", space_location = "nullius-vulcanus"}
+    },
     unit = {
       count = 30,
       ingredients = {

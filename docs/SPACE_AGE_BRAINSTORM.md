@@ -914,8 +914,9 @@ come from planets. The android needs no life support or habitat.
 
 Orbital Construction follows Rocket Science 2 and uses the Composites 2 research
 cost. It enables the platform interface, the route home to Nauvis, the four
-component recipes, foundation packaging, and propellant conditioning. Probe
-activation enables each destination. The current routes have no asteroid spawns.
+component recipes, foundation packaging, and propellant conditioning. Each probe
+technology unlocks its planet as a destination through its research effect. The
+current routes have no asteroid spawns.
 
 | Component | Materials | Crafting category |
 |---|---|---|

@@ -120,7 +120,7 @@ data:extend({planet, {
 }, {
   type = "technology", name = "nullius-probe-fulgora", order = "nullius-df",
   icon = "__space-age__/graphics/icons/fulgora.png", icon_size = 64,
-  effects = {},
+  effects = {{type = "unlock-space-location", space_location = "nullius-fulgora"}},
   prerequisites = {"nullius-interplanetary-signal-acquisition", "nullius-insulation-1"},
   unit = {count = 30, time = 20, ingredients = {
     {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},

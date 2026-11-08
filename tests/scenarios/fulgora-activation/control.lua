@@ -58,6 +58,7 @@ script.on_nth_tick(1, function()
   local force = game.forces.player
   if game.tick == 1 then
     check(game.planets["nullius-fulgora"].surface == nil, "Fulgora was created before research")
+    check(not force.is_space_location_unlocked("nullius-fulgora"), "Fulgora was unlocked before research")
     check(commands.commands["nullius-fulgora"] ~= nil, "missing Fulgora command")
     local tech = force.technologies["nullius-probe-fulgora"]
     check(tech.prerequisites["nullius-interplanetary-signal-acquisition"] ~= nil, "missing signal prerequisite")

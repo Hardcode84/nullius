@@ -147,6 +147,8 @@ local function activate()
   check(pneumatic ~= nil, "missing nullius-pneumatic-technology")
   check(probe ~= nil, "missing nullius-probe-vulcanus")
   if not pneumatic or not probe then finish() return end
+  check(not force.is_space_location_unlocked("nullius-vulcanus"),
+    "Vulcanus space location was unlocked before research")
 
   observations.pneumatic_research_count =
     research.complete_with_prerequisites(pneumatic)

@@ -401,8 +401,15 @@ if script.active_mods["factorio-test-support"] then
     cycle = function(player_index, reverse)
       cycle_body(game.get_player(player_index), reverse)
     end,
+    -- Research the probe so its effects apply; repeat activation directly.
     activate = function(force, destination)
-      probe.on_probe_researched("nullius-probe-" .. (destination or "vulcanus"), force)
+      local name = "nullius-probe-" .. (destination or "vulcanus")
+      local technology = force.technologies[name]
+      if technology.researched then
+        probe.on_probe_researched(name, force)
+      else
+        technology.researched = true
+      end
     end,
     snapshot = function(player_index, destination)
       local player = game.get_player(player_index)
