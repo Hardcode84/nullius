@@ -751,6 +751,16 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             + ", ".join(unknown_forbidden_categories)
         )
 
+    forbidden_products = set(getattr(args, "forbid_product", []))
+    known_products = set(data.get("fluid", {}))
+    for prototypes in data.values():
+        if isinstance(prototypes, dict):
+            known_products.update(name for name, prototype in prototypes.items()
+                                  if isinstance(prototype, dict) and "stack_size" in prototype)
+    unknown = forbidden_products - known_products
+    if unknown:
+        raise TestFailure("unknown forbidden products: " + ", ".join(sorted(unknown)))
+
     producers: dict[str, list[str]] = defaultdict(list)
     eligible_recipes: set[str] = set()
     unlockers: dict[str, list[str]] = defaultdict(list)
@@ -1230,6 +1240,13 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "unresolved": sorted(set(unresolved)),
         "blocked_recipes": blocked_recipes,
     }
+    used_products = set(args.targets)
+    for step in selected:
+        used_products.add(step["product"])
+        if step.get("provider"):
+            used_products.add(step["provider"])
+        used_products.update(ingredient["name"] for ingredient in step["ingredients"])
+    report["forbidden_dependencies"] = sorted(forbidden_products & used_products)
     report["electric_required_paths"] = find_electric_required_paths(
         args.targets, selected
     )
@@ -1598,6 +1615,7 @@ def print_human(report: Prototype, compact: bool = False) -> None:
     print("Targets: " + ", ".join(report["targets"]))
     forbidden = ", ".join(report["forbidden_categories"]) or "none"
     print("Forbidden crafting categories: " + forbidden)
+    print("Forbidden dependencies: " + (", ".join(report.get("forbidden_dependencies", [])) or "none"))
     print(f"Selected production steps: {len(report['selected_recipes'])}")
     for step in ([] if compact else report["selected_recipes"]):
         ingredients = ", ".join(
@@ -1831,6 +1849,8 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="fail if any selected production step requires an electric executor",
     )
+    parser.add_argument("--forbid-product", action="append", default=[], metavar="ITEM_OR_FLUID",
+                        help="fail if a selected recipe or executor requires this product")
     parser.add_argument("--json", action="store_true", dest="json_output")
     parser.add_argument(
         "--describe-recipe",
@@ -2116,6 +2136,7 @@ def main() -> int:
             1
             if report["unresolved"]
             or report["invalid_raw"]
+            or report["forbidden_dependencies"]
             or failed_technology_contract
             or failed_electricity_contract
             else 0

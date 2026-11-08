@@ -1,4 +1,6 @@
 @tests/progression/fulgora-launch-closure.args
+nullius-helium=1
+nullius-compressed-helium=1
 nullius-rocket=1
 nullius-electromagnetic-pack=1
 nullius-climatology-pack=1

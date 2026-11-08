@@ -333,3 +333,5 @@ require("prototypes.planet.fulgora-reinjection")
 require("prototypes.planet.fulgora-placement")
 
 require("prototypes.planet.fulgora-organic-productivity")
+
+require("prototypes.launch-vehicle")

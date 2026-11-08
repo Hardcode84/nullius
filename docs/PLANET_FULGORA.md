@@ -261,8 +261,8 @@ Slurry climatology uses the captured air without seawater.
 Helium light enough to escape leaves none in the atmosphere, so it
 comes from the primordial hydrocarbon ocean, where it stays dissolved through
 filtration. Slow, cold fractionation during cracking recovers it as the lightest
-fraction. The current rocket and silo need it for heat pipe 3 and processor 2;
-the planned titanium-free default needs none. See
+fraction. Heat pipe 3 and processor 2 need it. The default rocket stage and silo
+need none. See
 [Cargo closure](SPACE_AGE_BRAINSTORM.md#cargo-closure).
 
 | Property | Rule |
@@ -285,9 +285,8 @@ the planned titanium-free default needs none. See
 | Rejected: helium from slurry filtration | Hydro plants have two fluid outputs, both used by filtration |
 
 Validation: `tests/progression/fulgora-launch-closure-helium.args` checks that the
-local rocket path and research packs are reachable with the implemented recipes.
-`tests/progression/fulgora-launch-manifest.args` quantifies the rocket and silo;
-degassing takes a small share of cracking there, before the helium checkpoint.
+local rocket path, helium, compressed helium, and research packs are reachable.
+`tests/progression/fulgora-launch-manifest.args` quantifies the rocket and silo.
 The `fulgora-helium` scenario checks research gates and production on Fulgora, for
 ordinary and bulk recipes on every distillery tier. Recipe values live in
 `nullius-star/prototypes/planet/fulgora-recipes.lua` and research values in

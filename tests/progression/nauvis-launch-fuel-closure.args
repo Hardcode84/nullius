@@ -1,5 +1,5 @@
 --technology
-nullius-physics
+nullius-rocket-science-1
 --require-no-additional-technologies
 @tests/progression/nauvis-launch-boundary.args
 processed-fuel
@@ -11,3 +11,5 @@ nullius-iron-oxide
 nullius-aluminum-powder
 nullius-rubber
 cliff-explosives
+rocket-fuel
+nullius-box-rocket-fuel

@@ -395,6 +395,9 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
             factorio, dependencies, archive, args.timeout_seconds, root / "factorio"
         )
         contract_count = run_progression_contracts(data_raw, args.timeout_seconds)
+        run_checked([sys.executable, str(REPOSITORY / "tools/check_launch_vehicle.py"),
+                     "--data-raw", str(data_raw), "--output", str(root / "launch-cost.json")],
+                    "launch vehicle cost bounds", args.timeout_seconds)
         run_unlock_audits(data_raw, args.timeout_seconds, root)
         bootstrap = run_bootstrap_checks(data_raw, args.timeout_seconds, root)
         extracted_mod = extract_release(archive, root / "extracted")

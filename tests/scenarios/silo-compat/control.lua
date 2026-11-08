@@ -1,7 +1,7 @@
 -- given: one production rocket recipe batch, one satellite, and electric power
 -- place/connect: production silo on a powered grid, with a cargo landing pad
 -- act: craft the rocket and request a launch when ready
--- run: up to 30000 ticks; check every 60 ticks
+-- run: up to 7200 ticks; check every 60 ticks
 -- expect: exact ingredient consumption, one launch, and satellite science return
 local function expect(ok, message)
   storage.assertions = storage.assertions + 1
@@ -29,7 +29,7 @@ script.on_init(function()
   expect(silo ~= nil, "silo placed")
   expect(silo.get_recipe().name == "nullius-rocket", "production fixed recipe")
   local recipe = prototypes.recipe["nullius-rocket"]
-  expect(recipe.energy == 400, "400-second recipe")
+  expect(recipe.energy == 60, "60-second recipe")
   for _, ingredient in pairs(recipe.ingredients) do
     expect(silo.insert{name=ingredient.name,count=ingredient.amount} == ingredient.amount, "feed " .. ingredient.name)
   end
@@ -56,7 +56,7 @@ script.on_nth_tick(60, function()
     }, false)
     script.on_nth_tick(60, nil)
   else
-    assert(game.tick < 29940, "silo launch/science deadline; status=" .. silo.rocket_silo_status .. " progress=" .. silo.crafting_progress .. " products=" .. silo.products_finished .. " requested=" .. tostring(storage.requested) .. " energy=" .. silo.energy)
+    assert(game.tick < 7140, "silo launch/science deadline; status=" .. silo.rocket_silo_status .. " progress=" .. silo.crafting_progress .. " products=" .. silo.products_finished .. " requested=" .. tostring(storage.requested) .. " energy=" .. silo.energy)
   end
 end)
 

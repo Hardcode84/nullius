@@ -958,7 +958,8 @@ crafting time only; item weight and entity health are unchanged.
 |---|---|---|
 | Vulcanus rutile or titanium | Platform components | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
 | Vulcanus rutile or titanium | Rocket stage | At most two thirds of the default stage's Nauvis raw input, and at most half its crafting time. Fuel is most of the default stage's raw input, and lower dry mass cuts fuel by less than the one-third bound requires |
-| Nauvis synthetic rutile | All | Total raw cost no lower than the default recipe, so the default stays the pre-cargo route |
+| Nauvis synthetic rutile | Platform components | Total raw cost no lower than the default recipe |
+| Nauvis synthetic rutile | Rocket stage | Savings are allowed; both stage recipes unlock together |
 
 #### Vacuum placement
 
@@ -1010,9 +1011,9 @@ needs debris mitigation.
 |---|---|
 | `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-cost.args nullius-rocket=1` | Per-unit raw cost of any item on Nauvis; machines excluded |
 | `python3 tools/analyze_factorio_prereqs.py --describe-research-closure nullius-rocket-science-2` | Research packs and lab time up to a technology |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-fuel-closure.args` | Fuel ingredients close at `nullius-physics` on Nauvis |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-titanium-free-closure.args` | Default stage and silo ingredients close at `nullius-composites-2` on Nauvis |
-| `python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-titanium-free-closure.args` | The same ingredients close at `nullius-composites-2` on Fulgora, without helium |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-fuel-closure.args` | Fuel and its boxed recipe close at Rocket Science 1 on Nauvis |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/nauvis-launch-titanium-free-closure.args` | Default stage, silo, and boxed inputs close at Rocket Science 2 on Nauvis |
+| `python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-titanium-free-closure.args` | The same products close at Rocket Science 2 on Fulgora, without titanium or helium |
 | `python tools/run_factorio_tests.py --keep-run-directory experiment-rocket-cargo-weights` | Engine-computed item weights and silo cargo properties |
 
 #### Engine checks before implementation
@@ -1167,31 +1168,18 @@ python tools/run_factorio_tests.py experiment-storm-interference
 
 ### 4.6 Launch Vehicle
 
-Design only. Every exporting planet builds its silo and rockets from local
-production; see [Cargo closure](#cargo-closure). Platform thruster propellant is a
-separate design.
-
-```yaml
-current:
-  rocket: >-
-    nullius-rocket, the silo's fixed recipe; titanium sheet, haste module 3 and
-    sensor node 2 (titanium tetrachloride), heat pipe 3, and a box of logistic bots
-  silo: six of eight ingredients are titanium-tier buildings
-  research: >-
-    fuel at nullius-rocket-science-1, after Demolitions 2, Freight Transportation 3,
-    and High Pressure Chemistry 2; rocket and silo at nullius-rocket-science-2,
-    after Braking 8 and Personal Transportation 4
-  cargo: silo launch_to_space_platforms false; one insertion slot
-```
+Implemented: early launch research, both rocket stages, the silo, and native
+platform cargo. Satellite returns and probe missions still work. Planet-specific
+fuel alternatives below remain design work.
 
 #### Launch research
 
 Rocket fuel and the default rocket need nothing later than the first physics
-technologies. `nauvis-launch-fuel-closure.args` closes the fuel ingredients at
-`nullius-physics`. `nauvis-launch-titanium-free-closure.args` closes the default
-stage and silo ingredients at `nullius-composites-2`, the only technology they add
-past `nullius-physics`. Titanium sheets, loose and boxed, also close there, so
-both stage recipes unlock together.
+technologies. `nauvis-launch-fuel-closure.args` checks fuel and its boxed recipe
+at Rocket Science 1. `nauvis-launch-titanium-free-closure.args` closes the default
+stage, silo, and their boxed inputs at Rocket Science 2. These checks reject
+titanium and helium dependencies. Titanium sheets are also available at this
+research boundary, so both stage recipes unlock together.
 
 | Technology | Unlocks | Prerequisites | Unit cost |
 |---|---|---|---|
@@ -1220,7 +1208,7 @@ rocket_recipe: 1 nullius-rocket-stage -> 1 nullius-rocket; productivity allowed 
 stage_recipes: productivity disabled, so productivity applies once per rocket
 fuel: a stage ingredient, so the titanium stage can take less
 removed: logistic bots
-inputs: boxed bulk items, as in the current rocket recipe
+inputs: boxed bulk materials and loose control components
 ```
 
 | Recipe | Structure | Systems | Fuel |
@@ -1251,10 +1239,7 @@ current:
     + 3 iron oxide + 35 aluminum powder + 14 rubber + 2 cliff explosives
     -> 3 rocket fuel + 200 wastewater, 40 s, basic-chemistry
   unlock: nullius-rocket-science-1
-  per_launch: nullius-rocket takes 50 boxed rocket fuel (250); the silo needs 1 rocket
-target:
-  unlock: Rocket Science 1 at nullius-physics; see Launch research
-  per_launch: taken by the rocket stage recipes
+  per_launch: fuel is consumed by the selected stage recipe
 gravity_scaling: none
 ```
 
@@ -1284,21 +1269,16 @@ no first launch may depend on them.
 | Query | Unresolved today | Traced cause |
 |---|---|---|
 | `tests/progression/vulcanus-launch-closure.args` | `rocket-fuel` | Fuel route is designed above |
-| `tests/progression/fulgora-launch-closure.args` | None | [Degassing cracking](PLANET_FULGORA.md#helium) supplies helium for the current silo and rocket (`fulgora-launch-closure-helium.args`). The titanium-free default needs none (`fulgora-launch-titanium-free-closure.args`). This boundary is the bootstrap one, so its fuel route uses the current Nauvis recipe |
+| `tests/progression/fulgora-launch-closure.args` | None | The default stage and silo need no helium. The separate helium contract also checks local degassing. Fuel uses the current Nauvis recipe |
 
 ```bash
 python3 tools/analyze_factorio_prereqs.py @tests/progression/vulcanus-launch-closure.args
 python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-closure.args
 ```
 
-`tests/progression/fulgora-launch-manifest.args` also quantifies Fulgora's rocket and
-silo. It declares a chlorine stock; without it the execution-order check fails on
-chlorine, which titanium tetrachloride consumes. The stock is not proven to be
-a scheduling prime: on Nauvis, `nauvis-launch-cost.args` without `--marginal`
-fails the same check on chlorine for one rocket or one silo even with 200
-chlorine stocked, while two of each pass. The planner's execution-order check
-needs a trace of that failure before any stock is declared for it. The
-titanium-free default stage and silo consume no titanium tetrachloride.
+`tests/progression/fulgora-launch-manifest.args` checks the local rocket and silo
+production quantities. `tools/check_launch_vehicle.py` checks both titanium
+supply routes against the default stage and enforces the cost and time bounds.
 
 The Vulcanus query exits 1 until its fuel route is implemented. Gleba and Aquilo
 need the same query. The default stage and silo consume aluminum, iron, and steel,

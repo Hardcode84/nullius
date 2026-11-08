@@ -60,6 +60,8 @@ Declare the starting contract explicitly:
 - `--surface-property NAME=VALUE` excludes recipes incompatible with a declared
   surface property. Undeclared properties use the prototype `default_value`,
   as Factorio does; an unknown property name fails.
+- `--forbid-product ITEM_OR_FLUID` rejects a selected dependency, even when
+  that material is available at the declared research boundary.
 - `--forbid-category CATEGORY` excludes an operation unavailable at the
   campaign boundary even when a shared machine item can execute it elsewhere.
   For example, forbid `seawater-pumping` on a surface without seawater while

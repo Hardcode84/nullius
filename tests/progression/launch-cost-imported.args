@@ -1,0 +1,11 @@
+--manifest
+--marginal
+--technology
+nullius-rocket-science-2
+--require-no-additional-technologies
+@tests/progression/nauvis-launch-boundary.args
+--recipe
+nullius-rocket-stage=nullius-titanium-rocket-stage
+--raw
+nullius-rutile
+nullius-rocket-stage=1
