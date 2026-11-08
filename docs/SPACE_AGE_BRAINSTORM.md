@@ -1453,7 +1453,7 @@ no first launch may depend on them.
 
 | Query | Unresolved today | Traced cause |
 |---|---|---|
-| `tests/progression/vulcanus-launch-closure.args` | None | [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) and ANFO supply the local launch |
+| `tests/progression/vulcanus-launch-closure.args` | None, but the silo needs electricity Vulcanus cannot make | [Aluminum-CO2 rocket fuel](PLANET_VULCANUS.md#aluminum-co2-rocket-fuel) and ANFO supply the fuel; the [pneumatic silo](PLANET_VULCANUS.md#pneumatic-silo) removes the electric path |
 | `tests/progression/fulgora-launch-closure.args` | None | The default stage and silo need no helium. The separate helium contract also checks local degassing. Fuel uses the current Nauvis recipe |
 
 ```bash
