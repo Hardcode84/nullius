@@ -9,9 +9,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('class_name')
     parser.add_argument('member', nargs='*')
+    parser.add_argument('--search', help="list members of the class, or of every class with '*', whose name or description contains this text")
     args = parser.parse_args()
     path = default_factorio().resolve().parents[2] / 'doc-html/runtime-api.json'
     api = json.loads(path.read_text())
+    if args.search:
+        needle = args.search.lower()
+        print(json.dumps(sorted(f"{c['name']}.{m['name']}" for c in api['classes']
+                                if args.class_name in ('*', c['name'])
+                                for field in ('methods', 'attributes') for m in c.get(field, [])
+                                if needle in m['name'].lower() or needle in m.get('description', '').lower()),
+                         indent=2))
+        return
     if not args.member:
         matches = [c for c in api['concepts'] if c['name'] == args.class_name]
         if not matches:

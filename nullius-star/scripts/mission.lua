@@ -356,11 +356,9 @@ script.on_event(defines.events.on_cargo_pod_finished_ascending, cargo_pod_finish
 script.on_event(defines.events.on_gui_click, gui_clicked)
 
 if script.active_mods["factorio-test-support"] then
-  remote.add_interface("nullius-test-mission", {create=create_mission,set_goal=set_mission_goal})
-end
-
-if script.active_mods["factorio-test-support"] then
-  remote.add_interface("nullius-test-launch-mission", {
+  remote.add_interface("nullius-test-mission", {
+    create = create_mission,
+    set_goal = set_mission_goal,
     probes = function() return storage.nullius_mission_count and storage.nullius_mission_count[1] or 0 end,
   })
 end

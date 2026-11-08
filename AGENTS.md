@@ -48,6 +48,19 @@
 - Mention save compatibility only for breaking changes.
 - These rules take precedence over the technical-detail guidance above.
 
+## Prototype changes
+
+- Change a Nullius prototype in the file that defines it. Do not redefine it
+  from `data-final-fixes` or another later file. Later stages may add
+  prototypes or run passes that need the complete prototype set.
+- Released data-stage code must not require test-support files. Runtime test
+  hooks extend the script's existing test-support remote interface.
+- Every recipe a technology unlocks must be craftable at that technology. Cover
+  each unlocked product with a progression contract that uses
+  `--require-no-additional-technologies`.
+- When research moves, state what each dependent technology must keep, and
+  check it with a release tool.
+
 ## Data access
 
 - Use repository scripts, Factorio's Lua API, or resolved-prototype tools.
@@ -79,6 +92,8 @@
   alternative removes an unavailable ingredient, add or verify the equivalent
   boxed bulk recipe; ordinary packaging is not a substitute for boxed recipe
   parity.
+- Never add item counts to fluid units, or imported inputs to local ones, in a
+  cost or ratio. Report and bound each raw class separately.
 
 ## Prototype locale audit
 
@@ -118,6 +133,8 @@ independence:
 - Test heat/fluid connections through placed entities, including geometry and
   delayed connection where relevant.
 - Use semantic assertions, not state hashes.
+- Test the player-facing path, not only a script shortcut. For example, robots
+  filling a platform request, not only `launch_rocket`.
 - Avoid per-tick script work; schedule checks at required ticks or terminal
   events.
 - Stage duration is a test contract, not shared orchestration machinery.
@@ -127,6 +144,8 @@ independence:
 
 ## Completion
 
+- Do not add tool options, baselines, or computations that no checked-in caller
+  uses.
 - Run focused tests and fresh resolved-prototype checks appropriate to the
   change.
 - Update stale references in adjacent documentation.

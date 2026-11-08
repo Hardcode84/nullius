@@ -4,6 +4,19 @@ local ENTITYPATH = "__nullius-star__/graphics/entity/"
 local TECHPATH = "__nullius-star__/graphics/technology/"
 local EQUIPPATH = "__nullius-star__/graphics/equipment/"
 
+-- Composites and launch research share the first physics cost tier.
+local function early_physics_unit()
+  return {
+    count = 800,
+    ingredients = {
+      {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+      {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+      {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
+    },
+    time = 40
+  }
+end
+
 data:extend({
   {
     type = "technology",
@@ -9724,15 +9737,7 @@ data:extend({
         recipe = "nullius-unbox-carbon-composite"
       }
     },
-    unit = {
-      count = 800,
-      ingredients = {
-        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
-      },
-      time = 40
-    },
+    unit = early_physics_unit(),
     prerequisites = {"nullius-physics"}
   },
 
@@ -12356,17 +12361,8 @@ data:extend({
         recipe = "nullius-unbox-rocket-fuel"
       }
     },
-    unit = {
-      count = 3500,
-      ingredients = {
-        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
-      },
-      time = 55
-    },
-    prerequisites = {"nullius-freight-transportation-3", "nullius-demolitions-2",
-		"nullius-high-pressure-chemistry-2"},
+    unit = early_physics_unit(),
+    prerequisites = {"nullius-physics"},
 		essential = true
   },
   {
@@ -12474,7 +12470,9 @@ data:extend({
       },
       time = 55
     },
-    prerequisites = {"nullius-rocket-science-1", "nullius-parallel-computing-3"},
+    prerequisites = {"nullius-rocket-science-1", "nullius-parallel-computing-3",
+      "nullius-demolitions-2", "nullius-freight-transportation-3",
+      "nullius-high-pressure-chemistry-2"},
     upgrade = true
   },
   {
@@ -12646,7 +12644,9 @@ data:extend({
       },
       time = 55
     },
-    prerequisites = {"nullius-exploration-3", "nullius-rocket-science-1"}
+    prerequisites = {"nullius-exploration-3", "nullius-rocket-science-1",
+      "nullius-demolitions-2", "nullius-freight-transportation-3",
+      "nullius-high-pressure-chemistry-2"}
   },
   {
     type = "technology",
@@ -12767,7 +12767,9 @@ data:extend({
       },
       time = 55
     },
-    prerequisites = {"nullius-checkpoint-rocket-fuel", "nullius-cybernetics-5"},
+    prerequisites = {"nullius-checkpoint-rocket-fuel", "nullius-cybernetics-5",
+      "nullius-demolitions-2", "nullius-freight-transportation-3",
+      "nullius-high-pressure-chemistry-2"},
     upgrade = true
   },
   {
@@ -12916,18 +12918,18 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-landing-pad"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-rocket-stage"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-titanium-rocket-stage"
       }
     },
-    unit = {
-      count = 4800,
-      ingredients = {
-        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 1}
-      },
-      time = 60
-    },
-    prerequisites = {"nullius-personal-transportation-4", "nullius-braking-8"},
+    unit = early_physics_unit(),
+    prerequisites = {"nullius-checkpoint-rocket-fuel", "nullius-composites-2"},
     essential = true
   },
 
@@ -12963,7 +12965,8 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-rocket-science-2", "nullius-terraforming-3", "nullius-broadcasting-4"},
+    prerequisites = {"nullius-rocket-science-2", "nullius-terraforming-3", "nullius-broadcasting-4",
+      "nullius-braking-8", "nullius-personal-transportation-4"},
     essential = true
   },
 

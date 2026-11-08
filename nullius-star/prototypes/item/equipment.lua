@@ -1,5 +1,26 @@
 local modern = require("factorio-version").is_2_1
 
+-- Both rocket stages share their systems. The titanium stage replaces the
+-- aluminum and steel structure and needs less fuel for its lower dry mass.
+local function rocket_stage_ingredients(fuel_boxes, structure)
+  local ingredients = {
+    {type = "item", name = "nullius-box-rocket-fuel", amount = fuel_boxes},
+    {type = "item", name = "nullius-box-carbon-composite", amount = 40},
+  }
+  for _, ingredient in ipairs(structure) do ingredients[#ingredients + 1] = ingredient end
+  for _, ingredient in ipairs({
+    {type = "item", name = "nullius-haste-module-2", amount = 2},
+    {type = "item", name = "radar", amount = 3},
+    {type = "item", name = "nullius-box-heat-pipe-2", amount = 6},
+    {type = "item", name = "nullius-box-insulation", amount = 12},
+    {type = "item", name = "nullius-box-ceramic-powder", amount = 20},
+    {type = "item", name = "nullius-box-gate", amount = 1},
+  }) do
+    ingredients[#ingredients + 1] = ingredient
+  end
+  return ingredients
+end
+
 local function extend_equipment_prototypes(prototypes)
   if not modern then
     for _, prototype in ipairs(prototypes) do
@@ -3486,22 +3507,57 @@ extend_equipment_prototypes({
     always_show_made_in = true,
     hide_from_player_crafting = true,
     categories = {"rocketry"},
-    energy_required = 400,
+    energy_required = 60,
+    allow_productivity = true,
     ingredients = {
-      {type = "item", name = "nullius-box-rocket-fuel", amount = 50},
-      {type = "item", name = "nullius-box-carbon-composite", amount = 40},
-      {type = "item", name = "nullius-box-titanium-sheet", amount = 30},
-      {type = "item", name = "nullius-haste-module-3", amount = 2},
-      {type = "item", name = "nullius-sensor-node-2", amount = 3},
-      {type = "item", name = "nullius-box-steel-beam", amount = 20},
-      {type = "item", name = "nullius-box-heat-pipe-3", amount = 6},
-      {type = "item", name = "nullius-box-insulation", amount = 12},
-      {type = "item", name = "nullius-box-ceramic-powder", amount = 20},
-      {type = "item", name = "nullius-box-logistic-bot-2", amount = 1},
-      {type = "item", name = "nullius-box-gate", amount = 1}
+      {type = "item", name = "nullius-rocket-stage", amount = 1}
     },
     results = {
       {type = "item", name = "nullius-rocket", amount = 1}
+    }
+  },
+  {
+    type = "item",
+    name = "nullius-rocket-stage",
+    icon = "__base__/graphics/icons/rocket.png",
+    icon_size = 64,
+    subgroup = "space",
+    order = "nullius-bb",
+    stack_size = 1,
+    auto_recycle = false
+  },
+  {
+    type = "recipe",
+    name = "nullius-rocket-stage",
+    enabled = false,
+    always_show_made_in = true,
+    categories = {"huge-crafting"},
+    energy_required = 400,
+    allow_productivity = false,
+    maximum_productivity = 0,
+    ingredients = rocket_stage_ingredients(50, {
+      {type = "item", name = "nullius-box-aluminum-sheet", amount = 60},
+      {type = "item", name = "nullius-box-steel-beam", amount = 20}
+    }),
+    results = {
+      {type = "item", name = "nullius-rocket-stage", amount = 1}
+    }
+  },
+  {
+    type = "recipe",
+    name = "nullius-titanium-rocket-stage",
+    localised_name = {"recipe-name.nullius-titanium-rocket-stage"},
+    enabled = false,
+    always_show_made_in = true,
+    categories = {"huge-crafting"},
+    energy_required = 200,
+    allow_productivity = false,
+    maximum_productivity = 0,
+    ingredients = rocket_stage_ingredients(25, {
+      {type = "item", name = "nullius-box-titanium-sheet", amount = 30}
+    }),
+    results = {
+      {type = "item", name = "nullius-rocket-stage", amount = 1}
     }
   },
 

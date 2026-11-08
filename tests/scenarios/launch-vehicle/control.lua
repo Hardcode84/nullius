@@ -28,7 +28,7 @@ script.on_init(function()
   local platform = assert(force.create_space_platform{
     name=CASE, planet="nauvis", starter_pack="space-platform-starter-pack"})
   storage.hub = assert(platform.apply_starter_pack(true))
-  storage.probes_before = remote.call("nullius-test-launch-mission", "probes")
+  storage.probes_before = remote.call("nullius-test-mission", "probes")
   for index, recipe in ipairs{"nullius-rocket-stage", "nullius-titanium-rocket-stage"} do
     local x=(index-1)*30
     local assembler=assert(surface.create_entity{name="nullius-large-assembler-1-overcharged",position={x,0},force=force})
@@ -71,7 +71,7 @@ script.on_nth_tick(60,function()
     end
   end
   if storage.hub.get_inventory(defines.inventory.hub_main).get_item_count("iron-plate")==10 and
-      remote.call("nullius-test-launch-mission","probes")==storage.probes_before+1 then
+      remote.call("nullius-test-mission","probes")==storage.probes_before+1 then
     for _,row in ipairs(storage.rows) do
       check(row.launched,"both launch paths")
       check(row.assembler.get_output_inventory().is_empty(),"no extra stage")
@@ -92,7 +92,7 @@ script.on_nth_tick(60,function()
           status_name=(function() for name,id in pairs(defines.entity_status) do if id==row.assembler.status then return name end end end)()}
       end
       error(helpers.table_to_json{rows=rows,hub=storage.hub.get_inventory(defines.inventory.hub_main).get_contents(),
-        probes=remote.call("nullius-test-launch-mission","probes"), initial_probes=storage.probes_before})
+        probes=remote.call("nullius-test-mission","probes"), initial_probes=storage.probes_before})
     end
   end
 end)

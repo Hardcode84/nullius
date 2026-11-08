@@ -10,6 +10,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
@@ -27,7 +28,9 @@ from analyze_factorio_prereqs import (
     describe_technologies,
     find_dependency_paths,
     find_electric_required_paths,
+    main,
     merge_prototype_overlay,
+    parse_arguments,
     parse_target,
     print_human,
     resolve_surface,
@@ -1372,6 +1375,33 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(TestFailure, "refuses to replace"):
             merge_prototype_overlay(data, replacement)
+
+    def test_forbidden_product_fails_even_when_available(self):
+        data = {
+            "item": {name: {"stack_size": 10} for name in ("science", "titanium")},
+            "character": {"character": {"crafting_categories": ["crafting"], "crafting_speed": 1}},
+            "recipe": {"science": {
+                "name": "science", "enabled": True, "category": "crafting",
+                "ingredients": [{"type": "item", "name": "titanium", "amount": 1}],
+                "results": [{"type": "item", "name": "science", "amount": 1}],
+            }},
+            "technology": {},
+        }
+        argv = ["--available", "titanium", "--forbid-product", "titanium", "science"]
+        args = parse_arguments(argv)
+        args.targets = ["science"]
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual(report["forbidden_dependencies"], ["titanium"])
+        with patch("sys.argv", ["analyzer", *argv]), \
+                patch("analyze_factorio_prereqs.dump_resolved_data", return_value=(data, None)), \
+                redirect_stdout(StringIO()):
+            self.assertEqual(main(), 1)
+        args.forbid_product = ["unknown"]
+        with self.assertRaisesRegex(TestFailure, "unknown forbidden products"):
+            analyze(data, args)
+        args.forbid_product = []
+        self.assertEqual(analyze(data, args)["forbidden_dependencies"], [])
 
     def create_temp_file(self, contents: str) -> Path:
         handle = tempfile.NamedTemporaryFile(mode="w", delete=False)

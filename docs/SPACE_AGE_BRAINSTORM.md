@@ -915,7 +915,7 @@ The android needs no life support or habitat.
 current_state:
   platform_prototypes: vanilla foundation, starter pack, thruster, cargo bay, collector, crusher
   unlocks: vanilla rocket-silo and space-platform technologies; unreachable
-  nullius_silo: launch_to_space_platforms false; one rocket cargo slot, so it cannot supply a platform yet
+  nullius_silo: launches to space platforms; robots fill platform requests; see [Launch vehicle](#46-launch-vehicle)
   vanilla_foundation: 20 steel + 20 copper cable
   connections: Nauvis-Vulcanus and Nauvis-Fulgora, 15,000 km each, no asteroid spawns
   vulcanus_fulgora_connection: none
@@ -923,7 +923,6 @@ current_state:
   vacuum_placement: Nullius buildings have no pressure or gravity conditions
   platform_ambient_temperature: default 25
 constraints:
-  nullius_silo: launches to space platforms with a cargo inventory; see [Launch vehicle](#46-launch-vehicle)
   first_platform: Nauvis materials only; it launches before any cargo exists
   copper: none in tier-1 platform recipes
   asteroid_processing: collector and crusher recipes hidden
@@ -944,7 +943,7 @@ constraints:
 | Debris bumper | Sacrificial wall line on the leading edge | Aluminum sheet |
 | Debris trajectory adjuster | Electric turret; `attack_target_mask` targets asteroids only | Electric; no ammunition |
 | Waste | Chimneys and voids work in vacuum | Existing |
-| Cargo landing pad | Planet surface; optional drop target | Existing recipe; imported by drop where it has no local route. See [Cargo closure](#cargo-closure) |
+| Cargo landing pad | Planet surface; optional drop target | Titanium-free building tiers, unlocked with the silo. See [Cargo closure](#cargo-closure) |
 
 #### Titanium recipes
 
@@ -957,9 +956,9 @@ crafting time only; item weight and entity health are unchanged.
 | Titanium source | Recipe | Required planner result |
 |---|---|---|
 | Vulcanus rutile or titanium | Platform components | At most one third of the default recipe's Nauvis raw input per item, and at most half its crafting time |
-| Vulcanus rutile or titanium | Rocket stage | At most two thirds of the default stage's Nauvis raw input, and at most half its crafting time. Fuel is most of the default stage's raw input, and lower dry mass cuts fuel by less than the one-third bound requires |
+| Vulcanus rutile or titanium | Rocket stage | At most two thirds of the default stage's Nauvis ore, and separately of its Nauvis gas; imported rutile is not Nauvis input. At most half its crafting time. Fuel is most of the default stage's raw input, and lower dry mass cuts fuel by less than the one-third bound requires |
 | Nauvis synthetic rutile | Platform components | Total raw cost no lower than the default recipe |
-| Nauvis synthetic rutile | Rocket stage | Savings are allowed; both stage recipes unlock together |
+| Nauvis synthetic rutile | Rocket stage | No bound; both stage recipes unlock together. It costs more Nauvis ore than the default stage and less gas |
 
 #### Vacuum placement
 
@@ -1024,7 +1023,6 @@ needs debris mitigation.
 | Thruster fluid filters and conditioning recipes | One thruster prototype for every chemistry |
 | Weights of canisters, recordings, and blank modules, added to `experiment-rocket-cargo-weights` | Propellant per trip and launches per correlation |
 | Box weight: one stack of any measured box fills a whole launch, independent of contents. Find the engine's weight source for boxes, then make box weight equal contents weight | Whether boxed cargo carries more per launch than loose cargo |
-| Silo with the Space Age cargo layout still counts satellite and probe launches | Probe mission objective after the silo change |
 | Reference platform thrust and propellant | Reference transit for recording spoilage |
 | Space-platform surface properties | Vacuum placement conditions |
 
@@ -1168,9 +1166,15 @@ python tools/run_factorio_tests.py experiment-storm-interference
 
 ### 4.6 Launch Vehicle
 
-Implemented: early launch research, both rocket stages, the silo, and native
-platform cargo. Satellite returns and probe missions still work. Planet-specific
-fuel alternatives below remain design work.
+Implemented: early launch research, both rocket stages, the silo, the landing
+pad, and platform cargo. Planet-specific fuel alternatives below remain design
+work.
+
+| Scenario | Checks |
+|---|---|
+| `launch-vehicle` | Both stage recipes, no stage productivity, silo productivity, script cargo launch to a platform, probe mission count |
+| `silo-platform-request` | Robots load the silo for a platform hub request, and the silo launches it unprompted |
+| `silo-compat` | Satellite launch returns science |
 
 #### Launch research
 
@@ -1193,7 +1197,7 @@ research boundary, so both stage recipes unlock together.
 | Rocket Science 1 dependents | Empiricism 6 and Robot Speed 4 take Demolitions 2, Freight Transportation 3, and High Pressure Chemistry 2 |
 | Checkpoint dependents | Braking 8 takes the same three |
 | Rocket Science 2 dependents | Astronomy takes Braking 8 and Personal Transportation 4 |
-| Check | `--describe-research-closure` reports the same technologies before and after for every technology except the three moved ones |
+| Check | `tools/check_launch_vehicle.py` rebuilds the former tree from the moved technologies' former prerequisites; every other technology keeps its closure |
 
 #### Rocket stage
 
@@ -1223,6 +1227,9 @@ recipe: drone launcher 1, hangar 2, beacon 1, lab 2, productivity module 1, heat
 titanium_alternative: none; each planet builds few silos
 launch_to_space_platforms: true
 cargo: Space Age silo layout; a rocket cargo inventory replaces the single insertion slot
+platform_requests: >-
+  needs a logistic trash inventory, as on the Space Age silo; without one,
+  "requests for platforms in orbit" reads back false and robots never load the rocket
 can_launch_without_landing_pads: true, unchanged
 ```
 
@@ -1277,8 +1284,9 @@ python3 tools/analyze_factorio_prereqs.py @tests/progression/fulgora-launch-clos
 ```
 
 `tests/progression/fulgora-launch-manifest.args` checks the local rocket and silo
-production quantities. `tools/check_launch_vehicle.py` checks both titanium
-supply routes against the default stage and enforces the cost and time bounds.
+production quantities. `tools/check_launch_vehicle.py` checks the launch research
+closures, prices both titanium supply routes against the default stage, and
+enforces the ore, gas, and time bounds.
 
 The Vulcanus query exits 1 until its fuel route is implemented. Gleba and Aquilo
 need the same query. The default stage and silo consume aluminum, iron, and steel,

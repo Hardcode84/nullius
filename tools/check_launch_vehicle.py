@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check launch material costs and unchanged research prerequisite closures."""
+"""Check launch research placement and rocket stage cost bounds."""
 import argparse
 import json
 from pathlib import Path
@@ -7,31 +7,73 @@ import shutil
 import analyze_factorio_prereqs as prereqs
 
 ROOT = Path(__file__).resolve().parents[1]
-MOVED = {'nullius-rocket-science-1', 'nullius-checkpoint-rocket-fuel', 'nullius-rocket-science-2'}
+CONTRACTS = ROOT / 'tests/progression'
+BOUNDARY = CONTRACTS / 'nauvis-launch-boundary.args'
+CHECKPOINT = 'nullius-checkpoint-rocket-fuel'
+# Prerequisites of the launch research before it moved to the physics tier.
+# Every other technology must keep the closure this tree gave it.
+FORMER_PREREQUISITES = {
+    'nullius-rocket-science-1': ['nullius-demolitions-2', 'nullius-freight-transportation-3',
+                                 'nullius-high-pressure-chemistry-2'],
+    'nullius-rocket-science-2': ['nullius-braking-8', 'nullius-personal-transportation-4'],
+}
+PREREQUISITES = {
+    'nullius-rocket-science-1': ['nullius-physics'],
+    'nullius-rocket-science-2': [CHECKPOINT, 'nullius-composites-2'],
+}
+MOVED = {*FORMER_PREREQUISITES, CHECKPOINT}
+IMPORTED_BOUND = 2 / 3
+TIME_BOUND = 1 / 2
 
 
-def research_snapshot(data):
-    return {name: sorted(prereqs.technology_closure(data['technology'], {name}))
-            for name in data['technology']}
+def research_violations(technologies):
+    """Return launch research placement and closure violations."""
+    violations = [f'{name} prerequisites: expected {expected}, found {technologies[name].get("prerequisites")}'
+                  for name, expected in PREREQUISITES.items()
+                  if sorted(technologies[name].get('prerequisites') or []) != sorted(expected)]
+    former = {name: {**technology, 'prerequisites': FORMER_PREREQUISITES.get(name, technology.get('prerequisites'))}
+              for name, technology in technologies.items()}
+    for name in sorted(technologies.keys() - MOVED):
+        current = prereqs.technology_closure(technologies, {name})
+        expected = prereqs.technology_closure(former, {name})
+        if current != expected:
+            violations.append(f'{name} closure: lost {sorted(expected - current)}, gained {sorted(current - expected)}')
+    return violations
 
 
-def material_cost(data, arguments):
+def split_raw(raw_inputs, nauvis_raw, fluids):
+    """Split a manifest's raw inputs into Nauvis ore, Nauvis gas, and imports."""
+    result = {'ore': 0.0, 'gas': 0.0, 'imports': {}}
+    for name, amount in raw_inputs.items():
+        if name not in nauvis_raw:
+            result['imports'][name] = amount
+        elif name in fluids:
+            result['gas'] += amount
+        else:
+            result['ore'] += amount
+    return result
+
+
+def material_cost(data, arguments, nauvis_raw):
     args = prereqs.parse_arguments(['@' + str(arguments)])
     quantities = dict(args.targets)
     args.targets = list(quantities)
     report = prereqs.analyze(data, args)
     if report['unresolved'] or report['required_technologies']:
-        raise prereqs.TestFailure(f"Unclosed launch cost boundary: {arguments}")
+        raise prereqs.TestFailure(f'Unclosed launch cost boundary: {arguments}')
     manifest = prereqs.build_production_manifest(data, report, quantities, None, {}, True)
     if manifest['available_inputs']:
-        raise prereqs.TestFailure(f"Unpriced launch inputs: {manifest['available_inputs']}")
-    return dict(raw_inputs=manifest['raw_inputs'], total=sum(manifest['raw_inputs'].values()))
+        raise prereqs.TestFailure(f'Unpriced launch inputs: {manifest["available_inputs"]}')
+    return dict(raw_inputs=manifest['raw_inputs'],
+                **split_raw(manifest['raw_inputs'], nauvis_raw, data.get('fluid', {})))
+
+
+def ratios(variant, default):
+    return {kind: variant[kind] / default[kind] for kind in ('ore', 'gas')}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--write-baseline', type=Path)
-    parser.add_argument('--baseline', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--data-raw', type=Path)
     args = parser.parse_args()
@@ -39,31 +81,30 @@ def main():
     dump_args.data_raw = args.data_raw
     data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
-        current = research_snapshot(data)
-        if args.write_baseline:
-            args.write_baseline.write_text(json.dumps(current, indent=2) + '\n')
-            args.output.write_text(json.dumps({'technologies': len(current)}) + '\n')
-            return
-        results = {}
-        if args.baseline:
-            baseline = json.loads(args.baseline.read_text())
-            changed = [name for name in baseline if name not in MOVED and current.get(name) != baseline[name]]
-            if changed:
-                raise prereqs.TestFailure(f"Unintended prerequisite closure changes: {changed}")
-            results['unchanged_research_closures'] = len(baseline) - len(MOVED)
+        violations = research_violations(data['technology'])
+        if violations:
+            raise prereqs.TestFailure('Launch research violations:\n' + '\n'.join(violations))
+        nauvis_raw = set(prereqs.parse_arguments(['@' + str(BOUNDARY)]).raw)
+        results = {'unchanged_research_closures': len(data['technology'].keys() - MOVED)}
         for variant in ('default', 'synthetic', 'imported'):
-            results[variant] = material_cost(data, ROOT / 'tests/progression' / f'launch-cost-{variant}.args')
-        base = results['default']['total']
-        results['imported_ratio'] = results['imported']['total'] / base
-        results['synthetic_ratio'] = results['synthetic']['total'] / base
-        results['time_ratio'] = data['recipe']['nullius-titanium-rocket-stage']['energy_required'] / data['recipe']['nullius-rocket-stage']['energy_required']
+            results[variant] = material_cost(data, CONTRACTS / f'launch-cost-{variant}.args', nauvis_raw)
+        for variant in ('synthetic', 'imported'):
+            results[variant + '_ratio'] = ratios(results[variant], results['default'])
+        recipes = data['recipe']
+        results['time_ratio'] = (recipes['nullius-titanium-rocket-stage']['energy_required']
+                                 / recipes['nullius-rocket-stage']['energy_required'])
         args.output.write_text(json.dumps(results, indent=2) + '\n')
         print(json.dumps(results, indent=2))
-        if results['imported_ratio'] > 2/3 or results['time_ratio'] > .5:
-            raise prereqs.TestFailure('Rocket stage cost or time bound failed')
+        failed = [f'imported {kind} ratio {value:.3f}' for kind, value in results['imported_ratio'].items()
+                  if value > IMPORTED_BOUND]
+        if results['time_ratio'] > TIME_BOUND:
+            failed.append(f'time ratio {results["time_ratio"]:.3f}')
+        if failed:
+            raise prereqs.TestFailure('Rocket stage bounds failed: ' + ', '.join(failed))
     finally:
         if temporary:
             shutil.rmtree(temporary)
+
 
 if __name__ == '__main__':
     main()
