@@ -279,8 +279,11 @@ data:extend({
 data:extend({{
   type = "technology",
   name = "nullius-titanium-rocket-structures",
-  icon = "__angelssmeltinggraphics__/graphics/technology/smelting-titanium-tech.png",
-  icon_size = 256,
+  icons = {
+    {icon = "__base__/graphics/technology/rocket-silo.png", icon_size = 256},
+    {icon = "__angelssmeltinggraphics__/graphics/icons/roll-titanium.png", icon_size = 64,
+      scale = 0.8, shift = {36, -36}},
+  },
   order = "nullius-dg-tirs",
   prerequisites = {"nullius-rocket-science-2", "nullius-volcanic-titanium-metallurgy"},
   effects = {
