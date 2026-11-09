@@ -157,8 +157,8 @@ geoengineering. Status: design only.
 
 ### 3.3 Gleba (Microbiology/Breeding)
 
-Gleba is the uranium source: a bred leaching strain and a perishable
-biomineralizing culture. See [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
+Gleba becomes the bulk uranium source: a bred leaching strain and a perishable
+biomineralizing culture. Until then, Nauvis seawater adsorption supplies fission. See [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
 
 **Concept**: Gleba has life -- but only **primitive bacterial and fungal** life. No animals, no plants, no complex organisms. The android arrives on a world of microbial mats, fungal networks, and bacterial biofilms. The core mechanic is **probabilistic breeding**: engineering increasingly complex organisms from this primitive base, with unpredictable and sometimes dangerous results.
 
@@ -312,7 +312,8 @@ IMPORTS:    Metals, electronics, containment materials, carbon (from Vulcanus CO
 
 ### 3.4 Aquilo (Cryogenic/Fusion/Monopoles)
 
-Aquilo owns advanced fusion; fission is a parallel Gleba branch. See
+Aquilo owns advanced fusion; fission is a parallel branch that starts on Nauvis
+and later takes its bulk uranium from Gleba. See
 [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
 
 **Natural fit with Nullius**: Fusion power, tritium, lithium, ammonia are all existing Nullius systems. Aquilo's frozen environment maps directly to Nullius's nuclear progression bottlenecks.
@@ -1487,15 +1488,17 @@ a local metal route. They need no titanium route.
 
 ### 4.7 Heavy Elements and Nuclear Branches
 
-Design only. Asteroid mining is removed. Copper comes from Fulgora, uranium from
-Gleba, and antimatter from antiproton capture around Fulgora. Fission and fusion
-become two parallel branches that share only the reactor.
+Design only, except the parts marked implemented. Asteroid mining is removed.
+Copper comes from Fulgora; uranium comes from Nauvis seawater adsorption and later
+from Gleba; antimatter comes from antiproton capture around Fulgora. Fission and
+fusion become two parallel branches that share only the reactor.
 
 #### Asteroid mining removal
 
 Asteroid mining is today's only source of copper ore and uranium ore: no recipe
 produces either, and only guide-drone impacts create their patches. The removal
-ships together with Fulgora copper and the fission branch below.
+ships together with Fulgora copper, after seawater uranium below replaces the
+uranium-ore checkpoint.
 
 | Removed | Contents |
 |---|---|
@@ -1509,7 +1512,7 @@ ships together with Fulgora copper and the fission branch below.
 | Battery Storage 5 | Requires Asteroid Mining 3 | Same |
 | Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
 | Copper Production | Requires the copper-ore checkpoint | Requires the Fulgora copper technology |
-| Uranium Processing | Requires the uranium-ore checkpoint | Requires Gleba Uranium Leaching; see below |
+| Uranium Processing | Requires the uranium-ore checkpoint | Requires Seawater Uranium Adsorption; see below. The yellowcake recipe from crushed uranium ore stays for remaining patches and Nauvis deposits |
 | Mission goal 10 | 20 copper guide drones | Open; Fulgora copper deposit seeding is the candidate |
 | Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
 | Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | None: Nauvis patches are finite. Vulcanus lava and Fulgora vents are infinite, so depleted Nauvis materials can be imported |
@@ -1524,36 +1527,65 @@ ships together with Fulgora copper and the fission branch below.
 
 ```
 Shared base:     Nuclear Reactor   reactor and portable reactor
-Fusion branch:   Nuclear Power 1 (fusion cells; Nauvis, tritium-starved) -> aneutronic cells
-                 -> breeder cells -> Aquilo: bulk tritium, monopole confinement
-Fission branch:  Gleba Uranium Leaching -> Uranium Processing -> Uranium Enrichment
-                 -> Nuclear Power 4 (fission cells)
+Fusion branch:   Electrolysis 4 -> Isotope Separation -> Nuclear Power 1 (fusion cells;
+                 Nauvis, tritium-starved) -> aneutronic cells -> breeder cells
+                 -> Aquilo: bulk tritium, monopole confinement
+Fission branch:  Biochemistry 4 -> Seawater Uranium Adsorption -> Uranium Processing --+
+                 Electrolysis 4 -> Fluorine Chemistry ----------------------------------+
+                 -> Uranium Enrichment -> Nuclear Power 4 (fission cells)
 Meeting point:   Antimatter Containment requires both branches
 ```
 
-Implemented without a new planet; `tools/check_nuclear_research.py` checks the
+The reactor split and the fission detachment from the fusion ladder are
+implemented without a new planet; `tools/check_nuclear_research.py` checks the
 placement and closures in the release build, and `tests/progression/nuclear-*`
-prove each unlock closes at its technology.
+prove each unlock closes at its technology. The rules below describe that
+implemented state; [Fission branch](#fission-branch) describes the planned rest.
 
 | Rule | Value |
 |---|---|
 | Reactor split | Nuclear Reactor unlocks the reactor and portable reactor after the thermal-tank checkpoint and Empiricism 5. Nuclear Power 1 keeps fusion cells and their recycling and requires Nuclear Reactor and the tritium checkpoint. Isotope Separation stays independent of the reactor |
 | Fusion dependents | Boiling 3, Demolitions 2, and both Thermal Engineering 3 technologies keep Nuclear Power 1 and their closures |
 | Fission | Uranium Processing requires only the uranium-ore checkpoint; Nuclear Power 4 requires Uranium Processing and Nuclear Reactor. No breeder checkpoint, Nuclear Power 3, or Boiling 4 |
-| Remaining coupling | The uranium-ore checkpoint still follows Asteroid Mining 1, so fission still requires Astronomy, and enriched uranium still consumes tritium. Gleba leaching and the enrichment chain below remove both |
+| Remaining coupling | The uranium-ore checkpoint still follows Asteroid Mining 1, and Uranium Processing and Nuclear Power 4 cost astronomy packs, so fission still requires Astronomy. Enriched uranium still consumes tritium. Seawater uranium and the enrichment chain below remove both |
 | Antimatter Containment | Antimatter traps consume breeder and fission cells, so it requires the breeder checkpoint and Boiling 4 directly. Its dependents keep their closures |
 | Released research | Wildlife Management 1 and its dependents reached Nuclear Power 3 only through Uranium Processing and no longer require it |
 | Existing saves | A force that researched Nuclear Power 1 receives Nuclear Reactor |
-| Timing | Fission arrives at Gleba's local science tier, which can precede Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
-| Other uranium consumers | Wildlife Management 1 loses its Uranium Processing prerequisite; its depleted-uranium magazine moves to the fission branch. Multi-tool 3 and Stabilizer 2 move to the fission branch or lose their uranium |
 
 #### Fission branch
 
-Uranium leaching runs on Gleba; the rest of the chain needs only Nauvis
-chemistry.
+Seawater adsorption gives Nauvis uranium without a new planet; Gleba leaching and
+biomineralized deposits later take over bulk supply. The rest of the chain needs
+only Nauvis chemistry.
+
+| Research | Unlocks | Prerequisites | Cost |
+|---|---|---|---|
+| Seawater Uranium Adsorption | Adsorbent, loading, elution, precipitation to yellowcake | Biochemistry 4 | Biology packs, as Biochemistry 4 |
+| Uranium Processing | Yellowcake from crushed uranium ore, uranium dioxide | Seawater Uranium Adsorption | Nauvis packs; no astronomy pack |
+| Fluorine Chemistry | Fluorite flotation, hydrogen fluoride, fluorine | Electrolysis 4 | Chemistry and physics packs, as Isotope Separation |
+| Uranium Enrichment | Green salt, hexafluoride, centrifuge, both enrichment stages, deconversion | Uranium Processing, Fluorine Chemistry | Nauvis packs; no astronomy pack |
+| Nuclear Power 4 | Unchanged: fission cell and fission recycling | Uranium Enrichment, Nuclear Reactor | Nauvis packs; no astronomy pack |
+
+| Rule | Value |
+|---|---|
+| Placement | Biochemistry 4 is the first protein-engineering research (amino acid metabolism) and shares Empiricism 5 with Nuclear Reactor. Its closure already makes acrylic fibre and amino acids. Fluorine Chemistry and Isotope Separation both follow Electrolysis 4, whose closure holds limestone flotation, sulfuric acid, and electrolysis |
+| Uranium Processing | Making yellowcake needs no fluorine, so Fluorine Chemistry gates enrichment, not Uranium Processing |
+| Astronomy | Removing the uranium-ore checkpoint is not enough: the astronomy packs in Uranium Processing, Uranium Enrichment, and Nuclear Power 4 costs would keep Astronomy |
+| Timing | Fission arrives at the Nauvis biochemistry and Electrolysis 4 tiers, beside Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
+| Gleba move | Seawater Uranium Adsorption later swaps its biology packs for Gleba science; its recipes stay |
+| Other uranium consumers | Wildlife Management 1 keeps Uranium Processing for its depleted-uranium magazine. It and its dependents may drop research reached only through the uranium-ore checkpoint; the release check lists that set. Multi-tool 3 and Stabilizer 2 keep uranium; Cybernetics 6 and 7 already reach Uranium Processing and still cost astronomy packs |
+
+Delivery order:
+
+| Step | Change | Coupling removed |
+|---|---|---|
+| Seawater uranium | Seawater Uranium Adsorption; Uranium Processing requires it and Isotope Separation instead of the uranium-ore checkpoint, and loses its astronomy pack, as does Nuclear Power 4. Uranium Processing keeps uranium smelting and tritium enrichment, and tritium comes from Isotope Separation | Astronomy |
+| Enrichment | Fluorine Chemistry and Uranium Enrichment; Uranium Processing drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
+| Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint |
 
 | Stage | Process | Real basis |
 |---|---|---|
+| Seawater | See [Seawater uranium](#seawater-uranium) | Uranyl-binding protein adsorbents |
 | Leaching | A bred sulfur-oxidizing strain leaches Gleba rock into uranyl sulfate liquor, which precipitates yellowcake | Bacterial heap leaching of uranium with *Acidithiobacillus*; Gleba's H2S atmosphere and abundant sulfur |
 | Nauvis deposits | Biomineralized deposits yield ore for the existing crushed-ore and flotation route to yellowcake | See mission goal 11 below |
 | Fluorite | Calcite flotation yields trace fluorite concentrate | Industrial fluorite and calcite flotation separation |
@@ -1576,20 +1608,23 @@ chemistry.
 
 #### Seawater uranium
 
-A Nauvis stopgap before cultures arrive by cargo, and deliberately much worse than
-either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
+The first uranium source: slow, but needs no planet and no cargo. Once Gleba
+exists it becomes the stopgap before cultures arrive, deliberately much worse
+than either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
 
 | Rule | Value |
 |---|---|
-| Research | Seawater Uranium Adsorption costs Gleba biological science: Gleba labs sequence a uranyl-binding protein. Research is global, so the recipes then run on Nauvis without cargo |
+| Research | Seawater Uranium Adsorption follows Biochemistry 4 and costs Nauvis biology packs: the android's labs design a uranyl-binding protein. When Gleba ships, the cost moves to Gleba biological science. Research is global, so the recipes run on Nauvis without cargo either way |
 | Real basis | Engineered uranyl-binding proteins with femtomolar affinity, and amidoxime polymer fibres tested for seawater extraction |
-| Adsorbent | A binder fibre made on Nauvis from the protein sequence and polymer feedstock; it degrades and is consumed each cycle |
+| Adsorbent | Amino acids + acrylic fibre support -> uranyl-binding fibre |
 | Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + the same seawater returned for disposal |
-| Elution | Loaded adsorbent + acid -> uranyl solution + spent adsorbent; the uranyl solution joins the leach-liquor route to yellowcake |
-| Cost | Seawater is free, so machine count, pumping, and adsorbent carry the cost. The route must need at least 10 times the machine time per yellowcake of the biomineralized-deposit route |
-| Craftability | The adsorbent and every loading and elution input close on Nauvis at the research, with `--require-no-additional-technologies` |
+| Elution | Loaded adsorbent + acid -> uranyl solution + most of the adsorbent back + a fixed share of spent adsorbent, so adsorbent is consumed every cycle without a probabilistic result |
+| Precipitation | Uranyl solution + sodium hydroxide -> yellowcake + wastewater; real sodium diuranate precipitation |
+| Cost | Seawater is free, so machine count, pumping, and adsorbent carry the cost. When biomineralized deposits ship, the route must need at least 10 times the machine time per yellowcake of the deposit route |
+| Craftability | The adsorbent and every loading, elution, and precipitation input close on Nauvis at the research, with `--require-no-additional-technologies` |
 
-The machine-time bound needs a manifest query that does not exist yet:
+The machine-time bound needs a manifest query that does not exist yet; it ships
+with the deposits:
 
 ```yaml
 query: production manifest machine time total
@@ -1603,7 +1638,7 @@ Uranium sources, best last:
 
 | Source | Planet | Needs cargo | Role |
 |---|---|---|---|
-| Seawater adsorption | Nauvis | No | Stopgap after Gleba research |
+| Seawater adsorption | Nauvis | No | First source; stopgap once Gleba exists |
 | Bacterial leaching | Gleba | To export | Gleba's own supply and bootstrap |
 | Biomineralized deposits | Nauvis | Cultures from Gleba | Bulk Nauvis supply and mission goal 11 |
 
