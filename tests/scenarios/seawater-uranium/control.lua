@@ -110,6 +110,8 @@ local function verify()
       check(output.get_item_count(name) == count, row.recipe .. " output " .. name .. ": " .. output.get_item_count(name))
     end
     check(machine.get_inventory(defines.inventory.crafter_input).is_empty(), row.recipe .. " consumed its items")
+    -- The hydro plant's input port stays full of seawater from its source, so
+    -- its drained seawater output cannot be told apart by fluid name.
     for _, fluid in ipairs(row.sinks) do
       if fluid ~= "nullius-seawater" then
         check(machine.get_fluid_count(fluid) < 0.001, row.recipe .. " drained " .. fluid)
