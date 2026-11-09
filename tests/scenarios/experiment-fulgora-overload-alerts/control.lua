@@ -3,6 +3,7 @@
 -- act: trip, wait, remove the anchor, change player force, reload and reset.
 -- expect: one current custom alert per affected player, targeted at the sink;
 -- preserve other alerts and remove the overload alert when the grid is reset.
+local join=require("__nullius-star__/scenarios/multiplayer-join")
 local overload=require("__nullius-star__/scenarios/experiment-fulgora-overload/overload")
 local CASE="experiment-fulgora-overload-alerts"
 local MESSAGE="Electrical grid overloaded"
@@ -27,6 +28,7 @@ end
 script.on_init(function() overload.init();storage.stage="setup";storage.assertions=0;storage.joins=0 end)
 script.on_event(defines.events.on_player_joined_game,function(event)
   if game.get_player(event.player_index).name=="nullius-test-a" then storage.joins=storage.joins+1 end
+  join.joined()
 end)
 script.on_event(defines.events.on_gui_opened,overload.open)
 script.on_event(defines.events.on_gui_click,overload.click)
@@ -51,6 +53,7 @@ script.on_nth_tick(30,function()
     storage.stage="peer"
     helpers.write_file("factorio-tests/multiplayer-action.json",helpers.table_to_json{
       id=1,action="join",player="nullius-test-b"},false)
+    join.await({"nullius-test-b"})
     return
   end
   local peer=game.get_player("nullius-test-b")
@@ -73,6 +76,7 @@ script.on_nth_tick(30,function()
     player.force=storage.force
     overload.reconcile();own_alert(player,9)
     storage.stage="reload"
+    join.await({"nullius-test-a","nullius-test-b"})
     helpers.write_file("factorio-tests/multiplayer-action.json",helpers.table_to_json{id=2,action="reload"},false)
   elseif storage.stage=="reload" and storage.joins>=2 then
     overload.sample();own_alert(player,9)

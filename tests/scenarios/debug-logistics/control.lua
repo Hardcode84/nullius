@@ -4,6 +4,7 @@
 -- run: production logistics checks, including autocraft and remote view.
 -- expect: admin and achievement gates, free supply, trash removal, per-player isolation,
 --   inventory capacity, disabled sections and admin revocation.
+local join=require("__nullius-star__/scenarios/multiplayer-join")
 local CASE="debug-logistics"
 local GEAR="nullius-iron-gear"
 local function check(value,message)
@@ -41,7 +42,7 @@ script.on_event(defines.events.on_player_joined_game,function(event)
     phase("console")
   elseif p.name=="nullius-test-b" then
     storage.other=p.index
-    game.tick_paused=false
+    check(join.joined(),"second client ends the join wait")
     phase("supply")
   end
 end)
@@ -64,9 +65,8 @@ script.on_nth_tick(1,function()
     remote.call("nullius-test-autocraft","shortcut",{player_index=p.index,prototype_name="nullius-autocraft"})
     p.character.get_main_inventory().remove{name=GEAR,count=5}
     p.character.get_inventory(defines.inventory.character_trash).insert{name="nullius-iron-plate",count=2}
-    -- Client startup takes wall time, not game time: no tick passes until the join.
     action("join",{player="nullius-test-b"})
-    game.tick_paused=true
+    join.await({"nullius-test-b"})
     phase("join")
   elseif storage.phase=="supply" and age>=35 then
     check(p.character.get_item_count(GEAR)==5,"poll supplies missing items")
