@@ -10,7 +10,9 @@ local base_wind_power = {1500000*multiplier, 4000000*multiplier, 12000000*multip
 -- Adjustment {top, bottom, left, right} to bounding box of modded entities.
 -- Adjustment is relative to the bounding box of a wind turbine.
 local wind_mod_offsets = {
-  ["cargo-drone-depot-constant-combinator"] = {0, -1, 0, -1}
+  ["cargo-drone-depot-constant-combinator"] = {0, -1, 0, -1},
+  ["nullius-radio-dish"] = {-1, 1, -1, 1},
+  ["nullius-radio-dish-pneumatic"] = {-1, 1, -1, 1}
 }
 
 -- storage.nullius_turbine_buckets :: array[TurbineBucket]

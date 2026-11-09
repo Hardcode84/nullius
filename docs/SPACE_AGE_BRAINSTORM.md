@@ -1063,8 +1063,8 @@ Not in the first platform implementation; connections keep no asteroid spawns.
 
 ### 4.5 Astronomy: Interplanetary Interferometry
 
-Implemented for Nauvis, Vulcanus, and Fulgora. Dishes use vanilla radar graphics
-as a placeholder. `astronomy-array`, `astronomy-correlation`, and
+Implemented for Nauvis, Vulcanus, and Fulgora. Dishes and correlators use
+animated models on a 5×5 footprint. `astronomy-array`, `astronomy-correlation`, and
 `astronomy-transit` check the production machines and transport contract.
 
 The astronomy pack decodes the progenitor's interstellar signal. Dishes on one

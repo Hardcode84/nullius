@@ -1,0 +1,12 @@
+{
+  "reflector": {
+    "frames": 16,
+    "speed": 0.05,
+    "tilt_degrees": 3
+  },
+  "correlator-fans": {
+    "frames": 8,
+    "speed": 0.5,
+    "blades": 7
+  }
+}

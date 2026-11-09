@@ -1,0 +1,125 @@
+{
+  "blender": "4.5.3 LTS",
+  "seed": 1729,
+  "pixels_per_tile": 64,
+  "canvas": 768,
+  "origin": [
+    384.0,
+    384.0
+  ],
+  "footprint": [
+    5,
+    5
+  ],
+  "projection": {
+    "elevation_degrees": 45,
+    "ground_y_scale": 1.4142135623730951
+  },
+  "models": {
+    "radio-dish": {
+      "objects": 209,
+      "body": "radio-dish-body.png",
+      "shadow": "radio-dish-shadow.png",
+      "glow": "radio-dish-glow.png"
+    },
+    "radio-dish-east": {
+      "objects": 209,
+      "body": "radio-dish-east-body.png",
+      "shadow": "radio-dish-east-shadow.png",
+      "glow": "radio-dish-east-glow.png"
+    },
+    "radio-dish-south": {
+      "objects": 209,
+      "body": "radio-dish-south-body.png",
+      "shadow": "radio-dish-south-shadow.png",
+      "glow": "radio-dish-south-glow.png"
+    },
+    "radio-dish-west": {
+      "objects": 209,
+      "body": "radio-dish-west-body.png",
+      "shadow": "radio-dish-west-shadow.png",
+      "glow": "radio-dish-west-glow.png"
+    },
+    "pneumatic-radio-dish": {
+      "objects": 223,
+      "body": "pneumatic-radio-dish-body.png",
+      "shadow": "pneumatic-radio-dish-shadow.png",
+      "glow": "pneumatic-radio-dish-glow.png"
+    },
+    "pneumatic-radio-dish-east": {
+      "objects": 223,
+      "body": "pneumatic-radio-dish-east-body.png",
+      "shadow": "pneumatic-radio-dish-east-shadow.png",
+      "glow": "pneumatic-radio-dish-east-glow.png"
+    },
+    "pneumatic-radio-dish-south": {
+      "objects": 223,
+      "body": "pneumatic-radio-dish-south-body.png",
+      "shadow": "pneumatic-radio-dish-south-shadow.png",
+      "glow": "pneumatic-radio-dish-south-glow.png"
+    },
+    "pneumatic-radio-dish-west": {
+      "objects": 223,
+      "body": "pneumatic-radio-dish-west-body.png",
+      "shadow": "pneumatic-radio-dish-west-shadow.png",
+      "glow": "pneumatic-radio-dish-west-glow.png"
+    },
+    "correlator": {
+      "objects": 303,
+      "body": "correlator-body.png",
+      "shadow": "correlator-shadow.png",
+      "glow": "correlator-glow.png"
+    }
+  },
+  "motions": {
+    "reflector": {
+      "frames": 16,
+      "speed": 0.05,
+      "tilt_degrees": 3
+    },
+    "correlator-fans": {
+      "frames": 8,
+      "speed": 0.5,
+      "blades": 7
+    }
+  },
+  "sprite_sha256": {
+    "nullius-star/graphics/entity/astronomy/reflector-body.png": "8456e3069a88a061301a63d151ed315f8d0f67fac80edabf6646b2b6e799ec67",
+    "nullius-star/graphics/entity/astronomy/correlator-fans-body.png": "5a3932e6dd2ef20982b407f90bb57cccd0614d99eb3f6f766a7dad3a9ac15a90",
+    "nullius-star/graphics/entity/astronomy/radio-dish-body.png": "16e7e51dad858d85633dab2c865ebe0aa0bfa760b4fa895a57c423123c188d5d",
+    "nullius-star/graphics/entity/astronomy/radio-dish-shadow.png": "8bc3ba4e24f0fd1b77453f1f0e00b280599dad73f784ef3718bc24123aa7622f",
+    "nullius-star/graphics/entity/astronomy/radio-dish-glow.png": "9d94a0de963007df9357ffe3aa3640876de24a65b5903df63b726f4a57cbc4ce",
+    "nullius-star/graphics/entity/astronomy/radio-dish-east-body.png": "97dee8a68160f384e03c863e3375ddf068416746ef77f508f7d816d01221bf9d",
+    "nullius-star/graphics/entity/astronomy/radio-dish-east-shadow.png": "ef0418c4352808c2261b83f0fe9a0c711b4f8037729451243563875168b5fb5e",
+    "nullius-star/graphics/entity/astronomy/radio-dish-east-glow.png": "9b17f3fffa7c75baec69a0c75403a8e6f7def1604eb8e935927974870b189f75",
+    "nullius-star/graphics/entity/astronomy/radio-dish-south-body.png": "493721bef427b4cad315cd94bdbab8602ea79ed5797eae9226da7b6799c4d9ae",
+    "nullius-star/graphics/entity/astronomy/radio-dish-south-shadow.png": "6c6210cc8ef1f16207752e5ac2dba7bfd7360d0b7d2d75ca213bd43129747339",
+    "nullius-star/graphics/entity/astronomy/radio-dish-south-glow.png": "9a1cf8ed950b7091639c45919aecad9c54604596355134d2bfe8b2152b01cee9",
+    "nullius-star/graphics/entity/astronomy/radio-dish-west-body.png": "ae75ef3b2cb3013fa292a94d2216196a910726ab104f29dc9641ea5629a502c6",
+    "nullius-star/graphics/entity/astronomy/radio-dish-west-shadow.png": "bf97ee6128dff7bb642ce93db366bf6e27d1b90678dbfe6e86f4ec281e257598",
+    "nullius-star/graphics/entity/astronomy/radio-dish-west-glow.png": "c76b7c3b9ae9245ac07b840ef6ac27ffe24489d52dac23c56e9ead39dfd53973",
+    "nullius-star/graphics/icons/astronomy/radio-dish.png": "d5fbfb2c0cab6c1d8f4aa636ca540a075f45f8f8e0e52160383e0fe5aa5d27b5",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-body.png": "8adf8bf43f49ef0d64230d19c2519a72b04d04515e00b1852e35da51faa82dc9",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-shadow.png": "9150afb52570b029230be841a9e604343d572e82f3344ad72f5c283797316f9f",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-glow.png": "c97dcb37728a401b244859bb7d5dd3a1554e0bf14da42c40dd7da6f4d5ca559d",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-east-body.png": "bc33b643ad3caa15a62c87b28744a08ad2a14ed28d0dc23cd9ba245277ded333",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-east-shadow.png": "d368da4eac347e3028c522f02947e7d65bc2dc7a99e56ec0312d19fdcb42d741",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-east-glow.png": "d9da39d439cc6dc04f5145b7f2b54db1ce00806227f9ed3f0581991548d3ee7a",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-south-body.png": "0918ce88aa368c2d2d848961c15ced9cce0080e590852a7e0158fcb392cd4ccb",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-south-shadow.png": "a303c1be44605020576a9dd4640ceecce467f1aea0865c2d28eb12ba98ee8ba5",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-south-glow.png": "1b89565f805587eff111ba8be76312d2e5c2611eaad6b7dfdb63854f925454c8",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-west-body.png": "11ff1cdf74596ce759ca8e689ad0a96885da0d4a937b2428b4d267c99bf4e1c3",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-west-shadow.png": "f32ad3ee7a0223b168ce0c74ea9d937839145fa21ef3c8467ac97fa0e08857f0",
+    "nullius-star/graphics/entity/astronomy/pneumatic-radio-dish-west-glow.png": "0166f54e23d0d8d381d585c2ecb86db070dcbe8b05cb0048c382837bb9efbe5a",
+    "nullius-star/graphics/icons/astronomy/pneumatic-radio-dish.png": "d6dd27c90cbf8725d9deba55e49e41d0572c90ef85b5c7d48b376e928ae9b3fc",
+    "nullius-star/graphics/entity/astronomy/correlator-body.png": "e28db4af722443fc1ea2db9edc5d5589ea3069546baba394e393114eea7dee34",
+    "nullius-star/graphics/entity/astronomy/correlator-shadow.png": "ba710db55c81d1bd137cd147b53d7f366e5344230a6577856ecbd3d75620b949",
+    "nullius-star/graphics/entity/astronomy/correlator-glow.png": "1eb6166cd3f048c4d0290efe8a3b2743143086bc0894c461039f7caf58398f43",
+    "nullius-star/graphics/icons/astronomy/correlator.png": "5baf80ba4059ba31393ea85a7b4dd9263202be4aab98b9f42f7c737135e17ae6"
+  },
+  "source_sha256": {
+    "art/astronomy/build.py": "c18ba16e84c3864514cfb4dd97844b4e11883a45ee5e6e12dd755844e1a8b9be",
+    "tools/render_astronomy.py": "dc9e3c7dfe6f32e41fa42f39500ef35639119d0a26c66f25b747530906568a8d",
+    "art/astronomy/motion.json": "818a2b05b02602913f33b2c53f72d2363795cc1174f9653f5319858b04aa571a"
+  }
+}

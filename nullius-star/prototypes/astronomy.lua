@@ -1,4 +1,5 @@
 local spec = require("shared.astronomy")
+local graphics = require("prototypes.entity.astronomy-graphics")
 local launch_research = require("prototypes.planet.launch-research")
 local unlocks = {
   {type="unlock-recipe",recipe="nullius-satellite"},
@@ -6,8 +7,8 @@ local unlocks = {
   {type="unlock-recipe",recipe="nullius-unbox-astronomy-pack"},
 }
 local function unlock(name) unlocks[#unlocks + 1] = {type="unlock-recipe",recipe=name} end
-local function item(name, icon, place)
-  data:extend({{type="item",name=name,icon=icon,icon_size=64,subgroup="space",
+local function item(name, icon, place, icon_size)
+  data:extend({{type="item",name=name,icon=icon,icon_size=icon_size or 64,subgroup="space",
     order="nullius-radio-"..name,stack_size=50,place_result=place}})
 end
 local function recipe(name, category, seconds, inputs, outputs)
@@ -35,11 +36,16 @@ data:extend({{type="recipe-category",name="nullius-radio-recording"},
 
 for i, name in ipairs({spec.dishes[1],spec.dishes[2],"nullius-correlator"}) do
   local dish = i < 3
-  local icon = dish and "__base__/graphics/icons/radar.png" or "__base__/graphics/icons/satellite.png"
-  item(name,icon,name)
-  -- Placeholder graphics use the vanilla radar on the dish footprint.
+  local art = graphics[name]
+  local icon = art.icon
+  item(name,icon,name,128)
   local entity = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-2"])
-  entity.name=name;entity.icon=icon;entity.icons=nil
+  entity.name=name;entity.icon=icon;entity.icon_size=128;entity.icons=nil
+  entity.graphics_set={animation=art.animation,working_visualisations=art.working_visualisations}
+  entity.collision_box={{-2.2,-2.2},{2.2,2.2}}
+  entity.selection_box={{-2.5,-2.5},{2.5,2.5}}
+  entity.tile_width=5;entity.tile_height=5
+  entity.drawing_box_vertical_extension=1.5
   entity.minable={mining_time=0.5,result=name};entity.next_upgrade=nil
   entity.fast_replaceable_group=nil;entity.placeable_by={item=name,count=1}
   entity.crafting_categories={dish and "nullius-radio-recording" or "nullius-radio-correlation"}
@@ -53,22 +59,21 @@ for i, name in ipairs({spec.dishes[1],spec.dishes[2],"nullius-correlator"}) do
   entity.allow_copy_paste=false
   entity.fluid_boxes=dish and {{production_type="input",filter="nullius-hydrogen",volume=100,
     pipe_picture=require("prototypes.entity.assembler-pipe-pictures")(),pipe_covers=pipecoverspictures(),
-    pipe_connections={{flow_direction="input",direction=defines.direction.north,position={-1,-1}}}}} or nil
+    pipe_connections={{flow_direction="input",direction=defines.direction.north,position={-1,-2}}},
+    secondary_draw_orders={north=-1,east=1,south=1,west=1}}} or nil
+  entity.fluid_boxes_off_when_no_fluid_recipe=false
   if dish then
-    local animation=table.deepcopy(data.raw.radar.radar.pictures)
-    for _,layer in ipairs(animation.layers) do
-      layer.frame_count=layer.direction_count;layer.direction_count=nil
-      layer.apply_projection=nil
-      if i==2 then layer.tint={1,0.7,0.4} end
-    end
-    entity.graphics_set={animation=animation}
     entity.collision_mask={layers={item=true,object=true,player=true,water_tile=true,nullius_dish=true}}
   end
   if i==2 then
     entity.energy_source={type="fluid",effectivity=1,burns_fluid=true,scale_fluid_usage=true,
+      light_flicker={minimum_intensity=0,maximum_intensity=0},
       fluid_box={volume=1000,filter="nullius-compressed-volcanic-gas",
         pipe_picture=require("prototypes.entity.assembler-pipe-pictures")(),pipe_covers=pipecoverspictures(),
-        pipe_connections={{flow_direction="input-output",direction=defines.direction.north,position={1,-1}}}}}
+        secondary_draw_orders={north=-1,east=1,south=1,west=1},
+        pipe_connections={
+          {flow_direction="input-output",direction=defines.direction.west,position={-2,0}},
+          {flow_direction="input-output",direction=defines.direction.east,position={2,0}}}}}
   end
   data:extend({entity})
   recipe(name,"large-crafting",30,{

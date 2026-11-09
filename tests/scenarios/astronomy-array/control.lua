@@ -26,10 +26,10 @@ local function dish(surface,x,y,force,pneumatic)
  local e=assert(surface.create_entity{name=name,position={x,y},force=force,raise_built=true})
  if e.get_recipe() then
   check(e.insert{name='nullius-blank-recording-module',count=50}==50,'finite media')
-  local pipe=assert(surface.create_entity{name='pipe',position={x-1,y-2},force=force})
+  local pipe=assert(surface.create_entity{name='pipe',position={x-1,y-3},force=force})
   check(pipe.insert_fluid{name='nullius-hydrogen',amount=50}==50,'finite maser hydrogen')
   if pneumatic then
-   local gas=assert(surface.create_entity{name='pipe',position={x+1,y-2},force=force})
+   local gas=assert(surface.create_entity{name='pipe',position={x+3,y},force=force})
    check(gas.insert_fluid{name='nullius-compressed-volcanic-gas',amount=100}==100,'finite pneumatic fuel')
    check(e.insert_fluid{name='nullius-compressed-volcanic-gas',amount=900}==900,'finite machine fuel')
   else
