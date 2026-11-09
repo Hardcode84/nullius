@@ -40,3 +40,23 @@ disabled request sections, and crafting during remote view.
 ```bash
 python tools/run_factorio_tests.py personal-autocraft -n auto
 ```
+
+## Debug logistics
+
+Admins can use `/nullius-debug-logistics [on|off]`. With no argument, the
+command toggles debug logistics for that player.
+
+First run `/c game.print("Debug commands enabled.")` and confirm the engine
+warning. This permanently disables achievements for the save. The debug
+command refuses to enable while the native console-command flag is clear;
+Factorio exposes that flag as read-only to mods.
+
+Enabling the command unlocks personal logistic requests for the force and
+provides a trash slot if needed. These unlocks remain when the toggle is off.
+For the enabled player, active requests receive free items before auto-crafting
+runs. Items in personal trash are destroyed. Full inventories keep outstanding
+requests; no items spill. Disabled personal requests pause debug logistics.
+Losing admin access turns the toggle off.
+
+Validation: `debug-logistics` tests the command handler with real players and
+uses a native console command to disable achievements.

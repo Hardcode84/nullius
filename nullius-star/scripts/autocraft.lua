@@ -1,4 +1,6 @@
 local autocraft = {}
+local logistics = require("scripts.personal_logistics")
+local debug_logistics = require("scripts.debug_logistics")
 local NAME = "nullius-autocraft"
 local recipes_by_item
 
@@ -9,15 +11,8 @@ local function state(player)
   return states[player.index]
 end
 
-local function requester(player)
-  if not player.connected or not player.character or
-      not player.force.character_logistic_requests then return nil end
-  local point = player.character.get_requester_point()
-  if point and point.enabled then return point end
-end
-
 local function refresh_gui(player)
-  local available = requester(player) ~= nil
+  local available = logistics.requester(player) ~= nil
   local settings = state(player)
   local frame = player.gui.top[NAME]
   if not available then
@@ -39,20 +34,6 @@ local function refresh_gui(player)
   player.set_shortcut_toggled(NAME, settings.enabled)
 end
 
-local function matches_quality(filter, quality)
-  if not filter.quality then return true end
-  local actual = prototypes.quality[quality].level
-  local wanted = prototypes.quality[filter.quality].level
-  local comparison = filter.comparator or "="
-  if comparison == "=" then return actual == wanted end
-  if comparison == ">" then return actual > wanted end
-  if comparison == "<" then return actual < wanted end
-  if comparison == "≥" or comparison == ">=" then return actual >= wanted end
-  if comparison == "≤" or comparison == "<=" then return actual <= wanted end
-  if comparison == "≠" or comparison == "!=" then return actual ~= wanted end
-  error("Unexpected logistic quality comparator: " .. comparison)
-end
-
 -- Cold path: index final products only. Factorio resolves all intermediates.
 local function recipe_index()
   if recipes_by_item then return recipes_by_item end
@@ -71,6 +52,7 @@ local function recipe_index()
 end
 
 function autocraft.check(player)
+  debug_logistics.check(player)
   refresh_gui(player)
   local settings = state(player)
   if not settings.enabled then return end
@@ -78,14 +60,14 @@ function autocraft.check(player)
   -- including while the player's active controller is remote view.
   local character = player.character
   if character.crafting_queue_size ~= 0 then return end
-  local point = requester(player)
+  local point = logistics.requester(player)
   local contents = character.get_main_inventory().get_contents()
   for _, filter in ipairs(point.filters or {}) do
     if (filter.type == nil or filter.type == "item") and
-        filter.count > 0 and matches_quality(filter, "normal") then
+        filter.count > 0 and logistics.matches_quality(filter, "normal") then
       local count = 0
       for _, item in pairs(contents) do
-        if item.name == filter.name and matches_quality(filter, item.quality) then
+        if item.name == filter.name and logistics.matches_quality(filter, item.quality) then
           count = count + item.count
         end
       end
@@ -106,15 +88,15 @@ function autocraft.check(player)
 end
 
 function autocraft.toggle(player, enabled)
-  if not requester(player) then return end
-  state(player).enabled = requester(player) ~= nil and enabled
+  if not logistics.requester(player) then return end
+  state(player).enabled = logistics.requester(player) ~= nil and enabled
   refresh_gui(player)
 end
 
 function autocraft.on_shortcut(event)
   if event.prototype_name ~= NAME then return end
   local player = game.get_player(event.player_index)
-  if not requester(player) then return end
+  if not logistics.requester(player) then return end
   autocraft.toggle(player, not state(player).enabled)
 end
 
@@ -148,11 +130,13 @@ script.on_event(defines.events.on_player_cancelled_crafting, function(event)
   autocraft.toggle(game.get_player(event.player_index), false)
 end)
 function autocraft.remove_player(index)
+  debug_logistics.remove_player(index)
   if storage.nullius_autocraft then storage.nullius_autocraft[index] = nil end
 end
 
 if script.active_mods["factorio-test-support"] then
   remote.add_interface("nullius-test-autocraft", {
+    debug_command = debug_logistics.command,
     shortcut = autocraft.on_shortcut,
     checkbox = autocraft.on_checkbox,
   })

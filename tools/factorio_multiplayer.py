@@ -284,19 +284,26 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
                 break
             action = wait_for_json(action_path, wait_for, "reading multiplayer action")
             if (not isinstance(action, dict) or
-                    set(action) - {"id", "action", "player", "configuration_change"} or
+                    set(action) - {"id", "action", "player", "configuration_change", "command"} or
                     not isinstance(action.get("id"), int) or
                     ("configuration_change" in action and
                      (action.get("action") != "reload" or type(action["configuration_change"]) is not bool)) or
-                    action.get("action") not in {"join", "leave", "reload"} or
-                    (action["action"] != "reload" and not isinstance(action.get("player"), str))):
+                    action.get("action") not in {"join", "leave", "reload", "console"} or
+                    ("command" in action and action.get("action") != "console") or
+                    (action.get("action") == "console" and
+                     (not isinstance(action.get("command"), str) or not action["command"].startswith("/") or
+                      "\n" in action["command"] or "\r" in action["command"])) or
+                    (action["action"] in {"join", "leave"} and not isinstance(action.get("player"), str))):
                 raise TestFailure(f"invalid multiplayer action: {action!r}")
             if action["id"] <= action_id:
                 raise TestFailure("multiplayer action ID did not advance")
             action_id = action["id"]
             action_path.unlink()
             operation = action["action"]
-            if operation == "join":
+            if operation == "console":
+                server.stdin.write(action["command"] + "\n")
+                server.stdin.flush()
+            elif operation == "join":
                 name = action["player"]
                 if name not in ("nullius-test-a", "nullius-test-b") or name in clients:
                     raise TestFailure(f"invalid multiplayer join: {name}")
