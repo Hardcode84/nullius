@@ -39,13 +39,17 @@ script.on_event(defines.events.on_player_joined_game,function(event)
     check(not p.force.character_logistic_requests,"achievements gate blocks unlock")
     action("console",{command='/c game.print("Debug logistics test")'})
     phase("console")
-  elseif p.name=="nullius-test-b" then storage.other=p.index end
+  elseif p.name=="nullius-test-b" then
+    storage.other=p.index
+    game.tick_paused=false
+    phase("supply")
+  end
 end)
 script.on_nth_tick(1,function()
   if not storage.player or storage.finished then return end
   local p=game.get_player(storage.player)
   local age=game.tick-storage.since
-  if age >= (storage.phase=="supply" and 1500 or 180) then error("phase timeout: "..storage.phase) end
+  if age >= 180 then error("phase timeout: "..storage.phase) end
   if storage.phase=="console" and game.console_command_used then
     command(p,"on")
     check(p.force.character_logistic_requests,"requests unlocked")
@@ -60,9 +64,11 @@ script.on_nth_tick(1,function()
     remote.call("nullius-test-autocraft","shortcut",{player_index=p.index,prototype_name="nullius-autocraft"})
     p.character.get_main_inventory().remove{name=GEAR,count=5}
     p.character.get_inventory(defines.inventory.character_trash).insert{name="nullius-iron-plate",count=2}
+    -- Client startup takes wall time, not game time: no tick passes until the join.
     action("join",{player="nullius-test-b"})
-    phase("supply")
-  elseif storage.phase=="supply" and age>=35 and storage.other then
+    game.tick_paused=true
+    phase("join")
+  elseif storage.phase=="supply" and age>=35 then
     check(p.character.get_item_count(GEAR)==5,"poll supplies missing items")
     check(p.character.crafting_queue_size==0,"debug supply runs before autocraft")
     check(p.character.get_item_count("nullius-iron-plate")==4,"no crafting resources consumed")
