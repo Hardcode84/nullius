@@ -1509,7 +1509,7 @@ ships together with Fulgora copper and the fission branch below.
 | Battery Storage 5 | Requires Asteroid Mining 3 | Same |
 | Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
 | Copper Production | Requires the copper-ore checkpoint | Requires the Fulgora copper technology |
-| Uranium Processing | Requires the uranium-ore checkpoint and Nuclear Power 3 | Requires Gleba Uranium Leaching; see below |
+| Uranium Processing | Requires the uranium-ore checkpoint | Requires Gleba Uranium Leaching; see below |
 | Mission goal 10 | 20 copper guide drones | Open; Fulgora copper deposit seeding is the candidate |
 | Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
 | Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | None: Nauvis patches are finite. Vulcanus lava and Fulgora vents are infinite, so depleted Nauvis materials can be imported |
@@ -1523,19 +1523,27 @@ ships together with Fulgora copper and the fission branch below.
 #### Nuclear branches
 
 ```
-Shared base:     Nuclear Reactor   reactor and portable reactor, split from Nuclear Power 1
-Fusion branch:   Fusion Power (Nauvis, tritium-starved) -> aneutronic cells -> breeder cells
-                 -> Aquilo: bulk tritium, monopole confinement
+Shared base:     Nuclear Reactor   reactor and portable reactor
+Fusion branch:   Nuclear Power 1 (fusion cells; Nauvis, tritium-starved) -> aneutronic cells
+                 -> breeder cells -> Aquilo: bulk tritium, monopole confinement
 Fission branch:  Gleba Uranium Leaching -> Uranium Processing -> Uranium Enrichment
-                 -> Fission Power
+                 -> Nuclear Power 4 (fission cells)
+Meeting point:   Antimatter Containment requires both branches
 ```
+
+Implemented without a new planet; `tools/check_nuclear_research.py` checks the
+placement and closures in the release build, and `tests/progression/nuclear-*`
+prove each unlock closes at its technology.
 
 | Rule | Value |
 |---|---|
-| Nuclear Power 1 split | The reactor recipe has no fusion inputs, so it moves to Nuclear Reactor. Nuclear Power 1 keeps fusion cells and their recycling as Fusion Power |
-| Fusion Power dependents | Boiling 3, Demolitions 2, and Thermal Engineering 3 require Fusion Power and keep their closures |
-| Fusion | Basic tritium-starved fusion stays on Nauvis; Aquilo supplies bulk tritium and monopole confinement |
-| Fission | Needs only Nuclear Reactor and the fission branch. No breeder checkpoint, Nuclear Power 3, Astronomy, or tritium |
+| Reactor split | Nuclear Reactor unlocks the reactor and portable reactor after the thermal-tank checkpoint and Empiricism 5. Nuclear Power 1 keeps fusion cells and their recycling and requires Nuclear Reactor and the tritium checkpoint. Isotope Separation stays independent of the reactor |
+| Fusion dependents | Boiling 3, Demolitions 2, and both Thermal Engineering 3 technologies keep Nuclear Power 1 and their closures |
+| Fission | Uranium Processing requires only the uranium-ore checkpoint; Nuclear Power 4 requires Uranium Processing and Nuclear Reactor. No breeder checkpoint, Nuclear Power 3, or Boiling 4 |
+| Remaining coupling | The uranium-ore checkpoint still follows Asteroid Mining 1, so fission still requires Astronomy, and enriched uranium still consumes tritium. Gleba leaching and the enrichment chain below remove both |
+| Antimatter Containment | Antimatter traps consume breeder and fission cells, so it requires the breeder checkpoint and Boiling 4 directly. Its dependents keep their closures |
+| Released research | Wildlife Management 1 and its dependents reached Nuclear Power 3 only through Uranium Processing and no longer require it |
+| Existing saves | A force that researched Nuclear Power 1 receives Nuclear Reactor |
 | Timing | Fission arrives at Gleba's local science tier, which can precede Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
 | Other uranium consumers | Wildlife Management 1 loses its Uranium Processing prerequisite; its depleted-uranium magazine moves to the fission branch. Multi-tool 3 and Stabilizer 2 move to the fission branch or lose their uranium |
 

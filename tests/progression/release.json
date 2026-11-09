@@ -62,7 +62,12 @@
     "correlate-vulcanus-astronomy-closure.args",
     "fulgora-astronomy-closure.args",
     "nauvis-astronomy-closure.args",
-    "vulcanus-astronomy-closure.args"
+    "vulcanus-astronomy-closure.args",
+    "nuclear-reactor-closure.args",
+    "nuclear-fusion-closure.args",
+    "nuclear-uranium-closure.args",
+    "nuclear-fission-closure.args",
+    "nuclear-antimatter-closure.args"
   ],
   "bootstrap": [
     {

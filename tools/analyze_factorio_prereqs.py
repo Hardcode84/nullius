@@ -566,6 +566,49 @@ def technology_closure(
     return closure
 
 
+def moved_research_violations(
+    technologies: dict[str, Prototype],
+    former_prerequisites: dict[str, list[str]],
+    exempt: set[str],
+    released: frozenset[str] = frozenset(),
+) -> list[str]:
+    """Report closure changes caused by moved research.
+
+    The former tree is the resolved tree with the given prerequisites restored.
+    Every technology outside exempt must keep the closure that tree gave it,
+    except that it may stop requiring the released technologies.
+    """
+    former = {
+        name: {
+            **technology,
+            "prerequisites": former_prerequisites.get(
+                name, technology.get("prerequisites")
+            ),
+        }
+        for name, technology in technologies.items()
+    }
+    violations = []
+    for name in sorted(technologies.keys() - exempt):
+        current = technology_closure(technologies, {name})
+        expected = technology_closure(former, {name})
+        if current - released != expected - released or current - expected:
+            violations.append(
+                f"{name} closure: lost {sorted(expected - current)}, "
+                f"gained {sorted(current - expected)}"
+            )
+    return violations
+
+
+def recipe_unlockers(technologies: dict[str, Prototype], recipe: str) -> list[str]:
+    """Return the sorted technologies that unlock a recipe."""
+    return sorted(
+        name
+        for name, technology in technologies.items()
+        for effect in technology.get("effects") or []
+        if effect.get("type") == "unlock-recipe" and effect.get("recipe") == recipe
+    )
+
+
 def find_dependency_paths(
     data: Prototype,
     args: argparse.Namespace,

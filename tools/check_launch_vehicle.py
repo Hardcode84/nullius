@@ -48,19 +48,12 @@ def research_violations(technologies):
     violations = [f'{name} prerequisites: expected {expected}, found {technologies[name].get("prerequisites")}'
                   for name, expected in PREREQUISITES.items()
                   if sorted(technologies[name].get('prerequisites') or []) != sorted(expected)]
-    former = {name: {**technology, 'prerequisites': FORMER_PREREQUISITES.get(name, technology.get('prerequisites'))}
-              for name, technology in technologies.items()}
     for recipe, expected in RECIPE_UNLOCKS.items():
-        unlockers = sorted(name for name, technology in technologies.items()
-                           for effect in technology.get('effects') or []
-                           if effect.get('type') == 'unlock-recipe' and effect.get('recipe') == recipe)
+        unlockers = prereqs.recipe_unlockers(technologies, recipe)
         if unlockers != [expected]:
             violations.append(f'{recipe} unlocked by {unlockers}, expected {expected}')
-    for name in sorted(technologies.keys() - MOVED - NEW_TECHNOLOGIES):
-        current = prereqs.technology_closure(technologies, {name})
-        expected = prereqs.technology_closure(former, {name})
-        if current != expected:
-            violations.append(f'{name} closure: lost {sorted(expected - current)}, gained {sorted(current - expected)}')
+    violations.extend(prereqs.moved_research_violations(technologies, FORMER_PREREQUISITES,
+                                                        MOVED | NEW_TECHNOLOGIES))
     for name in VULCANUS_TECHNOLOGIES:
         if 'nullius-metallurgic-pack' not in (pack for pack, _ in technologies[name]['unit']['ingredients']):
             violations.append(f'{name} does not require metallurgic science')

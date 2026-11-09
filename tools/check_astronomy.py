@@ -73,8 +73,7 @@ def main():
             if recipe.startswith('nullius-correlate-'):
                 expected_unlocks[recipe] = 'nullius-astronomy'
         for recipe, expected in expected_unlocks.items():
-            actual = [name for name, tech in technologies.items() for effect in tech.get('effects', [])
-                      if effect.get('type') == 'unlock-recipe' and effect.get('recipe') == recipe]
+            actual = prereqs.recipe_unlockers(technologies, recipe)
             if actual != [expected]:
                 errors.append(recipe + ': unexpected unlocks ' + str(actual))
         for name, weight in {'nullius-blank-recording-module': 1000,

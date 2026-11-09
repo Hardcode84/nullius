@@ -1,0 +1,7 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--raw
+uranium-ore
+--technology
+nullius-nuclear-power-4
+--require-no-additional-technologies
+nullius-fission-cell

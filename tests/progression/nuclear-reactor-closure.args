@@ -1,0 +1,6 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--technology
+nullius-nuclear-reactor
+--require-no-additional-technologies
+nullius-reactor
+nullius-portable-reactor

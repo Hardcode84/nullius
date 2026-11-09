@@ -11657,23 +11657,14 @@ data:extend({
 
   {
     type = "technology",
-    name = "nullius-nuclear-power-1",
+    name = "nullius-nuclear-reactor",
     order = "nullius-fo",
     icon = "__base__/graphics/technology/nuclear-power.png",
     icon_size = 256,
-    
     effects = {
       {
         type = "unlock-recipe",
         recipe = "nullius-reactor"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-fusion-cell"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-fusion-recycling"
       },
       {
         type = "unlock-recipe",
@@ -11689,7 +11680,34 @@ data:extend({
       },
       time = 50
     },
-    prerequisites = {"nullius-checkpoint-tritium", "nullius-checkpoint-thermal-tank", "nullius-empiricism-5"}
+    prerequisites = {"nullius-checkpoint-thermal-tank", "nullius-empiricism-5"}
+  },
+  {
+    type = "technology",
+    name = "nullius-nuclear-power-1",
+    order = "nullius-fo",
+    icon = ICONPATH .. "fusion-cell.png",
+    icon_size = 64,
+    effects = {
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-fusion-cell"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-fusion-recycling"
+      }
+    },
+    unit = {
+      count = 2700,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2}
+      },
+      time = 50
+    },
+    prerequisites = {"nullius-nuclear-reactor", "nullius-checkpoint-tritium"}
   },
   {
     type = "technology",
@@ -13438,7 +13456,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-checkpoint-uranium-ore", "nullius-nuclear-power-3"}
+    prerequisites = {"nullius-checkpoint-uranium-ore"}
   },
   {
     type = "technology",
@@ -13660,7 +13678,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-uranium-processing", "nullius-checkpoint-breeder-cell", "nullius-boiling-4"}
+    prerequisites = {"nullius-uranium-processing", "nullius-nuclear-reactor"}
   },
   {
     type = "technology",
@@ -14211,7 +14229,8 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-solar-power-3", "nullius-checkpoint-enriched-uranium"}
+    prerequisites = {"nullius-solar-power-3", "nullius-checkpoint-enriched-uranium",
+      "nullius-checkpoint-breeder-cell", "nullius-boiling-4"}
   },
   {
     type = "technology",

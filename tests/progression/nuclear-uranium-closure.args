@@ -1,0 +1,9 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--raw
+uranium-ore
+--technology
+nullius-uranium-processing
+--require-no-additional-technologies
+nullius-yellowcake
+nullius-uranium
+nullius-enriched-uranium

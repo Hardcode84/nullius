@@ -1,0 +1,9 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--raw
+uranium-ore
+--raw
+copper-ore
+--technology
+nullius-antimatter-containment
+--require-no-additional-technologies
+nullius-antimatter-trap

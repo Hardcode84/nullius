@@ -401,6 +401,9 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
         run_checked([sys.executable, str(REPOSITORY / "tools/check_astronomy.py"),
                      "--data-raw", str(data_raw), "--output", str(root / "astronomy.json")],
                     "radio astronomy contracts", args.timeout_seconds)
+        run_checked([sys.executable, str(REPOSITORY / "tools/check_nuclear_research.py"),
+                     "--data-raw", str(data_raw)],
+                    "nuclear research placement", args.timeout_seconds)
         run_unlock_audits(data_raw, args.timeout_seconds, root)
         bootstrap = run_bootstrap_checks(data_raw, args.timeout_seconds, root)
         extracted_mod = extract_release(archive, root / "extracted")

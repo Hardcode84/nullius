@@ -1,0 +1,5 @@
+@tests/progression/nauvis-astronomy-boundary.args
+--technology
+nullius-nuclear-power-1
+--require-no-additional-technologies
+nullius-fusion-cell
