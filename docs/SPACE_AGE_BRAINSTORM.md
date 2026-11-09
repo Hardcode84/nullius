@@ -1599,7 +1599,7 @@ re-energized.
 | Spoil time | Fixed prototype value: 1.5 times the reference transit from Fulgora to Nauvis, so a delivery need not recharge en route |
 | Recharge | 1 filled trap -> 1 filled trap; the product sets `always_fresh = true` with `percent_spoiled = 0`. Without the flag a crafted product inherits its ingredient's spoilage, so recharging would not reset the timer |
 | Recharge cost | Electricity and crafting time only; no productivity or quality |
-| Executor | An electric machine available on the ground and on platforms, so stockpiles and cargo in transit can both be maintained |
+| Executor | Electrolyzers, category `nullius-electrolysis`, which already forbids productivity. They work on the ground and on platforms, so stockpiles and cargo in transit can both be maintained. Priority electrolyzers keep traps safe; surge electrolyzers run only on surplus power, so a shortage lets traps spoil |
 | Stacks | Merging stacks averages spoil timers, so stockpiles need a recharge loop, as with other spoiling goods |
 | Consumers | Consume the filled trap; only spoilage returns an empty trap |
 
