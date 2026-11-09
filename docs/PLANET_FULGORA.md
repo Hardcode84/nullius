@@ -1171,6 +1171,12 @@ Recipe feasibility does not prove startup order, buffer capacity, vent supply,
 or a connected factory layout. The source recipes and planner contracts define
 quantities; this document defines the mechanics.
 
+## Antiproton capture
+
+Design only. Fulgora's strong magnetic field traps antiprotons. Platforms stopped
+at Fulgora fill antimatter traps; this is the only antimatter source. See
+[Antimatter: antiproton capture](SPACE_AGE_BRAINSTORM.md#antimatter-antiproton-capture).
+
 ## Nuclear geoengineering
 
 | Step | Proposed behavior |

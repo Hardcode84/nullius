@@ -157,6 +157,9 @@ geoengineering. Status: design only.
 
 ### 3.3 Gleba (Microbiology/Breeding)
 
+Gleba is the uranium source: a bred leaching strain and a perishable
+biomineralizing culture. See [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
+
 **Concept**: Gleba has life -- but only **primitive bacterial and fungal** life. No animals, no plants, no complex organisms. The android arrives on a world of microbial mats, fungal networks, and bacterial biofilms. The core mechanic is **probabilistic breeding**: engineering increasingly complex organisms from this primitive base, with unpredictable and sometimes dangerous results.
 
 #### Core Constraints
@@ -308,6 +311,9 @@ IMPORTS:    Metals, electronics, containment materials, carbon (from Vulcanus CO
 ```
 
 ### 3.4 Aquilo (Cryogenic/Fusion/Monopoles)
+
+Aquilo owns advanced fusion; fission is a parallel Gleba branch. See
+[Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
 
 **Natural fit with Nullius**: Fusion power, tritium, lithium, ammonia are all existing Nullius systems. Aquilo's frozen environment maps directly to Nullius's nuclear progression bottlenecks.
 
@@ -1478,6 +1484,111 @@ a local metal route. They need no titanium route.
 | Import | Drops improve cost and throughput after the first launch; closure queries never declare a dropped item |
 
 ---
+
+### 4.7 Heavy Elements and Nuclear Branches
+
+Design only. Asteroid mining is removed. Copper comes from Fulgora, uranium from
+Gleba, and antimatter from antiproton capture around Fulgora. Fission and fusion
+become two parallel branches that share only the reactor.
+
+#### Asteroid mining removal
+
+Asteroid mining is today's only source of copper ore and uranium ore: no recipe
+produces either, and only guide-drone impacts create their patches. The removal
+ships together with Fulgora copper and the fission branch below.
+
+| Removed | Contents |
+|---|---|
+| Items and recipes | Asteroid miners 1 and 2, every guide drone and guide remote, guide-drone redeploy recipes |
+| Technologies | Asteroid Mining 1 to 3; the copper-ore, uranium-ore, and asteroid-mining checkpoints |
+| Scripts | Guide-drone impact effects in `drone.lua`, guide-drone checkpoint counts in `checkpoint.lua`, the ore list in `artillery_remote.lua`, and the `interface.lua` entries |
+
+| Dependent | Today | After removal |
+|---|---|---|
+| Reconnaissance 3 | Requires Asteroid Mining 1 | Keeps its closure without the removed branch |
+| Battery Storage 5 | Requires Asteroid Mining 3 | Same |
+| Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
+| Copper Production | Requires the copper-ore checkpoint | Requires the Fulgora copper technology |
+| Uranium Processing | Requires the uranium-ore checkpoint and Nuclear Power 3 | Requires Gleba Uranium Leaching; see below |
+| Mission goal 10 | 20 copper guide drones | Open; Fulgora copper deposit seeding is the candidate |
+| Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
+| Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | Open: accept finite patches, or keep these four under another delivery method |
+| Existing saves | Miner and drone items disappear with their prototypes; created patches remain | Migration and changelog compatibility note |
+
+| Check | Contract |
+|---|---|
+| Research blast radius | New query `--describe-research-dependents TECHNOLOGY` in `tools/analyze_factorio_prereqs.py`: every technology whose prerequisite closure contains the given one, with the count |
+| Rewired closures | A release check proves each rewired technology keeps its former closure minus the removed branch |
+
+#### Nuclear branches
+
+```
+Shared base:     Nuclear Reactor   reactor and portable reactor, split from Nuclear Power 1
+Fusion branch:   Fusion Power (Nauvis, tritium-starved) -> aneutronic cells -> breeder cells
+                 -> Aquilo: bulk tritium, monopole confinement
+Fission branch:  Gleba Uranium Leaching -> Uranium Processing -> Uranium Enrichment
+                 -> Fission Power
+```
+
+| Rule | Value |
+|---|---|
+| Nuclear Power 1 split | The reactor recipe has no fusion inputs, so it moves to Nuclear Reactor. Nuclear Power 1 keeps fusion cells and their recycling as Fusion Power |
+| Fusion Power dependents | Boiling 3, Demolitions 2, and Thermal Engineering 3 require Fusion Power and keep their closures |
+| Fusion | Basic tritium-starved fusion stays on Nauvis; Aquilo supplies bulk tritium and monopole confinement |
+| Fission | Needs only Nuclear Reactor and the fission branch. No breeder checkpoint, Nuclear Power 3, Astronomy, or tritium |
+| Timing | Fission arrives at Gleba's local science tier, which can precede Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
+| Other uranium consumers | Wildlife Management 1 loses its Uranium Processing prerequisite; its depleted-uranium magazine moves to the fission branch. Multi-tool 3 and Stabilizer 2 move to the fission branch or lose their uranium |
+
+#### Fission branch
+
+Uranium leaching runs on Gleba; the rest of the chain needs only Nauvis
+chemistry.
+
+| Stage | Process | Real basis |
+|---|---|---|
+| Leaching | A bred sulfur-oxidizing strain leaches Gleba rock into uranyl sulfate liquor, which precipitates yellowcake | Bacterial heap leaching of uranium with *Acidithiobacillus*; Gleba's H2S atmosphere and abundant sulfur |
+| Nauvis deposits | Biomineralized deposits yield ore for the existing crushed-ore and flotation route to yellowcake | See mission goal 11 below |
+| Fluorite | Calcite flotation yields trace fluorite concentrate | Industrial fluorite and calcite flotation separation |
+| Hydrogen fluoride | Fluorite + sulfuric acid -> hydrogen fluoride + gypsum | The industrial HF route |
+| Fluorine | Hydrogen fluoride electrolysis -> fluorine + hydrogen | Fluorine production from HF electrolysis |
+| Uranium dioxide | Yellowcake + hydrogen -> uranium dioxide | Reduction step of uranium conversion |
+| Green salt | Uranium dioxide + hydrogen fluoride -> uranium tetrafluoride + water | Hydrofluorination |
+| Hexafluoride | Uranium tetrafluoride + fluorine + empty cylinder -> natural UF6 cylinder | UF6 is solid at room temperature and ships in cylinders |
+| Enrichment stage A | Centrifuge: natural UF6 -> low-enriched UF6 + depleted tails | Gas centrifuge cascade |
+| Enrichment stage B | Centrifuge: low-enriched UF6 -> reactor-grade UF6 + a stripped stream returned to stage A | Cascade recycle |
+| Deconversion | Reactor-grade UF6 + steam + hydrogen -> enriched uranium + hydrogen fluoride + empty cylinder; tails -> uranium (U-238) + hydrogen fluoride + empty cylinder | Deconversion recovers the fluoride |
+| Fission cell | Unchanged: steel sheet, uranium, enriched uranium | Existing recipe |
+
+| Rule | Value |
+|---|---|
+| Centrifuge | The vanilla centrifuge in its own Nullius category, unhidden with a Nullius recipe. It has no fluid boxes, so UF6 moves in cylinder items |
+| Loops | The stage B return, hydrogen fluoride, and cylinders circulate; fluorite tops up fluoride losses |
+| Removed recipes | Tritium enrichment and direct yellowcake smelting to uranium. Uranium comes from enrichment tails, which gives the tails a consumer |
+| Existing items | `nullius-uranium` is described as U-238 and `nullius-enriched-uranium` as U-235; both keep their names and consumers |
+
+#### Mission goal 11: biomineralization
+
+| Rule | Value |
+|---|---|
+| Culture | A perishable Gleba culture that reduces dissolved uranium from water into a mineral deposit, as *Geobacter* does |
+| Seeding | A drone seeds a uranium patch on Nauvis coast or shallow water, reusing the guide-drone patch creation in `miner_effect` |
+| Goal | Counts seeded deposits; the target stays 12 |
+| Supply | Spoilage makes the culture a recurring Gleba-to-Nauvis shipment |
+| Lore | Life concentrates seawater uranium, remediating the planet's heavy-element deficiency |
+
+#### Antimatter: antiproton capture
+
+Planetary radiation belts trap antiprotons; the PAMELA satellite observed them in
+Earth's belts. Fulgora has the strongest magnetic field of the three planets.
+
+| Rule | Value |
+|---|---|
+| Machine | Antiproton collector, buildable only on space platforms. It fills an empty trap with antimatter, reusing `nullius-antimatter-trap` and `nullius-antimatter` |
+| Location | Recipes cannot see a platform's orbit, so a script enables collectors only while their platform is stopped at Fulgora, using the dish lifecycle controller pattern |
+| Research | Antimatter Containment, repurposed: Orbital Construction and Fulgora research; no enriched-uranium checkpoint |
+| Removed | The trap's reactor-fuel role |
+| Consequence | Victory requires Fulgora and a platform, because probes take antimatter |
+| Other consumers | Battery 3, Shield, and Solar Panel 4 follow the same source |
 
 ## 5. Quality Mechanic
 
