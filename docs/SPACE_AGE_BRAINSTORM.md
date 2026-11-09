@@ -1590,6 +1590,25 @@ Earth's belts. Fulgora has the strongest magnetic field of the three planets.
 | Consequence | Victory requires Fulgora and a platform, because probes take antimatter |
 | Other consumers | Battery 3, Shield, and Solar Panel 4 follow the same source |
 
+Traps hold antimatter only while powered, so filled traps spoil and must be
+re-energized.
+
+| Rule | Value |
+|---|---|
+| Spoilage | `nullius-antimatter` spoils to an empty `nullius-antimatter-trap`; the antimatter annihilates, and the trap returns to Fulgora for refilling |
+| Spoil time | Fixed prototype value: 1.5 times the reference transit from Fulgora to Nauvis, so a delivery need not recharge en route |
+| Recharge | 1 filled trap -> 1 filled trap; the product sets `always_fresh = true` with `percent_spoiled = 0`. Without the flag a crafted product inherits its ingredient's spoilage, so recharging would not reset the timer |
+| Recharge cost | Electricity and crafting time only; no productivity or quality |
+| Executor | An electric machine available on the ground and on platforms, so stockpiles and cargo in transit can both be maintained |
+| Stacks | Merging stacks averages spoil timers, so stockpiles need a recharge loop, as with other spoiling goods |
+| Consumers | Consume the filled trap; only spoilage returns an empty trap |
+
+| Contract | Checks |
+|---|---|
+| Spoilage | A filled trap spoils to an empty trap at the prototype time |
+| Recharge | A nearly spoiled trap comes out fresh; an ordinary recipe without `always_fresh` would not |
+| Collector gate | Collectors work only while their platform is stopped at Fulgora |
+
 ## 5. Quality Mechanic
 
 **Decision: Loaded but disabled.** Space Age requires the Quality mod, so
