@@ -1566,6 +1566,39 @@ chemistry.
 | Removed recipes | Tritium enrichment and direct yellowcake smelting to uranium. Uranium comes from enrichment tails, which gives the tails a consumer |
 | Existing items | `nullius-uranium` is described as U-238 and `nullius-enriched-uranium` as U-235; both keep their names and consumers |
 
+#### Seawater uranium
+
+A Nauvis stopgap before cultures arrive by cargo, and deliberately much worse than
+either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
+
+| Rule | Value |
+|---|---|
+| Research | Seawater Uranium Adsorption costs Gleba biological science: Gleba labs sequence a uranyl-binding protein. Research is global, so the recipes then run on Nauvis without cargo |
+| Real basis | Engineered uranyl-binding proteins with femtomolar affinity, and amidoxime polymer fibres tested for seawater extraction |
+| Adsorbent | A binder fibre made on Nauvis from the protein sequence and polymer feedstock; it degrades and is consumed each cycle |
+| Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + the same seawater returned for disposal |
+| Elution | Loaded adsorbent + acid -> uranyl solution + spent adsorbent; the uranyl solution joins the leach-liquor route to yellowcake |
+| Cost | Seawater is free, so machine count, pumping, and adsorbent carry the cost. The route must need at least 10 times the machine time per yellowcake of the biomineralized-deposit route |
+| Craftability | The adsorbent and every loading and elution input close on Nauvis at the research, with `--require-no-additional-technologies` |
+
+The machine-time bound needs a manifest query that does not exist yet:
+
+```yaml
+query: production manifest machine time total
+input: existing --manifest --marginal arguments and target quantities
+output:
+  machine_seconds: sum of seconds_per_cycle * cycles over placed executors, by category
+consumer: a fission cost check comparing seawater and deposit yellowcake
+```
+
+Uranium sources, best last:
+
+| Source | Planet | Needs cargo | Role |
+|---|---|---|---|
+| Seawater adsorption | Nauvis | No | Stopgap after Gleba research |
+| Bacterial leaching | Gleba | To export | Gleba's own supply and bootstrap |
+| Biomineralized deposits | Nauvis | Cultures from Gleba | Bulk Nauvis supply and mission goal 11 |
+
 #### Mission goal 11: biomineralization
 
 | Rule | Value |
