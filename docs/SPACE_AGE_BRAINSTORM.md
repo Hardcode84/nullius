@@ -1512,7 +1512,7 @@ uranium-ore checkpoint.
 | Battery Storage 5 | Requires Asteroid Mining 3 | Same |
 | Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
 | Copper Production | Requires the copper-ore checkpoint | Requires the Fulgora copper technology |
-| Uranium Processing | Requires the uranium-ore checkpoint | Requires Seawater Uranium Adsorption; see below. The yellowcake recipe from crushed uranium ore stays for remaining patches and Nauvis deposits |
+| Uranium-ore checkpoint | Unlocks crushed uranium ore and ore yellowcake; Uranium Processing no longer requires it | Removed; ore yellowcake moves to the research that creates Nauvis deposits, so remaining patches stay usable |
 | Mission goal 10 | 20 copper guide drones | Open; Fulgora copper deposit seeding is the candidate |
 | Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
 | Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | None: Nauvis patches are finite. Vulcanus lava and Fulgora vents are infinite, so depleted Nauvis materials can be imported |
@@ -1536,8 +1536,8 @@ Fission branch:  Biochemistry 4 -> Seawater Uranium Adsorption -> Uranium Proces
 Meeting point:   Antimatter Containment requires both branches
 ```
 
-The reactor split and the fission detachment from the fusion ladder are
-implemented without a new planet; `tools/check_nuclear_research.py` checks the
+The reactor split, the fission detachment from the fusion ladder, and seawater
+uranium are implemented without a new planet; `tools/check_nuclear_research.py` checks the
 placement and closures in the release build, and `tests/progression/nuclear-*`
 prove each unlock closes at its technology. The rules below describe that
 implemented state; [Fission branch](#fission-branch) describes the planned rest.
@@ -1546,11 +1546,12 @@ implemented state; [Fission branch](#fission-branch) describes the planned rest.
 |---|---|
 | Reactor split | Nuclear Reactor unlocks the reactor and portable reactor after the thermal-tank checkpoint and Empiricism 5. Nuclear Power 1 keeps fusion cells and their recycling and requires Nuclear Reactor and the tritium checkpoint. Isotope Separation stays independent of the reactor |
 | Fusion dependents | Boiling 3, Demolitions 2, and both Thermal Engineering 3 technologies keep Nuclear Power 1 and their closures |
-| Fission | Uranium Processing requires only the uranium-ore checkpoint; Nuclear Power 4 requires Uranium Processing and Nuclear Reactor. No breeder checkpoint, Nuclear Power 3, or Boiling 4 |
-| Remaining coupling | The uranium-ore checkpoint still follows Asteroid Mining 1, and Uranium Processing and Nuclear Power 4 cost astronomy packs, so fission still requires Astronomy. Enriched uranium still consumes tritium. Seawater uranium and the enrichment chain below remove both |
-| Antimatter Containment | Antimatter traps consume breeder and fission cells, so it requires the breeder checkpoint and Boiling 4 directly. Its dependents keep their closures |
-| Released research | Wildlife Management 1 and its dependents reached Nuclear Power 3 only through Uranium Processing and no longer require it |
-| Existing saves | A force that researched Nuclear Power 1 receives Nuclear Reactor |
+| Fission | Seawater Uranium Adsorption follows Biochemistry 4. Uranium Processing requires it and Isotope Separation; Nuclear Power 4 requires Uranium Processing and Nuclear Reactor. No breeder checkpoint, Nuclear Power 3, Boiling 4, uranium-ore checkpoint, or astronomy pack, so fission does not require Astronomy |
+| Ore yellowcake | The uranium-ore checkpoint unlocks ore yellowcake beside crushed uranium ore; Uranium Processing keeps uranium smelting and tritium enrichment |
+| Remaining coupling | Enriched uranium still consumes tritium, so Uranium Processing requires Isotope Separation. The enrichment chain below removes it |
+| Antimatter Containment | Antimatter traps consume breeder and fission cells, so it requires the breeder checkpoint and Boiling 4 directly. Through fission cells it and its dependents also require Seawater Uranium Adsorption and the Nauvis biology research before it |
+| Released research | Uranium consumers reached Nuclear Power 3 and the uranium-ore checkpoint only through Uranium Processing and no longer require them; they keep Astronomy through other prerequisites. `tools/check_nuclear_research.py` lists each changed closure |
+| Existing saves | A force that researched Nuclear Power 1 receives Nuclear Reactor. A force that researched Uranium Processing keeps ore yellowcake through the checkpoint it already researched |
 
 #### Fission branch
 
@@ -1561,7 +1562,7 @@ only Nauvis chemistry.
 | Research | Unlocks | Prerequisites | Cost |
 |---|---|---|---|
 | Seawater Uranium Adsorption | Adsorbent, loading, elution, precipitation to yellowcake | Biochemistry 4 | Biology packs, as Biochemistry 4 |
-| Uranium Processing | Yellowcake from crushed uranium ore, uranium dioxide | Seawater Uranium Adsorption | Nauvis packs; no astronomy pack |
+| Uranium Processing | Uranium dioxide | Seawater Uranium Adsorption | Nauvis packs; no astronomy pack |
 | Fluorine Chemistry | Fluorite flotation, hydrogen fluoride, fluorine | Electrolysis 4 | Chemistry and physics packs, as Isotope Separation |
 | Uranium Enrichment | Green salt, hexafluoride, centrifuge, both enrichment stages, deconversion | Uranium Processing, Fluorine Chemistry | Nauvis packs; no astronomy pack |
 | Nuclear Power 4 | Unchanged: fission cell and fission recycling | Uranium Enrichment, Nuclear Reactor | Nauvis packs; no astronomy pack |
@@ -1579,7 +1580,7 @@ Delivery order:
 
 | Step | Change | Coupling removed |
 |---|---|---|
-| Seawater uranium | Seawater Uranium Adsorption; Uranium Processing requires it and Isotope Separation instead of the uranium-ore checkpoint, and loses its astronomy pack, as does Nuclear Power 4. Uranium Processing keeps uranium smelting and tritium enrichment, and tritium comes from Isotope Separation | Astronomy |
+| Seawater uranium (implemented) | See the rules above | Astronomy |
 | Enrichment | Fluorine Chemistry and Uranium Enrichment; Uranium Processing drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
 | Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint |
 
@@ -1618,7 +1619,7 @@ than either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
 | Real basis | Engineered uranyl-binding proteins with femtomolar affinity, and amidoxime polymer fibres tested for seawater extraction |
 | Adsorbent | Amino acids + acrylic fibre support -> uranyl-binding fibre |
 | Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + the same seawater returned for disposal |
-| Elution | Loaded adsorbent + acid -> uranyl solution + most of the adsorbent back + a fixed share of spent adsorbent, so adsorbent is consumed every cycle without a probabilistic result |
+| Elution | Loaded adsorbent + acid -> uranyl solution + most of the adsorbent back; the rest is consumed every cycle without a probabilistic result |
 | Precipitation | Uranyl solution + sodium hydroxide -> yellowcake + wastewater; real sodium diuranate precipitation |
 | Cost | Seawater is free, so machine count, pumping, and adsorbent carry the cost. When biomineralized deposits ship, the route must need at least 10 times the machine time per yellowcake of the deposit route |
 | Craftability | The adsorbent and every loading, elution, and precipitation input close on Nauvis at the research, with `--require-no-additional-technologies` |

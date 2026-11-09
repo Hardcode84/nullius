@@ -6007,6 +6007,119 @@ extend_intermediate_prototypes({
     main_product = "nullius-yellowcake"
   },
 
+  -- Seawater uranium: an engineered uranyl-binding protein on an acrylic fiber
+  -- support adsorbs trace uranium, and acid elution returns most of the fiber.
+  {
+    type = "item",
+    name = "nullius-uranyl-binding-fiber",
+    icons = {{
+      icon = "__angelssmeltinggraphics__/graphics/icons/wire-platinum.png",
+      icon_size = 32,
+      tint = {0.55, 0.85, 0.45}
+    }},
+    subgroup = "uranium",
+    order = "nullius-ca",
+    stack_size = 100
+  },
+  {
+    type = "recipe",
+    name = "nullius-uranyl-binding-fiber",
+    enabled = false,
+    categories = {"nanotechnology"},
+    always_show_made_in = true,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 12,
+    ingredients = {
+      {type="item", name="nullius-acrylic-fiber", amount=4},
+      {type="fluid", name="nullius-amino-acids", amount=2}
+    },
+    results = {
+      {type="item", name="nullius-uranyl-binding-fiber", amount=4}
+    }
+  },
+  {
+    type = "item",
+    name = "nullius-loaded-uranyl-fiber",
+    icons = {
+      {
+        icon = "__angelssmeltinggraphics__/graphics/icons/wire-platinum.png",
+        icon_size = 32,
+        tint = {0.85, 0.85, 0.2}
+      },
+      {
+        icon = "__angelssmeltinggraphics__/graphics/icons/pellet-gold.png",
+        icon_size = 64,
+        tint = {0.7, 1, 0.7},
+        scale = 0.25,
+        shift = {-8, -8}
+      }
+    },
+    subgroup = "uranium",
+    order = "nullius-cb",
+    stack_size = 100
+  },
+  {
+    type = "recipe",
+    name = "nullius-loaded-uranyl-fiber",
+    localised_name = {"recipe-name.nullius-loaded-uranyl-fiber"},
+    enabled = false,
+    categories = {"nullius-water-treatment"},
+    always_show_made_in = true,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 12,
+    ingredients = {
+      {type="item", name="nullius-uranyl-binding-fiber", amount=1},
+      {type="fluid", name="nullius-seawater", amount=1000}
+    },
+    results = {
+      {type="item", name="nullius-loaded-uranyl-fiber", amount=1},
+      {type="fluid", name="nullius-seawater", amount=1000, ignored_by_productivity=1000}
+    },
+    main_product = "nullius-loaded-uranyl-fiber"
+  },
+  {
+    type = "recipe",
+    name = "nullius-uranyl-solution",
+    localised_name = {"recipe-name.nullius-uranyl-solution"},
+    enabled = false,
+    categories = {"ore-flotation"},
+    always_show_made_in = true,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 10,
+    ingredients = {
+      {type="item", name="nullius-loaded-uranyl-fiber", amount=10},
+      {type="fluid", name="nullius-acid-hydrochloric", amount=25, fluidbox_index=1}
+    },
+    results = {
+      {type="fluid", name="nullius-uranyl-solution", amount=20, fluidbox_index=1},
+      {type="item", name="nullius-uranyl-binding-fiber", amount=9, ignored_by_productivity=9}
+    },
+    main_product = "nullius-uranyl-solution"
+  },
+  {
+    type = "recipe",
+    name = "nullius-yellowcake-precipitation",
+    localised_name = {"recipe-name.nullius-yellowcake-precipitation"},
+    enabled = false,
+    categories = {"ore-flotation"},
+    always_show_made_in = true,
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 4,
+    ingredients = {
+      {type="fluid", name="nullius-uranyl-solution", amount=10, fluidbox_index=1},
+      {type="item", name="nullius-sodium-hydroxide", amount=1}
+    },
+    results = {
+      {type="item", name="nullius-yellowcake", amount=1},
+      {type="fluid", name="nullius-wastewater", amount=10, fluidbox_index=1}
+    },
+    main_product = "nullius-yellowcake"
+  },
+
   {
     type = "item",
     name = "nullius-uranium",

@@ -1,9 +1,8 @@
-@tests/progression/nauvis-astronomy-boundary.args
---raw
-uranium-ore
+@tests/progression/nauvis-boundary.args
+--recipe
+nullius-yellowcake=nullius-yellowcake-precipitation
 --technology
 nullius-uranium-processing
 --require-no-additional-technologies
-nullius-yellowcake
 nullius-uranium
 nullius-enriched-uranium

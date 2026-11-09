@@ -8,26 +8,29 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
 import analyze_factorio_prereqs as prereqs
-from check_nuclear_research import (ANTIMATTER, FISSION, FISSION_BRANCH, FORMER_PREREQUISITES, FUSION,
-                                    REACTOR, RECIPE_UNLOCKS, RELEASED, URANIUM, research_violations)
+from check_nuclear_research import (ANTIMATTER, ASTRONOMY, FISSION, FISSION_BRANCH, FORMER_PREREQUISITES, FUSION,
+                                    ISOTOPES, REACTOR, RECIPE_UNLOCKS, SEAWATER, URANIUM, URANIUM_ORE,
+                                    closure_rules, research_violations)
 
 
 def nuclear_tree():
     prerequisites = {
         "nullius-empiricism-5": [],
         "nullius-checkpoint-thermal-tank": [],
-        "nullius-isotope-separation": [],
-        "nullius-checkpoint-tritium": ["nullius-isotope-separation"],
+        ISOTOPES: [],
+        "nullius-checkpoint-tritium": [ISOTOPES],
+        "nullius-biochemistry-4": [],
+        SEAWATER: ["nullius-biochemistry-4"],
         REACTOR: ["nullius-checkpoint-thermal-tank", "nullius-empiricism-5"],
         FUSION: [REACTOR, "nullius-checkpoint-tritium"],
         "nullius-boiling-3": [FUSION],
-        "nullius-astronomy": ["nullius-boiling-3"],
-        "nullius-nuclear-power-3": ["nullius-astronomy"],
+        ASTRONOMY: ["nullius-boiling-3"],
+        "nullius-nuclear-power-3": [ASTRONOMY],
         "nullius-checkpoint-breeder-cell": ["nullius-nuclear-power-3"],
         "nullius-checkpoint-pressure-steam": ["nullius-nuclear-power-3"],
         "nullius-boiling-4": ["nullius-checkpoint-pressure-steam"],
-        "nullius-checkpoint-uranium-ore": ["nullius-astronomy"],
-        URANIUM: ["nullius-checkpoint-uranium-ore"],
+        URANIUM_ORE: [ASTRONOMY],
+        URANIUM: [SEAWATER, ISOTOPES],
         "nullius-wildlife-management-1": [URANIUM],
         FISSION: [URANIUM, REACTOR],
         "nullius-checkpoint-enriched-uranium": [FISSION],
@@ -52,8 +55,16 @@ class NuclearResearchTest(unittest.TestCase):
         technologies = nuclear_tree()
         technologies[FISSION]["prerequisites"].append("nullius-checkpoint-breeder-cell")
         violations = research_violations(technologies)
-        self.assertEqual(len(violations), 1)
         self.assertIn(f"{FISSION} prerequisites", violations[0])
+        self.assertEqual(violations[1:], [f"nullius-checkpoint-enriched-uranium requires {ASTRONOMY}",
+                                          f"{FISSION} requires {ASTRONOMY}"])
+
+    def test_uranium_through_astronomy_is_rejected(self):
+        technologies = nuclear_tree()
+        technologies[SEAWATER]["prerequisites"].append(URANIUM_ORE)
+        violations = research_violations(technologies)
+        self.assertIn(f"{SEAWATER} prerequisites", violations[0])
+        self.assertEqual(violations[1:], [f"{name} requires {ASTRONOMY}" for name in sorted(FISSION_BRANCH)])
 
     def test_reactor_unlocked_with_fusion_cells_is_rejected(self):
         technologies = nuclear_tree()
@@ -61,19 +72,28 @@ class NuclearResearchTest(unittest.TestCase):
         self.assertEqual(research_violations(technologies), [
             f"nullius-reactor unlocked by ['{FUSION}', '{REACTOR}'], expected {REACTOR}"])
 
-    def test_released_breeder_research_may_leave_uranium_consumers(self):
+    def test_ore_yellowcake_at_uranium_processing_is_rejected(self):
+        technologies = nuclear_tree()
+        technologies[URANIUM]["effects"].append({"type": "unlock-recipe", "recipe": "nullius-yellowcake"})
+        self.assertEqual(research_violations(technologies), [
+            f"nullius-yellowcake unlocked by ['{URANIUM_ORE}', '{URANIUM}'], expected {URANIUM_ORE}"])
+
+    def test_uranium_consumers_trade_ore_research_for_seawater_research(self):
         technologies = nuclear_tree()
         exempt = FISSION_BRANCH | {REACTOR}
-        self.assertEqual(prereqs.moved_research_violations(technologies, FORMER_PREREQUISITES, exempt), [
-            "nullius-wildlife-management-1 closure: lost ['nullius-nuclear-power-3'], gained []"])
+        lost, gained = prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, exempt)[
+            "nullius-wildlife-management-1"]
+        self.assertEqual(sorted(gained), ["nullius-biochemistry-4", SEAWATER])
+        self.assertIn(URANIUM_ORE, lost)
         self.assertEqual(prereqs.moved_research_violations(technologies, FORMER_PREREQUISITES, exempt,
-                                                           RELEASED), [])
+                                                           *closure_rules(technologies)), [])
 
     def test_antimatter_without_the_fusion_ladder_loses_closure(self):
         technologies = nuclear_tree()
         technologies[ANTIMATTER]["prerequisites"].remove("nullius-boiling-4")
         violations = research_violations(technologies)
-        lost = "closure: lost ['nullius-boiling-4', 'nullius-checkpoint-pressure-steam'], gained []"
+        lost = (f"closure: lost ['nullius-boiling-4', 'nullius-checkpoint-pressure-steam', '{URANIUM_ORE}'], "
+                f"gained ['nullius-biochemistry-4', '{SEAWATER}']")
         self.assertEqual(len(violations), 3)
         self.assertIn(f"{ANTIMATTER} prerequisites", violations[0])
         self.assertEqual(violations[1:], [f"{ANTIMATTER} {lost}", f"nullius-rocket-science-3 {lost}"])

@@ -31,6 +31,7 @@ element_tint = {
   ["boron"] = { 240, 180, 172 },
   ["titanium"] = { 120, 60, 90 },
   ["copper"] = {0.803, 0.388, 0.215},
+  ["uranium"] = { 200, 220, 40 },
   ["water"] = { 18, 193, 200 },
   ["saline"] = { 34, 169, 187 },
   ["brine"] = { 36, 94, 142 },
@@ -784,6 +785,20 @@ extend_fluid_prototypes({
     order = "nullius-i",
     base_color = {r = 0.9, g = 1, b = 0.7},
     flow_color = {r = 0.9, g = 1, b = 0.7},
+    heat_capacity = "0.04kJ",
+    default_temperature = 25,
+    max_temperature = 100
+  },
+  {
+    type = "fluid",
+    name = "nullius-uranyl-solution",
+    icons = angelsLegacy.functions.create_liquid_fluid_icon(nil,
+      {element_tint["uranium"], element_tint["oxygen"], element_tint["chlorine"]}
+    ),
+    subgroup = "inorganic-chemistry",
+    order = "nullius-ia",
+    base_color = {r = 0.78, g = 0.86, b = 0.16},
+    flow_color = {r = 0.78, g = 0.86, b = 0.16},
     heat_capacity = "0.04kJ",
     default_temperature = 25,
     max_temperature = 100

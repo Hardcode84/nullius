@@ -13435,10 +13435,6 @@ data:extend({
     effects = {
       {
         type = "unlock-recipe",
-        recipe = "nullius-yellowcake"
-      },
-      {
-        type = "unlock-recipe",
         recipe = "nullius-uranium"
       },
       {
@@ -13451,12 +13447,12 @@ data:extend({
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
         {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2},
-        {"nullius-astronomy-pack", 1}
+        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
       },
       time = 60
     },
-    prerequisites = {"nullius-checkpoint-uranium-ore"}
+    -- Tritium enrichment needs Isotope Separation until enrichment replaces it.
+    prerequisites = {"nullius-seawater-uranium-adsorption", "nullius-isotope-separation"}
   },
   {
     type = "technology",
@@ -13673,8 +13669,7 @@ data:extend({
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
         {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 2},
-        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 1},
-        {"nullius-astronomy-pack", 1}
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 1}
       },
       time = 60
     },
@@ -14411,6 +14406,39 @@ data:extend({
       time = 600
     },
     prerequisites = {"nullius-biochemistry-3", "nullius-zoology-1", "nullius-empiricism-5"}
+  },
+  {
+    type = "technology",
+    name = "nullius-seawater-uranium-adsorption",
+    order = "nullius-gh",
+    icons = data.raw.item["nullius-loaded-uranyl-fiber"].icons,
+    effects = {
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-uranyl-binding-fiber"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-loaded-uranyl-fiber"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-uranyl-solution"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-yellowcake-precipitation"
+      }
+    },
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-biochemistry-pack", 1}, {"nullius-microbiology-pack", 1},
+        {"nullius-nematology-pack", 1}
+      },
+      time = 600
+    },
+    prerequisites = {"nullius-biochemistry-4"}
   },
   {
     type = "technology",

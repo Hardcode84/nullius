@@ -566,17 +566,15 @@ def technology_closure(
     return closure
 
 
-def moved_research_violations(
+def moved_research_changes(
     technologies: dict[str, Prototype],
     former_prerequisites: dict[str, list[str]],
     exempt: set[str],
-    released: frozenset[str] = frozenset(),
-) -> list[str]:
-    """Report closure changes caused by moved research.
+) -> dict[str, tuple[set[str], set[str]]]:
+    """Return the lost and gained closure of each technology changed by moved research.
 
     The former tree is the resolved tree with the given prerequisites restored.
-    Every technology outside exempt must keep the closure that tree gave it,
-    except that it may stop requiring the released technologies.
+    Technologies in exempt are not compared.
     """
     former = {
         name: {
@@ -587,16 +585,35 @@ def moved_research_violations(
         }
         for name, technology in technologies.items()
     }
-    violations = []
+    changes = {}
     for name in sorted(technologies.keys() - exempt):
         current = technology_closure(technologies, {name})
         expected = technology_closure(former, {name})
-        if current - released != expected - released or current - expected:
-            violations.append(
-                f"{name} closure: lost {sorted(expected - current)}, "
-                f"gained {sorted(current - expected)}"
-            )
-    return violations
+        if current != expected:
+            changes[name] = (expected - current, current - expected)
+    return changes
+
+
+def moved_research_violations(
+    technologies: dict[str, Prototype],
+    former_prerequisites: dict[str, list[str]],
+    exempt: set[str],
+    released: frozenset[str] = frozenset(),
+    gained: frozenset[str] = frozenset(),
+) -> list[str]:
+    """Report closure changes caused by moved research.
+
+    Every technology outside exempt must keep the closure the former tree gave
+    it, except that it may stop requiring the released technologies and start
+    requiring the gained ones.
+    """
+    return [
+        f"{name} closure: lost {sorted(lost)}, gained {sorted(new)}"
+        for name, (lost, new) in moved_research_changes(
+            technologies, former_prerequisites, exempt
+        ).items()
+        if lost - released or new - gained
+    ]
 
 
 def recipe_unlockers(technologies: dict[str, Prototype], recipe: str) -> list[str]:

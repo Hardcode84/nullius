@@ -1,6 +1,6 @@
-@tests/progression/nauvis-astronomy-boundary.args
---raw
-uranium-ore
+@tests/progression/nauvis-boundary.args
+--recipe
+nullius-yellowcake=nullius-yellowcake-precipitation
 --raw
 copper-ore
 --technology

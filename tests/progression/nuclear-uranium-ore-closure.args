@@ -1,0 +1,10 @@
+@tests/progression/nauvis-boundary.args
+--raw
+uranium-ore
+--recipe
+nullius-yellowcake=nullius-yellowcake
+--technology
+nullius-checkpoint-uranium-ore
+--require-no-additional-technologies
+nullius-crushed-uranium-ore
+nullius-yellowcake

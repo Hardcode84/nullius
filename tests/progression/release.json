@@ -65,7 +65,9 @@
     "vulcanus-astronomy-closure.args",
     "nuclear-reactor-closure.args",
     "nuclear-fusion-closure.args",
+    "nuclear-seawater-closure.args",
     "nuclear-uranium-closure.args",
+    "nuclear-uranium-ore-closure.args",
     "nuclear-fission-closure.args",
     "nuclear-antimatter-closure.args"
   ],

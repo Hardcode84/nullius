@@ -5,11 +5,23 @@ local function assert_reactor(force)
   end
 end
 
+-- Ore yellowcake moved from Uranium Processing to the uranium-ore checkpoint, its
+-- former prerequisite. Seawater uranium is new research the save has not done.
+local function assert_uranium(force)
+  for _,name in ipairs({"nullius-crushed-uranium-ore","nullius-yellowcake","nullius-uranium","nullius-enriched-uranium"}) do
+    assert(force.recipes[name].enabled,"researched Uranium Processing lost "..name)
+  end
+  assert(not force.technologies["nullius-seawater-uranium-adsorption"].researched,"seawater uranium researched by upgrade")
+  assert(not force.recipes["nullius-yellowcake-precipitation"].enabled,"seawater uranium unlocked by upgrade")
+end
+
 remote.add_interface("release-upgrade",{
   seed=function()
     local technologies=game.forces.player.technologies
     technologies["nullius-astronomy"].researched=true
     technologies["nullius-nuclear-power-1"].researched=true
+    technologies["nullius-checkpoint-uranium-ore"].researched=true
+    technologies["nullius-uranium-processing"].researched=true
     game.create_force("nuclear-control")
     storage.astronomy_upgrade_seed=true
   end,
@@ -27,11 +39,14 @@ remote.add_interface("release-upgrade",{
       assert(not force.recipes["nullius-"..planet.."-interferometric-recording"].enabled,"planet research bypassed")
     end
     assert_reactor(force)
+    assert_uranium(force)
     force.reset_technology_effects()
     assert_reactor(force)
+    assert_uranium(force)
     local control=game.forces["nuclear-control"]
     assert(not control.technologies["nullius-nuclear-reactor"].researched,"migration researched reactors without Nuclear Power 1")
     assert(not control.recipes["nullius-reactor"].enabled,"unresearched force has reactors")
+    assert(not control.recipes["nullius-yellowcake"].enabled,"unresearched force has yellowcake")
     helpers.write_file("upgrade-result.json",helpers.table_to_json{status="pass",astronomy_research=true,
       recordings=true,planet_gates=true,reactor_split=true},false)
   end,

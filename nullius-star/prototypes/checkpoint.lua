@@ -2172,6 +2172,10 @@ data:extend({
 	  {
         type = "unlock-recipe",
         recipe = "nullius-crushed-uranium-ore"
+      },
+	  {
+        type = "unlock-recipe",
+        recipe = "nullius-yellowcake"
       }
 	},
     unit = {

@@ -1,0 +1,10 @@
+@tests/progression/nauvis-boundary.args
+--recipe
+nullius-yellowcake=nullius-yellowcake-precipitation
+--technology
+nullius-seawater-uranium-adsorption
+--require-no-additional-technologies
+nullius-uranyl-binding-fiber
+nullius-loaded-uranyl-fiber
+nullius-uranyl-solution
+nullius-yellowcake
