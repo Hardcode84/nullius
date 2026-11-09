@@ -277,8 +277,9 @@ so no factory power route needs an energy bound.
 
 ### Pneumatic silo
 
-The silo can use compressed volcanic gas on Vulcanus. Pneumatic Technology
-unlocks the mode. Select a built silo and press Ctrl+R to switch modes.
+Vulcanus has no electricity route, so the silo can use compressed volcanic gas
+there. Pneumatic Technology unlocks the mode. Select a silo or its ghost and
+press Ctrl+R to switch modes.
 
 - Gas use during crafting and powered launch steps matches the total
   electric draw. The night lamp adds the same load in both modes. Pneumatic
@@ -288,8 +289,8 @@ unlocks the mode. Select a built silo and press Ctrl+R to switch modes.
 - Switch before a rocket is assembled or after the launch sequence ends.
   Partial crafting progress, modules, inventories, logistic requests, circuit
   settings, and automatic orbit sending survive the switch.
-- Ghosts and assembled or launching rockets cannot switch. Pneumatic silos
-  cannot be built on space platforms.
+- Assembled or launching rockets cannot switch. Pneumatic silos cannot be
+  built on space platforms.
 - Clockwork robots can load platform requests without an electric grid.
 
 Validation: `experiment-pneumatic-silo`, `pneumatic-silo-transition`, and

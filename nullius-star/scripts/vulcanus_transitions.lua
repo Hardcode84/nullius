@@ -58,10 +58,13 @@ local function register_pneumatic_pair(electric, pneumatic, gate, replace_fn)
   })
 end
 
+-- A ghost has no silo state. A built silo switches only between rockets: the
+-- rocket needs one part, so building_rocket means no part and no rocket yet.
 local function silo_gate(entity)
-  local allowed = entity.type == "rocket-silo" and
+  if entity.type == "entity-ghost" then return true end
+  local allowed =
     entity.rocket_silo_status == defines.rocket_silo_status.building_rocket and
-    entity.rocket_parts == 0 and entity.rocket == nil
+    entity.rocket == nil
   if not allowed then
     rendering.draw_text{surface=entity.surface, target=entity.position,
       text={"nullius-pneumatic.silo-switch-blocked"},
@@ -71,6 +74,10 @@ local function silo_gate(entity)
 end
 
 local function replace_silo(entity, name, force)
+  if entity.type == "entity-ghost" then
+    return assert(replace_fluid_entity(entity, name, force), "Pneumatic silo ghost replacement failed")
+  end
+  -- Fast replacement drops automatic orbit sending; experiment-pneumatic-silo measures it.
   local automatic = entity.send_to_orbit_automatically
   local finished = entity.products_finished
   local replacement = assert(replace_fluid_entity(entity, name, force),

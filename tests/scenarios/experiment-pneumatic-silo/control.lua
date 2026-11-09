@@ -87,14 +87,17 @@ script.on_nth_tick(60,function()
     e=replace(e,"nullius-silo-pneumatic"); e=replace(e,"nullius-silo")
     storage.idle=e
     obs.idle_after=snapshot(e)
+    -- Raw fast replacement keeps everything except automatic orbit sending,
+    -- which replace_silo restores.
+    local before,after=obs.idle_before,obs.idle_after
+    check(before.automatic and not after.automatic,"fast replacement drops automatic orbit sending")
+    check(after.requests and after.circuit==before.circuit,"platform requests and circuit mode survive")
+    check(helpers.table_to_json(after.inventories)==helpers.table_to_json(before.inventories),"silo inventories survive")
+    check(after.section_count==before.section_count and
+      helpers.table_to_json(after.section)==helpers.table_to_json(before.section),"logistic sections survive")
     obs.electric_craft_start=storage.pole.electric_network_statistics.get_input_count("nullius-silo")
     obs.craft_start=fuel(a)
     obs.progress_start=a.silo.crafting_progress
-    local e=storage.rows[3].silo
-    obs.partial_before={progress=e.crafting_progress,parts=e.rocket_parts}
-    e=replace(e,"nullius-silo"); e=replace(e,"nullius-silo-pneumatic")
-    storage.rows[3].silo=e
-    obs.partial_after={progress=e.crafting_progress,parts=e.rocket_parts}
   elseif game.tick==180 then
     obs.craft_per_second=obs.craft_start-fuel(a)
     obs.electric_craft_per_second=storage.pole.electric_network_statistics.get_input_count("nullius-silo")-obs.electric_craft_start
@@ -127,10 +130,10 @@ script.on_nth_tick(60,function()
       row.ready=game.tick
       e.get_inventory(defines.inventory.rocket_silo_rocket).insert{name="nullius-probe",count=1}
       if i==3 then
-        obs.ready_before={parts=e.rocket_parts,cargo=e.get_inventory(defines.inventory.rocket_silo_rocket).get_contents()}
+        obs.ready_before={cargo=e.get_inventory(defines.inventory.rocket_silo_rocket).get_contents()}
         e=replace(e,"nullius-silo"); e=replace(e,"nullius-silo-pneumatic"); row.silo=e
         local inv=e.get_inventory(defines.inventory.rocket_silo_rocket)
-        obs.ready_after={parts=e.rocket_parts,cargo=inv and inv.get_contents() or {}}
+        obs.ready_after={cargo=inv and inv.get_contents() or {}}
       else
         e.send_to_orbit_automatically=true
       end

@@ -73,7 +73,12 @@ script.on_nth_tick(1,function()
   check(e.insert{name="nullius-rocket-stage",count=2}==2,"finite stages")
   storage.silo=e
   local ghost=assert(s.create_entity{name="entity-ghost",inner_name="nullius-silo",position={-10,0},force=f})
-  check(remote.call("nullius-test-transitions","execute",ghost) and ghost.valid,"unproven ghost stays unchanged")
+  check(remote.call("nullius-test-transitions","execute",ghost),"ghost switch")
+  ghost=assert(s.find_entities_filtered{name="entity-ghost",position={-10,0},radius=1}[1])
+  check(ghost.ghost_name=="nullius-silo-pneumatic","ghost enters pneumatic mode")
+  check(remote.call("nullius-test-transitions","execute",ghost),"ghost switch back")
+  ghost=assert(s.find_entities_filtered{name="entity-ghost",position={-10,0},radius=1}[1])
+  check(ghost.ghost_name=="nullius-silo","ghost returns to electric mode")
   local surface=game.surfaces.nauvis
   local other=assert(surface.create_entity{name="nullius-silo",position={40,40},force=f})
   check(not remote.call("nullius-test-transitions","execute",other),"planet gate")
