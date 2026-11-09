@@ -1512,7 +1512,7 @@ ships together with Fulgora copper and the fission branch below.
 | Uranium Processing | Requires the uranium-ore checkpoint and Nuclear Power 3 | Requires Gleba Uranium Leaching; see below |
 | Mission goal 10 | 20 copper guide drones | Open; Fulgora copper deposit seeding is the candidate |
 | Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
-| Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | Open: accept finite patches, or keep these four under another delivery method |
+| Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | None: Nauvis patches are finite. Vulcanus lava and Fulgora vents are infinite, so depleted Nauvis materials can be imported |
 | Existing saves | Miner and drone items disappear with their prototypes; created patches remain | Migration and changelog compatibility note |
 
 | Check | Contract |
