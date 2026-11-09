@@ -36,12 +36,13 @@ end
 
 -- Convenience: register both directions of a pneumatic pair.
 -- Must match entities generated in prototypes/pneumatic.lua.
-local function register_pneumatic_pair(electric, pneumatic)
+local function register_pneumatic_pair(electric, pneumatic, gate, replace_fn)
   local assembler = pneumatic_families.is_normal_assembler(electric)
   transitions.register(electric, pneumatic, {
     condition = is_vulcanus_pneumatic,
+    gate = gate,
     on_enter = on_enter_pneumatic,
-    replace_fn = assembler and overcharged_assemblers.replace or nil,
+    replace_fn = replace_fn or (assembler and overcharged_assemblers.replace or nil),
   })
   if assembler then
     transitions.register(pneumatic, electric .. "-overcharged", {
@@ -51,10 +52,36 @@ local function register_pneumatic_pair(electric, pneumatic)
     })
   end
   transitions.register(pneumatic, electric, {
+    gate = gate,
     on_leave = on_leave_pneumatic,
-    replace_fn = assembler and overcharged_assemblers.replace or nil,
+    replace_fn = replace_fn or (assembler and overcharged_assemblers.replace or nil),
   })
 end
+
+local function silo_gate(entity)
+  local allowed = entity.type == "rocket-silo" and
+    entity.rocket_silo_status == defines.rocket_silo_status.building_rocket and
+    entity.rocket_parts == 0 and entity.rocket == nil
+  if not allowed then
+    rendering.draw_text{surface=entity.surface, target=entity.position,
+      text={"nullius-pneumatic.silo-switch-blocked"},
+      color={1, 0.6, 0.2}, time_to_live=120, alignment="center"}
+  end
+  return allowed
+end
+
+local function replace_silo(entity, name, force)
+  local automatic = entity.send_to_orbit_automatically
+  local finished = entity.products_finished
+  local replacement = assert(replace_fluid_entity(entity, name, force),
+    "Pneumatic silo replacement failed")
+  replacement.send_to_orbit_automatically = automatic
+  replacement.products_finished = finished
+  return replacement
+end
+
+register_pneumatic_pair("nullius-silo", "nullius-silo-pneumatic",
+  silo_gate, replace_silo)
 
 -- Four-state cycle for machines that already have priority/surge modes:
 -- priority electric -> surge electric -> surge pneumatic ->

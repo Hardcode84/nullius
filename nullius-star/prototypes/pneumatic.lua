@@ -41,6 +41,8 @@ local function register_pneumatic(entity_type, entity_name, gas_offset,
   })
 end
 
+register_pneumatic("rocket-silo", "nullius-silo", 0, 4)
+
 -- Register every ordinary assembler size and tier.
 for _, name in ipairs(pneumatic_families.normal_assemblers(
     data.raw["assembling-machine"])) do
@@ -237,6 +239,15 @@ for _, entry in pairs(pneumatic_machines) do
         starting_vertical_speed = 0.08,
       }},
     }
+
+    if entry.type == "rocket-silo" then
+      local drain = util.parse_energy(original.energy_source.drain)
+      for _, field in ipairs({"energy_usage", "active_energy_usage"}) do
+        pneumatic[field] = tostring((util.parse_energy(original[field]) + drain) * 60) .. "W"
+      end
+      pneumatic.energy_source.fluid_usage_per_tick = nil
+      pneumatic.energy_source.fluid_box.filter = "nullius-compressed-volcanic-gas"
+    end
 
     -- Same fast_replaceable_group so toggle works.
     pneumatic.fast_replaceable_group = original.fast_replaceable_group or entry.name

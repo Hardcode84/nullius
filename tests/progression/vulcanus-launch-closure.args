@@ -15,3 +15,6 @@ nullius-rocket-stage=nullius-rocket-stage
 nullius-silo
 nullius-rocket-stage
 nullius-rocket
+--executor
+rocketry=nullius-silo-pneumatic
+--require-no-electricity
