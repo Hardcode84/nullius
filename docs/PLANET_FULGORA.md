@@ -524,7 +524,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Copper Production | Repurposed. Prerequisites: Astronomy, Primitive Filtration, Overcharged Assembly 2. The copper-ore checkpoint prerequisite is removed. Cost unchanged |
 | Unlocks | Deep mode, deep slurry filtration, roasting, leaching, electrowinning, wire, sheet, copper heat pipe, and their boxed and packaging recipes |
 | Crushed-ore flotation | Moves to the copper-ore checkpoint, which supplies its input; crustal fracturing later takes over the crushed-ore recipes |
-| Moved closures | Every dependent of Copper Production releases the copper-ore checkpoint, Asteroid Mining 1, and Mining Productivity 20 unless it keeps them through another prerequisite, and gains the Fulgora prerequisites. A release check states and verifies each dependent's closure |
+| Moved closures | A dependent of Copper Production may release only the closure of the copper-ore checkpoint, and may gain only the closure of the new prerequisites. It keeps any released technology that another prerequisite still requires. Reconnaissance 3 requires Asteroid Mining 1, so Robot Speed 5 keeps it directly, and Wildlife Management 1 keeps it through Checkpoint Worm and Personal Storage 3. The other dependents and Antimatter Containment lose it |
 
 #### Crustal fracturing
 
@@ -552,7 +552,9 @@ before both have replacements.
 | Check | Expected result |
 |---|---|
 | Copper-free closure | Copper Production closes from the Fulgora boundary without `copper-ore` raw or any copper item, with `--require-no-additional-technologies` |
-| Dependents | The Copper Production dependents and Antimatter Containment close without Asteroid Mining 1 |
+| Asteroid-free copper | Copper Production, the copper-ingot checkpoint, Electronics 4, Solar Power 3, Braking 9, and Antimatter Containment close without any asteroid-mining technology |
+| Dependents | A release check compares every technology's closure with the former tree under the moved-closure rule above; `tests/progression/copper-research-roots.args` lists the closures of the dependents' other prerequisites |
+| Final removal | When asteroid mining is removed, no technology closure contains an asteroid-mining technology |
 | Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
 | Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |
