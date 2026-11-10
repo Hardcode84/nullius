@@ -1,0 +1,16 @@
+@tests/progression/antimatter-import-boundary.args
+--technology
+nullius-rocket-science-3
+--require-no-additional-technologies
+nullius-probe
+nullius-drone-launcher-1
+nullius-algaculture-drone
+nullius-horticulture-drone
+nullius-arboriculture-drone
+nullius-entomology-drone
+nullius-aquaculture-drone
+nullius-husbandry-drone
+nullius-sequestration-coal-drone
+nullius-sequestration-petroleum-drone
+nullius-excavation-drone
+nullius-oxygen
