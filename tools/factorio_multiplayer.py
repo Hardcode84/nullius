@@ -10,7 +10,6 @@ import secrets
 import select
 import shutil
 import signal
-import socket
 import subprocess
 import time
 
@@ -196,7 +195,7 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
 
 def _execute_multiplayer(args, common, save, run_directory, display, environment) -> None:
     # Imported here because the scenario runner imports this executor on demand.
-    from tools.run_factorio_tests import TestFailure, die_with_parent, prepare_config, tail
+    from tools.run_factorio_tests import TestFailure, die_with_parent, free_udp_port, prepare_config, tail
 
     settings = run_directory / "server-settings.json"
     server_settings = json.loads((Path(common[0]).resolve().parents[2] /
@@ -208,10 +207,7 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
         "autosave_interval": 0, "allow_commands": "true",
     })
     settings.write_text(json.dumps(server_settings))
-    # Select a free loopback port; a bind conflict is a reported server failure.
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as port_socket:
-        port_socket.bind(("127.0.0.1", 0))
-        port = port_socket.getsockname()[1]
+    port = free_udp_port()
     processes: list[subprocess.Popen] = []
     streams = []
     clients = {}

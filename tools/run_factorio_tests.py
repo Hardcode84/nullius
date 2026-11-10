@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import shutil
 import signal
+import socket
 import subprocess
 import sys
 import tempfile
@@ -198,6 +199,18 @@ def die_with_parent(parent: int = os.getpid()) -> None:
     """
     if _LIBC.prctl(_PR_SET_PDEATHSIG, signal.SIGKILL) != 0 or os.getppid() != parent:
         os._exit(1)
+
+
+def free_udp_port() -> int:
+    """Return a free loopback UDP port for a Factorio server.
+
+    Factorio ignores port 0 in --bind and falls back to its default port, so
+    concurrent servers need an explicit port each. A bind conflict between
+    selection and use is a reported server failure.
+    """
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as port_socket:
+        port_socket.bind(("127.0.0.1", 0))
+        return port_socket.getsockname()[1]
 
 
 def run_factorio(

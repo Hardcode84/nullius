@@ -14,10 +14,12 @@ import zipfile
 
 if __package__:
     from .build_release import prepare_release_mods, run_checked
-    from .run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, die_with_parent, prepare_config
+    from .run_factorio_tests import (REPOSITORY, default_factorio, default_dependency_mods, die_with_parent,
+                                     free_udp_port, prepare_config)
 else:
     from build_release import prepare_release_mods, run_checked
-    from run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, die_with_parent, prepare_config
+    from run_factorio_tests import (REPOSITORY, default_factorio, default_dependency_mods, die_with_parent,
+                                    free_udp_port, prepare_config)
 
 
 def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int,
@@ -87,7 +89,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         log_path = root / "upgrade-server.log"
         with log_path.open("w") as log:
             server = subprocess.Popen([*common, "--start-server", str(save),
-                "--bind", "127.0.0.1:0", "--server-settings", str(settings)],
+                "--bind", f"127.0.0.1:{free_udp_port()}", "--server-settings", str(settings)],
                 stdout=log, stderr=subprocess.STDOUT, preexec_fn=die_with_parent)
             try:
                 deadline = time.monotonic() + timeout
