@@ -14411,7 +14411,21 @@ data:extend({
     type = "technology",
     name = "nullius-seawater-uranium-adsorption",
     order = "nullius-gh",
-    icons = data.raw.item["nullius-loaded-uranyl-fiber"].icons,
+    -- Explicit layer scales and shifts are absolute, so item icon overlays
+    -- shrink on a technology icon; these layers are sized for technologies.
+    icons = {
+      {
+        icon = data.raw.fluid["nullius-seawater"].icon,
+        icon_size = data.raw.fluid["nullius-seawater"].icon_size
+      },
+      {
+        icon = data.raw.item["nullius-yellowcake"].icons[1].icon,
+        icon_size = data.raw.item["nullius-yellowcake"].icons[1].icon_size,
+        tint = data.raw.item["nullius-yellowcake"].icons[1].tint,
+        scale = 1,
+        shift = {32, 32}
+      }
+    },
     effects = {
       {
         type = "unlock-recipe",
