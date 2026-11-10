@@ -17,7 +17,9 @@ collector.fixed_recipe = "nullius-antiproton-capture"
 collector.disabled_when_recipe_not_researched = true
 collector.fluid_boxes = nil
 collector.heating_energy = nil
-collector.energy_usage = "1MW"
+-- One filled trap costs many times its own fuel value, and the draw is beyond
+-- practical orbital solar, so collection platforms need reactors.
+collector.energy_usage = "40MW"
 collector.module_slots = 0
 collector.allowed_effects = {}
 -- The source machine has innate productivity; captured antimatter has none.
@@ -63,7 +65,7 @@ data:extend({
     categories = {CATEGORY},
     subgroup = "nuclear",
     order = "nullius-fd",
-    energy_required = 60,
+    energy_required = 600,
     allow_productivity = false,
     maximum_productivity = 0,
     ingredients = {{type = "item", name = "nullius-antimatter-trap", amount = 1}},
@@ -79,7 +81,8 @@ data:extend({
     categories = {"nullius-electrolysis"},
     subgroup = "nuclear",
     order = "nullius-fe",
-    energy_required = 10,
+    -- Holding a trap is a continuous power load.
+    energy_required = 60,
     -- A crafted product inherits its ingredient's spoilage unless it is
     -- always fresh, so only this flag resets the trap's timer.
     ingredients = {{type = "item", name = "nullius-antimatter", amount = 1}},

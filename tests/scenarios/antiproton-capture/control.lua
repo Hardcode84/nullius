@@ -1,4 +1,6 @@
--- given: Antimatter Containment researched by a fresh force; a starter platform stopped at Fulgora.
+-- given: Antimatter Containment researched by a fresh force; a starter platform stopped at Fulgora;
+--   a collector whose capture is declared nearly complete, because one capture outlasts the
+--   scenario tick limit.
 -- place: a powered antiproton collector and a thruster with one declared propellant batch on the
 --   platform; a powered priority electrolyzer and a reactor on Nauvis; a chest of nearly spoiled
 --   antimatter.
@@ -12,6 +14,10 @@ local transit = require("__nullius-star__/shared/reference-transit")
 local CASE = "antiproton-capture"
 local COLLECTOR = "nullius-antiproton-collector"
 local SPOIL_MARGIN = 120
+-- Native capture ticks left after the declared progress.
+local CAPTURE_REMAINDER = 300
+-- The collector's full draw, so it captures at full speed.
+local GRID_POWER = 50000000
 
 local function check(ok, message)
   storage.assertions = storage.assertions + 1
@@ -20,8 +26,8 @@ end
 
 local function power(surface, force, x, y)
   local grid = assert(surface.create_entity{name = "factorio-test-planner-grid", position = {x + 8, y}, force = force})
-  grid.power_production = 10000000
-  grid.electric_buffer_size = 10000000
+  grid.power_production = GRID_POWER
+  grid.electric_buffer_size = GRID_POWER
   assert(surface.create_entity{name = "substation", position = {x + 5, y + 4}, force = force})
 end
 
@@ -81,7 +87,8 @@ local function setup()
   electrolyzer.set_recipe("nullius-antimatter-recharge")
   check(electrolyzer.insert{name = "nullius-antimatter", count = 1, spoil_percent = 0.9} == 1, "nearly spoiled trap accepted")
   storage.electrolyzer = electrolyzer
-  storage.recharge_ticks = craft_ticks(electrolyzer, "nullius-antimatter-recharge")
+  storage.recharge_tick = game.tick + math.ceil(craft_ticks(electrolyzer, "nullius-antimatter-recharge") / 30) * 30 + 60
+  storage.spoil_tick = game.tick
 
   local chest = assert(ground.create_entity{name = "wooden-chest", position = {10, 20}, force = force})
   local stack = chest.get_inventory(defines.inventory.chest)[1]
@@ -130,29 +137,40 @@ script.on_event(defines.events.on_space_platform_changed_state, function(event)
   end
 end)
 
+-- Spoilage and recharge run on their own clocks beside the collector stages.
+local function check_ground()
+  local elapsed = game.tick - storage.spoil_tick
+  if elapsed == SPOIL_MARGIN / 2 then
+    check(storage.chest.get_item_count("nullius-antimatter") == 1, "antimatter before its spoil time")
+  end
+  if elapsed == SPOIL_MARGIN + 60 then
+    check(storage.chest.get_item_count("nullius-antimatter") == 0, "antimatter spoiled at its spoil time")
+    check(storage.chest.get_item_count("nullius-antimatter-trap") == 1, "spoilage left an empty trap")
+  end
+  if game.tick == storage.recharge_tick then
+    local electrolyzer = storage.electrolyzer
+    check(electrolyzer.products_finished == 1, "one recharge: " .. tostring(status(electrolyzer)))
+    local recharged = electrolyzer.get_output_inventory().find_item_stack("nullius-antimatter")
+    check(recharged ~= nil, "recharged trap in the output")
+    check(recharged.spoil_percent < 60 / transit.spoil_ticks + 0.001, "recharge resets spoilage: " .. recharged.spoil_percent)
+    storage.recharged = true
+  end
+end
+
 script.on_nth_tick(30, function(event)
   if event.tick == 0 then return end
   if not storage.stage then setup() return end
+  check_ground()
   local elapsed = game.tick - storage.stage_tick
   local collector, platform = storage.collector, storage.platform
-  local stopped_label = "spoil margin " .. SPOIL_MARGIN
   if storage.stage == "capture" then
-    if elapsed == SPOIL_MARGIN / 2 then
-      check(storage.chest.get_item_count("nullius-antimatter") == 1, "antimatter before its spoil time")
+    if not storage.declared then
+      check(collector.is_crafting(), "collector started a capture")
+      collector.crafting_progress = 1 - CAPTURE_REMAINDER / storage.capture_ticks
+      storage.declared = game.tick
+      return
     end
-    if elapsed == SPOIL_MARGIN + 60 then
-      check(storage.chest.get_item_count("nullius-antimatter") == 0, "antimatter spoiled at its spoil time, " .. stopped_label)
-      check(storage.chest.get_item_count("nullius-antimatter-trap") == 1, "spoilage left an empty trap")
-    end
-    if elapsed == math.ceil(storage.recharge_ticks / 30) * 30 + 60 then
-      local electrolyzer = storage.electrolyzer
-      check(electrolyzer.products_finished == 1, "one recharge: " .. tostring(status(electrolyzer)))
-      local output = electrolyzer.get_output_inventory()
-      local recharged = output.find_item_stack("nullius-antimatter")
-      check(recharged ~= nil, "recharged trap in the output")
-      check(recharged.spoil_percent < 60 / transit.spoil_ticks + 0.001, "recharge resets spoilage: " .. recharged.spoil_percent)
-    end
-    if elapsed < storage.capture_ticks + 60 then return end
+    if game.tick - storage.declared < CAPTURE_REMAINDER + 60 then return end
     check(collector.products_finished == 1, "one capture at Fulgora: " .. tostring(status(collector)))
     check(collector.get_output_inventory().get_item_count("nullius-antimatter") == 1, "a filled trap")
     platform.schedule = {current = 1, records = {{station = "nauvis"}}}
@@ -178,6 +196,8 @@ script.on_nth_tick(30, function(event)
     stage("return")
   elseif storage.stage == "return" then
     gated(collector, false, "back at Fulgora")
-    finish()
+    stage("recharge")
+  elseif storage.stage == "recharge" then
+    if storage.recharged then finish() end
   end
 end)
