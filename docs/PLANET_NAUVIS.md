@@ -143,7 +143,7 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Current Tier 5 | SA Tier 5 |
 |---|---|
 | Nuclear power 1-4 (all on Nauvis) | Shared reactor; fusion on Nauvis, advanced by Aquilo; fission from Gleba uranium. See [Nuclear branches](SPACE_AGE_BRAINSTORM.md#nuclear-branches) |
-| Asteroid mining (abstract, Nauvis) | Removed; platforms do not process asteroids. See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal) |
+| Asteroid mining (abstract, Nauvis) | Removed with Nauvis ore renewal; Vulcanus and Fulgora supply infinite ores. See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal) |
 | Copper from asteroids | Import copper from Fulgora, its sole primary source; see [Fulgora design](PLANET_FULGORA.md#late-game-copper) |
 | Rocket science (Nauvis) | Rocket science moves to the start of the physics tier and enables orbital lift; space platforms carry cross-planet cargo. See [Launch vehicle](SPACE_AGE_BRAINSTORM.md#46-launch-vehicle) |
 | Physics pack (complex machines) | Physics pack stays on Nauvis |

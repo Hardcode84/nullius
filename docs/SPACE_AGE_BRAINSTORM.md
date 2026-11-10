@@ -14,7 +14,7 @@
 | Conflict | Nullius Current | Space Age Expects | Resolution Options |
 |---|---|---|---|
 | **Coal/oil** | Removed entirely | Vulcanus uses coal-like processes; Gleba produces bioflux | A) Keep removed on Nauvis, available on other planets. B) Replace SA planet resources with Nullius equivalents. |
-| **Copper** | Fulgora deep drilling and asteroid mining | Available as basic resource everywhere | Fulgora is the sole primary source; deep drilling and crustal fracturing replace asteroid copper. See [Fulgora design](PLANET_FULGORA.md#late-game-copper). |
+| **Copper** | Fulgora deep drilling | Available as basic resource everywhere | Fulgora is the sole primary source; deep drilling and crustal fracturing replace asteroid copper. See [Fulgora design](PLANET_FULGORA.md#late-game-copper). |
 | **Vanilla recipes** | All replaced | SA adds planet-specific recipes assuming vanilla chains | Must create Nullius-compatible versions of all SA recipes. |
 | **Vanilla intermediates** | Replaced (aluminum wire instead of copper, etc.) | SA builds on vanilla intermediates | Remap SA intermediates to Nullius equivalents. |
 
@@ -1241,7 +1241,7 @@ The satellite stays undecided. This design only decouples it from astronomy.
 | Rule | Value |
 |---|---|
 | Item and recipe | Kept, still unlocked by Astronomy |
-| Consumers | Unchanged: asteroid miner, probe, and concordance satellite |
+| Consumers | Unchanged: probe and concordance satellite |
 | Launch | No astronomy pack return; `send_to_orbit_mode` becomes `not-sendable`, so an automatic silo cannot burn one |
 | `silo-compat` scenario and `tools/test_silo_compatibility.py` | Drop the satellite science return; the probe in `launch-vehicle` covers the launch path |
 | Locale and mission text | Satellite description and the mission's "satellite contact" text describe recordings and correlation |
@@ -1488,44 +1488,43 @@ a local metal route. They need no titanium route.
 
 ### 4.7 Heavy Elements and Nuclear Branches
 
-Design only, except the parts marked implemented. Asteroid mining is removed.
+Design only, except the parts marked implemented.
 Copper comes from Fulgora; uranium comes from Nauvis seawater adsorption and later
 from Gleba; antimatter comes from antiproton capture around Fulgora. Fission and
 fusion become two parallel branches that share only the reactor.
 
 #### Asteroid mining removal
 
-Asteroid mining supplies copper ore and uranium ore. Deep drilling supplies
-copper solution without ore. No unlocked recipe produces either ore; only
-guide-drone impacts create their patches. Victory
-requires all 13 mission goals, and goals 10 and 11 count copper and uranium guide
-drones, so the removal ships after both goals have replacements: copper guide
-drones go with Fulgora crustal fracturing, the rest with Gleba biomineralization.
-Fulgora deep drilling is implemented and removes asteroid mining from the copper
-research path. See [Fulgora copper sequencing](PLANET_FULGORA.md#sequencing).
+Design. Asteroid mining is removed entirely. Vulcanus lava and Fulgora vents
+supply infinite ores, so Nauvis patches become finite and depleted materials are
+imported. Copper comes from Fulgora deep drilling; uranium from Nauvis seawater
+adsorption.
 
 | Removed | Contents |
 |---|---|
-| Items and recipes | Asteroid miners 1 and 2, every guide drone and guide remote, guide-drone redeploy recipes |
+| Items and recipes | Asteroid miners 1 and 2, every guide drone and guide remote, guide-drone redeploy and tier-2 recipes |
 | Technologies | Asteroid Mining 1 to 3; the copper-ore, uranium-ore, and asteroid-mining checkpoints |
-| Scripts | Guide-drone impact effects in `drone.lua`, guide-drone checkpoint counts in `checkpoint.lua`, the ore list in `artillery_remote.lua`, and the `interface.lua` entries |
+| Scripts | Guide-drone impact effects in `drone.lua`, guide-drone checkpoint counts in `checkpoint.lua`, the guide remotes in `artillery_remote.lua`, and the `interface.lua` entries. `miner_effect` stays: coal sequestration uses it, and later deposit creation reuses it |
 
 | Dependent | Today | After removal |
 |---|---|---|
-| Reconnaissance 3 | Requires Asteroid Mining 1 | Keeps its closure without the removed branch |
-| Battery Storage 5 | Requires Asteroid Mining 3 | Same |
-| Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
-| Copper Production | Requires Astronomy, Primitive Filtration, and Overcharged Assembly 2; unlocks deep drilling | Implemented before asteroid removal |
-| Uranium-ore checkpoint | Unlocks crushed uranium ore and ore yellowcake; Uranium Processing no longer requires it | Removed; ore yellowcake moves to the research that creates Nauvis deposits, so remaining patches stay usable |
-| Mission goal 10 | 20 copper guide drones | 20 copper shale deposits opened by Fulgora crustal fracturing; charge type undecided |
-| Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |
-| Nauvis ore renewal | Iron, sandstone, bauxite, and calcite guide drones create new patches | None: Nauvis patches are finite. Vulcanus lava and Fulgora vents are infinite, so depleted Nauvis materials can be imported |
-| Existing saves | Miner and drone items disappear with their prototypes; created patches remain | Migration and changelog compatibility note |
+| Reconnaissance 3 | Requires Asteroid Mining 1 | Requires Asteroid Mining 1's prerequisites instead |
+| Rocket Science 3 | Requires Asteroid Mining 2 | Requires Asteroid Mining 2's prerequisites instead |
+| Battery Storage 5 | Requires Asteroid Mining 3 | Requires the prerequisites of Asteroid Mining 3 and of the asteroid-mining checkpoint outside the removed branch |
+| Companion (optional mod) | Requires Asteroid Mining 2; the companion recipe takes Asteroid Miner 2 | Requires Asteroid Mining 2's prerequisites; the miner ingredient is replaced by part of the miner's own non-asteroid ingredients |
+| Probe | Takes Asteroid Miner 1 | The ingredient is dropped; the probe keeps its other inputs |
+| Copper ore route | Crushing and flotation unlocked by the copper-ore checkpoint | Unlocked by Copper Production, so remaining patches stay usable; crustal fracturing reuses the route |
+| Uranium ore route | Crushing and ore yellowcake unlocked by the uranium-ore checkpoint | Unlocked by Uranium Processing, so remaining patches stay usable; biomineralized deposits reuse the route |
+| Mission goals 10 and 11 | 20 copper and 12 uranium guide drones; required for victory | Stubs: not shown, not counted in overall progress, not required for victory. Crustal fracturing and Gleba biomineralization later give them targets |
+| Nauvis ore renewal | Iron, sandstone, bauxite, and limestone guide drones create new patches | None |
+| Existing saves | Miner and drone items disappear with their prototypes; created patches remain | A save whose other goals are all complete finishes the mission on load. Changelog compatibility note |
 
 | Check | Contract |
 |---|---|
-| Research blast radius | New query `--describe-research-dependents TECHNOLOGY` in `tools/analyze_factorio_prereqs.py`: every technology whose prerequisite closure contains the given one, with the count |
-| Rewired closures | A release check proves each rewired technology keeps its former closure minus the removed branch |
+| Absence | No item, recipe, technology, or entity of the removed branch exists in resolved prototypes |
+| Rewired closures | A release check restores the removed technologies and former prerequisites in a copy of the tree; every remaining technology keeps that closure minus the removed technologies and gains nothing |
+| Ore routes | Contracts close the copper and uranium ore routes at their new technologies |
+| Mission | A scenario completes every non-stub goal and expects victory with goals 10 and 11 at zero; the panel omits them |
 
 #### Nuclear branches
 
@@ -1588,7 +1587,7 @@ Delivery order:
 | Seawater uranium (implemented) | See the rules above | Astronomy |
 | Enrichment (implemented) | Fluorine Chemistry and Uranium Enrichment; Uranium Processing becomes conversion and drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
 | Antiproton capture (implemented) | See [Antimatter: antiproton capture](#antimatter-antiproton-capture) | Fission and breeder cells in antimatter |
-| Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint |
+| Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint and guide drones |
 
 | Stage | Process | Real basis |
 |---|---|---|
@@ -1655,7 +1654,7 @@ Uranium sources, best last:
 |---|---|
 | Culture | A perishable Gleba culture that reduces dissolved uranium from water into a mineral deposit, as *Geobacter* does |
 | Seeding | A drone seeds a uranium patch on Nauvis coast or shallow water, reusing the guide-drone patch creation in `miner_effect` |
-| Goal | Counts seeded deposits; the target stays 12 |
+| Goal | Counts seeded deposits; the target stays 12. A stub until biomineralization ships |
 | Supply | Spoilage makes the culture a recurring Gleba-to-Nauvis shipment |
 | Lore | Life concentrates seawater uranium, remediating the planet's heavy-element deficiency |
 
@@ -1680,7 +1679,7 @@ three planets, so antimatter is collected in Fulgora orbit and nowhere else.
 | Research | Antimatter Containment, repurposed: a Fulgora electromagnetic research priced as Overcharged Assembly 2, after Orbital Construction, Supercapacitors, and Solar Power 3, which makes the empty trap's processors, batteries, and copper wire. It unlocks the empty trap, the collector, capture, and recharge. The fission, breeder, enriched-uranium, and Boiling 4 prerequisites are removed |
 | Removed | The trap's reactor-fuel role: no fuel value, fuel category, or burnt result |
 | Consequence | Victory requires Fulgora and a platform, because probes take antimatter |
-| Consumers | Probe, battery 3, shield, solar panel 4, asteroid miner 2, and the companion reactor take filled traps; the quantum coprocessor takes an empty trap; the antimatter checkpoint counts consumed filled traps |
+| Consumers | Probe, battery 3, shield, solar panel 4, and the companion reactor take filled traps; the quantum coprocessor takes an empty trap; the antimatter checkpoint counts consumed filled traps |
 | Moved research | Antimatter Containment's dependents may drop research reached only through the removed nuclear prerequisites and gain Orbital Construction, Supercapacitors, and their closures. `tools/check_nuclear_research.py` lists each changed closure and rejects any other change |
 | Existing saves | Researched Antimatter Containment keeps its unlocks and gains the new ones. The engine keeps former fuel in fuel slots, where a trap blocks one-slot burners, so a migration moves every trap from nuclear burners onto the ground beside their owner: reactors, vehicles, locomotives, and portable reactors in vehicle grids, worn armor, and stored armor |
 

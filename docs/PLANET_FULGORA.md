@@ -473,8 +473,8 @@ are an external fuel input. Prove the first oxygen batch with probe power.
 
 ### Late-game copper
 
-Deep drilling is implemented. Crustal fracturing and asteroid removal remain
-design only. After removal, Fulgora is the sole primary copper source; other
+Deep drilling is implemented. Crustal fracturing is design only. After
+asteroid mining removal, Fulgora is the sole primary copper source; other
 planets must import it.
 
 Copper is concentrated in deep mineral-rich sediments beneath the hydrocarbon
@@ -526,7 +526,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Copper Production | Repurposed. Prerequisites: Astronomy, Primitive Filtration, Overcharged Assembly 2. The copper-ore checkpoint prerequisite is removed. Cost unchanged |
 | Unlocks | Deep mode, deep slurry filtration, roasting, leaching, electrowinning, wire, sheet, copper heat pipe, and their boxed and packaging recipes |
 | Crushed-ore flotation | Moves to the copper-ore checkpoint, which supplies its input; crustal fracturing later takes over the crushed-ore recipes |
-| Moved closures | A dependent of Copper Production may release only the closure of the copper-ore checkpoint, and may gain only the closure of the new prerequisites. It keeps any released technology that another prerequisite still requires. Reconnaissance 3 requires Asteroid Mining 1, so Robot Speed 5 keeps it directly, and Wildlife Management 1 keeps it through Checkpoint Worm and Personal Storage 3. The other dependents and Antimatter Containment lose it |
+| Moved closures | A dependent of Copper Production may release only the closure of the former copper-ore checkpoint, and may gain only the closure of the new prerequisites. Asteroid mining removal then releases the rest of the asteroid branch from every technology |
 
 #### Crustal fracturing
 
@@ -535,28 +535,22 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Charge | Fission, fusion, or antimatter; undecided |
 | Deposit | A finite copper shale patch on the fractured site, mined by drills into the existing `copper-ore`, crushing, and flotation route |
 | Creation | Shares one deposit-creation helper with mission goal 11 biomineralization; reuses the guide-drone patch creation |
-| Mission goal 10 | Counts opened deposits; the target stays 20 |
+| Mission goal 10 | Counts opened deposits; the target stays 20. A stub until fracturing ships |
 
 #### Sequencing
 
-All 13 mission goals are required for victory (`scripts/mission.lua`). Goals 10
-and 11 count copper and uranium guide drones, so asteroid mining cannot be removed
-before both have replacements.
-
-| Step | Ships | Asteroid route |
+| Step | Ships | Mission goal 10 |
 |---|---|---|
-| Deep drilling (implemented) | Repurposed Copper Production; copper no longer requires asteroid mining | Kept for goals 10 and 11 and the crushed-ore recipes |
-| Crustal fracturing | Copper shale deposits; goal 10 counts them | Copper guide drones removed |
-| Gleba biomineralization | Goal 11 counts seeded deposits | Asteroid mining removed |
+| Deep drilling (implemented) | Repurposed Copper Production; copper no longer requires asteroid mining | Copper guide drones |
+| Asteroid mining removal | See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal); Copper Production takes over the crushed-ore route | Stub; not required for victory |
+| Crustal fracturing | Copper shale deposits | Counts opened deposits |
 
 #### Copper acceptance checks
 
 | Check | Expected result |
 |---|---|
 | Copper-free closure | Copper Production closes from the Fulgora boundary without `copper-ore` raw or any copper item, with `--require-no-additional-technologies` |
-| Asteroid-free copper | Copper Production, the copper-ingot checkpoint, Electronics 4, Solar Power 3, Braking 9, and Antimatter Containment close without any asteroid-mining technology |
 | Dependents | `tools/check_copper_research.py` compares every technology's closure with the former tree under the moved-closure rule above; `tests/progression/copper-research-roots.args` lists the closures of the dependents' other prerequisites |
-| Final removal | When asteroid mining is removed, no technology closure contains an asteroid-mining technology |
 | Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
 | Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |
