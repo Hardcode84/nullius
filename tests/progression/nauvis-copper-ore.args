@@ -3,11 +3,11 @@
 copper-ore
 --technology
 nullius-copper-production
---technology
-nullius-checkpoint-copper-ore
 --recipe
 nullius-copper-solution=nullius-copper-solution
 --require-no-additional-technologies
+nullius-copper-solution
+nullius-box-crushed-copper-ore
 nullius-copper-ingot
 nullius-copper-wire
 nullius-copper-sheet

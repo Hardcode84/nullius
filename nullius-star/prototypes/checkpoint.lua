@@ -2153,94 +2153,6 @@ data:extend({
   },
   {
     type = "technology",
-    name = "nullius-checkpoint-uranium-ore",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-assay",
-	    {"item-name.uranium-ore"}}},
-    localised_description = {"technology-description.nullius-consume",
-	    {"technology-description.nullius-item", tostring(1), "nullius-guide-drone-uranium-1",
-		    {"", {"item-name.nullius-guide-drone-uranium"}, " ", tostring(1)}}},
-    order = "nullius-yg",
-    icons = {
-	  {
-        icon = BASEICON .. "uranium-ore.png",
-        icon_size = 64,
-        
-	  },
-          checkmark(2)
-    },
-	effects = {
-	  {
-        type = "unlock-recipe",
-        recipe = "nullius-crushed-uranium-ore"
-      },
-	  {
-        type = "unlock-recipe",
-        recipe = "nullius-yellowcake"
-      }
-	},
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-astronomy-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-asteroid-mining-1"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
-    name = "nullius-checkpoint-copper-ore",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-assay",
-	    {"item-name.copper-ore"}}},
-    localised_description = {"technology-description.nullius-consume",
-	    {"technology-description.nullius-item", tostring(1), "nullius-guide-drone-copper-1",
-		    {"", {"item-name.nullius-guide-drone-copper"}, " ", tostring(1)}}},
-    order = "nullius-yg",
-    icons = {
-	  {
-        icon = BASEICON .. "copper-ore.png",
-        icon_size = 64,
-        
-	  },
-          checkmark(2)
-    },
-	effects = {
-      {type="unlock-recipe", recipe="nullius-copper-solution"},
-      {type="unlock-recipe", recipe="nullius-boxed-copper-solution"},
-	  {
-        type = "unlock-recipe",
-        recipe = "nullius-box-copper-ore"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-unbox-copper-ore"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-crushed-copper-ore"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-boxed-crushed-copper-ore"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-box-crushed-copper-ore"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-unbox-crushed-copper-ore"
-      }
-	},
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-astronomy-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-asteroid-mining-1"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
     name = "nullius-checkpoint-breeder-cell",
     localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-utilization",
 	    {"item-name.nullius-spent-breeder-cell"}}},
@@ -2477,33 +2389,6 @@ data:extend({
       time = 1
     },
     prerequisites = {"nullius-artificial-intelligence-2"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
-    name = "nullius-checkpoint-asteroid-mining",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-utilization",
-	    {"technology-name.nullius-asteroid-mining"}}},
-    localised_description = {"technology-description.nullius-consume", {"technology-description.nullius-item",
-		    tostring(20),"nullius-asteroid-miner-2", {"item-name.nullius-asteroid-miner-2"}}},
-    order = "nullius-yg",
-    icons = {
-      {
-        icon = ICONPATH .. "uncrate.png",
-        icon_size = 64
-      },
-      {
-        icon = ICONPATH .. "asteroid-miner-2.png",
-        icon_size = 64,
-		scale = 0.8
-      }
-    },
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-astronomy-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-asteroid-mining-2"},
     ignore_tech_cost_multiplier = true
   },
   {

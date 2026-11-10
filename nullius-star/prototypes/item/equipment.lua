@@ -3626,7 +3626,6 @@ extend_equipment_prototypes({
     categories = {"huge-crafting"},
     energy_required = 800,
     ingredients = {
-      {type = "item", name = "nullius-asteroid-miner-1", amount = 1},
       {type = "item", name = "nullius-satellite", amount = 2},
       {type = "item", name = "nullius-antimatter", amount = 25},
       {type = "item", name = "nullius-box-copper-sheet", amount = 10},

@@ -380,18 +380,6 @@ data:extend({
   },
   {
     type = "item-subgroup",
-    name = "asteroid-1",
-    group = "drones",
-    order = "ib"
-  },
-  {
-    type = "item-subgroup",
-    name = "asteroid-2",
-    group = "drones",
-    order = "ic"
-  },
-  {
-    type = "item-subgroup",
     name = "farming",
     group = "drones",
     order = "jb"
@@ -2077,48 +2065,6 @@ data:extend({
   {
     type = "ammo-category",
     name = "nullius-paving-drone-hazard",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-iron",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-bauxite",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-sandstone",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-limestone",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-copper",
-    icon = "__nullius-star__/graphics/icons/scout-2.png",
-    icon_size = 64,
-    subgroup = "military-equipment"
-  },
-  {
-    type = "ammo-category",
-    name = "nullius-guide-drone-uranium",
     icon = "__nullius-star__/graphics/icons/scout-2.png",
     icon_size = 64,
     subgroup = "military-equipment"

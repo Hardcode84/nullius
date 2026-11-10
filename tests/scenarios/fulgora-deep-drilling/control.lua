@@ -62,7 +62,8 @@ script.on_nth_tick(1,function(event)
   local ghost=s.find_entities_filtered{position={0,45},type='entity-ghost'}[1]
   check(ghost.ghost_name==base,'locked ghost not extraction');ghost.destroy()
   force.technologies['nullius-copper-production'].researched=true
-  check(not force.recipes['nullius-copper-solution'].enabled,'ore flotation unlocked without ore')
+  -- Remaining asteroid patches use the ore route.
+  check(force.recipes['nullius-copper-solution'].enabled,'ore flotation locked')
   for _,name in ipairs({'deep-drilling','deep-slurry-filtration','copper-roasting','copper-leaching',
       'boxed-deep-slurry-filtration','boxed-copper-roasting','boxed-copper-leaching'}) do
     check(force.recipes['nullius-'..name].enabled,'missing unlock '..name)

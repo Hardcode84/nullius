@@ -675,8 +675,8 @@ def run(factorio, dependency_mod_directory, scenarios=()):
         "title": "Tool compatibility fixture", "author": "Nullius Star tests",
         "dependencies": [f"base >= {version}.0", "boblogistics", "angelspetrochemgraphics", "angelsrefininggraphics", "angelssmeltinggraphics"],
     }))
-    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("asteroid-miner-products")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("drone-recipes")\nrequire("drone-recipe-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\nrequire("weapon-recipes")\nrequire("weapon-recipe-executor")\nrequire("landfill-recipes")\nrequire("landfill-recipe-executor")\nrequire("general-recipes")\nrequire("general-recipe-executor")\nrequire("biology-recipes")\nrequire("biology-recipe-executor")\nrequire("equipment-recipes")\nrequire("equipment-recipe-executor")\nrequire("building-recipes")\nrequire("building-recipe-executor")\nrequire("plumbing-recipes")\nrequire("plumbing-recipe-executor")\nrequire("fluid-recipes")\nrequire("fluid-recipe-executor")\nrequire("intermediate-recipes")\nrequire("intermediate-recipe-executor")\nrequire("primitive-recipes")\nrequire("primitive-recipe-executor")\n')
-    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "asteroid-miner-products.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
+    (mod / "data.lua").write_text('require("tool-fixture")\nrequire("productivity-fixture")\nrequire("fluid-preservation")\nrequire("helper-mining")\nrequire("drone-mining")\nrequire("recipe-filter")\nrequire("assembler-pipe-pictures")\nrequire("rock-drops")\nrequire("fluid-resource-fixture")\nrequire("fluid-resource-products")\nrequire("turbine-pictures")\nrequire("turbine-generator")\nrequire("vehicle-dependencies")\nrequire("car-prototypes")\nrequire("vehicle-forces")\nrequire("chest-doors")\nrequire("chest-test-port")\nrequire("miner-connectors")\nrequire("turbine-recipes")\nrequire("broken-recipes")\nrequire("broken-recipe-executor")\nrequire("boxing-recipes")\nrequire("boxing-recipe-executor")\nrequire("module-recipes")\nrequire("module-recipe-executor")\nrequire("turbine-recipe-executor")\nrequire("void-recipe-fixture")\nrequire("void-products")\nrequire("metallurgic-recipe-fixture")\nrequire("metallurgic-products")\nrequire("extractor-pictures")\nrequire("extractor-test")\nrequire("well-recipe-fixture")\nrequire("well-pictures")\nrequire("well-test")\nrequire("pump-wagons")\nrequire("pump-test")\nrequire("salvage-research")\nrequire("reactor-prototype")\nrequire("reactor-neighbours")\nrequire("solar-prototypes")\nrequire("terrain-drone-recipes")\nrequire("terrain-drone-executor")\nrequire("drone-recipes")\nrequire("drone-recipe-executor")\nrequire("alignment-recipes")\nrequire("alignment-recipe-executor")\nrequire("weapon-recipes")\nrequire("weapon-recipe-executor")\nrequire("landfill-recipes")\nrequire("landfill-recipe-executor")\nrequire("general-recipes")\nrequire("general-recipe-executor")\nrequire("biology-recipes")\nrequire("biology-recipe-executor")\nrequire("equipment-recipes")\nrequire("equipment-recipe-executor")\nrequire("building-recipes")\nrequire("building-recipe-executor")\nrequire("plumbing-recipes")\nrequire("plumbing-recipe-executor")\nrequire("fluid-recipes")\nrequire("fluid-recipe-executor")\nrequire("intermediate-recipes")\nrequire("intermediate-recipe-executor")\nrequire("primitive-recipes")\nrequire("primitive-recipe-executor")\n')
+    for filename in ("tool-fixture.lua", "productivity-fixture.lua", "helper-mining.lua", "recipe-visibility.lua", "assembler-pipe-pictures.lua", "rock-drops.lua", "turbine-pictures.lua", "vehicle-dependencies.lua", "chest-doors.lua"):
         (mod / filename).symlink_to(ROOT / "tests/compatibility" / filename)
     (mod / "turbine-generator.lua").symlink_to(ROOT / "tests/factorio-test-support/turbine-generator.lua")
     (mod / "factorio-version.lua").symlink_to(ROOT / "nullius-star/factorio-version.lua")
@@ -715,8 +715,6 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     (mod / "prototypes").mkdir()
     for filename in ("rock.lua", "rock-products.lua", "vulcanus-rocks.lua"):
         (mod / "prototypes" / filename).symlink_to(ROOT / "nullius-star/prototypes" / filename)
-    (mod / "prototypes/item").mkdir()
-    (mod / "prototypes/item/asteroid-miner-products.lua").symlink_to(ROOT / "nullius-star/prototypes/item/asteroid-miner-products.lua")
     (mod / "prototypes/entity").mkdir()
     stage_extractor_pictures(mod)
     stage_well_pictures(mod, version)
@@ -746,7 +744,6 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     (mod / "scenarios/drone-mining").symlink_to(
         ROOT / "tests/scenarios/drone-mining", target_is_directory=True)
     (mod / "scenarios/startup-recipe-filter").symlink_to(ROOT / "tests/scenarios/startup-recipe-filter", target_is_directory=True)
-    (mod / "scenarios/asteroid-miner-products").symlink_to(ROOT / "tests/scenarios/asteroid-miner-products", target_is_directory=True)
     (mod / "scenarios/rock-drops").symlink_to(ROOT / "tests/scenarios/rock-drops", target_is_directory=True)
     (mod / "scenarios/fluid-resource-products").symlink_to(ROOT / "tests/scenarios/fluid-resource-products", target_is_directory=True)
     (mod / "scenarios/turbine-generator").symlink_to(ROOT / "tests/scenarios/turbine-generator", target_is_directory=True)
@@ -780,7 +777,6 @@ def run(factorio, dependency_mod_directory, scenarios=()):
                             ("nullius-star", "helper-mining"),
                             ("nullius-star", "drone-mining"),
                             ("nullius-star", "startup-recipe-filter"),
-                            ("nullius-star", "asteroid-miner-products"),
                             ("nullius-star", "rock-drops"),
                             ("nullius-star", "fluid-resource-products"),
                             ("nullius-star", "turbine-generator"),
@@ -848,8 +844,6 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     assert drones["status"] == "pass", drones
     filtering = json.loads((work / "script-output/factorio-tests/startup-recipe-filter.json").read_text())
     assert filtering["status"] == "pass", filtering
-    asteroid = json.loads((work / "script-output/factorio-tests/asteroid-miner-products.json").read_text())
-    assert asteroid["status"] == "pass", asteroid
     rocks = json.loads((work / "script-output/factorio-tests/rock-drops.json").read_text())
     assert rocks["status"] == "pass", rocks
     resources = json.loads((work / "script-output/factorio-tests/fluid-resource-products.json").read_text())
@@ -928,7 +922,6 @@ def run(factorio, dependency_mod_directory, scenarios=()):
             "fluid_assertions": preservation["assertions"],
             "helper_mining_assertions": mining["assertions"],
             "drone_mining_assertions": drones["assertions"],
-            "asteroid_return_assertions": asteroid["assertions"],
             "rock_drop_assertions": rocks["assertions"],
             "rock_types": rocks["rocks"],
             "fluid_resource_assertions": resources["assertions"],

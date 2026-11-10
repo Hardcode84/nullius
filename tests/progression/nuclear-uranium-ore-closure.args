@@ -4,7 +4,7 @@ uranium-ore
 --recipe
 nullius-yellowcake=nullius-yellowcake
 --technology
-nullius-checkpoint-uranium-ore
+nullius-uranium-processing
 --require-no-additional-technologies
 nullius-crushed-uranium-ore
 nullius-yellowcake

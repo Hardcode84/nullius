@@ -457,6 +457,8 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
                 "radio astronomy contracts", timeout),
             "copper research placement": functools.partial(run_checked, tool(
                 "check_copper_research.py", "--data-raw", str(data_raw)), "copper research placement", timeout),
+            "asteroid mining removal": functools.partial(run_checked, tool(
+                "check_asteroid_removal.py", "--data-raw", str(data_raw)), "asteroid mining removal", timeout),
             "nuclear research placement": functools.partial(run_checked, tool(
                 "check_nuclear_research.py", "--data-raw", str(data_raw)), "nuclear research placement", timeout),
             "recipe unlock audits": functools.partial(run_unlock_audits, data_raw, timeout, root),

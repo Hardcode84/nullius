@@ -6,6 +6,7 @@ import json
 import shutil
 from pathlib import Path
 import analyze_factorio_prereqs as prereqs
+import removed_research
 
 REACTOR = 'nullius-nuclear-reactor'
 FUSION = 'nullius-nuclear-power-1'
@@ -56,9 +57,9 @@ RECIPE_UNLOCKS = {
     'nullius-loaded-uranyl-fiber': SEAWATER,
     'nullius-uranyl-solution': SEAWATER,
     'nullius-yellowcake-precipitation': SEAWATER,
-    # Ore yellowcake stays with its ore, which Uranium Processing no longer requires.
-    'nullius-crushed-uranium-ore': URANIUM_ORE,
-    'nullius-yellowcake': URANIUM_ORE,
+    # The ore route keeps remaining patches usable after asteroid mining removal.
+    'nullius-crushed-uranium-ore': URANIUM,
+    'nullius-yellowcake': URANIUM,
     'nullius-fluorite': FLUORINE,
     'nullius-hydrogen-fluoride': FLUORINE,
     'nullius-hydrogen-fluoride-electrolysis': FLUORINE,
@@ -82,7 +83,7 @@ RECIPE_UNLOCKS = {
 # technologies and the fission checkpoint are checked by their prerequisites.
 FISSION_BRANCH = {SEAWATER, FLUORINE, URANIUM, ENRICHMENT, FISSION, 'nullius-checkpoint-enriched-uranium'}
 # Placement of these is checked by their prerequisites, not their closures.
-EXEMPT = FISSION_BRANCH | {REACTOR, ANTIMATTER}
+EXEMPT = FISSION_BRANCH | {REACTOR, ANTIMATTER} | set(removed_research.REMOVED)
 
 
 def closure_rules(technologies):
@@ -149,7 +150,7 @@ def main():
     dump_args.data_raw = args.data_raw
     data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
-        technologies = data['technology']
+        technologies = removed_research.with_removed(data['technology'])
         violations = research_violations(technologies, data['recipe'])
         if violations:
             raise prereqs.TestFailure('Nuclear research violations:\n' + '\n'.join(violations))

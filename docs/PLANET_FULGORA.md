@@ -473,9 +473,8 @@ are an external fuel input. Prove the first oxygen batch with probe power.
 
 ### Late-game copper
 
-Deep drilling is implemented. Crustal fracturing is design only. After
-asteroid mining removal, Fulgora is the sole primary copper source; other
-planets must import it.
+Deep drilling is implemented. Crustal fracturing is design only. Fulgora is
+the sole primary copper source; other planets must import it.
 
 Copper is concentrated in deep mineral-rich sediments beneath the hydrocarbon
 ocean, as in sediment-hosted copper on Earth: metal-bearing brines deposit
@@ -542,7 +541,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Step | Ships | Mission goal 10 |
 |---|---|---|
 | Deep drilling (implemented) | Repurposed Copper Production; copper no longer requires asteroid mining | Copper guide drones |
-| Asteroid mining removal | See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal); Copper Production takes over the crushed-ore route | Stub; not required for victory |
+| Asteroid mining removal (implemented) | See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal); Copper Production takes over the crushed-ore route | Stub; not required for victory |
 | Crustal fracturing | Copper shale deposits | Counts opened deposits |
 
 #### Copper acceptance checks
@@ -550,7 +549,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Check | Expected result |
 |---|---|
 | Copper-free closure | Copper Production closes from the Fulgora boundary without `copper-ore` raw or any copper item, with `--require-no-additional-technologies` |
-| Dependents | `tools/check_copper_research.py` compares every technology's closure with the former tree under the moved-closure rule above; `tests/progression/copper-research-roots.args` lists the closures of the dependents' other prerequisites |
+| Dependents | `tools/check_copper_research.py` compares every technology's closure with the former tree under the moved-closure rule above; `tools/check_asteroid_removal.py` proves no technology keeps the asteroid branch |
 | Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
 | Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |

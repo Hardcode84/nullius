@@ -1,46 +1,41 @@
-"""Regression tests for staged copper research independence."""
+"""Regression tests for the copper research move and deep copper supply."""
 from pathlib import Path
 import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from check_copper_research import ASTEROID_FREE, COPPER, FIXED_SUPPLY, ORE, ROOTS, violations
+from check_copper_research import (COPPER, DEEP_RECIPES, FIXED_SUPPLY, ORE, ORE_RECIPES, ROOTS,
+                                   violations)
+
+INGOT = 'nullius-checkpoint-copper-ingot'
 
 
 def tree():
+    # The ore checkpoint stands for the removed branch restored from the catalog.
     parents = {name: [] for name in ROOTS}
-    parents.update({COPPER: ROOTS, ORE: ['nullius-asteroid-mining-1'],
-                    'nullius-asteroid-mining-1': [ROOTS[0]],
-                    'nullius-reconnaissance-3': ['nullius-asteroid-mining-1'],
-                    'nullius-robot-speed-5': [COPPER, 'nullius-reconnaissance-3'],
-                    'nullius-wildlife-management-1': [COPPER, 'nullius-reconnaissance-3']})
-    parents.update({name: [COPPER] for name in ASTEROID_FREE if name != COPPER})
+    parents.update({'nullius-asteroid-mining-1': [ROOTS[0]], ORE: ['nullius-asteroid-mining-1'],
+                    COPPER: ROOTS, INGOT: [COPPER]})
     technologies = {name: {'name': name, 'prerequisites': list(prerequisites), 'effects': []}
                     for name, prerequisites in parents.items()}
-    recipes = ['deep-drilling', 'deep-slurry-filtration', 'boxed-deep-slurry-filtration',
-               'copper-roasting', 'boxed-copper-roasting', 'copper-leaching', 'boxed-copper-leaching',
-               'box-copper-concentrate', 'unbox-copper-concentrate', 'box-copper-calcine', 'unbox-copper-calcine']
-    for name in recipes:
-        technologies[COPPER]['effects'].append({'type': 'unlock-recipe', 'recipe': 'nullius-' + name})
-    for name in ('copper-solution', 'boxed-copper-solution'):
-        technologies[ORE]['effects'].append({'type': 'unlock-recipe', 'recipe': 'nullius-' + name})
+    technologies[COPPER]['effects'] = [{'type': 'unlock-recipe', 'recipe': 'nullius-' + name}
+                                       for name in DEEP_RECIPES + ORE_RECIPES]
     recipes = {name: {'name': name, 'allow_productivity': False} for name in FIXED_SUPPLY}
     return {'technology': technologies, 'recipe': recipes}
 
 
 class CopperResearchTest(unittest.TestCase):
-    def test_independent_asteroid_branch_is_retained(self):
+    def test_moved_tree_passes(self):
         self.assertEqual(violations(tree()), [])
 
-    def test_asteroid_gate_on_antimatter_is_rejected(self):
+    def test_changed_copper_prerequisites_are_rejected(self):
         data = tree()
-        data['technology']['nullius-antimatter-containment']['prerequisites'].append('nullius-reconnaissance-3')
-        self.assertTrue(any('antimatter-containment requires' in message for message in violations(data)))
+        data['technology'][COPPER]['prerequisites'].append(ORE)
+        self.assertIn('Copper Production prerequisites changed', violations(data))
 
-    def test_early_removal_of_independent_gate_is_rejected(self):
+    def test_ore_route_outside_copper_production_is_rejected(self):
         data = tree()
-        data['technology']['nullius-reconnaissance-3']['prerequisites'] = []
-        self.assertTrue(any('robot-speed-5 lost' in message for message in violations(data)))
+        data['technology'][ORE]['effects'].append({'type': 'unlock-recipe', 'recipe': 'nullius-copper-solution'})
+        self.assertIn(f'copper-solution: expected {COPPER}, found {sorted([COPPER, ORE])}', violations(data))
 
     def test_deep_filtration_productivity_is_rejected(self):
         data = tree()
@@ -53,7 +48,6 @@ class CopperResearchTest(unittest.TestCase):
             {'type': 'change-recipe-productivity', 'recipe': 'nullius-boxed-deep-slurry-filtration', 'change': 0.01})
         self.assertIn(f'{ROOTS[0]} changes nullius-boxed-deep-slurry-filtration productivity', violations(data))
 
-    def test_ore_recipe_stays_with_ore_checkpoint(self):
-        data = tree()
-        data['technology'][COPPER]['effects'].append(data['technology'][ORE]['effects'].pop())
-        self.assertTrue(any('boxed-copper-solution:' in message for message in violations(data)))
+
+if __name__ == '__main__':
+    unittest.main()

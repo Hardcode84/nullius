@@ -1495,7 +1495,7 @@ fusion become two parallel branches that share only the reactor.
 
 #### Asteroid mining removal
 
-Design. Asteroid mining is removed entirely. Vulcanus lava and Fulgora vents
+Implemented. Asteroid mining is removed entirely. Vulcanus lava and Fulgora vents
 supply infinite ores, so Nauvis patches become finite and depleted materials are
 imported. Copper comes from Fulgora deep drilling; uranium from Nauvis seawater
 adsorption.
@@ -1521,10 +1521,10 @@ adsorption.
 
 | Check | Contract |
 |---|---|
-| Absence | No item, recipe, technology, or entity of the removed branch exists in resolved prototypes |
-| Rewired closures | A release check restores the removed technologies and former prerequisites in a copy of the tree; every remaining technology keeps that closure minus the removed technologies and gains nothing |
-| Ore routes | Contracts close the copper and uranium ore routes at their new technologies |
-| Mission | A scenario completes every non-stub goal and expects victory with goals 10 and 11 at zero; the panel omits them |
+| Absence | `tools/check_asteroid_removal.py`: no technology of the removed branch, and no prototype of any type named as an asteroid miner or guide drone, remote, flare, or projectile |
+| Rewired closures | The same check restores the removed technologies from `tools/removed_research.py` and the former prerequisites in a copy of the tree; every remaining technology keeps that closure minus the removed technologies and gains nothing. Other moved-research checks restore the same catalog |
+| Ore routes | `nauvis-copper-ore.args` and `nuclear-uranium-ore-closure.args` close the ore routes at Copper Production and Uranium Processing |
+| Mission | `mission-stub-goals` completes every required goal and expects victory with goals 10 and 11 at zero and absent from the panel; `mission-stub-upgrade` finishes a pre-stub save on load |
 
 #### Nuclear branches
 
@@ -1587,7 +1587,7 @@ Delivery order:
 | Seawater uranium (implemented) | See the rules above | Astronomy |
 | Enrichment (implemented) | Fluorine Chemistry and Uranium Enrichment; Uranium Processing becomes conversion and drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
 | Antiproton capture (implemented) | See [Antimatter: antiproton capture](#antimatter-antiproton-capture) | Fission and breeder cells in antimatter |
-| Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint and guide drones |
+| Asteroid removal (implemented) | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint and guide drones |
 
 | Stage | Process | Real basis |
 |---|---|---|

@@ -2044,7 +2044,7 @@ extend_mod_prototypes({
       },
       time = 60
     },
-    prerequisites = {"nullius-artificial-intelligence-2", "nullius-asteroid-mining-2"}
+    prerequisites = {"nullius-artificial-intelligence-2", "nullius-wildlife-management-2"}
   },
   {
     type = "recipe",
@@ -2055,7 +2055,10 @@ extend_mod_prototypes({
     energy_required = 90,
     ingredients = {
       {type = "item", name = "nullius-android-2", amount = 1},
-      {type = "item", name = "nullius-asteroid-miner-2", amount = 1}
+      {type = "item", name = "nullius-hangar-3", amount = 1},
+      {type = "item", name = "nullius-sensor-node-3", amount = 1},
+      {type = "item", name = "nullius-construction-bot-4", amount = 3},
+      {type = "item", name = "nullius-turret", amount = 2}
     },
     results = {
 			{type = "item", name = "companion", amount = 1}

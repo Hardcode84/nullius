@@ -479,14 +479,6 @@ local function create_terraform(base_name, suffix)
   create_projectile(base_name, suffix, picture, shadow)
 end
 
-local function create_guide(suffix)
-  local picture = data.raw["artillery-projectile"]["nullius-scout-drone-projectile-1"].picture
-  local shadow = data.raw["artillery-projectile"]["nullius-scout-drone-projectile-1"].shadow
-  create_flare("guide", suffix)
-  create_projectile("guide", suffix.."-1", picture, shadow)
-  create_projectile("guide", suffix.."-2", picture, shadow)
-end
-
 local function create_farmer(base_name)
   create_flare(base_name)
   local prefix = "nullius-"..base_name
@@ -551,13 +543,6 @@ create_terraform("paving", "purple")
 create_terraform("paving", "brown")
 create_terraform("paving", "black")
 create_terraform("paving", "hazard")
-
-create_guide("iron")
-create_guide("bauxite")
-create_guide("sandstone")
-create_guide("limestone")
-create_guide("copper")
-create_guide("uranium")
 
 create_farmer("algaculture")
 create_farmer("horticulture")

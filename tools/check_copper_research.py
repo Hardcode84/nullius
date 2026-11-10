@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
-"""Check the copper research move, its retained asteroid dependencies, and
-that deep copper supply stays without productivity."""
+"""Check the copper research move, its unlocks, and that deep copper supply
+stays without productivity."""
 import argparse
 import json
 import shutil
 from pathlib import Path
 import analyze_factorio_prereqs as prereqs
+import removed_research
 
 COPPER = 'nullius-copper-production'
+# Copper Production's former prerequisite, removed with asteroid mining.
 ORE = 'nullius-checkpoint-copper-ore'
 ROOTS = ['nullius-astronomy', 'nullius-primitive-filtration', 'nullius-overcharged-assembly-2']
-ASTEROID_FREE = [COPPER, 'nullius-checkpoint-copper-ingot', 'nullius-electronics-4',
-                 'nullius-solar-power-3', 'nullius-braking-9', 'nullius-antimatter-containment']
+DEEP_RECIPES = ['deep-drilling', 'deep-slurry-filtration', 'boxed-deep-slurry-filtration', 'copper-roasting',
+                'boxed-copper-roasting', 'copper-leaching', 'boxed-copper-leaching', 'box-copper-concentrate',
+                'unbox-copper-concentrate', 'box-copper-calcine', 'unbox-copper-calcine']
+# Remaining asteroid patches and later crustal fracturing use the ore route.
+ORE_RECIPES = ['box-copper-ore', 'unbox-copper-ore', 'crushed-copper-ore', 'boxed-crushed-copper-ore',
+               'box-crushed-copper-ore', 'unbox-crushed-copper-ore', 'copper-solution', 'boxed-copper-solution']
+EXEMPT = set(removed_research.REMOVED)
 # Productivity on these would multiply a vent's fixed deep supply.
 FIXED_SUPPLY = ['nullius-deep-drilling', 'nullius-deep-slurry-filtration',
                 'nullius-boxed-deep-slurry-filtration']
@@ -29,30 +36,22 @@ def productivity_violations(data):
 
 
 def violations(data):
-    """Return incorrect prerequisites, unlocks, and dependent research closures."""
+    """Return incorrect prerequisites, unlocks, and dependent research closures.
+
+    The technology table must contain the removed technologies, restored from
+    the catalog, so the former tree resolves.
+    """
     technologies = data['technology']
     errors = []
     if sorted(technologies[COPPER].get('prerequisites', [])) != sorted(ROOTS):
         errors.append('Copper Production prerequisites changed')
     released = frozenset(prereqs.technology_closure(technologies, {ORE}))
     gained = frozenset(prereqs.technology_closure(technologies, set(ROOTS)))
-    errors.extend(prereqs.moved_research_violations(technologies, {COPPER: [ORE]}, set(), released, gained))
-    for name in ASTEROID_FREE:
-        asteroids = {t for t in prereqs.technology_closure(technologies, {name})
-                     if t.startswith('nullius-asteroid-mining-')}
-        if asteroids:
-            errors.append(f'{name} requires {sorted(asteroids)}')
-    for name in ('nullius-robot-speed-5', 'nullius-wildlife-management-1'):
-        if 'nullius-asteroid-mining-1' not in prereqs.technology_closure(technologies, {name}):
-            errors.append(f'{name} lost its independent asteroid prerequisite')
-    recipes = ['deep-drilling', 'deep-slurry-filtration', 'copper-roasting', 'copper-leaching']
-    recipes += ['boxed-' + name for name in recipes[1:]]
-    recipes += [prefix + name for name in ('copper-concentrate', 'copper-calcine')
-                for prefix in ('box-', 'unbox-')]
-    for recipe, owner in [(r, COPPER) for r in recipes] + [('copper-solution', ORE), ('boxed-copper-solution', ORE)]:
+    errors.extend(prereqs.moved_research_violations(technologies, {COPPER: [ORE]}, EXEMPT, released, gained))
+    for recipe in DEEP_RECIPES + ORE_RECIPES:
         unlockers = prereqs.recipe_unlockers(technologies, 'nullius-' + recipe)
-        if unlockers != [owner]:
-            errors.append(f'{recipe}: expected {owner}, found {unlockers}')
+        if unlockers != [COPPER]:
+            errors.append(f'{recipe}: expected {COPPER}, found {unlockers}')
     return errors + productivity_violations(data)
 
 
@@ -64,10 +63,11 @@ def main():
     dump_args.data_raw = args.data_raw
     data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
+        data['technology'] = removed_research.with_removed(data['technology'])
         errors = violations(data)
         if errors:
             raise prereqs.TestFailure('\n'.join(errors))
-        changes = prereqs.moved_research_changes(data['technology'], {COPPER: [ORE]}, set())
+        changes = prereqs.moved_research_changes(data['technology'], {COPPER: [ORE]}, EXEMPT)
         print(json.dumps({'changed_closures': {name: {'lost': sorted(lost), 'gained': sorted(gained)}
                                              for name, (lost, gained) in changes.items()}}, indent=2))
     finally:

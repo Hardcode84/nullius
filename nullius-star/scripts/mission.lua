@@ -7,6 +7,18 @@ local objective_name = {
 	"uranium", "coal", "petroleum", "overall"
 }
 
+-- Goals 10 and 11 counted copper and uranium guide drones, removed with
+-- asteroid mining. They stay stubs until crustal fracturing and uranium
+-- biomineralization give them targets: hidden, outside overall progress, and
+-- not required for victory.
+local STUB_GOALS = {[10] = true, [11] = true}
+local MISSION_TARGET = {10, 125, 1800, 12000000,
+    32000, 750, 320, 60, 2500000, 20, 12, 3000000, 12000000}
+local REQUIRED_GOALS = {}
+for goal = 1, 13 do
+  if not STUB_GOALS[goal] then REQUIRED_GOALS[#REQUIRED_GOALS + 1] = goal end
+end
+
 local function objective_locale(goal)
   local group = {"item", "fluid", "item", "item", "item", "item", "item",
       "item", "technology", "ore", "ore", "item", "fluid", "objective"}
@@ -40,7 +52,9 @@ function update_mission_panel(player)
     local oxygen = storage.nullius_mission_status[2]
     for i = 1, 13 do
 	  local str = nil
-      if (storage.nullius_mission_status[i] < 100) then
+      if STUB_GOALS[i] then
+        -- Hidden.
+      elseif (storage.nullius_mission_status[i] < 100) then
         str = {"", objective_locale(i), ": ",
             storage.nullius_mission_status[i], "%"}
 	  elseif ((i >= 3) and (i <= 5) and
@@ -128,6 +142,44 @@ local function update_mission_global()
   end
 end
 
+local function required_goals_complete()
+  for _, goal in ipairs(REQUIRED_GOALS) do
+    if (storage.nullius_mission_status[goal] < 100) then return false end
+  end
+  return true
+end
+
+-- Shows two digits after the dot.
+local function set_goal_count(goal, amount)
+  local count = storage.nullius_mission_count
+  count[goal] = math.min(math.max(amount, 0), (MISSION_TARGET[goal] * 4))
+  storage.nullius_mission_status[goal] = (math.floor(100 *
+      ((100 * count[goal]) / MISSION_TARGET[goal])) / 100)
+end
+
+-- Oxygen counts twice. Goals can pass 100%; each share is capped.
+local function update_overall_status()
+  local status = storage.nullius_mission_status
+  local overall = math.min(100, status[2])
+  for _, goal in ipairs(REQUIRED_GOALS) do
+    overall = overall + math.min(100, status[goal])
+  end
+  status[14] = (math.floor(100 * (overall / (#REQUIRED_GOALS + 1))) / 100)
+end
+
+local function finish_mission(force)
+  storage.nullius_mission_complete = true
+  update_mission_global()
+  if remote.interfaces["better-victory-screen"] and remote.interfaces["better-victory-screen"]["trigger_victory"] then
+    remote.call("better-victory-screen", "trigger_victory", force)
+  else
+    game.set_game_state{game_finished=true, player_won=true,
+      can_continue=true, victorious_force=force}
+  end
+end
+
+-- A save whose required goals were all complete before goals became stubs
+-- finishes here; no later goal update would cross 100% to finish it.
 function init_mission_global()
   if (storage.nullius_mission_status == nil) then return end
   for i = 1, 14 do
@@ -136,60 +188,42 @@ function init_mission_global()
       storage.nullius_mission_status[i] = 0
     end
   end
+  update_overall_status()
+  if (not storage.nullius_mission_complete) and required_goals_complete() then
+    finish_mission(game.forces.player)
+    return
+  end
   update_mission_global()
 end
 
 function set_mission_goal(goal, amount, force)
   if (storage.nullius_mission_complete) then return end
 
-  local mission_target = {10, 125, 1800, 12000000,
-      32000, 750, 320, 60, 2500000, 20, 12, 3000000, 12000000}
   local count = storage.nullius_mission_count
   local status = storage.nullius_mission_status
   local oldstatus = status[goal]
-  count[goal] = math.min(math.max(amount, 0), (mission_target[goal] * 4))
-  status[goal] = (math.floor(100 *
-      ((100 * count[goal]) / mission_target[goal])) / 100) -- only shows 2 digits after the dot
+  set_goal_count(goal, amount)
 
   if ((goal >= 3) and (goal <= 5)) then
-    local algae_oxygen = (40 * count[3]) / (count[3] + (mission_target[3] / 2))
-    local grass_oxygen = (30 * count[4]) / (count[4] + (mission_target[4] / 2))
-    local tree_oxygen = (30 * count[5]) / (count[5] + (mission_target[5] / 2))
+    local algae_oxygen = (40 * count[3]) / (count[3] + (MISSION_TARGET[3] / 2))
+    local grass_oxygen = (30 * count[4]) / (count[4] + (MISSION_TARGET[4] / 2))
+    local tree_oxygen = (30 * count[5]) / (count[5] + (MISSION_TARGET[5] / 2))
     local total_oxygen = algae_oxygen + grass_oxygen + tree_oxygen
 	storage.nullius_oxygen_bio_target = (108 * total_oxygen) / (150 - total_oxygen)
   end
 
   local finished = false
   if ((status[goal] >= 100) and (oldstatus < 100)) then
-    finished = true
-    for i = 1, 13 do
-      if (status[i] < 100) then
-        finished = false
-      end
-    end
+    finished = required_goals_complete()
     force.print({"objective-description.nullius-complete-objective",
         objective_locale(goal)}, {1, 0.75, 0.4})
   end
-
-  local overall = storage.nullius_mission_status[2]
-  for i = 1, 13 do
-    overall = overall + math.min(100, storage.nullius_mission_status[i])
-  end
-  storage.nullius_mission_status[14] = (math.floor(100 * (overall / 14)) / 100)
+  update_overall_status()
 
   if (finished and (force ~= nil)) then
-    storage.nullius_mission_complete = true
-  end
-  update_mission_global()
-  if (storage.nullius_mission_complete) then
-
-    if remote.interfaces["better-victory-screen"] and remote.interfaces["better-victory-screen"]["trigger_victory"] then
-      remote.call("better-victory-screen", "trigger_victory", force)
-    else
-      game.set_game_state{game_finished=true, player_won=true,
-	    can_continue=true, victorious_force=force}
-    end
-
+    finish_mission(force)
+  else
+    update_mission_global()
   end
 end
 
@@ -360,5 +394,11 @@ if script.active_mods["factorio-test-support"] then
     create = create_mission,
     set_goal = set_mission_goal,
     probes = function() return storage.nullius_mission_count and storage.nullius_mission_count[1] or 0 end,
+    complete = function() return storage.nullius_mission_complete end,
+    overall = function() return storage.nullius_mission_status[14] end,
+    -- Reproduces a save from before goals 10 and 11 became stubs: a goal
+    -- reached without the completion check that set_goal runs.
+    seed_count = set_goal_count,
+    reload = init_mission_global,
   })
 end

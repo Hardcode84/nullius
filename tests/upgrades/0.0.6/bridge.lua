@@ -5,8 +5,8 @@ local function assert_reactor(force)
   end
 end
 
--- Ore yellowcake moved from Uranium Processing to the uranium-ore checkpoint, its
--- former prerequisite. Uranium smelting and tritium enrichment were replaced by
+-- The uranium-ore checkpoint was removed with asteroid mining; Uranium Processing
+-- unlocks the ore route instead. Uranium smelting and tritium enrichment were replaced by
 -- conversion and centrifuge enrichment, which the migration researches. Seawater
 -- uranium is new research the save has not done.
 local function assert_uranium(force)

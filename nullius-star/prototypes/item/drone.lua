@@ -1,6 +1,5 @@
 local modern = require("factorio-version").is_2_1
 
-local asteroid_products = require("prototypes.item.asteroid-miner-products")
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
@@ -156,122 +155,6 @@ local function create_paving(suffix, landfill, suborder, tech, tile)
   })
 end
 
-local function create_miner(mineral, suborder, group, tech, iname, isize, itint)
-  local drone_icons1 = {
-    {
-      icon = ICONPATH .. "asteroid-miner-1.png",
-      icon_size = 64
-    },
-    {
-      icon = iname,
-      icon_size = isize,
-      tint = itint,
-      scale = (0.5 * (32 / isize)),
-      shift = {0, 7}
-    }
-  }
-  local drone_icons2 = {
-    {
-      icon = ICONPATH .. "asteroid-miner-2.png",
-      icon_size = 64
-    },
-    {
-      icon = iname,
-      icon_size = isize,
-      tint = itint,
-      scale = (0.6 * (32 / isize)),
-      shift = {0, 8}
-    }
-  }
-  local remote_icons = {
-    {
-      icon = ICONPATH .. "target.png",
-      icon_size = 64
-    },
-    {
-      icon = iname,
-      icon_size = isize,
-      tint = itint,
-      scale = (0.75 * (32 / isize)),
-      shift = {0, -2}
-    }
-  }
-  local sg = "asteroid-"..group
-  create_drone("guide", sg, suborder.."b", mineral, 10, tech, "nullius-guide-drone-"..mineral, drone_icons1, remote_icons, 1)
-  create_drone("guide", sg, suborder.."c", mineral, 5, tech, "nullius-guide-drone-"..mineral, drone_icons2, remote_icons, 2)
-  extend_drone_prototypes({
-    {
-      type = "capsule",
-      name = "nullius-guide-remote-"..mineral,
-      icons = remote_icons,
-      flags = {"spawnable", "only-in-cursor","not-stackable"},
-      hidden_in_factoriopedia = true,
-      capsule_action = {
-        type = "artillery-remote",
-        flare = "nullius-guide-flare-"..mineral
-      },
-      subgroup = sg,
-      order = "nullius-"..suborder.."e",
-      inventory_move_sound = item_sounds.artillery_remote_inventory_move,
-      pick_sound = item_sounds.mechanical_inventory_pickup,
-      drop_sound = item_sounds.artillery_remote_inventory_move,
-      stack_size = 1
-    },
-    {
-      type = "recipe",
-      name = "nullius-guide-drone-"..mineral.."-redeploy",
-      localised_name = {"recipe-name.nullius-redeploy", {"item-name.nullius-guide-drone-"..mineral}},
-      icons = {
-        {
-          icon = ICONPATH .. "asteroid-miner-1.png",
-          icon_size = 64
-        },
-        {
-          icon = iname,
-          icon_size = isize,
-          tint = itint,
-          scale = (0.4 * (32 / isize)),
-          shift = {10, 10}
-        }
-      },
-      enabled = false,
-      always_show_made_in = true,
-      always_show_products = true,
-      allow_as_intermediate = false,
-      allow_decomposition = false,
-      no_productivity = true,
-      categories = {"huge-crafting"},
-      subgroup = sg,
-      order = "nullius-"..suborder.."d",
-      energy_required = 20,
-      ingredients = {
-        {type = "item", name = "nullius-guide-drone-"..mineral.."-1", amount = 2},
-        {type = "item", name = "nullius-box-astronomy-pack", amount = 1}
-      },
-      results = {
-				{type="item", name="nullius-asteroid-miner-1", amount = 1}
-			}
-    },
-    {
-      type = "recipe",
-      name = "nullius-guide-drone-"..mineral.."-2",
-      enabled = false,
-      always_show_made_in = true,
-      always_show_products = true,
-      categories = {"huge-crafting"},
-      energy_required = 30,
-      ingredients = {
-        {type = "item", name = "nullius-guide-drone-"..mineral.."-1", amount = 40},
-        {type = "item", name = "nullius-relay-3", amount = 1}
-      },
-      results = {
-				{type="item", name="nullius-guide-drone-"..mineral.."-2", amount = 1}
-			}
-    }
-  })
-end
-
-
 local function create_bio_drone(base, suborder, iname, tech)
   local drone_icons = {
     {
@@ -349,15 +232,6 @@ create_paving("purple", "red", "h", "nullius-terraforming-3")
 create_paving("brown", "brown", "i", "nullius-terraforming-3")
 create_paving("black", "grey", "j", "nullius-terraforming-3")
 create_paving("hazard", "tan", "k", "nullius-terraforming-3")
-
-create_miner("iron", "b", 1, "nullius-asteroid-mining-1", "__base__/graphics/icons/iron-ore.png", 64)
-create_miner("sandstone", "c", 1, "nullius-asteroid-mining-1",
-    "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-2.png", 64, {184, 125, 73})
-create_miner("bauxite", "d", 1, "nullius-asteroid-mining-1", "__angelssmeltinggraphics__/graphics/icons/ore-bauxite.png", 32)
-create_miner("limestone", "e", 2, "nullius-asteroid-mining-1",
-    "__angelsrefininggraphics__/graphics/icons/angels-ore6/angels-ore6-3.png", 64, {0.898, 0.773, 0.688})
-create_miner("copper", "f", 2, "nullius-asteroid-mining-1", "__base__/graphics/icons/copper-ore.png", 64)
-create_miner("uranium", "g", 2, "nullius-asteroid-mining-1", "__base__/graphics/icons/uranium-ore.png", 64)
 
 create_farmer("algaculture", "b", "algae", "algae-spore", 60, "nullius-ecology-1",
     ICONPATH .. "algae.png", 1, 1,
@@ -661,76 +535,6 @@ extend_drone_prototypes({
 
   {
     type = "item",
-    name = "nullius-asteroid-miner-1",
-    icons = {{
-      icon = ICONPATH .. "asteroid-miner-1.png",
-      icon_size = 64
-    }},
-    subgroup = "space",
-    order = "nullius-eb",
-    stack_size = 1,
-    weight = 1000000,
-    send_to_orbit_mode = "automated",
-    rocket_launch_products = asteroid_products[1]
-  },
-  {
-    type = "recipe",
-    name = "nullius-asteroid-miner-1",
-    enabled = false,
-    always_show_made_in = true,
-    categories = {"huge-crafting"},
-    energy_required = 120,
-    ingredients = {
-      {type = "item", name = "nullius-satellite", amount = 1},
-      {type = "item", name = "nullius-box-rocket-fuel", amount = 25},
-      {type = "item", name = "nullius-excavation-drone", amount = 3},
-      {type = "item", name = "nullius-medium-miner-3", amount = 5},
-      {type = "item", name = "nullius-drone-launcher-2", amount = 1},
-      {type = "item", name = "nullius-construction-bot-3", amount = 3},
-      {type = "item", name = "nullius-box-astronomy-pack", amount = 6},
-      {type = "item", name = "nullius-large-buffer-chest-2", amount = 4}
-    },
-    results = {
-				{type="item", name="nullius-asteroid-miner-1", amount = 1}
-			}
-  },
-
-  {
-    type = "item",
-    name = "nullius-asteroid-miner-2",
-    icons = {{
-      icon = ICONPATH .. "asteroid-miner-2.png",
-      icon_size = 64
-    }},
-    subgroup = "space",
-    order = "nullius-ec",
-    stack_size = 1,
-    weight = 1000000,
-    send_to_orbit_mode = "automated",
-    rocket_launch_products = asteroid_products[2]
-  },
-  {
-    type = "recipe",
-    name = "nullius-asteroid-miner-2",
-    enabled = false,
-    always_show_made_in = true,
-    categories = {"huge-crafting"},
-    energy_required = 240,
-    ingredients = {
-      {type = "item", name = "nullius-asteroid-miner-1", amount = 2},
-      {type = "item", name = "nullius-antimatter", amount = 8},
-      {type = "item", name = "nullius-turret", amount = 4},
-      {type = "item", name = "nullius-hangar-3", amount = 1},
-      {type = "item", name = "nullius-sensor-node-3", amount = 1},
-      {type = "item", name = "nullius-construction-bot-4", amount = 3},
-	  {type = "item", name = "nullius-trash-compactor-2", amount = 2}
-    },
-    results = {
-				{type="item", name="nullius-asteroid-miner-2", amount = 1}
-			}
-  },
-  {
-    type = "item",
     --name = "nullius-android-1",
     name = "character",
     localised_name = {"", {"item-name.nullius-android"}, " ", tostring(1)},
@@ -857,17 +661,3 @@ extend_drone_prototypes({
 })
 
 
-label_icon("nullius-asteroid-miner-1", 1, "purple")
-label_icon("nullius-asteroid-miner-2", 2, "blue")
-label_icon("nullius-guide-drone-iron-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-iron-2", 2, "blue", "ammo")
-label_icon("nullius-guide-drone-sandstone-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-sandstone-2", 2, "blue", "ammo")
-label_icon("nullius-guide-drone-bauxite-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-bauxite-2", 2, "blue", "ammo")
-label_icon("nullius-guide-drone-limestone-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-limestone-2", 2, "blue", "ammo")
-label_icon("nullius-guide-drone-copper-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-copper-2", 2, "blue", "ammo")
-label_icon("nullius-guide-drone-uranium-1", 1, "purple", "ammo")
-label_icon("nullius-guide-drone-uranium-2", 2, "blue", "ammo")

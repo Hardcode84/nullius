@@ -101,37 +101,6 @@ local function initialize_remotes()
     )
   end
 
-  for i, tbl in ipairs{
-    {"iron", "iron-ore"}, {"sandstone", "nullius-sandstone"},
-    {"bauxite", "nullius-bauxite"}, {"limestone", "nullius-limestone"},
-    {"copper", "copper-ore"}, {"uranium", "uranium-ore"}
-  } do
-    local mineral, item_name = table.unpack(tbl)
-    table.insert(
-      remotes,
-      {
-        payload = item_name,
-        remote = "nullius-guide-remote-" .. mineral,
-        technology = "nullius-asteroid-mining-1",
-        category = "d",
-        order = tostring(i)
-      }
-    )
-  end
-
-  if script.active_mods["tricky-old-nick"] then
-    table.insert(
-      remotes,
-      {
-        payload = "nullius-nickel-ore",
-        remote = "nullius-guide-remote-nickel",
-        technology = "nullius-asteroid-mining-1",
-        category = "d",
-        order = "1-b",
-      }
-    )
-  end
-
   for i, remote_gui_data in ipairs{
     {
       payload = "nullius-algae",

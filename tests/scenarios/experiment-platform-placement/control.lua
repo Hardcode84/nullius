@@ -76,6 +76,7 @@ script.on_nth_tick(30, function()
   -- The platform blocks exactly the vacuum rule and these earlier exclusions.
   local EARLIER_EXCLUSIONS = {
     ["nullius-extractor-1-reinjection"] = true, ["nullius-extractor-2-reinjection"] = true,
+    ["nullius-extractor-1-deep"] = true, ["nullius-extractor-2-deep"] = true,
     ["nullius-vulcanus-radiator-1"] = true, ["nullius-vulcanus-radiator-2"] = true,
     ["nullius-primitive-demand-chest"] = true, ["nullius-primitive-storage-chest"] = true,
     ["nullius-primitive-supply-chest"] = true, ["nullius-clockwork-roboport"] = true,

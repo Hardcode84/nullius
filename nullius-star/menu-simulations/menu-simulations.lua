@@ -97,37 +97,6 @@ local nullius_epoxy = {
 }
 
 ---@type data.SimulationDefinition
-local nullius_mining_drone = {
-  checkboard = false,
-  save = "__nullius-star__/menu-simulations/mining-drone.zip",
-  mods = { "nullius" },
-  length = 25 * second,
-  init = [[
-    local logo = game.surfaces.nauvis.find_entities_filtered{name = "factorio-logo-11tiles", limit = 1}[1]
-    logo.destructible = false
-    game.simulation.camera_position = {logo.position.x, logo.position.y - 12}
-    game.simulation.camera_zoom = 1
-    game.tick_paused = false
-
-    local start_tick = game.tick
-    script.on_event(defines.events.on_tick, function()
-      local tick_from_start = game.tick - start_tick
-      if tick_from_start == 15 * second then
-        game.surfaces["nauvis"].create_entity({
-          name="nullius-guide-flare-limestone",
-          position = {51, -145},
-          force = "player",
-          movement = {0, 0},
-          height = 0,
-          vertical_speed = 0,
-          frame_speed = 0,
-        })
-      end
-    end)
-  ]],
-}
-
----@type data.SimulationDefinition
 local nullius_trains = {
   checkboard = false,
   save = "__nullius-star__/menu-simulations/trains.zip",
@@ -163,12 +132,11 @@ local simulations = {
   nullius_algae = nullius_algae,
   nullius_blue_science = nullius_blue_science,
   nullius_expoxy = nullius_epoxy,
-  nullius_mining_drone = nullius_mining_drone,
   nullius_trains = nullius_trains,
   nullius_early_power = nullius_early_power,
 }
 
 -- Uncomment to debug a single visualization
--- simulations = { nullius_mining_drone }
+-- simulations = { nullius_trains }
 
 return simulations

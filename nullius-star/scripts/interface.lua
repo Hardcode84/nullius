@@ -121,8 +121,6 @@ remote.add_interface("nullius", {
           {type="item",       name="nullius-entomology-drone",         quantity=1},
           {type="item",       name="nullius-aquaculture-drone",        quantity=1},
           {type="item",       name="nullius-husbandry-drone",          quantity=1},
-          {type="item",       name="nullius-guide-drone-copper-1",     quantity=1},
-          {type="item",       name="nullius-guide-drone-uranium-1",    quantity=1},
           {type="item",       name="nullius-antimatter",               quantity=1},
           {type="item",       name="nullius-probe",                    quantity=1},
           {type="item",       name="nullius-probe",                    quantity=10},

@@ -85,11 +85,11 @@ class NuclearResearchTest(unittest.TestCase):
         self.assertEqual(research_violations(technologies, RECIPES), [
             f"nullius-reactor unlocked by ['{FUSION}', '{REACTOR}'], expected {REACTOR}"])
 
-    def test_ore_yellowcake_at_uranium_processing_is_rejected(self):
+    def test_ore_yellowcake_outside_uranium_processing_is_rejected(self):
         technologies = nuclear_tree()
-        technologies[URANIUM]["effects"].append({"type": "unlock-recipe", "recipe": "nullius-yellowcake"})
+        technologies[FISSION]["effects"].append({"type": "unlock-recipe", "recipe": "nullius-yellowcake"})
         self.assertEqual(research_violations(technologies, RECIPES), [
-            f"nullius-yellowcake unlocked by ['{URANIUM_ORE}', '{URANIUM}'], expected {URANIUM_ORE}"])
+            f"nullius-yellowcake unlocked by ['{FISSION}', '{URANIUM}'], expected {URANIUM}"])
 
     def test_uranium_consumers_trade_ore_research_for_enrichment(self):
         technologies = nuclear_tree()

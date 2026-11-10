@@ -235,7 +235,7 @@ local function clear_radius(event, size)
   s.set_tiles(newtiles)
 end
 
-function miner_effect(event, ore, size, richness, goal_ind, goal_amount)
+function miner_effect(event, ore, size, richness)
   clear_radius(event, size)
   local s = game.surfaces[event.surface_index]
   local c = tile_center(event)
@@ -268,10 +268,6 @@ function miner_effect(event, ore, size, richness, goal_ind, goal_amount)
     end
   end
 
-  if ((goal_ind ~= nil) and (event.source_entity ~= nil) and
-      event.source_entity.valid) then
-    bump_mission_goal(goal_ind, goal_amount, event.source_entity.force)
-  end
 end
 
 local function count_resource(event, name, limit, objective)
@@ -1029,32 +1025,6 @@ function trigger_effect(event)
     elseif (suffix == "-drone-effect-black") then
       paving_effect(event, "black-refined-concrete", "landfill")
     end    
-  elseif (midfix == "guide-") then
-    if (suffix == "drone-effect-iron-1") then
-        miner_effect(event, "iron-ore", 16, 1.493)
-    elseif (suffix == "drone-effect-iron-2") then
-        miner_effect(event, "iron-ore", 32, 14.93)
-    elseif (suffix == "drone-effect-sandstone-1") then
-        miner_effect(event, "nullius-sandstone", 16, 1.243)
-    elseif (suffix == "drone-effect-sandstone-2") then
-        miner_effect(event, "nullius-sandstone", 32, 12.43)
-    elseif (suffix == "drone-effect-bauxite-1") then
-        miner_effect(event, "nullius-bauxite", 15, 1.132)
-    elseif (suffix == "drone-effect-bauxite-2") then
-        miner_effect(event, "nullius-bauxite", 30, 11.32)
-    elseif (suffix == "drone-effect-limestone-1") then
-        miner_effect(event, "nullius-limestone", 14, 1.05)
-    elseif (suffix == "drone-effect-limestone-2") then
-        miner_effect(event, "nullius-limestone", 28, 10.5)
-    elseif (suffix == "drone-effect-copper-1") then
-        miner_effect(event, "copper-ore", 13, 0.941, 10, 1)
-    elseif (suffix == "drone-effect-copper-2") then
-        miner_effect(event, "copper-ore", 26, 9.41, 10, 40)
-    elseif (suffix == "drone-effect-uranium-1") then
-        miner_effect(event, "uranium-ore", 10, 0.781, 11, 1)
-    elseif (suffix == "drone-effect-uranium-2") then
-        miner_effect(event, "uranium-ore", 20, 7.91, 11, 40)
-    end
   elseif (midfix == "seques") then
     if (suffix == "tration-coal-drone-effect") then
       coal_effect(event)

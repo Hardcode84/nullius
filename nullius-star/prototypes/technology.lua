@@ -13154,30 +13154,6 @@ data:extend({
   },
   {
     type = "technology",
-    name = "nullius-asteroid-mining-1",
-    order = "nullius-gc",
-    icon = "__base__/graphics/technology/atomic-bomb.png",
-    icon_size = 256,
-    
-    effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-asteroid-miner-1"
-      }
-    },
-    unit = {
-      count = 4000,
-      ingredients = {
-        {"nullius-geology-pack", 2}, {"nullius-mechanical-pack", 1},
-        {"nullius-electrical-pack", 1}, {"nullius-chemical-pack", 1},
-        {"nullius-physics-pack", 1}, {"nullius-astronomy-pack", 2}
-      },
-      time = 60
-    },
-    prerequisites = {"nullius-astronomy", "nullius-mining-productivity-20"}
-  },
-  {
-    type = "technology",
     name = "nullius-biochemistry-1",
     order = "nullius-gc",
     icons = data.raw.fluid["nullius-nucleotides"].icons,
@@ -13303,7 +13279,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-asteroid-mining-1", "nullius-land-fill-5"}
+    prerequisites = {"nullius-astronomy", "nullius-mining-productivity-20", "nullius-land-fill-5"}
   },
   {
     type = "technology",
@@ -13343,6 +13319,15 @@ data:extend({
     icon_size = 256,
     
     effects = {
+      -- Patches from former guide drones and later crustal fracturing use the ore route.
+      {type="unlock-recipe", recipe="nullius-box-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-unbox-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-crushed-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-boxed-crushed-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-box-crushed-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-unbox-crushed-copper-ore"},
+      {type="unlock-recipe", recipe="nullius-copper-solution"},
+      {type="unlock-recipe", recipe="nullius-boxed-copper-solution"},
       {type="unlock-recipe", recipe="nullius-deep-drilling"},
       {type="unlock-recipe", recipe="nullius-deep-slurry-filtration"},
       {type="unlock-recipe", recipe="nullius-boxed-deep-slurry-filtration"},
@@ -13465,6 +13450,9 @@ data:extend({
     order = "nullius-gd",
     icons = data.raw.item["nullius-uranium-tetrafluoride"].icons,
     effects = {
+      -- Patches from former guide drones and later biomineralization use the ore route.
+      {type="unlock-recipe", recipe="nullius-crushed-uranium-ore"},
+      {type="unlock-recipe", recipe="nullius-yellowcake"},
       {
         type = "unlock-recipe",
         recipe = "nullius-uranium-dioxide"
@@ -15661,53 +15649,6 @@ data:extend({
   },
   {
     type = "technology",
-    name = "nullius-asteroid-mining-2",
-    order = "nullius-gk",
-    icon = ICONPATH .. "asteroid-miner-1.png",
-    icon_size = 64,
-    effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-asteroid-miner-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-iron-redeploy"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-sandstone-redeploy"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-bauxite-redeploy"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-limestone-redeploy"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-copper-redeploy"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-uranium-redeploy"
-      }
-    },
-    unit = {
-      count = 40000,
-      ingredients = {
-        {"nullius-geology-pack", 2}, {"nullius-mechanical-pack", 1},
-        {"nullius-electrical-pack", 1}, {"nullius-physics-pack", 1},
-        {"nullius-astronomy-pack", 2}
-      },
-      time = 60
-    },
-    prerequisites = {"nullius-wildlife-management-2"}
-  },
-  {
-    type = "technology",
     name = "nullius-artificial-intelligence-2",
     order = "nullius-gk",
     icon = TECHPATH .. "rocket-control-unit.png",
@@ -15753,52 +15694,8 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-asteroid-mining-2", "nullius-checkpoint-android-2"},
+    prerequisites = {"nullius-wildlife-management-2", "nullius-checkpoint-android-2"},
     essential = true
-  },
-  {
-    type = "technology",
-    name = "nullius-asteroid-mining-3",
-    order = "nullius-gl",
-    icon = ICONPATH .. "asteroid-miner-2.png",
-    icon_size = 64,
-    effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-iron-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-sandstone-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-bauxite-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-limestone-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-copper-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-guide-drone-uranium-2"
-      }
-    },
-    unit = {
-      count = 80000,
-      ingredients = {
-        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 1},
-        {"nullius-astronomy-pack", 1}
-      },
-      time = 60
-    },
-    prerequisites = {"nullius-checkpoint-asteroid-mining", "nullius-air-separation-5"}
   },
   {
     type = "technology",
@@ -15874,7 +15771,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-asteroid-mining-3", "nullius-checkpoint-solar-panel"}
+    prerequisites = {"nullius-air-separation-5", "nullius-wildlife-management-2", "nullius-checkpoint-solar-panel"}
   },
   {
     type = "technology",

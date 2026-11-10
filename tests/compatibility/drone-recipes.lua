@@ -2,7 +2,7 @@ local cases=require("scenarios/drone-recipes/fixture")
 for _,name in ipairs({"small-crafting","huge-crafting","nanotechnology"}) do
   if not data.raw["recipe-category"][name] then data:extend({{type="recipe-category",name=name}}) end
 end
-for _,name in ipairs({"drone","drone-remote","paving","paving-remote","asteroid-1","asteroid-2",
+for _,name in ipairs({"drone","drone-remote","paving","paving-remote",
   "farming","farming-remote","drone-launcher","space","armor"}) do
   if not data.raw["item-subgroup"][name] then data:extend({{type="item-subgroup",name=name,group="production",order="z"}}) end
 end
