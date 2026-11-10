@@ -121,9 +121,17 @@ script.on_nth_tick(1, function()
     "iron ore assay did not accept 400 iron ore")
 
   split_statistic(nauvis_items, "iron-ore", 200, 0)
-  split_statistic(nauvis_items, "nullius-molten-iron-bloom", 80, 0)
+  split_statistic(vulcanus_items, "nullius-molten-iron-bloom", 80, 0)
   check(close(progress(force, "iron-ore"), 1),
-    "iron ore assay did not combine proportional alternatives")
+    "iron ore assay did not combine proportional alternatives across surfaces")
+  split_statistic(vulcanus_items, "nullius-molten-iron-bloom", 0, 0)
+
+  -- Crushing turns ore into crushed ore on the same surface; count it once.
+  split_statistic(nauvis_items, "iron-ore", 300, 0)
+  split_statistic(nauvis_items, "nullius-crushed-iron-ore", 250, 0)
+  check(close(progress(force, "iron-ore"), 300 / 400),
+    "iron ore assay counted ore and its crushed form twice on one surface")
+  split_statistic(nauvis_items, "nullius-crushed-iron-ore", 0, 0)
 
   local nauvis_fluids = force.get_fluid_production_statistics(nauvis)
   local vulcanus_fluids = force.get_fluid_production_statistics(vulcanus)
@@ -208,9 +216,10 @@ script.on_nth_tick(1, function()
     "calcite checkpoint did not accept 500 calcite")
 
   split_statistic(nauvis_items, "nullius-limestone", 250, 0)
-  split_statistic(nauvis_items, "nullius-crushed-limestone", 160, 0)
+  split_statistic(vulcanus_items, "nullius-crushed-limestone", 160, 0)
   check(close(progress(force, "limestone"), 1),
-    "calcite checkpoint did not combine proportional alternatives")
+    "calcite checkpoint did not combine proportional alternatives across surfaces")
+  split_statistic(vulcanus_items, "nullius-crushed-limestone", 0, 0)
 
   split_statistic(nauvis_items, "nullius-sandstone", 0, 0)
   split_statistic(vulcanus_items, "nullius-sand", 799, 0)
@@ -285,6 +294,23 @@ script.on_nth_tick(1, function()
     split_statistic(fulgora_items,row.crushed,row.below+1,9000)
     research_prerequisites(force.technologies["nullius-checkpoint-"..row.checkpoint])
   end
+
+  -- given: consumed iron ore forms on three surfaces.
+  -- expect: the mining checkpoint counts each surface's largest form once.
+  for _, stats in ipairs({nauvis_items, vulcanus_items, fulgora_items}) do
+    for _, name in ipairs({"iron-ore", "nullius-box-iron-ore", "nullius-crushed-iron-ore",
+        "nullius-box-crushed-iron-ore"}) do
+      -- Production stays: the iron ore assay below still completes from it.
+      stats.set_output_count(name, 0)
+    end
+  end
+  nauvis_items.set_output_count("iron-ore", 600000)
+  nauvis_items.set_output_count("nullius-crushed-iron-ore", 400000)
+  check(close(progress(force, "mining", 1), 0.5),
+    "mining checkpoint counted ore crushed on Nauvis twice")
+  fulgora_items.set_output_count("nullius-box-crushed-iron-ore", 100000)
+  check(close(progress(force, "mining", 1), 1),
+    "mining checkpoint did not add boxed crushed ore consumed on Fulgora")
 
   check(force.technologies["nullius-checkpoint-freshwater"] == nil,
     "obsolete freshwater checkpoint still exists")

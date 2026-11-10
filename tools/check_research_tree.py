@@ -8,7 +8,7 @@ technology is paid in labs.
 
 Violations:
   unavailable_packs: a lab technology needs a pack with no recipe enabled or
-    unlocked by its prerequisite closure.
+    unlocked by its prerequisite closure on a planet that closure reaches.
   checkpoint_markers: a checkpoint marks a pack tier that its prerequisite
     closure cannot produce. Script-only checkpoint packs have no recipe.
   foreign_prerequisites: a Nullius technology depends on one outside the tree.
@@ -36,6 +36,7 @@ import analyze_factorio_prereqs as prereqs
 
 PREFIX = 'nullius-'
 CHECKPOINT_PREFIX = 'nullius-checkpoint-'
+STARTING_PLANET = 'nauvis'
 SERIES = re.compile(r'^(?P<base>.+)-(?P<level>\d+)$')
 # Numbered levels that deliberately do not follow their predecessor.
 DETACHED_LEVELS = {
@@ -76,6 +77,8 @@ class Tree:
         for name in sorted(self.recipes):
             for product in prereqs.recipe_results(self.recipes[name]):
                 self.makers[product['name']].append(name)
+        self.planets = {name: prereqs.resolve_surface(data, planet.get('surface_properties') or {})
+                        for name, planet in data.get('planet', {}).items()}
         self.labs = [n for n in self.names if not is_checkpoint(n) and self.all[n].get('unit')]
         self.packs = sorted({p for n in self.labs for p in unit_packs(self.all[n])})
         self.first_unlocks = {pack: self.earliest_unlocks(pack) for pack in self.packs}
@@ -85,9 +88,19 @@ class Tree:
         unlockers = {o for r in self.makers.get(item, []) for o in self.owners.get(r, [])}
         return sorted(u for u in unlockers if not any(o in self.closures[u] - {u} for o in unlockers))
 
+    def reachable_planets(self, technologies):
+        """Return the surfaces of the starting planet and the planets these technologies unlock."""
+        names = {STARTING_PLANET} | {effect['space_location'] for t in technologies
+                                     for effect in self.all[t].get('effects') or []
+                                     if effect['type'] == 'unlock-space-location'}
+        return [self.planets[n] for n in sorted(names & self.planets.keys())]
+
     def available_before(self, item, name):
+        """Return whether research before name makes item on a planet it can reach."""
         earlier = self.closures[name] - {name}
-        return any(self.recipes[r].get('enabled', True) or earlier.intersection(self.owners.get(r, []))
+        planets = self.reachable_planets(earlier)
+        return any((self.recipes[r].get('enabled', True) or earlier.intersection(self.owners.get(r, [])))
+                   and any(prereqs.allowed_on_surface(self.recipes[r], planet) for planet in planets)
                    for r in self.makers.get(item, []))
 
     def pack_at_most(self, lower, upper):

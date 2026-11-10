@@ -984,7 +984,14 @@ function trigger_effect(event)
   if (string.sub(event.effect_id, 1, 8) ~= "nullius-") then return end
   local drone = string.match(event.effect_id, '^nullius%-([%a%-]+)%-drone%-effect')
   if drone_surface.nauvis_only[drone] and
-      game.surfaces[event.surface_index].name ~= 'nauvis' then return end
+      game.surfaces[event.surface_index].name ~= 'nauvis' then
+    -- A drone ordered before it left Nauvis is spent without effect; say why.
+    local source = event.source_entity
+    rendering.draw_text{text={'nullius-drone.nauvis-only'}, surface=event.surface_index,
+      target=event.target_position or event.source_position, color={1, 0.75, 0.4},
+      time_to_live=300, forces=(source and source.valid) and {source.force} or nil}
+    return
+  end
   local midfix = string.sub(event.effect_id, 9, 14)
   local suffix = string.sub(event.effect_id, 15, -1)
 

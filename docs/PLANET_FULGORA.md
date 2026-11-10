@@ -1128,7 +1128,9 @@ Iron-ore and bauxite checkpoints accept crushed ore at their crushing ratios
 (6/5 and 7/5 raw units per crushed item). Sandstone and limestone already accept
 sand and crushed limestone. Raw-ore and bloom alternatives remain available.
 The mining checkpoint counts consumed crushed ore and sand, boxed or not, at
-the same ratios.
+the same ratios. Each surface counts the largest form of an ore, because
+crushing and boxing pass the same ore through several forms; surfaces add
+together.
 
 Argon is available through local residual-gas separation. Sand and sulfuric acid
 supply rutile. Borate leaching supplies boric acid. All materials for physics

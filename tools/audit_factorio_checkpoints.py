@@ -21,7 +21,7 @@ def action_rows(data, surface, requirements, products, executed, supplied):
     entities = {n: p for entries in data.values() if isinstance(entries, dict)
                 for n, p in entries.items() if isinstance(p, dict) and
                 (p.get('minable') or p.get('placeable_by'))}
-    for kind, mode, amount, alternatives in requirements:
+    for kind, mode, amount, alternatives, *_ in requirements:
         row = dict(kind=kind, mode=mode, amount=amount, alternatives=alternatives, witnesses=[])
         rows.append(row)
         if kind not in (1, 2, 3) or mode not in (1, 2, 3):

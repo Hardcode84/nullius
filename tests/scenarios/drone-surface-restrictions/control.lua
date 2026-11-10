@@ -2,7 +2,8 @@
 -- place: identical clear ground on Nauvis, Vulcanus and Fulgora.
 -- act: use each remote; fire coal and petroleum drones on Nauvis.
 -- Supply off-world flares to check impacts from previously ordered drones.
--- expect: off-world use creates no targets; only Nauvis oxygen counts.
+-- expect: off-world use creates no targets, off-world impacts explain themselves,
+-- and only Nauvis oxygen counts.
 local CASE='drone-surface-restrictions'
 local remotes={'terraforming-remote-grey','paving-remote-grey','excavation-remote',
   'shallow-excavation-remote','algaculture-remote','horticulture-remote',
@@ -10,11 +11,15 @@ local remotes={'terraforming-remote-grey','paving-remote-grey','excavation-remot
   'sequestration-coal-remote','sequestration-petroleum-remote'}
 local function mission(name,...) return remote.call('nullius-test-mission',name,...) end
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
-script.on_init(function() storage.assertions=0;storage.blocked={} end)
+script.on_init(function() storage.assertions=0;storage.blocked={};storage.notices={} end)
 script.on_nth_tick(30,function(event)
   if event.tick==0 then return end
   local p=game.get_player('nullius-test-a')
   if not p or not p.connected then return end
+  -- Impact notices expire, so record them while polling.
+  for _,object in pairs(rendering.get_all_objects('nullius-star')) do
+    if object.type=='text' then storage.notices[object.surface.name]=true end
+  end
   if not storage.started then
     storage.started=game.tick
     mission('create',p.force)
@@ -77,6 +82,7 @@ script.on_nth_tick(30,function(event)
       check(row.launcher.get_item_count(row.ammo)==0,'supplied off-world target reached impact')
       check(row.launcher.surface.count_entities_filtered{name={'coal','crude-oil'}}==0,
         'off-world impact must not create deposits')
+      check(storage.notices[row.launcher.surface.name],'off-world impact must tell the player why it had no effect')
     end
     check(mission('count',12)>0,'Nauvis coal credited')
     check(mission('count',13)>0,'Nauvis petroleum credited')

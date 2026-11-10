@@ -8,6 +8,11 @@ local STT_PRODUCE = 1
 local STT_CONSUME = 2
 local STT_NET = 3
 
+-- Optional fifth requirement field: the alternatives are forms of one material,
+-- such as an ore, its box, and its crushed product. Each unit passes through
+-- several forms, so a surface counts its largest form instead of their sum.
+local MATERIAL_FORMS = true
+
 local CAT_TECH = 1
 local CAT_BROKEN = 2
 
@@ -36,16 +41,16 @@ local checkpoint_data = {
   ["plastic"] = {{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-plastic"}} }},
   ["iron-ore"] = {{ CHK_ITEM, STT_PRODUCE, 400,
 			{{"iron-ore"}, {"nullius-crushed-iron-ore", CRUSHED_IRON_ORE},
-            {"nullius-molten-iron-bloom", 2.5}} }},
+            {"nullius-molten-iron-bloom", 2.5}}, MATERIAL_FORMS }},
   ["hydrogen"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-hydrogen"}} }},
   ["carbon-dioxide"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-carbon-dioxide"}} }},
   ["furnace"] = {{ CHK_BUILD, STT_NET, 4, {{"nullius-small-furnace-1"}} }},
 
   ["sandstone"] = {{ CHK_ITEM, STT_PRODUCE, 1000,
-			{{"nullius-sandstone"}, {"nullius-sand", SAND}} }},
+			{{"nullius-sandstone"}, {"nullius-sand", SAND}}, MATERIAL_FORMS }},
   ["bauxite"] = {{ CHK_ITEM, STT_PRODUCE, 2000,
 			{{"nullius-bauxite"}, {"nullius-crushed-bauxite", CRUSHED_BAUXITE},
-            {"nullius-molten-aluminum-bloom", 2.5}} }},
+            {"nullius-molten-aluminum-bloom", 2.5}}, MATERIAL_FORMS }},
   ["water"] = {{ CHK_FLUID, STT_CONSUME, 10000, {{"nullius-water"}} }},
   ["caustic-solution"] = {{ CHK_FLUID, STT_CONSUME, 250, {{"nullius-caustic-solution"}} }},
   ["wind-power"] = {{ CHK_BUILD, STT_NET, 5, {{"nullius-wind-base-1"},{"nullius-wind-build-1"}} }},
@@ -78,7 +83,7 @@ local checkpoint_data = {
 			{ CHK_BUILD, STT_NET, 2, {{"train-stop"}} },
 			{ CHK_BUILD, STT_NET, 150, {{"straight-rail"}}}},--,{"curved-rail-a",4}} }},
   ["limestone"] = {{ CHK_ITEM, STT_PRODUCE, 500,
-			{{"nullius-limestone"}, {"nullius-crushed-limestone", CRUSHED_LIMESTONE}} }},
+			{{"nullius-limestone"}, {"nullius-crushed-limestone", CRUSHED_LIMESTONE}}, MATERIAL_FORMS }},
   ["optimization"] = {{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-haste-module-1"}} },
 			{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-efficiency-module-1"}} }},
   ["compressed-nitrogen"] = {{ CHK_FLUID, STT_CONSUME, 1000, {{"nullius-compressed-nitrogen"}} }},
@@ -131,12 +136,14 @@ local checkpoint_data = {
   ["logistics-3"] = {{ CHK_BUILD, STT_NET, 10, {{"bob-ultimate-splitter"}} }},
   ["automation"] = {{ CHK_BUILD, STT_NET, 20, {{"nullius-large-assembler-2"}} }},
   ["mining"] = {{ CHK_ITEM, STT_CONSUME, 1200000,
-			ore_and_crushed("iron-ore", "nullius-crushed-iron-ore", CRUSHED_IRON_ORE) },
-			{ CHK_ITEM, STT_CONSUME, 900000, ore_and_crushed("nullius-sandstone", "nullius-sand", SAND) },
+			ore_and_crushed("iron-ore", "nullius-crushed-iron-ore", CRUSHED_IRON_ORE), MATERIAL_FORMS },
+			{ CHK_ITEM, STT_CONSUME, 900000,
+			ore_and_crushed("nullius-sandstone", "nullius-sand", SAND), MATERIAL_FORMS },
 			{ CHK_ITEM, STT_CONSUME, 600000,
-			ore_and_crushed("nullius-bauxite", "nullius-crushed-bauxite", CRUSHED_BAUXITE) },
+			ore_and_crushed("nullius-bauxite", "nullius-crushed-bauxite", CRUSHED_BAUXITE), MATERIAL_FORMS },
 			{ CHK_ITEM, STT_CONSUME, 300000,
-			ore_and_crushed("nullius-limestone", "nullius-crushed-limestone", CRUSHED_LIMESTONE) }},
+			ore_and_crushed("nullius-limestone", "nullius-crushed-limestone", CRUSHED_LIMESTONE),
+			MATERIAL_FORMS }},
   ["android"] = {{ CHK_SPECIAL, 1, 3, {} }},
   ["battery-2"] = {{ CHK_ITEM, STT_PRODUCE, 200, {{"nullius-battery-2"},{"nullius-box-battery-2",5}} }},
   ["calcium"] = {{ CHK_ITEM, STT_PRODUCE, 250, {{"nullius-calcium"},{"nullius-box-calcium",5}} }},
@@ -341,6 +348,19 @@ local function count_req_list(list, statistics, calc)
   return count
 end
 
+-- Sum each surface's largest form of one material.
+local function count_material_forms(list, statistics, calc)
+  local count = 0
+  for _, stats in pairs(statistics) do
+    local largest = 0
+    for _, form in pairs(list) do
+      largest = math.max(largest, count_req_list({form}, {stats}, calc))
+    end
+    count = count + largest
+  end
+  return count
+end
+
 local function test_checkpoint_req(force, req)
   local goal = req[3]
   if (goal < 1) then return 1 end
@@ -379,7 +399,13 @@ local function test_checkpoint_req(force, req)
     return 0
   end
 
-  local count = count_req_list(list, statistics, calc)
+  local count
+  if req[5] == MATERIAL_FORMS then
+    assert(calc ~= STT_NET, "material forms count production or consumption, not net values")
+    count = count_material_forms(list, statistics, calc)
+  else
+    count = count_req_list(list, statistics, calc)
+  end
   return math.min(math.max((count / goal), 0), 1)
 end
 

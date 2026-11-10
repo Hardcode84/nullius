@@ -32,7 +32,9 @@ def violations(*technologies, recipes=()):
     ]
     all_technologies = [*base, *technologies]
     unlocked = {e['recipe'] for t in all_technologies for e in t['effects'] if e['type'] == 'unlock-recipe'}
-    data = {'technology': {t['name']: t for t in all_technologies},
+    data = {'planet': {'nauvis': {}, 'nullius-hot': {'surface_properties': {'heat': 200}}},
+            'surface-property': {'heat': {'default_value': 15}},
+            'technology': {t['name']: t for t in all_technologies},
             'recipe': {r['name']: r for r in [*(recipe(name) for name in sorted(unlocked)), *recipes]}}
     return {kind: rows for kind, rows in tree_check.violations(data).items() if rows}
 
@@ -44,6 +46,17 @@ class ResearchTreeCheckTest(unittest.TestCase):
     def test_pack_unlocked_only_by_a_later_technology_is_unavailable(self):
         self.assertEqual(violations(technology('nullius-early', [], ['nullius-middle-pack'])),
                          {'unavailable_packs': [{'technology': 'nullius-early', 'pack': 'nullius-middle-pack'}]})
+
+    def test_pack_made_only_on_an_unreached_planet_is_unavailable(self):
+        hot = [{'property': 'heat', 'min': 100}]
+        reach = [{'type': 'unlock-space-location', 'space_location': 'nullius-hot'}]
+        found = violations(
+            technology('nullius-hot-science', ['nullius-low-science'], effects=unlock('nullius-hot-pack')),
+            technology('nullius-hot-probe', ['nullius-low-science'], effects=reach),
+            technology('nullius-early', ['nullius-hot-science'], ['nullius-hot-pack']),
+            technology('nullius-later', ['nullius-hot-science', 'nullius-hot-probe'], ['nullius-hot-pack']),
+            recipes=[recipe('nullius-hot-pack', surface_conditions=hot)])
+        self.assertEqual(found, {'unavailable_packs': [{'technology': 'nullius-early', 'pack': 'nullius-hot-pack'}]})
 
     def test_checkpoint_marker_needs_its_pack_in_the_closure(self):
         self.assertEqual(violations(

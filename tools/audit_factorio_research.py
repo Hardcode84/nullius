@@ -152,7 +152,7 @@ def audit(data, runtime, config):
             if definition is None:
                 checkpoints.append(dict(technology=name, status='missing_definition'))
                 continue
-            for kind, mode, amount, alternatives in definition:
+            for kind, mode, amount, alternatives, *_ in definition:
                 row = dict(technology=name, kind=kind, mode=mode, amount=amount, alternatives=alternatives, witnesses=[])
                 checkpoints.append(row)
                 if kind in (4, 5):
