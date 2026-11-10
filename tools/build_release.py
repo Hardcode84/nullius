@@ -496,6 +496,8 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
                 "check_asteroid_removal.py", "--data-raw", str(data_raw)), "asteroid mining removal", timeout),
             "nuclear research placement": functools.partial(run_checked, tool(
                 "check_nuclear_research.py", "--data-raw", str(data_raw)), "nuclear research placement", timeout),
+            "research tree structure": functools.partial(run_checked, tool(
+                "check_research_tree.py", "--data-raw", str(data_raw)), "research tree structure", timeout),
             "recipe unlock audits": functools.partial(run_unlock_audits, data_raw, timeout, root),
             "staged bootstrap": functools.partial(run_bootstrap_checks, data_raw, timeout, root),
             "prototype locale audit": functools.partial(run_checked, tool(

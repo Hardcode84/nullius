@@ -1,0 +1,12 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-plumbing-1
+--available
+nullius-broken-hydro-plant
+--recipe
+pipe=pipe
+--recipe
+nullius-hydro-plant-1=nullius-broken-hydro-plant
+pipe
+storage-tank
+nullius-hydro-plant-1

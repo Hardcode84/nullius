@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-alignment-1
+--recipe
+nullius-align-identification-card=nullius-align-identification-card
+nullius-align-identification-card

@@ -442,7 +442,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-optimization-7"},
+    prerequisites = {"nullius-optimization-7", "nullius-mining-productivity-20"},
     max_level = "infinite",
     upgrade = true
   },

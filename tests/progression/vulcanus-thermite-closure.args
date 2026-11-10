@@ -1,0 +1,10 @@
+@tests/progression/vulcanus-raw-boundary.args
+--technology
+nullius-pneumatic-technology
+--technology
+nullius-explosives-1
+--recipe
+cliff-explosives=nullius-thermite-explosive
+cliff-explosives
+nullius-aluminum-powder
+nullius-box-aluminum-powder

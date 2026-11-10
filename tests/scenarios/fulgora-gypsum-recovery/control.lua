@@ -1,4 +1,4 @@
--- given: one ordinary/boxed batch: 200/1000 sludge and 180 oxygen/225 compressed oxygen.
+-- given: one ordinary/boxed batch: 200/1000 sludge and 180/900 oxygen.
 -- place/connect: flotation cell 1, two input pipes and a wastewater pipe bank per cell.
 -- act: unlock ordinary and bulk waste reclamation; connect oxygen at tick 600 on Fulgora.
 -- run: finite reagent feeds and explicit 10 MW electric grids.
@@ -62,7 +62,7 @@ script.on_nth_tick(30,function()
     if game.tick==600 then
       check(row.machine.products_finished==0,'must wait for oxygen connection')
       row.feeds[#row.feeds+1]={pipe=build(storage.surface,storage.force,'pipe',row.x-2.5,-0.5),
-        name=row.scale==5 and 'nullius-compressed-oxygen' or 'nullius-oxygen',left=row.scale==5 and 225 or 180}
+        name='nullius-oxygen',left=180*row.scale}
     end
     for _,feed in ipairs(row.feeds) do
       if feed.left>0 then feed.left=feed.left-feed.pipe.insert_fluid{name=feed.name,amount=feed.left} end

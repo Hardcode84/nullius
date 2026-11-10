@@ -11,22 +11,38 @@ local STT_NET = 3
 local CAT_TECH = 1
 local CAT_BROKEN = 2
 
+-- Raw ore units per crushed item, as crushing yields them.
+local CRUSHED_IRON_ORE = 6 / 5
+local SAND = 5 / 4
+local CRUSHED_BAUXITE = 7 / 5
+local CRUSHED_LIMESTONE = 25 / 16
+
+local function boxed(name)
+  return "nullius-box-" .. (name:gsub("^nullius%-", ""))
+end
+
+-- Count a raw ore with its box and its crushed product, so that planets with
+-- crushed ore but no raw deposits can complete the checkpoint.
+local function ore_and_crushed(ore, crushed, ratio)
+  return {{ore}, {boxed(ore), 5}, {crushed, ratio}, {boxed(crushed), 5 * ratio}}
+end
+
 
 local checkpoint_data = {
   ["iron-ingot"] = {{ CHK_ITEM, STT_PRODUCE, 16, {{"nullius-iron-ingot"}} }},
   ["stone-brick"] = {{ CHK_ITEM, STT_PRODUCE, 40, {{"stone-brick"}} }},
   ["plastic"] = {{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-plastic"}} }},
   ["iron-ore"] = {{ CHK_ITEM, STT_PRODUCE, 400,
-			{{"iron-ore"}, {"nullius-crushed-iron-ore", 6 / 5},
+			{{"iron-ore"}, {"nullius-crushed-iron-ore", CRUSHED_IRON_ORE},
             {"nullius-molten-iron-bloom", 2.5}} }},
   ["hydrogen"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-hydrogen"}} }},
   ["carbon-dioxide"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-carbon-dioxide"}} }},
   ["furnace"] = {{ CHK_BUILD, STT_NET, 4, {{"nullius-small-furnace-1"}} }},
 
   ["sandstone"] = {{ CHK_ITEM, STT_PRODUCE, 1000,
-			{{"nullius-sandstone"}, {"nullius-sand", 1.25}} }},
+			{{"nullius-sandstone"}, {"nullius-sand", SAND}} }},
   ["bauxite"] = {{ CHK_ITEM, STT_PRODUCE, 2000,
-			{{"nullius-bauxite"}, {"nullius-crushed-bauxite", 7 / 5},
+			{{"nullius-bauxite"}, {"nullius-crushed-bauxite", CRUSHED_BAUXITE},
             {"nullius-molten-aluminum-bloom", 2.5}} }},
   ["water"] = {{ CHK_FLUID, STT_CONSUME, 10000, {{"nullius-water"}} }},
   ["caustic-solution"] = {{ CHK_FLUID, STT_CONSUME, 250, {{"nullius-caustic-solution"}} }},
@@ -60,7 +76,7 @@ local checkpoint_data = {
 			{ CHK_BUILD, STT_NET, 2, {{"train-stop"}} },
 			{ CHK_BUILD, STT_NET, 150, {{"straight-rail"}}}},--,{"curved-rail-a",4}} }},
   ["limestone"] = {{ CHK_ITEM, STT_PRODUCE, 500,
-			{{"nullius-limestone"}, {"nullius-crushed-limestone", 25 / 16}} }},
+			{{"nullius-limestone"}, {"nullius-crushed-limestone", CRUSHED_LIMESTONE}} }},
   ["optimization"] = {{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-haste-module-1"}} },
 			{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-efficiency-module-1"}} }},
   ["compressed-nitrogen"] = {{ CHK_FLUID, STT_CONSUME, 1000, {{"nullius-compressed-nitrogen"}} }},
@@ -112,10 +128,13 @@ local checkpoint_data = {
   ["pumping"] = {{ CHK_BUILD, STT_NET, 15, {{"nullius-pump-2"}} }},
   ["logistics-3"] = {{ CHK_BUILD, STT_NET, 10, {{"bob-ultimate-splitter"}} }},
   ["automation"] = {{ CHK_BUILD, STT_NET, 20, {{"nullius-large-assembler-2"}} }},
-  ["mining"] = {{ CHK_ITEM, STT_CONSUME, 1200000, {{"iron-ore"},{"nullius-box-iron-ore",5}} },
-			{ CHK_ITEM, STT_CONSUME, 900000, {{"nullius-sandstone"},{"nullius-box-sandstone",5}} },
-			{ CHK_ITEM, STT_CONSUME, 600000, {{"nullius-bauxite"},{"nullius-box-bauxite",5}} },
-			{ CHK_ITEM, STT_CONSUME, 300000, {{"nullius-limestone"},{"nullius-box-limestone",5}} }},
+  ["mining"] = {{ CHK_ITEM, STT_CONSUME, 1200000,
+			ore_and_crushed("iron-ore", "nullius-crushed-iron-ore", CRUSHED_IRON_ORE) },
+			{ CHK_ITEM, STT_CONSUME, 900000, ore_and_crushed("nullius-sandstone", "nullius-sand", SAND) },
+			{ CHK_ITEM, STT_CONSUME, 600000,
+			ore_and_crushed("nullius-bauxite", "nullius-crushed-bauxite", CRUSHED_BAUXITE) },
+			{ CHK_ITEM, STT_CONSUME, 300000,
+			ore_and_crushed("nullius-limestone", "nullius-crushed-limestone", CRUSHED_LIMESTONE) }},
   ["android"] = {{ CHK_SPECIAL, 1, 3, {} }},
   ["battery-2"] = {{ CHK_ITEM, STT_PRODUCE, 200, {{"nullius-battery-2"},{"nullius-box-battery-2",5}} }},
   ["calcium"] = {{ CHK_ITEM, STT_PRODUCE, 250, {{"nullius-calcium"},{"nullius-box-calcium",5}} }},
@@ -133,8 +152,6 @@ local checkpoint_data = {
 				{{"nullius-algae",100}, {"nullius-grass",200}, {"nullius-tree",500}} } },
 			{ CHK_FLUID, STT_PRODUCE, 2000000000, {{"nullius-oxygen"},{"nullius-compressed-oxygen",4}} }},			
   ["cybernetics"] = {{ CHK_ITEM, STT_PRODUCE, 1, {{"nullius-chassis-4"}} }},
-  ["breeder-cell"] = {{ CHK_ITEM, STT_CONSUME, 25, {{"nullius-spent-breeder-cell"}} }},
-  ["enriched-uranium"] = {{ CHK_ITEM, STT_PRODUCE, 250, {{"nullius-enriched-uranium"}} }},
   ["antimatter"] = {{ CHK_ITEM, STT_CONSUME, 1, {{"nullius-antimatter"}} }},
   ["pressure-steam"] = {{ CHK_FLUID, STT_CONSUME, 5000, {{"nullius-pressure-steam"}} }},
   ["copper-ingot"] = {{ CHK_ITEM, STT_PRODUCE, 1000,

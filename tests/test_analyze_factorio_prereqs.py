@@ -855,6 +855,27 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             {"machine_items": ["machine-item"], "characters": ["character"]},
         )
 
+    def test_hidden_technology_never_supplies_a_recipe_unlock(self) -> None:
+        recipe = {"enabled": False, "category": "crafting",
+                  "ingredients": [{"type": "item", "name": "ore", "amount": 1}],
+                  "results": [{"type": "item", "name": "target", "amount": 1}]}
+        unlock = [{"type": "unlock-recipe", "recipe": "make-target"}]
+        data = {
+            "recipe": {"make-target": recipe},
+            "technology": {
+                "base": {"name": "base", "prerequisites": []},
+                "visible": {"name": "visible", "prerequisites": ["base"], "effects": unlock},
+                # Fewer prerequisites, so only its visibility keeps it out.
+                "hidden-vanilla": {"name": "hidden-vanilla", "hidden": True, "enabled": False,
+                                   "prerequisites": [], "effects": unlock},
+            },
+            "simple-entity": {"rock": {"name": "rock", "minable": {"result": "ore"}}},
+            "character": {"character": {"crafting_categories": ["crafting"]}},
+        }
+        args = SimpleNamespace(targets=["target"], technology=[], surface_property=[], available=[], raw=["ore"])
+        report = analyze(data, args)
+        self.assertEqual(report["required_technologies"], ["base", "visible"])
+
     def test_missing_product_fails_closed(self) -> None:
         args = SimpleNamespace(
             targets=["missing"],

@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-alignment-3
+--recipe
+nullius-align-transponder=nullius-align-transponder
+nullius-align-transponder

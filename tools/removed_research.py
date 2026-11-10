@@ -14,7 +14,12 @@ ASTEROID_MINING = {
     'nullius-checkpoint-copper-ore': ['nullius-asteroid-mining-1'],
     'nullius-checkpoint-uranium-ore': ['nullius-asteroid-mining-1'],
 }
-REMOVED = {**ASTEROID_MINING}
+# Nuclear checkpoints that gated only the former antimatter route.
+NUCLEAR_CHECKPOINTS = {
+    'nullius-checkpoint-breeder-cell': ['nullius-nuclear-power-3'],
+    'nullius-checkpoint-enriched-uranium': ['nullius-nuclear-power-4'],
+}
+REMOVED = {**ASTEROID_MINING, **NUCLEAR_CHECKPOINTS}
 
 
 def with_removed(technologies):

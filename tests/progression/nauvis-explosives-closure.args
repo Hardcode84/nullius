@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-explosives-1
+--recipe
+cliff-explosives=nullius-improvised-explosive
+cliff-explosives

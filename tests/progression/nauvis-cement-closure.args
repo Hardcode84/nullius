@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-concrete-2
+--recipe
+nullius-cement=nullius-cement-2
+nullius-cement

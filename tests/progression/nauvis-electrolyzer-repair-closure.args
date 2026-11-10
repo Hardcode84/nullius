@@ -1,0 +1,8 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-electrolysis-1
+--available
+nullius-broken-electrolyzer
+--recipe
+nullius-electrolyzer-1=nullius-broken-electrolyzer
+nullius-electrolyzer-1

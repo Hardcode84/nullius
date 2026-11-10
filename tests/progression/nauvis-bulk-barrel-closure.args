@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-mass-production-5
+--recipe
+nullius-box-barrel=nullius-boxed-barrel-2
+nullius-box-barrel

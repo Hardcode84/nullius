@@ -863,6 +863,10 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             )
 
     for technology_name, technology in technologies.items():
+        # A hidden technology is never shown for research; a disabled one may
+        # still be enabled by script, as optional research is.
+        if technology.get("hidden"):
+            continue
         for effect in technology.get("effects") or []:
             if effect.get("type") == "unlock-recipe":
                 unlockers[effect["recipe"]].append(technology_name)

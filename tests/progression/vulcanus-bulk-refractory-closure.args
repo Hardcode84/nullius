@@ -1,0 +1,8 @@
+@tests/progression/vulcanus-raw-boundary.args
+--technology
+nullius-pneumatic-technology
+--technology
+nullius-bulk-refractory-materials
+--recipe
+nullius-box-insulation=nullius-boxed-insulation-vulcanus
+nullius-box-insulation

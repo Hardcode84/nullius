@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-mass-production-4
+--recipe
+nullius-box-canister=nullius-boxed-canister
+nullius-box-canister

@@ -1,0 +1,8 @@
+@tests/progression/vulcanus-raw-boundary.args
+--technology
+nullius-pneumatic-technology
+--technology
+nullius-mass-production-6
+--recipe
+nullius-box-transformer=nullius-boxed-transformer-vulcanus
+nullius-box-transformer

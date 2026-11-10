@@ -1,0 +1,8 @@
+@tests/progression/vulcanus-raw-boundary.args
+--technology
+nullius-pneumatic-technology
+--technology
+nullius-volcanic-alkali-processing
+--recipe
+nullius-sodium-hydroxide=nullius-volcanic-causticization
+nullius-sodium-hydroxide

@@ -1,0 +1,6 @@
+@tests/progression/fulgora-bootstrap-boundary.args
+--technology
+nullius-bulk-polymer-processing
+--recipe
+nullius-box-iron-gear=nullius-boxed-improved-doped-polymer-gear
+nullius-box-iron-gear

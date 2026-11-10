@@ -69,8 +69,7 @@ class NuclearResearchTest(unittest.TestCase):
         technologies[FISSION]["prerequisites"].append("nullius-checkpoint-breeder-cell")
         violations = research_violations(technologies, RECIPES)
         self.assertIn(f"{FISSION} prerequisites", violations[0])
-        self.assertEqual(violations[1:], [f"nullius-checkpoint-enriched-uranium requires {ASTRONOMY}",
-                                          f"{FISSION} requires {ASTRONOMY}"])
+        self.assertEqual(violations[1:], [f"{FISSION} requires {ASTRONOMY}"])
 
     def test_uranium_through_astronomy_is_rejected(self):
         technologies = nuclear_tree()

@@ -434,11 +434,22 @@ end
 data:extend(recipes)
 
 
+-- Research that makes each level's pack and unlocked recipes craftable.
+local PREREQUISITES = {
+  {"nullius-electrolysis-2", "nullius-steelworking"},
+  {"nullius-aluminum-working-1"},
+  {"nullius-computation"},
+  {"nullius-aluminum-working-2"},
+  {"nullius-demolitions-1"},
+  {"nullius-physics"},
+  {"nullius-astronomy"},
+}
+
 local function alignment_tech(num, item, typ, cnt, tm, pack, ignore, item2)
   local itemname = "nullius-align-" .. item
-  local prereq = nil
+  local prereq = table.deepcopy(PREREQUISITES[num])
   if (num > 1) then
-    prereq = { "nullius-alignment-" .. (num - 1) }
+    table.insert(prereq, 1, "nullius-alignment-" .. (num - 1))
   end
 
   local tech = {

@@ -80,8 +80,8 @@ RECIPE_UNLOCKS = {
     'nullius-antimatter-recharge': ANTIMATTER,
 }
 # Fission no longer passes through the fusion ladder or Astronomy. Its
-# technologies and the fission checkpoint are checked by their prerequisites.
-FISSION_BRANCH = {SEAWATER, FLUORINE, URANIUM, ENRICHMENT, FISSION, 'nullius-checkpoint-enriched-uranium'}
+# technologies are checked by their prerequisites.
+FISSION_BRANCH = {SEAWATER, FLUORINE, URANIUM, ENRICHMENT, FISSION}
 # Placement of these is checked by their prerequisites, not their closures.
 EXEMPT = FISSION_BRANCH | {REACTOR, ANTIMATTER} | set(removed_research.REMOVED)
 

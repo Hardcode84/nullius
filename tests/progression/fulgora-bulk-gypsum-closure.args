@@ -1,0 +1,6 @@
+@tests/progression/fulgora-bootstrap-boundary.args
+--technology
+nullius-bulk-waste-reclamation
+--recipe
+nullius-box-gypsum=nullius-boxed-gypsum-recovery
+nullius-box-gypsum

@@ -1,5 +1,16 @@
 local launch_research = require("prototypes.planet.launch-research")
 local recipe_productivity = require("prototypes.recipe-productivity")
+local thermal_tiers = require("thermal-machine-specs")
+
+-- The thermal transitions script enables these modes from the same tier specs.
+local function thermal_mode_effects(tier)
+  local machines = {""}
+  for index, machine in ipairs(thermal_tiers[tier].machines) do
+    if index > 1 then machines[#machines + 1] = ", " end
+    machines[#machines + 1] = {"entity-name." .. machine}
+  end
+  return {{type = "nothing", effect_description = {"technology-effect.nullius-thermal-modes", machines}}}
+end
 
 local function productivity_technology(name, order, icon, prerequisite,
     categories)
@@ -42,7 +53,8 @@ data:extend({
       },
       time = 30,
     },
-    prerequisites = {"nullius-nitrogen-chemistry-1"},
+    -- Causticization consumes lime.
+    prerequisites = {"nullius-nitrogen-chemistry-1", "nullius-limestone-processing-1"},
   },
   {
     type = "technology",
@@ -173,6 +185,33 @@ data:extend({
     },
   },
   {
+    -- Boxed refractory substitutes need both bulk boxing and local refractory mix.
+    type = "technology",
+    name = "nullius-bulk-refractory-materials",
+    order = "nullius-df-zb-bulk",
+    icon = "__angelssmeltinggraphics__/graphics/icons/brick-clay.png",
+    icon_size = 32,
+    effects = {
+      {type = "unlock-recipe", recipe = "nullius-boxed-insulation-vulcanus"},
+    },
+    unit = {
+      count = 10,
+      ingredients = {
+        {"nullius-metallurgic-pack", 40},
+        {"nullius-geology-pack", 4},
+        {"nullius-climatology-pack", 4},
+        {"nullius-mechanical-pack", 4},
+        {"nullius-electrical-pack", 4},
+        {"nullius-chemical-pack", 4},
+      },
+      time = 45,
+    },
+    prerequisites = {
+      "nullius-vulcanus-refractory-engineering",
+      "nullius-mass-production-5",
+    },
+  },
+  {
     type = "technology",
     name = "nullius-volcanic-titanium-metallurgy",
     order = "nullius-df-zc",
@@ -206,7 +245,7 @@ data:extend({
     order = "nullius-dg-e",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",
     icon_size = 256,
-    effects = {},
+    effects = thermal_mode_effects(2),
     unit = {
       count = 10,
       ingredients = {
@@ -233,7 +272,7 @@ data:extend({
     order = "nullius-dg-f",
     icon = "__base__/graphics/technology/advanced-material-processing-2.png",
     icon_size = 256,
-    effects = {},
+    effects = thermal_mode_effects(3),
     unit = {
       count = 20,
       ingredients = {

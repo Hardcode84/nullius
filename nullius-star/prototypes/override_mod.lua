@@ -260,6 +260,9 @@ else
 data.raw.technology["bob-long-inserters-1"].order = "nullius-dd"
 data.raw.technology["bob-long-inserters-1"].localised_name = {"technology-name.nullius-long-inserters"}
 data.raw.technology["bob-long-inserters-1"].localised_description = {"technology-description.nullius-long-inserters"}
+-- Boblogistics enables the inserter reach options by script once this is researched.
+data.raw.technology["bob-long-inserters-1"].effects = {
+  {type = "nothing", effect_description = {"technology-effect.nullius-long-inserters"}}}
 data.raw.technology["bob-long-inserters-1"].prerequisites = {"nullius-lubrication", "nullius-mass-production-1"}
 data.raw.technology["bob-long-inserters-1"].unit = { count = 8,
   ingredients = {{"nullius-mechanical-pack", 1}},

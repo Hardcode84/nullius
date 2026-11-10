@@ -1,0 +1,6 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-masonry-2
+--recipe
+pipe=nullius-stone-pipe
+pipe

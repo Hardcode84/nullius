@@ -1,0 +1,8 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-air-separation-1
+--available
+nullius-broken-air-filter
+--recipe
+nullius-air-filter-1=nullius-broken-air-filter
+nullius-air-filter-1

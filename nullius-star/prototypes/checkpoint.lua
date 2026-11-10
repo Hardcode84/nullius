@@ -1820,7 +1820,8 @@ data:extend({
 	    {"technology-description.nullius-consume", {"technology-description.nullius-item-boxable",
 		    si_string(600000),"nullius-bauxite", "nullius-box-bauxite", {"item-name.nullius-bauxite"}}}, "\n",
 	    {"technology-description.nullius-consume", {"technology-description.nullius-item-boxable",
-		    si_string(300000),"nullius-limestone", "nullius-box-limestone", {"item-name.nullius-limestone"}}}},
+		    si_string(300000),"nullius-limestone", "nullius-box-limestone", {"item-name.nullius-limestone"}}}, "\n",
+	    {"technology-description.nullius-crushed-equivalents"}},
     order = "nullius-yf",
     icons = {
 	  {
@@ -2153,55 +2154,6 @@ data:extend({
   },
   {
     type = "technology",
-    name = "nullius-checkpoint-breeder-cell",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-utilization",
-	    {"item-name.nullius-spent-breeder-cell"}}},
-    localised_description = {"technology-description.nullius-consume",
-	    {"technology-description.nullius-item", tostring(25), "nullius-spent-breeder-cell",
-		    {"item-name.nullius-spent-breeder-cell"}}},
-    order = "nullius-yg",
-    icons = {
-      {
-        icon = ICONPATH .. "uncrate.png",
-        icon_size = 64
-      },
-	  {
-        icon = ICONPATH .. "breeder-spent.png",
-        icon_size = 64,
-		scale = 0.8
-      }
-    },
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-astronomy-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-nuclear-power-3"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
-    name = "nullius-checkpoint-enriched-uranium",
-    localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-analysis",
-	    {"item-name.nullius-enriched-uranium"}}},
-    localised_description = {"technology-description.nullius-produce",
-	    {"technology-description.nullius-item", tostring(250), "nullius-enriched-uranium",
-		    {"item-name.nullius-enriched-uranium"}}},
-    order = "nullius-yg",
-    icons = {
-	  data.raw.item["nullius-enriched-uranium"].icons[1],
-          checkmark(2)
-    },
-    unit = {
-      count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-astronomy-pack", 1}},
-      time = 1
-    },
-    prerequisites = {"nullius-nuclear-power-4"},
-    ignore_tech_cost_multiplier = true
-  },
-  {
-    type = "technology",
     name = "nullius-checkpoint-antimatter",
     localised_name = {"technology-name.nullius-checkpoint", {"technology-name.nullius-utilization",
 	    {"item-name.nullius-antimatter"}}},
@@ -2334,7 +2286,7 @@ data:extend({
     },
     unit = {
       count = 1,
-      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-astronomy-pack", 1}},
+      ingredients = {{"nullius-checkpoint", 1}, {"nullius-requirement-consume", 1}, {"nullius-physics-pack", 1}},
       time = 1
     },
     prerequisites = {"nullius-woodworking", "nullius-biochemistry-5"},

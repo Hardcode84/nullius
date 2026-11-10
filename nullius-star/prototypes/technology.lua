@@ -172,6 +172,7 @@ data:extend({
     icon_size = 256,
     
     effects = {
+      {type = "unlock-recipe", recipe = "nullius-broken-hydro-plant"},
       {
         type = "unlock-recipe",
         recipe = "nullius-medium-tank-1"
@@ -180,17 +181,13 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-iron-pipe"
       },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-stone-pipe"
-      }
     },
     unit = {
       count = 1,
       ingredients = {{"nullius-climatology-pack", 1}},
       time = 8
     },
-    prerequisites = {"nullius-climatology-1", "nullius-iron-smelting-1"},
+    prerequisites = {"nullius-climatology-1", "nullius-iron-smelting-1", "nullius-iron-working-1"},
     ignore_tech_cost_multiplier = true
   },
   {
@@ -204,10 +201,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-seawater-filtration"
       },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-broken-hydro-plant"
-      }
     },
     unit = {
       count = 1,
@@ -322,7 +315,7 @@ data:extend({
       ingredients = {{"nullius-climatology-pack", 1}},
       time = 6
     },
-    prerequisites = {"nullius-water-filtration-1"},
+    prerequisites = {"nullius-water-filtration-1", "nullius-iron-working-2"},
     ignore_tech_cost_multiplier = true
   },
   {
@@ -411,6 +404,7 @@ data:extend({
     icon_size = 256,
     
     effects = {
+      {type = "unlock-recipe", recipe = "nullius-stone-pipe"},
       {
         type = "unlock-recipe",
         recipe = "nullius-stone-block"
@@ -1624,7 +1618,7 @@ data:extend({
       ingredients = {{"nullius-climatology-pack", 1}, {"nullius-mechanical-pack", 1}},
       time = 8
     },
-    prerequisites = {"nullius-steelworking", "nullius-organic-chemistry-3"},
+    prerequisites = {"nullius-steelworking", "nullius-organic-chemistry-3", "nullius-aluminum-working-1"},
     ignore_tech_cost_multiplier = true
   },
   {
@@ -1937,7 +1931,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-heat-exchanger-1"
       },
-      {type = "unlock-recipe", recipe = "nullius-iron-assisted-sludge-dehydration"},
     },
     unit = {
       count = 8,
@@ -2312,7 +2305,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-geology-pack-2"
       },
-      {type = "unlock-recipe", recipe = "nullius-geology-pack-vulcanus-2"},
     },
     unit = {
       count = 16,
@@ -2636,7 +2628,7 @@ data:extend({
     icon = "__space-age__/graphics/technology/rocket-turret.png",
     icon_size = 256,
     essential = true,
-    effects = {},
+    effects = {{type = "nothing", effect_description = {"technology-effect.nullius-probe-signals"}}},
     unit = {
       count = 50,
       ingredients = {
@@ -2680,6 +2672,7 @@ data:extend({
       {type = "unlock-recipe", recipe = "nullius-temperature-sensor"},
       {type = "unlock-recipe", recipe = "nullius-carbochlorination"},
       {type = "unlock-recipe", recipe = "nullius-iron-chlorination"},
+      {type = "unlock-recipe", recipe = "nullius-iron-assisted-sludge-dehydration"},
     },
     unit = {
       count = 20,
@@ -2967,7 +2960,8 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-lime"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-geology-pack-vulcanus-2"},
     },
     unit = {
       count = 50,
@@ -3142,7 +3136,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-climatology-pack-2"
       },
-      {type = "unlock-recipe", recipe = "nullius-climatology-pack-vulcanus-2"},
     },
     unit = {
       count = 150,
@@ -4044,6 +4037,8 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-aluminum-powder"
       },
+      {type = "unlock-recipe", recipe = "nullius-box-aluminum-powder"},
+      {type = "unlock-recipe", recipe = "nullius-unbox-aluminum-powder"},
 	  {
         type = "unlock-recipe",
         recipe = "nullius-chlorine-barrel"
@@ -4073,7 +4068,8 @@ data:extend({
       },
       time = 30
     },
-    prerequisites = {"nullius-aesthetics-1", "nullius-energy-storage-2"}
+    -- Hydrocarbon Combustion 2 supplies the processed fuel of the improvised explosive.
+    prerequisites = {"nullius-aesthetics-1", "nullius-energy-storage-2", "nullius-hydrocarbon-combustion-2"}
   },
   {
     type = "technology",
@@ -5938,7 +5934,7 @@ data:extend({
       },
       time = 30
     },
-    prerequisites = {"nullius-composites-1"}
+    prerequisites = {"nullius-composites-1", "nullius-iron-smelting-3"}
   },
   {
     type = "technology",
@@ -6714,14 +6710,6 @@ data:extend({
       },
       {
         type = "unlock-recipe",
-        recipe = "nullius-box-repair-pack"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-unbox-repair-pack"
-      },
-      {
-        type = "unlock-recipe",
         recipe = "nullius-box-chain-signal"
       },
       {
@@ -7096,23 +7084,11 @@ data:extend({
     effects = {
       {
         type = "unlock-recipe",
-        recipe = "nullius-aluminum-powder"
-      },
-      {
-        type = "unlock-recipe",
         recipe = "nullius-aluminum-oxidation"
       },
       {
         type = "unlock-recipe",
         recipe = "nullius-aluminum-carbide"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-box-aluminum-powder"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-unbox-aluminum-powder"
       }
     },
     unit = {
@@ -7487,7 +7463,7 @@ data:extend({
       },
       time = 35
     },
-    prerequisites = {"nullius-architecture-1", "nullius-inserter-capacity-1", "nullius-optimization-3"}
+    prerequisites = {"nullius-architecture-1", "nullius-inserter-capacity-1", "nullius-optimization-3", "nullius-packaging-4"}
   },
   {
     type = "technology",
@@ -7614,6 +7590,7 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-compressed-carbon-dioxide"
       },
+      {type = "unlock-recipe", recipe = "nullius-climatology-pack-vulcanus-2"},
       {
         type = "unlock-recipe",
         recipe = "nullius-compressed-carbon-monoxide"
@@ -8451,14 +8428,11 @@ data:extend({
       {type = "unlock-recipe", recipe = "nullius-boxed-pump-2-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-display-panel-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-battery-1-vulcanus"},
-      {type = "unlock-recipe", recipe = "nullius-boxed-insulation-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-repair-pack-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-levitation-field-1-vulcanus"},
-      {type = "unlock-recipe", recipe = "nullius-boxed-medium-tank-2-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-optical-cable-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-rail-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-solar-panel-1-vulcanus"},
-      {type = "unlock-recipe", recipe = "nullius-boxed-transformer-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-antenna-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-inserter-3-vulcanus"},
       {type = "unlock-recipe", recipe = "nullius-boxed-power-switch-vulcanus"},
@@ -8474,7 +8448,7 @@ data:extend({
       },
       time = 35
     },
-    prerequisites = {"nullius-mass-production-4", "nullius-freight-transportation-2", "nullius-thermal-storage-2"}
+    prerequisites = {"nullius-mass-production-4", "nullius-freight-transportation-2", "nullius-thermal-storage-2", "nullius-packaging-5"}
   },
   {
     type = "technology",
@@ -8862,6 +8836,7 @@ data:extend({
     icon_size = 256,
     
     effects = {
+      {type = "unlock-recipe", recipe = "nullius-boxed-transformer-vulcanus"},
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-eutectic-salt"
@@ -9404,6 +9379,7 @@ data:extend({
     icon_size = 256,
     
     effects = {
+      {type = "unlock-recipe", recipe = "nullius-boxed-medium-tank-2-vulcanus"},
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-pressure-graphite"
@@ -11494,7 +11470,11 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-hydrogen-fluoride-electrolysis"
-      }
+      },
+      {type = "unlock-recipe", recipe = "nullius-hydrogen-fluoride-barrel"},
+      {type = "unlock-recipe", recipe = "empty-nullius-hydrogen-fluoride-barrel"},
+      {type = "unlock-recipe", recipe = "nullius-fluorine-barrel"},
+      {type = "unlock-recipe", recipe = "empty-nullius-fluorine-barrel"},
     },
     unit = {
       count = 2400,
