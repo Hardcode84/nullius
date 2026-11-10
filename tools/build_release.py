@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import functools
@@ -81,7 +82,10 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--dependency-mod-directory", type=Path, default=default_dependency_mods()
     )
-    parser.add_argument("--output-directory", type=Path, default=REPOSITORY / "release")
+    parser.add_argument("--output-directory", type=Path,
+                        help="where the archive and manifest are written; default: release/")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="validate a release without writing its archive or manifest")
     parser.add_argument(
         "-n",
         "--workers",
@@ -89,7 +93,21 @@ def parse_arguments() -> argparse.Namespace:
         help="scenario workers: a positive integer or 'auto'",
     )
     parser.add_argument("--timeout-seconds", type=int, default=300)
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.dry_run and args.output_directory:
+        parser.error("--dry-run writes nothing, so it takes no --output-directory")
+    return args
+
+
+def output_directory(args: argparse.Namespace, stack: contextlib.ExitStack) -> Path:
+    """Return where the archive is built.
+
+    Validation needs a real archive, so a dry run builds one in a temporary
+    directory that the stack removes.
+    """
+    if args.dry_run:
+        return Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="nullius-release-dry-run-")))
+    return (args.output_directory or REPOSITORY / "release").expanduser().resolve()
 
 
 def checked_output(command: list[str]) -> str:
@@ -479,6 +497,7 @@ def main() -> int:
     sys.stdout.reconfigure(line_buffering=True)
     args = parse_arguments()
     started = time.perf_counter()
+    stack = contextlib.ExitStack()
     try:
         print("[1/5] RUN  checkout and metadata")
         commit = require_clean_checkout()
@@ -498,7 +517,7 @@ def main() -> int:
 
         def package_and_validate() -> tuple[Path, str, dict[str, object]]:
             print("[3/5] RUN  deterministic release archive")
-            archive = build_archive(args.output_directory.expanduser().resolve(), metadata)
+            archive = build_archive(output_directory(args, stack), metadata)
             digest = hashlib.sha256(archive.read_bytes()).hexdigest()
             print(f"[3/5] PASS deterministic release archive - {archive}")
             print("[4/5] RUN  packaged Factorio and progression validation")
@@ -510,6 +529,11 @@ def main() -> int:
             "Python unit tests": unit_tests, "release": package_and_validate})["release"]
         print("[2/5] PASS Python unit tests")
 
+        if args.dry_run:
+            print("[5/5] SKIP release manifest - dry run")
+            print(f"\nRelease validation PASS in {format_duration(time.perf_counter() - started)}; "
+                  "dry run wrote no archive or manifest")
+            return 0
         print("[5/5] RUN  release manifest")
         manifest = {
             "schema": 1,
@@ -535,6 +559,8 @@ def main() -> int:
         sys.stdout.flush()
         print(f"\nRelease FAIL: {error}")
         return 1
+    finally:
+        stack.close()
 
 
 if __name__ == "__main__":

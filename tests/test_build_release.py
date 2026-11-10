@@ -1,10 +1,14 @@
+import contextlib
 import hashlib
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 import zipfile
 from unittest.mock import patch
+
+import tools.build_release as build_release
 
 from tools.build_release import (build_archive, read_metadata, run_progression_contracts,
                                  run_bootstrap_checks, run_unlock_audits, prepare_release_mods,
@@ -107,6 +111,18 @@ class ReleaseBuilderTests(unittest.TestCase):
             self.assertNotIn("nullius-star/scripts/migrate.lua", names)
             self.assertNotIn("nullius-star/legacyMirror.lua", names)
             self.assertNotIn("nullius-star/legacyValves.lua", names)
+
+    def test_dry_run_builds_in_a_removed_directory(self) -> None:
+        with contextlib.ExitStack() as stack:
+            directory = build_release.output_directory(
+                SimpleNamespace(dry_run=True, output_directory=None), stack)
+            self.assertTrue(directory.is_dir())
+            self.assertNotEqual(directory, build_release.REPOSITORY / "release")
+        self.assertFalse(directory.exists())
+        with contextlib.ExitStack() as stack:
+            self.assertEqual(build_release.output_directory(
+                SimpleNamespace(dry_run=False, output_directory=None), stack),
+                (build_release.REPOSITORY / "release").resolve())
 
     def test_archive_is_reproducible(self) -> None:
         with (
