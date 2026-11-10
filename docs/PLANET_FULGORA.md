@@ -511,7 +511,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Entity | `nullius-extractor-N-deep`: assembling-machine shell as the reinjection variant, with a fixed recipe that produces deep slurry |
 | Switch | Ctrl+R cycles extraction, reinjection, deep, extraction. The transition registry tries edges in order, so a locked mode is skipped |
 | Vent use | Exclusive: the vent hosts one extractor in one mode. A deep vent supplies no ice, so copper is paid in water from other vents |
-| Rate and power | Fixed per vent, independent of vent yield and extractor tier. A deep vent yields a fraction of a tier-1 extractor's slurry and draws several times a tier-2 extractor's power, so vent count and power bound deep copper; bulk copper comes from crustal fracturing |
+| Rate and power | Independent of vent yield. Each tier drills at its extractor's speed, yields a fraction of that extractor's slurry, and draws a fixed multiple of its power and drain, so vent count and power bound deep copper; bulk copper comes from crustal fracturing |
 | Placement and lifecycle | As reinjection: on a Fulgora vent after research, otherwise extractor or removal; built, robot, revive, clone, upgrade, and script-raised paths |
 | Deep slurry filtration | Hydro plant; same output shape as slurry filtration with concentrate in place of ice; no planet restriction, as slurry filtration |
 | Roasting | Consumes oxygen, which Fulgora makes by water electrolysis |
@@ -732,7 +732,7 @@ drops from 13.3 to 9.1 min, including the magnetic filtration change.
 |---|---|
 | Selective recovery | Higher purity per mineral; see dominance table |
 | Wastewater filtration, condensation | More valuable: reinjecting wastewater discards scarce water |
-| Extractor tiers 2+ | Extraction rises; reinjection stays 10 units/s per vent |
+| Extractor tiers 2+ | Extraction and deep drilling rise with the tier; reinjection stays 10 units/s per vent |
 | Bulk filtration and cracking | Unchanged output streams |
 | Deep drilling and copper | A third mode of the same extractor; deep slurry is not accepted and the copper solids cannot be |
 | Nuclear geoengineering | Exposed ocean has no vent entities; bulk filtration processes its outputs |

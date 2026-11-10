@@ -3,8 +3,8 @@
 -- ordinary and boxed processing lines, and robots supplied with extractor items.
 -- act: switch, blueprint, clone, revive and upgrade deep extractors. Transfer
 -- only measured intermediate output between the declared processing machines.
--- run: END ticks; boxed batches cross four tier-1 machines. Expect copper production, fixed vent rates,
--- deep power above every extractor tier, and lifecycle parity.
+-- run: END ticks; boxed batches cross four tier-1 machines. Expect copper production, tier-scaled vent rates,
+-- deep power at one multiple of each tier, and lifecycle parity.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
 -- Four low-yield vents fill a boxed filtration batch slowly; test.json adds one second.
 local END=14400
@@ -95,10 +95,15 @@ script.on_nth_tick(1,function(event)
   create(s,'nullius-extractor-2-deep',40,45,{fast_replace=true,raise_built=true})
   check(s.find_entity('nullius-extractor-2-deep',{40,45})~=nil,'fast replace lost mode')
   check(s.find_entity(deep,{40,45})==nil,'fast replace kept tier 1')
-  local deep_power=prototypes.entity[deep].energy_usage
-  check(prototypes.entity['nullius-extractor-2-deep'].energy_usage==deep_power,'tier changed deep power')
+  -- Each tier draws the same multiple of its extractor's power, well above it.
+  local ratio=prototypes.entity[deep].energy_usage/prototypes.entity[base].energy_usage
+  check(ratio>2,'deep power not above extraction')
   for tier=1,2 do
-    check(deep_power>2*prototypes.entity['nullius-extractor-'..tier].energy_usage,'deep power not above tier '..tier)
+    local b='nullius-extractor-'..tier
+    local e,d=prototypes.entity[b],prototypes.entity[b..'-deep']
+    check(math.abs(d.energy_usage/e.energy_usage-ratio)<1e-9,'tier '..tier..' deep power ratio')
+    check(math.abs(d.electric_energy_source_prototype.drain/e.electric_energy_source_prototype.drain-ratio)<1e-9,
+      'tier '..tier..' deep drain ratio')
   end
   local other=game.surfaces.nauvis
   vent(other,0,0)
@@ -111,7 +116,7 @@ script.on_nth_tick(1,function(event)
   local directions={defines.direction.north,defines.direction.east,defines.direction.south,defines.direction.west}
   for tier=1,2 do for i,direction in ipairs(directions) do
     local x,y=(i-1)*30,(tier-1)*15
-    local resource=vent(s,x,y,tier*100000)
+    local resource=vent(s,x,y,i*100000)
     local b='nullius-extractor-'..tier
     check(s.can_place_entity{name=b..'-deep',position={x,y},force=force,
       build_check_type=defines.build_check_type.manual_ghost},'sand placement')
@@ -122,7 +127,7 @@ script.on_nth_tick(1,function(event)
     check(target.x==pos.x and target.y==pos.y,'pipe moved')
     check(d.direction==direction,'direction moved')
     check(d.get_recipe().name=='nullius-deep-drilling','missing fixed recipe')
-    check(d.crafting_speed==1,'tier changed speed')
+    check(d.crafting_speed==prototypes.entity[b].mining_speed,'deep speed differs from tier')
     check(not d.get_module_inventory() or #d.get_module_inventory()==0,'module slots')
     local pipe=create(s,'pipe',target.x,target.y)
     power(s,x,y)
@@ -201,12 +206,13 @@ script.on_nth_tick(60,function(event)
     planner.destroy()
   end
   if event.tick~=END then return end
-  -- Every vent drills at the recipe rate; setup and power start take under a second.
-  local cycle=prototypes.recipe['nullius-deep-drilling'].energy*60
-  local count=storage.rows[1].machine.products_finished
-  check(count>=math.floor((END-60)/cycle) and count<=math.floor(END/cycle),'deep extraction rate')
+  -- Every vent drills at the recipe rate scaled by its tier's speed; setup and
+  -- power start take under a second. Rotation and vent yield do not matter.
+  local energy=prototypes.recipe['nullius-deep-drilling'].energy*60
   for _,row in ipairs(storage.rows) do
-    check(row.machine.products_finished==count,'tier, rotation or yield changed output')
+    local cycle=energy/row.machine.crafting_speed
+    local count=row.machine.products_finished
+    check(count>=math.floor((END-60)/cycle) and count<=math.floor(END/cycle),'deep extraction rate')
     check(row.resource.amount==row.amount,'deep drilling changed vent yield')
     check(toggle(row.machine,row.machine.name:gsub('%-deep$','')).type=='mining-drill','return to extraction')
   end

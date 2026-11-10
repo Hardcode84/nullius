@@ -1,5 +1,10 @@
 -- Cold data path: extractor modes share the original item and pipe geometry.
 data:extend({{type="recipe-category", name="nullius-reinjection"}})
+-- Deep drilling power as a multiple of the same tier's extractor.
+local DEEP_POWER_FACTOR=5
+local function deep_power(energy)
+  return tostring(util.parse_energy(energy)*60*DEEP_POWER_FACTOR).."W"
+end
 for tier=1,2 do
   local name="nullius-extractor-"..tier
   local base=data.raw["mining-drill"][name]
@@ -32,9 +37,12 @@ for tier=1,2 do
   deep.localised_description={"entity-description.nullius-deep-drilling"}
   deep.crafting_categories={"nullius-deep-drilling"}
   deep.fixed_recipe="nullius-deep-drilling"
-  -- Drilling past the reservoir is slow and power-hungry on every tier, so a
-  -- vent bounds deep copper and bulk copper needs crustal fracturing.
-  deep.energy_usage="2MW"
+  -- Drilling past the reservoir is slow and power-hungry, so a vent bounds
+  -- deep copper and bulk copper needs crustal fracturing. Each tier drills at
+  -- its extractor's speed for a fixed multiple of its extractor's power.
+  deep.crafting_speed=base.mining_speed
+  deep.energy_usage=deep_power(base.energy_usage)
+  deep.energy_source.drain=deep_power(base.energy_source.drain)
   deep.next_upgrade=tier==1 and "nullius-extractor-2-deep" or nil
   deep.fluid_boxes={table.deepcopy(base.output_fluid_box)}
   deep.fluid_boxes[1].production_type="output"
