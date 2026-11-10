@@ -3,17 +3,17 @@
 import argparse
 import json
 from pathlib import Path
-import tempfile
 
 from run_factorio_tests import default_dependency_mods, prepare_mods, supported_factorio_version
 from summarize_factorio_test_log import prototype_warnings
 from test_vulcanus_processing_compatibility import ROOT, command
+import run_directories
 
 FIELDS = {"always_show_products", "show_amount_in_title"}
 
 
 def capture(engine, dependencies, version, baseline=False):
-    work = Path(tempfile.mkdtemp(prefix=f"recipe-display-{version}-"))
+    work = run_directories.create(f"recipe-display-{version}-")
     prepare_mods(work / "mods", dependencies)
     for name in ("nullius-star", "factorio-test-support"):
         path = work / "mods" / name / "info.json"

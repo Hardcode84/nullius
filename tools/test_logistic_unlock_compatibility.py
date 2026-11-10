@@ -7,10 +7,10 @@ This isolates force modifiers from the incomplete full-mod 2.1 port.
 import argparse
 import json
 from pathlib import Path
-import tempfile
 
 from run_factorio_tests import TestFailure
 from test_vulcanus_processing_compatibility import ROOT, command
+import run_directories
 
 TECHNOLOGIES = {
     "nullius-robotics-1": "prototypes/technology.lua",
@@ -26,7 +26,7 @@ def run(engine):
     version = ".".join(metadata["version"].split(".")[:2])
     if version not in {"2.0", "2.1"}:
         raise TestFailure(f"Unsupported engine: {metadata['version']}")
-    work = Path(tempfile.mkdtemp(prefix=f"logistic-unlock-{version}-"))
+    work = run_directories.create(f"logistic-unlock-{version}-")
     mod = work / "mods/unlock-test"
     scenario = mod / "scenarios/research"
     scenario.mkdir(parents=True)

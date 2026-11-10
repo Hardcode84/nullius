@@ -5,7 +5,6 @@ import argparse
 import json
 from pathlib import Path
 import shutil
-import tempfile
 from run_factorio_tests import (
     prepare_mods,
     prepare_config,
@@ -15,6 +14,7 @@ from run_factorio_tests import (
     tail,
     TestFailure,
 )
+import run_directories
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     parser.add_argument("--expect-rebuilt", action="store_true")
     parser.add_argument("--ticks", type=int, default=1200)
     args = parser.parse_args()
-    work = Path(tempfile.mkdtemp(prefix="placement-save-"))
+    work = run_directories.create("placement-save-")
     prepare_mods(work / "mods", default_dependency_mods())
     config = prepare_config(work, default_factorio())
     (work / "mods/factorio-test-support/control.lua").write_text(

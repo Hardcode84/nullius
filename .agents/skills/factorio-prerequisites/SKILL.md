@@ -79,7 +79,9 @@ ticks, fluid-fuel demand, heat requirements, and the aggregate raw/available
 boundaries. The fuel recipe is part of the graph and is sized by net output
 after powering itself. The checker fails instead of averaging probabilistic or
 ranged results. Put a repeatable contract in an argument file and invoke it as
-`@path/to/file.args`.
+`@path/to/file.args`. Release contracts are listed in
+`tests/progression/release.json`; `python tools/run_progression_contracts.py`
+runs all of them against one fresh dump of the checkout.
 
 Declare finite bootstrap material with `--stock ITEM=COUNT`. Unlike
 `--available`, stock is consumed and the checker expands production after it is

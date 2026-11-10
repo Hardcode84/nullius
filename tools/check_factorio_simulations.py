@@ -5,7 +5,6 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-import tempfile
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -13,6 +12,7 @@ from tools.check_factorio_locale import prepare_mods
 from tools.run_factorio_tests import (default_factorio, default_dependency_mods,
     prepare_config, tail, MOD_UNDER_TEST, TestFailure)
 from tools.factorio_multiplayer import virtual_display, stop_process
+import run_directories
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--dependency-mod-directory', type=Path, default=default_dependency_mods())
     parser.add_argument('--group', choices=['tips', 'menu', 'all'], default='all')
     args = parser.parse_args()
-    work = Path(tempfile.mkdtemp(prefix='factorio-simulation-check-'))
+    work = run_directories.create('factorio-simulation-check-')
     print('Artifacts:', work, flush=True)
     for name in ('saves', 'script-output', 'temp'):
         (work / name).mkdir()

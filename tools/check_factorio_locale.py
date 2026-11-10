@@ -13,7 +13,6 @@ import shutil
 import stat
 import subprocess
 import sys
-import tempfile
 from typing import Any, Iterable
 
 from run_factorio_tests import (
@@ -27,6 +26,7 @@ from run_factorio_tests import (
     run_factorio,
     tail,
 )
+import run_directories
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -160,7 +160,7 @@ def run_dumps(
     mod_directory: Path,
     timeout_seconds: int,
 ) -> tuple[dict[str, Any], dict[str, dict[str, dict[str, str]]], str]:
-    run_directory = Path(tempfile.mkdtemp(prefix="factorio-locale-audit-"))
+    run_directory = run_directories.create("factorio-locale-audit-")
     try:
         for directory in ("script-output", "temp"):
             (run_directory / directory).mkdir()

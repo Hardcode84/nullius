@@ -4,12 +4,12 @@ import argparse
 import copy
 import json
 from pathlib import Path
-import tempfile
 from types import SimpleNamespace
 
 from test_assembler_graphics_compatibility import capture, execute_multiplayer
 from test_vulcanus_processing_compatibility import ROOT, command, lua
 from run_factorio_tests import default_dependency_mods, prepare_config
+import run_directories
 
 NAMES = {**{f"nullius-{prefix}well-{tier}": "assembling-machine"
             for prefix in ("", "legacy-") for tier in (1, 2)},
@@ -35,7 +35,7 @@ def check_graphics(old, data):
 
 
 def render(engine, data, major):
-    work = Path(tempfile.mkdtemp(prefix=f"pumpjack-render-{major}-"))
+    work = run_directories.create(f"pumpjack-render-{major}-")
     mod = work / "mods/nullius-star"
     scenario = mod / "scenarios/pumpjack-graphics"
     scenario.mkdir(parents=True)

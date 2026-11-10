@@ -8,11 +8,11 @@ changed recipe and item, excluding graphics and version-specific presentation.
 import argparse
 import json
 from pathlib import Path
-import tempfile
 
 from run_factorio_tests import (
     default_dependency_mods, prepare_mods, prepare_config, run_factorio, TestFailure,
 )
+import run_directories
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,7 +44,7 @@ def dump(work, engine):
 
 
 def capture(engine, dependencies):
-    work = Path(tempfile.mkdtemp(prefix="vulcanus-processing-baseline-"))
+    work = run_directories.create("vulcanus-processing-baseline-")
     prepare_mods(work / "mods", dependencies)
     mod = work / "mods/nullius-star"
     source = (mod / "data.lua").read_text()
@@ -81,7 +81,7 @@ def run(engine, baseline, alignment):
     major = ".".join(version.split(".")[:2])
     if major not in {"2.0", "2.1"}:
         raise TestFailure(f"Unsupported version: {version}")
-    work = Path(tempfile.mkdtemp(prefix=f"vulcanus-processing-{major}-"))
+    work = run_directories.create(f"vulcanus-processing-{major}-")
     mod = work / "mods/nullius-star"
     (mod / "prototypes/planet").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(

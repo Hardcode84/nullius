@@ -13,7 +13,6 @@ from pathlib import Path
 import re
 import shutil
 import sys
-import tempfile
 from typing import Any
 
 from run_factorio_tests import (
@@ -29,6 +28,10 @@ from run_factorio_tests import (
 
 from factorio_schema import recipe_categories, deterministic_product
 from factorio_package import workspace_target
+if __package__:
+    from . import run_directories
+else:
+    import run_directories
 
 Prototype = dict[str, Any]
 IGNORED_RECIPE_CATEGORIES = {"recycling", "recycling-or-hand-crafting"}
@@ -129,7 +132,7 @@ def dump_resolved_data(args: argparse.Namespace) -> tuple[Prototype, Path | None
         path = args.data_raw.expanduser().resolve()
         return json.loads(path.read_text(encoding="utf-8")), None
 
-    run_directory = Path(tempfile.mkdtemp(prefix="factorio-prerequisites-"))
+    run_directory = run_directories.create("factorio-prerequisites-")
     try:
         factorio = args.factorio.expanduser().resolve()
         dependency_mods = args.dependency_mod_directory.expanduser().resolve()

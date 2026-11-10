@@ -2,6 +2,7 @@ import contextlib
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -10,9 +11,48 @@ from unittest.mock import patch
 
 import tools.build_release as build_release
 
-from tools.build_release import (build_archive, read_metadata, run_progression_contracts,
+from tools.build_release import (build_archive, historical_engine, read_metadata, run_progression_contracts,
                                  run_bootstrap_checks, run_unlock_audits, prepare_release_mods,
                                  TestFailure)
+
+
+def engine_archive(root: Path, name: str, binary: bool) -> Path:
+    staging = root / ("staging-" + name)
+    (staging / "factorio" / "bin" / "x64").mkdir(parents=True)
+    if binary:
+        (staging / "factorio" / "bin" / "x64" / "factorio").write_text("engine")
+    archive = root / (name + ".tar.xz")
+    subprocess.run(["tar", "-cJf", str(archive), "-C", str(staging), "factorio"], check=True)
+    return archive
+
+
+class HistoricalEngineTests(unittest.TestCase):
+    def test_archive_unpacks_once_into_the_cache(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            archive = engine_archive(root, "factorio-space-age_linux_2.1.19", True)
+            binary = historical_engine(archive, root / "cache")
+            self.assertEqual(binary, root / "cache/factorio-space-age_linux_2.1.19/factorio/bin/x64/factorio")
+            self.assertEqual(binary.read_text(), "engine")
+            archive.unlink()
+            self.assertEqual(historical_engine(archive, root / "cache"), binary)
+            self.assertEqual(sorted(path.name for path in (root / "cache").iterdir()),
+                             ["factorio-space-age_linux_2.1.19"])
+
+    def test_binary_is_used_as_given(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            binary = Path(temporary) / "factorio"
+            binary.write_text("engine")
+            self.assertEqual(historical_engine(binary, Path(temporary) / "cache"), binary.resolve())
+            self.assertFalse((Path(temporary) / "cache").exists())
+
+    def test_archive_without_engine_leaves_no_cache_entry(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            archive = engine_archive(root, "broken", False)
+            with self.assertRaises(TestFailure):
+                historical_engine(archive, root / "cache")
+            self.assertEqual(list((root / "cache").iterdir()), [])
 
 
 class ReleaseBuilderTests(unittest.TestCase):

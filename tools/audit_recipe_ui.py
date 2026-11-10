@@ -12,7 +12,6 @@ import shutil
 import subprocess
 import sys
 import tarfile
-import tempfile
 from typing import Any
 
 from factorio_schema import recipe_categories
@@ -29,6 +28,7 @@ from run_factorio_tests import (
     run_factorio,
     tail,
 )
+import run_directories
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -234,7 +234,7 @@ def resolve_recipes(
     dependency_mods: Path,
     timeout_seconds: int,
 ) -> tuple[RecipeMap, str]:
-    run_directory = Path(tempfile.mkdtemp(prefix=f"recipe-ui-audit-{label}-"))
+    run_directory = run_directories.create(f"recipe-ui-audit-{label}-")
     try:
         for directory in ("saves", "script-output", "temp"):
             (run_directory / directory).mkdir(parents=True)
@@ -519,7 +519,7 @@ def main() -> int:
         if args.details_only and not args.detail_recipe:
             raise TestFailure("--details-only requires --detail-recipe")
 
-        archive_root = Path(tempfile.mkdtemp(prefix="recipe-ui-audit-base-source-"))
+        archive_root = run_directories.create("recipe-ui-audit-base-source-")
         base_mod = extract_git_directory(
             args.base_ref, args.base_mod_path, archive_root
         )

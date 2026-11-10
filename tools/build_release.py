@@ -10,8 +10,10 @@ from datetime import datetime, timezone
 import functools
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -76,7 +78,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--upgrade-factorio", type=Path,
                         help="engine used to create prior-release saves")
     parser.add_argument("--upgrade-factorio-2-1", type=Path,
-                        help="historical 2.1 engine for the 0.0.4 upgrade fixture")
+                        help="historical 2.1 engine for the 0.0.4 upgrade fixture: its binary, or the "
+                             "official Linux .tar.xz, unpacked once into ~/.cache/nullius/engines")
     parser.add_argument("--upgrade-dependency-mod-directory", type=Path,
                         help="dependencies used to create prior-release saves")
     parser.add_argument(
@@ -424,6 +427,38 @@ def extract_release(release_archive: Path, destination: Path) -> Path:
     return destination / "nullius-star"
 
 
+ENGINE_ARCHIVE_SUFFIX = ".tar.xz"
+
+
+def engine_cache() -> Path:
+    return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "nullius" / "engines"
+
+
+def historical_engine(path: Path, cache: Path) -> Path:
+    """Return an engine binary, unpacking an official Linux archive once into the cache.
+
+    The archive unpacks into a temporary sibling that is renamed into place, so
+    an interrupted unpack never leaves a cache entry that looks complete.
+    """
+    path = path.expanduser().resolve()
+    if not path.name.endswith(ENGINE_ARCHIVE_SUFFIX):
+        return path
+    target = cache / path.name.removesuffix(ENGINE_ARCHIVE_SUFFIX)
+    binary = target / "factorio" / "bin" / "x64" / "factorio"
+    if not binary.is_file():
+        cache.mkdir(parents=True, exist_ok=True)
+        partial = Path(tempfile.mkdtemp(prefix=target.name + ".", dir=cache))
+        try:
+            subprocess.run(["tar", "-xJf", str(path), "-C", str(partial)], check=True)
+            if not (partial / "factorio" / "bin" / "x64" / "factorio").is_file():
+                raise TestFailure(f"{path} has no factorio/bin/x64/factorio")
+            partial.rename(target)
+        except BaseException:
+            shutil.rmtree(partial, ignore_errors=True)
+            raise
+    return binary
+
+
 def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]:
     factorio = args.factorio.expanduser().resolve()
     dependencies = args.dependency_mod_directory.expanduser().resolve()
@@ -475,7 +510,8 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
         upgrades = {"0.0.1": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
                     "0.0.2": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
                     "0.0.3": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
-                    "0.0.4": (args.upgrade_factorio_2_1, dependencies),
+                    "0.0.4": (args.upgrade_factorio_2_1 and historical_engine(args.upgrade_factorio_2_1,
+                                                                               engine_cache()), dependencies),
                     "0.0.5": (None, None),
                     "0.0.6": (None, None)}
         for version, (engine, mods) in upgrades.items():

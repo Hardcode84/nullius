@@ -3,15 +3,15 @@
 import argparse
 import json
 from pathlib import Path
-import tempfile
 
 from patch_boblogistics_tungsten import patch_archive
 from run_factorio_tests import find_archive
 from test_vulcanus_processing_compatibility import command
+import run_directories
 
 
 def check(engine, dependencies):
-    work = Path(tempfile.mkdtemp(prefix="boblogistics-tungsten-test-"))
+    work = run_directories.create("boblogistics-tungsten-test-")
     patched = work / "boblogistics_3.0.1.zip"
     print(json.dumps(patch_archive(find_archive(dependencies, "boblogistics"), patched)), flush=True)
     for case, space_age, bob_provider in (

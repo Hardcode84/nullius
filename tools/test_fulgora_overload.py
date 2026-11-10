@@ -4,12 +4,12 @@ import argparse
 import json
 from pathlib import Path
 import shutil
-import tempfile
 
 from run_factorio_tests import (
     MOD_UNDER_TEST, default_factorio, default_dependency_mods, deadline_for,
     execute, run_factorio, TestFailure, tail,
 )
+import run_directories
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
     args.timeout_seconds = 300
     args.until_tick = None
     case = args.case
-    work = Path(tempfile.mkdtemp(prefix="fulgora-overload-"))
+    work = run_directories.create("fulgora-overload-")
     first = execute(args, case, work)
     common = [str(args.factorio.expanduser().resolve()), "--config", str(work / "config.ini"),
               "--mod-directory", str(work / "mods"), "--disable-audio"]

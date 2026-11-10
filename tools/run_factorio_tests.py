@@ -14,9 +14,12 @@ import signal
 import socket
 import subprocess
 import sys
-import tempfile
 import time
 import zipfile
+if __package__:
+    from . import run_directories
+else:
+    import run_directories
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -498,9 +501,7 @@ def run_case(args: argparse.Namespace, case: str) -> dict[str, object]:
         character if character.isalnum() or character in "-_" else "-"
         for character in case
     )
-    run_directory = Path(
-        tempfile.mkdtemp(prefix=f"factorio-test-{safe_case or 'case'}-")
-    )
+    run_directory = run_directories.create(f"factorio-test-{safe_case or 'case'}-")
     success = False
     try:
         result = execute(args, case, run_directory)

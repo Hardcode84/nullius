@@ -3,14 +3,14 @@
 import argparse
 import json
 from pathlib import Path
-import tempfile
 from run_factorio_tests import prepare_config, run_factorio, TestFailure
+import run_directories
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--factorio', type=Path, required=True)
     args = parser.parse_args()
-    work = Path(tempfile.mkdtemp(prefix='loot-fractions-'))
+    work = run_directories.create('loot-fractions-')
     mod = work / 'mods/loot-probe'
     mod.mkdir(parents=True)
     (mod / 'info.json').write_text(json.dumps(dict(name='loot-probe', version='0.0.1', title='Loot probe', author='tests', factorio_version='2.0', dependencies=['base'])))

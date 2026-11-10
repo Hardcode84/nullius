@@ -4,14 +4,14 @@ import argparse
 import json
 from pathlib import Path
 import re
-import tempfile
 
 from run_factorio_tests import default_dependency_mods, prepare_mods
 from test_vulcanus_processing_compatibility import ROOT, command, dump, lua
+import run_directories
 
 
 def capture(engine, dependencies):
-    work = Path(tempfile.mkdtemp(prefix="mirroring-capture-"))
+    work = run_directories.create("mirroring-capture-")
     prepare_mods(work / "mods", dependencies)
     resolved = dump(work, engine)
     fields = ("name", "collision_box", "selection_box", "fluid_boxes",
@@ -29,7 +29,7 @@ def run(engine, machines):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
     assert major in ("2.0", "2.1"), version
-    work = Path(tempfile.mkdtemp(prefix=f"mirroring-{major}-"))
+    work = run_directories.create(f"mirroring-{major}-")
     mod = work / "mods/nullius-star"
     (mod / "scenarios").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="nullius-star", version="0.0.3",

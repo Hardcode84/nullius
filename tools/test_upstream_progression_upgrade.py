@@ -7,12 +7,12 @@ import shutil
 import socket
 import subprocess
 import time
-import tempfile
 import io
 import tarfile
 from run_factorio_tests import (MOD_UNDER_TEST, REPOSITORY, default_factorio,
     default_dependency_mods, prepare_config, prepare_mods, run_factorio, tail)
 from factorio_package import workspace_target
+import run_directories
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
     parser.add_argument('--factorio',type=Path,default=default_factorio())
     parser.add_argument('--dependency-mod-directory',type=Path,default=default_dependency_mods())
     args=parser.parse_args()
-    work=Path(tempfile.mkdtemp(prefix='factorio-progression-upgrade-'))
+    work=run_directories.create('factorio-progression-upgrade-')
     print('Artifacts:',work,flush=True)
     for name in ('saves','script-output','temp'): (work/name).mkdir()
     config=prepare_config(work,args.factorio)

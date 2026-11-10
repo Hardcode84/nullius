@@ -6,17 +6,17 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import sys
-import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.run_factorio_tests import prepare_config, run_factorio
+import run_directories
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ("experiment-network-trip", "experiment-network-sink", "experiment-lightning-poles")
 
 
 def run_case(factorio, case):
-    work = Path(tempfile.mkdtemp(prefix=f"factorio-network-api-{case}-"))
+    work = run_directories.create(f"factorio-network-api-{case}-")
     mod = work / "mods" / "nullius-star"
     mod.mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps({

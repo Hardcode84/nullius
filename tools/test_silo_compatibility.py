@@ -7,10 +7,10 @@ and a declared electric source. It does not load the full dependency stack.
 import argparse
 import json
 from pathlib import Path
-import tempfile
 
 from run_factorio_tests import TestFailure
 from test_vulcanus_processing_compatibility import ROOT, command
+import run_directories
 
 
 def run(engine):
@@ -19,7 +19,7 @@ def run(engine):
     major = ".".join(version.split(".")[:2])
     if major != "2.1":
         raise TestFailure(f"Unsupported engine: {version}")
-    work = Path(tempfile.mkdtemp(prefix=f"silo-{major}-"))
+    work = run_directories.create(f"silo-{major}-")
     mod = work / "mods/silo-test"
     (mod / "scenarios/silo").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="silo-test", version="0.0.1",

@@ -2,14 +2,14 @@
 """Check optional resource, item visibility, and YAFC contracts on Factorio 2.1."""
 import argparse
 from pathlib import Path
-import tempfile
 
 from run_factorio_tests import default_dependency_mods, prepare_mods
 from test_vulcanus_processing_compatibility import ROOT, command
+import run_directories
 
 
 def run(engine, dependencies):
-    work = Path(tempfile.mkdtemp(prefix="upstream-optional-ports-"))
+    work = run_directories.create("upstream-optional-ports-")
     prepare_mods(work / "mods", dependencies)
     mod = work / "mods/nullius-star"
     for target, source in (

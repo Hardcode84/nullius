@@ -8,10 +8,10 @@ import re
 import shutil
 import statistics
 import subprocess
-import tempfile
 from generate_factorio_scenario_manifest import lua
 from run_factorio_tests import (REPOSITORY, MOD_UNDER_TEST, default_factorio,
     default_dependency_mods, prepare_config, prepare_mods, run_factorio, tail, TestFailure)
+import run_directories
 
 
 def effect(source):
@@ -108,7 +108,7 @@ def main():
     if not args.output:
         parser.error('--output is required when running an experiment')
     contract = json.loads(args.config.read_text())
-    work = Path(tempfile.mkdtemp(prefix='factorio-arboriculture-'))
+    work = run_directories.create('factorio-arboriculture-')
     print('Artifacts:', work, flush=True)
     for name in ('saves','script-output','temp'): (work/name).mkdir()
     config = prepare_config(work,args.factorio)

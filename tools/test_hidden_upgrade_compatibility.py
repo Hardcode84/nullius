@@ -5,10 +5,10 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
-import tempfile
 
 from run_factorio_tests import default_dependency_mods, prepare_mods, TestFailure
 from test_vulcanus_processing_compatibility import ROOT, dump
+import run_directories
 
 
 def isolated(engine):
@@ -16,7 +16,7 @@ def isolated(engine):
     major = ".".join(version.split(".")[:2])
     if major not in {"2.0", "2.1"}:
         raise TestFailure(f"Unsupported engine: {version}")
-    work = Path(tempfile.mkdtemp(prefix=f"hidden-upgrades-{major}-"))
+    work = run_directories.create(f"hidden-upgrades-{major}-")
     mod = work / "mods/upgrade-test"
     (mod / "prototypes").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="upgrade-test", version="0.0.1",
@@ -49,7 +49,7 @@ def isolated(engine):
 def full_mod(engine, dependencies, baseline_ref):
     snapshots = []
     for baseline in [True, False]:
-        work = Path(tempfile.mkdtemp(prefix="hidden-upgrades-full-"))
+        work = run_directories.create("hidden-upgrades-full-")
         prepare_mods(work / "mods", dependencies)
         if baseline:
             staged = work / "mods/nullius-star/prototypes"
@@ -78,7 +78,7 @@ def staged_full_mod(engine, dependencies):
     """Retarget only the subject/test manifests; dependencies must be staged."""
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
-    work = Path(tempfile.mkdtemp(prefix="hidden-upgrades-staged-"))
+    work = run_directories.create("hidden-upgrades-staged-")
     prepare_mods(work / "mods", dependencies)
     for name in ["nullius-star", "factorio-test-support"]:
         path = work / "mods" / name / "info.json"

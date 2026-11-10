@@ -4,8 +4,8 @@ import argparse
 import json
 import re
 from pathlib import Path
-import tempfile
 from run_factorio_tests import prepare_config, run_factorio, supported_factorio_version, TestFailure
+import run_directories
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def run(factorio):
     metadata = json.loads((factorio.resolve().parents[2] / "data/base/info.json").read_text())
     version = supported_factorio_version(".".join(metadata["version"].split(".")[:2]))
-    work = Path(tempfile.mkdtemp(prefix="vulcanus-recipe-compat-"))
+    work = run_directories.create("vulcanus-recipe-compat-")
     mod = work / "mods/nullius-star"
     (mod / "scenarios").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps({

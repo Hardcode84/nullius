@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 import subprocess
 import shutil
-import tempfile
 
 from run_factorio_tests import default_dependency_mods, prepare_mods
 from test_vulcanus_processing_compatibility import ROOT, dump, lua
+import run_directories
 
 SOURCES = ["prototypes/entity/plumbing.lua", "prototypes/entity/turbine.lua",
            "prototypes/planet/vulcanus-entities.lua"]
@@ -27,7 +27,7 @@ def hidden_boxes(value, path=()):
 
 
 def capture(engine, dependencies, baseline_ref):
-    work = Path(tempfile.mkdtemp(prefix="hidden-connections-baseline-"))
+    work = run_directories.create("hidden-connections-baseline-")
     prepare_mods(work / "mods", dependencies)
     staged = work / "mods/nullius-star/prototypes"
     staged.unlink()
@@ -38,7 +38,7 @@ def capture(engine, dependencies, baseline_ref):
         target.unlink()
         target.write_bytes(content)
     baseline = dump(work, engine)
-    current_work = Path(tempfile.mkdtemp(prefix="hidden-connections-current-"))
+    current_work = run_directories.create("hidden-connections-current-")
     prepare_mods(current_work / "mods", dependencies)
     current = dump(current_work, engine)
     # Require exact 2.0 parity for all resolved data, including inherited variants.
@@ -54,7 +54,7 @@ def run(engine, boxes):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
     assert major in ("2.0", "2.1"), version
-    work = Path(tempfile.mkdtemp(prefix=f"hidden-connections-{major}-"))
+    work = run_directories.create(f"hidden-connections-{major}-")
     mod = work / "mods/nullius-star"
     (mod / "prototypes/entity").mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="nullius-star", version="0.0.3",

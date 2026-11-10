@@ -6,13 +6,13 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
-import tempfile
 from types import SimpleNamespace
 
 from run_factorio_tests import default_dependency_mods, prepare_mods, prepare_config
 from test_vulcanus_processing_compatibility import ROOT, command, dump, lua
 sys.path.insert(0, str(ROOT))
 from tools.factorio_multiplayer import execute_multiplayer
+import run_directories
 
 NAMES = {"nullius-small-assembler-1": 1, "nullius-medium-assembler-1": 1,
          "nullius-large-assembler-1": 2, "nullius-small-assembler-2": 2,
@@ -24,7 +24,7 @@ def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua",
             baseline_directory="entity"):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
-    work = Path(tempfile.mkdtemp(prefix="assembler-capture-"))
+    work = run_directories.create("assembler-capture-")
     prepare_mods(work / "mods", dependencies)
     for name in ["nullius-star", "factorio-test-support"]:
         p = work / "mods" / name / "info.json"
@@ -74,7 +74,7 @@ def check_graphics(old, data):
 
 
 def render(engine, data, major, names=NAMES, scenario_name="assembler-graphics"):
-    work = Path(tempfile.mkdtemp(prefix=f"assembler-render-{major}-"))
+    work = run_directories.create(f"assembler-render-{major}-")
     mod = work / "mods/nullius-star"
     (mod / "scenarios" / scenario_name).mkdir(parents=True)
     (mod / "info.json").write_text(json.dumps(dict(name="nullius-star",version="0.0.3",

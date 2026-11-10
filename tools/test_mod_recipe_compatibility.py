@@ -5,10 +5,10 @@ from concurrent.futures import ThreadPoolExecutor
 import itertools
 import json
 from pathlib import Path
-import tempfile
 
 from test_vulcanus_processing_compatibility import ROOT, lua, canonical, command, dump
 from run_factorio_tests import TestFailure
+import run_directories
 
 LEGACY_COMBINATORS = {"crafting_combinator", "crafting_combinator_xeraph"}
 CONFIG = json.loads((ROOT / "tests/compatibility/mod-recipes.json").read_text())
@@ -37,7 +37,7 @@ def run(engine, mode, enabled, settings, source):
     version = json.loads((engine.parents[2] / "data/base/info.json").read_text())["version"]
     major = ".".join(version.split(".")[:2])
     assert major in {"2.0", "2.1"}
-    work = Path(tempfile.mkdtemp(prefix=f"mod-recipes-{major}-{mode}-"))
+    work = run_directories.create(f"mod-recipes-{major}-{mode}-")
     mod = work / "mods/nullius-star"
     (mod / "scenarios").mkdir(parents=True)
     (mod / "prototypes").mkdir()
