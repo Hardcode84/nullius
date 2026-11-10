@@ -53,6 +53,7 @@ remote.add_interface("release-upgrade",{
     technologies["nullius-checkpoint-uranium-ore"].researched=true
     technologies["nullius-uranium-processing"].researched=true
     technologies["nullius-antimatter-containment"].researched=true
+    technologies["nullius-explosives-1"].researched=true
     local surface=game.surfaces.nauvis
     surface.request_to_generate_chunks({64,64},1)
     surface.force_generate_chunk_requests()
@@ -88,6 +89,10 @@ remote.add_interface("release-upgrade",{
     end
     assert_reactor(force)
     assert_uranium(force)
+    -- Explosives 1 gained the aluminum powder box recipes after this release.
+    for _,name in ipairs({"nullius-box-aluminum-powder","nullius-unbox-aluminum-powder"}) do
+      assert(force.recipes[name].enabled,"researched Explosives 1 did not unlock "..name)
+    end
     assert_traps()
     force.reset_technology_effects()
     assert_reactor(force)

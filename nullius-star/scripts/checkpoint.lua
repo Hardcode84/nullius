@@ -11,7 +11,9 @@ local STT_NET = 3
 local CAT_TECH = 1
 local CAT_BROKEN = 2
 
--- Raw ore units per crushed item, as crushing yields them.
+-- Raw ore units per crushed item. Iron ore, sand, and bauxite follow their
+-- crushing recipes. Limestone crushing yields 8/5; 25/16 keeps the limestone
+-- checkpoint at a round 320 crushed limestone, as its description states.
 local CRUSHED_IRON_ORE = 6 / 5
 local SAND = 5 / 4
 local CRUSHED_BAUXITE = 7 / 5
