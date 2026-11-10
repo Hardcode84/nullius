@@ -1,5 +1,5 @@
 -- given: two real clients after native faction landing, separate forces,
--- a 2 MW source and 100 kW load.
+-- a 2 MW source and 100 kW load; queued landing chunks complete synchronously.
 -- place/connect: two wired poles and one hidden consumer in the test storm surface.
 -- act: trip, wait, remove the anchor, change player force, reload and reset.
 -- expect: one current custom alert per affected player, targeted at the sink;
@@ -13,7 +13,27 @@ local overload={
 local CASE="fulgora-grid-alerts"
 local MESSAGE={"fulgora-overload.alert"}
 local SINK="nullius-fulgora-overload-sink"
-local function check(ok,message) storage.assertions=storage.assertions+1;assert(ok,message) end
+local function trace(event)
+  local players={}
+  for _,name in ipairs({"nullius-test-a","nullius-test-b"}) do
+    local player=game.get_player(name)
+    if player then players[#players+1]={name=name,connected=player.connected,
+      force=player.force.name,character=player.character~=nil,surface=player.surface.name} end
+  end
+  local row={event=event,tick=game.tick,stage=storage.stage,
+    stage_tick=storage.stage_tick,paused=game.tick_paused,joins=storage.joins,players=players}
+  local text=helpers.table_to_json(row)
+  helpers.write_file("factorio-tests/"..CASE.."-trace.jsonl",text.."\n",true)
+  log(CASE.." "..text)
+end
+local function stage(name)
+  storage.stage=name;storage.stage_tick=game.tick;trace("stage")
+end
+local function check(ok,message)
+  storage.assertions=storage.assertions+1
+  if not ok then trace("failure: "..message) end
+  assert(ok,message)
+end
 local function alerts(player,message)
   local result={}
   for _,surface in pairs(player.get_alerts{type=defines.alert_type.custom,message=message}) do
@@ -30,14 +50,27 @@ local function own_alert(player,x)
   check(alert.icon.name=="signal-alert" and alert.message[1]==MESSAGE[1],"alert presentation")
   check(alert.tick>=game.tick-30,"alert was not refreshed")
 end
-script.on_init(function() storage.stage="setup";storage.assertions=0;storage.joins=0 end)
+script.on_init(function() storage.assertions=0;storage.joins=0;stage("setup") end)
 script.on_event(defines.events.on_player_joined_game,function(event)
   if game.get_player(event.player_index).name=="nullius-test-a" then storage.joins=storage.joins+1 end
+  trace("joined: "..game.get_player(event.player_index).name)
+  if storage.stage=="reload" then
+    check(game.tick==storage.reload_tick,"game advanced across paused save/reload")
+  end
   join.joined()
+  trace("join barrier")
 end)
-script.on_nth_tick(30,function()
+script.on_event(defines.events.on_player_left_game,function(event)
+  trace("left: "..game.get_player(event.player_index).name)
+end)
+script.on_nth_tick(30,function(event)
+  if event.tick==0 then return end
   local player=game.get_player("nullius-test-a")
   if not player or not player.connected then return end
+  if storage.stage=="setup" or storage.stage=="peer" then
+    -- Keep the native landing path; map generation consumes wall time only.
+    for _,surface in pairs(game.surfaces) do surface.force_generate_chunk_requests() end
+  end
   if storage.stage=="setup" then
     if not player.character or player.force.name~="faction-"..player.name then return end
     local surface=game.planets["nullius-fulgora"].create_surface()
@@ -53,10 +86,11 @@ script.on_nth_tick(30,function()
     end
     storage.pole=place("pole",0,0);storage.other=place("pole",9,0)
     storage.source=place("source-2000000",1,0);storage.load=place("load",1,1)
-    storage.stage="peer"
+    stage("peer")
     helpers.write_file("factorio-tests/multiplayer-action.json",helpers.table_to_json{
       id=1,action="join",player="nullius-test-b"},false)
     join.await({"nullius-test-b"})
+    trace("peer barrier armed")
     return
   end
   local peer=game.get_player("nullius-test-b")
@@ -64,24 +98,26 @@ script.on_nth_tick(30,function()
   if storage.stage=="peer" then
     if not peer.character or peer.force.name~="faction-"..peer.name then return end
     peer.force=storage.foreign
-    storage.stage="refresh";storage.start=game.tick
+    stage("refresh");storage.start=game.tick
   elseif storage.stage=="refresh" then
     if game.tick<storage.start+660 then return end
     own_alert(player,0)
     check(#alerts(peer,MESSAGE)==0,"alert leaked to another force")
-    storage.pole.destroy();storage.stage="relocate"
+    storage.pole.destroy();stage("relocate")
   elseif storage.stage=="relocate" then
     own_alert(player,9)
     player.force=storage.foreign
-    storage.stage="changed-force"
+    stage("changed-force")
   elseif storage.stage=="changed-force" then
     check(#alerts(player,MESSAGE)==0,"old force alert remained")
     player.force=storage.force
-    storage.stage="returned-force"
+    stage("returned-force")
   elseif storage.stage=="returned-force" then
     own_alert(player,9)
-    storage.stage="reload"
+    stage("reload")
+    storage.reload_tick=game.tick
     join.await({"nullius-test-a","nullius-test-b"})
+    trace("reload barrier armed")
     helpers.write_file("factorio-tests/multiplayer-action.json",helpers.table_to_json{id=2,action="reload"},false)
   elseif storage.stage=="reload" and storage.joins>=2 then
     own_alert(player,9)
@@ -96,7 +132,7 @@ script.on_nth_tick(30,function()
     check(not overload.offline(storage.other),"GUI reset failed")
     check(#alerts(player,MESSAGE)==0,"reset left an overload alert")
     check(#alerts(player,"Other alert")==1,"reset removed another alert")
-    storage.stage="overlap-start"
+    stage("overlap-start")
   elseif storage.stage=="overlap-start" then
     storage.foreign_pole=assert(storage.surface.create_entity{name="factorio-test-trip-pole",
       position={11,0},force=peer.force,raise_built=true})
@@ -105,7 +141,7 @@ script.on_nth_tick(30,function()
     assert(storage.surface.create_entity{name="factorio-test-trip-source-2000000",
       position={10,0},force=player.force})
     check(storage.foreign_pole.electric_network_id~=storage.other.electric_network_id,"overlap fixture has a wire")
-    storage.start=game.tick;storage.stage="overlap-wait"
+    storage.start=game.tick;stage("overlap-wait")
   elseif storage.stage=="overlap-wait" then
     if game.tick<storage.start+180 then return end
     check(overload.offline(storage.other) and overload.offline(storage.foreign_pole),"overlap did not latch both grids")
@@ -124,8 +160,10 @@ script.on_nth_tick(30,function()
     overload.click{player_index=peer.index,element=button}
     check(not overload.offline(storage.other) and not overload.offline(storage.foreign_pole),"reset did not clear shared group")
     check(#alerts(player,MESSAGE)==0 and #alerts(peer,MESSAGE)==0,"shared reset retained alerts")
-    storage.stage="finish"
+    stage("finish")
   elseif storage.stage=="finish" then
+    game.tick_paused=true
+    trace("complete")
     helpers.write_file("factorio-tests/"..CASE..".json",helpers.table_to_json{
       schema=1,case=CASE,status="pass",failure_count=0,assertions=storage.assertions,
       tick=game.tick,factorio_version=script.active_mods.base},false)
