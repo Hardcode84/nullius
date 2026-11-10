@@ -29,7 +29,7 @@ metals: dissolved traces; no ore deposits
 combustion: permitted with oxygen from water electrolysis
 pre_cargo: independent local bootstrap and electromagnetic research
 global_machine_reward: overcharged assemblers
-exports: advanced organics, polymers, carbon materials, rare traces
+exports: advanced organics, polymers, carbon materials, copper, rare traces
 imports: bulk metals, oxygen, water, nuclear devices
 ```
 
@@ -476,18 +476,89 @@ Design only. Fulgora is the sole primary copper source. Remove copper from
 asteroid mining; other planets must import it from Fulgora.
 
 Copper is concentrated in deep mineral-rich sediments beneath the hydrocarbon
-ocean. Surface vents do not supply recoverable copper at the starter stage.
+ocean, as in sediment-hosted copper on Earth: metal-bearing brines deposit
+copper sulfides where they meet reduced organic matter. Surface vents do not
+supply recoverable copper at the starter stage.
 
 | Stage | Copper route |
 |---|---|
 | Arrival | No copper from primitive filtration; use aluminum and polymer conductors |
-| Advanced EM industry | Deep extraction supplies a separate copper-bearing concentrate; chemical extraction and electrolysis recover copper |
-| Nuclear geoengineering | Expose deeper deposits for bulk copper production and export |
+| Deep drilling | A third extractor mode on hydrocarbon vents yields deep slurry; its filtration supplies a separate copper sulfide concentrate; roasting, leaching, and the existing electrowinning recover copper |
+| Crustal fracturing | Geoengineering charges open finite copper shale deposits for bulk copper production and export; see [Nuclear geoengineering](#nuclear-geoengineering) |
 
 Keep the copper-bearing feed separate from generic sludge. Copper production
 must not require copper to build or research its first extraction and processing
 line. Preserve copper's late-game role; validate the research and cargo gates
-before replacing the asteroid route.
+before replacing the asteroid route. Fulgora closes its own first launch, so
+copper export needs no imported launch components.
+
+#### Deep drilling
+
+```text
+vent -> extractor, deep mode -> deep slurry
+deep slurry -> deep slurry filtration -> filtered hydrocarbons + sludge
+                                         + copper sulfide concentrate + salt
+concentrate + oxygen -> roasting -> copper calcine + sulfur dioxide
+calcine + sulfuric acid -> leaching -> copper solution + iron oxide + sludge
+copper solution -> electrowinning -> copper ingot [existing]
+sulfur dioxide + water + oxygen -> sulfuric acid [existing]
+```
+
+| Property | Contract |
+|---|---|
+| Entity | `nullius-extractor-N-deep`: assembling-machine shell as the reinjection variant, with a fixed recipe that produces deep slurry |
+| Switch | Ctrl+R cycles extraction, reinjection, deep, extraction. The transition registry tries edges in order, so a locked mode is skipped |
+| Vent use | Exclusive: the vent hosts one extractor in one mode. A deep vent supplies no ice, so copper is paid in water from other vents |
+| Rate | Fixed per vent, independent of vent yield and extractor tier; vent count bounds deep copper; bulk copper comes from crustal fracturing |
+| Placement and lifecycle | As reinjection: on a Fulgora vent after research, otherwise extractor or removal; built, robot, revive, clone, upgrade, and script-raised paths |
+| Deep slurry filtration | Hydro plant; same output shape as slurry filtration with concentrate in place of ice; no planet restriction, as slurry filtration |
+| Roasting | Consumes oxygen, which Fulgora makes by water electrolysis |
+| Leaching | Returns the concentrate's iron as iron oxide and its gangue as sludge |
+| Sulfur | Roasting sulfur dioxide is a second local sulfur source beside gypsum |
+| Reinjection | Deep slurry is not accepted; concentrate and calcine are solids |
+| Boxed parity | Boxed filtration, roasting, and leaching unlock with the ordinary recipes |
+| Productivity | None on deep drilling; ordinary rules for the rest |
+
+| Research | Rule |
+|---|---|
+| Copper Production | Repurposed. Prerequisites: Astronomy, Primitive Filtration, Overcharged Assembly 2. The copper-ore checkpoint prerequisite is removed. Cost unchanged |
+| Unlocks | Deep mode, deep slurry filtration, roasting, leaching, electrowinning, wire, sheet, copper heat pipe, and their boxed and packaging recipes |
+| Crushed-ore flotation | Moves to the copper-ore checkpoint, which supplies its input; crustal fracturing later takes over the crushed-ore recipes |
+| Moved closures | Every dependent of Copper Production releases the copper-ore checkpoint, Asteroid Mining 1, and Mining Productivity 20 unless it keeps them through another prerequisite, and gains the Fulgora prerequisites. A release check states and verifies each dependent's closure |
+
+#### Crustal fracturing
+
+| Rule | Value |
+|---|---|
+| Charge | Fission, fusion, or antimatter; undecided |
+| Deposit | A finite copper shale patch on the fractured site, mined by drills into the existing `copper-ore`, crushing, and flotation route |
+| Creation | Shares one deposit-creation helper with mission goal 11 biomineralization; reuses the guide-drone patch creation |
+| Mission goal 10 | Counts opened deposits; the target stays 20 |
+
+#### Sequencing
+
+All 13 mission goals are required for victory (`scripts/mission.lua`). Goals 10
+and 11 count copper and uranium guide drones, so asteroid mining cannot be removed
+before both have replacements.
+
+| Step | Ships | Asteroid route |
+|---|---|---|
+| Deep drilling | Repurposed Copper Production; copper no longer requires asteroid mining | Kept for goals 10 and 11 and the crushed-ore recipes |
+| Crustal fracturing | Copper shale deposits; goal 10 counts them | Copper guide drones removed |
+| Gleba biomineralization | Goal 11 counts seeded deposits | Asteroid mining removed |
+
+#### Copper acceptance checks
+
+| Check | Expected result |
+|---|---|
+| Copper-free closure | Copper Production closes from the Fulgora boundary without `copper-ore` raw or any copper item, with `--require-no-additional-technologies` |
+| Dependents | The Copper Production dependents and Antimatter Containment close without Asteroid Mining 1 |
+| Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
+| Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
+| Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |
+| Vent supply | The planner bounds copper per vent and the water cost of a deep vent at the Electronics 4 research rate |
+| Boxed parity | Resolved-prototype inspection of every new product and its box |
+| Audits | `tests/progression/copper-sources.args` and `tests/progression/copper-consumers.args` list copper producers and consumers |
 
 ### Mineral ratios and sulfur
 
@@ -659,7 +730,7 @@ drops from 13.3 to 9.1 min, including the magnetic filtration change.
 | Wastewater filtration, condensation | More valuable: reinjecting wastewater discards scarce water |
 | Extractor tiers 2+ | Extraction rises; reinjection stays 10 units/s per vent |
 | Bulk filtration and cracking | Unchanged output streams |
-| Deep extraction and copper | Copper concentrate is not accepted |
+| Deep drilling and copper | A third mode of the same extractor; deep slurry is not accepted and the copper solids cannot be |
 | Nuclear geoengineering | Exposed ocean has no vent entities; bulk filtration processes its outputs |
 
 Water remains the scarce stream. In the seven-extractor Waste Reclamation case,
@@ -1181,11 +1252,11 @@ at Fulgora fill antimatter traps; this is the only antimatter source. See
 
 | Step | Proposed behavior |
 |---|---|
-| Prerequisite | Aquilo fusion research or imported Nauvis nuclear technology; choice unresolved |
-| Deployment | Use nuclear charges as geological tools |
+| Prerequisite | Aquilo fusion research, imported Nauvis fission technology, or Fulgora antimatter; choice unresolved |
+| Deployment | Use charges as geological tools |
 | Terrain change | Fracture the crust and expose large areas of hydrocarbon ocean |
 | Construction | Use specialized foundations on unstable, fluid-rich terrain |
-| Production | Replace limited fountain extraction with bulk surface filtration; expose deeper copper deposits |
+| Production | Replace limited fountain extraction with bulk surface filtration; open finite copper shale deposits; see [Crustal fracturing](#crustal-fracturing) |
 
 The shared endgame also proposes repurposing these charges for orbital defence.
 
