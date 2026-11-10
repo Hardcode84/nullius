@@ -472,8 +472,9 @@ are an external fuel input. Prove the first oxygen batch with probe power.
 
 ### Late-game copper
 
-Design only. Fulgora is the sole primary copper source. Remove copper from
-asteroid mining; other planets must import it from Fulgora.
+Deep drilling is implemented. Crustal fracturing and asteroid removal remain
+design only. After removal, Fulgora is the sole primary copper source; other
+planets must import it.
 
 Copper is concentrated in deep mineral-rich sediments beneath the hydrocarbon
 ocean, as in sediment-hosted copper on Earth: metal-bearing brines deposit
@@ -543,7 +544,7 @@ before both have replacements.
 
 | Step | Ships | Asteroid route |
 |---|---|---|
-| Deep drilling | Repurposed Copper Production; copper no longer requires asteroid mining | Kept for goals 10 and 11 and the crushed-ore recipes |
+| Deep drilling (implemented) | Repurposed Copper Production; copper no longer requires asteroid mining | Kept for goals 10 and 11 and the crushed-ore recipes |
 | Crustal fracturing | Copper shale deposits; goal 10 counts them | Copper guide drones removed |
 | Gleba biomineralization | Goal 11 counts seeded deposits | Asteroid mining removed |
 
@@ -553,12 +554,12 @@ before both have replacements.
 |---|---|
 | Copper-free closure | Copper Production closes from the Fulgora boundary without `copper-ore` raw or any copper item, with `--require-no-additional-technologies` |
 | Asteroid-free copper | Copper Production, the copper-ingot checkpoint, Electronics 4, Solar Power 3, Braking 9, and Antimatter Containment close without any asteroid-mining technology |
-| Dependents | A release check compares every technology's closure with the former tree under the moved-closure rule above; `tests/progression/copper-research-roots.args` lists the closures of the dependents' other prerequisites |
+| Dependents | `tools/check_copper_research.py` compares every technology's closure with the former tree under the moved-closure rule above; `tests/progression/copper-research-roots.args` lists the closures of the dependents' other prerequisites |
 | Final removal | When asteroid mining is removed, no technology closure contains an asteroid-mining technology |
 | Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
 | Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |
-| Vent supply | The planner bounds copper per vent and the water cost of a deep vent at the Electronics 4 research rate |
+| Vent supply | `tests/progression/planner/fulgora-deep-copper.json` measures ingot supply and net water demand at Electronics 4. Water, power, and machines are supplied; salt and iron oxide leave for mineral disposal. Science at this boundary does not consume copper |
 | Boxed parity | Resolved-prototype inspection of every new product and its box |
 | Audits | `tests/progression/copper-sources.args` and `tests/progression/copper-consumers.args` list copper producers and consumers |
 

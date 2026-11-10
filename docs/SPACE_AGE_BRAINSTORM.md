@@ -14,7 +14,7 @@
 | Conflict | Nullius Current | Space Age Expects | Resolution Options |
 |---|---|---|---|
 | **Coal/oil** | Removed entirely | Vulcanus uses coal-like processes; Gleba produces bioflux | A) Keep removed on Nauvis, available on other planets. B) Replace SA planet resources with Nullius equivalents. |
-| **Copper** | Asteroid-only (endgame) | Available as basic resource everywhere | Fulgora is the sole primary source; deep drilling and crustal fracturing replace asteroid copper. See [Fulgora design](PLANET_FULGORA.md#late-game-copper). |
+| **Copper** | Fulgora deep drilling and asteroid mining | Available as basic resource everywhere | Fulgora is the sole primary source; deep drilling and crustal fracturing replace asteroid copper. See [Fulgora design](PLANET_FULGORA.md#late-game-copper). |
 | **Vanilla recipes** | All replaced | SA adds planet-specific recipes assuming vanilla chains | Must create Nullius-compatible versions of all SA recipes. |
 | **Vanilla intermediates** | Replaced (aluminum wire instead of copper, etc.) | SA builds on vanilla intermediates | Remap SA intermediates to Nullius equivalents. |
 
@@ -1495,12 +1495,13 @@ fusion become two parallel branches that share only the reactor.
 
 #### Asteroid mining removal
 
-Asteroid mining is today's only source of copper ore and uranium ore: no recipe
-produces either, and only guide-drone impacts create their patches. Victory
+Asteroid mining supplies copper ore and uranium ore. Deep drilling supplies
+copper solution without ore. No unlocked recipe produces either ore; only
+guide-drone impacts create their patches. Victory
 requires all 13 mission goals, and goals 10 and 11 count copper and uranium guide
 drones, so the removal ships after both goals have replacements: copper guide
 drones go with Fulgora crustal fracturing, the rest with Gleba biomineralization.
-Fulgora deep drilling ships first and removes asteroid mining from the copper
+Fulgora deep drilling is implemented and removes asteroid mining from the copper
 research path. See [Fulgora copper sequencing](PLANET_FULGORA.md#sequencing).
 
 | Removed | Contents |
@@ -1514,7 +1515,7 @@ research path. See [Fulgora copper sequencing](PLANET_FULGORA.md#sequencing).
 | Reconnaissance 3 | Requires Asteroid Mining 1 | Keeps its closure without the removed branch |
 | Battery Storage 5 | Requires Asteroid Mining 3 | Same |
 | Rocket Science 3 and the probe | Requires Asteroid Mining 2; the probe recipe takes an asteroid miner | The asteroid miner ingredient is replaced; the probe keeps its other inputs |
-| Copper Production | Requires the copper-ore checkpoint | Requires Astronomy, Primitive Filtration, and Overcharged Assembly 2; unlocks Fulgora deep drilling. Changed with deep drilling, before the removal |
+| Copper Production | Requires Astronomy, Primitive Filtration, and Overcharged Assembly 2; unlocks deep drilling | Implemented before asteroid removal |
 | Uranium-ore checkpoint | Unlocks crushed uranium ore and ore yellowcake; Uranium Processing no longer requires it | Removed; ore yellowcake moves to the research that creates Nauvis deposits, so remaining patches stay usable |
 | Mission goal 10 | 20 copper guide drones | 20 copper shale deposits opened by Fulgora crustal fracturing; charge type undecided |
 | Mission goal 11 | 12 uranium guide drones | 12 biomineralized uranium deposits; see below |

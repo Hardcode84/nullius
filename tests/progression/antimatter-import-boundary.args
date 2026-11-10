@@ -1,7 +1,7 @@
 @tests/progression/nauvis-boundary.args
 --recipe
 nullius-yellowcake=nullius-yellowcake-precipitation
---raw
-copper-ore
+--available
+nullius-copper-ingot
 --available
 nullius-antimatter

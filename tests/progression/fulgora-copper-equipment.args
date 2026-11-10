@@ -1,0 +1,14 @@
+@tests/progression/fulgora-copper-boundary.args
+@tests/progression/forbid-copper.args
+--forbid-product
+nullius-copper-concentrate
+--forbid-product
+nullius-copper-calcine
+nullius-extractor-1
+nullius-hydro-plant-1
+nullius-chemical-plant-1
+nullius-flotation-cell-1
+nullius-electrolyzer-1
+nullius-foundry-1
+pipe
+inserter

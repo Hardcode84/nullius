@@ -1,6 +1,9 @@
 local reinjection={}
 local bases={}
-for tier=1,2 do bases["nullius-extractor-"..tier.."-reinjection"]="nullius-extractor-"..tier end
+local research={reinjection="nullius-primitive-filtration",deep="nullius-copper-production"}
+for tier=1,2 do
+  for mode in pairs(research) do bases["nullius-extractor-"..tier.."-"..mode]="nullius-extractor-"..tier end
+end
 
 local function on_vent(entity)
   local surface=entity.surface
@@ -9,8 +12,8 @@ local function on_vent(entity)
   return surface.count_entities_filtered{name="nullius-hydrocarbon-vent",
     area={{p.x-0.99,p.y-0.99},{p.x+0.99,p.y+0.99}}}>0
 end
-local function unlocked(force)
-  return force.technologies["nullius-primitive-filtration"].researched
+local function unlocked(force,mode)
+  return force.technologies[research[mode]].researched
 end
 
 -- Switching preserves health, electrical charge, ghost tags and circuit wires.
@@ -47,11 +50,12 @@ function reinjection.replace(entity,name,force)
   return replacement
 end
 
--- A reinjector requires a Fulgora vent. Locked placements become extractors;
+-- Deep drilling and reinjection require a Fulgora vent. Locked placements become extractors;
 -- invalid real placements return their item, while invalid ghosts are removed.
 function reinjection.built(entity)
   local ghost=entity.type=="entity-ghost"
-  local base=bases[ghost and entity.ghost_name or entity.name]
+  local name=ghost and entity.ghost_name or entity.name
+  local base=bases[name]
   if not base then return entity end
   if not on_vent(entity) then
     local surface,position,quality=entity.surface,entity.position,entity.quality
@@ -62,18 +66,26 @@ function reinjection.built(entity)
     end
     return nil
   end
-  if not unlocked(entity.force) then return reinjection.replace(entity,base,entity.force) end
+  if not unlocked(entity.force,name:match("%-(%a+)$")) then return reinjection.replace(entity,base,entity.force) end
   return entity
 end
 
 function reinjection.register()
   local transitions=require("scripts.transitions")
-  for variant,base in pairs(bases) do
-    transitions.register(base,variant,{
-      condition=function(entity,force) return unlocked(force) and on_vent(entity) end,
-      replace_fn=reinjection.replace,
-    })
-    transitions.register(variant,base,{replace_fn=reinjection.replace})
+  for tier=1,2 do
+    local base="nullius-extractor-"..tier
+    local inject,deep=base.."-reinjection",base.."-deep"
+    local function edge(from,to,mode)
+      transitions.register(from,to,{
+        condition=mode and function(entity,force) return unlocked(force,mode) and on_vent(entity) end or nil,
+        replace_fn=reinjection.replace,
+      })
+    end
+    edge(base,inject,"reinjection")
+    edge(base,deep,"deep")
+    edge(inject,deep,"deep")
+    edge(inject,base)
+    edge(deep,base)
   end
 end
 return reinjection

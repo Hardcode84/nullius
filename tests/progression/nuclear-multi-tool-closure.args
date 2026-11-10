@@ -1,8 +1,8 @@
 @tests/progression/nauvis-boundary.args
 --recipe
 nullius-yellowcake=nullius-yellowcake-precipitation
---raw
-copper-ore
+--available
+nullius-copper-ingot
 --technology
 nullius-cybernetics-6
 --require-no-additional-technologies

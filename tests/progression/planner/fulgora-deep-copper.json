@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "fuel": "nullius-compressed-volcanic-gas",
+  "heat_controller": "nullius-star/scripts/vulcanus_heat.lua",
+  "electric_grid": true,
+  "entrance_technologies": [
+    "nullius-electronics-4"
+  ],
+  "science_rates_per_minute": [
+    30,
+    36,
+    60,
+    120
+  ],
+  "uncertain_outputs": "guaranteed",
+  "raw": [
+    "nullius-water"
+  ],
+  "prime_stock": {},
+  "solid_discard": [
+    "nullius-salt",
+    "nullius-iron-oxide"
+  ],
+  "wreck_machines": {
+    "nullius-extractor-1": 100,
+    "nullius-hydro-plant-1": 100,
+    "nullius-chemical-plant-1": 100,
+    "nullius-flotation-cell-1": 100,
+    "nullius-electrolyzer-1": 100,
+    "nullius-chimney-1": 100
+  },
+  "lab": "nullius-lab-1",
+  "extractors": {},
+  "assumptions": {
+    "boundary": "Copper processing at Electronics 4. Rate means ingots per minute, not science packs. Science packs at this boundary do not consume copper.",
+    "water": "Water supplied from the separate ice line; net water demand includes oxygen electrolysis and sulfuric acid. Electricity and machines supplied.",
+    "waste": "Reservoir fluids use reinjection; gases use chimney recipes. Salt and iron oxide leave for the separate mineral disposal line. No modules, beacons or research productivity.",
+    "construction": "Process capacity only. The separate copper equipment prerequisite contract checks local construction."
+  },
+  "stages": [
+    {
+      "name": "deep-copper",
+      "contract": "tests/progression/fulgora-copper-boundary.args",
+      "technologies": [
+        "nullius-electronics-4"
+      ],
+      "research_roots": [],
+      "products": {
+        "nullius-copper-ingot": 1
+      },
+      "machines": [
+        "nullius-extractor-1-deep",
+        "nullius-extractor-1-reinjection",
+        "nullius-hydro-plant-1",
+        "nullius-chemical-plant-1",
+        "nullius-flotation-cell-1",
+        "nullius-priority-electrolyzer-1",
+        "nullius-chimney-1"
+      ],
+      "excluded_recipes": [
+        "nullius-boxed-deep-slurry-filtration",
+        "nullius-boxed-copper-roasting",
+        "nullius-boxed-copper-leaching",
+        "nullius-boxed-copper-ingot",
+        "nullius-crude-sludge-filtration",
+        "nullius-magnetic-sludge-filtration"
+      ]
+    }
+  ]
+}

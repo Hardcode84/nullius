@@ -26,5 +26,14 @@ for tier=1,2 do
   box.production_type="input"
   for _,connection in ipairs(box.pipe_connections) do connection.flow_direction="input" end
   variant.fluid_boxes={box}
-  data:extend({variant})
+  local deep=table.deepcopy(variant)
+  deep.name=name.."-deep"
+  deep.localised_name={"entity-name.nullius-deep-drilling",base.localised_name or {"entity-name."..name}}
+  deep.localised_description={"entity-description.nullius-deep-drilling"}
+  deep.crafting_categories={"nullius-deep-drilling"}
+  deep.fixed_recipe="nullius-deep-drilling"
+  deep.next_upgrade=tier==1 and "nullius-extractor-2-deep" or nil
+  deep.fluid_boxes={table.deepcopy(base.output_fluid_box)}
+  deep.fluid_boxes[1].production_type="output"
+  data:extend({variant,deep})
 end

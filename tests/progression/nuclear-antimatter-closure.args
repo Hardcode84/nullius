@@ -1,6 +1,6 @@
 @tests/progression/nauvis-boundary.args
---raw
-copper-ore
+--available
+nullius-copper-ingot
 --technology
 nullius-antimatter-containment
 --require-no-additional-technologies

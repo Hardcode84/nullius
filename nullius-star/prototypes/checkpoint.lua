@@ -2204,6 +2204,8 @@ data:extend({
           checkmark(2)
     },
 	effects = {
+      {type="unlock-recipe", recipe="nullius-copper-solution"},
+      {type="unlock-recipe", recipe="nullius-boxed-copper-solution"},
 	  {
         type = "unlock-recipe",
         recipe = "nullius-box-copper-ore"

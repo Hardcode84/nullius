@@ -30,7 +30,8 @@ for kind in pairs(require("collision-mask-defaults")) do
     local mask = masks.get_mask(entity)
     local extractor = (kind=="mining-drill" and
       (name:find("nullius-extractor-",1,true)==1 or name=="pumpjack")) or
-      (kind=="assembling-machine" and name:match("^nullius%-extractor%-%d+%-reinjection$"))
+      (kind=="assembling-machine" and (name:match("^nullius%-extractor%-%d+%-reinjection$") or
+        name:match("^nullius%-extractor%-%d+%-deep$")))
     local elevated = kind:find("elevated-",1,true)==1
     if defines.prototypes.entity[kind] and not allowed[kind] and not extractor and not elevated and
         name~="nullius-hydrocarbon-vent" and not coils[name] and not require("shared.astronomy").is_dish(name) and

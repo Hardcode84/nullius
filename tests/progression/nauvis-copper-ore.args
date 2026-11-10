@@ -1,0 +1,16 @@
+@tests/progression/nauvis-boundary.args
+--raw
+copper-ore
+--technology
+nullius-copper-production
+--technology
+nullius-checkpoint-copper-ore
+--recipe
+nullius-copper-solution=nullius-copper-solution
+--require-no-additional-technologies
+nullius-copper-ingot
+nullius-copper-wire
+nullius-copper-sheet
+nullius-box-copper-ingot
+nullius-box-copper-wire
+nullius-box-copper-sheet

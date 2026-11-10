@@ -13343,10 +13343,17 @@ data:extend({
     icon_size = 256,
     
     effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-copper-solution"
-      },
+      {type="unlock-recipe", recipe="nullius-deep-drilling"},
+      {type="unlock-recipe", recipe="nullius-deep-slurry-filtration"},
+      {type="unlock-recipe", recipe="nullius-boxed-deep-slurry-filtration"},
+      {type="unlock-recipe", recipe="nullius-copper-roasting"},
+      {type="unlock-recipe", recipe="nullius-boxed-copper-roasting"},
+      {type="unlock-recipe", recipe="nullius-copper-leaching"},
+      {type="unlock-recipe", recipe="nullius-boxed-copper-leaching"},
+      {type="unlock-recipe", recipe="nullius-box-copper-concentrate"},
+      {type="unlock-recipe", recipe="nullius-unbox-copper-concentrate"},
+      {type="unlock-recipe", recipe="nullius-box-copper-calcine"},
+      {type="unlock-recipe", recipe="nullius-unbox-copper-calcine"},
       {
         type = "unlock-recipe",
         recipe = "nullius-copper-ingot"
@@ -13358,10 +13365,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-copper-sheet"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-boxed-copper-solution"
       },
       {
         type = "unlock-recipe",
@@ -13418,7 +13421,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-checkpoint-copper-ore"}
+    prerequisites = {"nullius-astronomy", "nullius-primitive-filtration", "nullius-overcharged-assembly-2"}
   },
   {
     type = "technology",
