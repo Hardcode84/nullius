@@ -1,0 +1,11 @@
+@tests/progression/nauvis-boundary.args
+--recipe
+nullius-yellowcake=nullius-yellowcake-precipitation
+--technology
+nullius-uranium-enrichment
+--require-no-additional-technologies
+nullius-centrifuge
+nullius-low-enriched-uf6
+nullius-reactor-grade-uf6
+nullius-enriched-uranium
+nullius-uranium

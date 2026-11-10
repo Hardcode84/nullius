@@ -1954,7 +1954,7 @@ extend_mod_prototypes({
       },
       time = 60
     },
-    prerequisites = {"nullius-copper-production", "nullius-uranium-processing"}
+    prerequisites = {"nullius-copper-production", "nullius-uranium-enrichment"}
   }
 })
 end

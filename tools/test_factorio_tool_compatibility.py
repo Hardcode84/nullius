@@ -886,7 +886,7 @@ def run(factorio, dependency_mod_directory, scenarios=()):
     primitive = json.loads((work / "script-output/factorio-tests/primitive-recipes.json").read_text())
     assert primitive["status"] == "pass" and primitive["recipes"] == 5, primitive
     intermediate = json.loads((work / "script-output/factorio-tests/intermediate-recipes.json").read_text())
-    assert intermediate["status"] == "pass" and intermediate["recipes"] == 293, intermediate
+    assert intermediate["status"] == "pass" and intermediate["recipes"] == 291, intermediate
     fluid_recipes = json.loads((work / "script-output/factorio-tests/fluid-recipes.json").read_text())
     assert fluid_recipes["status"] == "pass" and fluid_recipes["recipes"] == 224, fluid_recipes
     biology = json.loads((work / "script-output/factorio-tests/biology-recipes.json").read_text())

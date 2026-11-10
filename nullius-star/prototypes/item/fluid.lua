@@ -23,6 +23,7 @@ element_tint = {
   ["oxygen"] = { 224, 16, 16 },
   ["nitrogen"] = { 40, 80, 192 },
   ["chlorine"] = { 32, 224, 32 },
+  ["fluorine"] = { 220, 230, 120 },
   ["calcium"] = { 96, 128, 64 },
   ["sulfur"] = { 224, 208, 0 },
   ["sodium"] = { 150, 40, 180 },
@@ -759,6 +760,21 @@ extend_fluid_prototypes({
   },
   {
     type = "fluid",
+    name = "nullius-fluorine",
+    icons = angelsLegacy.functions.create_gas_fluid_icon(nil,
+      {element_tint["fluorine"], element_tint["fluorine"], element_tint["fluorine"]}
+    ),
+    subgroup = "inorganic-chemistry",
+    order = "nullius-da",
+    base_color = {r = 0.86, g = 0.9, b = 0.47},
+    flow_color = {r = 0.86, g = 0.9, b = 0.47},
+    heat_capacity = "0.04kJ",
+    default_temperature = 25,
+    max_temperature = 100,
+    gas_temperature = 0
+  },
+  {
+    type = "fluid",
     name = "nullius-caustic-solution",
     icons = angelsLegacy.functions.create_liquid_fluid_icon(
       {FLUIDPATH .. "sodium-hydroxide.png",
@@ -844,6 +860,23 @@ extend_fluid_prototypes({
     order = "nullius-e",
     base_color = {r = 0.7, g = 1, b = 0.7},
     flow_color = {r = 0.7, g = 1, b = 0.7},
+    heat_capacity = "0.04kJ",
+    default_temperature = 25,
+    max_temperature = 100,
+    gas_temperature = 0
+  },
+  {
+    type = "fluid",
+    name = "nullius-hydrogen-fluoride",
+    icons = angelsLegacy.functions.create_gas_fluid_icon(
+      {"__angelspetrochemgraphics__/graphics/icons/molecules/hydrofluoric-acid.png",
+        72, nil, 0.15},
+      {element_tint["fluorine"], element_tint["fluorine"], element_tint["hydrogen"]}
+    ),
+    subgroup = "acid-chemistry",
+    order = "nullius-ea",
+    base_color = {r = 0.86, g = 0.95, b = 0.75},
+    flow_color = {r = 0.86, g = 0.95, b = 0.75},
     heat_capacity = "0.04kJ",
     default_temperature = 25,
     max_temperature = 100,
@@ -1510,6 +1543,33 @@ extend_fluid_prototypes({
     results = {
       {type="fluid", name="nullius-hydrogen", amount=120, fluidbox_index=1},
       {type="fluid", name="nullius-chlorine", amount=120, fluidbox_index=3}
+    }
+  },
+  {
+    type = "recipe",
+    name = "nullius-hydrogen-fluoride-electrolysis",
+    icons = angelsLegacy.functions.create_gas_recipe_icon(
+        {{"__angelspetrochemgraphics__/graphics/icons/molecules/hydrogen.png", 72}},
+      {element_tint["hydrogen"], element_tint["fluorine"], element_tint["fluorine"]},
+      nil
+    ),
+    enabled = false,
+    categories = {"nullius-electrolysis"},
+    subgroup = "chlorine-chemistry",
+    order = "nullius-ca",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-hydrogen"].flow_color,
+      secondary = data.raw.fluid["nullius-fluorine"].flow_color
+    },
+    energy_required = 1,
+    no_productivity = true,
+    hide_from_signal_gui = false,
+    ingredients = {
+      {type="fluid", name="nullius-hydrogen-fluoride", amount=240}
+    },
+    results = {
+      {type="fluid", name="nullius-hydrogen", amount=120, fluidbox_index=1},
+      {type="fluid", name="nullius-fluorine", amount=120, fluidbox_index=3}
     }
   },
   {

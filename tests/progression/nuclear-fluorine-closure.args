@@ -1,0 +1,7 @@
+@tests/progression/nauvis-boundary.args
+--technology
+nullius-fluorine-chemistry
+--require-no-additional-technologies
+nullius-fluorite
+nullius-hydrogen-fluoride
+nullius-fluorine

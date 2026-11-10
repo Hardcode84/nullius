@@ -6,10 +6,22 @@ local function assert_reactor(force)
 end
 
 -- Ore yellowcake moved from Uranium Processing to the uranium-ore checkpoint, its
--- former prerequisite. Seawater uranium is new research the save has not done.
+-- former prerequisite. Uranium smelting and tritium enrichment were replaced by
+-- conversion and centrifuge enrichment, which the migration researches. Seawater
+-- uranium is new research the save has not done.
 local function assert_uranium(force)
-  for _,name in ipairs({"nullius-crushed-uranium-ore","nullius-yellowcake","nullius-uranium","nullius-enriched-uranium"}) do
+  for _,name in ipairs({"nullius-fluorine-chemistry","nullius-uranium-enrichment"}) do
+    assert(force.technologies[name].researched,"researched Uranium Processing did not receive "..name)
+  end
+  for _,name in ipairs({"nullius-crushed-uranium-ore","nullius-yellowcake","nullius-fluorite",
+    "nullius-hydrogen-fluoride","nullius-hydrogen-fluoride-electrolysis","nullius-uranium-dioxide",
+    "nullius-uranium-tetrafluoride","nullius-uf6-cylinder","nullius-natural-uf6","nullius-centrifuge",
+    "nullius-low-enriched-uf6","nullius-reactor-grade-uf6","nullius-enriched-uranium-deconversion",
+    "nullius-uranium-deconversion"}) do
     assert(force.recipes[name].enabled,"researched Uranium Processing lost "..name)
+  end
+  for _,name in ipairs({"nullius-uranium","nullius-enriched-uranium"}) do
+    assert(not force.recipes[name],"removed recipe "..name.." remains")
   end
   assert(not force.technologies["nullius-seawater-uranium-adsorption"].researched,"seawater uranium researched by upgrade")
   assert(not force.recipes["nullius-yellowcake-precipitation"].enabled,"seawater uranium unlocked by upgrade")
@@ -47,6 +59,7 @@ remote.add_interface("release-upgrade",{
     assert(not control.technologies["nullius-nuclear-reactor"].researched,"migration researched reactors without Nuclear Power 1")
     assert(not control.recipes["nullius-reactor"].enabled,"unresearched force has reactors")
     assert(not control.recipes["nullius-yellowcake"].enabled,"unresearched force has yellowcake")
+    assert(not control.technologies["nullius-uranium-enrichment"].researched,"migration researched enrichment without Uranium Processing")
     helpers.write_file("upgrade-result.json",helpers.table_to_json{status="pass",astronomy_research=true,
       recordings=true,planet_gates=true,reactor_split=true},false)
   end,

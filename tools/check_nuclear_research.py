@@ -9,12 +9,15 @@ import analyze_factorio_prereqs as prereqs
 REACTOR = 'nullius-nuclear-reactor'
 FUSION = 'nullius-nuclear-power-1'
 SEAWATER = 'nullius-seawater-uranium-adsorption'
+FLUORINE = 'nullius-fluorine-chemistry'
 URANIUM = 'nullius-uranium-processing'
+ENRICHMENT = 'nullius-uranium-enrichment'
 FISSION = 'nullius-nuclear-power-4'
 ANTIMATTER = 'nullius-antimatter-containment'
 URANIUM_ORE = 'nullius-checkpoint-uranium-ore'
 ISOTOPES = 'nullius-isotope-separation'
 ASTRONOMY = 'nullius-astronomy'
+WILDLIFE = 'nullius-wildlife-management-1'
 # Prerequisites before the split. The reactor research is the part split from
 # Nuclear Power 1, so it stays in that technology's former closure.
 FORMER_PREREQUISITES = {
@@ -22,14 +25,18 @@ FORMER_PREREQUISITES = {
     URANIUM: [URANIUM_ORE, 'nullius-nuclear-power-3'],
     FISSION: [URANIUM, 'nullius-checkpoint-breeder-cell', 'nullius-boiling-4'],
     ANTIMATTER: ['nullius-solar-power-3', 'nullius-checkpoint-enriched-uranium'],
+    WILDLIFE: ['nullius-checkpoint-copper-ingot', URANIUM, 'nullius-checkpoint-worm', 'nullius-personal-storage-3'],
 }
 PREREQUISITES = {
     REACTOR: ['nullius-checkpoint-thermal-tank', 'nullius-empiricism-5'],
     FUSION: [REACTOR, 'nullius-checkpoint-tritium'],
     SEAWATER: ['nullius-biochemistry-4'],
-    # Tritium enrichment needs Isotope Separation until enrichment replaces it.
-    URANIUM: [SEAWATER, ISOTOPES],
-    FISSION: [URANIUM, REACTOR],
+    FLUORINE: ['nullius-electrolysis-4'],
+    URANIUM: [SEAWATER, FLUORINE],
+    ENRICHMENT: [URANIUM],
+    FISSION: [ENRICHMENT, REACTOR],
+    # Uranium comes only from enrichment tails, so its consumers follow enrichment.
+    WILDLIFE: ['nullius-checkpoint-copper-ingot', ENRICHMENT, 'nullius-checkpoint-worm', 'nullius-personal-storage-3'],
     # Antimatter traps consume breeder and fission cells; the fusion ladder that
     # fission dropped is required again where the branches meet.
     ANTIMATTER: ['nullius-solar-power-3', 'nullius-checkpoint-enriched-uranium',
@@ -47,24 +54,34 @@ RECIPE_UNLOCKS = {
     # Ore yellowcake stays with its ore, which Uranium Processing no longer requires.
     'nullius-crushed-uranium-ore': URANIUM_ORE,
     'nullius-yellowcake': URANIUM_ORE,
-    'nullius-uranium': URANIUM,
-    'nullius-enriched-uranium': URANIUM,
+    'nullius-fluorite': FLUORINE,
+    'nullius-hydrogen-fluoride': FLUORINE,
+    'nullius-hydrogen-fluoride-electrolysis': FLUORINE,
+    'nullius-uranium-dioxide': URANIUM,
+    'nullius-uranium-tetrafluoride': URANIUM,
+    'nullius-uf6-cylinder': URANIUM,
+    'nullius-natural-uf6': URANIUM,
+    'nullius-centrifuge': ENRICHMENT,
+    'nullius-low-enriched-uf6': ENRICHMENT,
+    'nullius-reactor-grade-uf6': ENRICHMENT,
+    'nullius-enriched-uranium-deconversion': ENRICHMENT,
+    'nullius-uranium-deconversion': ENRICHMENT,
     'nullius-fission-cell': FISSION,
     'nullius-fission-recycling': FISSION,
 }
 # Fission no longer passes through the fusion ladder or Astronomy. Its
 # technologies and the fission checkpoint are checked by their prerequisites.
-FISSION_BRANCH = {SEAWATER, URANIUM, FISSION, 'nullius-checkpoint-enriched-uranium'}
+FISSION_BRANCH = {SEAWATER, FLUORINE, URANIUM, ENRICHMENT, FISSION, 'nullius-checkpoint-enriched-uranium'}
 
 
 def closure_rules(technologies):
     """Return the research uranium consumers may drop and gain.
 
     Consumers of Uranium Processing reached breeder research and the uranium
-    ore checkpoint only through it, and now reach its new prerequisites.
+    ore checkpoint only through it, and now reach enrichment and its closure.
     """
     released = frozenset({'nullius-nuclear-power-3'} | prereqs.technology_closure(technologies, {URANIUM_ORE}))
-    gained = frozenset(prereqs.technology_closure(technologies, set(PREREQUISITES[URANIUM])))
+    gained = frozenset(prereqs.technology_closure(technologies, {ENRICHMENT}))
     return released, gained
 
 

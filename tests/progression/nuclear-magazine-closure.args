@@ -1,0 +1,9 @@
+@tests/progression/nauvis-boundary.args
+--recipe
+nullius-yellowcake=nullius-yellowcake-precipitation
+--raw
+copper-ore
+--technology
+nullius-wildlife-management-1
+--require-no-additional-technologies
+nullius-magazine-2

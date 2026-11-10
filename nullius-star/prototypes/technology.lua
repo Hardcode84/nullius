@@ -11478,6 +11478,37 @@ data:extend({
   },
   {
     type = "technology",
+    name = "nullius-fluorine-chemistry",
+    order = "nullius-fm",
+    icon_size = 72,
+    icon = "__angelspetrochemgraphics__/graphics/icons/molecules/hydrofluoric-acid.png",
+    effects = {
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-fluorite"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-hydrogen-fluoride"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-hydrogen-fluoride-electrolysis"
+      }
+    },
+    unit = {
+      count = 2400,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2}
+      },
+      time = 50
+    },
+    prerequisites = {"nullius-electrolysis-4"}
+  },
+  {
+    type = "technology",
     name = "nullius-personal-storage-2",
     order = "nullius-fm",
     icon = "__base__/graphics/technology/toolbelt.png",
@@ -13429,17 +13460,23 @@ data:extend({
     type = "technology",
     name = "nullius-uranium-processing",
     order = "nullius-gd",
-    icon = "__base__/graphics/technology/kovarex-enrichment-process.png",
-    icon_size = 256,
-    
+    icons = data.raw.item["nullius-uranium-tetrafluoride"].icons,
     effects = {
       {
         type = "unlock-recipe",
-        recipe = "nullius-uranium"
+        recipe = "nullius-uranium-dioxide"
       },
       {
         type = "unlock-recipe",
-        recipe = "nullius-enriched-uranium"
+        recipe = "nullius-uranium-tetrafluoride"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-uf6-cylinder"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-natural-uf6"
       }
     },
     unit = {
@@ -13451,8 +13488,46 @@ data:extend({
       },
       time = 60
     },
-    -- Tritium enrichment needs Isotope Separation until enrichment replaces it.
-    prerequisites = {"nullius-seawater-uranium-adsorption", "nullius-isotope-separation"}
+    prerequisites = {"nullius-seawater-uranium-adsorption", "nullius-fluorine-chemistry"}
+  },
+  {
+    type = "technology",
+    name = "nullius-uranium-enrichment",
+    order = "nullius-gda",
+    icon = "__base__/graphics/technology/kovarex-enrichment-process.png",
+    icon_size = 256,
+    effects = {
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-centrifuge"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-low-enriched-uf6"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-reactor-grade-uf6"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-enriched-uranium-deconversion"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-uranium-deconversion"
+      }
+    },
+    unit = {
+      count = 6000,
+      ingredients = {
+        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
+      },
+      time = 60
+    },
+    prerequisites = {"nullius-uranium-processing"}
   },
   {
     type = "technology",
@@ -13673,7 +13748,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-uranium-processing", "nullius-nuclear-reactor"}
+    prerequisites = {"nullius-uranium-enrichment", "nullius-nuclear-reactor"}
   },
   {
     type = "technology",
@@ -14059,7 +14134,7 @@ data:extend({
       },
       time = 60
     },
-    prerequisites = {"nullius-checkpoint-copper-ingot", "nullius-uranium-processing",
+    prerequisites = {"nullius-checkpoint-copper-ingot", "nullius-uranium-enrichment",
 	    "nullius-checkpoint-worm", "nullius-personal-storage-3" }
   },
   {

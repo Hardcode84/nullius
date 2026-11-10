@@ -8,16 +8,18 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
 import analyze_factorio_prereqs as prereqs
-from check_nuclear_research import (ANTIMATTER, ASTRONOMY, FISSION, FISSION_BRANCH, FORMER_PREREQUISITES, FUSION,
-                                    ISOTOPES, REACTOR, RECIPE_UNLOCKS, SEAWATER, URANIUM, URANIUM_ORE,
-                                    closure_rules, research_violations)
+from check_nuclear_research import (ANTIMATTER, ASTRONOMY, ENRICHMENT, FISSION, FISSION_BRANCH, FLUORINE,
+                                    FORMER_PREREQUISITES, FUSION, ISOTOPES, PREREQUISITES, REACTOR, RECIPE_UNLOCKS,
+                                    SEAWATER, URANIUM, URANIUM_ORE, WILDLIFE, closure_rules, research_violations)
 
 
 def nuclear_tree():
     prerequisites = {
         "nullius-empiricism-5": [],
         "nullius-checkpoint-thermal-tank": [],
-        ISOTOPES: [],
+        "nullius-electrolysis-4": [],
+        ISOTOPES: ["nullius-electrolysis-4"],
+        FLUORINE: ["nullius-electrolysis-4"],
         "nullius-checkpoint-tritium": [ISOTOPES],
         "nullius-biochemistry-4": [],
         SEAWATER: ["nullius-biochemistry-4"],
@@ -30,9 +32,13 @@ def nuclear_tree():
         "nullius-checkpoint-pressure-steam": ["nullius-nuclear-power-3"],
         "nullius-boiling-4": ["nullius-checkpoint-pressure-steam"],
         URANIUM_ORE: [ASTRONOMY],
-        URANIUM: [SEAWATER, ISOTOPES],
-        "nullius-wildlife-management-1": [URANIUM],
-        FISSION: [URANIUM, REACTOR],
+        URANIUM: [SEAWATER, FLUORINE],
+        ENRICHMENT: [URANIUM],
+        "nullius-checkpoint-copper-ingot": [],
+        "nullius-checkpoint-worm": [],
+        "nullius-personal-storage-3": [],
+        WILDLIFE: PREREQUISITES[WILDLIFE],
+        FISSION: [ENRICHMENT, REACTOR],
         "nullius-checkpoint-enriched-uranium": [FISSION],
         "nullius-solar-power-3": [],
         ANTIMATTER: ["nullius-solar-power-3", "nullius-checkpoint-enriched-uranium",
@@ -64,7 +70,7 @@ class NuclearResearchTest(unittest.TestCase):
         technologies[SEAWATER]["prerequisites"].append(URANIUM_ORE)
         violations = research_violations(technologies)
         self.assertIn(f"{SEAWATER} prerequisites", violations[0])
-        self.assertEqual(violations[1:], [f"{name} requires {ASTRONOMY}" for name in sorted(FISSION_BRANCH)])
+        self.assertEqual(violations[1:], [f"{name} requires {ASTRONOMY}" for name in sorted(FISSION_BRANCH - {FLUORINE})])
 
     def test_reactor_unlocked_with_fusion_cells_is_rejected(self):
         technologies = nuclear_tree()
@@ -78,22 +84,30 @@ class NuclearResearchTest(unittest.TestCase):
         self.assertEqual(research_violations(technologies), [
             f"nullius-yellowcake unlocked by ['{URANIUM_ORE}', '{URANIUM}'], expected {URANIUM_ORE}"])
 
-    def test_uranium_consumers_trade_ore_research_for_seawater_research(self):
+    def test_uranium_consumers_trade_ore_research_for_enrichment(self):
         technologies = nuclear_tree()
         exempt = FISSION_BRANCH | {REACTOR}
-        lost, gained = prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, exempt)[
-            "nullius-wildlife-management-1"]
-        self.assertEqual(sorted(gained), ["nullius-biochemistry-4", SEAWATER])
+        lost, gained = prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, exempt)[WILDLIFE]
+        self.assertEqual(sorted(gained), ["nullius-biochemistry-4", FLUORINE, SEAWATER, ENRICHMENT])
         self.assertIn(URANIUM_ORE, lost)
         self.assertEqual(prereqs.moved_research_violations(technologies, FORMER_PREREQUISITES, exempt,
                                                            *closure_rules(technologies)), [])
+
+    def test_uranium_consumer_before_enrichment_is_rejected(self):
+        technologies = nuclear_tree()
+        prerequisites = technologies[WILDLIFE]["prerequisites"]
+        prerequisites[prerequisites.index(ENRICHMENT)] = URANIUM
+        # Its closure change stays within the released and gained research, so
+        # only the pinned prerequisites catch it.
+        self.assertEqual(research_violations(technologies), [
+            f"{WILDLIFE} prerequisites: expected {PREREQUISITES[WILDLIFE]}, found {prerequisites}"])
 
     def test_antimatter_without_the_fusion_ladder_loses_closure(self):
         technologies = nuclear_tree()
         technologies[ANTIMATTER]["prerequisites"].remove("nullius-boiling-4")
         violations = research_violations(technologies)
         lost = (f"closure: lost ['nullius-boiling-4', 'nullius-checkpoint-pressure-steam', '{URANIUM_ORE}'], "
-                f"gained ['nullius-biochemistry-4', '{SEAWATER}']")
+                f"gained ['nullius-biochemistry-4', '{FLUORINE}', '{SEAWATER}', '{ENRICHMENT}']")
         self.assertEqual(len(violations), 3)
         self.assertIn(f"{ANTIMATTER} prerequisites", violations[0])
         self.assertEqual(violations[1:], [f"{ANTIMATTER} {lost}", f"nullius-rocket-science-3 {lost}"])

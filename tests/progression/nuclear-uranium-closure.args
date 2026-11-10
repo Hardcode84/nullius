@@ -4,5 +4,7 @@ nullius-yellowcake=nullius-yellowcake-precipitation
 --technology
 nullius-uranium-processing
 --require-no-additional-technologies
-nullius-uranium
-nullius-enriched-uranium
+nullius-uranium-dioxide
+nullius-uranium-tetrafluoride
+nullius-uf6-cylinder
+nullius-natural-uf6

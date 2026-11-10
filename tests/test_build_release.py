@@ -101,6 +101,7 @@ class ReleaseBuilderTests(unittest.TestCase):
                 "nullius-star/migrations/radio-astronomy.lua",
                 "nullius-star/migrations/upstream-progression.json",
                 "nullius-star/migrations/upstream-progression.lua",
+                "nullius-star/migrations/uranium-enrichment.lua",
             })
             self.assertNotIn("nullius-star/scripts/migrate.lua", names)
             self.assertNotIn("nullius-star/legacyMirror.lua", names)

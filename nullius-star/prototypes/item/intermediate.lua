@@ -6135,23 +6135,6 @@ extend_intermediate_prototypes({
     order = "nullius-e",
     stack_size = 50
   },
-  {
-    type = "recipe",
-    name = "nullius-uranium",
-    enabled = false,
-    categories = {"vent-smelting"},
-    energy_required = 16,
-    ingredients = {
-      {type="item", name="nullius-yellowcake", amount = 5},
-      {type="item", name="nullius-soda-ash", amount = 2}
-    },
-    results = {
-      {type="item", name="nullius-uranium", amount=3},
-      {type="item", name="nullius-gravel", amount=2},
-      {type="fluid", name="nullius-sulfur-dioxide", amount=8}
-    },
-    main_product = "nullius-uranium"
-  },
 
   {
     type = "item",
@@ -6164,23 +6147,6 @@ extend_intermediate_prototypes({
     subgroup = "uranium",
     order = "nullius-f",
     stack_size = 50
-  },
-  {
-    type = "recipe",
-    name = "nullius-enriched-uranium",
-    enabled = false,
-    categories = {"nanotechnology"},
-    energy_required = 30,
-    ingredients = {
-      {type="item", name="nullius-uranium", amount=7},
-      {type="fluid", name="nullius-tritium", amount=3, fluidbox_index=1}
-    },
-    results = {
-      {type="item", name="nullius-enriched-uranium", amount=2},
-      {type="item", name="nullius-mineral-dust", amount=6},
-      {type="fluid", name="nullius-deuterium", amount=2, fluidbox_index=1}
-    },
-    main_product = "nullius-enriched-uranium"
   },
 
   {

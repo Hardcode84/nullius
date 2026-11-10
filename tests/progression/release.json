@@ -66,9 +66,13 @@
     "nuclear-reactor-closure.args",
     "nuclear-fusion-closure.args",
     "nuclear-seawater-closure.args",
+    "nuclear-fluorine-closure.args",
     "nuclear-uranium-closure.args",
+    "nuclear-enrichment-closure.args",
     "nuclear-uranium-ore-closure.args",
     "nuclear-fission-closure.args",
+    "nuclear-magazine-closure.args",
+    "nuclear-multi-tool-closure.args",
     "nuclear-antimatter-closure.args"
   ],
   "bootstrap": [

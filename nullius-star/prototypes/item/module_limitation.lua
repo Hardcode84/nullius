@@ -3,6 +3,7 @@ local ENTITYPATH = "__nullius-star__/graphics/entity/"
 
 nullius_non_productivity_categories = {
   ["nullius-electrolysis"] = true,
+  ["nullius-centrifuging"] = true,
   ["nullius-gas-void"] = true,
   ["nullius-liquid-void"] = true,
   ["nullius-power-sink"] = true,
