@@ -1565,9 +1565,9 @@ only Nauvis chemistry.
 |---|---|---|---|
 | Seawater Uranium Adsorption | Adsorbent, loading, elution, precipitation to yellowcake | Biochemistry 4 | Biology packs, as Biochemistry 4 |
 | Fluorine Chemistry | Fluorite flotation, hydrogen fluoride, fluorine | Electrolysis 4 | Chemistry and physics packs, as Isotope Separation |
-| Uranium Processing | Conversion: uranium dioxide, green salt, empty cylinder, hexafluoride | Seawater Uranium Adsorption, Fluorine Chemistry | Nauvis packs; no astronomy pack |
-| Uranium Enrichment | Centrifuge, both enrichment stages, both deconversions | Uranium Processing | Nauvis packs; no astronomy pack |
-| Nuclear Power 4 | Unchanged: fission cell and fission recycling | Uranium Enrichment, Nuclear Reactor | Nauvis packs; no astronomy pack |
+| Uranium Processing | Conversion: uranium dioxide, green salt, empty cylinder, hexafluoride | Seawater Uranium Adsorption, Fluorine Chemistry | As Isotope Separation |
+| Uranium Enrichment | Centrifuge, both enrichment stages, both deconversions | Uranium Processing | As Nuclear Power 1 |
+| Nuclear Power 4 | Unchanged: fission cell and fission recycling | Uranium Enrichment, Nuclear Reactor | As Nuclear Power 1, its fusion counterpart |
 
 | Rule | Value |
 |---|---|

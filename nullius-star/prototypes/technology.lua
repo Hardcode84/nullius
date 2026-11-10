@@ -13480,13 +13480,13 @@ data:extend({
       }
     },
     unit = {
-      count = 6000,
+      count = 2400,
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
         {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2}
       },
-      time = 60
+      time = 50
     },
     prerequisites = {"nullius-seawater-uranium-adsorption", "nullius-fluorine-chemistry"}
   },
@@ -13519,13 +13519,13 @@ data:extend({
       }
     },
     unit = {
-      count = 6000,
+      count = 2700,
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
         {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 2}, {"nullius-physics-pack", 2}
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2}
       },
-      time = 60
+      time = 50
     },
     prerequisites = {"nullius-uranium-processing"}
   },
@@ -13740,13 +13740,13 @@ data:extend({
       }
     },
     unit = {
-      count = 9000,
+      count = 2700,
       ingredients = {
         {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 2},
-        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 1}
+        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2}
       },
-      time = 60
+      time = 50
     },
     prerequisites = {"nullius-uranium-enrichment", "nullius-nuclear-reactor"}
   },
