@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+import functools
 import hashlib
 import json
 from pathlib import Path
@@ -17,6 +19,7 @@ import zipfile
 
 if __package__:
     from .run_factorio_tests import (
+        die_with_parent,
         BUILTIN_MODS,
         DEPENDENCY_MODS,
         TestFailure,
@@ -29,6 +32,7 @@ if __package__:
     )
 else:
     from run_factorio_tests import (
+        die_with_parent,
         BUILTIN_MODS,
         DEPENDENCY_MODS,
         TestFailure,
@@ -236,6 +240,7 @@ def prepare_release_mods(mods: Path, dependencies: Path, release_archive: Path,
 def run_checked(command: list[str], label: str, timeout: int) -> str:
     completed = subprocess.run(
         command,
+        preexec_fn=die_with_parent,
         cwd=REPOSITORY,
         text=True,
         stdout=subprocess.PIPE,
@@ -252,6 +257,7 @@ def run_checked(command: list[str], label: str, timeout: int) -> str:
 def run_streaming(command: list[str], label: str, timeout: int) -> None:
     completed = subprocess.run(
         command,
+        preexec_fn=die_with_parent,
         cwd=REPOSITORY,
         timeout=timeout,
         check=False,
@@ -312,25 +318,44 @@ def validate_factorio_archive(
     return data_raw
 
 
+VALIDATION_ERRORS = (TestFailure, OSError, ValueError, subprocess.TimeoutExpired)
+
+
+def run_jobs(jobs: dict[str, object]) -> dict[str, object]:
+    """Run independent validation jobs at once and report every failure.
+
+    Each job is a callable that runs child processes; all of them finish
+    before the failures, if any, are raised together.
+    """
+    with ThreadPoolExecutor(max_workers=len(jobs)) as executor:
+        futures = {label: executor.submit(job) for label, job in jobs.items()}
+    results: dict[str, object] = {}
+    failures = []
+    for label, future in futures.items():
+        try:
+            results[label] = future.result()
+        except VALIDATION_ERRORS as error:
+            failures.append(f"{label}: {error}")
+    if failures:
+        raise TestFailure("\n\n".join(failures))
+    return results
+
+
 def run_progression_contracts(data_raw: Path, timeout: int) -> int:
     contract_names = json.loads((PROGRESSION_CONTRACTS / "release.json").read_text())["contracts"]
     contracts = [PROGRESSION_CONTRACTS / name for name in contract_names]
     if not contracts:
         raise TestFailure("no progression contracts found")
     analyzer = REPOSITORY / "tools" / "analyze_factorio_prereqs.py"
-    for contract in contracts:
-        run_checked(
-            [
-                sys.executable,
-                str(analyzer),
-                f"@{contract}",
-                "--data-raw",
-                str(data_raw),
-                "--json",
-            ],
+    run_jobs({
+        contract.name: functools.partial(
+            run_checked,
+            [sys.executable, str(analyzer), f"@{contract}", "--data-raw", str(data_raw), "--json"],
             f"progression contract {contract.name}",
             timeout,
         )
+        for contract in contracts
+    })
     return len(contracts)
 
 
@@ -389,85 +414,69 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
     if not dependencies.is_dir():
         raise TestFailure(f"dependency mod directory not found: {dependencies}")
 
+    if __package__:
+        from .check_factorio_upgrade import check_upgrade
+    else:
+        from check_factorio_upgrade import check_upgrade
+    timeout = args.timeout_seconds
     with tempfile.TemporaryDirectory(prefix="nullius-star-release-") as temporary:
         root = Path(temporary)
-        data_raw = validate_factorio_archive(
-            factorio, dependencies, archive, args.timeout_seconds, root / "factorio"
-        )
-        contract_count = run_progression_contracts(data_raw, args.timeout_seconds)
-        run_checked([sys.executable, str(REPOSITORY / "tools/check_launch_vehicle.py"),
-                     "--data-raw", str(data_raw), "--output", str(root / "launch-cost.json")],
-                    "launch vehicle cost bounds", args.timeout_seconds)
-        run_checked([sys.executable, str(REPOSITORY / "tools/check_astronomy.py"),
-                     "--data-raw", str(data_raw), "--output", str(root / "astronomy.json")],
-                    "radio astronomy contracts", args.timeout_seconds)
-        run_checked([sys.executable, str(REPOSITORY / "tools/check_nuclear_research.py"),
-                     "--data-raw", str(data_raw)],
-                    "nuclear research placement", args.timeout_seconds)
-        run_unlock_audits(data_raw, args.timeout_seconds, root)
-        bootstrap = run_bootstrap_checks(data_raw, args.timeout_seconds, root)
+        data_raw = validate_factorio_archive(factorio, dependencies, archive, timeout, root / "factorio")
         extracted_mod = extract_release(archive, root / "extracted")
-        run_checked(
-            [
-                sys.executable,
-                str(REPOSITORY / "tools" / "check_factorio_locale.py"),
-                "--mod",
-                str(extracted_mod),
-                "--factorio",
-                str(factorio),
-                "--dependency-mod-directory",
-                str(dependencies),
-                "--timeout-seconds",
-                str(args.timeout_seconds),
-            ],
-            "prototype locale audit",
-            args.timeout_seconds * 2,
-        )
         scenario_result = root / "scenario-result.json"
-        run_streaming(
-            [
-                sys.executable,
-                str(REPOSITORY / "tools" / "run_factorio_tests.py"),
-                "--mod-under-test",
-                str(archive),
-                "--factorio",
-                str(factorio),
-                "--dependency-mod-directory",
-                str(dependencies),
-                "-n",
-                args.workers,
-                "--result-json",
-                str(scenario_result),
-            ],
-            "Factorio scenario suite",
-            args.timeout_seconds * 3,
-        )
+
+        def tool(name: str, *arguments: str) -> list[str]:
+            return [sys.executable, str(REPOSITORY / "tools" / name), *arguments]
+
+        # Every job below reads only the archive, the dump, or its own files.
+        jobs = {
+            "progression contracts": functools.partial(run_progression_contracts, data_raw, timeout),
+            "launch vehicle cost bounds": functools.partial(run_checked, tool(
+                "check_launch_vehicle.py", "--data-raw", str(data_raw), "--output", str(root / "launch-cost.json")),
+                "launch vehicle cost bounds", timeout),
+            "radio astronomy contracts": functools.partial(run_checked, tool(
+                "check_astronomy.py", "--data-raw", str(data_raw), "--output", str(root / "astronomy.json")),
+                "radio astronomy contracts", timeout),
+            "nuclear research placement": functools.partial(run_checked, tool(
+                "check_nuclear_research.py", "--data-raw", str(data_raw)), "nuclear research placement", timeout),
+            "recipe unlock audits": functools.partial(run_unlock_audits, data_raw, timeout, root),
+            "staged bootstrap": functools.partial(run_bootstrap_checks, data_raw, timeout, root),
+            "prototype locale audit": functools.partial(run_checked, tool(
+                "check_factorio_locale.py", "--mod", str(extracted_mod), "--factorio", str(factorio),
+                "--dependency-mod-directory", str(dependencies), "--timeout-seconds", str(timeout)),
+                "prototype locale audit", timeout * 2),
+            "Factorio scenario suite": functools.partial(run_streaming, tool(
+                "run_factorio_tests.py", "--mod-under-test", str(archive), "--factorio", str(factorio),
+                "--dependency-mod-directory", str(dependencies), "-n", args.workers,
+                "--result-json", str(scenario_result)), "Factorio scenario suite", timeout * 3),
+        }
+        upgrades = {"0.0.1": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
+                    "0.0.2": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
+                    "0.0.3": (args.upgrade_factorio, args.upgrade_dependency_mod_directory),
+                    "0.0.4": (args.upgrade_factorio_2_1, dependencies),
+                    "0.0.5": (None, None),
+                    "0.0.6": (None, None)}
+        for version, (engine, mods) in upgrades.items():
+            jobs[f"{version} upgrade"] = functools.partial(
+                check_upgrade, archive, factorio, dependencies, timeout, version, engine, mods)
+        results = run_jobs(jobs)
         if not scenario_result.is_file():
             raise TestFailure("Factorio scenario suite wrote no structured result")
         scenario_suite = json.loads(scenario_result.read_text(encoding="utf-8"))
         if scenario_suite.get("status") != "pass":
             raise TestFailure(f"invalid passing scenario result: {scenario_suite!r}")
-    if __package__:
-        from .check_factorio_upgrade import check_upgrade
-    else:
-        from check_factorio_upgrade import check_upgrade
-    upgrade = [check_upgrade(archive, factorio, dependencies, args.timeout_seconds, version,
-                            args.upgrade_factorio, args.upgrade_dependency_mod_directory)
-               for version in ("0.0.1", "0.0.2", "0.0.3")]
-    upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.4",
-                                 args.upgrade_factorio_2_1, dependencies))
-    upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.5"))
-    upgrade.append(check_upgrade(archive, factorio, dependencies, args.timeout_seconds, "0.0.6"))
     return {
-        "bootstrap": bootstrap,
-        "upgrade": upgrade,
-        "progression_contracts": contract_count,
+        "bootstrap": results["staged bootstrap"],
+        "upgrade": [results[f"{version} upgrade"] for version in upgrades],
+        "progression_contracts": results["progression contracts"],
         "scenario_tests": scenario_suite["passed"],
         "scenario_wall_time_seconds": scenario_suite["wall_time_seconds"],
     }
 
 
 def main() -> int:
+    # Stage lines must reach a redirected log as they happen.
+    sys.stdout.reconfigure(line_buffering=True)
     args = parse_arguments()
     started = time.perf_counter()
     try:
@@ -482,31 +491,24 @@ def main() -> int:
             raise TestFailure("release target does not match the selected Factorio engine")
         print("[1/5] PASS checkout and metadata")
 
-        print("[2/5] RUN  Python unit tests")
-        run_checked(
-            [
-                sys.executable,
-                "-m",
-                "unittest",
-                "discover",
-                "-s",
-                "tests",
-                "-p",
-                "test_*.py",
-            ],
-            "Python unit tests",
-            args.timeout_seconds,
-        )
+        print("[2/5] RUN  Python unit tests, alongside the archive and validation")
+        unit_tests = functools.partial(run_checked, [
+            sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py",
+        ], "Python unit tests", args.timeout_seconds)
+
+        def package_and_validate() -> tuple[Path, str, dict[str, object]]:
+            print("[3/5] RUN  deterministic release archive")
+            archive = build_archive(args.output_directory.expanduser().resolve(), metadata)
+            digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+            print(f"[3/5] PASS deterministic release archive - {archive}")
+            print("[4/5] RUN  packaged Factorio and progression validation")
+            validation = run_validation(args, archive)
+            print("[4/5] PASS packaged Factorio and progression validation")
+            return archive, digest, validation
+
+        archive, digest, validation = run_jobs({
+            "Python unit tests": unit_tests, "release": package_and_validate})["release"]
         print("[2/5] PASS Python unit tests")
-
-        print("[3/5] RUN  deterministic release archive")
-        archive = build_archive(args.output_directory.expanduser().resolve(), metadata)
-        digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-        print(f"[3/5] PASS deterministic release archive - {archive}")
-
-        print("[4/5] RUN  packaged Factorio and progression validation")
-        validation = run_validation(args, archive)
-        print("[4/5] PASS packaged Factorio and progression validation")
 
         print("[5/5] RUN  release manifest")
         manifest = {
@@ -529,7 +531,7 @@ def main() -> int:
         print(f"\nRelease PASS in {format_duration(time.perf_counter() - started)}")
         print(f"SHA-256 {digest}  {archive.name}")
         return 0
-    except (TestFailure, OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except VALIDATION_ERRORS as error:
         sys.stdout.flush()
         print(f"\nRelease FAIL: {error}")
         return 1

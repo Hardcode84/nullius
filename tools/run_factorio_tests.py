@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -183,11 +185,27 @@ def prepare_config(run_directory: Path, factorio: Path) -> Path:
     return config
 
 
+_LIBC = ctypes.CDLL(None, use_errno=True)
+_PR_SET_PDEATHSIG = 1
+
+
+def die_with_parent(parent: int = os.getpid()) -> None:
+    """Child hook: get SIGKILL when the spawning thread dies.
+
+    A runner killed by SIGTERM or SIGKILL runs no cleanup, so Factorio, Xvfb,
+    and nested runners would otherwise outlive it. Exit if the parent died
+    before the hook ran.
+    """
+    if _LIBC.prctl(_PR_SET_PDEATHSIG, signal.SIGKILL) != 0 or os.getppid() != parent:
+        os._exit(1)
+
+
 def run_factorio(
     command: list[str], log_path: Path, timeout_seconds: int
 ) -> subprocess.CompletedProcess[str]:
     completed = subprocess.run(
         command,
+        preexec_fn=die_with_parent,
         cwd=REPOSITORY,
         text=True,
         stdout=subprocess.PIPE,
@@ -396,7 +414,8 @@ def parse_arguments() -> argparse.Namespace:
         type=parse_worker_count,
         default=1,
         metavar="WORKERS",
-        help="run tests in parallel; use a positive integer or 'auto'",
+        help="run tests in parallel; use a positive integer or 'auto' "
+             f"(one per core, at most {MAX_AUTO_WORKERS})",
     )
     parser.add_argument(
         "--json",
@@ -426,11 +445,17 @@ def format_duration(seconds: float) -> str:
     return f"{int(hours)}h {int(minutes)}m {remainder:.1f}s"
 
 
+# Each Factorio process fans out across dozens of threads while it loads, so
+# one worker per core oversubscribes the machine: on 192 cores the suite ran
+# slower with 192 workers than with 12. 48 workers is the chosen default cap.
+MAX_AUTO_WORKERS = 48
+
+
 def parse_worker_count(value: str) -> int:
     if value == "auto":
         if hasattr(os, "sched_getaffinity"):
-            return len(os.sched_getaffinity(0))
-        return os.cpu_count() or 1
+            return min(len(os.sched_getaffinity(0)), MAX_AUTO_WORKERS)
+        return min(os.cpu_count() or 1, MAX_AUTO_WORKERS)
     try:
         workers = int(value)
     except ValueError as error:

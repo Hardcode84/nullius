@@ -14,10 +14,10 @@ import zipfile
 
 if __package__:
     from .build_release import prepare_release_mods, run_checked
-    from .run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, prepare_config
+    from .run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, die_with_parent, prepare_config
 else:
     from build_release import prepare_release_mods, run_checked
-    from run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, prepare_config
+    from run_factorio_tests import REPOSITORY, default_factorio, default_dependency_mods, die_with_parent, prepare_config
 
 
 def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: int,
@@ -88,7 +88,7 @@ def check_upgrade(candidate: Path, factorio: Path, dependencies: Path, timeout: 
         with log_path.open("w") as log:
             server = subprocess.Popen([*common, "--start-server", str(save),
                 "--bind", "127.0.0.1:0", "--server-settings", str(settings)],
-                stdout=log, stderr=subprocess.STDOUT)
+                stdout=log, stderr=subprocess.STDOUT, preexec_fn=die_with_parent)
             try:
                 deadline = time.monotonic() + timeout
                 while not upgraded.is_file():

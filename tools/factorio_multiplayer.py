@@ -77,7 +77,7 @@ def validate_client_log(log: Path) -> None:
 @contextmanager
 def virtual_display(run_directory: Path, timeout_seconds: float):
     """Own a software-only display for one scenario, including all its peers."""
-    from tools.run_factorio_tests import TestFailure, tail
+    from tools.run_factorio_tests import TestFailure, die_with_parent, tail
 
     xvfb, xauth = shutil.which("Xvfb"), shutil.which("xauth")
     if not xvfb or not xauth:
@@ -104,7 +104,7 @@ def virtual_display(run_directory: Path, timeout_seconds: float):
             process = subprocess.Popen([
                 xvfb, "-displayfd", str(write_fd), "-screen", "0", "640x480x24",
                 "-nolisten", "tcp", "-auth", str(authority), "-noreset",
-            ], stdout=output, stderr=subprocess.STDOUT, pass_fds=(write_fd,))
+            ], stdout=output, stderr=subprocess.STDOUT, pass_fds=(write_fd,), preexec_fn=die_with_parent)
             os.close(write_fd)
             write_fd = None
             deadline = time.monotonic() + timeout_seconds
@@ -196,7 +196,7 @@ def execute_multiplayer(args, common: list[str], save: Path, run_directory: Path
 
 def _execute_multiplayer(args, common, save, run_directory, display, environment) -> None:
     # Imported here because the scenario runner imports this executor on demand.
-    from tools.run_factorio_tests import TestFailure, prepare_config, tail
+    from tools.run_factorio_tests import TestFailure, die_with_parent, prepare_config, tail
 
     settings = run_directory / "server-settings.json"
     server_settings = json.loads((Path(common[0]).resolve().parents[2] /
@@ -223,7 +223,8 @@ def _execute_multiplayer(args, common, save, run_directory, display, environment
     def launch(command, log, **kwargs):
         stream = log.open("w")
         streams.append(stream)
-        process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT, **kwargs)
+        process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
+                                   preexec_fn=die_with_parent, **kwargs)
         processes.append(process)
         return process
 
