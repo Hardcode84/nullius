@@ -1,0 +1,96 @@
+{
+  "milestones": [
+    "nullius-physics",
+    "nullius-rocket-science-1",
+    "nullius-orbital-construction",
+    "nullius-astronomy",
+    "nullius-copper-production",
+    "nullius-electronics-4",
+    "nullius-biology-1",
+    "nullius-evolution-1",
+    "nullius-rocket-science-3",
+    "nullius-battery-storage-5",
+    "nullius-cybernetics-7"
+  ],
+  "supply_rates_per_minute": [
+    60,
+    120,
+    240
+  ],
+  "largest_costs": 15,
+  "groups": {
+    "mission-equipment": [
+      "nullius-rocket-science-3",
+      "nullius-carbon-sequestration-4",
+      "nullius-terraforming-3",
+      "nullius-wildlife-management-2"
+    ]
+  },
+  "recipe_cases": [
+    {
+      "boundary": "tests/progression/fulgora-bootstrap-boundary.args",
+      "technology": "nullius-bulk-polymer-processing",
+      "recipe": "nullius-improved-doped-polymer-gear"
+    },
+    {
+      "boundary": "tests/progression/fulgora-bootstrap-boundary.args",
+      "technology": "nullius-bulk-polymer-processing",
+      "recipe": "nullius-boxed-improved-doped-polymer-gear"
+    },
+    {
+      "boundary": "tests/progression/fulgora-bootstrap-boundary.args",
+      "technology": "nullius-bulk-waste-reclamation",
+      "recipe": "nullius-gypsum-recovery"
+    },
+    {
+      "boundary": "tests/progression/fulgora-bootstrap-boundary.args",
+      "technology": "nullius-bulk-waste-reclamation",
+      "recipe": "nullius-boxed-gypsum-recovery"
+    },
+    {
+      "boundary": "tests/progression/nauvis-boundary.args",
+      "technology": "nullius-boiling-1",
+      "recipe": "nullius-iron-assisted-sludge-dehydration"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-climatology-2",
+      "recipe": "nullius-climatology-pack-vulcanus-2"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-geology-2",
+      "recipe": "nullius-geology-pack-vulcanus-2"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-volcanic-alkali-processing",
+      "recipe": "nullius-volcanic-causticization"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-mass-production-5",
+      "recipe": "nullius-boxed-insulation-vulcanus"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-mass-production-5",
+      "recipe": "nullius-boxed-medium-tank-2-vulcanus"
+    },
+    {
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-mass-production-5",
+      "recipe": "nullius-boxed-transformer-vulcanus"
+    }
+  ],
+  "cost_intervals": [
+    [
+      "nullius-orbital-construction",
+      "nullius-astronomy"
+    ],
+    [
+      "nullius-astronomy",
+      "nullius-rocket-science-3"
+    ]
+  ]
+}
