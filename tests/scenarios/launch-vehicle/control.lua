@@ -1,11 +1,16 @@
 -- given: one finite input batch for each stage recipe, two productivity modules,
--- one probe, ten iron plates, a supplied electric grid, and an orbital starter pack.
--- place/connect: two overcharged assemblers and two ordinary silos on Nauvis.
--- act/run: craft both stages, transfer them to silos, launch cargo and a probe.
+-- one probe, ten iron plates, a supplied electric grid, an orbital starter pack,
+-- and a mission whose other required goals are complete with one probe left.
+-- place/connect: two overcharged assemblers and two ordinary silos on Nauvis;
+-- an inserter loads the probe from a chest into the second silo's rocket.
+-- act/run: craft both stages, transfer them to silos, launch cargo and the probe.
 -- expect: the titanium stage unlocks only with titanium rocket structures;
 -- stage productivity is zero; silo productivity works; cargo arrives;
--- the production mission counter records the probe.
+-- the probe launch completes the mission and wins the game.
 local CASE = "launch-vehicle"
+-- Every required mission goal but the probe, which the launch completes.
+local OTHER_GOALS = {2, 3, 4, 5, 6, 7, 8, 9, 12, 13}
+local PROBE_GOAL = 10
 local function check(ok, message)
   storage.assertions = storage.assertions + 1
   assert(ok, message)
@@ -33,6 +38,15 @@ script.on_init(function()
   local platform = assert(force.create_space_platform{
     name=CASE, planet="nauvis", starter_pack="space-platform-starter-pack"})
   storage.hub = assert(platform.apply_starter_pack(true))
+  -- Victory pauses a single-player game, so this case runs as multiplayer; the
+  -- server keeps real time unless sped up.
+  game.speed = 8
+  remote.call("nullius-test-mission", "create", force)
+  for _, goal in ipairs(OTHER_GOALS) do
+    remote.call("nullius-test-mission", "set_goal", goal, 1e12, force)
+  end
+  remote.call("nullius-test-mission", "set_goal", 1, PROBE_GOAL - 1, force)
+  check(not remote.call("nullius-test-mission", "complete"), "mission finished before the last probe")
   storage.probes_before = remote.call("nullius-test-mission", "probes")
   for index, recipe in ipairs{"nullius-rocket-stage", "nullius-titanium-rocket-stage"} do
     local x=(index-1)*30
@@ -50,6 +64,20 @@ script.on_init(function()
     end
     storage.rows[index]={assembler=assembler,silo=silo,power=power}
   end
+  -- The probe reaches the rocket the way a player's factory delivers it.
+  local probe_silo = storage.rows[2].silo
+  probe_silo.send_to_orbit_automatically = true
+  -- The 9x9 silo's west edge is five tiles from its centre.
+  local at = probe_silo.position
+  local chest = assert(surface.create_entity{name="wooden-chest",position={at.x-6,at.y},force=force})
+  check(chest.insert{name="nullius-probe",count=1}==1, "probe supply")
+  local inserter = assert(surface.create_entity{name="inserter",position={at.x-5,at.y},
+    direction=defines.direction.west,force=force})
+  -- Targets resolve on the first update, so check the arm's geometry: it picks
+  -- up over the chest and drops inside the silo.
+  check(math.floor(inserter.pickup_position.x) == math.floor(chest.position.x) and
+    inserter.drop_position.x > at.x - 4.5, "inserter feeds the probe silo")
+  storage.probe_chest = chest
 end)
 script.on_nth_tick(60,function()
   if game.tick==0 then return end
@@ -68,15 +96,18 @@ script.on_nth_tick(60,function()
       if index==1 then
         check(inventory.insert{name="iron-plate",count=10}==10,"cargo payload")
         check(row.silo.launch_rocket{type=defines.cargo_destination.station,station=storage.hub},"cargo launch")
-      else
-        check(inventory.insert{name="nullius-probe",count=1}==1,"probe payload")
-        row.silo.send_to_orbit_automatically=true
+        row.launched=true
       end
-      row.launched=true
     end
   end
+  if remote.call("nullius-test-mission","probes")==storage.probes_before+1 then
+    storage.rows[2].launched=true
+  end
   if storage.hub.get_inventory(defines.inventory.hub_main).get_item_count("iron-plate")==10 and
-      remote.call("nullius-test-mission","probes")==storage.probes_before+1 then
+      storage.rows[2].launched then
+    check(storage.probe_chest.get_item_count("nullius-probe")==0, "the inserter loaded the probe")
+    check(remote.call("nullius-test-mission","complete"), "the last probe did not complete the mission")
+    check(game.finished or game.finished_but_continuing, "the last probe did not win the game")
     for _,row in ipairs(storage.rows) do
       check(row.launched,"both launch paths")
       check(row.assembler.get_output_inventory().is_empty(),"no extra stage")
