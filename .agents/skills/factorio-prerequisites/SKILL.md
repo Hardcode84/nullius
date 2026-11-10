@@ -24,7 +24,10 @@ loads on that engine. For schema or executor changes, run
 and the `planner-*-executors` scenarios with `tools/run_factorio_tests.py` on 2.1.
 Older schema readers serve historical fixtures only.
 Recipe categories are alternatives; exact quantities reject both independent
-and shared probability.
+and shared probability. A hidden technology never supplies a recipe unlock; a
+disabled one may, because scripts enable optional research. Burnt results are
+not modelled; declare a burner's spent item with `--available` and target the
+fuel it comes from.
 
 Use repeatable `--describe-product ITEM` to inspect every resolved producer,
 including byproduct recipes, exact inputs and outputs, categories, surface

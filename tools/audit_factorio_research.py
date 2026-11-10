@@ -238,15 +238,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, default=Path('tests/progression/final-research-audit.json'))
     parser.add_argument('--runtime', type=Path)
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--output', type=Path, help='Report written when auditing a runtime export')
     parser.add_argument('--read-report', type=Path)
     parser.add_argument('--section', choices=['summary','checkpoints','checkpoint_gaps','science_gate_gaps','recipe_input_gate_gaps','milestones','cost_intervals','recipe_cases','largest_direct_costs'], default='summary')
     args = parser.parse_args()
     if args.read_report:
         report = json.loads(args.read_report.read_text())
     else:
-        if not args.runtime:
-            parser.error('--runtime must name a checkpoint-contracts scenario result')
+        if not args.runtime or not args.output:
+            parser.error('--runtime and --output are required unless --read-report is given')
         suite = json.loads(args.runtime.read_text())
         runtime = next(row for row in suite['results'] if row['case'] == 'checkpoint-contracts')
         if runtime['status'] != 'pass':

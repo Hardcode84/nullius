@@ -7,11 +7,11 @@ local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 -- expect: one craft and two output items or boxes from each machine.
 local CASE = "vulcanus-science-tier2"
 local specs = {
-  {recipe="nullius-geology-pack-vulcanus-2", tech="nullius-geology-2", machine="nullius-medium-assembler-2-pneumatic", product="nullius-geology-pack", seconds=10,
+  {recipe="nullius-geology-pack-vulcanus-2", tech="nullius-limestone-processing-1", machine="nullius-medium-assembler-2-pneumatic", product="nullius-geology-pack", seconds=10,
     inputs={{"nullius-glass",1},{"nullius-lime",1},{"nullius-mineral-dust",2}}},
   {recipe="nullius-boxed-geology-pack-vulcanus-2", tech="nullius-mass-production-7", machine="nullius-large-assembler-1-pneumatic", product="nullius-box-geology-pack", seconds=50,
     inputs={{"nullius-box-glass",1},{"nullius-box-lime",1},{"nullius-box-mineral-dust",2}}},
-  {recipe="nullius-climatology-pack-vulcanus-2", tech="nullius-climatology-2", machine="nullius-chemical-plant-2-pneumatic", product="nullius-climatology-pack", seconds=10,
+  {recipe="nullius-climatology-pack-vulcanus-2", tech="nullius-pressure-containment", machine="nullius-chemical-plant-2-pneumatic", product="nullius-climatology-pack", seconds=10,
     inputs={{"nullius-compressed-carbon-dioxide",100},{"nullius-compressed-nitrogen",10},{"nullius-acid-sulfuric",5}}},
   {recipe="nullius-boxed-climatology-pack-vulcanus-2", tech="nullius-mass-production-7", machine="nullius-chemical-plant-2-pneumatic", product="nullius-box-climatology-pack", seconds=50,
     inputs={{"nullius-compressed-carbon-dioxide",500},{"nullius-compressed-nitrogen",50},{"nullius-acid-sulfuric",25}}},

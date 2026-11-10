@@ -1127,6 +1127,8 @@ see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing).
 Iron-ore and bauxite checkpoints accept crushed ore at their crushing ratios
 (6/5 and 7/5 raw units per crushed item). Sandstone and limestone already accept
 sand and crushed limestone. Raw-ore and bloom alternatives remain available.
+The mining checkpoint counts consumed crushed ore and sand, boxed or not, at
+the same ratios.
 
 Argon is available through local residual-gas separation. Sand and sulfuric acid
 supply rutile. Borate leaching supplies boric acid. All materials for physics

@@ -1,0 +1,9 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-mass-production-4
+--available
+nullius-water-canister
+--recipe
+nullius-box-canister=nullius-boxed-canister-emptying
+nullius-box-canister
+processed-fuel

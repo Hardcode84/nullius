@@ -107,7 +107,8 @@
     "nauvis-storage-closure.args",
     "nauvis-cement-closure.args",
     "nauvis-bulk-canister-closure.args",
-    "nauvis-bulk-barrel-closure.args"
+    "nauvis-bulk-barrel-closure.args",
+    "nauvis-bulk-canister-emptying-closure.args"
   ],
   "bootstrap": [
     {

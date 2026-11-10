@@ -211,6 +211,13 @@ script.on_nth_tick(1, function()
     end
   end
 
+  -- The thermal transitions script enables these modes; the research shows them.
+  for _, name in ipairs({"nullius-thermal-engineering-2", "nullius-thermal-engineering-3"}) do
+    local effects = prototypes.technology[name].effects
+    check(#effects == 1 and effects[1].type == "nothing" and effects[1].effect_description ~= nil,
+      name .. " does not show its thermal modes")
+  end
+
   local pneumatic = force.technologies["nullius-pneumatic-technology"]
   check(pneumatic ~= nil, "missing Pneumatic technology")
   if pneumatic then
@@ -220,20 +227,13 @@ script.on_nth_tick(1, function()
         "nullius-vulcanus-radiator-2",
         "nullius-carbochlorination",
         "nullius-iron-chlorination",
+        "nullius-iron-assisted-sludge-dehydration",
     }) do
       check(unlocks[recipe] == true,
         "Pneumatic technology does not unlock " .. recipe)
       check(force.recipes[recipe] and not force.recipes[recipe].enabled,
         recipe .. " must be locked before Pneumatic technology")
     end
-  end
-
-  local boiling_1 = force.technologies["nullius-boiling-1"]
-  check(boiling_1 ~= nil, "missing Boiling 1 technology")
-  if boiling_1 then
-    local unlocks = unlocked_recipes(boiling_1)
-    check(unlocks["nullius-iron-assisted-sludge-dehydration"] == true,
-      "Boiling 1 does not unlock iron-assisted sludge dehydration")
   end
 
   local titanium_technology = force.technologies[
@@ -309,7 +309,7 @@ script.on_nth_tick(1, function()
     "missing iron-assisted sludge dehydration recipe")
   if sludge_dehydration then
     check(not sludge_dehydration.enabled,
-      "iron-assisted sludge dehydration must require Boiling 1")
+      "iron-assisted sludge dehydration must require Pneumatic technology")
     check(has_category(sludge_dehydration.prototype, "boiling"),
       "iron-assisted sludge dehydration has wrong category")
     check(sludge_dehydration.prototype.surface_conditions == nil,

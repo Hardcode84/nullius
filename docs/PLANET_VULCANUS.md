@@ -218,6 +218,10 @@ required by local progression, including barrels, wires, circuits, capacitors,
 motors, filters, pumps, belts, logistics, vehicles, electrical components, and
 their boxed production families. Resolved prerequisite contracts define the
 current closure; this document does not duplicate their ingredient lists.
+Vulcanus tier 2 geology unlocks with Limestone Processing 1, which supplies lime;
+tier 2 climatology unlocks with Pressure Containment, which supplies compressed
+gases. Boxed refractory insulation unlocks with Bulk Refractory Materials, after
+Mass Production 5 and Vulcanus refractory engineering.
 
 Rocket fuel uses the polymer-free route in
 [Aluminum-CO2 rocket fuel](#aluminum-co2-rocket-fuel).
@@ -493,7 +497,7 @@ factory. Planner executor scenarios check the selected upstream recipe set.
 
 The comparison permits all pre-physics supply recipes and the declared machine
 catalog. It measures industrial capacity, not the equipment available at the
-instant geology 2 or climatology 2 unlocks. Nauvis uses second-tier solid miners
+instant the Vulcanus tier 2 recipes unlock. Nauvis uses second-tier solid miners
 and first-tier gas extractors. Both planets use ordinary and boxed tier 2 science
 routes. Each science is supplied at the stated rate in a combined row.
 

@@ -82,6 +82,7 @@ local specs = {
     products = { ["nullius-box-battery-1"] = 1 },
   },
   ["nullius-boxed-insulation-vulcanus"] = {
+    technology = "nullius-bulk-refractory-materials",
     energy = 30,
     ingredients = { ["nullius-box-gypsum"] = 3,
       ["nullius-box-glass-fiber"] = 2,
@@ -107,6 +108,7 @@ local specs = {
     products = { ["nullius-box-levitation-field-1"] = 1 },
   },
   ["nullius-boxed-medium-tank-2-vulcanus"] = {
+    technology = "nullius-mass-production-7",
     energy = 50,
     ingredients = { ["nullius-box-medium-tank-1"] = 1,
       ["nullius-box-steel-sheet"] = 2, ["nullius-box-steel-rod"] = 1,
@@ -136,6 +138,7 @@ local specs = {
     products = { ["nullius-box-solar-panel-1"] = 1 },
   },
   ["nullius-boxed-transformer-vulcanus"] = {
+    technology = "nullius-mass-production-6",
     energy = 30,
     ingredients = { ["nullius-box-iron-plate"] = 2,
       ["nullius-box-heat-pipe-1"] = 1,
@@ -218,24 +221,26 @@ end
 local function run()
   script.on_nth_tick(1, nil)
   local force = game.forces.player
-  local mass_production_5 = force.technologies["nullius-mass-production-5"]
-  local mass_production_6 = force.technologies["nullius-mass-production-6"]
-  check(mass_production_5 ~= nil, "missing Mass Production 5")
-  check(mass_production_6 ~= nil, "missing Mass Production 6")
-  if mass_production_5 and mass_production_6 then
-    mass_production_5.researched = false
-    mass_production_6.researched = false
-    for name in pairs(specs) do
-      check(force.recipes[name] and not force.recipes[name].enabled,
-        name .. " enabled before its mass production technology")
-    end
-    research_closure(mass_production_5, {})
+  -- Each later technology's closure contains the earlier ones.
+  local order = {"nullius-mass-production-5", "nullius-mass-production-6",
+    "nullius-mass-production-7", "nullius-bulk-refractory-materials"}
+  local position = {}
+  for index, name in ipairs(order) do
+    position[name] = index
+    check(force.technologies[name] ~= nil, "missing " .. name)
+    force.technologies[name].researched = false
+  end
+  for name in pairs(specs) do
+    check(force.recipes[name] and not force.recipes[name].enabled,
+      name .. " enabled before its mass production technology")
+  end
+  for index, technology in ipairs(order) do
+    research_closure(force.technologies[technology], {})
     for name, spec in pairs(specs) do
-      local expected = spec.technology ~= "nullius-mass-production-6"
+      local expected = position[spec.technology or order[1]] <= index
       check(force.recipes[name] and force.recipes[name].enabled == expected,
-        name .. " has wrong Mass Production 5 unlock state")
+        name .. " has wrong unlock state after " .. technology)
     end
-    research_closure(mass_production_6, {})
   end
   for name, spec in pairs(specs) do
     local recipe = force.recipes[name]

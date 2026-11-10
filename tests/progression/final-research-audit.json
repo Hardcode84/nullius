@@ -48,18 +48,18 @@
       "recipe": "nullius-boxed-gypsum-recovery"
     },
     {
-      "boundary": "tests/progression/nauvis-boundary.args",
-      "technology": "nullius-boiling-1",
+      "boundary": "tests/progression/vulcanus-basic-science.args",
+      "technology": "nullius-pneumatic-technology",
       "recipe": "nullius-iron-assisted-sludge-dehydration"
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-climatology-2",
+      "technology": "nullius-pressure-containment",
       "recipe": "nullius-climatology-pack-vulcanus-2"
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-geology-2",
+      "technology": "nullius-limestone-processing-1",
       "recipe": "nullius-geology-pack-vulcanus-2"
     },
     {
@@ -69,17 +69,17 @@
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-mass-production-5",
+      "technology": "nullius-bulk-refractory-materials",
       "recipe": "nullius-boxed-insulation-vulcanus"
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-mass-production-5",
+      "technology": "nullius-mass-production-7",
       "recipe": "nullius-boxed-medium-tank-2-vulcanus"
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-mass-production-5",
+      "technology": "nullius-mass-production-6",
       "recipe": "nullius-boxed-transformer-vulcanus"
     }
   ],

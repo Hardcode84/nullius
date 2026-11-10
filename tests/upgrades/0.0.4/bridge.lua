@@ -2,7 +2,8 @@
 remote.add_interface("release-upgrade", {
   seed = function()
     local force = game.forces.player
-    for _, name in ipairs({"nullius-probe-vulcanus", "nullius-geology-2",
+    for _, name in ipairs({"nullius-probe-vulcanus", "nullius-geology-2", "nullius-limestone-processing-1",
+        "nullius-pressure-containment",
         "nullius-climatology-2", "nullius-air-separation-2", "nullius-mass-production-7", "nullius-primitive-robotics", "nullius-explosives-2", "nullius-mass-production-6"}) do
       force.technologies[name].researched = true
     end
