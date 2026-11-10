@@ -1,3 +1,5 @@
+local drone_surface = require('__nullius-star__/drone-surface')
+
 function scout_effect(event, range, halt)
   local source = event.source_entity
   if ((source ~= nil) and source.valid) then
@@ -980,6 +982,9 @@ end
 function trigger_effect(event)
   if event.effect_id == antiproton.ANNIHILATION then return antiproton.annihilation(event) end
   if (string.sub(event.effect_id, 1, 8) ~= "nullius-") then return end
+  local drone = string.match(event.effect_id, '^nullius%-([%a%-]+)%-drone%-effect')
+  if drone_surface.nauvis_only[drone] and
+      game.surfaces[event.surface_index].name ~= 'nauvis' then return end
   local midfix = string.sub(event.effect_id, 9, 14)
   local suffix = string.sub(event.effect_id, 15, -1)
 
@@ -1053,3 +1058,17 @@ function trigger_effect(event)
 end
 
 script.on_event(defines.events.on_script_trigger_effect, trigger_effect)
+
+script.on_event(defines.events.on_player_used_capsule, function(event)
+  local drone = string.match(event.item.name, '^nullius%-([%a%-]+)%-remote')
+  if not drone_surface.nauvis_only[drone] then return end
+  local player = game.get_player(event.player_index)
+  local surface = player.surface
+  if surface.name == 'nauvis' then return end
+  local flare = string.gsub(event.item.name, '%-remote', '-flare', 1)
+  for _, entity in pairs(surface.find_entities_filtered{
+      name=flare, position=event.position, radius=1, force=player.force}) do
+    entity.destroy()
+  end
+  player.create_local_flying_text{text={'nullius-drone.nauvis-only'}, position=event.position}
+end)

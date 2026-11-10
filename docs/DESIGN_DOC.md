@@ -838,7 +838,11 @@ Players can continue playing after victory with infinite research tracks.
 
 **Mecha Suits**: Spider-vehicle chassis with equipment grids. Mountable generators, solar panels, drone launchers (tier 1-2), guns (tier 1-2), and missile launchers. Autonomous power via portable reactors burning nuclear fuel cells.
 
-**Terraforming Drones**: 6 terrain color variants (grey, tan, brown, red, beige, volcanic) that convert alien biomes to standard terrain. Also **9 paving drone colors** (grey, white, red, blue, yellow, green, purple, brown, black, hazard) for creating walkable paths. Drones are fired as artillery ammunition via remote capsule targeting.
+**Terraforming Drones**: Terrain variants (grey, tan, brown, red, beige) convert alien biomes to standard terrain. Paving variants (grey, white, red, blue, yellow, green, purple, brown, black, hazard) create paths. Drones are fired as artillery ammunition via remote capsule targeting.
+
+Terraforming, paving, excavation, biological seeding, coal, and petroleum drones
+can only operate on Nauvis. The oxygen mission counts gas production and use
+on Nauvis only.
 
 **Multiplayer Alignment**: Full faction system, not just optional cooperation. Each player gets their own force. Satellite/pod rocket launch triggers "concordance" -- the launching faction absorbs all others (technologies shared, entities transferred, charts merged). Inactive factions auto-absorbed after 30 days. Requires alignment startup setting AND multiplayer.
 

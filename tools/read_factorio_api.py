@@ -30,9 +30,9 @@ def main():
                          indent=2))
         return
     if not args.member:
-        matches = [c for c in api[types] if c['name'] == args.class_name]
+        matches = [c for c in [*api[types], *api.get('events', [])] if c['name'] == args.class_name]
         if not matches:
-            parser.error('Supply a class and member names, or a type name')
+            parser.error('Supply a class and member names, or a type or event name')
         print(json.dumps(matches[0], indent=2))
         return
     classes = {c['name']: c for c in api[owners]}

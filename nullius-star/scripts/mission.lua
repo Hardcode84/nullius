@@ -396,6 +396,8 @@ if script.active_mods["factorio-test-support"] then
     probes = function() return storage.nullius_mission_count and storage.nullius_mission_count[1] or 0 end,
     complete = function() return storage.nullius_mission_complete end,
     overall = function() return storage.nullius_mission_status[14] end,
+    count = function(goal) return storage.nullius_mission_count[goal] end,
+    update_oxygen = update_oxygen,
     -- Reproduces a save from before goals 10 and 11 became stubs: a goal
     -- reached without the completion check that set_goal runs.
     seed_count = set_goal_count,
