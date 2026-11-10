@@ -246,8 +246,6 @@ These solver results do not prove a connected factory or the failing scenario
 contracts.
 
 ```bash
-python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.0
-python tools/test_factorio_tool_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_vulcanus_recipe_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_vulcanus_processing_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1
