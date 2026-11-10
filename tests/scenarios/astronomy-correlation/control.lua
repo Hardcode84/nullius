@@ -4,6 +4,7 @@
 -- expect: native pack yields, every blank returned, fixed lifetime and cargo weight.
 local CASE='astronomy-correlation'
 local spec=require('__nullius-star__/shared/astronomy')
+local transit=require('__nullius-star__/shared/reference-transit')
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
 script.on_init(function()
  storage.assertions=0;storage.rows={}
@@ -35,7 +36,7 @@ script.on_init(function()
  local inventory=game.create_inventory(3);storage.spoiling=inventory
  for i,planet in ipairs(spec.planets) do
   local name=spec.recording(planet);local p=prototypes.item[name]
-  check(p.get_spoil_ticks()==spec.spoil_ticks,'prototype lifetime')
+  check(p.get_spoil_ticks()==transit.spoil_ticks,'prototype lifetime')
   check(p.weight==1000 and p.stack_size==50,'recording cargo')
   inventory[i].set_stack{name=name,count=1};inventory[i].spoil_percent=1-300/p.get_spoil_ticks()
  end

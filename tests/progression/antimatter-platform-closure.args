@@ -1,0 +1,12 @@
+--surface-property
+pressure=0
+--available
+nullius-antimatter-trap
+--available-machine
+nullius-antiproton-collector
+--recipe
+nullius-antimatter=nullius-antiproton-capture
+--technology
+nullius-antimatter-containment
+--require-no-additional-technologies
+nullius-antimatter

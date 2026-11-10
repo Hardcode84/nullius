@@ -27,6 +27,24 @@ local function assert_uranium(force)
   assert(not force.recipes["nullius-yellowcake-precipitation"].enabled,"seawater uranium unlocked by upgrade")
 end
 
+-- Traps stopped being nuclear fuel. The migration moves every seeded trap out of
+-- the reactor, truck, and stored armor's portable reactor fuel slots onto the
+-- ground beside them, losing none.
+local function assert_traps()
+  local seeded=storage.traps
+  assert(seeded.reactor.get_fuel_inventory().get_item_count("nullius-antimatter-trap")==0,"trap left in reactor fuel")
+  assert(seeded.truck.get_fuel_inventory().get_item_count("nullius-antimatter-trap")==0,"trap left in truck fuel")
+  local grid=seeded.chest.get_inventory(defines.inventory.chest)[1].grid
+  for _,item in pairs(grid.equipment) do
+    assert(item.burner.inventory.get_item_count("nullius-antimatter-trap")==0,"trap left in equipment fuel")
+  end
+  local ground=0
+  for _,item in pairs(seeded.reactor.surface.find_entities_filtered{name="item-on-ground",area={{50,50},{78,78}}}) do
+    if item.stack.name=="nullius-antimatter-trap" then ground=ground+item.stack.count end
+  end
+  assert(ground==4,"moved traps on the ground: "..ground)
+end
+
 remote.add_interface("release-upgrade",{
   seed=function()
     local technologies=game.forces.player.technologies
@@ -34,6 +52,24 @@ remote.add_interface("release-upgrade",{
     technologies["nullius-nuclear-power-1"].researched=true
     technologies["nullius-checkpoint-uranium-ore"].researched=true
     technologies["nullius-uranium-processing"].researched=true
+    technologies["nullius-antimatter-containment"].researched=true
+    local surface=game.surfaces.nauvis
+    surface.request_to_generate_chunks({64,64},1)
+    surface.force_generate_chunk_requests()
+    for _,entity in pairs(surface.find_entities_filtered{area={{56,56},{72,72}}}) do entity.destroy() end
+    local tiles={}
+    for x=56,72 do for y=56,72 do tiles[#tiles+1]={name="concrete",position={x,y}} end end
+    surface.set_tiles(tiles)
+    local reactor=assert(surface.create_entity{name="nullius-reactor",position={64,64},force="player"})
+    assert(reactor.get_fuel_inventory().insert{name="nullius-antimatter-trap",count=2}==2,"seed traps as reactor fuel")
+    local truck=assert(surface.create_entity{name="nullius-truck-2",position={59,59},force="player"})
+    assert(truck.get_fuel_inventory().insert{name="nullius-antimatter-trap",count=1}==1,"seed a trap as vehicle fuel")
+    local chest=assert(surface.create_entity{name="wooden-chest",position={69,69},force="player"})
+    local armor=chest.get_inventory(defines.inventory.chest)[1]
+    assert(armor.set_stack{name="nullius-chassis-4",count=1},"seed stored armor")
+    local generator=assert(armor.grid.put{name="nullius-portable-reactor"},"seed a portable reactor")
+    assert(generator.burner.inventory.insert{name="nullius-antimatter-trap",count=1}==1,"seed a trap as equipment fuel")
+    storage.traps={reactor=reactor,truck=truck,chest=chest}
     game.create_force("nuclear-control")
     storage.astronomy_upgrade_seed=true
   end,
@@ -52,6 +88,7 @@ remote.add_interface("release-upgrade",{
     end
     assert_reactor(force)
     assert_uranium(force)
+    assert_traps()
     force.reset_technology_effects()
     assert_reactor(force)
     assert_uranium(force)
@@ -61,6 +98,6 @@ remote.add_interface("release-upgrade",{
     assert(not control.recipes["nullius-yellowcake"].enabled,"unresearched force has yellowcake")
     assert(not control.technologies["nullius-uranium-enrichment"].researched,"migration researched enrichment without Uranium Processing")
     helpers.write_file("upgrade-result.json",helpers.table_to_json{status="pass",astronomy_research=true,
-      recordings=true,planet_gates=true,reactor_split=true},false)
+      recordings=true,planet_gates=true,reactor_split=true,traps_moved=true},false)
   end,
 })

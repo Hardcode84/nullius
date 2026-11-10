@@ -540,10 +540,10 @@ def resolve_surface(data: Prototype, declared: dict[str, float]) -> dict[str, fl
 
 
 def allowed_on_surface(
-    recipe: Prototype, surface_properties: dict[str, float]
+    prototype: Prototype, surface_properties: dict[str, float]
 ) -> bool:
-    """Check conditions against a surface completed by resolve_surface."""
-    for condition in recipe.get("surface_conditions") or []:
+    """Check a recipe's or machine's conditions against a surface completed by resolve_surface."""
+    for condition in prototype.get("surface_conditions") or []:
         value = surface_properties[condition["property"]]
         if value < condition.get("min", float("-inf")):
             return False
@@ -908,6 +908,9 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     category_machines: dict[str, list[str]] = defaultdict(list)
     for prototype_type in ("assembling-machine", "furnace", "rocket-silo"):
         for machine_name, machine in data.get(prototype_type, {}).items():
+            # A machine that cannot be built on the declared surface executes nothing there.
+            if not allowed_on_surface(machine, surface_properties):
+                continue
             for category in machine.get("crafting_categories") or []:
                 items = machine_items.get(machine_name) or []
                 for item_name in items:

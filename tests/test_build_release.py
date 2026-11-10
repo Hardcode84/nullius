@@ -97,6 +97,7 @@ class ReleaseBuilderTests(unittest.TestCase):
             self.assertFalse(any(name.startswith("tests/") for name in names))
             self.assertFalse(any(name.startswith("tools/") for name in names))
             self.assertEqual({name for name in names if "/migrations/" in name}, {
+                "nullius-star/migrations/antiproton-capture.lua",
                 "nullius-star/migrations/nuclear-reactor.lua",
                 "nullius-star/migrations/radio-astronomy.lua",
                 "nullius-star/migrations/upstream-progression.json",

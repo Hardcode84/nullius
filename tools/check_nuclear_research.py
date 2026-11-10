@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Check the nuclear reactor split and the fission branch research placement."""
+"""Check the nuclear reactor split, the fission branch, and antiproton capture research placement."""
 import argparse
+import functools
 import json
 import shutil
 from pathlib import Path
@@ -37,11 +38,15 @@ PREREQUISITES = {
     FISSION: [ENRICHMENT, REACTOR],
     # Uranium comes only from enrichment tails, so its consumers follow enrichment.
     WILDLIFE: ['nullius-checkpoint-copper-ingot', ENRICHMENT, 'nullius-checkpoint-worm', 'nullius-personal-storage-3'],
-    # Antimatter traps consume breeder and fission cells; the fusion ladder that
-    # fission dropped is required again where the branches meet.
-    ANTIMATTER: ['nullius-solar-power-3', 'nullius-checkpoint-enriched-uranium',
-                 'nullius-checkpoint-breeder-cell', 'nullius-boiling-4'],
+    # Antiproton capture is Fulgora orbit research; Solar Power 3 makes the
+    # empty trap's processors, batteries, and copper wire.
+    ANTIMATTER: ['nullius-orbital-construction', 'nullius-supercapacitors', 'nullius-solar-power-3'],
 }
+# Antimatter Containment required these before antiproton capture replaced
+# antimatter made from nuclear cells.
+REMOVED_ANTIMATTER_PREREQUISITES = ['nullius-checkpoint-enriched-uranium', 'nullius-checkpoint-breeder-cell',
+                                    'nullius-boiling-4']
+ANTIMATTER_ITEMS = ('nullius-antimatter', 'nullius-antimatter-trap')
 RECIPE_UNLOCKS = {
     'nullius-reactor': REACTOR,
     'nullius-portable-reactor': REACTOR,
@@ -68,24 +73,59 @@ RECIPE_UNLOCKS = {
     'nullius-uranium-deconversion': ENRICHMENT,
     'nullius-fission-cell': FISSION,
     'nullius-fission-recycling': FISSION,
+    'nullius-antimatter-trap': ANTIMATTER,
+    'nullius-antiproton-collector': ANTIMATTER,
+    'nullius-antiproton-capture': ANTIMATTER,
+    'nullius-antimatter-recharge': ANTIMATTER,
 }
 # Fission no longer passes through the fusion ladder or Astronomy. Its
 # technologies and the fission checkpoint are checked by their prerequisites.
 FISSION_BRANCH = {SEAWATER, FLUORINE, URANIUM, ENRICHMENT, FISSION, 'nullius-checkpoint-enriched-uranium'}
+# Placement of these is checked by their prerequisites, not their closures.
+EXEMPT = FISSION_BRANCH | {REACTOR, ANTIMATTER}
 
 
 def closure_rules(technologies):
-    """Return the research uranium consumers may drop and gain.
+    """Return (released, gained) research for uranium consumers and for antimatter dependents.
 
-    Consumers of Uranium Processing reached breeder research and the uranium
-    ore checkpoint only through it, and now reach enrichment and its closure.
+    Consumers of Uranium Processing reached breeder research and the uranium ore
+    checkpoint only through it, and now reach enrichment and its closure.
+    Research after Antimatter Containment may also drop what only its removed
+    nuclear prerequisites reached, and reach its new prerequisites.
     """
-    released = frozenset({'nullius-nuclear-power-3'} | prereqs.technology_closure(technologies, {URANIUM_ORE}))
-    gained = frozenset(prereqs.technology_closure(technologies, {ENRICHMENT}))
-    return released, gained
+    closure = functools.partial(prereqs.technology_closure, technologies)
+    uranium = (frozenset({'nullius-nuclear-power-3'} | closure({URANIUM_ORE})), frozenset(closure({ENRICHMENT})))
+    antimatter = (frozenset(closure(set(REMOVED_ANTIMATTER_PREREQUISITES))),
+                  frozenset(closure(set(PREREQUISITES[ANTIMATTER]))))
+    return uranium, antimatter
 
 
-def research_violations(technologies):
+def closure_violations(technologies):
+    """Return closure changes that neither the uranium nor the antimatter rule allows."""
+    uranium, antimatter = closure_rules(technologies)
+    violations = []
+    for name, (lost, gained) in prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, EXEMPT).items():
+        released, reached = uranium
+        if ANTIMATTER in prereqs.technology_closure(technologies, {name}):
+            released, reached = released | antimatter[0], reached | antimatter[1]
+        if lost - released or gained - reached:
+            violations.append(f'{name} closure: lost {sorted(lost)}, gained {sorted(gained)}')
+    return violations
+
+
+def antimatter_consumer_violations(technologies, recipes):
+    """Return research that unlocks a trap consumer without reaching Antimatter Containment."""
+    violations = []
+    for name, recipe in sorted(recipes.items()):
+        if not any(ingredient['name'] in ANTIMATTER_ITEMS for ingredient in recipe.get('ingredients') or []):
+            continue
+        for technology in prereqs.recipe_unlockers(technologies, name):
+            if ANTIMATTER not in prereqs.technology_closure(technologies, {technology}):
+                violations.append(f'{technology} unlocks {name} without {ANTIMATTER}')
+    return violations
+
+
+def research_violations(technologies, recipes):
     """Return nuclear research placement and closure violations."""
     violations = [f'{name} prerequisites: expected {expected}, found {technologies[name].get("prerequisites")}'
                   for name, expected in PREREQUISITES.items()
@@ -96,9 +136,8 @@ def research_violations(technologies):
             violations.append(f'{recipe} unlocked by {unlockers}, expected {expected}')
     violations.extend(f'{name} requires {ASTRONOMY}' for name in sorted(FISSION_BRANCH)
                       if ASTRONOMY in prereqs.technology_closure(technologies, {name}))
-    released, gained = closure_rules(technologies)
-    violations.extend(prereqs.moved_research_violations(technologies, FORMER_PREREQUISITES,
-                                                        FISSION_BRANCH | {REACTOR}, released, gained))
+    violations.extend(closure_violations(technologies))
+    violations.extend(antimatter_consumer_violations(technologies, recipes))
     return violations
 
 
@@ -111,13 +150,13 @@ def main():
     data, temporary = prereqs.dump_resolved_data(dump_args)
     try:
         technologies = data['technology']
-        violations = research_violations(technologies)
+        violations = research_violations(technologies, data['recipe'])
         if violations:
             raise prereqs.TestFailure('Nuclear research violations:\n' + '\n'.join(violations))
-        changes = prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, FISSION_BRANCH | {REACTOR})
+        changes = prereqs.moved_research_changes(technologies, FORMER_PREREQUISITES, EXEMPT)
         print(json.dumps({
-            'unchanged_research_closures': len(technologies.keys() - FISSION_BRANCH - {REACTOR} - changes.keys()),
-            'changed_uranium_consumers': {name: {'lost': sorted(lost), 'gained': sorted(gained)}
+            'unchanged_research_closures': len(technologies.keys() - EXEMPT - changes.keys()),
+            'changed_research_closures': {name: {'lost': sorted(lost), 'gained': sorted(gained)}
                                           for name, (lost, gained) in changes.items()},
         }, indent=2))
     finally:

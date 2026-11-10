@@ -1,0 +1,5 @@
+@tests/progression/antimatter-import-boundary.args
+--technology
+nullius-cybernetics-7
+--require-no-additional-technologies
+nullius-stabilizer-2

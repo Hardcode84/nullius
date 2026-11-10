@@ -65,6 +65,22 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         with self.assertRaisesRegex(TestFailure, "unknown surface properties: gravity"):
             resolve_surface(data, {"gravity": 10})
 
+    def test_machine_surface_conditions_limit_executors(self):
+        data = {
+            "surface-property": {"pressure": {"default_value": 1000}},
+            "item": {"collector": {"name": "collector", "place_result": "collector"}},
+            "recipe": {"collect": {"name": "collect", "enabled": True, "category": "capture",
+                                   "ingredients": [], "results": [{"type": "item", "name": "trap", "amount": 1}]}},
+            "assembling-machine": {"collector": {
+                "name": "collector", "crafting_categories": ["capture"], "minable": {"result": "collector"},
+                "surface_conditions": [{"property": "pressure", "min": 0, "max": 0}]}},
+        }
+        args = SimpleNamespace(targets=["trap"], technology=[], surface_property=[], available=[],
+                               available_machine=["collector"], raw=[])
+        self.assertEqual(analyze(data, args)["unresolved"], ["trap"])
+        args.surface_property = [("pressure", 0)]
+        self.assertEqual(analyze(data, args)["unresolved"], [])
+
     def test_omitted_enabled_uses_factorio_default(self):
         data = {"recipe": {"vent": {"ingredients": [], "results": []},
                            "locked": {"enabled": False, "ingredients": [], "results": []}},

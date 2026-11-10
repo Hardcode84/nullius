@@ -1,0 +1,5 @@
+@tests/progression/antimatter-import-boundary.args
+--technology
+nullius-battery-storage-5
+--require-no-additional-technologies
+nullius-battery-3

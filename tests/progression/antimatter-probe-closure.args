@@ -1,0 +1,5 @@
+@tests/progression/antimatter-import-boundary.args
+--technology
+nullius-rocket-science-3
+--require-no-additional-technologies
+nullius-probe

@@ -57,9 +57,12 @@ Declare the starting contract explicitly:
 - `--executor CATEGORY=ENTITY` selects the exact runtime entity whose crafting
   speed and energy source define the manifest.
 - `--machine-category CATEGORY` forbids hand crafting for that category.
-- `--surface-property NAME=VALUE` excludes recipes incompatible with a declared
-  surface property. Undeclared properties use the prototype `default_value`,
-  as Factorio does; an unknown property name fails.
+- `--surface-property NAME=VALUE` excludes recipes and machines incompatible
+  with a declared surface property. Undeclared properties use the prototype
+  `default_value`, as Factorio does; an unknown property name fails. A contract
+  that uses a planet-specific or platform-only machine must declare that
+  surface. One contract models one surface; import goods made elsewhere with
+  `--available`.
 - `--forbid-product ITEM_OR_FLUID` rejects a selected dependency, even when
   that material is available at the declared research boundary.
 - `--forbid-category CATEGORY` excludes an operation unavailable at the

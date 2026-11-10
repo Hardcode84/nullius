@@ -96,7 +96,7 @@ for _, planet in ipairs(spec.planets) do
   local icons={{icon="__base__/graphics/icons/advanced-circuit.png",icon_size=64},
     {icon=surface.icon,icon_size=surface.icon_size,scale=0.25,shift={10,-10}}}
   local recording={type="item",name=name,icons=icons,subgroup="space",order="nullius-radio-"..planet,
-    stack_size=50,spoil_ticks=spec.spoil_ticks,spoil_result=blank}
+    stack_size=50,spoil_ticks=require("shared.reference-transit").spoil_ticks,spoil_result=blank}
   data:extend({recording})
   recipe(name,"nullius-radio-recording",1,{ingredient(blank,1),{type="fluid",name="nullius-hydrogen",amount=1}},
     {ingredient(name,1)})

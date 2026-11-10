@@ -14287,20 +14287,31 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-antimatter-trap"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-antiproton-collector"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-antiproton-capture"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "nullius-antimatter-recharge"
       }
     },
+    -- Fulgora electromagnetic research, priced as Overcharged Assembly 2.
     unit = {
-      count = 25000,
+      count = 10,
       ingredients = {
-        {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-        {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-        {"nullius-chemical-pack", 1}, {"nullius-physics-pack", 2},
-        {"nullius-astronomy-pack", 1}
+        {"nullius-electromagnetic-pack", 20}, {"nullius-mechanical-pack", 4},
+        {"nullius-electrical-pack", 4}
       },
-      time = 60
+      time = 45
     },
-    prerequisites = {"nullius-solar-power-3", "nullius-checkpoint-enriched-uranium",
-      "nullius-checkpoint-breeder-cell", "nullius-boiling-4"}
+    -- Solar Power 3 makes the trap's processors, batteries, and copper wire.
+    prerequisites = {"nullius-orbital-construction", "nullius-supercapacitors", "nullius-solar-power-3"}
   },
   {
     type = "technology",

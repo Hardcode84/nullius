@@ -4,7 +4,7 @@
 -- act: fly from each remote planet to the other through Nauvis.
 -- run: sample every 30 ticks; no stops, refuelling, infinity inputs, or extra cargo.
 -- expect: both reference transits finish; recording lifetime covers the measured route.
-local astronomy=require('__nullius-star__/shared/astronomy')
+local transit=require('__nullius-star__/shared/reference-transit')
 local CASE='astronomy-transit'
 local function check(ok,msg) storage.assertions=storage.assertions+1;assert(ok,msg) end
 script.on_init(function()
@@ -52,7 +52,7 @@ script.on_nth_tick(30,function()
    check(row.plant.products_finished>0,'onboard propellant')
   end
   local expected=math.ceil(longest*1.5)
-  check(expected==astronomy.spoil_ticks,"reference transit sets recording lifetime")
+  check(expected==transit.spoil_ticks,"reference transit sets the interplanetary spoil time")
   helpers.write_file('factorio-tests/'..CASE..'.json',helpers.table_to_json{schema=1,case=CASE,status='pass',tick=game.tick,
    failure_count=0,assertions=storage.assertions,factorio_version=script.active_mods.base,
    observations={transit_ticks=times,spoil_ticks=expected}},false)

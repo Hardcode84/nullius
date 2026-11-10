@@ -6226,10 +6226,6 @@ extend_intermediate_prototypes({
     name = "nullius-antimatter-trap",
     icon = ICONPATH .. "antimatter-trap.png",
     icon_size = 64,
-    fuel_categories = {"nullius-nuclear"},
-    burnt_result = "nullius-antimatter",
-    fuel_value = "1GJ",
-	  fuel_glow_color = {r=0.9, g=0.6, b=0, a=1},
     subgroup = "nuclear",
     order = "nullius-fb",
     stack_size = 20
@@ -6245,6 +6241,10 @@ extend_intermediate_prototypes({
     fuel_value = "1GJ",
     fuel_acceleration_multiplier = 2.5,
     fuel_top_speed_multiplier = 1.75,
+    -- The trap holds antimatter only while powered; unrecharged antimatter
+    -- annihilates and leaves the empty trap.
+    spoil_ticks = require("shared.reference-transit").spoil_ticks,
+    spoil_result = "nullius-antimatter-trap",
     stack_size = 20
   },
   {
@@ -6255,8 +6255,6 @@ extend_intermediate_prototypes({
     categories = {"tiny-crafting"},
     energy_required = 30,
     ingredients = {
-      {type="item", name="nullius-fission-cell", amount=1},
-      {type="item", name="nullius-breeder-cell", amount=2},
       {type="item", name="nullius-box-copper-wire", amount=1},
       {type="item", name="nullius-processor-3", amount=1},
       {type="item", name="nullius-sensor-2", amount=1},

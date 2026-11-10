@@ -3,7 +3,7 @@ nullius-sodium-processing
 --require-no-additional-technologies
 --require-no-electricity
 --surface-property
-nullius-ambient-temperature=15
+nullius-ambient-temperature=200
 --available
 nullius-soda-ash
 --stock

@@ -1533,8 +1533,7 @@ Fusion branch:   Electrolysis 4 -> Isotope Separation -> Nuclear Power 1 (fusion
 Fission branch:  Biochemistry 4 -> Seawater Uranium Adsorption --+
                  Electrolysis 4 -> Fluorine Chemistry -----------+-> Uranium Processing
                  -> Uranium Enrichment -> Nuclear Power 4 (fission cells)
-Antimatter:      Today Antimatter Containment requires both branches; antiproton
-                 capture moves it to Fulgora orbit, independent of both
+Antimatter:      Antimatter Containment is Fulgora orbit research, independent of both branches
 ```
 
 The reactor split, the fission detachment from the fusion ladder, seawater
@@ -1552,7 +1551,7 @@ implemented state; [Fission branch](#fission-branch) describes the planned rest.
 | Fission | Seawater Uranium Adsorption follows Biochemistry 4 and Fluorine Chemistry follows Electrolysis 4. Uranium Processing requires both; Uranium Enrichment requires Uranium Processing; Nuclear Power 4 requires Uranium Enrichment and Nuclear Reactor. No breeder checkpoint, Nuclear Power 3, Boiling 4, Isotope Separation, uranium-ore checkpoint, or astronomy pack, so fission does not require Astronomy or tritium |
 | Ore yellowcake | The uranium-ore checkpoint unlocks ore yellowcake beside crushed uranium ore |
 | Uranium consumers | Uranium and enriched uranium come only from deconversion, so Wildlife Management 1 and Typesetting 4 require Uranium Enrichment, and Cybernetics 6 and 7 reach it through their closures |
-| Antimatter Containment | Antimatter traps consume breeder and fission cells, so it requires the breeder checkpoint and Boiling 4 directly. Through fission cells it and its dependents also require the fission chain and the Nauvis biology research before it |
+| Antimatter Containment | Antiproton capture in Fulgora orbit; see [Antimatter: antiproton capture](#antimatter-antiproton-capture). It requires neither nuclear branch |
 | Released research | Uranium consumers reached Nuclear Power 3 and the uranium-ore checkpoint only through Uranium Processing and no longer require them; they gain the fission chain and keep Astronomy through other prerequisites. `tools/check_nuclear_research.py` lists each changed closure |
 | Existing saves | A force that researched Nuclear Power 1 receives Nuclear Reactor. A force that researched Uranium Processing keeps ore yellowcake through the checkpoint it already researched, and receives Fluorine Chemistry and Uranium Enrichment |
 
@@ -1584,7 +1583,7 @@ Delivery order:
 |---|---|---|
 | Seawater uranium (implemented) | See the rules above | Astronomy |
 | Enrichment (implemented) | Fluorine Chemistry and Uranium Enrichment; Uranium Processing becomes conversion and drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
-| Antiproton capture | See [Antimatter: antiproton capture](#antimatter-antiproton-capture) | Fission and breeder cells in antimatter |
+| Antiproton capture (implemented) | See [Antimatter: antiproton capture](#antimatter-antiproton-capture) | Fission and breeder cells in antimatter |
 | Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint |
 
 | Stage | Process | Real basis |
@@ -1658,7 +1657,7 @@ Uranium sources, best last:
 
 #### Antimatter: antiproton capture
 
-Design only. Planetary radiation belts trap antiprotons; the PAMELA satellite
+Implemented. Planetary radiation belts trap antiprotons; the PAMELA satellite
 observed them in Earth's belts. Fulgora has the strongest magnetic field of the
 three planets, so antimatter is collected in Fulgora orbit and nowhere else.
 
@@ -1670,14 +1669,15 @@ three planets, so antimatter is collected in Fulgora orbit and nowhere else.
 | Rule | Value |
 |---|---|
 | Collector | `nullius-antiproton-collector`, an electric assembling machine with a fixed recipe: empty trap -> filled trap. Placement requires pressure 0, as the vanilla asteroid collector, so it builds only on platforms |
-| Fulgora gate | Recipes cannot see a platform's orbit. A script, following the dish controller pattern, sets `disabled_by_script` and a custom status on every collector unless its platform's `space_location` is Fulgora. It updates on build, removal, `on_space_platform_changed_state`, and configuration change. A platform in transit has no `space_location`, so collectors stop between planets |
+| Fulgora gate | Recipes cannot see a platform's orbit. `scripts/antiproton.lua` sets `disabled_by_script` and a custom status on every collector unless its platform's `space_location` is Fulgora. The state is derived, not stored: it is applied on build, on `on_space_platform_changed_state`, and on configuration change. Writing `space_location` also raises that event. A platform in transit has no `space_location`, so collectors stop between planets |
+| Platform construction | Entities a platform builds or mines raise their own events; these now reach the Nullius build and mining hooks with the robot handlers, so collectors and other scripted entities register when a platform builds them |
 | Empty trap | Crafted from its current non-nuclear ingredients; the fission and breeder cells are removed, so antimatter no longer depends on either nuclear branch |
-| Research | Antimatter Containment, repurposed: a Fulgora electromagnetic research after Orbital Construction and Supercapacitors, priced as the Fulgora electromagnetic research. It unlocks the empty trap, the collector, and the recharge recipe. The fission, breeder, enriched-uranium, and Boiling 4 prerequisites are removed; any kept Nauvis prerequisite is one the empty trap's components need, proved by its contract |
+| Research | Antimatter Containment, repurposed: a Fulgora electromagnetic research priced as Overcharged Assembly 2, after Orbital Construction, Supercapacitors, and Solar Power 3, which makes the empty trap's processors, batteries, and copper wire. It unlocks the empty trap, the collector, capture, and recharge. The fission, breeder, enriched-uranium, and Boiling 4 prerequisites are removed |
 | Removed | The trap's reactor-fuel role: no fuel value, fuel category, or burnt result |
 | Consequence | Victory requires Fulgora and a platform, because probes take antimatter |
 | Consumers | Probe, battery 3, shield, solar panel 4, asteroid miner 2, and the companion reactor take filled traps; the quantum coprocessor takes an empty trap; the antimatter checkpoint counts consumed filled traps |
 | Moved research | Antimatter Containment's dependents may drop research reached only through the removed nuclear prerequisites and gain Orbital Construction, Supercapacitors, and their closures. `tools/check_nuclear_research.py` lists each changed closure and rejects any other change |
-| Existing saves | Researched Antimatter Containment keeps its unlocks and gains the new ones. Traps in reactor fuel slots leave the slot without loss; `tests/upgrades/0.0.6` seeds one and checks where it goes |
+| Existing saves | Researched Antimatter Containment keeps its unlocks and gains the new ones. The engine keeps former fuel in fuel slots, where a trap blocks one-slot burners, so a migration moves every trap from nuclear burners onto the ground beside their owner: reactors, vehicles, locomotives, and portable reactors in vehicle grids, worn armor, and stored armor |
 
 Traps hold antimatter only while powered, so filled traps spoil and must be
 re-energized.
@@ -1685,7 +1685,7 @@ re-energized.
 | Rule | Value |
 |---|---|
 | Spoilage | `nullius-antimatter` spoils to an empty `nullius-antimatter-trap`; the antimatter annihilates, and the trap returns to Fulgora for refilling |
-| Spoil time | The recording spoil time: 1.5 times the reference transit, the longest measured one-way trip between array planets via Nauvis. Fulgora to Vulcanus is one of the measured trips, so a delivery to any planet need not recharge en route. Both items read one shared constant, which `astronomy-transit` validates |
+| Spoil time | The recording spoil time: 1.5 times the reference transit, the longest measured one-way trip between array planets via Nauvis. Fulgora to Vulcanus is one of the measured trips, so a delivery to any planet need not recharge en route. Both items read `shared/reference-transit.lua`, which `astronomy-transit` validates |
 | Recharge | 1 filled trap -> 1 filled trap; the product sets `always_fresh = true` with `percent_spoiled = 0`. Without the flag a crafted product inherits its ingredient's spoilage, so recharging would not reset the timer |
 | Recharge cost | Electricity and crafting time only; no productivity or quality |
 | Executor | Electrolyzers, category `nullius-electrolysis`, which already forbids productivity. They work on the ground and on platforms, so stockpiles and cargo in transit can both be maintained. Priority electrolyzers keep traps safe; surge electrolyzers run only on surplus power, so a shortage lets traps spoil |
@@ -1695,15 +1695,15 @@ re-energized.
 | Contract | Checks |
 |---|---|
 | Spoilage | A filled trap spoils to an empty trap at the prototype time |
-| Recharge | A nearly spoiled trap comes out fresh in a placed electrolyzer; an ordinary recipe without `always_fresh` would not |
-| Collector gate | A placed collector fills a trap while its platform is stopped at Fulgora, and stays disabled with its status at Nauvis and in transit |
+| Recharge | A nearly spoiled trap comes out fresh in a placed electrolyzer |
+| Collector gate | A placed collector fills a trap while its platform is stopped at Fulgora, stays disabled with its status in transit and at Nauvis, and resumes back at Fulgora. Leaving orbit needs thrust, so the platform carries a thruster with one declared propellant batch |
 | Collector placement | The collector cannot be placed on a planet surface |
 | Reactor fuel | A reactor no longer accepts a trap |
 | Platform closure | On a declared platform boundary (pressure 0; empty traps imported from a planet), the collector and recharge close at Antimatter Containment with `--require-no-additional-technologies`. The empty trap closes there on the Nauvis boundary |
-| Machine surface conditions | `tools/analyze_factorio_prereqs.py` applies only recipe surface conditions today, so the collector would pass on a planet. It must also reject a machine whose own surface conditions the declared surface fails |
-| Consumer closure | Battery 3, stabilizer 2, and the probe close at their research on their planet boundary with antimatter declared as an import from orbit |
+| Machine surface conditions | `tools/analyze_factorio_prereqs.py` rejects a machine whose own surface conditions the declared surface fails, so the collector does not pass on a planet |
+| Consumer closure | Battery 3, stabilizer 2, and the probe close at their research on `antimatter-import-boundary.args`, the Nauvis boundary with antimatter declared as an import from orbit |
 | Consumer research | `tools/check_nuclear_research.py` finds every recipe that consumes a filled or empty trap and requires each unlocking technology's closure to contain Antimatter Containment, so the imported antimatter is reachable there |
-| Existing saves | `tests/upgrades/0.0.6` seeds a trap in a reactor fuel slot and a researched Antimatter Containment |
+| Existing saves | `tests/upgrades/0.0.6` seeds traps in a reactor, a truck, and a stored armor's portable reactor, and checks every one lands on the ground |
 
 ## 5. Quality Mechanic
 

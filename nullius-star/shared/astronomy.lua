@@ -2,8 +2,6 @@ local astronomy = {
   planets = {"fulgora", "nauvis", "vulcanus"},
   dishes = {"nullius-radio-dish", "nullius-radio-dish-pneumatic"},
   field_prefix = "nullius-dish-collision-",
-  -- Reference flight is validated by astronomy-transit.
-  spoil_ticks = 16605,
 }
 function astronomy.is_dish(name)
   return name == astronomy.dishes[1] or name == astronomy.dishes[2]

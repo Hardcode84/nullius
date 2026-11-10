@@ -11,6 +11,7 @@ function entity_added(entity, handbuilt, tags)
   fulgora_collectors.add(entity)
   grounding_coils.built(entity)
   astronomy.built(entity)
+  antiproton.built(entity)
   if (entity.type == "spider-vehicle") then
 	  mecha_added(entity)
     return
@@ -124,6 +125,7 @@ function entity_cloned(event)
   if astronomy.cloned(event.destination) then return end
   if grounding_coils.cloned(event.destination) then return end
   if fulgora_overload.cloned(event.destination) then return end
+  antiproton.built(event.destination)
   local destination = reinjection.built(event.destination)
   if not destination then return end
   local entity = supercapacitors.built(overcharged_assemblers.built(destination))
@@ -182,12 +184,15 @@ end
 
 script.on_event(defines.events.on_built_entity, entity_hand_built)
 script.on_event(defines.events.on_robot_built_entity, entity_bot_built)
+-- Platform construction raises its own events with the robot event payloads.
+script.on_event(defines.events.on_space_platform_built_entity, entity_bot_built)
 script.on_event(defines.events.script_raised_built, entity_raised)
 script.on_event(defines.events.script_raised_revive, entity_raised)
 script.on_event(defines.events.on_entity_cloned, entity_cloned)
 
 script.on_event(defines.events.on_player_mined_entity, entity_mined)
 script.on_event(defines.events.on_robot_mined_entity, entity_mined)
+script.on_event(defines.events.on_space_platform_mined_entity, entity_mined)
 script.on_event(defines.events.on_entity_died, entity_died)
 script.on_event(defines.events.on_object_destroyed, entity_destroyed)
 -- One handler: a second registration of this event would replace the first.
@@ -196,6 +201,7 @@ script.on_event(defines.events.script_raised_teleported, function(event)
   fulgora_collectors.add(entity)
   grounding_coils.built(entity)
   astronomy.built(entity)
+  antiproton.built(entity)
 end)
 
 

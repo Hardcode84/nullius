@@ -73,7 +73,11 @@
     "nuclear-fission-closure.args",
     "nuclear-magazine-closure.args",
     "nuclear-multi-tool-closure.args",
-    "nuclear-antimatter-closure.args"
+    "nuclear-antimatter-closure.args",
+    "antimatter-platform-closure.args",
+    "antimatter-battery-closure.args",
+    "antimatter-stabilizer-closure.args",
+    "antimatter-probe-closure.args"
   ],
   "bootstrap": [
     {

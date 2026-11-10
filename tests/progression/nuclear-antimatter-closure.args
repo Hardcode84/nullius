@@ -1,9 +1,8 @@
 @tests/progression/nauvis-boundary.args
---recipe
-nullius-yellowcake=nullius-yellowcake-precipitation
 --raw
 copper-ore
 --technology
 nullius-antimatter-containment
 --require-no-additional-technologies
 nullius-antimatter-trap
+nullius-antiproton-collector
