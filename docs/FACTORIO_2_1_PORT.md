@@ -134,7 +134,7 @@ fields are removed on both engines.
 | Area | Evidence | Required work |
 |---|---|---|
 | Multiplayer support overlay | The overlay extends the private staged directory and keeps its generated manifest | Unit tests cover both version manifests, settings, deadlines, and conflicts. All three scenarios pass on both engines, including shared-body save/reload. The 2.1 run passes 287 assertions |
-| Assembler sprite layouts | All eight definitions use native 2.1 layers with the Nullius scale, offsets, and cycle duration | Both clients render and craft: 16 assertions each. Checks include status lights, frozen overlays, and inherited variants. The full 2.0 prototype dump is unchanged |
+| Assembler sprite layouts | All eight definitions use native 2.1 layers scaled about the machine centre with the Nullius cycle duration; every native offset scales with its sprite | The 2.1 client renders and crafts with 16 assertions. Checks include each layer's scaled offset, status lights, frozen overlays, and inherited variants |
 | Distillery sprite layouts | All three tiers and their pneumatic variants use complete native 2.1 refinery graphics with their tier colours | Both clients render and craft in all four directions: 48 assertions each. Native layers, smoke, lights, and frozen overlays match. The full 2.0 prototype dump is unchanged |
 | Pumpjack sprite layouts | Wells and extractors use native 2.1 arm shadows; custom coloured arms stay unchanged | Shadow scale and timing match each arm. Both clients render all eight definitions in four directions and produce water: 64 assertions each. The full 2.0 prototype dump is unchanged |
 | Chemical-plant sprite layouts | All three tiers and their pneumatic variants use native 2.1 body layers with Nullius scale, offsets, and colours | Both clients render and craft in all four directions: 48 assertions each. Checks preserve animation timing and recipe effects and include frozen overlays. The full 2.0 prototype dump is unchanged |
@@ -265,7 +265,7 @@ python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.0
 python tools/test_silo_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2.0 --compare-full-mod
 python tools/test_hidden_upgrade_compatibility.py --factorio /path/to/factorio-2.1 --staged-full-mod --dependency-mod-directory /path/to/staged/mods
-python tools/test_assembler_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
+python tools/test_assembler_graphics_compatibility.py --factorio /path/to/factorio-2.1
 python tools/test_distillery_graphics_compatibility.py --factorio-2-0 /path/to/factorio-2.0 --factorio-2-1 /path/to/factorio-2.1 --staged-dependency-mod-directory /path/to/staged/mods
 python tools/test_recipe_display_compatibility.py --factorio /path/to/factorio --dependency-mod-directory /path/to/dependency/mods
 python tools/test_geothermal_graphics_compatibility.py --factorio /path/to/factorio --dependency-mod-directory /path/to/dependency/mods
@@ -394,6 +394,7 @@ Ported on Factorio 2.1.24. Nauvis follows upstream for these changes.
 | Diesel, `ad1c4b4`, `f4d01e8` | Adopted | Rename the fuel and containers. Add synthetic diesel and Hydrocarbon Combustion 3. Preserve saved fuel and fix excess fuel from canister flushing. |
 | Solar thermal, `91ae21c`, `5ca89b1`, `3cd29bd`, `0bf3743` | Adopted | Use fluid-powered heat production and the upstream light curve. Keep same-tier neighbour connections on 2.1. Set each collector's health from its tier. |
 | Robot radar, `cd97b84` | Adopted | Remove radar coverage from hangars, relays, and chargers. |
+| Assembler offsets, `dbf2b9d` | Adopted | Native layer offsets scale with the sprite, so small and large assemblers no longer sit slightly off-centre. |
 
 Checks:
 

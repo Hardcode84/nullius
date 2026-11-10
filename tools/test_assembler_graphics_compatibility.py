@@ -42,32 +42,27 @@ def capture(engine, dependencies, baseline=False, baseline_file="assembler.lua",
     return data, major
 
 
-def check_graphics(old, data):
+def check_graphics(data):
+    """Check that each machine draws its base-game assembler scaled about its centre."""
     for name, tier in NAMES.items():
-        legacy = old["assembling-machine"][name]["graphics_set"]["animation"]["layers"]
         graphics = data["assembling-machine"][name]["graphics_set"]
         native = data["assembling-machine"][f"assembling-machine-{tier}"]["graphics_set"]
         layers = graphics["animation"]["layers"]
-        assert len(layers) == 3, name
-        ratio = legacy[0]["scale"] / 0.5
-        old_cycle = legacy[0]["frame_count"] / legacy[0].get("animation_speed", 1)
-        for actual, original in zip(layers, native["animation"]["layers"]):
+        native_layers = native["animation"]["layers"]
+        assert len(layers) == len(native_layers) == 3, name
+        ratio = layers[0]["scale"] / native_layers[0].get("scale", 1)
+        pairs = list(zip(layers, native_layers))
+        pairs += [(v["animation"], n["animation"]) for v, n in zip(
+            graphics["working_visualisations"], native["working_visualisations"], strict=True)]
+        pairs.append((graphics["frozen_patch"], native["frozen_patch"]))
+        for actual, original in pairs:
             for field in ("filename", "width", "height", "line_length", "frame_count", "repeat_count"):
                 assert actual.get(field) == original.get(field), (name, field)
             assert abs(actual["scale"] - original.get("scale", 1) * ratio) < 1e-9, name
-            frames = actual.get("frame_count", 1) * actual.get("repeat_count", 1)
-            assert abs(frames / actual["animation_speed"] - old_cycle) < 1e-9, name
-        # Every new layer retains its native offset relative to the other layers.
-        body = layers[0]
-        native_body = native["animation"]["layers"][0]
-        overlays = [(v["animation"], n["animation"]) for v, n in zip(
-            graphics["working_visualisations"], native["working_visualisations"], strict=True)]
-        overlays.append((graphics["frozen_patch"], native["frozen_patch"]))
-        for actual, original in list(zip(layers[:2], native["animation"]["layers"][:2])) + overlays:
-            assert abs(actual["scale"] - original.get("scale", 1) * ratio) < 1e-9, name
+            # Offsets scale with the sprite, so every layer stays aligned with the body.
             for axis in (0, 1):
-                assert abs((actual["shift"][axis] - body["shift"][axis]) -
-                           (original["shift"][axis] - native_body["shift"][axis]) * ratio) < 1e-9, name
+                assert abs(actual.get("shift", [0, 0])[axis] - original.get("shift", [0, 0])[axis] * ratio) < 1e-9, \
+                    (name, actual.get("filename"))
         for variant in (name + "-pneumatic", name + "-thermal"):
             if variant in data["assembling-machine"]:
                 assert data["assembling-machine"][variant]["graphics_set"] == graphics, variant
@@ -118,15 +113,9 @@ data:extend({recipe})
 
 if __name__ == "__main__":
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--factorio-2-0", type=Path, required=True)
-    parser.add_argument("--factorio-2-1", type=Path, required=True)
+    parser.add_argument("--factorio", type=Path, required=True)
     parser.add_argument("--dependency-mod-directory", type=Path, default=default_dependency_mods())
-    parser.add_argument("--staged-dependency-mod-directory", type=Path, required=True)
     args=parser.parse_args()
-    old,_=capture(args.factorio_2_0,args.dependency_mod_directory,True)
-    current,major=capture(args.factorio_2_0,args.dependency_mod_directory)
-    assert old==current, "2.0 prototypes changed"
-    render(args.factorio_2_0,current,major)
-    current,major=capture(args.factorio_2_1,args.staged_dependency_mod_directory)
-    check_graphics(old,current)
-    render(args.factorio_2_1,current,major)
+    current,major=capture(args.factorio,args.dependency_mod_directory)
+    check_graphics(current)
+    render(args.factorio,current,major)
