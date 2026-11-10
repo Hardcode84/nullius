@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import functools
+import heapq
 from collections import defaultdict, deque
 import json
 import math
@@ -862,13 +864,16 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             if effect.get("type") == "unlock-recipe":
                 unlockers[effect["recipe"]].append(technology_name)
 
-    def missing_technologies(recipe_name: str) -> set[str] | None:
+    # The search asks for each recipe's research many times; the answer only
+    # depends on this analysis's fixed technologies and assumptions.
+    @functools.cache
+    def missing_technologies(recipe_name: str) -> frozenset[str] | None:
         recipe = recipes[recipe_name]
         if recipe.get("enabled", True):
-            return set()
+            return frozenset()
         choices = [
-            technology_closure(technologies, {technology_name})
-            - assumed_technologies
+            frozenset(technology_closure(technologies, {technology_name})
+                      - assumed_technologies)
             for technology_name in unlockers.get(recipe_name, [])
         ]
         if not choices:
@@ -1051,7 +1056,10 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                 ):
                     production_state[result] = candidate_state
                     changed = True
-        for recipe_name in eligible_recipes:
+        # A product keeps the first minimal state it reaches, and combined
+        # research is not monotone in ingredient states, so the visiting order
+        # decides the fixed point. Visit recipes in a fixed order.
+        for recipe_name in sorted(eligible_recipes):
             recipe = recipes[recipe_name]
             recipe_technologies = missing_technologies(recipe_name)
             if recipe_technologies is None:
@@ -1327,38 +1335,63 @@ def add_raw_bootstrap_for_execution(
     remaining = [float(step["cycles"]) for step in steps]
     added: dict[str, float] = defaultdict(float)
 
-    while any(amount > 1e-9 for amount in remaining):
-        ready: list[int] = []
-        for index in range(len(steps) - 1, -1, -1):
-            if remaining[index] <= 1e-9:
-                continue
-            step = steps[index]
-            atomic = bool(step.get("spoil_ticks"))
-            divisor = 1 if atomic else float(step["cycles"])
-            ingredients = [
-                (ingredient["name"], float(ingredient["amount"]) / divisor)
-                for ingredient in step["ingredients"]
-            ]
-            fuel = step.get("fuel")
-            if fuel:
-                ingredients.append((fuel["name"], float(fuel["amount_per_cycle"])))
-            if any(ledger[name] + 1e-9 < amount for name, amount in ingredients):
-                continue
-            ready.append(index)
+    # Each round runs one cycle of the highest-indexed ready step. A step's
+    # readiness changes only with its own remaining cycles or the ledger of
+    # its inputs, so only the consumers of changed names are re-evaluated.
+    inputs: list[list[tuple[str, float]]] = []
+    outputs: list[list[tuple[str, float]]] = []
+    consumers: dict[str, list[int]] = defaultdict(list)
+    for index, step in enumerate(steps):
+        divisor = 1 if step.get("spoil_ticks") else float(step["cycles"])
+        needs = [
+            (ingredient["name"], float(ingredient["amount"]) / divisor)
+            for ingredient in step["ingredients"]
+        ]
+        fuel = step.get("fuel")
+        if fuel:
+            needs.append((fuel["name"], float(fuel["amount_per_cycle"])))
+        inputs.append(needs)
+        outputs.append([
+            (output["name"], float(output["amount"]) / divisor)
+            for output in step["outputs"]
+        ])
+        for name in {name for name, _ in needs}:
+            consumers[name].append(index)
 
-        if ready:
-            selected = ready[0]
-            step = steps[selected]
-            atomic = bool(step.get("spoil_ticks"))
-            divisor = 1 if atomic else float(step["cycles"])
-            for ingredient in step["ingredients"]:
-                ledger[ingredient["name"]] -= float(ingredient["amount"]) / divisor
-            fuel = step.get("fuel")
-            if fuel:
-                ledger[fuel["name"]] -= float(fuel["amount_per_cycle"])
-            for output in step["outputs"]:
-                ledger[output["name"]] += float(output["amount"]) / divisor
+    ready = [False] * len(steps)
+    ready_heap: list[int] = []
+
+    def refresh(indices) -> None:
+        for index in indices:
+            now = remaining[index] > 1e-9 and not any(
+                ledger[name] + 1e-9 < amount for name, amount in inputs[index]
+            )
+            if now and not ready[index]:
+                heapq.heappush(ready_heap, -index)
+            ready[index] = now
+
+    refresh(range(len(steps)))
+    unfinished = sum(amount > 1e-9 for amount in remaining)
+    while unfinished:
+        while ready_heap and not ready[-ready_heap[0]]:
+            heapq.heappop(ready_heap)
+        if ready_heap:
+            selected = -ready_heap[0]
+            changed = set()
+            for name, amount in inputs[selected]:
+                ledger[name] -= amount
+                changed.add(name)
+            for name, amount in outputs[selected]:
+                ledger[name] += amount
+                changed.add(name)
+            atomic = bool(steps[selected].get("spoil_ticks"))
             remaining[selected] = 0 if atomic else remaining[selected] - 1
+            if remaining[selected] <= 1e-9:
+                unfinished -= 1
+            affected = {selected}
+            for name in changed:
+                affected.update(consumers.get(name, ()))
+            refresh(affected)
             continue
 
         candidates: list[tuple[float, str]] = []
@@ -1397,6 +1430,7 @@ def add_raw_bootstrap_for_execution(
         ledger[name] += deficit
         raw_inputs[name] += deficit
         added[name] += deficit
+        refresh(consumers.get(name, ()))
 
     return dict(sorted(added.items()))
 
