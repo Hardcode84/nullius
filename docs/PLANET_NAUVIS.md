@@ -19,6 +19,11 @@ Nauvis critical path through Tier 4.
 parallel branch. Vulcanus research unlocks optional heat-powered versions of
 corresponding Nauvis crushers, furnaces, and foundries.
 
+**Nauvis only**: Terraforming, paving, excavation, biological seeding, and
+carbon sequestration drones operate only on Nauvis, and the oxygen mission
+counts only Nauvis gas production and use. `drone-surface-restrictions` checks
+both.
+
 **Design only**: Other planet branches, cargo logistics, biology or nuclear
 redistribution, and Rogue content.
 
@@ -235,7 +240,6 @@ Once cargo is available, Nauvis exports:
 ## 6. Open Questions (Nauvis-specific)
 
 - Should existing Nullius biology packs remain fully producible on Nauvis, or should advanced bio-packs (dendrology, zoology, evolution) require Gleba inputs?
-- Should the oxygen mission remain Nauvis-only, or extend to terraforming other planets?
 - How does the Rogue scout spawning interact with Nauvis's existing minimal-combat design?
 - Should probe reactivation require a physical item (transmitter building) or just be a tech unlock?
 - Should the player be able to reactivate all planet probes simultaneously, or is there a cooldown/sequential constraint?
