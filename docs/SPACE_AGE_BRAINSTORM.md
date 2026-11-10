@@ -1618,7 +1618,7 @@ than either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
 | Research | Seawater Uranium Adsorption follows Biochemistry 4 and costs Nauvis biology packs: the android's labs design a uranyl-binding protein. When Gleba ships, the cost moves to Gleba biological science. Research is global, so the recipes run on Nauvis without cargo either way |
 | Real basis | Engineered uranyl-binding proteins with femtomolar affinity, and amidoxime polymer fibres tested for seawater extraction |
 | Adsorbent | Amino acids + acrylic fibre support -> uranyl-binding fibre |
-| Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + the same seawater returned for disposal |
+| Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + saline + sludge. The fiber bed filters the seawater, trapping silt and biofouling, and less saline comes out than seawater filtration gives. No seawater returns, so the intake volume cannot be looped |
 | Elution | Loaded adsorbent + acid -> uranyl solution + most of the adsorbent back; the rest is consumed every cycle without a probabilistic result |
 | Precipitation | Uranyl solution + sodium hydroxide -> yellowcake + wastewater; real sodium diuranate precipitation |
 | Cost | Seawater is free, so machine count, pumping, and adsorbent carry the cost. When biomineralized deposits ship, the route must need at least 10 times the machine time per yellowcake of the deposit route |

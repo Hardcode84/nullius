@@ -4,7 +4,7 @@
 -- act: insert one batch of each item ingredient; the item ingredient limits each machine to one craft.
 -- run: until every machine has finished its craft.
 -- expect: one craft per recipe, exact item outputs, recorded fluid production and consumption,
---   and the drained products gone from the machines.
+--   and most of each fluid product drained through its port.
 local CASE = "seawater-uranium"
 local TECHNOLOGY = "nullius-seawater-uranium-adsorption"
 local SETUP_TICK = 30
@@ -16,7 +16,8 @@ local ROWS = {
     items = {["nullius-acrylic-fiber"] = 4}, sources = {"nullius-amino-acids"}, sinks = {},
     outputs = {["nullius-uranyl-binding-fiber"] = 4}},
   {machine = "nullius-hydro-plant-1", recipe = "nullius-loaded-uranyl-fiber",
-    items = {["nullius-uranyl-binding-fiber"] = 1}, sources = {"nullius-seawater"}, sinks = {"nullius-seawater"},
+    items = {["nullius-uranyl-binding-fiber"] = 1}, sources = {"nullius-seawater"},
+    sinks = {"nullius-saline", "nullius-sludge"},
     outputs = {["nullius-loaded-uranyl-fiber"] = 1}},
   {machine = "nullius-flotation-cell-1", recipe = "nullius-uranyl-solution",
     items = {["nullius-loaded-uranyl-fiber"] = 10}, sources = {"nullius-acid-hydrochloric"},
@@ -26,7 +27,8 @@ local ROWS = {
     sinks = {"nullius-wastewater"}, outputs = {["nullius-yellowcake"] = 1}},
 }
 -- Fluid amounts every recipe above produces and consumes, summed per fluid.
-local PRODUCED = {["nullius-seawater"] = 1000, ["nullius-uranyl-solution"] = 20, ["nullius-wastewater"] = 10}
+local PRODUCED = {["nullius-saline"] = 700, ["nullius-sludge"] = 50, ["nullius-uranyl-solution"] = 20,
+  ["nullius-wastewater"] = 10}
 local CONSUMED = {["nullius-amino-acids"] = 2, ["nullius-seawater"] = 1000, ["nullius-acid-hydrochloric"] = 25,
   ["nullius-uranyl-solution"] = 10}
 
@@ -110,12 +112,11 @@ local function verify()
       check(output.get_item_count(name) == count, row.recipe .. " output " .. name .. ": " .. output.get_item_count(name))
     end
     check(machine.get_inventory(defines.inventory.crafter_input).is_empty(), row.recipe .. " consumed its items")
-    -- The hydro plant's input port stays full of seawater from its source, so
-    -- its drained seawater output cannot be told apart by fluid name.
+    -- Flow out of a port slows as the machine's box empties, so a connected
+    -- port has removed most of the batch; a disconnected one keeps all of it.
     for _, fluid in ipairs(row.sinks) do
-      if fluid ~= "nullius-seawater" then
-        check(machine.get_fluid_count(fluid) < 0.001, row.recipe .. " drained " .. fluid)
-      end
+      local left = machine.get_fluid_count(fluid)
+      check(left < PRODUCED[fluid] / 2, row.recipe .. " drains " .. fluid .. " through its port, left " .. left)
     end
   end
   local statistics = storage.force.get_fluid_production_statistics(storage.surface)

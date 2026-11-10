@@ -6073,9 +6073,12 @@ extend_intermediate_prototypes({
       {type="item", name="nullius-uranyl-binding-fiber", amount=1},
       {type="fluid", name="nullius-seawater", amount=1000}
     },
+    -- The fiber bed filters the seawater: no seawater returns, so the intake
+    -- volume is a real cost.
     results = {
       {type="item", name="nullius-loaded-uranyl-fiber", amount=1},
-      {type="fluid", name="nullius-seawater", amount=1000, ignored_by_productivity=1000}
+      {type="fluid", name="nullius-saline", amount=700},
+      {type="fluid", name="nullius-sludge", amount=50}
     },
     main_product = "nullius-loaded-uranyl-fiber"
   },
