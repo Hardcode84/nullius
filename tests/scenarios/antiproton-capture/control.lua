@@ -8,7 +8,8 @@
 --   Fulgora; recharge a nearly spoiled trap.
 -- run: through one capture at Fulgora and one recharge, then each location change.
 -- expect: collectors place only on the platform and run only at Fulgora, with a status elsewhere;
---   antimatter spoils to an empty trap at the prototype time; recharge returns it fresh;
+--   antimatter outlasts the recording spoil time and spoils to an empty trap at the prototype
+--   time; recharge returns it fresh;
 --   reactors reject traps.
 local transit = require("__nullius-star__/shared/reference-transit")
 local CASE = "antiproton-capture"
@@ -67,7 +68,8 @@ local function setup()
     check(force.recipes[name].enabled, name .. " unlocked by Antimatter Containment")
   end
   local item = prototypes.item["nullius-antimatter"]
-  check(item.get_spoil_ticks() == transit.spoil_ticks, "antimatter spoils after the reference transit")
+  storage.spoil_ticks = item.get_spoil_ticks()
+  check(storage.spoil_ticks > transit.spoil_ticks, "antimatter outlasts the recording spoil time, so deliveries need no recharge en route")
   check(item.spoil_result and item.spoil_result.name == "nullius-antimatter-trap", "antimatter spoils to an empty trap")
   check(prototypes.item["nullius-antimatter-trap"].fuel_value == 0, "the trap is not fuel")
 
@@ -93,7 +95,7 @@ local function setup()
   local chest = assert(ground.create_entity{name = "wooden-chest", position = {10, 20}, force = force})
   local stack = chest.get_inventory(defines.inventory.chest)[1]
   stack.set_stack{name = "nullius-antimatter", count = 1}
-  stack.spoil_percent = 1 - SPOIL_MARGIN / transit.spoil_ticks
+  stack.spoil_percent = 1 - SPOIL_MARGIN / storage.spoil_ticks
   storage.chest = chest
 
   force.unlock_space_location("nullius-fulgora")
@@ -152,7 +154,7 @@ local function check_ground()
     check(electrolyzer.products_finished == 1, "one recharge: " .. tostring(status(electrolyzer)))
     local recharged = electrolyzer.get_output_inventory().find_item_stack("nullius-antimatter")
     check(recharged ~= nil, "recharged trap in the output")
-    check(recharged.spoil_percent < 60 / transit.spoil_ticks + 0.001, "recharge resets spoilage: " .. recharged.spoil_percent)
+    check(recharged.spoil_percent < 60 / storage.spoil_ticks + 0.001, "recharge resets spoilage: " .. recharged.spoil_percent)
     storage.recharged = true
   end
 end

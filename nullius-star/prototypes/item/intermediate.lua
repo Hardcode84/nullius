@@ -6242,8 +6242,9 @@ extend_intermediate_prototypes({
     fuel_acceleration_multiplier = 2.5,
     fuel_top_speed_multiplier = 1.75,
     -- The trap holds antimatter only while powered; unrecharged antimatter
-    -- annihilates and leaves the empty trap.
-    spoil_ticks = require("shared.reference-transit").spoil_ticks,
+    -- annihilates and leaves the empty trap. Ten minutes outlasts any delivery
+    -- between planets, but not a stockpile left without recharging.
+    spoil_ticks = 10 * 60 * 60,
     spoil_result = "nullius-antimatter-trap",
     stack_size = 20
   },

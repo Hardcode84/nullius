@@ -1686,7 +1686,7 @@ re-energized.
 | Rule | Value |
 |---|---|
 | Spoilage | `nullius-antimatter` spoils to an empty `nullius-antimatter-trap`; the antimatter annihilates, and the trap returns to Fulgora for refilling |
-| Spoil time | The recording spoil time: 1.5 times the reference transit, the longest measured one-way trip between array planets via Nauvis. Fulgora to Vulcanus is one of the measured trips, so a delivery to any planet need not recharge en route. Both items read `shared/reference-transit.lua`, which `astronomy-transit` validates |
+| Spoil time | A fixed prototype value, longer than the recording spoil time of 1.5 times the reference transit, the longest measured one-way trip between array planets via Nauvis. Fulgora to Vulcanus is one of the measured trips, so a delivery to any planet need not recharge en route, and a stockpile still needs recharging between deliveries. `antiproton-capture` checks it exceeds the recording spoil time in `shared/reference-transit.lua` |
 | Recharge | 1 filled trap -> 1 filled trap; the product sets `always_fresh = true` with `percent_spoiled = 0`. Without the flag a crafted product inherits its ingredient's spoilage, so recharging would not reset the timer |
 | Recharge cost | Electricity and crafting time only; no productivity or quality. Each recharge costs enough that holding traps is a continuous power load, so stockpiles carry a running cost |
 | Executor | Electrolyzers, category `nullius-electrolysis`, which already forbids productivity. They work on the ground and on platforms, so stockpiles and cargo in transit can both be maintained. Priority electrolyzers keep traps safe; surge electrolyzers run only on surplus power, so a shortage lets traps spoil |

@@ -52,7 +52,7 @@ script.on_nth_tick(30,function()
    check(row.plant.products_finished>0,'onboard propellant')
   end
   local expected=math.ceil(longest*1.5)
-  check(expected==transit.spoil_ticks,"reference transit sets the interplanetary spoil time")
+  check(expected==transit.spoil_ticks,"reference transit sets the recording spoil time")
   helpers.write_file('factorio-tests/'..CASE..'.json',helpers.table_to_json{schema=1,case=CASE,status='pass',tick=game.tick,
    failure_count=0,assertions=storage.assertions,factorio_version=script.active_mods.base,
    observations={transit_ticks=times,spoil_ticks=expected}},false)
