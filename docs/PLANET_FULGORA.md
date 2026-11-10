@@ -1173,7 +1173,7 @@ quantities; this document defines the mechanics.
 
 ## Antiproton capture
 
-Design only. Fulgora's strong magnetic field traps antiprotons. Platforms stopped
+Implemented. Fulgora's strong magnetic field traps antiprotons. Platforms stopped
 at Fulgora fill antimatter traps; this is the only antimatter source. See
 [Antimatter: antiproton capture](SPACE_AGE_BRAINSTORM.md#antimatter-antiproton-capture).
 

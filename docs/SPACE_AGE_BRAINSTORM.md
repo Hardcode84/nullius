@@ -153,7 +153,7 @@ IMPORTS:   Water, organics (Fulgora), bio-feed for demolishers (Gleba)
 
 See [Fulgora design](PLANET_FULGORA.md) for hydrocarbon filtration, lightning
 power and overloads, organic industry, electromagnetic science, overcharged assemblers, and nuclear
-geoengineering. Status: design only.
+geoengineering. Status: per mechanic, in that document's status table.
 
 ### 3.3 Gleba (Microbiology/Breeding)
 
