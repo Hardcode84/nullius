@@ -1530,8 +1530,8 @@ Shared base:     Nuclear Reactor   reactor and portable reactor
 Fusion branch:   Electrolysis 4 -> Isotope Separation -> Nuclear Power 1 (fusion cells;
                  Nauvis, tritium-starved) -> aneutronic cells -> breeder cells
                  -> Aquilo: bulk tritium, monopole confinement
-Fission branch:  Biochemistry 4 -> Seawater Uranium Adsorption -> Uranium Processing --+
-                 Electrolysis 4 -> Fluorine Chemistry ----------------------------------+
+Fission branch:  Biochemistry 4 -> Seawater Uranium Adsorption --+
+                 Electrolysis 4 -> Fluorine Chemistry -----------+-> Uranium Processing
                  -> Uranium Enrichment -> Nuclear Power 4 (fission cells)
 Meeting point:   Antimatter Containment requires both branches
 ```
@@ -1562,26 +1562,27 @@ only Nauvis chemistry.
 | Research | Unlocks | Prerequisites | Cost |
 |---|---|---|---|
 | Seawater Uranium Adsorption | Adsorbent, loading, elution, precipitation to yellowcake | Biochemistry 4 | Biology packs, as Biochemistry 4 |
-| Uranium Processing | Uranium dioxide | Seawater Uranium Adsorption | Nauvis packs; no astronomy pack |
 | Fluorine Chemistry | Fluorite flotation, hydrogen fluoride, fluorine | Electrolysis 4 | Chemistry and physics packs, as Isotope Separation |
-| Uranium Enrichment | Green salt, hexafluoride, centrifuge, both enrichment stages, deconversion | Uranium Processing, Fluorine Chemistry | Nauvis packs; no astronomy pack |
+| Uranium Processing | Conversion: uranium dioxide, green salt, empty cylinder, hexafluoride | Seawater Uranium Adsorption, Fluorine Chemistry | Nauvis packs; no astronomy pack |
+| Uranium Enrichment | Centrifuge, both enrichment stages, both deconversions | Uranium Processing | Nauvis packs; no astronomy pack |
 | Nuclear Power 4 | Unchanged: fission cell and fission recycling | Uranium Enrichment, Nuclear Reactor | Nauvis packs; no astronomy pack |
 
 | Rule | Value |
 |---|---|
-| Placement | Biochemistry 4 is the first protein-engineering research (amino acid metabolism) and shares Empiricism 5 with Nuclear Reactor. Its closure already makes acrylic fibre and amino acids. Fluorine Chemistry and Isotope Separation both follow Electrolysis 4, whose closure holds limestone flotation, sulfuric acid, and electrolysis |
-| Uranium Processing | Making yellowcake needs no fluorine, so Fluorine Chemistry gates enrichment, not Uranium Processing |
+| Placement | Biochemistry 4 is the first protein-engineering research (amino acid metabolism) and shares Empiricism 5 with Nuclear Reactor. Its closure already makes acrylic fibre and amino acids. Fluorine Chemistry and Isotope Separation both follow Electrolysis 4. Fluorite flotation is a new flotation-cell recipe on crushed calcite; its contract proves the cell, crushed calcite, and sulfuric acid close at Fluorine Chemistry |
+| Uranium Processing | The seawater research already makes yellowcake, so Uranium Processing is the fluoride conversion to natural hexafluoride and requires Fluorine Chemistry. Every research in the chain unlocks a product its own unlocks consume or that the next research consumes |
 | Astronomy | Removing the uranium-ore checkpoint is not enough: the astronomy packs in Uranium Processing, Uranium Enrichment, and Nuclear Power 4 costs would keep Astronomy |
 | Timing | Fission arrives at the Nauvis biochemistry and Electrolysis 4 tiers, beside Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
 | Gleba move | Seawater Uranium Adsorption later swaps its biology packs for Gleba science; its recipes stay |
-| Other uranium consumers | Wildlife Management 1 keeps Uranium Processing for its depleted-uranium magazine. It and its dependents may drop research reached only through the uranium-ore checkpoint; the release check lists that set. Multi-tool 3 and Stabilizer 2 keep uranium; Cybernetics 6 and 7 already reach Uranium Processing and still cost astronomy packs |
+| Other uranium consumers | Uranium comes only from depleted tails, so every technology that unlocks a uranium consumer requires Uranium Enrichment: Wildlife Management 1 (depleted-uranium magazine) and Typesetting 4 (uranium textplates) replace their Uranium Processing prerequisite; Cybernetics 6 (multi-tool 3) and 7 (stabilizer 2) require it directly or through their closures. The release check lists each changed closure |
+| Existing saves | A force that researched Uranium Processing receives Fluorine Chemistry and Uranium Enrichment, so fission and depleted-uranium production continue after uranium smelting and tritium enrichment are removed |
 
 Delivery order:
 
 | Step | Change | Coupling removed |
 |---|---|---|
 | Seawater uranium (implemented) | See the rules above | Astronomy |
-| Enrichment | Fluorine Chemistry and Uranium Enrichment; Uranium Processing drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
+| Enrichment | Fluorine Chemistry and Uranium Enrichment; Uranium Processing becomes conversion and drops Isotope Separation, uranium smelting, and tritium enrichment | Tritium |
 | Asteroid removal | See [Asteroid mining removal](#asteroid-mining-removal) | Uranium-ore checkpoint |
 
 | Stage | Process | Real basis |
@@ -1589,11 +1590,11 @@ Delivery order:
 | Seawater | See [Seawater uranium](#seawater-uranium) | Uranyl-binding protein adsorbents |
 | Leaching | A bred sulfur-oxidizing strain leaches Gleba rock into uranyl sulfate liquor, which precipitates yellowcake | Bacterial heap leaching of uranium with *Acidithiobacillus*; Gleba's H2S atmosphere and abundant sulfur |
 | Nauvis deposits | Biomineralized deposits yield ore for the existing crushed-ore and flotation route to yellowcake | See mission goal 11 below |
-| Fluorite | Calcite flotation yields trace fluorite concentrate | Industrial fluorite and calcite flotation separation |
+| Fluorite | Crushed calcite flotation yields trace fluorite concentrate; the calcite leaves as tailings in wastewater, so it cannot be refloated | Industrial fluorite and calcite flotation separation |
 | Hydrogen fluoride | Fluorite + sulfuric acid -> hydrogen fluoride + gypsum | The industrial HF route |
 | Fluorine | Hydrogen fluoride electrolysis -> fluorine + hydrogen | Fluorine production from HF electrolysis |
-| Uranium dioxide | Yellowcake + hydrogen -> uranium dioxide | Reduction step of uranium conversion |
-| Green salt | Uranium dioxide + hydrogen fluoride -> uranium tetrafluoride + water | Hydrofluorination |
+| Uranium dioxide | Furnace: yellowcake + hydrogen -> uranium dioxide + water | Reduction step of uranium conversion |
+| Green salt | Uranium dioxide + hydrogen fluoride -> uranium tetrafluoride + wastewater | Hydrofluorination |
 | Hexafluoride | Uranium tetrafluoride + fluorine + empty cylinder -> natural UF6 cylinder | UF6 is solid at room temperature and ships in cylinders |
 | Enrichment stage A | Centrifuge: natural UF6 -> low-enriched UF6 + depleted tails | Gas centrifuge cascade |
 | Enrichment stage B | Centrifuge: low-enriched UF6 -> reactor-grade UF6 + a stripped stream returned to stage A | Cascade recycle |
@@ -1602,8 +1603,8 @@ Delivery order:
 
 | Rule | Value |
 |---|---|
-| Centrifuge | The vanilla centrifuge in its own Nullius category, unhidden with a Nullius recipe. It has no fluid boxes, so UF6 moves in cylinder items |
-| Loops | The stage B return, hydrogen fluoride, and cylinders circulate; fluorite tops up fluoride losses |
+| Centrifuge | `nullius-centrifuge`, a copy of the vanilla centrifuge with its own Nullius category and recipe; the vanilla prototype stays untouched. It has no fluid boxes, so UF6 moves in cylinder items |
+| Loops | The stage B return, hydrogen fluoride, and cylinders circulate; deconversion returns less hydrogen fluoride than conversion consumes, and fluorite tops up that loss. Each stage conserves cylinders |
 | Removed recipes | Tritium enrichment and direct yellowcake smelting to uranium. Uranium comes from enrichment tails, which gives the tails a consumer |
 | Existing items | `nullius-uranium` is described as U-238 and `nullius-enriched-uranium` as U-235; both keep their names and consumers |
 
