@@ -1,0 +1,10 @@
+@tests/progression/nauvis-boundary.args
+--raw
+copper-ore
+--technology
+nullius-checkpoint-copper-ore
+--recipe
+nullius-copper-solution=nullius-copper-solution
+--require-no-additional-technologies
+nullius-copper-solution
+nullius-box-crushed-copper-ore

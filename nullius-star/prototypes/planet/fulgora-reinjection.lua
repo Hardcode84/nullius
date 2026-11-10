@@ -32,6 +32,9 @@ for tier=1,2 do
   deep.localised_description={"entity-description.nullius-deep-drilling"}
   deep.crafting_categories={"nullius-deep-drilling"}
   deep.fixed_recipe="nullius-deep-drilling"
+  -- Drilling past the reservoir is slow and power-hungry on every tier, so a
+  -- vent bounds deep copper and bulk copper needs crustal fracturing.
+  deep.energy_usage="2MW"
   deep.next_upgrade=tier==1 and "nullius-extractor-2-deep" or nil
   deep.fluid_boxes={table.deepcopy(base.output_fluid_box)}
   deep.fluid_boxes[1].production_type="output"

@@ -8,6 +8,7 @@
 | Reservoir processing | Extractor reinjection mode and magnetic sludge filtration implemented; see [Reservoir reinjection](#reservoir-reinjection-and-stream-balancing) |
 | Surge power | Lightning collectors, overload protection, and circuit-controlled grounding; see [Metered grounding](#metered-grounding) |
 | Tier-2 climatology | Implemented; see [Storm climatology](#storm-climatology) |
+| Copper | Deep drilling implemented; crustal fracturing design only; see [Late-game copper](#late-game-copper) |
 | Planet mechanics and constraints | This document; extracted from the Space Age brainstorm |
 | Shared progression, cargo, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
@@ -510,7 +511,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Entity | `nullius-extractor-N-deep`: assembling-machine shell as the reinjection variant, with a fixed recipe that produces deep slurry |
 | Switch | Ctrl+R cycles extraction, reinjection, deep, extraction. The transition registry tries edges in order, so a locked mode is skipped |
 | Vent use | Exclusive: the vent hosts one extractor in one mode. A deep vent supplies no ice, so copper is paid in water from other vents |
-| Rate | Fixed per vent, independent of vent yield and extractor tier; vent count bounds deep copper; bulk copper comes from crustal fracturing |
+| Rate and power | Fixed per vent, independent of vent yield and extractor tier. A deep vent yields a fraction of a tier-1 extractor's slurry and draws several times a tier-2 extractor's power, so vent count and power bound deep copper; bulk copper comes from crustal fracturing |
 | Placement and lifecycle | As reinjection: on a Fulgora vent after research, otherwise extractor or removal; built, robot, revive, clone, upgrade, and script-raised paths |
 | Deep slurry filtration | Hydro plant; same output shape as slurry filtration with concentrate in place of ice; no planet restriction, as slurry filtration |
 | Roasting | Consumes oxygen, which Fulgora makes by water electrolysis |
@@ -518,7 +519,7 @@ sulfur dioxide + water + oxygen -> sulfuric acid [existing]
 | Sulfur | Roasting sulfur dioxide is a second local sulfur source beside gypsum |
 | Reinjection | Deep slurry is not accepted; concentrate and calcine are solids |
 | Boxed parity | Boxed filtration, roasting, and leaching unlock with the ordinary recipes |
-| Productivity | None on deep drilling; ordinary rules for the rest |
+| Productivity | None on deep drilling or deep slurry filtration, ordinary or boxed, as slurry filtration: it would multiply a vent's fixed supply. Roasting and leaching follow ordinary rules. `tools/check_copper_research.py` rejects the flag and any research productivity effect on these recipes |
 
 | Research | Rule |
 |---|---|
@@ -559,7 +560,7 @@ before both have replacements.
 | Mode switch | Three-mode cycle on a vent; deep mode skipped before research; no mode on Vulcanus gas vents |
 | Lifecycle | Blueprint, robot, revive, clone, and upgrade placements as reinjection |
 | Chain | A scenario runs deep slurry to copper ingot through placed machines with declared inputs |
-| Vent supply | `tests/progression/planner/fulgora-deep-copper.json` measures ingot supply and net water demand at Electronics 4. Water, power, and machines are supplied; salt and iron oxide leave for mineral disposal. Science at this boundary does not consume copper |
+| Vent supply | `tests/progression/planner/fulgora-deep-copper.json` measures ingot supply and net water demand at Electronics 4. Water, power, and machines are supplied; salt and iron oxide leave for mineral disposal. Science at this boundary does not consume copper. Repeat with `python tools/plan_factorio_factory.py --config tests/progression/planner/fulgora-deep-copper.json --output REPORT.json` |
 | Boxed parity | Resolved-prototype inspection of every new product and its box |
 | Audits | `tests/progression/copper-sources.args` and `tests/progression/copper-consumers.args` list copper producers and consumers |
 

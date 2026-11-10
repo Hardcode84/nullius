@@ -7,8 +7,8 @@
     "nullius-electronics-4"
   ],
   "science_rates_per_minute": [
+    7.2,
     30,
-    36,
     60,
     120
   ],

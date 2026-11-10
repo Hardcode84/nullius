@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Check the copper research move and its retained asteroid dependencies."""
+"""Check the copper research move, its retained asteroid dependencies, and
+that deep copper supply stays without productivity."""
 import argparse
 import json
 import shutil
@@ -11,6 +12,20 @@ ORE = 'nullius-checkpoint-copper-ore'
 ROOTS = ['nullius-astronomy', 'nullius-primitive-filtration', 'nullius-overcharged-assembly-2']
 ASTEROID_FREE = [COPPER, 'nullius-checkpoint-copper-ingot', 'nullius-electronics-4',
                  'nullius-solar-power-3', 'nullius-braking-9', 'nullius-antimatter-containment']
+# Productivity on these would multiply a vent's fixed deep supply.
+FIXED_SUPPLY = ['nullius-deep-drilling', 'nullius-deep-slurry-filtration',
+                'nullius-boxed-deep-slurry-filtration']
+
+
+def productivity_violations(data):
+    """Return fixed-supply recipes that permit or receive productivity."""
+    errors = [f'{name} permits productivity' for name in FIXED_SUPPLY
+              if data['recipe'][name].get('allow_productivity', False)]
+    for technology, prototype in sorted(data['technology'].items()):
+        for effect in prototype.get('effects') or []:
+            if effect['type'] == 'change-recipe-productivity' and effect['recipe'] in FIXED_SUPPLY:
+                errors.append(f'{technology} changes {effect["recipe"]} productivity')
+    return errors
 
 
 def violations(data):
@@ -38,7 +53,7 @@ def violations(data):
         unlockers = prereqs.recipe_unlockers(technologies, 'nullius-' + recipe)
         if unlockers != [owner]:
             errors.append(f'{recipe}: expected {owner}, found {unlockers}')
-    return errors
+    return errors + productivity_violations(data)
 
 
 def main():

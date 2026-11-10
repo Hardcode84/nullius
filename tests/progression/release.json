@@ -81,7 +81,8 @@
     "fulgora-copper-closure.args",
     "fulgora-copper-equipment.args",
     "fulgora-copper-bulk.args",
-    "nauvis-copper-ore.args"
+    "nauvis-copper-ore.args",
+    "nauvis-copper-ore-checkpoint.args"
   ],
   "bootstrap": [
     {

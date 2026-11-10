@@ -3,8 +3,11 @@
 -- ordinary and boxed processing lines, and robots supplied with extractor items.
 -- act: switch, blueprint, clone, revive and upgrade deep extractors. Transfer
 -- only measured intermediate output between the declared processing machines.
--- run: 7200 ticks; boxed batches cross four tier-1 machines. Expect copper production, fixed vent rates and lifecycle parity.
+-- run: END ticks; boxed batches cross four tier-1 machines. Expect copper production, fixed vent rates,
+-- deep power above every extractor tier, and lifecycle parity.
 local fluids=require('__nullius-star__/scenarios/fluid-api')
+-- Four low-yield vents fill a boxed filtration batch slowly; test.json adds one second.
+local END=14400
 local function check(ok,message)
   storage.assertions=storage.assertions+1
   assert(ok,message)
@@ -90,6 +93,13 @@ script.on_nth_tick(1,function(event)
   check(g.ghost_name==deep and g.tags.deep_test=='keep','ghost lost tags');g.destroy()
   check(prototypes.entity[deep].next_upgrade.name=='nullius-extractor-2-deep','upgrade path')
   create(s,'nullius-extractor-2-deep',40,45,{fast_replace=true,raise_built=true})
+  check(s.find_entity('nullius-extractor-2-deep',{40,45})~=nil,'fast replace lost mode')
+  check(s.find_entity(deep,{40,45})==nil,'fast replace kept tier 1')
+  local deep_power=prototypes.entity[deep].energy_usage
+  check(prototypes.entity['nullius-extractor-2-deep'].energy_usage==deep_power,'tier changed deep power')
+  for tier=1,2 do
+    check(deep_power>2*prototypes.entity['nullius-extractor-'..tier].energy_usage,'deep power not above tier '..tier)
+  end
   local other=game.surfaces.nauvis
   vent(other,0,0)
   create(other,deep,0,0,{raise_built=true})
@@ -161,8 +171,8 @@ local function move_item(from,to,name)
 end
 script.on_nth_tick(60,function(event)
   if event.tick==0 then return end
-  for _,row in ipairs(storage.rows) do
-    local target=storage.lines[_<=4 and 1 or 2].filter
+  for index,row in ipairs(storage.rows) do
+    local target=storage.lines[index<=4 and 1 or 2].filter
     move_fluid(row.pipe,target,'nullius-deep-slurry')
     -- Surplus measured slurry is discarded to keep the rate witness unblocked.
     row.pipe.clear_fluid_inside()
@@ -190,9 +200,11 @@ script.on_nth_tick(60,function(event)
     check(built.get_upgrade_target().name=='nullius-extractor-2-deep','robot upgrade target')
     planner.destroy()
   end
-  if event.tick~=7200 then return end
+  if event.tick~=END then return end
+  -- Every vent drills at the recipe rate; setup and power start take under a second.
+  local cycle=prototypes.recipe['nullius-deep-drilling'].energy*60
   local count=storage.rows[1].machine.products_finished
-  check(count>=118,'deep extraction rate')
+  check(count>=math.floor((END-60)/cycle) and count<=math.floor(END/cycle),'deep extraction rate')
   for _,row in ipairs(storage.rows) do
     check(row.machine.products_finished==count,'tier, rotation or yield changed output')
     check(row.resource.amount==row.amount,'deep drilling changed vent yield')

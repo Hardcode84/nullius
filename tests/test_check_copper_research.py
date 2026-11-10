@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from check_copper_research import ASTEROID_FREE, COPPER, ORE, ROOTS, violations
+from check_copper_research import ASTEROID_FREE, COPPER, FIXED_SUPPLY, ORE, ROOTS, violations
 
 
 def tree():
@@ -24,7 +24,8 @@ def tree():
         technologies[COPPER]['effects'].append({'type': 'unlock-recipe', 'recipe': 'nullius-' + name})
     for name in ('copper-solution', 'boxed-copper-solution'):
         technologies[ORE]['effects'].append({'type': 'unlock-recipe', 'recipe': 'nullius-' + name})
-    return {'technology': technologies}
+    recipes = {name: {'name': name, 'allow_productivity': False} for name in FIXED_SUPPLY}
+    return {'technology': technologies, 'recipe': recipes}
 
 
 class CopperResearchTest(unittest.TestCase):
@@ -40,6 +41,17 @@ class CopperResearchTest(unittest.TestCase):
         data = tree()
         data['technology']['nullius-reconnaissance-3']['prerequisites'] = []
         self.assertTrue(any('robot-speed-5 lost' in message for message in violations(data)))
+
+    def test_deep_filtration_productivity_is_rejected(self):
+        data = tree()
+        data['recipe']['nullius-deep-slurry-filtration']['allow_productivity'] = True
+        self.assertIn('nullius-deep-slurry-filtration permits productivity', violations(data))
+
+    def test_productivity_research_on_deep_supply_is_rejected(self):
+        data = tree()
+        data['technology'][ROOTS[0]]['effects'].append(
+            {'type': 'change-recipe-productivity', 'recipe': 'nullius-boxed-deep-slurry-filtration', 'change': 0.01})
+        self.assertIn(f'{ROOTS[0]} changes nullius-boxed-deep-slurry-filtration productivity', violations(data))
 
     def test_ore_recipe_stays_with_ore_checkpoint(self):
         data = tree()
