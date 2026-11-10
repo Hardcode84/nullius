@@ -1,4 +1,32 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.7
+Date: 10.11.2026
+  Features:
+    - Added early rocket launches, lighter titanium rocket stages, and new rocket fuels, including aluminum fuel on Vulcanus.
+    - Added space platforms for carrying cargo between planets, and pneumatic rocket silos on Vulcanus.
+    - Vulcanus and Fulgora are now reached through probe research.
+    - Added radio astronomy: record signals on each planet and combine them into astronomy research.
+    - Added copper production on Fulgora through deep drilling, and helium from Fulgora hydrocarbons.
+    - Reworked nuclear power: uranium now comes from seawater and is enriched in gas centrifuges, and reactors are separate research from fusion fuel.
+    - Antimatter is now collected in Fulgora orbit, and filled traps must be recharged before they spoil.
+    - Added an admin command for free personal logistics while testing.
+  Changes:
+    - Removed asteroid mining; the copper and uranium mission goals no longer apply.
+    - Terraforming, paving, excavation, seeding, and carbon sequestration drones now work only on Nauvis.
+    - Removed two nuclear checkpoints that unlocked nothing.
+    - The mining checkpoint now accepts crushed ores and sand.
+    - Rebalanced rocket cargo weights.
+    - Added missing research descriptions and effects.
+  Bugfixes:
+    - Fixed recipes that unlocked before their ingredients could be made.
+    - Fixed ore checkpoints counting crushed ore twice.
+    - Fixed missing fluorine and hydrogen fluoride barrels.
+    - Fixed infinite mining productivity being available before its earlier levels.
+    - Fixed small and large assemblers being drawn slightly off-centre.
+  Compatibility:
+    - Loading older saves removes asteroid miners, guide drones, and their remotes; asteroid ore patches already on the map remain.
+    - Loading older saves moves antimatter traps out of reactors and vehicles onto the ground.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.6
 Date: 01.11.2026
   Features:
