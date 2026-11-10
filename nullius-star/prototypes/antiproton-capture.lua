@@ -27,8 +27,27 @@ collector.effect_receiver = {uses_module_effects = false, uses_beacon_effects = 
 -- Vacuum only, as the vanilla asteroid collector: platforms, not planets.
 collector.surface_conditions = {{property = "pressure", min = 0, max = 0}}
 
+-- Spoiled antimatter detonates as the vanilla atomic rocket.
+assert(data.raw.projectile["atomic-rocket"], "antimatter annihilation needs the atomic-rocket projectile")
+
 data:extend({
   {type = "recipe-category", name = CATEGORY},
+  -- Indestructible alert target at an annihilation site; the blast destroys
+  -- whatever held the trap.
+  {
+    type = "simple-entity-with-owner",
+    name = "nullius-annihilation-site",
+    icon = "__nullius-star__/graphics/icons/antimatter.png",
+    icon_size = 64,
+    hidden = true,
+    hidden_in_factoriopedia = true,
+    flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-upgradable"},
+    selectable_in_game = false,
+    collision_box = {{0, 0}, {0, 0}},
+    collision_mask = {layers = {}},
+    selection_box = {{0, 0}, {0, 0}},
+    picture = {filename = "__core__/graphics/empty.png", width = 1, height = 1}
+  },
   {
     type = "item",
     name = NAME,

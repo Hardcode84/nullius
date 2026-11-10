@@ -1663,8 +1663,8 @@ three planets, so antimatter is collected in Fulgora orbit and nowhere else.
 
 | Item | Role |
 |---|---|
-| `nullius-antimatter-trap` | Empty Penning trap. Crafted, filled by a collector, returned by spoilage. No longer reactor fuel |
-| `nullius-antimatter` | Filled trap. Made only by the collector; spoils to an empty trap |
+| `nullius-antimatter-trap` | Empty Penning trap. Crafted and filled by a collector. No longer reactor fuel |
+| `nullius-antimatter` | Filled trap. Made only by the collector; when it spoils, containment fails and it detonates |
 
 | Rule | Value |
 |---|---|
@@ -1685,17 +1685,18 @@ re-energized.
 
 | Rule | Value |
 |---|---|
-| Spoilage | `nullius-antimatter` spoils to an empty `nullius-antimatter-trap`; the antimatter annihilates, and the trap returns to Fulgora for refilling |
+| Spoilage | Containment fails and the antimatter annihilates: the filled trap is destroyed and a nuclear explosion goes off where it spoiled, in a chest, a hub, a vehicle, a character, or on the ground. The holder's force gets a message with a map location |
+| Annihilation | `spoil_to_trigger_result` raises a script trigger per trap; `scripts/antiproton.lua` merges triggers on one surface tile in one tick into one vanilla atomic explosion and one message, so a spoiling stack is one detonation. The trigger carries no item count, so the message has none |
 | Spoil time | A fixed prototype value, longer than the recording spoil time of 1.5 times the reference transit, the longest measured one-way trip between array planets via Nauvis. Fulgora to Vulcanus is one of the measured trips, so a delivery to any planet need not recharge en route, and a stockpile still needs recharging between deliveries. `antiproton-capture` checks it exceeds the recording spoil time in `shared/reference-transit.lua` |
 | Recharge | 1 filled trap -> 1 filled trap; the product sets `always_fresh = true` with `percent_spoiled = 0`. Without the flag a crafted product inherits its ingredient's spoilage, so recharging would not reset the timer |
 | Recharge cost | Electricity and crafting time only; no productivity or quality. Each recharge costs enough that holding traps is a continuous power load, so stockpiles carry a running cost |
 | Executor | Electrolyzers, category `nullius-electrolysis`, which already forbids productivity. They work on the ground and on platforms, so stockpiles and cargo in transit can both be maintained. Priority electrolyzers keep traps safe; surge electrolyzers run only on surplus power, so a shortage lets traps spoil |
 | Stacks | Merging stacks averages spoil timers, so stockpiles need a recharge loop, as with other spoiling goods |
-| Consumers | Consume the filled trap; only spoilage returns an empty trap |
+| Consumers | Consume the filled trap; nothing returns an empty trap |
 
 | Contract | Checks |
 |---|---|
-| Spoilage | A filled trap spoils to an empty trap at the prototype time |
+| Spoilage | A filled trap in a chest survives until the prototype time, then spoils into one detonation that destroys the chest and its neighbourhood; a spoiling stack detonates once |
 | Recharge | A nearly spoiled trap comes out fresh in a placed electrolyzer |
 | Collector gate | A placed collector fills a trap while its platform is stopped at Fulgora, stays disabled with its status in transit and at Nauvis, and resumes back at Fulgora. Leaving orbit needs thrust, so the platform carries a thruster with one declared propellant batch |
 | Collector placement | The collector cannot be placed on a planet surface |

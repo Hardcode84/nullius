@@ -3,13 +3,14 @@
 --   scenario tick limit.
 -- place: a powered antiproton collector and a thruster with one declared propellant batch on the
 --   platform; a powered priority electrolyzer and a reactor on Nauvis; a chest of nearly spoiled
---   antimatter.
+--   antimatter far from the other machines.
 -- act: fill a trap at Fulgora, schedule the platform to Nauvis, then place it at Nauvis and back at
 --   Fulgora; recharge a nearly spoiled trap.
 -- run: through one capture at Fulgora and one recharge, then each location change.
 -- expect: collectors place only on the platform and run only at Fulgora, with a status elsewhere;
---   antimatter outlasts the recording spoil time and spoils to an empty trap at the prototype
---   time; recharge returns it fresh;
+--   antimatter outlasts the recording spoil time and, at the prototype time, detonates once,
+--   destroying its chest and leaving an indestructible alert site that expires; recharge returns
+--   it fresh;
 --   reactors reject traps.
 local transit = require("__nullius-star__/shared/reference-transit")
 local CASE = "antiproton-capture"
@@ -19,6 +20,9 @@ local SPOIL_MARGIN = 120
 local CAPTURE_REMAINDER = 300
 -- The collector's full draw, so it captures at full speed.
 local GRID_POWER = 50000000
+local BLAST = {300, 0}
+local SITE = "nullius-annihilation-site"
+local SITE_TICKS = 5 * 60 * 60
 
 local function check(ok, message)
   storage.assertions = storage.assertions + 1
@@ -70,7 +74,7 @@ local function setup()
   local item = prototypes.item["nullius-antimatter"]
   storage.spoil_ticks = item.get_spoil_ticks()
   check(storage.spoil_ticks > transit.spoil_ticks, "antimatter outlasts the recording spoil time, so deliveries need no recharge en route")
-  check(item.spoil_result and item.spoil_result.name == "nullius-antimatter-trap", "antimatter spoils to an empty trap")
+  check(item.spoil_result == nil and item.spoil_to_trigger_result ~= nil, "spoiled antimatter triggers, leaving no trap")
   check(prototypes.item["nullius-antimatter-trap"].fuel_value == 0, "the trap is not fuel")
 
   local ground = game.surfaces.nauvis
@@ -92,9 +96,12 @@ local function setup()
   storage.recharge_tick = game.tick + math.ceil(craft_ticks(electrolyzer, "nullius-antimatter-recharge") / 30) * 30 + 60
   storage.spoil_tick = game.tick
 
-  local chest = assert(ground.create_entity{name = "wooden-chest", position = {10, 20}, force = force})
+  ground.request_to_generate_chunks(BLAST, 2)
+  ground.force_generate_chunk_requests()
+  local chest = assert(ground.create_entity{name = "wooden-chest", position = BLAST, force = force})
   local stack = chest.get_inventory(defines.inventory.chest)[1]
-  stack.set_stack{name = "nullius-antimatter", count = 1}
+  -- A stack spoils at once; it must detonate once.
+  stack.set_stack{name = "nullius-antimatter", count = 3}
   stack.spoil_percent = 1 - SPOIL_MARGIN / storage.spoil_ticks
   storage.chest = chest
 
@@ -143,11 +150,20 @@ end)
 local function check_ground()
   local elapsed = game.tick - storage.spoil_tick
   if elapsed == SPOIL_MARGIN / 2 then
-    check(storage.chest.get_item_count("nullius-antimatter") == 1, "antimatter before its spoil time")
+    check(storage.chest.get_item_count("nullius-antimatter") == 3, "antimatter before its spoil time")
   end
   if elapsed == SPOIL_MARGIN + 60 then
-    check(storage.chest.get_item_count("nullius-antimatter") == 0, "antimatter spoiled at its spoil time")
-    check(storage.chest.get_item_count("nullius-antimatter-trap") == 1, "spoilage left an empty trap")
+    check(not storage.chest.valid, "the annihilation destroyed its chest")
+    local sites = game.surfaces.nauvis.find_entities_filtered{name = SITE}
+    check(#sites == 1, "one detonation for a spoiled stack: " .. #sites)
+    local site = sites[1].position
+    check(math.abs(site.x - BLAST[1]) < 1 and math.abs(site.y - BLAST[2]) < 1, "site at the chest")
+    check(not sites[1].destructible, "the alert site survives its blast")
+    storage.site = sites[1]
+  end
+  if elapsed == SPOIL_MARGIN + 60 + SITE_TICKS + 60 then
+    check(not storage.site.valid, "the alert site expires")
+    storage.expired = true
   end
   if game.tick == storage.recharge_tick then
     local electrolyzer = storage.electrolyzer
@@ -200,6 +216,6 @@ script.on_nth_tick(30, function(event)
     gated(collector, false, "back at Fulgora")
     stage("recharge")
   elseif storage.stage == "recharge" then
-    if storage.recharged then finish() end
+    if storage.recharged and storage.expired then finish() end
   end
 end)

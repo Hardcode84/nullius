@@ -6241,11 +6241,16 @@ extend_intermediate_prototypes({
     fuel_value = "1GJ",
     fuel_acceleration_multiplier = 2.5,
     fuel_top_speed_multiplier = 1.75,
-    -- The trap holds antimatter only while powered; unrecharged antimatter
-    -- annihilates and leaves the empty trap. Ten minutes outlasts any delivery
-    -- between planets, but not a stockpile left without recharging.
+    -- The trap holds antimatter only while powered. Unrecharged, containment
+    -- fails and the antimatter annihilates with the trap; scripts/antiproton.lua
+    -- detonates it. Ten minutes outlasts any delivery between planets, but not
+    -- a stockpile left without recharging.
     spoil_ticks = 10 * 60 * 60,
-    spoil_result = "nullius-antimatter-trap",
+    spoil_to_trigger_result = {
+      items_per_trigger = 1,
+      trigger = {type = "direct", action_delivery = {type = "instant",
+        source_effects = {{type = "script", effect_id = "nullius-antimatter-annihilation"}}}}
+    },
     stack_size = 20
   },
   {

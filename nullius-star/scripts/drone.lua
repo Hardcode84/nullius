@@ -982,6 +982,7 @@ end
 
 
 function trigger_effect(event)
+  if event.effect_id == antiproton.ANNIHILATION then return antiproton.annihilation(event) end
   if (string.sub(event.effect_id, 1, 8) ~= "nullius-") then return end
   local midfix = string.sub(event.effect_id, 9, 14)
   local suffix = string.sub(event.effect_id, 15, -1)
