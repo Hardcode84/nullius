@@ -62,7 +62,7 @@
 |---|---|---|
 | Vulcanus beyond tier-3 thermal industry | Design only | Vulcanus design |
 | Fulgora | Terrain and shared probe access | [Fulgora design](PLANET_FULGORA.md) |
-| Gleba | Design only | Space Age brainstorm |
+| Gleba | Design only | [Gleba design](PLANET_GLEBA.md) |
 | Aquilo | Design only | Space Age brainstorm |
 | Cargo logistics and combined research | Design only | Space Age brainstorm |
 | Rogue, raids, and final objective | Design only | Space Age brainstorm |
