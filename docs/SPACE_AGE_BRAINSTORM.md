@@ -157,7 +157,7 @@ geoengineering. Status: per mechanic, in that document's status table.
 
 ### 3.3 Gleba (Microbiology/Breeding)
 
-> **Detailed design**: See [PLANET_GLEBA.md](PLANET_GLEBA.md). It supersedes this section where they differ: tier-3 access with wild strains, bioleached metals, and carbon-balance decline.
+> **Detailed design**: See [PLANET_GLEBA.md](PLANET_GLEBA.md). It supersedes this section where they differ: tier-3 access with wild strains, bioleached metals, carbon-balance decline, and no electricity: machines burn nutrient goop, and bioreactor chemical and hydro plants are the global reward.
 
 Gleba becomes the bulk uranium source: a bred leaching strain and a perishable
 biomineralizing culture. Until then, Nauvis seawater adsorption supplies fission. See [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
