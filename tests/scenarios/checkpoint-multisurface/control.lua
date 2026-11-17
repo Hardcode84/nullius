@@ -72,7 +72,7 @@ local function check_replacement_statistics()
     script.on_nth_tick(2000, nil)
     check(force.technologies["nullius-checkpoint-furnace"].researched,
       "scheduled checkpoint polling did not complete the furnace checkpoint")
-    for _, name in ipairs({"iron-ore","bauxite","volcanic-gas"}) do
+    for _, name in ipairs({"iron-ore","bauxite","volcanic-gas","mining"}) do
       check(force.technologies["nullius-checkpoint-"..name].researched,
         "scheduled local-resource checkpoint did not complete: "..name)
     end
@@ -83,7 +83,8 @@ local function check_replacement_statistics()
   end)
 end
 
-script.on_nth_tick(1, function()
+script.on_nth_tick(1, function(event)
+  if event.tick == 0 then return end
   script.on_nth_tick(1, nil)
   check(remote.interfaces[INTERFACE] ~= nil, "missing checkpoint test interface")
   if not remote.interfaces[INTERFACE] then finish({}) return end
@@ -299,7 +300,7 @@ script.on_nth_tick(1, function()
   -- expect: the mining checkpoint counts each surface's largest form once.
   for _, stats in ipairs({nauvis_items, vulcanus_items, fulgora_items}) do
     for _, name in ipairs({"iron-ore", "nullius-box-iron-ore", "nullius-crushed-iron-ore",
-        "nullius-box-crushed-iron-ore"}) do
+        "nullius-box-crushed-iron-ore", "nullius-molten-iron-bloom"}) do
       -- Production stays: the iron ore assay below still completes from it.
       stats.set_output_count(name, 0)
     end
@@ -311,6 +312,41 @@ script.on_nth_tick(1, function()
   fulgora_items.set_output_count("nullius-box-crushed-iron-ore", 100000)
   check(close(progress(force, "mining", 1), 1),
     "mining checkpoint did not add boxed crushed ore consumed on Fulgora")
+
+  -- Replace the iron history above and the bauxite assay's consumption history.
+  fulgora_items.set_output_count("nullius-box-crushed-iron-ore", 0)
+  for _, row in ipairs({
+    {requirement=1, ore="iron-ore", crushed="nullius-crushed-iron-ore",
+      bloom="nullius-molten-iron-bloom", goal=1200000, blooms=480000},
+    {requirement=3, ore="nullius-bauxite", crushed="nullius-crushed-bauxite",
+      bloom="nullius-molten-aluminum-bloom", goal=600000, blooms=240000},
+  }) do
+    for _, stats in ipairs({nauvis_items, vulcanus_items, fulgora_items}) do
+      for _, item in ipairs({row.ore, row.crushed, row.bloom}) do
+        stats.set_output_count(item, 0)
+      end
+    end
+    vulcanus_items.set_input_count(row.bloom, row.blooms)
+    check(close(progress(force, "mining", row.requirement), 0),
+      "mining counted production of " .. row.bloom)
+    vulcanus_items.set_input_count(row.bloom, 0)
+    vulcanus_items.set_output_count(row.bloom, row.blooms - 1)
+    vulcanus_items.set_output_count(row.ore, 10)
+    check(close(progress(force, "mining", row.requirement), 1 - 2.5 / row.goal),
+      "incorrect mining credit one bloom below the target for " .. row.ore)
+    vulcanus_items.set_output_count(row.ore, 0)
+    vulcanus_items.set_output_count(row.bloom, row.blooms)
+    check(close(progress(force, "mining", row.requirement), 1),
+      "mining rejected bloom-only consumption of " .. row.bloom)
+    vulcanus_items.set_output_count(row.bloom, row.blooms / 2)
+    nauvis_items.set_output_count(row.ore, row.goal / 2)
+    check(close(progress(force, "mining", row.requirement), 1),
+      "mining did not combine Vulcanus blooms with Nauvis " .. row.ore)
+  end
+
+  nauvis_items.set_output_count("nullius-sandstone", 900000)
+  nauvis_items.set_output_count("nullius-limestone", 300000)
+  research_prerequisites(force.technologies["nullius-checkpoint-mining"])
 
   check(force.technologies["nullius-checkpoint-freshwater"] == nil,
     "obsolete freshwater checkpoint still exists")
@@ -348,7 +384,7 @@ script.on_nth_tick(1, function()
   local checkpoint = force.technologies["nullius-checkpoint-furnace"]
   research_prerequisites(checkpoint)
   -- given: prerequisites are researched, but each tested checkpoint is pending.
-  for _, name in ipairs({"furnace", "iron-ore", "bauxite", "volcanic-gas"}) do
+  for _, name in ipairs({"furnace", "iron-ore", "bauxite", "volcanic-gas", "mining"}) do
     local pending = force.technologies["nullius-checkpoint-"..name]
     pending.researched = false
     check(not pending.researched, name.." checkpoint completed before polling")

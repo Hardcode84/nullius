@@ -24,14 +24,15 @@ local SAND = 5 / 4
 local CRUSHED_BAUXITE = 7 / 5
 local CRUSHED_LIMESTONE = 25 / 16
 
+local IRON_BLOOM = {"nullius-molten-iron-bloom", 2.5}
+local ALUMINUM_BLOOM = {"nullius-molten-aluminum-bloom", 2.5}
+
 local function boxed(name)
   return "nullius-box-" .. (name:gsub("^nullius%-", ""))
 end
 
--- Count a raw ore with its box and its crushed product, so that planets with
--- crushed ore but no raw deposits can complete the checkpoint.
-local function ore_and_crushed(ore, crushed, ratio)
-  return {{ore}, {boxed(ore), 5}, {crushed, ratio}, {boxed(crushed), 5 * ratio}}
+local function mining_forms(ore, crushed, ratio, bloom)
+  return {{ore}, {boxed(ore), 5}, {crushed, ratio}, {boxed(crushed), 5 * ratio}, bloom}
 end
 
 
@@ -41,7 +42,7 @@ local checkpoint_data = {
   ["plastic"] = {{ CHK_ITEM, STT_PRODUCE, 5, {{"nullius-plastic"}} }},
   ["iron-ore"] = {{ CHK_ITEM, STT_PRODUCE, 400,
 			{{"iron-ore"}, {"nullius-crushed-iron-ore", CRUSHED_IRON_ORE},
-            {"nullius-molten-iron-bloom", 2.5}}, MATERIAL_FORMS }},
+            IRON_BLOOM}, MATERIAL_FORMS }},
   ["hydrogen"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-hydrogen"}} }},
   ["carbon-dioxide"] = {{ CHK_FLUID, STT_PRODUCE, 1000, {{"nullius-carbon-dioxide"}} }},
   ["furnace"] = {{ CHK_BUILD, STT_NET, 4, {{"nullius-small-furnace-1"}} }},
@@ -50,7 +51,7 @@ local checkpoint_data = {
 			{{"nullius-sandstone"}, {"nullius-sand", SAND}}, MATERIAL_FORMS }},
   ["bauxite"] = {{ CHK_ITEM, STT_PRODUCE, 2000,
 			{{"nullius-bauxite"}, {"nullius-crushed-bauxite", CRUSHED_BAUXITE},
-            {"nullius-molten-aluminum-bloom", 2.5}}, MATERIAL_FORMS }},
+            ALUMINUM_BLOOM}, MATERIAL_FORMS }},
   ["water"] = {{ CHK_FLUID, STT_CONSUME, 10000, {{"nullius-water"}} }},
   ["caustic-solution"] = {{ CHK_FLUID, STT_CONSUME, 250, {{"nullius-caustic-solution"}} }},
   ["wind-power"] = {{ CHK_BUILD, STT_NET, 5, {{"nullius-wind-base-1"},{"nullius-wind-build-1"}} }},
@@ -136,13 +137,13 @@ local checkpoint_data = {
   ["logistics-3"] = {{ CHK_BUILD, STT_NET, 10, {{"bob-ultimate-splitter"}} }},
   ["automation"] = {{ CHK_BUILD, STT_NET, 20, {{"nullius-large-assembler-2"}} }},
   ["mining"] = {{ CHK_ITEM, STT_CONSUME, 1200000,
-			ore_and_crushed("iron-ore", "nullius-crushed-iron-ore", CRUSHED_IRON_ORE), MATERIAL_FORMS },
+			mining_forms("iron-ore", "nullius-crushed-iron-ore", CRUSHED_IRON_ORE, IRON_BLOOM), MATERIAL_FORMS },
 			{ CHK_ITEM, STT_CONSUME, 900000,
-			ore_and_crushed("nullius-sandstone", "nullius-sand", SAND), MATERIAL_FORMS },
+			mining_forms("nullius-sandstone", "nullius-sand", SAND), MATERIAL_FORMS },
 			{ CHK_ITEM, STT_CONSUME, 600000,
-			ore_and_crushed("nullius-bauxite", "nullius-crushed-bauxite", CRUSHED_BAUXITE), MATERIAL_FORMS },
+			mining_forms("nullius-bauxite", "nullius-crushed-bauxite", CRUSHED_BAUXITE, ALUMINUM_BLOOM), MATERIAL_FORMS },
 			{ CHK_ITEM, STT_CONSUME, 300000,
-			ore_and_crushed("nullius-limestone", "nullius-crushed-limestone", CRUSHED_LIMESTONE),
+			mining_forms("nullius-limestone", "nullius-crushed-limestone", CRUSHED_LIMESTONE),
 			MATERIAL_FORMS }},
   ["android"] = {{ CHK_SPECIAL, 1, 3, {} }},
   ["battery-2"] = {{ CHK_ITEM, STT_PRODUCE, 200, {{"nullius-battery-2"},{"nullius-box-battery-2",5}} }},

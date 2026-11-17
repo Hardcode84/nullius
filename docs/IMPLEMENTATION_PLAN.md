@@ -1,7 +1,6 @@
 # Nullius* implementation status
 
-> **Status**: Active vertical slice
-> **Updated**: 2026-09-05
+Release `0.0.7`, reviewed 2026-11-17.
 
 ## Authority
 
@@ -13,12 +12,12 @@
 | Other planets and endgame | Space Age brainstorming document |
 | Factorio 2.1 migration | [Port assessment](FACTORIO_2_1_PORT.md) |
 
-## Implemented vertical slice
+## Implemented mechanics
 
 | Area | Implemented contract | Evidence |
 |---|---|---|
-| Space Age load | Space Age is required; Quality loads transitively and its gameplay effects, modules, and recycling are disabled | Strict prototype load |
-| Planet access | Vulcanus probe research unlocks the planet, creates the surface, one wreck per force, and a shared idle android; the quick-start command transfers its caller | Activation and shared-body scenarios |
+| Space Age load | Nullius* requires Factorio and Space Age 2.1.20 or later in the 2.1 series. Quality is incompatible. | Strict prototype load |
+| Planet access | Probe research gives access to Vulcanus and Fulgora. On Vulcanus, each force gets one wreck and a shared idle android. The quick-start command transfers its caller. | Activation and shared-body scenarios |
 | Bootstrap | Free lava intake and diminishing-return gas vent prime a net-positive lava-gas loop | Vent-prime and gas-self-power scenarios |
 | Pneumatic factory | Eligible non-heavy-industry machines switch on Vulcanus through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, boric acid, and metallic sodium are reachable without seawater, organic chemistry, or electricity | Production scenarios and prerequisite manifests |
@@ -29,6 +28,10 @@
 | Titanium pilot | Synthetic rutile and TiCl4 feed aluminothermic reduction; chloride recovery and three titanium plates close refractory hydro-plant-2 and foundry-2 construction | Titanium pilot and construction scenarios and manifests |
 | Construction closure | The Vulcanus cell reproduces the buildings and logistics required to scale the implemented slice | Construction-closure scenario and manifest |
 | Thermal industry | Pneumatic technology unlocks global tier-1 heat-powered crushers, furnace sizes, and foundries; metallurgic research unlocks tiers 2-3; eligible recipes receive innate and repeatable productivity | Thermal and productivity scenarios |
+| [Fulgora industry](PLANET_FULGORA.md) | Lightning supplies power. Overload affects the grid. Deep drilling supplies copper, and hydrocarbons supply helium. Local industry also produces polymers and climate science. | `fulgora-grid-overload`, `fulgora-deep-drilling`, `fulgora-helium`, Fulgora production contracts |
+| Rocket launches and cargo | Silos fill platform requests. Vulcanus has a pneumatic silo. A platform can deliver cargo to Vulcanus and return empty canisters to Nauvis. | `launch-vehicle`, `silo-platform-request`, `vulcanus-silo-request`, `platform-first-flight` |
+| Radio astronomy | Arrays on Nauvis, Vulcanus, and Fulgora record signals. Correlators combine the recordings for astronomy research. | `astronomy-array`, `astronomy-transit`, `astronomy-correlation` |
+| Nuclear power and antimatter | Seawater supplies uranium for gas centrifuges. Traps collect antimatter in Fulgora orbit and require recharging before the contents spoil. | `seawater-uranium`, `uranium-enrichment`, `antiproton-capture` |
 | Automated validation | Scenario runner supports selection, parallel workers, per-test timing, wall time, and tick ceilings; prerequisite checker consumes resolved prototypes | Full automated suite |
 | Release lineage | Version `0.0.1` starts a new-game-only lineage; upstream Nullius saves are rejected before configuration mutation | Save-lineage scenario and packaged release gate |
 
@@ -37,10 +40,10 @@
 | Field | Value |
 |---|---|
 | Initial version | `0.0.1` |
-| Current version | `0.0.5` alpha |
-| Playable endpoint | Local Vulcanus and Fulgora production through physics science |
+| Tagged release | `0.0.7` |
+| Local science coverage | Vulcanus and Fulgora production through physics science |
 | Upstream Nullius saves | Unsupported; rejected on configuration change |
-| Packaged migrations | None |
+| Save upgrades | The release includes migrations for upstream progression, radio astronomy, uranium enrichment, reactors, and antimatter traps. The [changelog](../nullius-star/changelog.txt) lists the effects on players. |
 
 ## Active hardening work
 
@@ -49,21 +52,20 @@
 | Vulcanus surface properties and map-generation fields are accepted and exercised by Factorio | Complete |
 | Shared probe access, late join, reconnect, exact-body respawn, and save/load pass with real clients | Complete |
 | Pneumatic heat ownership cannot leave duplicate or orphan hidden interfaces | Complete |
-| Current upstream Nullius development changes are integrated and revalidated | Open |
+| Selected upstream changes from the October 2026 review pass integration checks | Complete |
 | Version, changelog, and save-migration policy are coherent | Complete |
 | Required dependencies and supported optional mods have a tested matrix | Open |
-| The complete validation flow reproduces from a clean checkout | Open |
+| The release tool validates the package from a clean checkout | Complete |
 | The runner orchestrates real multiplayer scenario tests | Complete |
 | The harness compares the supported Factorio build with a candidate build | Open |
+| Vulcanus campaign timing | Open. Measure the research unlocks and the first 125 physics packs on a fixed map. Start with finite wreck stock. The factory must build its expansion machines and supply its own materials and heat. |
 
 ## Planned content boundary
 
 | Area | Status | Design source |
 |---|---|---|
 | Vulcanus beyond tier-3 thermal industry | Design only | Vulcanus design |
-| Fulgora | Terrain and shared probe access | [Fulgora design](PLANET_FULGORA.md) |
-| Gleba | Design only | [Gleba design](PLANET_GLEBA.md) |
+| Gleba | Design only. Probe access opens the biology branch. Machines use nutrient goop for power. The branch uses the seven existing biology packs. | [Gleba design](PLANET_GLEBA.md) |
 | Aquilo | Design only | Space Age brainstorm |
-| Cargo logistics and combined research | Design only | Space Age brainstorm |
 | Rogue, raids, and final objective | Design only | Space Age brainstorm |
 | Maintenance mechanic | Design only | Maintenance brainstorm |
