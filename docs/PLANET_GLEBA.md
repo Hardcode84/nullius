@@ -104,7 +104,8 @@ rock throughput.
 |---|---|
 | Role | The only source of wild culture, and so of all life in the game |
 | Form | Open question: a slow infinite resource on mat tiles or a harvested decorative entity |
-| Output | Wild culture item; spoils into sludge |
+| Manual recipe | Harvest renewable mat samples by hand. Wild Strain Cultivation unlocks a slow handcraft that takes only mat samples and produces wild culture and nutrient goop. |
+| Spoilage | Wild culture spoils into sludge |
 
 ### Strains
 
@@ -306,7 +307,7 @@ inventories and whether digestate in the burnt-result slot is removed.
 |---|---|
 | Access | Biological Probe Signal Recovery activates the overrun probe on weathered rock beside mats |
 | Pre-transfer research | Wild Strain Cultivation, researched on Nauvis with early packs, unlocks mat culture, acid leaching, chemosynthetic goop, nutrient mode, bioreactor tier 1, and the bootstrap biochemistry pack |
-| Energy | Burn the starter goop, then culture mats and grow chemosynthetic goop from crushed rock |
+| Energy | Use the wreck supplies or handcraft wild culture and goop from mats. Use the chemosynthetic goop recipe for sustained production. |
 | Materials | Mine and crush rock, leach it, neutralize the liquor, reduce iron with hydrogen from H2S |
 | Construction | Build basic machines and logistics from reduced iron and recovered silica |
 | Research | Local generic packs and bootstrap biochemistry packs in nutrient-mode labs |
@@ -436,7 +437,7 @@ and correlates astronomy packs once it joins the array.
 | Goop energy | A release check fails if a Nauvis or Fulgora goop recipe yields more fuel value than its organic inputs |
 | Carbon | No Gleba recipe cycle, including the goop-digestate loop, returns more carbon than it consumes |
 | Machine modes | Transitions between ordinary, nutrient, and bioreactor modes keep recipes and contents and never create energy or health |
-| Bootstrap | A finite starter inventory reproduces basic machines and logistics without imports |
+| Bootstrap | Let all starter goop and culture spoil. Harvest mats by hand, craft fresh culture and goop, then use the wreck equipment to reproduce basic machines and logistics without imports. |
 | Science | Local generic and bootstrap biochemistry packs close at their research with `--require-no-additional-technologies` |
 | Bioreactor closure | Goop on Nauvis and Fulgora closes on each boundary at the research that unlocks bioreactor tier 1 |
 | Transit | `astronomy-transit` measures the Gleba-Nauvis leg and the reference transit stays at its current value |
