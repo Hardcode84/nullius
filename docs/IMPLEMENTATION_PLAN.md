@@ -65,7 +65,7 @@ Release `0.0.7`, reviewed 2026-11-17.
 | Area | Status | Design source |
 |---|---|---|
 | Vulcanus beyond tier-3 thermal industry | Design only | Vulcanus design |
-| Gleba | Design only. Probe access opens the biology branch. Machines use nutrient goop for power. The branch uses the seven existing biology packs. | [Gleba design](PLANET_GLEBA.md) |
+| Gleba | Design only. The probe opens early biology. Nutrient machines supply seven biology packs and all six ordinary packs. Local research reaches Orbital Construction. | [Gleba design](PLANET_GLEBA.md) |
 | Aquilo | Design only | Space Age brainstorm |
 | Rogue, raids, and final objective | Design only | Space Age brainstorm |
 | Maintenance mechanic | Design only | Maintenance brainstorm |

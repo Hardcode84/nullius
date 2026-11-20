@@ -104,7 +104,7 @@ This plants the seed early without spoiling anything. Players who pay attention 
 **Proposed unlock order after Vulcanus**:
 - Vulcanus and Fulgora: Available immediately after signal acquisition. Can be researched with 4 packs.
 - Rogue: Available immediately. Cheap. Dead end (for now).
-- Gleba: Slightly later (needs organic-chemistry-1 which is Tier 3).
+- Gleba: Tier 3 at Organic Chemistry 1. The probe unlocks the manual mat craft. Wild Strain Cultivation and the first biology lab follow on Gleba. See [Gleba research](PLANET_GLEBA.md#biology-branch).
 - Aquilo: Requires chemical pack (Tier 4 gate). Player should have experience on other planets first.
 
 ### 2.4 Implemented Vulcanus Reactivation
@@ -151,7 +151,7 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 | Asteroid mining (abstract, Nauvis) | Removed with Nauvis ore renewal; Vulcanus and Fulgora supply infinite ores. See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal) |
 | Copper from asteroids | Import copper from Fulgora, its sole primary source; see [Fulgora design](PLANET_FULGORA.md#late-game-copper) |
 | Rocket science (Nauvis) | Rocket science moves to the start of the physics tier and enables orbital lift; space platforms carry cross-planet cargo. See [Launch vehicle](SPACE_AGE_BRAINSTORM.md#46-launch-vehicle) |
-| Physics pack (complex machines) | Physics pack stays on Nauvis |
+| Physics pack (complex machines) | Nauvis keeps its ordinary recipe. Gleba makes physics packs locally at Physics. |
 
 ### 3.3 New Tier 6+ Content (SA additions)
 
@@ -239,7 +239,6 @@ Once cargo is available, Nauvis exports:
 
 ## 6. Open Questions (Nauvis-specific)
 
-- Should existing Nullius biology packs remain fully producible on Nauvis, or should advanced bio-packs (dendrology, zoology, evolution) require Gleba inputs?
 - How does the Rogue scout spawning interact with Nauvis's existing minimal-combat design?
 - Should probe reactivation require a physical item (transmitter building) or just be a tech unlock?
 - Should the player be able to reactivate all planet probes simultaneously, or is there a cooldown/sequential constraint?

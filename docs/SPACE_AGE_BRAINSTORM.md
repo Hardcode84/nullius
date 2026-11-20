@@ -266,25 +266,13 @@ Engineered Genome + Growth Medium + Containment --> [Incubation]
 
 #### Gleba's Role in the Biology Progression
 
-Current Nullius biology is entirely on Nauvis. With Gleba:
-
-```
-NAUVIS (current):
-  Industrial bootstrap --> fatty acids --> basic biology
-  Seeding organisms designed elsewhere
-
-GLEBA (new):
-  Bacterial harvesting --> strain breeding --> complex organism design
-  The actual biological R&D happens here
-  Exports: proven organism designs, exotic biochemicals, biology packs
-
-PROGRESSION:
-  Nauvis basic bio (Tier 3-4) --> Gleba access (Tier 4-5) -->
-  advanced strain breeding --> complex organism design -->
-  export proven designs back to Nauvis for seeding (Tier 6-7)
-```
-
-Biology packs could split: basic bio-packs still producible on Nauvis, but advanced biology packs (dendrology, ichthyology, zoology, evolution) require Gleba-bred organisms or Gleba-exclusive biochemicals.
+The probe opens at Organic Chemistry 1. The first player on Gleba harvests
+mats and makes wild culture and goop by hand. The wreck lab researches Wild
+Strain Cultivation. A locally built biology lab then researches Biochemistry 1.
+Nanotechnology 1 opens genome work, and Physics opens advanced plant and animal
+research. Gleba can also supply every ordinary pack through Orbital Construction.
+Cargo carries living stock to Nauvis for deployment. See the
+[Gleba research design](PLANET_GLEBA.md#biology-branch).
 
 #### Power Progression
 
@@ -782,7 +770,7 @@ Each planet can produce one or more science packs from purely local materials:
 | **Nauvis** | Geology, Climatology, Mechanical, Electrical, Chemical, Physics | (existing Nullius packs) | The core 6 packs, same as current Nullius |
 | **Vulcanus** | **Metallurgic Pack** | Lava metals, volcanic compounds, titanium intermediates | Requires cooled (spoiled) metal products |
 | **Fulgora** | **Electromagnetic Pack** | Locally produced electrical components and polymer materials | Bootstrap and efficient recipes; see [Fulgora design](PLANET_FULGORA.md#science-and-research) |
-| **Gleba** | **Biological Pack** | Bred bacterial strains, exotic enzymes, cultured organisms | Requires active breeding loop (probabilistic) |
+| **Gleba** | **Biochemistry pack** | Wild culture and leach residue | First of seven existing biology packs. Each has a deterministic local recipe. |
 | **Aquilo** | **Cryogenic Pack** | Monopole-processed deuterium, lithium compounds, ammonia derivatives | Requires monopole allocation to lab processes |
 
 #### Technology Gating by Pack Availability
@@ -863,11 +851,11 @@ Each planet needs to produce small amounts of generic Nauvis packs from local re
 
 | Pack | Vulcanus (metals, no water) | Fulgora (organics, no atmospheric O2) | Gleba (bio, no ores) | Aquilo (cryo, limited everything) |
 |---|---|---|---|---|
-| **Geology** | Volcanic rock + mineral dust (easy) | Trace minerals from filtering (slow) | Bacterial mineral extraction (unreliable) | Ice-bound minerals (thaw first) |
-| **Mechanical** | Abundant metal gears (easy) | Polymer gears (alt recipe) | Bio-composite gears (alt recipe) | Frozen salvage from probe |
-| **Electrical** | Silicon-based circuits (no copper!) | Conductive polymer circuits (alt recipe) | Bio-electric cells (bred strain) | Superconductor circuits (monopole-enabled) |
+| **Geology** | Volcanic rock + mineral dust (easy) | Trace minerals from filtering (slow) | Crushed rock and leach residue | Ice-bound minerals (thaw first) |
+| **Mechanical** | Abundant metal gears (easy) | Polymer gears (alt recipe) | Reduced-iron gears and rods | Frozen salvage from probe |
+| **Electrical** | Silicon-based circuits (no copper!) | Conductive polymer circuits (alt recipe) | Iron and graphite test cells | Superconductor circuits (monopole-enabled) |
 
-Each planet gets **alternative recipes** for generic packs using local materials. These recipes are deliberately worse than Nauvis versions (slower, fewer per craft, more ingredients) but they work. The player builds a janky minimum-viable-science-line and moves on.
+Each planet gets **alternative recipes** for generic packs using local materials. Gleba can expand these lines through Orbital Construction. These recipes are deliberately worse than Nauvis versions (slower, fewer per craft, more ingredients) but they work. The player builds a janky minimum-viable-science-line and moves on.
 
 #### What Each Planet Unlocks Globally (Pre-Cargo)
 
@@ -1580,7 +1568,7 @@ only Nauvis chemistry.
 | Uranium Processing | The seawater research already makes yellowcake, so Uranium Processing is the fluoride conversion to natural hexafluoride and requires Fluorine Chemistry. Every research in the chain unlocks a product its own unlocks consume or that the next research consumes |
 | Astronomy | Removing the uranium-ore checkpoint is not enough: the astronomy packs in Uranium Processing, Uranium Enrichment, and Nuclear Power 4 costs would keep Astronomy |
 | Timing | Fission arrives at the Nauvis biochemistry and Electrolysis 4 tiers, beside Nauvis fusion; the fission cell is "technically simpler to harness" than fusion |
-| Gleba move | Seawater Uranium Adsorption later swaps its biology packs for Gleba science; its recipes stay |
+| Gleba move | Keep Biochemistry 4 and the same three biology packs. Gleba supplies the research. Nauvis supplies the industrial ingredients |
 
 Delivery order:
 
@@ -1622,7 +1610,7 @@ than either Gleba route. Seawater holds about 3 micrograms of uranium per litre.
 
 | Rule | Value |
 |---|---|
-| Research | Seawater Uranium Adsorption follows Biochemistry 4 and costs Nauvis biology packs: the android's labs design a uranyl-binding protein. When Gleba ships, the cost moves to Gleba biological science. Research is global, so the recipes run on Nauvis without cargo either way |
+| Research | Seawater Uranium Adsorption follows Biochemistry 4 and costs Nauvis biology packs: the android's labs design a uranyl-binding protein. In the Gleba design, the same three biology packs are available on Gleba. Research is global, so the recipes run on Nauvis without cargo either way |
 | Real basis | Engineered uranyl-binding proteins with femtomolar affinity, and amidoxime polymer fibres tested for seawater extraction |
 | Adsorbent | Amino acids + acrylic fibre support -> uranyl-binding fibre |
 | Loading | Adsorbent + an obscene volume of seawater -> loaded adsorbent + saline + sludge. The fiber bed filters the seawater, trapping silt and biofouling, and less saline comes out than seawater filtration gives. No seawater returns, so the intake volume cannot be looped |
@@ -1755,7 +1743,6 @@ Generic packs stay Nauvis packs with worse local recipes on other planets, as in
 | Metallurgic | Vulcanus | Titanium intermediates + calcite + volcanic alloys |
 | Electromagnetic | Fulgora | Local electrical components and polymer materials; recipe design in [Fulgora design](PLANET_FULGORA.md#science-and-research) |
 | Cryogenic | Aquilo | Lithium + tritium + ammonia compounds |
-| Biological | Gleba | Bred strains, exotic enzymes, cultured organisms; see [4.2](#planet-specific-science-packs) |
 
 ---
 
@@ -1799,7 +1786,6 @@ This is a massive undertaking:
 - How do planet-exclusive resources interact with the checkpoint system? Can checkpoints require off-world items?
 
 ### Biology
-- Should biology packs require Gleba research, or remain Nauvis-producible?
 - Does spoilage apply to Nullius biological items when transported between planets?
 - Are Gleba organisms compatible with Nauvis ecosystem seeding, or must they be adapted?
 
