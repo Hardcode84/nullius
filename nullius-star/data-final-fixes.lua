@@ -64,7 +64,7 @@ data.raw["utility-constants"]["default"].main_menu_simulations = require("menu-s
 -- Reassign Space Age music to the corresponding Nullius planets.
 for _, sound in pairs(data.raw["ambient-sound"]) do
   for index, planet in ipairs(sound.planets or {}) do
-    if planet == "vulcanus" or planet == "fulgora" then
+    if planet == "vulcanus" or planet == "fulgora" or planet == "gleba" then
       sound.planets[index] = "nullius-" .. planet
     end
   end
@@ -92,30 +92,7 @@ for _, planet_name in pairs({"vulcanus", "fulgora", "gleba", "aquilo"}) do
   end
 end
 
--- Strip autoplace from ALL SA tiles, decoratives, and entities that are NOT
--- in our explicit whitelist. Each planet also has its own autoplace whitelist.
---
--- Whitelist approach: we know exactly which tiles we want on Nauvis (alien-biomes
--- handles that), nullius-vulcanus, and natural Fulgora terrain.
-
--- Tiles used by nullius-vulcanus (from prototypes/planet/vulcanus.lua).
-local keep_tiles = {
-  ["volcanic-soil-dark"] = true, ["volcanic-soil-light"] = true,
-  ["volcanic-ash-soil"] = true, ["volcanic-ash-flats"] = true,
-  ["volcanic-ash-light"] = true, ["volcanic-ash-dark"] = true,
-  ["volcanic-cracks"] = true, ["volcanic-cracks-warm"] = true,
-  ["volcanic-folds"] = true, ["volcanic-folds-flat"] = true,
-  ["lava"] = true, ["lava-hot"] = true,
-  ["volcanic-folds-warm"] = true, ["volcanic-pumice-stones"] = true,
-  ["volcanic-cracks-hot"] = true, ["volcanic-jagged-ground"] = true,
-  ["volcanic-smooth-stone"] = true, ["volcanic-smooth-stone-warm"] = true,
-  ["volcanic-ash-cracks"] = true,
-  -- Infrastructure tiles to keep.
-  ["space"] = true, ["empty-space"] = true,
-  ["space-platform-foundation"] = true, ["foundation"] = true,
-}
-
--- Explicit list of non-Vulcanus SA planet tiles to strip autoplace from.
+-- Remove unused Space Age terrain from map generation.
 local strip_tiles = {
   -- Fulgora: keep natural dry ground, remove artificial terrain and oil.
   "fulgoran-paving", "fulgoran-walls", "fulgoran-conduit", "fulgoran-machinery",
@@ -124,22 +101,6 @@ local strip_tiles = {
   -- Gleba.
   "artificial-yumako-soil", "overgrowth-yumako-soil",
   "artificial-jellynut-soil", "overgrowth-jellynut-soil",
-  "natural-yumako-soil", "natural-jellynut-soil",
-  "lowland-olive-blubber", "lowland-olive-blubber-2", "lowland-olive-blubber-3",
-  "lowland-brown-blubber", "lowland-pale-green",
-  "lowland-cream-cauliflower", "lowland-cream-cauliflower-2",
-  "lowland-dead-skin", "lowland-dead-skin-2",
-  "lowland-cream-red", "lowland-red-vein", "lowland-red-vein-2",
-  "lowland-red-vein-3", "lowland-red-vein-4", "lowland-red-vein-dead",
-  "lowland-red-infection",
-  "midland-cracked-lichen", "midland-cracked-lichen-dull", "midland-cracked-lichen-dark",
-  "midland-turquoise-bark", "midland-turquoise-bark-2",
-  "midland-yellow-crust", "midland-yellow-crust-2", "midland-yellow-crust-3", "midland-yellow-crust-4",
-  "highland-dark-rock", "highland-dark-rock-2", "highland-yellow-rock",
-  "pit-rock",
-  "wetland-yumako", "wetland-jellynut", "wetland-dead-skin", "wetland-light-dead-skin",
-  "wetland-green-slime", "wetland-light-green-slime", "wetland-red-tentacle",
-  "wetland-pink-tentacle", "wetland-blue-slime", "gleba-deep-lake",
   "wetland-grey", "wetland-green", "wetland-pink", "wetland-purple",
   "wetland-green-puddle", "wetland-pink-puddle", "wetland-grey-puddle",
   -- Aquilo.
@@ -174,7 +135,7 @@ local sa_deco_prefixes = {
   "fuchsia-pita", "wispy-lichen", "barnacles", "solo-barnacle",
   "curly-roots", "knobbly-roots", "matches-small", "white-carpet",
   "green-carpet", "green-hairy", "nerve-roots", "yellow-coral",
-  "grey-cracked", "red-desert-bush", "white-desert-bush",
+  "red-desert-bush", "white-desert-bush",
 }
 
 for name, deco in pairs(data.raw["optimized-decorative"] or {}) do

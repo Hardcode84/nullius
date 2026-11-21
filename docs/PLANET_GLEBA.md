@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Design only |
+| Status | Probe access, native terrain and music are available. The probe wreck is empty. The surface has no vegetation, enemies or airborne spores. The biology and industry sections describe the planned progression. |
 | Planet mechanics and constraints | This document; supersedes [Space Age brainstorm 3.3](SPACE_AGE_BRAINSTORM.md#33-gleba-microbiologybreeding) where they differ |
 | Shared progression, cargo, nuclear, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |

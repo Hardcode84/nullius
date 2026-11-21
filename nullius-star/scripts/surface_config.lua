@@ -5,6 +5,7 @@ local surface_config = {}
 local controlled_planets = {
   ["nullius-vulcanus"] = true,
   ["nullius-fulgora"] = true,
+  ["nullius-gleba"] = true,
   vulcanus = true,
   fulgora = true,
   gleba = true,

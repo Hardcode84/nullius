@@ -3,6 +3,7 @@ local research = require("scripts.research")
 local debug = {}
 local destinations = {
   vulcanus = {planet = "nullius-vulcanus", technology = "nullius-pneumatic-technology", label = "Vulcanus"},
+  gleba = {planet = "nullius-gleba", technology = "nullius-probe-gleba", label = "Gleba"},
   fulgora = {planet = "nullius-fulgora", technology = "nullius-primitive-filtration", label = "Fulgora"},
 }
 
@@ -42,7 +43,7 @@ function debug.quick_start_vulcanus(player)
   return debug.quick_start(player, "vulcanus")
 end
 
-for _, name in ipairs({"vulcanus", "fulgora"}) do
+for _, name in ipairs({"vulcanus", "fulgora", "gleba"}) do
   local destination = name
   local label = destinations[destination].label
   commands.add_command("nullius-" .. destination,

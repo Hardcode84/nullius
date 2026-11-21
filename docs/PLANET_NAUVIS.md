@@ -87,7 +87,7 @@ After the umbrella "Interplanetary Signal Acquisition" tech, each planet has its
 |---|---|---|---|---|
 | **Vulcanus** | Volcanic Probe Signal Recovery | Interplanetary Signal Acquisition, metallurgy 2 | count=30; geology, climatology, mechanical, electrical x1; time=20 | Implemented |
 | **Fulgora** | Electromagnetic Probe Signal Recovery | Interplanetary Signal Acquisition, insulation 1 | count=30, 4 packs, time=20 | Terrain and probe access implemented |
-| **Gleba** | Biological Probe Signal Recovery | Interplanetary Signal Acquisition, organic chemistry 1 | count=40, 4 packs | Design only |
+| **Gleba** | Biological Probe Signal Recovery | Interplanetary Signal Acquisition, organic chemistry 1 | count=40, 4 packs, time=20 | Terrain and probe access implemented |
 | **Aquilo** | Cryogenic Probe Signal Recovery | Interplanetary Signal Acquisition, experimental chemistry, thermal-tank checkpoint | count=80, 5 packs | Design only |
 | **Rogue** | Unidentified Probe Signal Recovery | Interplanetary Signal Acquisition | count=15, 4 packs | Design only |
 
@@ -104,7 +104,7 @@ This plants the seed early without spoiling anything. Players who pay attention 
 **Proposed unlock order after Vulcanus**:
 - Vulcanus and Fulgora: Available immediately after signal acquisition. Can be researched with 4 packs.
 - Rogue: Available immediately. Cheap. Dead end (for now).
-- Gleba: Tier 3 at Organic Chemistry 1. The probe unlocks the manual mat craft. Wild Strain Cultivation and the first biology lab follow on Gleba. See [Gleba research](PLANET_GLEBA.md#biology-branch).
+- Gleba: Tier 3 at Organic Chemistry 1. The probe gives access to Gleba. The biology design adds the manual mat craft, Wild Strain Cultivation and the first biology lab on Gleba. See [Gleba research](PLANET_GLEBA.md#biology-branch).
 - Aquilo: Requires chemical pack (Tier 4 gate). Player should have experience on other planets first.
 
 ### 2.4 Implemented Vulcanus Reactivation

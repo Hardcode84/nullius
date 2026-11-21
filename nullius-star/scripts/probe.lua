@@ -6,16 +6,17 @@ local probe = {}
 local vulcanus_supplies = require("shared.vulcanus-starter")
 local fulgora_supplies = require("shared.fulgora-starter")
 
-local destinations = {
-  ["nullius-probe-vulcanus"] = "nullius-vulcanus",
-  ["nullius-probe-fulgora"] = "nullius-fulgora",
-}
+local function place_wreck(surface, pos, force)
+  local position = surface.find_non_colliding_position("nullius-landing-main", pos, 64, 1)
+  if not position then error(surface.name .. " probe has no safe landing position") end
+  local wreck = surface.create_entity{name = "nullius-landing-main", position = position, force = force}
+  if not wreck then error(surface.name .. " probe could not create its wreck") end
+  return wreck
+end
 
 local function fulgora_landing_site(surface, pos, force)
-  local position = surface.find_non_colliding_position("nullius-landing-main", pos, 64, 1)
-  if not position then error("Fulgora probe has no safe landing position") end
-  local wreck = surface.create_entity{name = "nullius-landing-main", position = position, force = force}
-  if not wreck then error("Fulgora probe could not create its wreck") end
+  local wreck = place_wreck(surface, pos, force)
+  local position = wreck.position
   -- Cold landing path. Separate logistics keep the kit within the wreck's slots.
   local supplies = fulgora_supplies
   for index,items in ipairs(supplies) do
@@ -66,6 +67,12 @@ local function vulcanus_landing_site(surface, pos, force)
     end
   end
 end
+
+local landing_sites = {
+  ["nullius-vulcanus"] = vulcanus_landing_site,
+  ["nullius-fulgora"] = fulgora_landing_site,
+  ["nullius-gleba"] = place_wreck,
+}
 
 -- Create a dormant android on the target surface.
 local function spawn_android(surface, pos, force)
@@ -128,7 +135,7 @@ function probe.get_landing(force, planet_name)
 end
 
 function probe.attach_player(player)
-  for _, planet_name in ipairs({"nullius-vulcanus", "nullius-fulgora"}) do
+  for _, planet_name in ipairs({"nullius-vulcanus", "nullius-fulgora", "nullius-gleba"}) do
     local landing = probe.get_landing(player.force, planet_name)
     local android = landing and landing.android
     if android and android.valid then
@@ -174,8 +181,9 @@ end
 -- Research activation is idempotent, including after loss of the body or wreck.
 -- The probe technology's own effect unlocks the planet as a space location.
 function probe.on_probe_researched(tech_name, force)
-  local planet_name = destinations[tech_name]
-  if not planet_name then return end
+  local planet_name = tech_name:gsub("^nullius%-probe%-", "nullius-")
+  local place_landing = landing_sites[planet_name]
+  if not place_landing then return end
   if not probe.get_landing(force, planet_name) then
     local planet = game.planets[planet_name]
     if not planet.surface then planet.create_surface() end
@@ -183,11 +191,7 @@ function probe.on_probe_researched(tech_name, force)
     local pos = {x = 0, y = 0}
     surface.request_to_generate_chunks(pos, 2)
     surface.force_generate_chunk_requests()
-    if planet_name == "nullius-vulcanus" then
-      vulcanus_landing_site(surface, pos, force)
-    else
-      fulgora_landing_site(surface, pos, force)
-    end
+    place_landing(surface, pos, force)
     local android = spawn_android(surface, {x = 5, y = 5}, force)
     if not android or not android.valid then
       error(planet_name .. " probe could not create its android")

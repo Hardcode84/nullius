@@ -36,6 +36,8 @@ local function stock()
   local wreck = surface.find_entities_filtered{name = "nullius-landing-main", force = "player"}[1]
   if destination == "vulcanus" then
     check(wreck.get_item_count("nullius-seawater-intake-1") == 2, "wreck supplies changed")
+  elseif destination == "gleba" then
+    check(wreck.get_inventory(defines.inventory.chest).is_empty(), "Gleba probe has supplies")
   else
     for _, stack in ipairs(fulgora_starter[1]) do
       check(wreck.get_item_count(stack[1]) == stack[2], "Fulgora starter " .. stack[1])
@@ -75,7 +77,8 @@ end)
 script.on_event(defines.events.on_player_respawned, function(event)
   storage.respawned = event.player_index
 end)
-script.on_nth_tick(30, function()
+script.on_nth_tick(30, function(event)
+  if event.tick == 0 then return end
   check(game.tick < 30000, "multiplayer tick deadline")
   local a = game.get_player("nullius-test-a")
   local b = game.get_player("nullius-test-b")
@@ -84,7 +87,7 @@ script.on_nth_tick(30, function()
     check(game.is_multiplayer(), "requires multiplayer simulation")
     storage.a_home = a.character
     check(storage.a_home ~= nil, "first client has no character")
-    research.complete_with_prerequisites(a.force.technologies[destination == "vulcanus" and "nullius-pneumatic-technology" or "nullius-probe-fulgora"])
+    research.complete_with_prerequisites(a.force.technologies[destination == "vulcanus" and "nullius-pneumatic-technology" or "nullius-probe-" .. destination])
     storage.stage = "activation"
   elseif stage == "activation" then
     local body = snapshot(a).body

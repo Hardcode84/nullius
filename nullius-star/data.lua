@@ -4,6 +4,7 @@ pipe_extents = {64, 144, 320, 672}
 -- Planet definitions.
 require("prototypes.planet.vulcanus")
 require("prototypes.planet.fulgora")
+require("prototypes.planet.gleba")
 require("prototypes.planet.fulgora-collectors")
 require("prototypes.planet.fulgora-overload")
 require("prototypes.planet.fulgora-meter")

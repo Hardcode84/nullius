@@ -17,7 +17,7 @@ Release `0.0.7`, reviewed 2026-11-17.
 | Area | Implemented contract | Evidence |
 |---|---|---|
 | Space Age load | Nullius* requires Factorio and Space Age 2.1.20 or later in the 2.1 series. Quality is incompatible. | Strict prototype load |
-| Planet access | Probe research gives access to Vulcanus and Fulgora. On Vulcanus, each force gets one wreck and a shared idle android. The quick-start command transfers its caller. | Activation and shared-body scenarios |
+| Planet access | Probe research gives access to Vulcanus, Fulgora and Gleba. Each force gets one wreck and one shared android on each planet it unlocks. The quick-start command transfers its caller. | Activation and shared-body scenarios |
 | Bootstrap | Free lava intake and diminishing-return gas vent prime a net-positive lava-gas loop | Vent-prime and gas-self-power scenarios |
 | Pneumatic factory | Eligible non-heavy-industry machines switch on Vulcanus through the common transition system; working machines expose correctly sized process-heat interfaces | Pneumatic lifecycle scenarios |
 | Local materials | Lava separation, bloom cooling, aluminum reduction, sulfur catalysis, inorganic barrels, renewable graphite, alkali, lubricant, glass, concrete, sulfuric acid, boric acid, and metallic sodium are reachable without seawater, organic chemistry, or electricity | Production scenarios and prerequisite manifests |
@@ -65,7 +65,7 @@ Release `0.0.7`, reviewed 2026-11-17.
 | Area | Status | Design source |
 |---|---|---|
 | Vulcanus beyond tier-3 thermal industry | Design only | Vulcanus design |
-| Gleba | Design only. The probe opens early biology. Nutrient machines supply seven biology packs and all six ordinary packs. Local research reaches Orbital Construction. | [Gleba design](PLANET_GLEBA.md) |
+| Gleba | Probe access, native terrain and music are available. The wreck is empty. The design uses nutrient machines to supply seven biology packs and six ordinary packs for local research through Orbital Construction. | [Gleba design](PLANET_GLEBA.md) |
 | Aquilo | Design only | Space Age brainstorm |
 | Rogue, raids, and final objective | Design only | Space Age brainstorm |
 | Maintenance mechanic | Design only | Maintenance brainstorm |
