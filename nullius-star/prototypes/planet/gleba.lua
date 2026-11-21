@@ -13,6 +13,43 @@ map.autoplace_settings.decorative = {treat_missing_as_default = false, settings 
   ["dark-mud-decal"] = {}, ["light-mud-decal"] = {},
 }}
 
+data:extend({{
+  type = "noise-expression", name = "nullius_gleba_rock_cluster",
+  expression = "max(gleba_highland, lower_cliff, upper_cliff) * max(0, gleba_cover_noise)",
+  local_expressions = {
+    lower_cliff = "gleba_select(elevation, cliff_elevation_0 - 10, cliff_elevation_0, 2, 0, 1)",
+    upper_cliff = "gleba_select(elevation, upper_level - 10, upper_level, 2, 0, 1)",
+    upper_level = "cliff_elevation_0 + cliff_elevation_interval",
+  },
+}})
+
+local bank_tiles, rocky_tiles = {}, {}
+for name in pairs(map.autoplace_settings.tile.settings) do
+  if name:match("^lowland%-") then
+    bank_tiles[#bank_tiles + 1] = name
+  elseif name:match("^midland%-") or name:match("^highland%-") or name == "pit-rock" then
+    rocky_tiles[#rocky_tiles + 1] = name
+  end
+end
+
+-- Use the original artwork with tile restrictions specific to Gleba.
+local function add_decorative(source, tiles, probability)
+  local prop = table.deepcopy(data.raw["optimized-decorative"][source])
+  prop.name = "nullius-gleba-" .. source
+  prop.localised_name = {"decorative-name." .. source}
+  prop.autoplace = {
+    order = source, default_enabled = false, tile_restriction = tiles,
+    probability_expression = probability,
+  }
+  data:extend({prop})
+  map.autoplace_settings.decorative.settings[prop.name] = {}
+end
+
+add_decorative("calcite-stain-small", bank_tiles,
+  "0.16 * gleba_select(elevation, 2.7, 5, 0.3, 0, 1) * clamp(gleba_decal_noise, 0, 1)")
+add_decorative("medium-rock", rocky_tiles, "0.24 * max(0, nullius_gleba_rock_cluster - 0.30)")
+add_decorative("small-rock", rocky_tiles, "0.28 * max(0, nullius_gleba_rock_cluster - 0.12)")
+
 data:extend({planet, {
   type = "space-connection", name = "nauvis-nullius-gleba",
   subgroup = "planet-connections", from = "nauvis", to = planet.name,

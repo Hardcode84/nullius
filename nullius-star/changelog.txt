@@ -2,7 +2,6 @@
 Version: 0.0.7
 Date: 10.11.2026
   Features:
-    - Recover a dormant probe and explore the wetlands and highlands of Gleba.
     - Added early rocket launches, lighter titanium rocket stages, and new rocket fuels, including aluminum fuel on Vulcanus.
     - Added space platforms for carrying cargo to the planets that probe research reveals, and pneumatic rocket silos on Vulcanus.
     - Added radio astronomy: record signals on each planet and combine them into astronomy research.

@@ -11,6 +11,70 @@ local function check(value, message)
   assert(value, message)
 end
 
+local function survey_minerals(surface, area)
+  local mud = {
+    ["light-mud-decal"] = true, ["dark-mud-decal"] = true,
+    ["cracked-mud-decal"] = true, ["grey-cracked-mud-decal"] = true,
+  }
+  local water = {}
+  for name in pairs(surface.map_gen_settings.autoplace_settings.tile.settings) do
+    if prototypes.tile[name].fluid then water[#water + 1] = name end
+  end
+  local counts = {mud = 0, calcite = 0, near_water = 0, medium = 0,
+    highland = 0, cliff = 0, small = 0, near_medium = 0, shore = 0, marked_shore = 0}
+  for _, decoration in pairs(surface.find_decoratives_filtered{area = area}) do
+    local name = decoration.decorative.name
+    local pos = decoration.position
+    local tile = surface.get_tile(pos)
+    if mud[name] then
+      counts.mud = counts.mud + 1
+    elseif name == "nullius-gleba-calcite-stain-small" then
+      assert(not tile.prototype.fluid, "calcite in water on " .. tile.name)
+      counts.calcite = counts.calcite + 1
+      if surface.count_tiles_filtered{position = pos, radius = 8, name = water, limit = 1} > 0 then
+        counts.near_water = counts.near_water + 1
+      end
+    elseif name == "nullius-gleba-medium-rock" then
+      assert(not tile.prototype.fluid, "medium rock in water")
+      counts.medium = counts.medium + 1
+      if tile.name:match("^highland") then counts.highland = counts.highland + 1 end
+      if surface.count_entities_filtered{name = "cliff-gleba", position = pos, radius = 8, limit = 1} > 0 then
+        counts.cliff = counts.cliff + 1
+      end
+    elseif name == "nullius-gleba-small-rock" then
+      assert(not tile.prototype.fluid, "small rock in water")
+      counts.small = counts.small + 1
+      if #surface.find_decoratives_filtered{name = "nullius-gleba-medium-rock",
+          area = {{pos.x - 6, pos.y - 6}, {pos.x + 6, pos.y + 6}}} > 0 then
+        counts.near_medium = counts.near_medium + 1
+      end
+    else
+      error("unexpected Gleba decorative " .. name)
+    end
+  end
+  for x = area[1][1], area[2][1] - 1, 8 do
+    for y = area[1][2], area[2][2] - 1, 8 do
+      if not surface.get_tile(x, y).prototype.fluid and
+          surface.count_tiles_filtered{position = {x, y}, radius = 3, name = water, limit = 1} > 0 then
+        counts.shore = counts.shore + 1
+        if #surface.find_decoratives_filtered{name = "nullius-gleba-calcite-stain-small",
+            area = {{x - 4, y - 4}, {x + 4, y + 4}}} > 0 then
+          counts.marked_shore = counts.marked_shore + 1
+        end
+      end
+    end
+  end
+  local report = helpers.table_to_json(counts)
+  log("Gleba mineral survey " .. report)
+  check(counts.mud > 0 and counts.calcite > 0, "missing mud or calcite " .. report)
+  check(counts.near_water > 0.75 * counts.calcite, "calcite too far inland " .. report)
+  check(counts.marked_shore > 0 and counts.marked_shore < counts.shore / 2, "unbroken or empty shoreline " .. report)
+  check(counts.medium > 0 and counts.highland > 0 and counts.cliff > 0, "missing rocky terrain " .. report)
+  check(counts.small > counts.medium and counts.near_medium > 0.5 * counts.small,
+    "small rocks do not cluster around medium rocks " .. report)
+  return counts
+end
+
 local function survey(surface)
   local area = {{-256, -256}, {256, 256}}
   surface.request_to_generate_chunks({0, 0}, 8)
@@ -29,15 +93,7 @@ local function survey(surface)
     assert(entity.type == "cliff" or entity.name == "character" or entity.name == "nullius-landing-main",
       "unexpected entity on Gleba: " .. entity.name)
   end
-  local mud = {
-    ["light-mud-decal"] = true, ["dark-mud-decal"] = true,
-    ["cracked-mud-decal"] = true, ["grey-cracked-mud-decal"] = true,
-  }
-  local decorations = surface.find_decoratives_filtered{area = area}
-  check(#decorations > 0, "missing native mud markings")
-  for _, decoration in pairs(decorations) do
-    assert(mud[decoration.decorative.name], "unexpected decorative on Gleba: " .. decoration.decorative.name)
-  end
+  local minerals = survey_minerals(surface, area)
 
   local tiles = map.autoplace_settings.tile.settings
   check(table_size(tiles) == 41, "expected the 41 native Gleba tiles")
@@ -57,6 +113,7 @@ local function survey(surface)
   for name in pairs(tiles) do table.insert(gleba_tiles, name) end
   check(nauvis.count_tiles_filtered{area = {{-64, -64}, {64, 64}}, name = gleba_tiles} == 0,
     "Nauvis generated Gleba terrain")
+  return minerals
 end
 
 script.on_nth_tick(1, function(event)
@@ -90,7 +147,15 @@ script.on_nth_tick(1, function(event)
         "interlude-1", "interlude-4"}) do
       check(tracks["gleba-" .. suffix], "missing Gleba music track " .. suffix)
     end
-    survey(planet.surface)
+    local minerals = {landing = survey(planet.surface)}
+    for _, seed in ipairs({17, 42, 103}) do
+      local settings = planet.surface.map_gen_settings
+      settings.seed = seed
+      local sample = game.create_surface("gleba-minerals-" .. seed, settings)
+      sample.request_to_generate_chunks({0, 0}, 9)
+      sample.force_generate_chunk_requests()
+      minerals[tostring(seed)] = survey_minerals(sample, {{-256, -256}, {256, 256}})
+    end
     local other = game.create_force("gleba-independent")
     remote.call("nullius-test-bodies", "activate", other, "gleba")
     local separate = planet.surface.find_entities_filtered{type = "container", force = other}
@@ -102,7 +167,7 @@ script.on_nth_tick(1, function(event)
       "activation recreated a destroyed wreck")
     helpers.write_file("factorio-tests/gleba-activation.json", helpers.table_to_json{
       schema = 1, case = "gleba-activation", status = "pass", failure_count = 0,
-      assertions = assertions, tick = event.tick, factorio_version = script.active_mods.base,
+      assertions = assertions, minerals = minerals, tick = event.tick, factorio_version = script.active_mods.base,
     }, false)
     script.on_nth_tick(1, nil)
   end
