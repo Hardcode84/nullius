@@ -6,6 +6,8 @@ data:extend({
   {type="item-subgroup",name="empty-probe",group="other"},
   {type="item-subgroup",name="probe",group="other"},
   {type="item-subgroup",name="hidden",group="other"},
+  {type="technology",name="barrel-probe",icon="__base__/graphics/technology/fluid-handling.png",icon_size=256,
+    effects={},unit={count=1,time=1,ingredients={}}},
 })
 for _,case in ipairs(require("scenarios/barrel-recipes/fixture")) do
   local fluid=table.deepcopy(data.raw.fluid.water)

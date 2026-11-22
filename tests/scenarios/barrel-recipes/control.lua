@@ -29,6 +29,12 @@ script.on_nth_tick(1,function()
   surface.force_generate_chunk_requests()
   for _,entity in pairs(surface.find_entities()) do entity.destroy() end
   check(prototypes.item["water-barrel"].subgroup.name=="hidden","foreign barrel hidden")
+  local unlocked={}
+  for _,technology in pairs(prototypes.technology) do
+    for _,effect in pairs(technology.effects) do
+      if effect.type=="unlock-recipe" then unlocked[effect.recipe]=true end
+    end
+  end
   for i,case in ipairs(cases) do
     local barrel=case.name.."-barrel"
     check(prototypes.item[barrel].stack_size==20,barrel.." stack size")
@@ -40,6 +46,7 @@ script.on_nth_tick(1,function()
       check(#categories==1 and categories[1]=="nullius-"..kind,name.." exclusive category")
       check(recipe.energy==case.seconds,name.." duration")
       check(game.forces.player.recipes[name].enabled==case.enabled,name.." enabled")
+      if not case.enabled then check(unlocked[name],name.." has no unlocking technology") end
       check(recipe.hidden_from_player_crafting,name.." hidden from hand crafting")
       local filled={{type="item",name=barrel,amount=1}}
       local loose={{type="fluid",name=case.name,amount=case.amount},{type="item",name="barrel",amount=1}}

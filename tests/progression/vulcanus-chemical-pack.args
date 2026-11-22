@@ -1,5 +1,7 @@
 --technology
 nullius-experimental-chemistry
+--surface-property
+nullius-ambient-temperature=200
 --require-no-additional-technologies
 --require-no-electricity
 --available

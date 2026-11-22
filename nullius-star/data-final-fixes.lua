@@ -1,4 +1,5 @@
 require("prototypes.override_final")
+require("prototypes.barrels")(require("prototypes.barrel-unlocks"))
 require("prototypes.override_final_only")
 require("prototypes.override_mod_final")
 require("prototypes.item.module_limitation")

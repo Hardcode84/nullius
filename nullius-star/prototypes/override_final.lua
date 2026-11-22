@@ -1,4 +1,3 @@
-local modern = require("factorio-version").is_2_1
 
 local ICONPATH = "__nullius-star__/graphics/icons/"
 local ENTICONPATH = "__nullius-star__/graphics/icons/entity/"
@@ -306,59 +305,6 @@ data.raw["mining-drill"]["nullius-geothermal-build-2"].collision_box =
     data.raw["reactor"]["nullius-geothermal-reactor-2"].collision_box
 data.raw["mining-drill"]["nullius-geothermal-build-3"].collision_box =
     data.raw["reactor"]["nullius-geothermal-reactor-3"].collision_box
-
-for _,fluid in pairs(data.raw.fluid) do
-  local barrel_name = fluid.name .. "-barrel"
-  if (string.sub(fluid.name, 1, 8) == "nullius-") and
-      data.raw.recipe[fluid.name .. "-barrel"] then  
-    local fill_name = barrel_name
-    local empty_name = "empty-" .. barrel_name
-	local subgroup = fluid.subgroup
-    data.raw.item[barrel_name].subgroup = "fill-" .. subgroup
-    data.raw.item[barrel_name].order = fluid.order
-    data.raw.item[barrel_name].stack_size = 20
-    data.raw.recipe[fill_name].subgroup = "fill-" .. subgroup
-    data.raw.recipe[fill_name].order = fluid.order
-    data.raw.recipe[fill_name].hide_from_player_crafting = true
-    data.raw.recipe[fill_name].hide_from_stats = true
-    data.raw.recipe[fill_name].enabled = true
-    if modern then
-      data.raw.recipe[fill_name].categories = {"nullius-barrel"}
-    else
-      data.raw.recipe[fill_name].category = "nullius-barrel"
-    end
-    data.raw.recipe[fill_name].energy_required = 0.25
-	data.raw.recipe[fill_name].requester_paste_multiplier = 5
-    data.raw.recipe[empty_name].subgroup = "empty-" .. subgroup
-    data.raw.recipe[empty_name].order = fluid.order
-    data.raw.recipe[empty_name].hide_from_player_crafting = true
-    data.raw.recipe[empty_name].hide_from_stats = true
-    data.raw.recipe[empty_name].enabled = true
-    if modern then
-      data.raw.recipe[empty_name].categories = {"nullius-unbarrel"}
-    else
-      data.raw.recipe[empty_name].category = "nullius-unbarrel"
-    end
-    data.raw.recipe[empty_name].energy_required = 0.25
-	data.raw.recipe[empty_name].requester_paste_multiplier = 5
-
-    if (fluid.fuel_value ~= nil) then
-      data.raw.recipe[fill_name].enabled = false
-      data.raw.recipe[empty_name].enabled = false
-      if (fluid.name ~= "nullius-steam") then
-        data.raw.recipe[fill_name].ingredients[1].amount = 25
-        data.raw.recipe[empty_name].results[1].amount = 25
-        data.raw.recipe[fill_name].energy_required = 0.5
-        data.raw.recipe[empty_name].energy_required = 0.5
-      end
-    elseif ((fluid.gas_temperature ~= nil) and (fluid.gas_temperature < 25)) then
-      data.raw.recipe[fill_name].enabled = false
-      data.raw.recipe[empty_name].enabled = false
-    end
-  elseif (data.raw.item[barrel_name] ~= nil) then
-    data.raw.item[barrel_name].subgroup = "hidden"
-  end
-end
 
 
 -- Mods might overwrite character crafting categories, making everything un-hand-craftable in

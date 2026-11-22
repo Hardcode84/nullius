@@ -205,17 +205,6 @@ data.raw.fish.fish.order = "z"
 data.raw.item["rocket-part"].subgroup = "space"
 data.raw.item["rocket-part"].order = "z"
 
-if data.raw.item["nullius-energy-barrel"] then
-  data.raw.item["nullius-energy-barrel"].hidden = true
-end
-if data.raw.recipe["nullius-energy-barrel"] then
-  data.raw.recipe["nullius-energy-barrel"].hidden = true
-  data.raw.recipe["nullius-energy-barrel"].enabled = false
-end
-if data.raw.recipe["empty-nullius-energy-barrel"] then
-  data.raw.recipe["empty-nullius-energy-barrel"].hidden = true
-  data.raw.recipe["empty-nullius-energy-barrel"].enabled = false
-end
 data.raw.technology["fluid-handling"].effects = { }
 
 data.raw["spider-vehicle"]["spidertron"].hidden_in_factoriopedia = true

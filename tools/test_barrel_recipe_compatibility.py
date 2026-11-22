@@ -23,12 +23,12 @@ def run(factorio):
     if version == "2.1":
         names.append("recycler")
     (work / "mods/mod-list.json").write_text(json.dumps({"mods": [{"name": name, "enabled": name in {"base", "nullius-star"}} for name in names]}))
-    source = (ROOT / "nullius-star/prototypes/override_final.lua").read_text()
-    start = source.index("for _,fluid in pairs(data.raw.fluid) do")
-    end = source.index("-- Mods might overwrite character", start)
+    (mod / "prototypes").mkdir()
+    # The fixture technology unlocks the barrels its fixture marks disabled.
     (mod / "data-final-fixes.lua").write_text(
-        'local modern = require("factorio-version").is_2_1\n' + source[start:end])
+        'require("prototypes.barrels")({{"barrel-probe", {"compressed-air", "steam", "oxygen"}}})\n')
     for target, source_path in (
+        ("prototypes/barrels.lua", "nullius-star/prototypes/barrels.lua"),
         ("factorio-version.lua", "nullius-star/factorio-version.lua"),
         ("fixture.lua", "tests/compatibility/barrel-recipes.lua"),
         ("executor.lua", "tests/factorio-test-support/barrel-recipes.lua"),

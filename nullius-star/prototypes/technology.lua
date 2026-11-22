@@ -3685,166 +3685,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-barrel-2"
       },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-air-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-air-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-residual-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-residual-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-trace-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-trace-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-volcanic-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-volcanic-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-nitrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-nitrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-argon-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-argon-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-helium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-helium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-carbon-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-carbon-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-carbon-monoxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-carbon-monoxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-methane-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-methane-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-ethylene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-ethylene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-propene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-propene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-butadiene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-butadiene-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-hydrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-hydrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-deuterium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-deuterium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-tritium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-tritium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-oxygen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-oxygen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-hydrogen-chloride-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-hydrogen-chloride-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-sulfur-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-sulfur-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-ammonia-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-ammonia-barrel"
-      }
     },
     unit = {
       count = 180,
@@ -4039,22 +3879,6 @@ data:extend({
       },
       {type = "unlock-recipe", recipe = "nullius-box-aluminum-powder"},
       {type = "unlock-recipe", recipe = "nullius-unbox-aluminum-powder"},
-	  {
-        type = "unlock-recipe",
-        recipe = "nullius-chlorine-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-chlorine-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-sulfur-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-sulfur-dioxide-barrel"
-      },
       {
         type = "cliff-deconstruction-enabled",
         modifier = true
@@ -9205,86 +9029,6 @@ data:extend({
     icon_size = 128,
     icon = "__angelsrefininggraphics__/graphics/technology/barrel-tech.png",
     effects = {
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-steam-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-steam-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-nitrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-nitrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-hydrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-hydrogen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-air-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-air-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-residual-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-residual-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-argon-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-argon-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-oxygen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-oxygen-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-carbon-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-carbon-dioxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-carbon-monoxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-carbon-monoxide-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-methane-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-methane-barrel"
-      }
     },
     unit = {
       count = 900,
@@ -10885,22 +10629,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-decompress-trace-gas"
       },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-helium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-helium-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-compressed-trace-gas-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-compressed-trace-gas-barrel"
-      }
     },
     unit = {
       count = 2000,
@@ -11471,10 +11199,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-hydrogen-fluoride-electrolysis"
       },
-      {type = "unlock-recipe", recipe = "nullius-hydrogen-fluoride-barrel"},
-      {type = "unlock-recipe", recipe = "empty-nullius-hydrogen-fluoride-barrel"},
-      {type = "unlock-recipe", recipe = "nullius-fluorine-barrel"},
-      {type = "unlock-recipe", recipe = "empty-nullius-fluorine-barrel"},
     },
     unit = {
       count = 2400,
@@ -13398,14 +13122,6 @@ data:extend({
       {
         type = "unlock-recipe",
         recipe = "nullius-boiler-2"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-pressure-steam-barrel"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "empty-nullius-pressure-steam-barrel"
       },
 	  {
         type = "unlock-recipe",

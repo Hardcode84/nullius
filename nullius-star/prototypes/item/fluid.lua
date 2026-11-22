@@ -1163,6 +1163,7 @@ extend_fluid_prototypes({
   {
     type = "fluid",
     name = "nullius-energy",
+    auto_barrel = false,
 	  icons = {{
       icon = FLUIDPATH .. "energy.png",
       icon_size = 32
