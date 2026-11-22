@@ -55,12 +55,12 @@ imports: carbon-rich materials, copper, aluminum
 | Constraint | Consequence |
 |---|---|
 | Hydrogen sulfide atmosphere | New surface property `nullius-hydrogen-sulfide`, default 0, positive on Gleba only. Mat culture and sulfide recipes require it above 0 |
-| No electricity | Generators, solar panels, wind turbines, and accumulators cannot be placed on Gleba; electric-only machines have no power source |
+| No electricity | Generators, solar panels, wind turbines, and accumulators cannot be placed on Gleba; electric-only machines have no power source. [Pneumatic machines](PLANET_VULCANUS.md#machine-modes) are Vulcanus-only |
 | No oxygen | Nothing combusts; oxygen is a chemistry input only |
 | Oxidants poison the mats | Gleba cannot vent oxygen or sulfur dioxide; void recipes for both require `nullius-hydrogen-sulfide` at 0. Gleba itself is never terraformed: removing the hydrogen sulfide or adding oxygen would kill the mats its economy runs on |
 | No carbon dioxide | Carbon comes from carbonate rock through acid neutralization |
 | No usable surface water | No offshore pumps or water wells; water comes from rock sulfidation and biomass dewatering |
-| No seawater or breathable air | Biology recipes that take seawater, air, or bulk wastewater need contained variants on Gleba; see [Contained culture](#contained-culture) |
+| No seawater or breathable air | Nutrient air filters separate nitrogen from the local air; ordinary air is not made on Gleba. Biology recipes that take seawater, air, or bulk wastewater need contained variants on Gleba; see [Contained culture](#contained-culture) |
 | Thick haze | Low `solar-power`; light limits phototrophs |
 | No ore deposits | Metals come from leach liquors |
 | No copper | Gleba rock carries no copper; Fulgora stays the sole primary copper source |
@@ -224,7 +224,7 @@ Each research unit consumes one of each listed pack.
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
 | Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
-| Nutrient Technology | Biological Probe Signal Recovery and Geology 2 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron and glass. |
+| Nutrient Technology | Biological Probe Signal Recovery and Geology 2 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor and a field-assembled Small Assembler 1. |
 | Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the nutrient flotation cell. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. Unlock bioreactor tier 1 and its local fuel routes on Nauvis and Fulgora. |
 

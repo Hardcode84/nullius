@@ -47,7 +47,7 @@ local function check_condition(name)
   check(prototype ~= nil, "missing entity prototype " .. name)
   if not prototype then return end
   local conditions = prototype.surface_conditions or {}
-  check(#conditions == 3, name .. " must have temperature, magnetic field, and pressure limits")
+  check(#conditions == 4, name .. " must have temperature, magnetic field, pressure, and hydrogen sulfide limits")
   local limits = {}
   for _,condition in pairs(conditions) do limits[condition.property] = condition end
   check(limits.pressure and limits.pressure.min == 1, name .. " must require positive pressure")
@@ -55,6 +55,8 @@ local function check_condition(name)
     name .. " must require ambient temperature at most 50")
   check(limits["magnetic-field"] and limits["magnetic-field"].max == 98,
     name .. " must require magnetic field at most 98")
+  check(limits["nullius-hydrogen-sulfide"] and limits["nullius-hydrogen-sulfide"].max == 0,
+    name .. " must be forbidden on Gleba")
 end
 
 script.on_nth_tick(1, function()

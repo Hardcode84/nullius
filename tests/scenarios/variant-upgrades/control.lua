@@ -1,10 +1,13 @@
--- given: all four mode families and an empty upgrade planner.
--- place: each source variant alone on landfill, without build-event side effects.
+-- given: all five mode families and an empty upgrade planner.
+-- place: each source variant alone on landfill on a surface that permits its mode, without
+--   build-event side effects.
 -- act: apply the native default planner.
 -- expect: every link selects the next tier in the same mode; terminal tiers stop.
 local CASE = "variant-upgrades"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local SUFFIXES = {"-pneumatic", "-thermal", "-overcharged", "-supercapacitor"}
+local SUFFIXES = {"-pneumatic", "-thermal", "-overcharged", "-supercapacitor", "-nutrient"}
+-- Pneumatic and nutrient modes are placeable only on their planets.
+local PLANETS = {["-pneumatic"] = "nullius-vulcanus", ["-nutrient"] = "nullius-gleba"}
 
 local assertions = 0
 local failures = {}
@@ -38,17 +41,21 @@ end
 local function setup()
   script.on_nth_tick(1, nil)
 
-  local surface = game.surfaces.nauvis
-  surface.request_to_generate_chunks({0, 0}, 1)
-  surface.force_generate_chunk_requests()
-  for _, entity in pairs(surface.find_entities_filtered{area={{-10,-10},{10,10}}}) do entity.destroy() end
-  local tiles = {}
-  for x=-10,10 do for y=-10,10 do tiles[#tiles+1]={name="landfill",position={x,y}} end end
-  surface.set_tiles(tiles, true)
+  local function pad(surface)
+    surface.request_to_generate_chunks({0, 0}, 1)
+    surface.force_generate_chunk_requests()
+    for _, entity in pairs(surface.find_entities_filtered{area={{-10,-10},{10,10}}}) do entity.destroy() end
+    local tiles = {}
+    for x=-10,10 do for y=-10,10 do tiles[#tiles+1]={name="landfill",position={x,y}} end end
+    surface.set_tiles(tiles, true)
+    return surface
+  end
   local inventory = game.create_inventory(1)
   inventory[1].set_stack{name="upgrade-planner"}
 
   for _, suffix in ipairs(SUFFIXES) do
+    local planet = PLANETS[suffix] and game.planets[PLANETS[suffix]]
+    local surface = pad(planet and (planet.surface or planet.create_surface()) or game.surfaces.nauvis)
     local variants = 0
     local upgrades = 0
     for name, variant in pairs(prototypes.entity) do

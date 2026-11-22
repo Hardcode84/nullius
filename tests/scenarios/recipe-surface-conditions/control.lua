@@ -42,8 +42,10 @@ script.on_nth_tick(1, function()
       local hot = false
       for _, condition in pairs(recipe_conditions) do
         conditions = conditions + 1
+        -- Gleba recipes require its hydrogen sulfide; oxidant voids are forbidden there.
         check(condition.property == AMBIENT_TEMPERATURE or condition.property == "magnetic-field" or
-          (condition.property == "pressure" and name:match("interferometric%-recording$") and condition.min == 1),
+          (condition.property == "pressure" and name:match("interferometric%-recording$") and condition.min == 1) or
+          (condition.property == "nullius-hydrogen-sulfide" and (condition.min == 1 or condition.max == 0)),
           name .. " uses unsupported surface condition " ..
           condition.property)
         if condition.property == AMBIENT_TEMPERATURE and condition.max and condition.max <= 50 then cool = true end

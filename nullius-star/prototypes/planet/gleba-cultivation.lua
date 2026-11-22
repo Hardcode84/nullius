@@ -62,9 +62,12 @@ item("domesticated-culture", "copper-bacteria", "nullius-culture-sludge", 20 * m
 local goop = item("nutrient-goop", "nutrients", "nullius-digestate", 15 * minute)
 goop.fuel_categories, goop.fuel_value, goop.burnt_result = {"nullius-nutrient"}, "8MJ", "nullius-digestate"
 
-local raw_items = {stone = true, inserter = true}
+-- A short name means the Nullius item when one exists, otherwise the base game item.
+local function item_exists(id) return data.raw.item[id] or data.raw.tool[id] end
 local function item_id(name)
-  return raw_items[name] and name or ("nullius-" .. name)
+  local id = item_exists("nullius-" .. name) and ("nullius-" .. name) or name
+  assert(item_exists(id), "Unknown Gleba recipe item: " .. name)
+  return id
 end
 
 local function stacks(list)
@@ -126,3 +129,16 @@ recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,
   {{"wild-culture", 2}, {"domesticated-culture", 2}, {"glass", 1}}, {{"microbiology-pack", 1}})
 unlock(cultivation, "nullius-biology-lab")
+
+-- Gleba air is nitrogen and hydrogen sulfide. Nutrient air filters separate the
+-- nitrogen in place of ordinary air, whose separation also yields carbon dioxide.
+-- Each cycle gives the nitrogen that ordinary separation draws from one cycle of air.
+data:extend({{
+  type = "recipe", name = "nullius-air-separation-gleba",
+  localised_name = {"recipe-name.nullius-air-separation-gleba"},
+  icons = table.deepcopy(assert(data.raw.fluid["nullius-nitrogen"]).icons),
+  enabled = true, hide_from_player_crafting = true, categories = {"air-filtration"},
+  subgroup = "air-filtration-recipe", order = "nullius-bc", energy_required = 3,
+  ingredients = {}, results = {{type = "fluid", name = "nullius-nitrogen", amount = 90}},
+  main_product = "nullius-nitrogen", allow_decomposition = false,
+}})

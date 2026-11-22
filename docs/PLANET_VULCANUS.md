@@ -326,6 +326,7 @@ free lava intake + diminishing-return gas vent
 - A transition requires the corresponding base-machine recipe to be enabled.
 - Upgrade targets preserve alternate mode and advance to the logical tier.
 - Pneumatic pumps and boxers do not create heat interfaces.
+- Pneumatic machines cannot be placed off Vulcanus, including from blueprints.
 - Solar panels, wind turbines, and water wells retain craftable items but cannot
   be placed on Vulcanus.
 

@@ -5,6 +5,7 @@
 -- on Vulcanus surface only.
 
 local pneumatic_families = require("shared.pneumatic-machine-families")
+local mode_variant = require("prototypes.mode-variant")
 
 -- Compressed volcanic gas fluid.
 data:extend({
@@ -115,155 +116,138 @@ register_pneumatic("pump", "nullius-togglable-small-pump-2")
 
 -- Generate pneumatic variants.
 for _, entry in pairs(pneumatic_machines) do
-  local original = data.raw[entry.type][entry.name]
-  if original then
-    local pneumatic_name = entry.name .. "-pneumatic"
-    local pneumatic = table.deepcopy(original)
-    pneumatic.name = pneumatic_name
-    pneumatic.localised_name = original.localised_name or {"entity-name." .. entry.name}
-    pneumatic.localised_description = {"", "[color=orange]Pneumatic mode[/color]\n",
-      original.localised_description or {"entity-description." .. entry.name}}
-    pneumatic.placeable_by = { item = original.minable and original.minable.result or entry.name, count = 1 }
+  local original = assert(data.raw[entry.type][entry.name], "Missing pneumatic base machine: " .. entry.name)
+  local pneumatic = mode_variant(original, "-pneumatic")
+  pneumatic.localised_name = original.localised_name or {"entity-name." .. entry.name}
+  pneumatic.localised_description = {"", "[color=orange]Pneumatic mode[/color]\n",
+    original.localised_description or {"entity-description." .. entry.name}}
 
-    -- Same item drops when mined.
-    if pneumatic.minable then
-      -- Keep same result item as original.
-    end
+  -- Replace electric energy source with fluid energy source.
+  -- Two pass-through connections so gas can flow through the machine.
+  -- Pipe positions must be inside the collision box.
+  -- For pass-through, place connections on opposite edges.
+  local cb = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
 
-    -- Replace electric energy source with fluid energy source.
-    -- Two pass-through connections so gas can flow through the machine.
-    -- Pipe positions must be inside the collision box.
-    -- For pass-through, place connections on opposite edges.
-    local cb = pneumatic.collision_box or {{-0.7, -0.7}, {0.7, 0.7}}
-
-    local half_h = math.abs(cb[1][2]) - 0.1
-    local half_w = math.abs(cb[1][1]) - 0.1
-    local off_h = 0
-    local off_w = 0
-    if half_h < 1 then
-      off_h = half_h
-    elseif half_h > 1.5 and half_h < 2.0 then
-      off_h = 0.4
-    end
-    if half_w < 1 then
-      off_w = half_w
-    elseif half_w > 1.5 and half_w < 2.0 then
-      off_w = 0.4
-    end
-
-    local occupied_connections = {}
-    local function connection_key(direction, offset)
-      return tostring(direction) .. ":" .. string.format("%.3f", offset)
-    end
-
-    -- Check which edges and lateral offsets recipe fluids already occupy.
-    local has_ew_fluid = false
-    for _, fb in pairs(pneumatic.fluid_boxes or {}) do
-      if type(fb) == "table" and fb.pipe_connections then
-        for _, pc in pairs(fb.pipe_connections) do
-          local position = pc.position or
-            (pc.positions and pc.positions[1]) or {0, 0}
-          local dir = pc.direction
-          if not dir then
-            if math.abs(position[1]) > math.abs(position[2]) then
-              dir = (position[1] > 0) and defines.direction.east or
-                defines.direction.west
-            else
-              dir = (position[2] > 0) and defines.direction.south or
-                defines.direction.north
-            end
-          end
-          if dir == defines.direction.east or dir == defines.direction.west then
-            has_ew_fluid = true
-            occupied_connections[connection_key(dir, position[2])] = true
-          elseif dir == defines.direction.north or
-              dir == defines.direction.south then
-            occupied_connections[connection_key(dir, position[1])] = true
-          end
-        end
-      end
-    end
-
-    local function free_offset(direction, preferred, maximum)
-      local candidates
-      if math.abs(preferred % 1) > 0.001 then
-        candidates = {preferred, -preferred, 0.5, -0.5, 1.5, -1.5}
-      else
-        candidates = {preferred, 0, 1, -1, 2, -2}
-      end
-      for _, candidate in ipairs(candidates) do
-        if math.abs(candidate) <= maximum and
-            not occupied_connections[connection_key(direction, candidate)] then
-          return candidate
-        end
-      end
-      error("No free pneumatic fluid connection for " .. entry.name)
-    end
-
-    local pipe_connections
-    if has_ew_fluid then
-      -- Entity uses east/west for recipe fluids, use north/south for energy.
-      local north_offset = free_offset(defines.direction.north,
-        entry.gas_offset or off_w, half_w)
-      local south_offset = free_offset(defines.direction.south,
-        entry.gas_offset or off_w, half_w)
-      pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.north, position = {north_offset, -(entry.gas_edge or half_h)} },
-        { flow_direction = "input-output", direction = defines.direction.south, position = {south_offset, entry.gas_edge or half_h} },
-      }
-    else
-      -- Default: east/west pass-through.
-      local east_offset = free_offset(defines.direction.east,
-        entry.gas_offset or off_h, half_h)
-      local west_offset = free_offset(defines.direction.west,
-        entry.gas_offset or off_h, half_h)
-      pipe_connections = {
-        { flow_direction = "input-output", direction = defines.direction.east, position = {entry.gas_edge or half_w, east_offset} },
-        { flow_direction = "input-output", direction = defines.direction.west, position = {-(entry.gas_edge or half_w), west_offset} },
-      }
-    end
-
-    pneumatic.energy_source = {
-      type = "fluid",
-      burns_fluid = true,
-      scale_fluid_usage = true,
-      fluid_usage_per_tick = 1,
-      fluid_box = {
-        volume = 200,
-        pipe_connections = pipe_connections,
-      },
-      smoke = {{
-        name = "smoke",
-        frequency = 10,
-        position = {0, -0.7},
-        starting_vertical_speed = 0.08,
-      }},
-    }
-
-    if entry.type == "rocket-silo" then
-      local drain = util.parse_energy(original.energy_source.drain)
-      for _, field in ipairs({"energy_usage", "active_energy_usage"}) do
-        pneumatic[field] = tostring((util.parse_energy(original[field]) + drain) * 60) .. "W"
-      end
-      pneumatic.energy_source.fluid_usage_per_tick = nil
-      pneumatic.energy_source.fluid_box.filter = "nullius-compressed-volcanic-gas"
-    end
-
-    -- Same fast_replaceable_group so toggle works.
-    pneumatic.fast_replaceable_group = original.fast_replaceable_group or entry.name
-    -- Make sure the original also has the same group.
-    original.fast_replaceable_group = pneumatic.fast_replaceable_group
-
-    -- Assigned after every pneumatic target prototype exists.
-    pneumatic.next_upgrade = nil
-
-    -- Surface condition: pneumatic mode only on Vulcanus.
-    -- (Actually, the toggle script handles this, not the prototype.)
-
-    -- Hidden from player crafting -- you don't craft pneumatic machines,
-    -- you toggle existing ones.
-    pneumatic.hidden = true
-
-    data:extend({pneumatic})
+  local half_h = math.abs(cb[1][2]) - 0.1
+  local half_w = math.abs(cb[1][1]) - 0.1
+  local off_h = 0
+  local off_w = 0
+  if half_h < 1 then
+    off_h = half_h
+  elseif half_h > 1.5 and half_h < 2.0 then
+    off_h = 0.4
   end
+  if half_w < 1 then
+    off_w = half_w
+  elseif half_w > 1.5 and half_w < 2.0 then
+    off_w = 0.4
+  end
+
+  local occupied_connections = {}
+  local function connection_key(direction, offset)
+    return tostring(direction) .. ":" .. string.format("%.3f", offset)
+  end
+
+  -- Check which edges and lateral offsets recipe fluids already occupy.
+  local has_ew_fluid = false
+  for _, fb in pairs(pneumatic.fluid_boxes or {}) do
+    if type(fb) == "table" and fb.pipe_connections then
+      for _, pc in pairs(fb.pipe_connections) do
+        local position = pc.position or
+          (pc.positions and pc.positions[1]) or {0, 0}
+        local dir = pc.direction
+        if not dir then
+          if math.abs(position[1]) > math.abs(position[2]) then
+            dir = (position[1] > 0) and defines.direction.east or
+              defines.direction.west
+          else
+            dir = (position[2] > 0) and defines.direction.south or
+              defines.direction.north
+          end
+        end
+        if dir == defines.direction.east or dir == defines.direction.west then
+          has_ew_fluid = true
+          occupied_connections[connection_key(dir, position[2])] = true
+        elseif dir == defines.direction.north or
+            dir == defines.direction.south then
+          occupied_connections[connection_key(dir, position[1])] = true
+        end
+      end
+    end
+  end
+
+  local function free_offset(direction, preferred, maximum)
+    local candidates
+    if math.abs(preferred % 1) > 0.001 then
+      candidates = {preferred, -preferred, 0.5, -0.5, 1.5, -1.5}
+    else
+      candidates = {preferred, 0, 1, -1, 2, -2}
+    end
+    for _, candidate in ipairs(candidates) do
+      if math.abs(candidate) <= maximum and
+          not occupied_connections[connection_key(direction, candidate)] then
+        return candidate
+      end
+    end
+    error("No free pneumatic fluid connection for " .. entry.name)
+  end
+
+  local pipe_connections
+  if has_ew_fluid then
+    -- Entity uses east/west for recipe fluids, use north/south for energy.
+    local north_offset = free_offset(defines.direction.north,
+      entry.gas_offset or off_w, half_w)
+    local south_offset = free_offset(defines.direction.south,
+      entry.gas_offset or off_w, half_w)
+    pipe_connections = {
+      { flow_direction = "input-output", direction = defines.direction.north, position = {north_offset, -(entry.gas_edge or half_h)} },
+      { flow_direction = "input-output", direction = defines.direction.south, position = {south_offset, entry.gas_edge or half_h} },
+    }
+  else
+    -- Default: east/west pass-through.
+    local east_offset = free_offset(defines.direction.east,
+      entry.gas_offset or off_h, half_h)
+    local west_offset = free_offset(defines.direction.west,
+      entry.gas_offset or off_h, half_h)
+    pipe_connections = {
+      { flow_direction = "input-output", direction = defines.direction.east, position = {entry.gas_edge or half_w, east_offset} },
+      { flow_direction = "input-output", direction = defines.direction.west, position = {-(entry.gas_edge or half_w), west_offset} },
+    }
+  end
+
+  pneumatic.energy_source = {
+    type = "fluid",
+    burns_fluid = true,
+    scale_fluid_usage = true,
+    fluid_usage_per_tick = 1,
+    fluid_box = {
+      volume = 200,
+      pipe_connections = pipe_connections,
+    },
+    smoke = {{
+      name = "smoke",
+      frequency = 10,
+      position = {0, -0.7},
+      starting_vertical_speed = 0.08,
+    }},
+  }
+
+  if entry.type == "rocket-silo" then
+    local drain = util.parse_energy(original.energy_source.drain)
+    for _, field in ipairs({"energy_usage", "active_energy_usage"}) do
+      pneumatic[field] = tostring((util.parse_energy(original[field]) + drain) * 60) .. "W"
+    end
+    pneumatic.energy_source.fluid_usage_per_tick = nil
+    pneumatic.energy_source.fluid_box.filter = "nullius-compressed-volcanic-gas"
+  end
+
+  -- Pneumatic mode runs only on Vulcanus, where the mode switch selects it.
+  -- The condition also stops blueprints from placing it anywhere else.
+  pneumatic.surface_conditions = {{property = "nullius-ambient-temperature", min = 100}}
+
+  -- Hidden from player crafting -- you don't craft pneumatic machines,
+  -- you toggle existing ones.
+  pneumatic.hidden = true
+
+  data:extend({pneumatic})
 end

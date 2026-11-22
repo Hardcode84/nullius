@@ -17,14 +17,16 @@ local function check(value, message)
 end
 
 local function stock() return storage.body.get_main_inventory() end
-local function item_name(item)
-  if item == "inserter" or item == "pipe" or item == "stone" then return item end
-  return prefix .. item
+-- A short name means the Nullius prototype when one exists, otherwise the base game one.
+local function full_name(kind, short)
+  local name = prototypes[kind][prefix .. short] and (prefix .. short) or short
+  assert(prototypes[kind][name], "unknown " .. kind .. " " .. short)
+  return name
 end
+local function item_name(short) return full_name("item", short) end
 local function have(item) return stock().get_item_count(item_name(item)) end
 
-local function take(source, target, item, count)
-  local name = item_name(item)
+local function take(source, target, name, count)
   local stack = source.find_item_stack(name)
   check(stack and stack.count >= count, "missing " .. count .. " " .. name)
   local moved = {name = name, count = count, quality = stack.quality}
@@ -35,8 +37,7 @@ end
 
 local function collect(inventory)
   for _, item in pairs(inventory.get_contents()) do
-    local key = item.name:sub(1, #prefix) == prefix and item.name:sub(#prefix + 1) or item.name
-    take(inventory, stock(), key, item.count)
+    take(inventory, stock(), item.name, item.count)
   end
 end
 
@@ -54,13 +55,12 @@ end
 -- Start count crafts of recipe in an idle machine with ingredients from the stock.
 local function start(key, recipe, count)
   local e = storage.machines[key]
-  local id = item_name(recipe)
+  local id = full_name("recipe", recipe)
   check(e.force.recipes[id].enabled, "locked recipe " .. id)
   e.set_recipe(id)
   check(e.get_recipe() and e.get_recipe().name == id, "machine rejected " .. id)
   for _, ingredient in pairs(e.get_recipe().ingredients) do
-    local ing = ingredient.name:sub(1, #prefix) == prefix and ingredient.name:sub(#prefix + 1) or ingredient.name
-    take(stock(), e.get_inventory(defines.inventory.crafter_input), ing, count * ingredient.amount)
+    take(stock(), e.get_inventory(defines.inventory.crafter_input), ingredient.name, count * ingredient.amount)
   end
   storage.jobs[key] = {initial = e.products_finished, count = count, recipe = recipe}
 end
@@ -100,7 +100,7 @@ local function refuel()
       if spent and not spent.is_empty() then collect(spent) end
       local burning = machine.burner and machine.burner.currently_burning
       if machine.get_fuel_inventory().is_empty() and not burning and have("nutrient-goop") > 0 then
-        take(stock(), machine.get_fuel_inventory(), "nutrient-goop", 1)
+        take(stock(), machine.get_fuel_inventory(), item_name("nutrient-goop"), 1)
       end
     end
   end
@@ -201,7 +201,7 @@ end
 local function run_lab(force, cultivation)
   local packs = have("biochemistry-pack")
   if packs == 0 then return end
-  take(stock(), storage.machines.lab.get_inventory(defines.inventory.lab_input), "biochemistry-pack", packs)
+  take(stock(), storage.machines.lab.get_inventory(defines.inventory.lab_input), item_name("biochemistry-pack"), packs)
   if not storage.first_pack_tick then
     check(force.add_research(cultivation), "cultivation research refused")
     storage.first_pack_tick = game.tick
@@ -292,7 +292,7 @@ end
 
 local function finish(event)
   local lab = place("biology-lab", stock(), {24, 16})
-  take(stock(), lab.get_inventory(defines.inventory.lab_input), "microbiology-pack", 1)
+  take(stock(), lab.get_inventory(defines.inventory.lab_input), item_name("microbiology-pack"), 1)
   check(lab.get_item_count("nullius-microbiology-pack") == 1, "biology lab rejected local assay")
   check(storage.mat.valid and storage.mat.amount == storage.mat_richness, "mat yield declined")
   check(storage.rock.valid and storage.rock.amount == storage.rock_richness, "rock yield declined")

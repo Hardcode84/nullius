@@ -1,13 +1,13 @@
 -- Ordinary items place the electric machine. Ctrl+R selects its nutrient mode.
 local machines = {}
 
-local function add(entity_type, name, category)
-  machines[#machines + 1] = {name = name, type = entity_type, category = category}
+local function add(entity_type, name, category, fixed_recipe)
+  machines[#machines + 1] = {name = name, type = entity_type, category = category, fixed_recipe = fixed_recipe}
 end
 
-local function add_tiers(entity_type, prefix, max_tier, category)
+local function add_tiers(entity_type, prefix, max_tier, category, fixed_recipe)
   for tier = 1, max_tier do
-    add(entity_type, prefix .. tier, category)
+    add(entity_type, prefix .. tier, category, fixed_recipe)
   end
 end
 
@@ -28,7 +28,8 @@ add_tiers("assembling-machine", "nullius-medium-assembler-", 3)
 add_tiers("assembling-machine", "nullius-large-assembler-", 2)
 add_tiers("assembling-machine", "nullius-hydro-plant-", 3)
 add_tiers("assembling-machine", "nullius-distillery-", 3)
-add_tiers("assembling-machine", "nullius-air-filter-", 3)
+-- Gleba air has no carbon dioxide, so nutrient filters separate its nitrogen.
+add_tiers("assembling-machine", "nullius-air-filter-", 3, nil, "nullius-air-separation-gleba")
 add_tiers("assembling-machine", "nullius-barrel-pump-", 2)
 add_tiers("assembling-machine", "nullius-priority-compressor-", 3)
 add_tiers("assembling-machine", "nullius-surge-compressor-", 3)

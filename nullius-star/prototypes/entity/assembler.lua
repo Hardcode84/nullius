@@ -892,6 +892,7 @@ data:extend({
   {
     type = "furnace",
     name = "nullius-boxer",
+    fast_replaceable_group = "nullius-boxer",
     icons = data.raw.item["nullius-boxer"].icons,
     flags = {"placeable-neutral", "player-creation"},
     minable = {mining_time = 0.7, result = "nullius-boxer"},

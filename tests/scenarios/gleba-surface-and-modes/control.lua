@@ -1,10 +1,13 @@
--- given: Gleba unlocked, before and after Nutrient Technology.
--- place: test entities on cleared Gleba ground and on Nauvis.
--- act: check forbidden entity placement, forbidden oxidant voids, mat-culture surface conditions,
---   locked nutrient blueprint downgrade, Ctrl+R mode switching, fuel release, and upgrade chains.
--- run: 10 ticks.
--- expect: Gleba blocks electricity generators, water intakes, normal logibots, and O2/SO2 voids;
---   Nauvis blocks mat culture; nutrient modes switch cleanly and preserve upgrade chains.
+-- given: Gleba unlocked, before and after Nutrient Technology; declared goop, gases and hand-craft
+--   ingredients.
+-- place: test entities on cleared Gleba ground and on Nauvis; one character on each surface.
+-- act: check forbidden entity placement, locked nutrient blueprint downgrade, mode switching,
+--   fuel release and upgrade chains; then vent gases, filter air and hand-craft Gleba recipes
+--   on both surfaces.
+-- run: 900 ticks.
+-- expect: Gleba blocks electricity generators, water intakes, normal logistic bots, pneumatic
+--   machines, oxygen venting and ordinary air; its filters make nitrogen; Gleba hand crafts and
+--   nutrient machines fail on Nauvis.
 local research = require("__nullius-star__/scripts/research")
 local CASE = "gleba-surface-and-modes"
 
@@ -48,6 +51,80 @@ local function finish(tick)
   if failed then error(helpers.table_to_json(storage.failures)) end
 end
 
+local GOOP = "nullius-nutrient-goop"
+
+local function nutrient(surface, name, position, force)
+  local entity = assert(surface.create_entity{name = name, position = position, force = force})
+  position = entity.position
+  check(remote.call("nullius-test-transitions", "execute", entity), "failed to enter nutrient mode: " .. name)
+  local machine = assert(surface.find_entity(name .. "-nutrient", position), "missing nutrient " .. name)
+  machine.get_fuel_inventory().insert{name = GOOP, count = 5}
+  return machine
+end
+
+local function hand_craft(character, recipe)
+  local ok, started = pcall(character.begin_crafting, {recipe = recipe, count = 1})
+  return ok and started or 0
+end
+
+local function character(surface, position, force, items)
+  local body = assert(surface.create_entity{name = "character", position =
+    assert(surface.find_non_colliding_position("character", position, 20, 1)), force = force})
+  for _, stack in ipairs(items) do
+    check(body.insert(stack) == stack.count, "character refused " .. stack.name)
+  end
+  return body
+end
+
+local HAND_INPUTS = {
+  {name = "nullius-mat-sample", count = 3}, {name = "nullius-iron-plate", count = 8},
+  {name = "nullius-iron-gear", count = 4}, {name = "nullius-leach-residue", count = 2},
+  {name = "inserter", count = 1},
+}
+
+function start_attempts(force)
+  local gleba, nauvis = game.planets["nullius-gleba"].surface, game.surfaces.nauvis
+  clear_pad(gleba, {x = 150, y = 80})
+  clear_pad(nauvis, {x = 80, y = 80})
+  local a = {}
+  storage.attempts = a
+
+  -- Nitrogen vents on Gleba; oxygen stays in the same kind of chimney.
+  a.nitrogen_chimney = nutrient(gleba, "nullius-chimney-3", {140, 70}, force)
+  a.oxygen_chimney = nutrient(gleba, "nullius-chimney-3", {150, 70}, force)
+  check(a.nitrogen_chimney.insert_fluid{name = "nullius-nitrogen", amount = 400} > 0, "chimney refused nitrogen")
+  check(a.oxygen_chimney.insert_fluid{name = "nullius-oxygen", amount = 400} > 0, "chimney refused oxygen")
+  a.nitrogen_before = a.nitrogen_chimney.get_fluid_count("nullius-nitrogen")
+  a.oxygen_before = a.oxygen_chimney.get_fluid_count("nullius-oxygen")
+
+  -- Nutrient filters separate Gleba nitrogen, and only on Gleba.
+  a.gleba_filter = nutrient(gleba, "nullius-air-filter-1", {140, 85}, force)
+  local recipe = a.gleba_filter.get_recipe()
+  check(recipe and recipe.name == "nullius-air-separation-gleba", "nutrient filter does not separate Gleba air")
+  check(not nauvis.can_place_entity{name = "nullius-air-filter-1-nutrient", position = {80, 75}, force = force},
+    "nutrient air filter placeable on Nauvis")
+
+  -- Gleba hand crafts complete on Gleba and fail on Nauvis.
+  a.gleba_hands = character(gleba, {150, 95}, force, HAND_INPUTS)
+  a.nauvis_hands = character(nauvis, {80, 90}, force, HAND_INPUTS)
+  for _, recipe in ipairs({"nullius-isolate-wild-culture", "nullius-gleba-small-assembler-1"}) do
+    check(hand_craft(a.gleba_hands, recipe) == 1, "Gleba character could not hand-craft " .. recipe)
+    hand_craft(a.nauvis_hands, recipe)
+  end
+end
+
+function check_attempts()
+  local a = storage.attempts
+  check(a.nitrogen_chimney.get_fluid_count("nullius-nitrogen") < a.nitrogen_before, "nutrient chimney did not vent nitrogen")
+  check(a.oxygen_chimney.get_fluid_count("nullius-oxygen") == a.oxygen_before, "nutrient chimney vented oxygen on Gleba")
+  check(a.gleba_filter.get_fluid_count("nullius-nitrogen") > 0, "Gleba filter made no nitrogen")
+  check(a.gleba_filter.get_fluid_count("nullius-air") == 0, "Gleba filter made ordinary air")
+  for _, product in ipairs({"nullius-wild-culture", "nullius-small-assembler-1"}) do
+    check(a.gleba_hands.get_item_count(product) > 0, "Gleba hand craft made no " .. product)
+    check(a.nauvis_hands.get_item_count(product) == 0, "Nauvis hand craft made " .. product)
+  end
+end
+
 script.on_init(function() storage.assertions, storage.failures = 0, {} end)
 
 script.on_nth_tick(1, function(event)
@@ -60,7 +137,7 @@ script.on_nth_tick(1, function(event)
     local nauvis = game.surfaces.nauvis
     clear_pad(gleba, {x = 80, y = 80})
 
-    -- 1. Forbidden entities on Gleba.
+    -- Forbidden entities on Gleba.
     local forbidden_on_gleba = {
       "nullius-solar-panel-1", "nullius-solar-panel-4",
       "nullius-wind-build-1", "nullius-wind-base-1",
@@ -70,6 +147,7 @@ script.on_nth_tick(1, function(event)
       "nullius-seawater-intake-1", "nullius-seawater-intake-2",
       "nullius-well-1", "nullius-well-2",
       "nullius-logistic-bot-1", "nullius-logistic-bot-4",
+      "nullius-air-filter-1-pneumatic", "nullius-small-assembler-1-pneumatic",
     }
     for _, name in ipairs(forbidden_on_gleba) do
       local proto = assert(prototypes.entity[name], "missing prototype " .. name)
@@ -78,28 +156,20 @@ script.on_nth_tick(1, function(event)
         name .. " placeable on Gleba")
     end
 
-    -- 2. Oxidant voids fail on Gleba and pass on Nauvis.
+    -- Compressed oxygen and sulfur dioxide share the oxygen void's rule; venting is run below.
     for _, name in ipairs({"nullius-void-oxygen", "nullius-void-compressed-oxygen", "nullius-void-sulfur-dioxide"}) do
       local proto = assert(prototypes.recipe[name], "missing recipe " .. name)
       check(not allowed(proto.surface_conditions, gleba), name .. " allowed on Gleba")
       check(allowed(proto.surface_conditions, nauvis), name .. " blocked on Nauvis")
     end
 
-    -- 3. Mat culture fails on Nauvis and passes on Gleba; ordinary biology recipes stay surface-free.
-    for _, name in ipairs({"nullius-isolate-wild-culture", "nullius-wild-culture-propagation"}) do
+    -- Ordinary biology recipes keep no surface condition.
+    for _, name in ipairs({"nullius-biochemistry-pack", "nullius-algae"}) do
       local proto = assert(prototypes.recipe[name], "missing recipe " .. name)
-      check(allowed(proto.surface_conditions, gleba), name .. " blocked on Gleba")
-      check(not allowed(proto.surface_conditions, nauvis), name .. " allowed on Nauvis")
-    end
-    for _, name in ipairs({"nullius-biochemistry-pack", "nullius-algae-1"}) do
-      local proto = prototypes.recipe[name]
-      if proto then
-        check(not proto.surface_conditions or #proto.surface_conditions == 0,
-          name .. " unexpectedly has surface conditions")
-      end
+      check(#(proto.surface_conditions or {}) == 0, name .. " unexpectedly has surface conditions")
     end
 
-    -- 4. Locked nutrient ghost placed before Nutrient Technology reverts to ordinary entity.
+    -- Locked nutrient ghost placed before Nutrient Technology reverts to ordinary entity.
     gleba.create_entity{
       name = "entity-ghost", inner_name = "inserter-nutrient", position = {75.5, 80.5}, force = force, raise_built = true,
     }
@@ -107,12 +177,12 @@ script.on_nth_tick(1, function(event)
     check(reverted ~= nil and reverted.ghost_name == "inserter", "locked nutrient ghost did not revert to inserter")
     if reverted then reverted.destroy() end
 
-    -- Now unlock Nutrient Technology for mode-switch and upgrade checks.
+    -- Unlock Nutrient Technology for mode-switch and upgrade checks.
     research.complete_with_prerequisites(force.technologies["nullius-nutrient-technology"])
   elseif event.tick == 3 then
     local gleba = game.planets["nullius-gleba"].surface
 
-    -- 5. Mode switching across diverse machine families, health preservation, and fuel spill on exit.
+    -- Mode switching across diverse machine families, health preservation, and fuel spill on exit.
     local switch_cases = {
       {name = "inserter", pos = {70, 75}},
       {name = "nullius-small-assembler-1", pos = {74, 75}},
@@ -153,7 +223,7 @@ script.on_nth_tick(1, function(event)
       end
     end
 
-    -- 6. Upgrade chains stay in nutrient mode.
+    -- Upgrade chains stay in nutrient mode.
     local chains = {
       {"inserter-nutrient", "bob-turbo-inserter-nutrient"},
       {"bob-turbo-inserter-nutrient", "bulk-inserter-nutrient"},
@@ -175,6 +245,9 @@ script.on_nth_tick(1, function(event)
         edge[1] .. " next_upgrade expected " .. edge[2] .. ", got " .. (next_up and next_up.name or "nil"))
     end
 
+    start_attempts(force)
+  elseif event.tick == 900 then
+    check_attempts()
     finish(event.tick)
   end
 end)

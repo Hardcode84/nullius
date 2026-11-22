@@ -48,11 +48,13 @@ local function check_condition(name)
   if not prototype then return end
   local conditions = prototype.surface_conditions or {}
   local wind=name:find("nullius-wind-",1,true)==1
-  check(#conditions == (wind and 2 or 1), name .. " surface condition count")
+  check(#conditions == (wind and 3 or 2), name .. " surface condition count")
   local limits={}
   for _,condition in pairs(conditions) do limits[condition.property]=condition end
   local condition=limits[AMBIENT_TEMPERATURE]
   check(condition and condition.max==50, name .. " must retain the cool-surface boundary")
+  local sulfide=limits["nullius-hydrogen-sulfide"]
+  check(sulfide and sulfide.max==0, name .. " must be forbidden on Gleba")
   if wind then
     check(limits.pressure and limits.pressure.min==1, name .. " requires positive pressure")
   else

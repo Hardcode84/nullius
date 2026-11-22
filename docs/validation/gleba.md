@@ -52,18 +52,22 @@ The prerequisite analyzer currently credits every listed result to a closure, in
 
 ## Surface conditions and nutrient modes
 
-`gleba-surface-and-modes`, Factorio 2.1.24 (112 assertions, tick 3):
+`gleba-surface-and-modes`, Factorio 2.1.24 (140 assertions, tick 900):
 
 | Check | Result |
 |---|---|
-| Forbidden Gleba entities | Solar panels, wind turbines, grid batteries, supercapacitors, Stirling engines, steam turbines, seawater intakes, water wells, and normal logistic robots fail `nullius-hydrogen-sulfide <= 0` and placement on `nullius-gleba` |
-| Forbidden Gleba voids | `nullius-void-oxygen`, `nullius-void-compressed-oxygen`, and `nullius-void-sulfur-dioxide` fail on `nullius-gleba` and pass on `nauvis` |
-| Mat culture | `nullius-isolate-wild-culture` and `nullius-wild-culture-propagation` pass on `nullius-gleba` and fail on `nauvis`; ordinary biology recipes keep no surface conditions |
+| Forbidden Gleba entities | Solar panels, wind turbines, grid batteries, supercapacitors, Stirling engines, steam turbines, seawater intakes, water wells, and normal logistic robots fail `nullius-hydrogen-sulfide <= 0`; they and pneumatic machines, which require `nullius-ambient-temperature >= 100`, fail placement on `nullius-gleba` |
+| Forbidden Gleba voids | `nullius-void-oxygen`, `nullius-void-compressed-oxygen`, and `nullius-void-sulfur-dioxide` fail on `nullius-gleba` and pass on `nauvis`. A nutrient chimney on Gleba vents nitrogen and leaves the same amount of oxygen untouched |
+| Gleba air | A nutrient air filter runs `nullius-air-separation-gleba`, makes nitrogen and no `nullius-air`; nutrient air filters cannot be placed on Nauvis |
+| Hand crafts | A character on Gleba finishes `nullius-isolate-wild-culture` and `nullius-gleba-small-assembler-1`; a character on Nauvis with the same ingredients makes neither |
+| Ordinary biology | `nullius-biochemistry-pack` and `nullius-algae` keep no surface conditions |
 | Locked blueprint downgrade | Placing a `-nutrient` ghost on Gleba before `Nutrient Technology` reverts to the ordinary entity |
-| Mode transitions | `Ctrl+R` switches inserters, assemblers, hydro plants, pumps, boxers, labs, and biology labs into and out of `-nutrient` mode while preserving health, never creating electric energy, and spilling fuel on leave |
+| Mode transitions | The `Ctrl+R` transition, called through the test-support hook, switches inserters, assemblers, hydro plants, pumps, boxers, labs, and biology labs into and out of `-nutrient` mode while preserving health, never creating electric energy, and spilling fuel on leave |
 | Upgrade chains | `variant_upgrades.apply("-nutrient")` keeps `next_upgrade` in nutrient mode across inserters, assemblers, crushers, chemical plants, furnaces, foundries, labs, and pumps |
 
 `tests/progression/gleba-construction.args` closes local zero-electricity production of `nullius-motor-1`, `inserter`, `transport-belt`, `wooden-chest`, `pipe`, `nullius-small-assembler-1`, `nullius-small-miner-1`, `nullius-small-furnace-1`, `nullius-foundry-1`, `nullius-crusher-1`, `nullius-pump-1`, and `nullius-biology-lab` at `Wild Strain Cultivation` with `--require-no-additional-technologies` and `--require-no-electricity`.
+
+Factorio 2.1.24 ignores recipe surface conditions for a machine's fixed recipe: a nutrient air filter fixed to `nullius-air` finished 3 cycles on Gleba with the recipe limited to `nullius-hydrogen-sulfide <= 0`. Gleba air is therefore selected by the nutrient filter's fixed recipe.
 
 ## Acceptance contracts
 

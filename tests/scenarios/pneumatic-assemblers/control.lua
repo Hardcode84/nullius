@@ -119,6 +119,13 @@ local function setup()
     if base and pneumatic then
       check_exact(values_to_set(pneumatic.crafting_categories),
         values_to_set(base.crafting_categories), test.name .. " categories")
+      -- Blueprints cannot place pneumatic mode where the base machine fits off Vulcanus.
+      local nauvis = game.surfaces.nauvis
+      local spot = nauvis.find_non_colliding_position(test.name, {0, 0}, 64, 1, true)
+      check(spot and nauvis.can_place_entity{name = test.name, position = spot, force = "player"},
+        test.name .. " has no Nauvis placement witness")
+      check(spot and not nauvis.can_place_entity{name = pneumatic_name, position = spot, force = "player"},
+        pneumatic_name .. " placeable on Nauvis")
       check_exact(values_to_set(pneumatic.allowed_effects),
         values_to_set(base.allowed_effects), test.name .. " effects")
       check(close(pneumatic.get_crafting_speed(), base.get_crafting_speed()),
