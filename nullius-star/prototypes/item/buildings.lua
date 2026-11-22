@@ -2180,14 +2180,13 @@ extend_building_prototypes({
     name = "nullius-biology-lab",
     enabled = false,
     always_show_made_in = true,
-    categories = {"huge-crafting"},
-    energy_required = 150,
+    categories = {"small-crafting"},
+    energy_required = 10,
     ingredients = {
-      {type = "item", name = "nullius-lab-2", amount = 3},
-	    {type = "item", name = "nullius-sensor-node-2", amount = 1},
-      {type = "item", name = "nullius-nanofabricator-1", amount = 1},
-	    {type = "item", name = "nullius-logistic-bot-2", amount = 2},
-      {type = "item", name = "nullius-box-insulation", amount = 10}
+      {type = "item", name = "nullius-iron-plate", amount = 8},
+      {type = "item", name = "nullius-glass", amount = 4},
+      {type = "item", name = "nullius-iron-gear", amount = 2},
+      {type = "item", name = "pipe", amount = 2},
     },
     results = {
       {type = "item", name = "nullius-biology-lab", amount = 1}

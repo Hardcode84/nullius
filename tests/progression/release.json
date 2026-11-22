@@ -1,6 +1,8 @@
 {
   "contracts": [
     "victory-equipment-closure.args",
+    "gleba-probe.args",
+    "gleba-cultivation.args",
     "fulgora-electromagnetic-science.args",
     "fulgora-em-improved.args",
     "fulgora-em-boxed.args",

@@ -363,7 +363,7 @@ end
 
 -- Mods might overwrite character crafting categories, making everything un-hand-craftable in
 -- Nullius.  At this stage, set them again, but this time, insert missing categories rather than -- overwriting the list, to give other mods opportunity to insert their own categories.
-local hand_crafting = { "hand-crafting", "tiny-crafting", "small-crafting", "medium-crafting",
+local hand_crafting = { "gleba-hand-sampling", "hand-crafting", "tiny-crafting", "small-crafting", "medium-crafting",
   "large-crafting", "huge-crafting", "packaging", "hand-casting", "hand-crushing"
 }
 for _,character in pairs(data.raw["character"]) do

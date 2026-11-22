@@ -34,6 +34,44 @@ for name in pairs(map.autoplace_settings.tile.settings) do
   end
 end
 
+-- Each resource has a landing patch and separate fields in the surrounding terrain.
+local function add_patch(name, product, icon, color, offset, noise_seed, mat)
+  local ore = table.deepcopy(data.raw.resource.stone)
+  ore.name, ore.icon, ore.icon_size = name, icon, 64
+  ore.icons, ore.factoriopedia_simulation = nil, nil
+  ore.infinite, ore.normal, ore.minimum, ore.infinite_depletion_amount = true, 100, 100, 0
+  ore.minable = {mining_time = mat and 2 or 1, result = product}
+  ore.map_color, ore.mining_visualisation_tint = color, color
+  ore.highlight = true
+  if mat then
+    ore.stage_counts = {0}
+    ore.stages = {sheet = {
+      filename = "__space-age__/graphics/decorative/polycephalum/polycephalum-slime.png",
+      width = 216, height = 188, line_length = 1, frame_count = 1, variation_count = 9,
+      scale = 0.22,
+    }}
+  else
+    ore.stages.sheet.tint = color
+  end
+  local noise = "basis_noise{x=x,y=y,seed0=map_seed,seed1=" .. noise_seed ..
+    ",input_scale=0.035,output_scale=1}"
+  ore.autoplace = {
+    default_enabled = false, tile_restriction = dry_tiles,
+    probability_expression = "max(9 - sqrt((x - (" .. offset .. "))^2 + (y - 8)^2) + 2 * gleba_cover_noise, min(distance - 70, (" .. noise .. " - 0.68) * 12))",
+    richness_expression = "100",
+  }
+  data:extend({ore})
+  map.autoplace_settings.entity.settings[name] = {}
+end
+
+add_patch("nullius-gleba-rock", "nullius-gleba-rock", "__space-age__/graphics/icons/iron-stromatolite.png",
+  {0.83, 0.50, 0.30}, -23, 414, false)
+add_patch("nullius-microbial-mat", "nullius-mat-sample", "__space-age__/graphics/icons/iron-bacteria.png",
+  {0.68, 0.85, 0.22}, 23, 872, true)
+
+data:extend({{type = "surface-property", name = "nullius-hydrogen-sulfide", default_value = 0}})
+planet.surface_properties["nullius-hydrogen-sulfide"] = 1
+
 local function place_decorative(prop, tiles, probability)
   prop.autoplace = {
     order = prop.name, default_enabled = false, tile_restriction = tiles,
@@ -74,13 +112,4 @@ data:extend({planet, {
   type = "space-connection", name = "nauvis-nullius-gleba",
   subgroup = "planet-connections", from = "nauvis", to = planet.name,
   order = "c", length = 15000, asteroid_spawn_definitions = {},
-}, {
-  type = "technology", name = "nullius-probe-gleba", order = "nullius-dg",
-  icon = planet.icon, icon_size = 64,
-  prerequisites = {"nullius-interplanetary-signal-acquisition", "nullius-organic-chemistry-1"},
-  effects = {{type = "unlock-space-location", space_location = planet.name}},
-  unit = {count = 40, time = 20, ingredients = {
-    {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
-    {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
-  }},
 }})

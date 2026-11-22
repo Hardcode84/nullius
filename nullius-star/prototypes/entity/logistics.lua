@@ -184,6 +184,7 @@ data:extend({
     energy_usage = "95kW",
     researching_speed = 1,
     inputs = {
+      "nullius-biochemistry-pack",
       "nullius-metallurgic-pack",
       "nullius-electromagnetic-pack",
       "nullius-geology-pack",
@@ -537,6 +538,7 @@ data:extend({
     icons = data.raw.item["nullius-biology-lab"].icons,
     flags = {"placeable-player", "player-creation"},
     minable = {mining_time = 5, result = "nullius-biology-lab"},
+    fast_replaceable_group = "nullius-biology-lab",
     max_health = 300,
     corpse = "lab-remnants",
     dying_explosion = "lab-explosion",
@@ -551,9 +553,9 @@ data:extend({
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
-      drain = "50kW"
+      drain = "5kW"
     },
-    energy_usage = "950kW",
+    energy_usage = "95kW",
     researching_speed = 1,
     inputs = {
       "nullius-biochemistry-pack",

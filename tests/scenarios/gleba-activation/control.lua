@@ -3,7 +3,7 @@
 -- connect: Nauvis and Gleba share a space route.
 -- act: recover the probe, generate terrain, and repeat activation.
 -- run: two ticks.
--- expect: an empty wreck on native terrain with no vegetation, enemies or spores.
+-- expect: an equipment wreck on native terrain with no vegetation, enemies or spores.
 local research = require("__nullius-star__/scripts/research")
 local assertions = 0
 local function check(value, message)
@@ -11,7 +11,23 @@ local function check(value, message)
   assert(value, message)
 end
 
+local starter = require("__nullius-star__/shared/gleba-starter")
+local function check_stock(wreck)
+  local contents = wreck.get_inventory(defines.inventory.chest).get_contents()
+  check(#contents == #starter, "unexpected probe contents")
+  for _, stack in ipairs(starter) do
+    check(wreck.get_item_count(stack[1]) == stack[2] and not prototypes.item[stack[1]].spoil_result,
+      "invalid starter stock: " .. stack[1])
+  end
+end
+
 local function survey_minerals(surface, area)
+  for _, name in ipairs({"nullius-gleba-rock", "nullius-microbial-mat"}) do
+    check(surface.count_entities_filtered{name = name, position = {0, 0}, radius = 40} >= 20,
+      "missing landing patch: " .. name)
+    check(surface.count_entities_filtered{name = name, area = area} >
+      surface.count_entities_filtered{name = name, position = {0, 0}, radius = 65}, "missing remote " .. name)
+  end
   local mud = {
     ["light-mud-decal"] = true, ["dark-mud-decal"] = true,
     ["cracked-mud-decal"] = true, ["grey-cracked-mud-decal"] = true,
@@ -111,7 +127,8 @@ local function survey(surface)
     and cliffs.cliff_elevation_interval == 60, "Gleba cliff settings changed")
   check(surface.count_entities_filtered{area = area, name = "cliff-gleba"} > 0, "missing cliffs")
   for _, entity in pairs(surface.find_entities_filtered{area = area}) do
-    assert(entity.type == "cliff" or entity.name == "character" or entity.name == "nullius-landing-main",
+    assert(entity.type == "cliff" or entity.name == "nullius-gleba-rock" or entity.name == "nullius-microbial-mat"
+      or entity.name == "character" or entity.name == "nullius-landing-main",
       "unexpected entity on Gleba: " .. entity.name)
   end
   local minerals = survey_minerals(surface, area)
@@ -143,6 +160,8 @@ local function survey(surface)
   local nauvis = game.surfaces.nauvis
   nauvis.request_to_generate_chunks({0, 0}, 2)
   nauvis.force_generate_chunk_requests()
+  check(nauvis.count_entities_filtered{name = {"nullius-gleba-rock", "nullius-microbial-mat"},
+    area = {{-64, -64}, {64, 64}}} == 0, "Nauvis generated Gleba resources")
   local gleba_tiles = {}
   for name in pairs(tiles) do table.insert(gleba_tiles, name) end
   check(nauvis.count_tiles_filtered{area = {{-64, -64}, {64, 64}}, name = gleba_tiles} == 0,
@@ -174,7 +193,7 @@ script.on_nth_tick(1, function(event)
     remote.call("nullius-test-bodies", "activate", force, "gleba")
     local wrecks = planet.surface.find_entities_filtered{type = "container", force = force}
     check(#wrecks == 1 and wrecks[1].name == "nullius-landing-main", "expected one probe wreck")
-    check(wrecks[1].get_inventory(defines.inventory.chest).is_empty(), "probe contains supplies")
+    check_stock(wrecks[1])
     check(planet.surface.count_entities_filtered{name = "character", force = force} == 1, "expected one android")
     local tracks = prototypes.mod_data["factorio-test-gleba-music"].data
     for _, suffix in ipairs({"1-hero", "1", "2", "3", "4", "5", "6", "8", "9", "10", "11",
@@ -193,8 +212,8 @@ script.on_nth_tick(1, function(event)
     local other = game.create_force("gleba-independent")
     remote.call("nullius-test-bodies", "activate", other, "gleba")
     local separate = planet.surface.find_entities_filtered{type = "container", force = other}
-    check(#separate == 1 and separate[1].name == "nullius-landing-main"
-      and separate[1].get_inventory(defines.inventory.chest).is_empty(), "second force has no empty wreck")
+    check(#separate == 1 and separate[1].name == "nullius-landing-main", "second force has no wreck")
+    check_stock(separate[1])
     wrecks[1].destroy()
     remote.call("nullius-test-bodies", "activate", force, "gleba")
     check(planet.surface.count_entities_filtered{type = "container", force = force} == 0,

@@ -14,6 +14,15 @@ local function place_wreck(surface, pos, force)
   return wreck
 end
 
+local gleba_supplies = require("shared.gleba-starter")
+
+local function gleba_landing_site(surface, pos, force)
+  local wreck = place_wreck(surface, pos, force)
+  for _, stack in ipairs(gleba_supplies) do
+    assert(wreck.insert{name = stack[1], count = stack[2]} == stack[2], "Gleba wreck lacks room for " .. stack[1])
+  end
+end
+
 local function fulgora_landing_site(surface, pos, force)
   local wreck = place_wreck(surface, pos, force)
   local position = wreck.position
@@ -71,7 +80,7 @@ end
 local landing_sites = {
   ["nullius-vulcanus"] = vulcanus_landing_site,
   ["nullius-fulgora"] = fulgora_landing_site,
-  ["nullius-gleba"] = place_wreck,
+  ["nullius-gleba"] = gleba_landing_site,
 }
 
 -- Create a dormant android on the target surface.
