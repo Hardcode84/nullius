@@ -44,11 +44,16 @@ local function add_patch(name, product, icon, color, offset, noise_seed, mat)
   ore.map_color, ore.mining_visualisation_tint = color, color
   ore.highlight = true
   if mat then
+    ore.map_grid = false
     ore.stage_counts = {0}
-    ore.stages = {sheet = {
-      filename = "__space-age__/graphics/decorative/polycephalum/polycephalum-slime.png",
-      width = 216, height = 188, line_length = 1, frame_count = 1, variation_count = 9,
-      scale = 0.22,
+    -- Use one richness stage. Skip the two rows with bright yellow cores and crests.
+    local slime = "__space-age__/graphics/decorative/polycephalum/polycephalum-slime.png"
+    ore.stages = {{
+      width = 216, height = 188, frame_count = 12, scale = 0.42,
+      stripes = {
+        {filename = slime, width_in_frames = 2, height_in_frames = 4},
+        {filename = slime, y = 6 * 188, width_in_frames = 2, height_in_frames = 2},
+      },
     }}
   else
     ore.stages.sheet.tint = color
