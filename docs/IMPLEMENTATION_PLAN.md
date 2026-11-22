@@ -6,9 +6,9 @@ Release `0.0.7`, reviewed 2026-11-17.
 
 | Scope | Authority |
 |---|---|
-| Current Vulcanus progression | Exact stage contracts |
+| Planet validation | [Vulcanus](validation/vulcanus.md), [Fulgora](validation/fulgora.md), [Gleba](validation/gleba.md) |
 | Implemented mechanics | Resolved prototypes and runtime scenario results |
-| Proposed mechanics | Planet design documents |
+| Planet mechanics and progression | Planet design documents |
 | Other planets and endgame | Space Age brainstorming document |
 | Factorio 2.1 migration | [Port assessment](FACTORIO_2_1_PORT.md) |
 
@@ -65,7 +65,7 @@ Release `0.0.7`, reviewed 2026-11-17.
 | Area | Status | Design source |
 |---|---|---|
 | Vulcanus beyond tier-3 thermal industry | Design only | Vulcanus design |
-| Gleba | Probe access, native terrain and music are available. The wreck is empty. The design uses nutrient machines to supply seven biology packs and six ordinary packs for local research through Orbital Construction. | [Gleba design](PLANET_GLEBA.md) |
+| Gleba | Implemented through Wild Strain Cultivation | [Gleba design](PLANET_GLEBA.md) |
 | Aquilo | Design only | Space Age brainstorm |
 | Rogue, raids, and final objective | Design only | Space Age brainstorm |
 | Maintenance mechanic | Design only | Maintenance brainstorm |

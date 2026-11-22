@@ -248,8 +248,8 @@ A shared flow can have more rounded stations because the solver minimizes
 active machine time. Do not describe either count as the integer minimum.
 
 
-`docs/PLANET_VULCANUS.md` is the maintained design and balance reference.
-Use `--update-vulcanus-doc docs/PLANET_VULCANUS.md` with the tier 2 comparison
+The Vulcanus balance tables are in `docs/validation/vulcanus.md`.
+Use `--update-vulcanus-doc docs/validation/vulcanus.md` with the tier 2 comparison
 command to replace its marked capacity table. Use the same option with the
 factory planner and `vulcanus-science-scale.json` to refresh the marked physics
 tables. Each updater requires one ordered marker pair and preserves other text.
@@ -287,7 +287,7 @@ not peak inventory; a feasible result is not a finite-inventory runtime proof.
 Read a saved result with `--read-plan PATH`, `--target NAME`, `--case NAME`, and
 `--field FIELD`. Useful fields are `bottlenecks`, `stored_surplus`, `machine_work`,
 and `research`. Pass `--table` for the compact timing table. Pass
-`--update-fulgora-doc docs/PLANET_FULGORA.md` to refresh its marked table.
+`--update-fulgora-doc docs/validation/fulgora.md` to refresh its marked table.
 Run `python -m unittest discover -s tests -p 'test_plan_factorio_bootstrap.py'`
 after solver changes. The vent coverage scenario supplies the survey yield cases.
 

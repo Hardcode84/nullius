@@ -1,33 +1,8 @@
-# Nullius SA: Nauvis -- Planet Design Document
+# Nauvis design
 
-> **Status**: Mixed: Vulcanus access and optional thermal branches implemented; other planet and endgame sections are design only
-> **Role**: Home planet. Primary terraforming target. Industrial foundation.
+## 1. Role
 
----
-
-## 1. Nauvis Role in SA
-
-Nauvis remains the starting planet and primary terraforming objective. The
-existing critical path remains available while optional Space Age branches
-begin in mid Tier 3, after the player has established core industry but before
-the chemical pack.
-
-**What stays the same**: Existing Nullius production and research remain the
-Nauvis critical path through Tier 4.
-
-**What changes now**: Signal acquisition and Vulcanus probe recovery add a
-parallel branch. Vulcanus research unlocks optional heat-powered versions of
-corresponding Nauvis crushers, furnaces, and foundries.
-
-**Nauvis only**: Terraforming, paving, excavation, biological seeding, and
-carbon sequestration drones operate only on Nauvis, and the oxygen mission
-counts only Nauvis gas production and use. `drone-surface-restrictions` checks
-both.
-
-**Design only**: Other planet branches, cargo logistics, biology or nuclear
-redistribution, and Rogue content.
-
----
+Nauvis is the starting planet and the primary terraforming target. Its industrial path runs through Tier 4. Probe research opens parallel branches before chemical science. Terraforming, paving, excavation, biological seeding and carbon sequestration drones operate on Nauvis. The oxygen mission counts gas production and use on Nauvis.
 
 ## 2. Probe Reactivation: When and How
 
@@ -58,7 +33,7 @@ TIER 3 LATE (order nullius-e*):
   [Major cost spike, gates Tier 4]
 ```
 
-### 2.2 Recommended: After sensors-1, before empiricism-2
+### 2.2 Interplanetary Signal Acquisition
 
 **Probe reactivation tech**: "Interplanetary Signal Acquisition"
 
@@ -71,27 +46,20 @@ TIER 3 LATE (order nullius-e*):
 | **Essential** | true |
 | **Unlocks** | Probe reactivation sub-techs (one per planet) |
 
-**Rationale for this position:**
-- Player has **4 science packs** (geology, climatology, mechanical, electrical) -- enough infrastructure to be established
-- Player has **sensors** (can detect signals) and **signal processing** (can decode them) and **computation** (can process the data) -- narratively justified
-- Player does NOT yet have chemical pack (250-count spike ahead) -- planets provide something to do during that grind
-- Player does NOT yet have beacons, robotics, or advanced logistics -- planets feel like a genuine challenge to bootstrap
-- Cost is moderate (50 count with 4 packs) -- noticeable but not a major gate
-- **Early enough** that planets feel like part of the core game, not endgame bolted on
-
 ### 2.3 Per-Planet Reactivation
 
-After the umbrella "Interplanetary Signal Acquisition" tech, each planet has its own reactivation tech:
+Each probe requires Interplanetary Signal Acquisition. A research unit uses one each of geology, climatology, mechanical and electrical science. Aquilo also needs one chemical pack.
 
-| Planet | Tech Name | Prerequisites | Cost | Status |
-|---|---|---|---|---|
-| **Vulcanus** | Volcanic Probe Signal Recovery | Interplanetary Signal Acquisition, metallurgy 2 | count=30; geology, climatology, mechanical, electrical x1; time=20 | Implemented |
-| **Fulgora** | Electromagnetic Probe Signal Recovery | Interplanetary Signal Acquisition, insulation 1 | count=30, 4 packs, time=20 | Terrain and probe access implemented |
-| **Gleba** | Biological Probe Signal Recovery | Interplanetary Signal Acquisition, organic chemistry 1 | count=40, 4 packs, time=20 | Terrain and probe access implemented |
-| **Aquilo** | Cryogenic Probe Signal Recovery | Interplanetary Signal Acquisition, experimental chemistry, thermal-tank checkpoint | count=80, 5 packs | Design only |
-| **Rogue** | Unidentified Probe Signal Recovery | Interplanetary Signal Acquisition | count=15, 4 packs | Design only |
+| Destination | Signal recovery | Additional prerequisite | Units | Seconds per unit |
+|---|---|---|---:|---:|
+| [Vulcanus](PLANET_VULCANUS.md) | Volcanic | Metallurgy 2 | 30 | 20 |
+| [Fulgora](PLANET_FULGORA.md) | Electromagnetic | Insulation 1 | 30 | 20 |
+| [Gleba](PLANET_GLEBA.md) | Biological | Organic Chemistry 1 | 40 | 20 |
+| Aquilo | Cryogenic | Experimental Chemistry and the thermal-tank checkpoint | 80 | 30 |
+| Rogue | Unidentified | None | 15 | 10 |
 
-**Proposed Rogue reactivation -- the dead end:**
+**Rogue signal**
+
 - Appears alongside the other planet reactivation techs. Cheap to research (15 count -- why not try it?).
 - On completion: "Signal transmitted. No response received. Probe status: INDETERMINATE. Recommend: deprioritize and revisit."
 - No surface created. No tech branch revealed. No consciousness transfer. Just a log entry.
@@ -101,37 +69,22 @@ After the umbrella "Interplanetary Signal Acquisition" tech, each planet has its
 
 This plants the seed early without spoiling anything. Players who pay attention to flavor text get a "holy shit" moment when the connection clicks. Players who skip flavor text never notice until the scouts arrive.
 
-**Proposed unlock order after Vulcanus**:
-- Vulcanus and Fulgora: Available immediately after signal acquisition. Can be researched with 4 packs.
-- Rogue: Available immediately. Cheap. Dead end (for now).
-- Gleba: Tier 3 at Organic Chemistry 1. The probe gives access to Gleba. The biology design adds the manual mat craft, Wild Strain Cultivation and the first biology lab on Gleba. See [Gleba research](PLANET_GLEBA.md#biology-branch).
-- Aquilo: Requires chemical pack (Tier 4 gate). Player should have experience on other planets first.
+### 2.4 Probe body access
 
-### 2.4 Implemented Vulcanus Reactivation
+Volcanic, electromagnetic and biological signal recovery each activate a probe.
 
-When Vulcanus probe recovery is researched:
-
-1. Vulcanus is unlocked for the force.
+1. The force gains access to the destination.
 2. The surface is created if absent. Each force receives one wreck and one idle android.
-3. The android receives the probe equipment. Research does not transfer a player.
+3. The player can transfer to the idle android after research.
 4. Any player in that force can transfer to the idle android. An occupied body cannot be taken.
 5. The `/nullius-vulcanus` command transfers its caller if the probe body is idle. A later caller receives an occupied-body message.
 6. Late joins receive access to the same body. Repeated activation and reconnects do not create more supplies.
 
-Body queues record access history. They do not assign exclusive ownership.
-A player can take another player's previous body when it is idle and belongs
-to the same force. The `vulcanus-shared-body` scenario checks this contract
-with two real clients, reconnect, death, and server save/load.
+In Alignment mode, quick-start waits for the faction landing.
 
-In Alignment mode, quick-start waits until the faction landing is complete.
-The `vulcanus-probe-alignment` scenario checks the command before and after
-that landing.
+## 3. Nauvis research
 
----
-
-## 3. Proposed Nauvis Tech Tree Modifications After the Current Slice
-
-### 3.1 Existing Tiers (Unchanged)
+### 3.1 Industrial tiers
 
 | Tier | Order Range | Content | SA Impact |
 |---|---|---|---|
@@ -141,11 +94,9 @@ that landing.
 | 3-4 gate | e* (ea-eb) | Experimental chemistry (chemical pack) | Aquilo reactivation gated here |
 | 4 | e* | Chemical pack era, nanotechnology | None |
 
-### 3.2 New Tier 5 Split (Modified)
+### 3.2 Tier 5
 
-Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
-
-| Current Tier 5 | SA Tier 5 |
+| Industry | Progression |
 |---|---|
 | Nuclear power 1-4 (all on Nauvis) | Shared reactor; fusion on Nauvis, advanced by Aquilo; fission from Gleba uranium. See [Nuclear branches](SPACE_AGE_BRAINSTORM.md#nuclear-branches) |
 | Asteroid mining (abstract, Nauvis) | Removed with Nauvis ore renewal; Vulcanus and Fulgora supply infinite ores. See [Asteroid mining removal](SPACE_AGE_BRAINSTORM.md#asteroid-mining-removal) |
@@ -176,25 +127,9 @@ Currently, Tier 5 is physics pack + nuclear + rocket + asteroid mining. With SA:
 
 ---
 
-## 4. Nauvis-Specific Numbers
+## 4. Cargo
 
-### 4.1 Implemented Research
-
-| Technology | Count | Packs per unit | Time | Status |
-|---|---:|---|---:|---|
-| Interplanetary Signal Acquisition | 50 | geology 1, climatology 1, mechanical 1, electrical 1 | 25s | Implemented |
-| Volcanic Probe Signal Recovery | 30 | geology 1, climatology 1, mechanical 1, electrical 1 | 20s | Implemented |
-
-### 4.2 Proposed Probe Reactivation Costs
-
-| Tech | Count | Packs | Time | Total Science (approx) |
-|---|---|---|---|---|
-| Electromagnetic Probe Signal Recovery | 30 | geo+clim+mech+elec x1 each | 20s | 120 packs total |
-| Biological Probe Signal Recovery | 40 | geo+clim+mech+elec x1 each | 20s | 160 packs total |
-| Cryogenic Probe Signal Recovery | 80 | geo+clim+mech+elec+chem x1 each | 30s | 400 packs total |
-| Unidentified Probe Signal Recovery | 15 | geo+clim+mech+elec x1 each | 10s | 60 packs total |
-
-### 4.3 Proposed Nauvis Exports (Post-Cargo)
+### Exports
 
 Once cargo is available, Nauvis exports:
 
@@ -206,7 +141,7 @@ Once cargo is available, Nauvis exports:
 | Antimatter (late game) | The Solution | Produced from monopole-catalyzed proton decay research |
 | Construction kits | New planet outposts | Pre-packaged building sets for rapid deployment |
 
-### 4.4 Proposed Nauvis Imports (Post-Cargo)
+### Imports
 
 | Import | Source | Purpose |
 |---|---|---|
@@ -219,7 +154,7 @@ Once cargo is available, Nauvis exports:
 
 ---
 
-## 5. Proposed Nauvis Timeline with SA
+## 5. Target progression time
 
 | Hours (approx) | Phase | SA Content |
 |---|---|---|
@@ -234,13 +169,3 @@ Once cargo is available, Nauvis exports:
 | 60-100 | Rogue awakening | Raids begin. Countermeasure research. Multi-planet defense. |
 | 80-150 | The Solution | All-planet combined effort. Vacuum decay device construction. |
 | 150+ | Post-Rogue | Shattered planet debris. Rogue-tech research. Infinite research. |
-
----
-
-## 6. Open Questions (Nauvis-specific)
-
-- How does the Rogue scout spawning interact with Nauvis's existing minimal-combat design?
-- Should probe reactivation require a physical item (transmitter building) or just be a tech unlock?
-- Should the player be able to reactivate all planet probes simultaneously, or is there a cooldown/sequential constraint?
-
----

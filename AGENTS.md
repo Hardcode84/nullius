@@ -25,6 +25,10 @@
 - Build release packages and validate new changes on 2.1. Do not add 2.0 compatibility.
 - Retain older-engine fixtures only for historical comparisons and prior-release upgrades.
 
+Keep each planet design in its planet document. Record implementation status in
+`docs/IMPLEMENTATION_PLAN.md` and validation results in `docs/validation/`.
+Link to the owning document when another planet uses the same mechanic.
+
 ## Communication
 
 - Lead with concrete results.

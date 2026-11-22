@@ -1,11 +1,10 @@
 # Gleba design
 
-## Status and authorities
+## Design references
 
 | Fact | Authority |
 |---|---|
-| Status | Probe access, native terrain and music are available. Calcite marks some dry banks. Weathered slabs and loose stones cover parts of the landing flats and highlands. Rounded mineral mounds occur along wetland edges. Players can cross and build over the rock scenery on dry land. The probe wreck is empty. The surface has no vegetation, enemies or airborne spores. The biology and industry sections describe the planned progression. |
-| Planet mechanics and constraints | This document; supersedes [Space Age brainstorm 3.3](SPACE_AGE_BRAINSTORM.md#33-gleba-microbiologybreeding) where they differ |
+| Planet mechanics and constraints | This document |
 | Shared progression, cargo, nuclear, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
 | Machine-mode precedents | [Vulcanus machine modes](PLANET_VULCANUS.md#machine-modes) and [Fulgora mode switching](PLANET_FULGORA.md#mode-switching) |
@@ -37,7 +36,6 @@ imports: carbon-rich materials, copper, aluminum
 
 | Question | Decision |
 |---|---|
-| Probe timing | Tier 3, at Organic Chemistry 1, as in [Nauvis design](PLANET_NAUVIS.md#23-per-planet-reactivation) |
 | Biology before nanotechnology | Native wild strains exist on Gleba; culturing them needs no genome, nanofabricator, or Biochemistry 1 |
 | Science packs | No new pack. The 7 existing biology packs are Gleba's research; the biochemistry pack is its planet pack from probe access |
 | Biology tree | A separate branch rooted at Gleba access, parallel to the main tree; see [Biology branch](#biology-branch) |
@@ -103,7 +101,7 @@ rock throughput.
 | Rule | Value |
 |---|---|
 | Role | The only source of wild culture, and so of all life in the game |
-| Form | Open question: a slow infinite resource on mat tiles or a harvested decorative entity |
+| Form | Infinite solid resource. One extraction yields one mat sample. Both resource patches keep their initial yield. |
 | Manual recipe | Harvest renewable mat samples by hand. Biological Probe Signal Recovery unlocks a slow handcraft that takes only mat samples and produces wild culture and nutrient goop. |
 | Spoilage | Wild culture spoils into sludge |
 
@@ -202,7 +200,7 @@ The spent-goop carbon loss is a design value fixed with the Gleba power balance.
 | Transitions | The common transition system: compatible recipes, contents, modules, and connections survive; stored energy and health never increase; leaving a nutrient mode releases remaining fuel |
 | Upgrades | Upgrade planners keep the mode and use ordinary machine items |
 | Logistics | Unlock the [clockwork logistics](PLANET_VULCANUS.md#primitive-logistics) equipment on Gleba at Robotics 1 and Wild Strain Cultivation. Build and wind it locally. Normal logistic robots are forbidden on Gleba. |
-| Flotation cells | Bioreactor mode deferred until tiers 1-3 have been played |
+| Flotation cells | Nutrient mode on Gleba |
 | Exclusive pairs | No machine belongs to two improved families: assemblers stay Fulgora, crushers, furnaces, and foundries stay Vulcanus |
 
 ## Biology branch
@@ -214,12 +212,11 @@ packs for one research unit. Pack lines can run while the other branch studies.
 
 ### From the probe to a biology lab
 
-The quantities below are proposed first-playtest values. Each listed pack
-costs one per unit unless a quantity follows its name.
+Each research unit consumes one of each listed pack.
 
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
-| Biological Probe Signal Recovery | Interplanetary Signal Acquisition and Organic Chemistry 1 | On Nauvis, 40 × 20 s with geology, climatology, mechanical and electrical | Activate the probe and unlock the Gleba destination. Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs. |
+| Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs. |
 | Wild Strain Cultivation | Biological Probe Signal Recovery | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the nutrient flotation cell. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. Unlock bioreactor tier 1 and its local fuel routes on Nauvis and Fulgora. |
 
@@ -228,9 +225,9 @@ culture and leach residue for biochemistry packs. Both inputs precede the
 first research. The two early pack recipes use physical culture. Their first
 batches cost zero chemical packs, physics packs, genomes or nanofabricators.
 
-Replace the current biology lab recipe with one handcraftable lab from
+Handcraft the biology lab from
 8 iron plates, 4 glass, 2 iron gears and 2 pipes in 10 s. The player keeps
-the wreck Lab 1 for ordinary research. The proposed biology lab uses Lab 1's
+the wreck Lab 1 for ordinary research. The biology lab uses Lab 1's
 research speed and active power draw. Its ordinary mode uses electricity and
 its Gleba mode uses goop. Both accept all seven biology packs. Ordinary labs
 accept the normal packs plus biochemistry for mixed industrial research.
@@ -244,21 +241,15 @@ one microbiology pack at 30 s each. It opens screening for a strain that
 yields more goop per batch of rock. Both ordinary science and the first
 genomes keep the deterministic domesticated route.
 
-The current lab costs 3 Lab 2s, a Sensor Node 2, a Nanofabricator 1, 2 Logistic
-Bot 2s and 10 boxes of insulation. Current Biochemistry 1 costs 1,000 units
-after Physics and Organic Chemistry 6. The early lab and the two culture
-recipes replace these construction and research gates together.
-
 ### Pack producers and research forks
 
-Each row gives the proposed direct prerequisites and the complete pack bill
+Each row gives the direct prerequisites and the complete pack bill
 per research unit. A newly listed pack becomes available when its research completes.
-The proposed unit counts and times are starting prices for the campaign test.
 
 | Research | Direct prerequisites | Units and packs | New production |
 |---|---|---|---|
 | Biology 1 | Biochemistry 1 and Nanotechnology 1 | 15 × 30 s, biochemistry + microbiology | Make first-generation bacteria, genomes and protocells in a nutrient nanofabricator. The first sequencing recipe uses chemical science and wild culture. Remove physics packs from this grade. |
-| Biology 2 | Biology 1 | 20 × 30 s, biochemistry + microbiology | Grow contained algae. Add the current algae-based microbiology pack as an efficient alternative to the culture assay. |
+| Biology 2 | Biology 1 | 20 × 30 s, biochemistry + microbiology | Grow contained algae. Use the algae-based microbiology pack as an efficient alternative to the culture assay. |
 | Botany 1 | Biology 2 | 20 × 30 s, microbiology + biochemistry | Grow grass tissue and cellulose. Make the botany pack. |
 | Zoology 1 | Biology 2 | 20 × 30 s, microbiology + biochemistry | Grow a contained worm line on microbial feed. Make the nematology pack. |
 | Botany 2 | Botany 1 and Physics | 30 × 40 s, microbiology + botany | Grow tree tissue and wood. Make the dendrology pack. |
@@ -267,10 +258,7 @@ The proposed unit counts and times are starting prices for the campaign test.
 
 The plant and animal routes can be taken in either order. Each first-generation
 genome, progenitor, feed and contained pack gets a deterministic recipe at its
-owner above. Move any later ingredient to an improved recipe. For example, the
-current first bacterial genome consumes 6 physics and 12 chemical packs, and
-the current ichthyology pack consumes 10,000 wastewater. Neither bill fits its
-new first-use boundary. Keep the fast archive genome recipes at Astronomy.
+owner above. Astronomy unlocks the fast archive genome recipes.
 Gleba can make all seven packs before cargo if the player stays to do so.
 
 ### Shared research gates
@@ -300,37 +288,6 @@ edges to Battery Storage 5 and Rocket Science 3, and the Evolution edges
 to Solar Power 4 and Cybernetics 7. Preserve the industrial prerequisites reached through
 each removed edge that the remaining products need. Rocket Science 1 and 2,
 Composites 2 and Orbital Construction retain their normal prerequisite trees.
-
-### Current coupling
-
-This table records the tree before the proposed moves. The release check compares
-the new graph with the resolved tree from the parent release.
-
-| Direction | Count | Technologies |
-|---|---:|---|
-| Biology technologies with main-tree prerequisites | 34 | Biochemistry 1-5, 7, 8; Biology 1-2; Botany 1-2; Ecology 1-6; Evolution 1-7; Zoology 1-3; Carbon Sequestration 4; Locomotion 5; Nitrogen Chemistry 3; Personal Transportation 5; Weaving 3; Wildlife Management 2; Woodworking |
-| Main-tree technologies requiring biology | 8 | Artificial Intelligence 2, Battery Storage 5, Cybernetics 7, Genetic Archive 1 and 2, Rocket Science 3, Solar Power 4, Uranium Processing |
-
-36 technologies cost biology packs, and every one costs only biology packs.
-Biochemistry 1 costs ordinary packs and unlocks the biochemistry pack and the
-biology lab.
-
-### Release checks
-
-Compare the implemented graph with the parent release using fresh resolved
-prototypes. List the direct crossings above and their inherited prerequisites.
-For every moved technology, record each retained ingredient or machine gate
-and each removed edge. Reject undeclared changes to dependent research.
-Check each pack, its usable lab, and each new recipe at its owning research
-with `--require-no-additional-technologies`. Check bulk recipes along with
-loose recipes. Run deployment and seawater applications on their named surfaces.
-
-Extend the research-pacing comparison to the probe, Wild Strain Cultivation,
-Biochemistry 1, both fork tips, Zoology 3 and Orbital Construction. Compare
-total packs by type and lab time. In the campaign, measure time from transfer
-to the first microbiology research, then time to chemical science and the first
-cargo delivery. On the early-biology test route, complete Biochemistry 1 before Experimental
-Chemistry with the wreck equipment and ongoing local production.
 
 ## Seeds
 
@@ -364,7 +321,6 @@ machines with Gleba inputs.
 |---|---|
 | Floor | Every product a closure needs has a deterministic recipe |
 | Probabilistic recipes | Selection only: better strains and waste. Engine rolls each result independently; a craft can give several results or none |
-| Tool change | The prerequisite analyzer currently credits every listed result to a closure, including probabilistic ones, and quantity manifests reject them. It must not credit a result with probability below 1 unless the contract declares it `--available`. Gleba contracts consume this rule |
 | Streaks | The deterministic floor bounds an unlucky streak; no scripted pity counter |
 
 ## Spoilage
@@ -373,7 +329,7 @@ machines with Gleba inputs.
 |---|---|---|
 | Goop | Digestate | Fuel that must keep moving |
 | Wild culture | Sludge | Imports must keep moving |
-| Domesticated cultures | Dead culture, then sludge | Vulcanus bloom cooling |
+| Domesticated cultures | Culture sludge | Vulcanus bloom cooling |
 | Re-cultured strain | Fresh | `always_fresh` with `percent_spoiled = 0`, as antimatter recharge |
 | Exported genomes, progenitors, and uranium-reducing culture | Dead culture | Recurring shipments |
 | Stockpiles | Averaged timers | Stack merging, as recordings and antimatter |
@@ -381,40 +337,17 @@ machines with Gleba inputs.
 Every spoiling export outlasts the recording spoil time in
 `shared/reference-transit.lua`, as antimatter does.
 
-A spoiled item that stays in a one-slot fuel inventory blocks the burner, as the
-antimatter-trap migration found. Before goop is designed around it, an
-engine-witness scenario records whether inserters remove spoiled items from fuel
-inventories and whether digestate in the burnt-result slot is removed.
-
 ## Probe and bootstrap
 
-| Step | Player outcome |
+The wreck contains [equipment](../nullius-star/shared/gleba-starter.lua). The landing has native terrain and music. Calcite marks some dry banks. Slabs, loose stones and mineral mounds allow movement and construction. The surface has no vegetation, enemies or airborne spores.
+
+| First use | Operation |
 |---|---|
-| Access | Biological Probe Signal Recovery activates the overrun probe on weathered rock beside mats |
-| Probe unlocks | The probe research unlocks the manual craft, nutrient mode, acid leaching, chemosynthetic goop, the four basic local pack recipes and the bootstrap biochemistry pack |
-| Energy | Harvest mat samples by hand. Handcraft the first wild culture and nutrient goop from those samples. Use chemosynthesis for sustained goop production. |
-| Materials | Mine and crush rock, leach it, neutralize the liquor, reduce iron with hydrogen from H2S |
-| Construction | Build basic machines and logistics from reduced iron and recovered silica |
-| Research | Local generic packs and bootstrap biochemistry packs in nutrient-mode labs |
+| Start or recover | Mine three mat samples. Isolate them by hand for 12 s to get two wild cultures and four goop. |
+| Sustain production | Set the wreck machines to nutrient mode with Ctrl+R. Crush ferric rock. Keep one wild culture for propagation. Feed crushed rock, wild culture and spent digestate to the chemical plant. |
+| Supply research | Leach crushed rock in a flotation cell. Use the silica residue for biochemistry packs and glass. Reduce the ferric concentrate in the furnace. Cast plates and rods in the foundry. |
 
-### Starter inventory
-
-Each force receives the equipment listed below once, at probe activation. Use a shared
-starter file like `nullius-star/shared/vulcanus-starter.lua`. Machines arrive
-as ordinary items and switch to nutrient mode.
-
-| Equipment | First use |
-|---|---|
-| Lab 1 | Local research |
-| Walls | Containment of the culture area |
-| Flotation cell | Mat culture, leaching, neutralization |
-| Chemical plant | Chemosynthetic goop |
-| Hydro plant | Water recovery and liquor handling |
-| Crusher | Rock crushing |
-| Small miner | Rock |
-| Small furnace | Dry smelting and glass |
-| Pipes, pumps, tanks | Liquor and water |
-| Belts, inserters, chests | Solid transport and fuel distribution |
+The [starting recipes](../nullius-star/prototypes/planet/gleba-cultivation.lua) specify the yields. The full industrial route adds hydro plants, pumps, tanks and inserters for liquor handling and automatic transport.
 
 ## Science and research
 
@@ -426,7 +359,7 @@ research. All six run on Gleba with local rock, mats and atmosphere. Put Gleba p
 assays in the nutrient machine categories. Keep the ordinary recipes and
 research costs on the other planets.
 
-| Pack | Research boundary | Proposed local production |
+| Pack | Research boundary | Local production |
 |---|---|---|
 | Geology | Probe | Sort crushed rock and leach residue in a nutrient crusher. |
 | Climatology | Probe | Sample the atmosphere in a nutrient hydro plant. Use local H₂S and nitrogen in place of air and seawater. |
@@ -469,21 +402,14 @@ routes a source in the leach residue. Check the loose and boxed products. On
 the platform use the normal solar-powered equipment and the existing canister
 conditioning recipe. The zero-electricity requirement applies on the surface.
 
-Audit the full checkpoint closure after subtracting **only** the probe's
-ancestors. Preserve each threshold, its action (build, produce or consume),
-and the Nauvis route. Where a required action is impossible on Gleba, specify
-the local equivalent at the same stage. Count equivalent nutrient machines
-for placement, clockwork logistics for robot work and local processed minerals
-by their material yield. Show the before/after counts in the game. A force
-that already finished the checkpoints elsewhere cannot serve as the witness.
+The industrial checkpoints keep their action and threshold on both planets. On Gleba, nutrient machines count for placement, clockwork logistics count for robot work, and processed minerals count by their material yield.
 
-In the current resolved tree, Rocket Science 1, Composites 2, Rocket Science 2
+Rocket Science 1, Composites 2, Rocket Science 2
 and Orbital Construction each cost 800 units with two physics packs per unit.
 Together these four technologies consume **6,400 physics packs**. Size the
 Gleba physics line against that demand. As a first balance target, sustain
 25 loose physics packs per minute together with the five lower pack lines.
-At that rate the physics packs alone take 256 minutes. Measure completed
-research units, goop use and elapsed ticks for the full sequence.
+At that rate the physics packs alone take 256 minutes.
 
 ### Global research
 
@@ -525,49 +451,3 @@ and correlates astronomy packs once it joins the array.
 | Fulgora to Gleba | Copper | Sole primary source |
 | Nauvis or Vulcanus to Gleba | Aluminum | Replaces carbon-expensive local reduction |
 | Nauvis and Fulgora, local | Goop | Fuel for bioreactor chemical and hydro plants |
-
-## Changes to existing designs
-
-| Document | Change |
-|---|---|
-| Space Age brainstorm 3.3 | Gleba access at tier 3 replaces "Gleba access (Tier 4-5)"; carbon-balance decline replaces the 95% recycling loss; nutrient goop replaces the biological power ladder; the bacterial-harvester salvage maps to the starter inventory above |
-| Space Age brainstorm 2.4 | Gleba local power is goop, not galvanic cells; carbon cannot be a pre-cargo import |
-| Space Age brainstorm 4.2 and 6 | No new Gleba pack: the biochemistry pack is Gleba's planet pack, and all 7 biology packs come from Gleba before cargo |
-| Space Age brainstorm 4.5 | Gleba joins the array without changing the reference transit |
-| Space Age brainstorm 4.7 | Seawater Uranium Adsorption keeps its Biochemistry 4 gate. Gleba supplies the research and Nauvis supplies the industrial ingredients |
-| Nauvis design 2.3 | Biological Probe Signal Recovery keeps Organic Chemistry 1. Wild Strain Cultivation is the first research after transfer |
-| Nauvis design 6 | Advanced biology packs require Gleba: all biology research starts there |
-
-## Unresolved design decisions
-
-| Decision | Options |
-|---|---|
-| Mat form | Infinite resource on mat tiles or harvested entities with regrowth |
-| Biology pack spoilage | Whether biology packs spoil |
-| Flotation cell bioreactors | Whether flotation cells join the bioreactor family |
-| Vanilla overlap | Spoiling machine fuel is a vanilla Gleba mechanic; goop keeps its own chemistry, carbon loop, names, and values |
-| Hostile organisms | Escapes need a hostile force on a mod with frozen evolution; outside the planet slice |
-| Existing saves | Saves inside the biology tier lose Nauvis pack production until wild culture arrives; a breaking change needs a changelog compatibility note |
-
-## Acceptance contracts
-
-| Contract | Check |
-|---|---|
-| Surface | `surface-mapgen-contract` covers Gleba terrain, rock, mats, and no natural enemies |
-| Surface conditions | Oxygen void, sulfur dioxide void, and electricity generators fail on Gleba; mat culture fails elsewhere; no biology recipe has a surface condition |
-| Electricity | Every ground production closure on Gleba rejects electricity-required executors, as `vulcanus-launch-closure.args` |
-| Seeds | On the Nauvis boundary without imports, no living product closes; with declared wild culture, the ordinary biology chain closes at its research |
-| Biology branch | The proposed `tools/check_biology_branch.py` checks the pack owners, shared research gates, and changes to dependent research in the release build. |
-| Contained culture | Every biology pack closes on the Gleba boundary at the research that unlocks it |
-| Randomness | Every Gleba closure passes with probabilistic results uncredited |
-| Spoiled fuel | Engine witness: spoiled goop and digestate leave fuel and burnt-result slots of placed nutrient machines |
-| Goop energy | A release check fails if a Nauvis or Fulgora goop recipe yields more fuel value than its organic inputs |
-| Carbon | No Gleba recipe cycle, including the goop-digestate loop, returns more carbon than it consumes |
-| Machine modes | Transitions between ordinary, nutrient, and bioreactor modes keep recipes and contents and never create energy or health |
-| Bootstrap | Check that the starting inventory contains only the listed equipment. Harvest mat samples by hand and use the manual recipe to produce the first wild culture and nutrient goop. Use that batch and the wreck equipment to reproduce basic machines and logistics without imports. |
-| Early research | From the equipment-only wreck, complete Wild Strain Cultivation in Lab 1. Build the biology lab from local materials and complete Biochemistry 1 there before chemical science. Record handcrafts and elapsed ticks. |
-| Science | Supply all six normal packs, all seven biology packs and single-planet astronomy at their named research boundaries. Check the machines, fuel and ingredients with `--require-no-additional-technologies`. |
-| Bioreactor closure | Goop on Nauvis and Fulgora closes on each boundary at the research that unlocks bioreactor tier 1 |
-| Transit | `astronomy-transit` measures the Gleba-Nauvis leg and the reference transit stays at its current value |
-| Space logistics | From the probe boundary, finish Orbital Construction with locally earned checkpoints and packs. Launch a locally built platform, fill a cargo request, deliver to Nauvis and return using only Gleba supplies. |
-| Spoiling exports | Every spoiling Gleba export outlasts the recording spoil time |

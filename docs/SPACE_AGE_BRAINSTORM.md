@@ -99,7 +99,7 @@ Each planet needs enough local resources to get started without imports. The bro
 |---|---|---|---|---|
 | **Vulcanus** | Compressed volcanic gas from lava (self-fueling). Pneumatic and thermal bootstrap; electricity comes later. | Iron, aluminum, calcite from lava (need cooldown!), titanium (deep, needs demolishers) | CO2 atmosphere + HCl geysers. Thermal cracking. Ceramic/silica alt recipes. No organics. | Organics, bulk water, biology |
 | **Fulgora** | Lightning (massive peaks, zero baseload) | Fixed filtration outputs: hydrocarbons, sludge, ice, salt, gypsum. Recover metals from sludge. | Hydrocarbon chemistry; filtered ice supplies water. Combustion uses manufactured oxygen. | Bulk metals, bulk oxygen and water |
-| **Gleba** | Biofilm galvanic cells (tiny, constant replacement) | Bacterial loops: sulfur-metabolizing bacteria from H2S atmosphere. Net negative without breeding (mineral carbon depletion). | H2S-based biochemistry. Sulfur abundant, carbon scarce (from rocks only). No CO2, no O2. | Water (low), carbon (the scarce resource!), conventional ores, predictability, metals, stable power |
+| **Gleba** | Nutrient goop | Ferric rock and microbial mats | Culture and mineral leaching | Fixed carbon and water |
 | **Aquilo** | Nuclear fusion (local fuel, but most output goes to heating) | Lithium, ammonia ice, heavy water ice, deuterium ice | Cryogenic chemistry (TBD mechanic) | Heat (defining scarcity), water, metals, biology |
 
 **Key design constraint**: Each planet must be playable (if painful) with zero imports, up to and including building its silo and launching its first rocket. The fun comes from solving "how do I make X with only what's here?" Then later, cargo removes the pain and enables specialization.
@@ -110,7 +110,7 @@ Each planet needs enough local resources to get started without imports. The bro
 |---|---|---|
 | **Vulcanus** | Furnaces, heat pipes, lava intake (toggles to free-gas vent), gas-powered inserters, pre-filled gas tank, gas pipes | Heat-resistant components survived. Electronics melted. No Stirling, no circuits. See [PLANET_VULCANUS.md](PLANET_VULCANUS.md). |
 | **Fulgora** | A few extractors, a filter, power poles, capacitor banks, polymer pipes, a distillation column, basic inserters | Probe landed near a fountain. Non-metallic components survived; electronics fried by lightning. See [Fulgora design](PLANET_FULGORA.md). |
-| **Gleba** | Basic lab, containment walls, bacterial harvester, water recycler | Probe landed in bacterial mat zone. Sterile equipment survived; biological seal held. Minimal power. |
+| **Gleba** | [Wreck equipment](PLANET_GLEBA.md#probe-and-bootstrap) | The probe landed beside a microbial mat. |
 | **Aquilo** | Everything, but frozen -- must thaw | Cryogenic preservation kept equipment intact but inert |
 
 ---
@@ -119,186 +119,15 @@ Each planet needs enough local resources to get started without imports. The bro
 
 ### 3.1 Vulcanus (Pneumatic Hell)
 
-> **Detailed design**: See [PLANET_VULCANUS.md](PLANET_VULCANUS.md) for the resource model, production constraints, and progression intent.
-
-**Tagline**: Gas-powered steampunk industry where lava processing IS the power source, and dual pipe routing (gas + heat) defines factory layout.
-
-**Core identity:**
-- **CO2 atmosphere**, no wind/solar (corrosive + too hot)
-- **All machines run on compressed volcanic gas** (`FluidEnergySource`), not electricity
-- **Lava processing produces both metals AND compressed gas** (self-fueling loop)
-- **Molten metals need cooldown time** (spoilage mechanic) before they're usable
-- **HCl geysers** (fixed map features) provide hydrogen and chlorine for chemistry
-- **Dual pipe routing**: gas pipes (fuel) + heat pipes (waste heat) to every machine
-- **Overheated radiators crack HCl** -- waste heat does useful chemistry (TFMG-thermal approach)
-- **Two-tier radiators** (low-temp 200C / high-temp 450C) with standard recipe selection. No toggle script -- Deacon, SO2 decomposition, and HCl cracking are recipes picked per radiator building.
-- **2-tile underground gas ducts** (hilariously short, cheap, needed constantly)
-- **Titanium** via Kroll process (deep deposits, requires synthetic demolishers)
-- **Demolishers**: Late-game synthetic organisms (requires Gleba bio-research), player-spawned via territory API
-- **Ceramic/glass/silica alt recipes** replace all plastic/rubber-dependent components
-
-```
-POWER:     Compressed volcanic gas from lava processing (self-fueling)
-           Electricity: none. No Stirling, no grid -- all machines toggled to pneumatic (Ctrl+R)
-MATERIALS: Bulk metals from lava (cheap but time-gated by cooldown)
-           HCl from dedicated geysers (chemistry bottleneck)
-           CO2 atmosphere --> graphite, O2, trace water
-MISSING:   Organics (plastic, rubber), bulk water, biology
-UNIQUE:    Dual pipe networks, thermal cracking, spoilage cooldown
-EXPORTS:   Titanium, bulk metals, calcite, artillery shells
-IMPORTS:   Water, organics (Fulgora), bio-feed for demolishers (Gleba)
-```
+See the [Vulcanus design](PLANET_VULCANUS.md) for lava processing, pneumatic machines and thermal industry.
 
 ### 3.2 Fulgora (Hydrocarbon/Lightning)
 
-See [Fulgora design](PLANET_FULGORA.md) for hydrocarbon filtration, lightning
-power and overloads, organic industry, electromagnetic science, overcharged assemblers, and nuclear
-geoengineering. Status: per mechanic, in that document's status table.
+See the [Fulgora design](PLANET_FULGORA.md) for reservoir processing, lightning power and electromagnetic industry.
 
 ### 3.3 Gleba (Microbiology/Breeding)
 
-> **Detailed design**: See [PLANET_GLEBA.md](PLANET_GLEBA.md). It supersedes this section where they differ: tier-3 access with wild strains, bioleached metals, carbon-balance decline, no electricity (machines burn nutrient goop; bioreactor chemical and hydro plants are the global reward), and the whole biology tree as a parallel branch rooted at Gleba with no new science pack.
-
-Gleba becomes the bulk uranium source: a bred leaching strain and a perishable
-biomineralizing culture. Until then, Nauvis seawater adsorption supplies fission. See [Heavy elements and nuclear branches](#47-heavy-elements-and-nuclear-branches).
-
-**Concept**: Gleba has life -- but only **primitive bacterial and fungal** life. No animals, no plants, no complex organisms. The android arrives on a world of microbial mats, fungal networks, and bacterial biofilms. The core mechanic is **probabilistic breeding**: engineering increasingly complex organisms from this primitive base, with unpredictable and sometimes dangerous results.
-
-#### Core Constraints
-- **Low water** -- continuing the cross-planet theme. Enough for bacterial life to exist, not enough for industrial use.
-- **N2 + H2S atmosphere** -- nitrogen + hydrogen sulfide. No carbon, no oxygen.
-  - H2S supports sulfur-metabolizing bacteria (real extremophile chemistry)
-  - H2S is lethal to complex life (a few ppm kills aerobic organisms)
-  - **No atmospheric carbon** -- bacteria must scavenge carbon from mineral carbonates in rock. This is slow and limited, naturally explaining why bacterial loops are net-negative (mineral carbon depletion).
-  - **No oxygen** -- only anaerobic metabolism possible. Complex organisms need O2 for efficient energy.
-  - **Sulfur is abundant** (from H2S processing), **carbon is the scarce resource** (must extract from rocks or import). Inverted from Nauvis where carbon (CO2) is atmospheric and sulfur is a processed product.
-  - **Terraform catch-22**: Growing complex organisms requires removing H2S and adding O2. But removing H2S kills the sulfur-metabolizing bacteria that produce your resources. You must maintain the toxic atmosphere to keep your bacterial economy running, which prevents the complex organisms you're trying to breed from surviving outside containment.
-- **No conventional mining** -- initial resources come from bacterial processing loops (similar to base SA Gleba nutrient cycling).
-- **Probabilistic outcomes** -- breeding new strains and organisms has random results. Not every experiment succeeds. Some fail spectacularly.
-
-#### Early Game: Bacterial Resource Loop
-
-Initial resource extraction mirrors base SA's biological processing but reframed as microbial engineering:
-
-```
-Native Bacterial Mats (harvestable, renewable)
-    |
-    v
-[Basic Processing] --> Biomass + trace minerals + exotic biochemicals
-    |
-    v
-[Bacterial Metabolism] --> Basic resources (iron bacteria --> iron dust,
-                           sulfur bacteria --> sulfur,
-                           silicon diatoms --> silica)
-    |
-    v
-[Fungal Decomposition] --> Recycles waste back into feedstock
-```
-
-**Cold start is possible but painful**: The probe's broken equipment + native bacterial harvesting provides enough to bootstrap. But throughput is low, outputs are unpredictable, and the player must carefully manage the bacterial ecosystem to avoid crashing it.
-
-**Closed-loop requirement**: Unlike Nauvis where you mine finite deposits, Gleba's bacterial resource chains are **closed loops that are slightly net negative**. Every cycle loses a small percentage of biomass/viability. Left alone, any production loop will eventually collapse.
-
-This is the core tension: **deterministic production loops are stable but slowly dying.**
-
-#### Mid Game: Strain Breeding (Probabilistic -- Continuous Requirement)
-
-Breeding is NOT a one-time research step. It is an **ongoing process** that must run continuously to prevent ecosystem collapse:
-
-```
-DETERMINISTIC LOOP (production):
-  Strain A + nutrients --> resources + depleted strain A'
-  Depleted strain A' + recycling --> 95% strain A (net negative!)
-  [Slowly decays without fresh input]
-
-PROBABILISTIC LOOP (replenishment):
-  Base culture + mutagen + nutrients --> [Breeding Chamber]
-    +--> 60% Fresh viable strain (feeds back into deterministic loop)
-    +--> 25% Failed strain (spoils, waste)
-    +--> 10% Unexpected variant (different properties)
-    +--> 5% Contamination (disrupts other cultures)
-
-BOTH MUST RUN SIMULTANEOUSLY:
-  Deterministic loop = your factory (predictable output, slowly dying)
-  Probabilistic loop = life support (unpredictable, keeps factory alive)
-```
-
-**Design implications:**
-- The probabilistic breeding loop is **infrastructure, not research**. You build it, you maintain it, it runs forever. If it stops, your deterministic production chains gradually collapse.
-- Player must size the breeding operation to match the decay rate of all active production loops. More production = more breeding capacity needed.
-- Failed strains spoil (spoilage mechanic!), creating continuous waste management pressure.
-- Contamination events from the breeding loop can cascade into the production loops, disrupting established cultures. Containment infrastructure matters.
-- **Scaling is the challenge**: Every new production chain adds decay pressure. The breeding loop must grow proportionally. Unlike Nauvis where you "just build more miners," on Gleba expansion has a biological maintenance cost.
-- Unexpected variants from breeding are sometimes more valuable than the target -- encourages keeping the breeding loop oversized, which costs more nutrients but increases serendipity.
-- **RNG streak mitigation**: independent 60% rolls average out over many crafts, but early-game throughput is low, so an unlucky streak stalls bootstrap exactly when the player can least afford it. Mitigations: a deterministic fallback recipe (slower and nutrient-hungry, but guaranteed viable output) as the safety floor, and/or a scripted pity mechanic (guaranteed viable strain after N consecutive failures).
-
-**Exotic chemistry from specialized strains:**
-- Strains that produce chemicals impossible through conventional synthesis
-- Exotic enzymes, bio-catalysts, novel polymers
-- These become Gleba's unique exports -- chemicals no other planet can produce
-
-#### Late Game: Complex Organism Breeding
-
-With enough biological mastery, the android attempts to breed **complex multicellular organisms** from the bacterial/fungal base. This is where things get really interesting and dangerous.
-
-```
-Engineered Genome + Growth Medium + Containment --> [Incubation]
-    |
-    +--> Successful Organism (useful: bio-factory, resource producer)
-    +--> Inert Failure (dead on arrival, waste disposal)
-    +--> PREMATURE HATCH (organism escapes containment!)
-```
-
-**Premature hatching**:
-- Complex organisms can hatch/emerge before the android is ready
-- Escaped organisms are **not controllable** -- they roam, consume resources, may attack infrastructure
-- Not a game-ender (they're still engineered organisms, not apex predators) but a serious disruption
-- Player must balance ambition (breeding powerful organisms) against risk (bigger organisms = harder to contain if they escape)
-- Containment infrastructure (walls, traps, kill zones) becomes important -- not for defense against natives, but defense against your own creations
-
-**Narrative parallel to Vulcanus demolishers**: On Vulcanus the android creates life for industrial extraction. On Gleba the android creates life as a biological experiment. Both can go wrong. Different failure modes -- demolishers destabilize terrain, Gleba organisms escape and consume resources.
-
-**Successful complex organisms**:
-- Living bio-factories that passively produce specific chemicals/materials
-- Self-replicating (renewable resource source)
-- Require feeding and environmental management
-- Eventually: the organism designs proven on Gleba become the templates for **Nauvis seeding** (worms, fish, arthropods are refined versions of Gleba experiments)
-
-#### Gleba's Role in the Biology Progression
-
-The probe opens at Organic Chemistry 1. The first player on Gleba harvests
-mats and makes wild culture and goop by hand. The wreck lab researches Wild
-Strain Cultivation. A locally built biology lab then researches Biochemistry 1.
-Nanotechnology 1 opens genome work, and Physics opens advanced plant and animal
-research. Gleba can also supply every ordinary pack through Orbital Construction.
-Cargo carries living stock to Nauvis for deployment. See the
-[Gleba research design](PLANET_GLEBA.md#biology-branch).
-
-#### Power Progression
-
-All power on Gleba is biologically derived. No wind, no geothermal, minimal solar (thick atmosphere). Power generation itself is part of the biological ecosystem and subject to the same decay/breeding pressures.
-
-| Tier | Source | Output | Mechanic |
-|---|---|---|---|
-| **Bootstrap** | Biofilm galvanic cells | Tiny (kW range) | Harvest bacterial mats, crude wet-cell batteries from probe electrodes. High maintenance, constant replacement. |
-| **Early** | Microbial fuel cells | Low (tens of kW) | Engineered bacteria generate current directly. First bred strain. Decays, needs breeding maintenance. |
-| **Mid** | Thermogenic bacteria + Stirling engines | Moderate (MW range) | Exothermic bacterial metabolism produces heat. Stirling engines (existing Nullius tech) convert to electricity. Bacteria are another strain in the breeding loop. |
-| **Late** | Hyper-efficient thermogenic strains / imported generators | High | Breed superior strains or import conventional power from other planets. |
-
-**Key design point**: Even power generation decays. If the breeding loop falters, not only do resource chains collapse -- the lights go out too. This makes Gleba the most fragile planet by design. Everything is alive, everything is dying, everything needs constant renewal.
-
-#### Gleba Summary
-
-```
-ATMOSPHERE: N2 + H2S (nitrogen + hydrogen sulfide)
-POWER:      Biological (galvanic cells --> microbial fuel cells --> thermogenic + Stirling)
-MATERIALS:  Sulfur-metabolizing bacterial loops. Sulfur abundant, carbon scarce (mineral rock only).
-MISSING:    Water (low), carbon (!), oxygen, conventional ores, predictability
-UNIQUE:     Probabilistic breeding, continuous maintenance, escaped organism management,
-            terraform catch-22 (remove H2S = kill bacteria = lose resources)
-EXPORTS:    Exotic biochemicals, organism progenitors, advanced biology packs, sulfur compounds
-IMPORTS:    Metals, electronics, containment materials, carbon (from Vulcanus CO2 atmosphere?)
-```
+See the [Gleba design](PLANET_GLEBA.md) for mat cultivation, nutrient fuel and biology research.
 
 ### 3.4 Aquilo (Cryogenic/Fusion/Monopoles)
 
@@ -1822,7 +1651,7 @@ Analysis based on the actual `prototype-api.json` and `runtime-api.json` from Fa
 **Use cases confirmed viable:**
 - Vulcanus molten metal cooldown (spoil_ticks as cooling time, spoil_result = solid ingot)
 - Gleba failed strains decaying (spoil_result = waste/sludge)
-- Gleba galvanic cells degrading (spoil_ticks = cell lifetime)
+- Nutrient goop spoils into digestate on Gleba.
 
 **Limitation**: Spoilage rate is fixed per item type. No temperature-dependent spoilage without scripting. Quality extends spoilage timers automatically (higher quality = slower spoil).
 
