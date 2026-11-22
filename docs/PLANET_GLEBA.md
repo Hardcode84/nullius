@@ -46,6 +46,8 @@ imports: carbon-rich materials, copper, aluminum
 | Production decline | Comes from carbon and rock mass balance, not a loss factor; see [Carbon](#carbon) |
 | Random breeding | Probabilistic recipes never carry a closure; see [Randomness rule](#randomness-rule) |
 | Radio array | Gleba joins; see [Radio astronomy](#radio-astronomy) |
+| First research | Probe research only opens the destination. Nutrient Technology, researched on Nauvis after the probe and Geology 2, unlocks the landing recipes and nutrient mode, as Pneumatic Technology and Primitive Filtration do |
+| Boxed recipes | None at landing. Boxed Gleba recipes arrive with later bulk-production research |
 | Escaped organisms | Not part of the planet slice |
 
 ## Environmental constraints
@@ -105,7 +107,7 @@ The wreck lies between a small ferric rock outcrop and a microbial mat. Farther 
 |---|---|
 | Role | The only source of wild culture, and so of all life in the game |
 | Form | Infinite solid resource. One extraction yields one mat sample. Both resource patches keep their initial yield. |
-| Manual recipe | Harvest renewable mat samples by hand. Biological Probe Signal Recovery unlocks a slow handcraft that takes only mat samples and produces wild culture and nutrient goop. |
+| Manual recipe | Harvest renewable mat samples by hand. Nutrient Technology unlocks a slow handcraft that takes only mat samples and produces wild culture and nutrient goop. |
 | Spoilage | Wild culture spoils into culture sludge, which digests into digestate |
 
 ### Strains
@@ -221,11 +223,12 @@ Each research unit consumes one of each listed pack.
 
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
-| Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs. |
-| Wild Strain Cultivation | Biological Probe Signal Recovery | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the nutrient flotation cell. |
+| Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
+| Nutrient Technology | Biological Probe Signal Recovery and Geology 2 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron and glass. |
+| Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the nutrient flotation cell. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. Unlock bioreactor tier 1 and its local fuel routes on Nauvis and Fulgora. |
 
-The probe unlocks a slow recipe in the flotation cell that consumes wild
+Nutrient Technology unlocks a slow recipe in the flotation cell that consumes wild
 culture, leach residue and ferric concentrate for biochemistry packs. Both
 assays cost bootstrap-grade time and materials, as the first metallurgic and
 electromagnetic packs do. Every later route for the same pack must use less
@@ -380,7 +383,7 @@ research costs on the other planets.
 Make glass from silica and graphite from fixed carbon at the probe. The
 nutrient hydro plant collects atmospheric gas. The nutrient chemical plant
 handles gas reactions and iron reduction. The starter furnace takes the dry
-solid for final smelting. The probe unlocks a local handcraft for Small Assembler 1
+solid for final smelting. Nutrient Technology unlocks a local handcraft for Small Assembler 1
 from iron plates, gears, leach residue and an inserter. The first machine can use a wreck
 inserter. Make replacement inserters from local materials.
 
@@ -442,7 +445,7 @@ and correlates astronomy packs once it joins the array.
 
 | Rule | Value |
 |---|---|
-| Membership | Gleba joins the interferometry array with a nutrient-mode radio dish and correlator. Gleba Radio Astronomy follows Astronomy and Biological Probe Signal Recovery. It costs biochemistry and physics packs in one ordinary lab |
+| Membership | Gleba joins the interferometry array with a nutrient-mode radio dish and correlator. Gleba Radio Astronomy follows Astronomy and Nutrient Technology. It costs biochemistry and physics packs in one ordinary lab |
 | Effect | Adds parallel correlation routes; existing routes keep their cost |
 | Reference transit | The longest one-way trip between array planets via Nauvis. It stays unchanged only if the measured Gleba-Nauvis leg is no longer than the shorter of the Vulcanus-Nauvis and Fulgora-Nauvis legs. The Gleba space connection length is chosen to meet this, and `astronomy-transit` measures it |
 | Recordings and antimatter | Unchanged spoil times follow from the unchanged reference transit |

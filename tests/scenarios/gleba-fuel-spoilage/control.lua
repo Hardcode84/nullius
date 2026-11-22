@@ -1,4 +1,4 @@
--- given: Gleba access, declared goop and cultures near the end of their spoil
+-- given: Gleba access and Nutrient Technology, declared goop and cultures near the end of their spoil
 -- time, declared crushed rock, and declared electricity for one inserter.
 -- place: nutrient labs, a nutrient flotation cell, a nutrient chemical plant,
 -- an inserter and chests on cleared Gleba ground.
@@ -80,7 +80,7 @@ script.on_init(function() storage.assertions, storage.failures = 0, {} end)
 script.on_nth_tick(1, function(event)
   if event.tick == 0 then return end
   if event.tick == 1 then
-    research.complete_with_prerequisites(game.forces.player.technologies["nullius-probe-gleba"])
+    research.complete_with_prerequisites(game.forces.player.technologies["nullius-nutrient-technology"])
   elseif event.tick == 2 then
     prepare()
   elseif event.tick == 600 then

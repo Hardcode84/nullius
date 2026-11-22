@@ -1,5 +1,5 @@
 --technology
-nullius-probe-gleba
+nullius-nutrient-technology
 --surface-property
 nullius-hydrogen-sulfide=1
 --raw
@@ -35,10 +35,6 @@ nullius-glass=nullius-gleba-glass
 --recipe
 nullius-iron-ingot=nullius-gleba-iron-reduction
 --recipe
-nullius-box-iron-ingot=nullius-gleba-boxed-iron-reduction
---recipe
-nullius-box-glass=nullius-gleba-boxed-glass
---recipe
 nullius-digestate=nullius-gleba-sludge-digestion
 --require-no-additional-technologies
 nullius-crushed-gleba-rock
@@ -50,5 +46,3 @@ nullius-ferric-concentrate
 nullius-biochemistry-pack
 nullius-glass
 nullius-iron-ingot
-nullius-box-glass
-nullius-box-iron-ingot

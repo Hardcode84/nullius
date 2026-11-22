@@ -1,4 +1,4 @@
--- given: probe research and its ordinary equipment. No imported materials or energy.
+-- given: probe and Nutrient Technology researched on Nauvis, and the wreck equipment. No imported materials or energy.
 -- place: one probe android, the wreck machines, a nutrient miner on ferric rock and its chest.
 -- connect: move the actual harvested items and machine products between inventories.
 -- act: isolate culture by hand, keep mining mats, and run each machine when its inputs are ready.
@@ -194,7 +194,7 @@ local function land(force, cultivation)
   }
   storage.supplies = supplies
   check(not force.recipes["nullius-domesticate-wild-culture"].enabled, "domestication open at landing")
-  check(table_size(cultivation.prerequisites) == 1 and cultivation.prerequisites["nullius-probe-gleba"]
+  check(table_size(cultivation.prerequisites) == 1 and cultivation.prerequisites["nullius-nutrient-technology"]
     and cultivation.research_unit_count == 8 and cultivation.research_unit_energy == 1200, "cultivation gate")
   for name, prototype in pairs(prototypes.get_entity_filtered{{filter = "crafting-machine"}}) do
     assert(not prototype.crafting_categories["gleba-hand-sampling"], name .. " can isolate the first culture")
@@ -245,7 +245,7 @@ script.on_nth_tick(15, function(event)
   local cultivation = force.technologies["nullius-wild-strain-cultivation"]
   if not storage.phase then
     storage.checks, storage.jobs, storage.done = 0, {}, {}
-    research.complete_with_prerequisites(force.technologies["nullius-probe-gleba"])
+    research.complete_with_prerequisites(force.technologies["nullius-nutrient-technology"])
     storage.phase = "land"
     return
   end

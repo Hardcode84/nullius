@@ -31,7 +31,7 @@ for _, spec in ipairs(require("shared.gleba-machines")) do
   transitions.register(ordinary, nutrient, {
     replace_fn = replace,
     condition = function(entity, force)
-      return entity.surface.name == "nullius-gleba" and force.technologies["nullius-probe-gleba"].researched
+      return entity.surface.name == "nullius-gleba" and force.technologies["nullius-nutrient-technology"].researched
     end,
   })
   transitions.register(nutrient, ordinary, {on_leave = release_fuel, replace_fn = replace})

@@ -196,6 +196,16 @@ local function survey(surface)
   return minerals
 end
 
+-- Probe and pre-transfer research cost one of each early pack per unit.
+local function check_early_packs(tech, label)
+  local packs = {}
+  for _, ingredient in pairs(tech.research_unit_ingredients) do packs[ingredient.name] = ingredient.amount end
+  check(table_size(packs) == 4, label .. " uses unexpected science packs")
+  for _, name in ipairs({"geology", "climatology", "mechanical", "electrical"}) do
+    check(packs["nullius-" .. name .. "-pack"] == 1, label .. " lacks the " .. name .. " pack")
+  end
+end
+
 script.on_nth_tick(1, function(event)
   if event.tick == 0 then return end
   local force = game.forces.player
@@ -206,12 +216,19 @@ script.on_nth_tick(1, function(event)
     check(table_size(tech.prerequisites) == 2 and tech.prerequisites["nullius-organic-chemistry-1"]
       and tech.prerequisites["nullius-interplanetary-signal-acquisition"], "unexpected research gate")
     check(tech.research_unit_count == 40 and tech.research_unit_energy == 20 * 60, "unexpected research cost")
-    local packs = {}
-    for _, ingredient in pairs(tech.research_unit_ingredients) do packs[ingredient.name] = ingredient.amount end
-    check(table_size(packs) == 4, "unexpected science packs")
-    for _, name in ipairs({"geology", "climatology", "mechanical", "electrical"}) do
-      check(packs["nullius-" .. name .. "-pack"] == 1, "missing " .. name .. " pack")
-    end
+    check_early_packs(tech, "probe")
+    -- expect: the probe only opens the destination; Nauvis research unlocks the recipes.
+    local effects = tech.prototype.effects
+    check(#effects == 1 and effects[1].type == "unlock-space-location" and effects[1].space_location == planet.name,
+      "probe research unlocks more than Gleba")
+    local nutrient = force.technologies["nullius-nutrient-technology"]
+    check(table_size(nutrient.prerequisites) == 2 and nutrient.prerequisites["nullius-probe-gleba"]
+      and nutrient.prerequisites["nullius-geology-2"], "unexpected nutrient research gate")
+    check(nutrient.research_unit_count == 20 and nutrient.research_unit_energy == 15 * 60,
+      "unexpected nutrient research cost")
+    check_early_packs(nutrient, "nutrient research")
+    check(force.recipes["nullius-gleba-chemosynthesis"] and not force.recipes["nullius-gleba-boxed-glass"]
+      and not force.recipes["nullius-gleba-boxed-iron-reduction"], "unexpected Gleba bulk recipes")
     research.complete_with_prerequisites(tech)
   else
     check(force.is_space_location_unlocked(planet.name) and planet.surface, "probe did not unlock Gleba")

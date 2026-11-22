@@ -10,14 +10,25 @@ local probe = {
     {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
   }},
 }
+-- Researched on Nauvis before transfer, as Pneumatic Technology and Primitive
+-- Filtration are. Geology 2 supplies the crushed-mineral assays it builds on.
+local nutrient = {
+  type = "technology", name = "nullius-nutrient-technology", order = "nullius-dga",
+  icon = icon_dir .. "nutrients.png", icon_size = 64,
+  prerequisites = {probe.name, "nullius-geology-2"}, effects = {},
+  unit = {count = 20, time = 15, ingredients = {
+    {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
+    {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
+  }},
+}
 local cultivation = {
-  type = "technology", name = "nullius-wild-strain-cultivation", order = "nullius-dga",
+  type = "technology", name = "nullius-wild-strain-cultivation", order = "nullius-dgb",
   icon = icon_dir .. "iron-bacteria-cultivation.png", icon_size = 64,
-  prerequisites = {probe.name}, effects = {},
+  prerequisites = {nutrient.name}, effects = {},
   unit = {count = 8, time = 20, ingredients = {{"nullius-biochemistry-pack", 1}}},
 }
 
-data:extend({probe, cultivation, {type = "fuel-category", name = "nullius-nutrient"},
+data:extend({probe, nutrient, cultivation, {type = "fuel-category", name = "nullius-nutrient"},
   {type = "recipe-category", name = "gleba-hand-sampling"}})
 
 for _, spec in ipairs(require("shared.gleba-machines")) do
@@ -83,34 +94,30 @@ local function recipe(tech, name, category, time, ingredients, products)
   unlock(tech, id)
 end
 
-recipe(probe, "isolate-wild-culture", "gleba-hand-sampling", 12,
+recipe(nutrient, "isolate-wild-culture", "gleba-hand-sampling", 12,
   {{"mat-sample", 3}}, {{"wild-culture", 2}, {"nutrient-goop", 4}})
-recipe(probe, "gleba-rock-crushing", "gleba-crushing", 2,
+recipe(nutrient, "gleba-rock-crushing", "gleba-crushing", 2,
   {{"gleba-rock", 1}}, {{"crushed-gleba-rock", 4}})
-recipe(probe, "wild-culture-propagation", "gleba-culture", 6,
+recipe(nutrient, "wild-culture-propagation", "gleba-culture", 6,
   {{"wild-culture", 1}, {"mat-sample", 2}}, {{"wild-culture", 4}})
-recipe(probe, "gleba-rock-leaching", "gleba-culture", 4,
+recipe(nutrient, "gleba-rock-leaching", "gleba-culture", 4,
   {{"crushed-gleba-rock", 2}, {"wild-culture", 1}}, {{"leach-residue", 2}, {"ferric-concentrate", 2}})
 -- Fixation takes all its carbon from rock. Recycling returns spent goop with a
 -- carbon loss, so it always consumes more digestate than its goop later leaves.
-recipe(probe, "gleba-chemosynthesis", "gleba-chemosynthesis", 10,
+recipe(nutrient, "gleba-chemosynthesis", "gleba-chemosynthesis", 10,
   {{"crushed-gleba-rock", 4}, {"wild-culture", 1}}, {{"nutrient-goop", 2}})
-recipe(probe, "gleba-digestate-recycling", "gleba-chemosynthesis", 10,
+recipe(nutrient, "gleba-digestate-recycling", "gleba-chemosynthesis", 10,
   {{"digestate", 5}, {"crushed-gleba-rock", 1}, {"wild-culture", 1}}, {{"nutrient-goop", 4}})
-recipe(probe, "gleba-sludge-digestion", "gleba-culture", 4,
+recipe(nutrient, "gleba-sludge-digestion", "gleba-culture", 4,
   {{"culture-sludge", 2}}, {{"digestate", 1}})
 -- Assay packs cost bootstrap-grade time and materials, as the first metallurgic
 -- and electromagnetic packs do.
-recipe(probe, "gleba-biochemistry", "gleba-culture", 30,
+recipe(nutrient, "gleba-biochemistry", "gleba-culture", 30,
   {{"wild-culture", 3}, {"leach-residue", 3}, {"ferric-concentrate", 2}}, {{"biochemistry-pack", 1}})
-recipe(probe, "gleba-iron-reduction", "gleba-roasting", 4,
+recipe(nutrient, "gleba-iron-reduction", "gleba-roasting", 4,
   {{"ferric-concentrate", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 3}})
-recipe(probe, "gleba-glass", "gleba-roasting", 4,
+recipe(nutrient, "gleba-glass", "gleba-roasting", 4,
   {{"leach-residue", 2}}, {{"glass", 2}})
-recipe(probe, "gleba-boxed-iron-reduction", "gleba-roasting", 20,
-  {{"ferric-concentrate", 10}, {"nutrient-goop", 5}}, {{"box-iron-ingot", 3}})
-recipe(probe, "gleba-boxed-glass", "gleba-roasting", 20,
-  {{"leach-residue", 10}}, {{"box-glass", 2}})
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
   {{"wild-culture", 2}}, {{"domesticated-culture", 1}})
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,

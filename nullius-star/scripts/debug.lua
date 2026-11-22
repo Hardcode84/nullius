@@ -3,7 +3,7 @@ local research = require("scripts.research")
 local debug = {}
 local destinations = {
   vulcanus = {planet = "nullius-vulcanus", technology = "nullius-pneumatic-technology", label = "Vulcanus"},
-  gleba = {planet = "nullius-gleba", technology = "nullius-probe-gleba", label = "Gleba"},
+  gleba = {planet = "nullius-gleba", technology = "nullius-nutrient-technology", label = "Gleba"},
   fulgora = {planet = "nullius-fulgora", technology = "nullius-primitive-filtration", label = "Fulgora"},
 }
 
