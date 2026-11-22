@@ -46,6 +46,16 @@ TIER 3 LATE (order nullius-e*):
 | **Essential** | true |
 | **Unlocks** | Probe reactivation sub-techs (one per planet) |
 
+Why this window:
+
+| Player state | Consequence |
+|---|---|
+| Four packs: geology, climatology, mechanical, electrical | Enough industry to support a second planet |
+| Sensors, signal processing and computation researched | The android can detect, decode and process the probe signals |
+| No chemical pack yet | Planets give the player something to build during the cost spike before Experimental Chemistry |
+| No beacons, robotics or advanced logistics | Each planet bootstrap is a real challenge |
+| Moderate cost | Noticeable without becoming a major gate; planets feel part of the core game, not an endgame addition |
+
 ### 2.3 Per-Planet Reactivation
 
 Each probe requires Interplanetary Signal Acquisition. A research unit uses one each of geology, climatology, mechanical and electrical science. Aquilo also needs one chemical pack.
@@ -169,3 +179,11 @@ Once cargo is available, Nauvis exports:
 | 60-100 | Rogue awakening | Raids begin. Countermeasure research. Multi-planet defense. |
 | 80-150 | The Solution | All-planet combined effort. Vacuum decay device construction. |
 | 150+ | Post-Rogue | Shattered planet debris. Rogue-tech research. Infinite research. |
+
+## 6. Unresolved design decisions
+
+| Decision | Options |
+|---|---|
+| Rogue scouts | How scout visits fit the minimal-combat design of Nauvis |
+| Probe hardware | Whether probe reactivation needs a placed transmitter building or stays a research unlock |
+| Simultaneous probes | Whether every planet probe can be active at once, or reactivation is sequential or on a cooldown |

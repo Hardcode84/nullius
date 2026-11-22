@@ -43,7 +43,8 @@ local function parts(actual,expected,label)
   end
   for _,part in ipairs(expected) do check(amounts[part.type..":"..part.name]==part.amount,label.." "..part.name) end
 end
-script.on_nth_tick(1,function()
+script.on_nth_tick(1,function(event)
+  if event.tick==0 then return end
   script.on_nth_tick(1,nil)
   local surface=game.create_surface("building-test",{width=128,height=512,autoplace_controls={}})
   surface.request_to_generate_chunks({0,0},8)

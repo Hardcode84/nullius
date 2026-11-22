@@ -55,7 +55,7 @@ imports: carbon-rich materials, copper, aluminum
 | Hydrogen sulfide atmosphere | New surface property `nullius-hydrogen-sulfide`, default 0, positive on Gleba only. Mat culture and sulfide recipes require it above 0 |
 | No electricity | Generators, solar panels, wind turbines, and accumulators cannot be placed on Gleba; electric-only machines have no power source |
 | No oxygen | Nothing combusts; oxygen is a chemistry input only |
-| Oxidants poison the mats | Gleba cannot vent oxygen or sulfur dioxide; void recipes for both require `nullius-hydrogen-sulfide` at 0 |
+| Oxidants poison the mats | Gleba cannot vent oxygen or sulfur dioxide; void recipes for both require `nullius-hydrogen-sulfide` at 0. Gleba itself is never terraformed: removing the hydrogen sulfide or adding oxygen would kill the mats its economy runs on |
 | No carbon dioxide | Carbon comes from carbonate rock through acid neutralization |
 | No usable surface water | No offshore pumps or water wells; water comes from rock sulfidation and biomass dewatering |
 | No seawater or breathable air | Biology recipes that take seawater, air, or bulk wastewater need contained variants on Gleba; see [Contained culture](#contained-culture) |
@@ -78,7 +78,8 @@ reduced atmosphere (H2S)  +  oxidized crust (ferric oxide, sulfate, carbonate, s
                      +-- water:   ferric oxide + H2S -> iron sulfide + water
                      +-- waste:   gypsum, iron sulfide, silica residue, digestate
 
-goop -> machines -> digestate -> chemosynthesis -> goop
+rock + culture -> fixation -> goop -> machines -> digestate -> recycling -> goop
+dead culture -> culture sludge -> digestion -> digestate
 ```
 
 Rock is the energy source, ore, carbon source, and water source at once. Goop
@@ -105,7 +106,7 @@ The wreck lies between a small ferric rock outcrop and a microbial mat. Farther 
 | Role | The only source of wild culture, and so of all life in the game |
 | Form | Infinite solid resource. One extraction yields one mat sample. Both resource patches keep their initial yield. |
 | Manual recipe | Harvest renewable mat samples by hand. Biological Probe Signal Recovery unlocks a slow handcraft that takes only mat samples and produces wild culture and nutrient goop. |
-| Spoilage | Wild culture spoils into sludge |
+| Spoilage | Wild culture spoils into culture sludge, which digests into digestate |
 
 ### Strains
 
@@ -128,7 +129,7 @@ The wreck lies between a small ferric rock outcrop and a microbial mat. Farther 
 | Rule | Value |
 |---|---|
 | Source | Carbonate rock neutralizing acid liquor releases CO2; chemosynthesis and phototrophs fix it |
-| Circulation | Goop burned in machines leaves digestate; chemosynthesis takes digestate back with a fixed carbon loss |
+| Circulation | Goop burned in machines leaves digestate. Recycling returns digestate to goop with a fixed carbon loss; fixation adds new carbon from rock |
 | Sinks | The digestate loss, methane, exported organics, plastics, spoilage to sludge, biology packs |
 | Decline | Every loop exports carbon, so it needs fresh rock. No loop returns more carbon than it receives |
 | Pressure | Energy, materials, and biology research share one carbon pool. Acid neutralization is mandatory waste handling and the carbon supply |
@@ -163,9 +164,9 @@ No electrowinning or electrolysis: electrolyzers stay electric only.
 | Sulfur dioxide | No void on Gleba; reduce back to sulfur with H2S |
 | Sulfur | From H2S splitting and phototrophs; feeds acid liquor |
 | Gypsum, iron sulfide | Solid waste; decomposition or disposal recipes |
-| Digestate | Recycled into goop on Gleba; fertilizer or sludge elsewhere |
+| Digestate | Recycled into goop on Gleba. Each recycling batch consumes more digestate than its goop later leaves, so enough recyclers always clear it. Fertilizer or sludge elsewhere |
 | Contaminated culture | Probabilistic product of screening; sterilized at a heat or acid cost |
-| Dead culture | Spoil result; becomes sludge |
+| Dead culture | Spoils into culture sludge; a flotation cell digests the sludge into digestate |
 
 ## Nutrient goop
 
@@ -174,13 +175,15 @@ No electrowinning or electrolysis: electrolyzers stay electric only.
 | Fuel category | Custom `nullius-nutrient`. Only nutrient and bioreactor modes burn it; ordinary burners reject it |
 | Burnt result | Digestate |
 | Spoilage | Goop spoils into digestate, so stockpiles go stale and supply must be steady |
-| Gleba route | Chemosynthesis: sulfur-oxidizer culture, H2S, ferric liquor, CO2 from neutralization, and digestate |
+| Gleba routes | Fixation from crushed rock and wild culture. Recycling of digestate with crushed rock and wild culture |
+| Energy return | Fixation returns several times the fuel that its mining, crushing, culture and plant burn; recycling returns more. Rock, culture and machine count bound the output |
+| Fuel slots | Goop that spoils in a fuel slot moves to free burnt-result space as digestate. With a full burnt-result slot the digestate stays in the fuel slot and blocks it until a player or inserter removes it |
 | Nauvis route | Single-cell protein from ordinary organic chemistry, as the ICI Pruteen process made from methanol and ammonia. A protein feedstock, not a living culture, so it needs no wild culture. It closes on Nauvis at the research that unlocks it |
 | Fulgora route | Hydrocarbons and ammonia |
 | Vulcanus | No route; Vulcanus has thermal machines |
 | Energy bound | On Nauvis and Fulgora, goop fuel value per craft is below the fuel value of its organic inputs, so goop never generates net energy |
 
-The spent-goop carbon loss is a design value fixed with the Gleba power balance.
+The recycling carbon loss is a design value in the recipe.
 
 ## Machine modes
 
@@ -223,7 +226,10 @@ Each research unit consumes one of each listed pack.
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. Unlock bioreactor tier 1 and its local fuel routes on Nauvis and Fulgora. |
 
 The probe unlocks a slow recipe in the flotation cell that consumes wild
-culture and leach residue for biochemistry packs. Both inputs precede the
+culture, leach residue and ferric concentrate for biochemistry packs. Both
+assays cost bootstrap-grade time and materials, as the first metallurgic and
+electromagnetic packs do. Every later route for the same pack must use less
+machine time per pack than its assay. Both inputs precede the
 first research. The two early pack recipes use physical culture. Their first
 batches cost zero chemical packs, physics packs, genomes or nanofabricators.
 
@@ -330,8 +336,8 @@ machines with Gleba inputs.
 | Item | Spoils into | Pattern |
 |---|---|---|
 | Goop | Digestate | Fuel that must keep moving |
-| Wild culture | Sludge | Imports must keep moving |
-| Domesticated cultures | Culture sludge | Vulcanus bloom cooling |
+| Wild culture | Culture sludge | Imports must keep moving |
+| Domesticated cultures | Culture sludge | Vulcanus bloom cooling; digests into digestate |
 | Re-cultured strain | Fresh | `always_fresh` with `percent_spoiled = 0`, as antimatter recharge |
 | Exported genomes, progenitors, and uranium-reducing culture | Dead culture | Recurring shipments |
 | Stockpiles | Averaged timers | Stack merging, as recordings and antimatter |
@@ -346,7 +352,7 @@ The wreck contains [equipment](../nullius-star/shared/gleba-starter.lua). The la
 | First use | Operation |
 |---|---|
 | Start or recover | Mine three mat samples. Isolate them by hand for 12 s to get two wild cultures and four goop. |
-| Sustain production | Set the wreck machines to nutrient mode with Ctrl+R. Crush ferric rock. Keep one wild culture for propagation. Feed crushed rock, wild culture and spent digestate to the chemical plant. |
+| Sustain production | Set the wreck machines to nutrient mode with Ctrl+R. Crush ferric rock. Keep one wild culture for propagation. Fix goop from crushed rock and wild culture in the chemical plant. Recycle spent digestate there once a batch has collected, digest culture sludge in a flotation cell, and keep burnt-result slots empty. |
 | Supply research | Leach crushed rock in a flotation cell. Use the silica residue for biochemistry packs and glass. Reduce the ferric concentrate in the furnace. Cast plates and rods in the foundry. |
 
 The [starting recipes](../nullius-star/prototypes/planet/gleba-cultivation.lua) specify the yields. The full industrial route adds hydro plants, pumps, tanks and inserters for liquor handling and automatic transport.
@@ -453,3 +459,15 @@ and correlates astronomy packs once it joins the array.
 | Fulgora to Gleba | Copper | Sole primary source |
 | Nauvis or Vulcanus to Gleba | Aluminum | Replaces carbon-expensive local reduction |
 | Nauvis and Fulgora, local | Goop | Fuel for bioreactor chemical and hydro plants |
+
+## Unresolved design decisions
+
+| Decision | Options |
+|---|---|
+| Biology pack spoilage | Whether biology packs spoil |
+| Flotation cell bioreactors | Whether flotation cells join the bioreactor family |
+| Vanilla overlap | Spoiling machine fuel is a vanilla Gleba mechanic; goop keeps its own chemistry, carbon loop, names, and values |
+| Contamination | Whether screening's contaminated culture can spread to neighbouring cultures, which would make containment walls a production layout rule |
+| Escaped organisms | Complex contained lines could hatch early through `spoil_to_trigger_result` and roam as an uncontrolled force. Needs a hostile force on a mod with frozen evolution; outside the planet slice |
+| Living producers | Whether successful complex organisms become fed buildings that passively produce chemicals, and later the templates for Nauvis seeding |
+| Existing saves | Releases up to 0.0.7 make biology packs on Nauvis. Moving them behind Gleba wild culture removes that production from those saves, so the release that moves them needs a changelog compatibility note |

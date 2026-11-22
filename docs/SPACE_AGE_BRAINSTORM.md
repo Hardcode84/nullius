@@ -22,7 +22,7 @@
 
 | Conflict | Nullius Current | Space Age Adds | Resolution Options |
 |---|---|---|---|
-| **Quality** | Loaded transitively by Space Age | Items have quality tiers | Keep loaded; disable quality effects, modules, and generated recycling in Nullius*. |
+| **Quality** | Not loaded | Items have quality tiers | Declared incompatible. Space Age on Factorio 2.1 requires Recycler, not Quality; disable generated recycling in Nullius*. |
 | **Tech tree** | Fully replaced, checkpoint-gated | Planet-specific tech branches | Merge: Nullius tiers 1-4 on Nauvis, tiers 5-7 split across planets. |
 | **Science packs** | 15 Nullius-specific packs | Planet-specific packs (metallurgic, electromagnetic, agricultural, cryogenic) | A) Replace SA packs with Nullius packs produced on appropriate planets. B) Add SA packs as new tiers. |
 | **Pollution** | Disabled | Some planets use pollution mechanics | Could remain disabled or repurpose as atmosphere contamination. |
@@ -1532,18 +1532,15 @@ re-energized.
 
 ## 5. Quality Mechanic
 
-**Decision: Loaded but disabled.** Space Age requires the Quality mod, so
-Nullius* cannot mark it incompatible. The data stage disables its gameplay
-effects instead.
+**Decision: Incompatible.** On Factorio 2.1 Space Age requires the Recycler
+mod but not Quality, so `info.json` declares `! quality`.
 
 Rationale:
 - Nullius already has its own complexity layers (boxing, byproduct management, checkpoint gating, module system). Quality adds pervasive complexity on top of that for marginal design benefit.
 - Quality interacts with spoilage (higher quality = slower spoil), which would complicate the Vulcanus cooldown and Gleba decay mechanics.
-- Every recipe has `allow_quality = false`.
-- Recycling recipes are hidden and disabled, and Nullius items opt out of
-  automatic recycling generation.
-- Quality-tier multipliers and transition probabilities are neutralized, and
-  quality modules are hidden.
+- Recycler stays loaded for Space Age. Its generated recycling recipes are
+  hidden, disabled, and removed from research, and Nullius items opt out of
+  automatic recycling generation. Nullius recovery recipes are kept.
 
 ---
 

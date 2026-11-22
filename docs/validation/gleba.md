@@ -2,7 +2,7 @@
 
 ## Cultivation from the probe wreck
 
-The `gleba-cultivation` scenario uses one hand isolation, the wreck equipment and the two landing patches. The android mines 15 mat samples and three rocks. Machines supply all subsequent fuel and materials. On Factorio 2.1.24 the first biochemistry pack reached Lab 1 at tick 3,840. Wild Strain Cultivation finished at tick 14,085. The new biology lab accepted a local microbiology pack at tick 15,510. The scenario deadline is 15,600.
+The `gleba-cultivation` scenario uses one hand isolation, the wreck equipment and the two landing patches. The android keeps mining mat samples by hand; a nutrient miner supplies ferric rock. Each machine runs when its inputs are ready, and machines supply all later fuel and materials. On Factorio 2.1.24 the first biochemistry pack reached Lab 1 at tick 5,085. Wild Strain Cultivation finished at tick 18,990. The new biology lab accepted a local microbiology pack at tick 22,200. The run fixed goop from rock in 16 batches, recycled digestate in 3 batches and ended with less than one recycling batch of digestate. The scenario deadline is 25,000.
 
 ## Biology tree before the Gleba redesign
 
@@ -41,10 +41,14 @@ The prerequisite analyzer currently credits every listed result to a closure, in
 
 ## Fuel inventory checks
 
-A spoiled item that stays in a one-slot fuel inventory blocks the burner, as the
-antimatter-trap migration found. Before goop is designed around it, an
-engine-witness scenario records whether inserters remove spoiled items from fuel
-inventories and whether digestate in the burnt-result slot is removed.
+`gleba-fuel-spoilage`, Factorio 2.1.24:
+
+| Case | Result |
+|---|---|
+| Goop spoils in the fuel slot of an idle nutrient lab | The digestate moves to the burnt-result slot; the fuel slot accepts fresh goop |
+| Goop spoils while the burnt-result slot is full | The digestate stays in the fuel slot, which then refuses goop |
+| An inserter picks up from the blocked lab | It removes the fuel-slot digestate first, then continues with the burnt-result slot; the fuel slot accepts goop again |
+| Wild culture spoils | It becomes culture sludge; sludge digestion and digestate recycling return it to goop |
 
 ## Acceptance contracts
 
@@ -57,7 +61,7 @@ inventories and whether digestate in the burnt-result slot is removed.
 | Biology branch | The proposed `tools/check_biology_branch.py` checks the pack owners, shared research gates, and changes to dependent research in the release build. |
 | Contained culture | Every biology pack closes on the Gleba boundary at the research that unlocks it |
 | Randomness | Every Gleba closure passes with probabilistic results uncredited |
-| Spoiled fuel | Engine witness: spoiled goop and digestate leave fuel and burnt-result slots of placed nutrient machines |
+| Spoiled fuel | `gleba-fuel-spoilage` checks spoiled goop in free and full burnt-result slots, inserter removal and the dead-culture route back to goop |
 | Goop energy | A release check fails if a Nauvis or Fulgora goop recipe yields more fuel value than its organic inputs |
 | Carbon | No Gleba recipe cycle, including the goop-digestate loop, returns more carbon than it consumes |
 | Machine modes | Transitions between ordinary, nutrient, and bioreactor modes keep recipes and contents and never create energy or health |
@@ -71,7 +75,8 @@ inventories and whether digestate in the burnt-result slot is removed.
 
 ## Earlier biology requirements
 
-The current lab costs 3 Lab 2s, a Sensor Node 2, a Nanofabricator 1, 2 Logistic
-Bot 2s and 10 boxes of insulation. Current Biochemistry 1 costs 1,000 units
-after Physics and Organic Chemistry 6. The early lab and the two culture
-recipes replace these construction and research gates together.
+Before Gleba cultivation the biology lab cost 3 Lab 2s, a Sensor Node 2, a
+Nanofabricator 1, 2 Logistic Bot 2s and 10 boxes of insulation, and Biochemistry
+1 cost 1,000 units after Physics and Organic Chemistry 6. The early lab now
+replaces that construction gate on every surface. Biochemistry 1 has not moved
+yet, so on Nauvis the cheaper lab arrives at the old research gate.

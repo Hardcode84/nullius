@@ -57,6 +57,8 @@ script.on_nth_tick(30, function()
         if INTAKE_CATEGORIES[category] then reason = "intake " .. category end
       end
       if not reason and entity.fluid_energy_source_prototype then reason = "fluid energy" end
+      local burner = entity.burner_prototype
+      if not reason and burner and burner.fuel_categories["nullius-nutrient"] then reason = "nutrient energy" end
       if not reason and GROUND_TYPES[entity.type] then reason = entity.type end
       if not reason then
         for _, prefix in ipairs(NAMED) do

@@ -13,6 +13,8 @@ nullius-flotation-cell-1
 --available-machine
 nullius-small-furnace-1
 --available-machine
+nullius-chemical-plant-1
+--available-machine
 nullius-foundry-1
 --executor
 gleba-crushing=nullius-crusher-1-nutrient
@@ -21,11 +23,13 @@ gleba-culture=nullius-flotation-cell-1-nutrient
 --executor
 gleba-roasting=nullius-small-furnace-1-nutrient
 --executor
+gleba-chemosynthesis=nullius-chemical-plant-1-nutrient
+--executor
 machine-casting=nullius-foundry-1-nutrient
 --recipe
 nullius-wild-culture=nullius-isolate-wild-culture
 --recipe
-nullius-nutrient-goop=nullius-isolate-wild-culture
+nullius-nutrient-goop=nullius-gleba-chemosynthesis
 --recipe
 nullius-ferric-concentrate=nullius-gleba-rock-leaching
 --recipe

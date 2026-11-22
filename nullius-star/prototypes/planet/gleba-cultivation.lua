@@ -90,21 +90,29 @@ recipe(probe, "gleba-rock-crushing", "gleba-crushing", 2,
 recipe(probe, "wild-culture-propagation", "gleba-culture", 6,
   {{"wild-culture", 1}, {"mat-sample", 2}}, {{"wild-culture", 4}})
 recipe(probe, "gleba-rock-leaching", "gleba-culture", 4,
-  {{"crushed-gleba-rock", 2}, {"wild-culture", 1}}, {{"leach-residue", 4}, {"ferric-concentrate", 4}})
-recipe(probe, "gleba-chemosynthesis", "gleba-chemosynthesis", 5,
-  {{"crushed-gleba-rock", 2}, {"wild-culture", 1}, {"digestate", 1}}, {{"nutrient-goop", 8}})
-recipe(probe, "gleba-biochemistry", "gleba-culture", 6,
-  {{"wild-culture", 1}, {"leach-residue", 1}}, {{"biochemistry-pack", 1}})
+  {{"crushed-gleba-rock", 2}, {"wild-culture", 1}}, {{"leach-residue", 2}, {"ferric-concentrate", 2}})
+-- Fixation takes all its carbon from rock. Recycling returns spent goop with a
+-- carbon loss, so it always consumes more digestate than its goop later leaves.
+recipe(probe, "gleba-chemosynthesis", "gleba-chemosynthesis", 10,
+  {{"crushed-gleba-rock", 4}, {"wild-culture", 1}}, {{"nutrient-goop", 2}})
+recipe(probe, "gleba-digestate-recycling", "gleba-chemosynthesis", 10,
+  {{"digestate", 5}, {"crushed-gleba-rock", 1}, {"wild-culture", 1}}, {{"nutrient-goop", 4}})
+recipe(probe, "gleba-sludge-digestion", "gleba-culture", 4,
+  {{"culture-sludge", 2}}, {{"digestate", 1}})
+-- Assay packs cost bootstrap-grade time and materials, as the first metallurgic
+-- and electromagnetic packs do.
+recipe(probe, "gleba-biochemistry", "gleba-culture", 30,
+  {{"wild-culture", 3}, {"leach-residue", 3}, {"ferric-concentrate", 2}}, {{"biochemistry-pack", 1}})
 recipe(probe, "gleba-iron-reduction", "gleba-roasting", 4,
-  {{"ferric-concentrate", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 4}})
+  {{"ferric-concentrate", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 3}})
 recipe(probe, "gleba-glass", "gleba-roasting", 4,
   {{"leach-residue", 2}}, {{"glass", 2}})
 recipe(probe, "gleba-boxed-iron-reduction", "gleba-roasting", 20,
-  {{"ferric-concentrate", 10}, {"nutrient-goop", 5}}, {{"box-iron-ingot", 4}})
+  {{"ferric-concentrate", 10}, {"nutrient-goop", 5}}, {{"box-iron-ingot", 3}})
 recipe(probe, "gleba-boxed-glass", "gleba-roasting", 20,
   {{"leach-residue", 10}}, {{"box-glass", 2}})
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
   {{"wild-culture", 2}}, {{"domesticated-culture", 1}})
-recipe(cultivation, "gleba-microbiology", "gleba-culture", 8,
-  {{"wild-culture", 1}, {"domesticated-culture", 1}}, {{"microbiology-pack", 1}})
+recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,
+  {{"wild-culture", 2}, {"domesticated-culture", 2}, {"glass", 1}}, {{"microbiology-pack", 1}})
 unlock(cultivation, "nullius-biology-lab")
