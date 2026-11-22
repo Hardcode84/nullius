@@ -60,7 +60,7 @@ imports: carbon-rich materials, copper, aluminum
 | Oxidants poison the mats | Gleba cannot vent oxygen or sulfur dioxide; void recipes for both require `nullius-hydrogen-sulfide` at 0. Gleba itself is never terraformed: removing the hydrogen sulfide or adding oxygen would kill the mats its economy runs on |
 | No carbon dioxide | Carbon comes from carbonate rock through acid neutralization |
 | No usable surface water | No offshore pumps or water wells; water comes from rock sulfidation and biomass dewatering |
-| No seawater or breathable air | Nutrient air filters separate nitrogen from the local air; ordinary air is not made on Gleba. Biology recipes that take seawater, air, or bulk wastewater need contained variants on Gleba; see [Contained culture](#contained-culture) |
+| No seawater or breathable air | Nutrient air filters draw Gleba air, a separate fluid, instead of ordinary air. Distillery separation of Gleba air yields its components, as each planet separates its own air. Biology recipes that take seawater, air, or bulk wastewater need contained variants on Gleba; see [Contained culture](#contained-culture) |
 | Thick haze | Low `solar-power`; light limits phototrophs |
 | No ore deposits | Metals come from leach liquors |
 | No copper | Gleba rock carries no copper; Fulgora stays the sole primary copper source |

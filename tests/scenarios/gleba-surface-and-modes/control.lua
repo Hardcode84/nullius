@@ -6,7 +6,8 @@
 --   on both surfaces.
 -- run: 900 ticks.
 -- expect: Gleba blocks electricity generators, water intakes, normal logistic bots, pneumatic
---   machines, oxygen venting and ordinary air; its filters make nitrogen; Gleba hand crafts and
+--   machines, oxygen venting and ordinary air; its filters make Gleba air, which separates into
+--   nitrogen and vents; Gleba air separation, Gleba hand crafts and
 --   nutrient machines fail on Nauvis.
 local research = require("__nullius-star__/scripts/research")
 local CASE = "gleba-surface-and-modes"
@@ -62,6 +63,14 @@ local function nutrient(surface, name, position, force)
   return machine
 end
 
+local function blueprinted(surface, name, position, force)
+  local ghost = assert(surface.create_entity{name = "entity-ghost", inner_name = name, position = position,
+    force = force, recipe = "nullius-gleba-air-separation"})
+  check(ghost.get_recipe() and ghost.get_recipe().name == "nullius-gleba-air-separation", "ghost lost its recipe")
+  local _, built = ghost.revive()
+  return assert(built, "could not build " .. name)
+end
+
 local function hand_craft(character, recipe)
   local ok, started = pcall(character.begin_crafting, {recipe = recipe, count = 1})
   return ok and started or 0
@@ -89,18 +98,31 @@ function start_attempts(force)
   local a = {}
   storage.attempts = a
 
-  -- Nitrogen vents on Gleba; oxygen stays in the same kind of chimney.
-  a.nitrogen_chimney = nutrient(gleba, "nullius-chimney-3", {140, 70}, force)
+  -- Gleba air vents on Gleba; oxygen stays in the same kind of chimney.
+  a.air_chimney = nutrient(gleba, "nullius-chimney-3", {140, 70}, force)
   a.oxygen_chimney = nutrient(gleba, "nullius-chimney-3", {150, 70}, force)
-  check(a.nitrogen_chimney.insert_fluid{name = "nullius-nitrogen", amount = 400} > 0, "chimney refused nitrogen")
+  check(a.air_chimney.insert_fluid{name = "nullius-gleba-air", amount = 400} > 0, "chimney refused Gleba air")
   check(a.oxygen_chimney.insert_fluid{name = "nullius-oxygen", amount = 400} > 0, "chimney refused oxygen")
-  a.nitrogen_before = a.nitrogen_chimney.get_fluid_count("nullius-nitrogen")
+  a.air_before = a.air_chimney.get_fluid_count("nullius-gleba-air")
   a.oxygen_before = a.oxygen_chimney.get_fluid_count("nullius-oxygen")
 
-  -- Nutrient filters separate Gleba nitrogen, and only on Gleba.
+  -- Nutrient filters draw Gleba air, and only on Gleba.
   a.gleba_filter = nutrient(gleba, "nullius-air-filter-1", {140, 85}, force)
   local recipe = a.gleba_filter.get_recipe()
-  check(recipe and recipe.name == "nullius-air-separation-gleba", "nutrient filter does not separate Gleba air")
+  check(recipe and recipe.name == "nullius-gleba-air", "nutrient filter does not draw Gleba air")
+
+  -- A blueprinted nutrient distillery keeps Gleba air separation on Gleba and separates
+  -- declared Gleba air into nitrogen. Script set_recipe skips surface conditions, so the
+  -- recipe arrives through the blueprint ghost a player would build.
+  a.separator = blueprinted(gleba, "nullius-distillery-1-nutrient", {150, 85}, force)
+  a.separator.get_fuel_inventory().insert{name = GOOP, count = 5}
+  check(a.separator.get_recipe() and a.separator.get_recipe().name == "nullius-gleba-air-separation",
+    "blueprinted Gleba distillery lost Gleba air separation")
+  check(a.separator.insert_fluid{name = "nullius-gleba-air", amount = 300} > 0, "distillery refused Gleba air")
+
+  -- The same blueprint built on Nauvis drops the recipe.
+  local still = blueprinted(nauvis, "nullius-distillery-1", {90, 75}, force)
+  check(still.get_recipe() == nil, "blueprinted Nauvis distillery kept Gleba air separation")
   check(not nauvis.can_place_entity{name = "nullius-air-filter-1-nutrient", position = {80, 75}, force = force},
     "nutrient air filter placeable on Nauvis")
 
@@ -115,10 +137,11 @@ end
 
 function check_attempts()
   local a = storage.attempts
-  check(a.nitrogen_chimney.get_fluid_count("nullius-nitrogen") < a.nitrogen_before, "nutrient chimney did not vent nitrogen")
+  check(a.air_chimney.get_fluid_count("nullius-gleba-air") < a.air_before, "nutrient chimney did not vent Gleba air")
   check(a.oxygen_chimney.get_fluid_count("nullius-oxygen") == a.oxygen_before, "nutrient chimney vented oxygen on Gleba")
-  check(a.gleba_filter.get_fluid_count("nullius-nitrogen") > 0, "Gleba filter made no nitrogen")
+  check(a.gleba_filter.get_fluid_count("nullius-gleba-air") > 0, "Gleba filter made no Gleba air")
   check(a.gleba_filter.get_fluid_count("nullius-air") == 0, "Gleba filter made ordinary air")
+  check(a.separator.get_fluid_count("nullius-nitrogen") > 0, "Gleba air separation made no nitrogen")
   for _, product in ipairs({"nullius-wild-culture", "nullius-small-assembler-1"}) do
     check(a.gleba_hands.get_item_count(product) > 0, "Gleba hand craft made no " .. product)
     check(a.nauvis_hands.get_item_count(product) == 0, "Nauvis hand craft made " .. product)

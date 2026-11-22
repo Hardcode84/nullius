@@ -28,8 +28,8 @@ add_tiers("assembling-machine", "nullius-medium-assembler-", 3)
 add_tiers("assembling-machine", "nullius-large-assembler-", 2)
 add_tiers("assembling-machine", "nullius-hydro-plant-", 3)
 add_tiers("assembling-machine", "nullius-distillery-", 3)
--- Gleba air has no carbon dioxide, so nutrient filters separate its nitrogen.
-add_tiers("assembling-machine", "nullius-air-filter-", 3, nil, "nullius-air-separation-gleba")
+-- Nutrient filters draw Gleba air instead of ordinary air.
+add_tiers("assembling-machine", "nullius-air-filter-", 3, nil, "nullius-gleba-air")
 add_tiers("assembling-machine", "nullius-barrel-pump-", 2)
 add_tiers("assembling-machine", "nullius-priority-compressor-", 3)
 add_tiers("assembling-machine", "nullius-surge-compressor-", 3)

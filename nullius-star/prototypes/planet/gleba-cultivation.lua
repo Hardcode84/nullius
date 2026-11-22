@@ -130,15 +130,40 @@ recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,
   {{"wild-culture", 2}, {"domesticated-culture", 2}, {"glass", 1}}, {{"microbiology-pack", 1}})
 unlock(cultivation, "nullius-biology-lab")
 
--- Gleba air is nitrogen and hydrogen sulfide. Nutrient air filters separate the
--- nitrogen in place of ordinary air, whose separation also yields carbon dioxide.
--- Each cycle gives the nitrogen that ordinary separation draws from one cycle of air.
-data:extend({{
-  type = "recipe", name = "nullius-air-separation-gleba",
-  localised_name = {"recipe-name.nullius-air-separation-gleba"},
-  icons = table.deepcopy(assert(data.raw.fluid["nullius-nitrogen"]).icons),
-  enabled = true, hide_from_player_crafting = true, categories = {"air-filtration"},
-  subgroup = "air-filtration-recipe", order = "nullius-bc", energy_required = 3,
-  ingredients = {}, results = {{type = "fluid", name = "nullius-nitrogen", amount = 90}},
-  main_product = "nullius-nitrogen", allow_decomposition = false,
-}})
+-- Gleba air is nitrogen and hydrogen sulfide, without the carbon dioxide of
+-- ordinary air, so it is its own fluid and ordinary air recipes never take it.
+-- Nutrient air filters make it; a fixed recipe ignores recipe surface conditions.
+local air_icons = angelsLegacy.functions.create_gas_fluid_icon(nil,
+  {element_tint["nitrogen"], element_tint["sulfur"], element_tint["nitrogen"]})
+local air_color = {r = 150, g = 170, b = 60}
+local void = table.deepcopy(assert(data.raw.recipe["nullius-void-air"]))
+void.name, void.icons = "nullius-void-gleba-air", table.deepcopy(air_icons)
+void.crafting_machine_tint = {primary = air_color}
+void.ingredients = {{type = "fluid", name = "nullius-gleba-air", amount = 200}}
+data:extend({
+  {
+    type = "fluid", name = "nullius-gleba-air", icons = air_icons,
+    subgroup = "air-filtration", order = "nullius-bg", base_color = air_color, flow_color = air_color,
+    heat_capacity = "0.04kJ", default_temperature = 25, max_temperature = 100, gas_temperature = 0,
+    -- Nothing ships Gleba air yet, so it has no barrel.
+    auto_barrel = false,
+  },
+  {
+    type = "recipe", name = "nullius-gleba-air", localised_name = {"fluid-name.nullius-gleba-air"},
+    enabled = true, hide_from_player_crafting = true, categories = {"air-filtration"},
+    subgroup = "air-filtration-recipe", order = "nullius-bg", energy_required = 3, ingredients = {},
+    results = {{type = "fluid", name = "nullius-gleba-air", amount = 150}}, main_product = "nullius-gleba-air",
+  },
+  {
+    type = "recipe", name = "nullius-gleba-air-separation",
+    localised_name = {"recipe-name.nullius-gleba-air-separation"},
+    icons = table.deepcopy(assert(data.raw.fluid["nullius-nitrogen"]).icons),
+    enabled = true, allow_decomposition = false, categories = {"distillation"},
+    subgroup = "air-filtration-recipe", order = "nullius-bh",
+    crafting_machine_tint = {primary = air_color}, energy_required = 1,
+    ingredients = {{type = "fluid", name = "nullius-gleba-air", amount = 150}},
+    results = {{type = "fluid", name = "nullius-nitrogen", amount = 90}},
+    main_product = "nullius-nitrogen", surface_conditions = table.deepcopy(gleba_only),
+  },
+  void,
+})
