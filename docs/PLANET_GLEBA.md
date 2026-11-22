@@ -470,6 +470,7 @@ and correlates astronomy packs once it joins the array.
 | Decision | Options |
 |---|---|
 | Biology pack spoilage | Whether biology packs spoil |
+| Higher-tier Gleba goop | Tier 2 and 3 bioreactors burn more goop per fixation cycle than it makes, so Gleba fixation and culture scale with tier 1 machines. Add more efficient goop recipes that only higher-tier machines can run |
 | Vanilla overlap | Spoiling machine fuel is a vanilla Gleba mechanic; goop keeps its own chemistry, carbon loop, names, and values |
 | Contamination | Whether screening's contaminated culture can spread to neighbouring cultures, which would make containment walls a production layout rule |
 | Escaped organisms | Complex contained lines could hatch early through `spoil_to_trigger_result` and roam as an uncontrolled force. Needs a hostile force on a mod with frozen evolution; outside the planet slice |
