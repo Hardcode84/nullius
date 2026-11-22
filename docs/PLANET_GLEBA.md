@@ -87,6 +87,8 @@ rock throughput.
 
 ## Resource model
 
+The wreck lies between a small ferric rock outcrop and a microbial mat. Farther from the landing, both resources occur in scattered clumps with bare ground between them.
+
 ### Rock
 
 | Rule | Value |

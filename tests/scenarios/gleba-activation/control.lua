@@ -21,13 +21,33 @@ local function check_stock(wreck)
   end
 end
 
-local function survey_minerals(surface, area)
-  for _, name in ipairs({"nullius-gleba-rock", "nullius-microbial-mat"}) do
-    check(surface.count_entities_filtered{name = name, position = {0, 0}, radius = 40} >= 20,
-      "missing landing patch: " .. name)
-    check(surface.count_entities_filtered{name = name, area = area} >
-      surface.count_entities_filtered{name = name, position = {0, 0}, radius = 65}, "missing remote " .. name)
+local function survey_patch(surface, name, area)
+  local min_x, min_y, max_x, max_y = 40, 40, -40, -40
+  local landing, remote, peak = 0, 0, 0
+  local blocks = {}
+  for _, resource in pairs(surface.find_entities_filtered{name = name, area = area}) do
+    local x, y = resource.position.x, resource.position.y
+    if x*x + y*y <= 40*40 then
+      landing = landing + 1
+      min_x, max_x = math.min(min_x, x), math.max(max_x, x)
+      min_y, max_y = math.min(min_y, y), math.max(max_y, y)
+    else
+      remote = remote + 1
+      local block = math.floor(x/16) .. "," .. math.floor(y/16)
+      blocks[block] = (blocks[block] or 0) + 1
+      peak = math.max(peak, blocks[block])
+    end
   end
+  local width, height = max_x - min_x + 1, max_y - min_y + 1
+  local report = {landing = landing, width = width, height = height, remote = remote, peak = peak}
+  local message = surface.name .. " " .. name .. " " .. helpers.table_to_json(report)
+  check(landing >= 4 and width <= 10 and height <= 10, "landing patch size: " .. message)
+  check(landing <= width * height * 0.65, "landing patch is dense: " .. message)
+  check(remote > 0 and remote < 3000 and peak <= 64, "remote patch coverage: " .. message)
+  return report
+end
+
+local function survey_minerals(surface, area)
   local mud = {
     ["light-mud-decal"] = true, ["dark-mud-decal"] = true,
     ["cracked-mud-decal"] = true, ["grey-cracked-mud-decal"] = true,
@@ -109,6 +129,8 @@ local function survey_minerals(surface, area)
   check(counts.medium > 0 and counts.highland > 0 and counts.cliff > 0, "missing rocky terrain " .. report)
   check(counts.small > counts.medium and counts.near_medium > 0.5 * counts.small,
     "small rocks do not cluster around medium rocks " .. report)
+  counts.rock = survey_patch(surface, "nullius-gleba-rock", area)
+  counts.mat = survey_patch(surface, "nullius-microbial-mat", area)
   return counts
 end
 

@@ -58,11 +58,16 @@ local function add_patch(name, product, icon, color, offset, noise_seed, mat)
   else
     ore.stages.sheet.tint = color
   end
-  local noise = "basis_noise{x=x,y=y,seed0=map_seed,seed1=" .. noise_seed ..
+  local field = "basis_noise{x=x,y=y,seed0=map_seed,seed1=" .. noise_seed ..
     ",input_scale=0.035,output_scale=1}"
+  local clumps = "basis_noise{x=x,y=y,seed0=map_seed,seed1=" .. (noise_seed + 1) ..
+    ",input_scale=0.16,output_scale=1}"
+  local radius = "sqrt((x - (" .. offset .. "))^2 + (y - 8)^2)"
+  local landing = "4.75 - " .. radius .. " + gleba_cover_noise"
+  local remote = "min(distance - 70, (" .. field .. " - 0.80) * 6, (" .. clumps .. " - 0.30) * 3)"
   ore.autoplace = {
     default_enabled = false, tile_restriction = dry_tiles,
-    probability_expression = "max(9 - sqrt((x - (" .. offset .. "))^2 + (y - 8)^2) + 2 * gleba_cover_noise, min(distance - 70, (" .. noise .. " - 0.68) * 12))",
+    probability_expression = "max(2 - " .. radius .. ", 0.48 * clamp(max(" .. landing .. ", " .. remote .. "), 0, 1))",
     richness_expression = "100",
   }
   data:extend({ore})
