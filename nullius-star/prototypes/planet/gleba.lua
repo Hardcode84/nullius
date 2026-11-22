@@ -64,7 +64,9 @@ local function add_patch(name, product, icon, color, offset, noise_seed, mat)
     ",input_scale=0.16,output_scale=1}"
   local radius = "sqrt((x - (" .. offset .. "))^2 + (y - 8)^2)"
   local landing = "4.75 - " .. radius .. " + gleba_cover_noise"
-  local remote = "min(distance - 70, (" .. field .. " - 0.80) * 6, (" .. clumps .. " - 0.30) * 3)"
+  -- Select widely spaced sites before applying the local patch shape.
+  local site = "gleba_simple_spot(" .. (noise_seed + 2) .. ", 24, 136, 1) > 0"
+  local remote = "min(distance - 70, (" .. field .. " - 0.80) * 6, (" .. clumps .. " - 0.30) * 3, " .. site .. ")"
   ore.autoplace = {
     default_enabled = false, tile_restriction = dry_tiles,
     probability_expression = "max(2 - " .. radius .. ", 0.48 * clamp(max(" .. landing .. ", " .. remote .. "), 0, 1))",

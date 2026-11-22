@@ -24,7 +24,7 @@ end
 local function survey_patch(surface, name, area)
   local min_x, min_y, max_x, max_y = 40, 40, -40, -40
   local landing, remote, peak = 0, 0, 0
-  local blocks = {}
+  local blocks, chunks = {}, {}
   for _, resource in pairs(surface.find_entities_filtered{name = name, area = area}) do
     local x, y = resource.position.x, resource.position.y
     if x*x + y*y <= 40*40 then
@@ -33,17 +33,22 @@ local function survey_patch(surface, name, area)
       min_y, max_y = math.min(min_y, y), math.max(max_y, y)
     else
       remote = remote + 1
+      chunks[math.floor(x / 32) .. "," .. math.floor(y / 32)] = true
       local block = math.floor(x/16) .. "," .. math.floor(y/16)
       blocks[block] = (blocks[block] or 0) + 1
       peak = math.max(peak, blocks[block])
     end
   end
   local width, height = max_x - min_x + 1, max_y - min_y + 1
-  local report = {landing = landing, width = width, height = height, remote = remote, peak = peak}
+  local report = {
+    landing = landing, width = width, height = height,
+    remote = remote, peak = peak, remote_chunks = table_size(chunks),
+  }
   local message = surface.name .. " " .. name .. " " .. helpers.table_to_json(report)
   check(landing >= 4 and width <= 10 and height <= 10, "landing patch size: " .. message)
   check(landing <= width * height * 0.65, "landing patch is dense: " .. message)
   check(remote > 0 and remote < 3000 and peak <= 64, "remote patch coverage: " .. message)
+  check(report.remote_chunks <= 32, "remote patches occupy more than one eighth of surveyed chunks: " .. message)
   return report
 end
 
