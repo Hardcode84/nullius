@@ -19,6 +19,9 @@ for _, spec in ipairs(bioreactors.specs) do
     type = "burner", fuel_categories = {"nullius-nutrient"}, effectivity = 1,
     fuel_inventory_size = 1, burnt_inventory_size = 1,
   }
+  if spec.category then
+    table.insert(machine.crafting_categories, spec.category)
+  end
   machine.effect_receiver = machine.effect_receiver or {}
   machine.effect_receiver.base_effect = machine.effect_receiver.base_effect or {}
   machine.effect_receiver.base_effect.productivity = productivity[spec.tier]

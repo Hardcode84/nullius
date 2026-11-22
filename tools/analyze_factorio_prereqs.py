@@ -1031,7 +1031,12 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         if characters and category not in machine_only_categories:
             return f"<character:{characters[0]}>", (frozenset(), 0)
         candidates: list[tuple[str, tuple[frozenset[str], int]]] = []
+        # An exact executor also selects the item that places it.
+        override = executor_overrides.get(category)
         for item_name in sorted(set(category_machines.get(category, []))):
+            entities = category_machine_entities.get(category, {}).get(item_name, [])
+            if override is not None and override not in {name for _, name in entities}:
+                continue
             if item_name in available_machines:
                 candidates.append(
                     (f"<available:{item_name}>", (frozenset(), 0))

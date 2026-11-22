@@ -1,7 +1,6 @@
-@tests/progression/nauvis-boundary.args
+@tests/progression/nauvis-raw-boundary.args
 --technology
-nullius-biochemistry-1
---require-no-additional-technologies
+nullius-nutrient-technology
 --available
 nullius-digestate
 --recipe

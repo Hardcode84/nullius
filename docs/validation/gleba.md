@@ -79,21 +79,22 @@ The nutrient filter's fixed recipe therefore selects Gleba air, and the scenario
 
 ## Bioreactors
 
-`bioreactor-modes`, Factorio 2.1.24 (52 assertions, tick 900):
+`bioreactor-modes`, Factorio 2.1.24 (71 assertions, tick 900):
 
 | Check | Result |
 |---|---|
-| Unlock | No bioreactor mode before Biochemistry 1. Chemical plant 2 stays ordinary before Bioreactor Engineering 2 and while its construction recipe is disabled. A blueprinted hydro plant 3 bioreactor ghost reverts to the ordinary machine |
-| Prototypes | Each bioreactor burns goop at its tier multiple of the ordinary machine's power |
-| Production | 12 methanol crafts in a tier 1 bioreactor yield 28 methanol, two bonus crafts from tier 1 productivity, and leave digestate in the burnt-result slot |
+| Unlock | No bioreactor mode before Nutrient Technology. Chemical plant 2 stays ordinary before Bioreactor Engineering 2 and while its construction recipe is disabled. A blueprinted hydro plant 3 bioreactor ghost reverts to the ordinary machine |
+| Prototypes | Each chemical plant, hydro plant and flotation cell bioreactor burns goop at its tier multiple of the ordinary machine's power; none of these families has a nutrient mode |
+| Production | 12 methanol crafts in a tier 1 bioreactor yield 28 methanol, two bonus crafts from tier 1 productivity, and burn the ordinary machine's energy from goop |
+| Gleba mode | A Gleba hydro plant 1 switches to bioreactor mode and back, spilling its goop. A Gleba flotation cell bioreactor leaches ferric rock |
 | Leaving | Switching back preserves health and spills the remaining goop and digestate |
-| Cycles | Gleba hydro plant 1: ordinary, nutrient, bioreactor, ordinary, spilling the nutrient fuel. Vulcanus chemical plant 1: ordinary, pneumatic, bioreactor, ordinary |
+| Cycles | Vulcanus chemical plant 1: ordinary, pneumatic, bioreactor, ordinary |
 
 | Contract | Result |
 |---|---|
-| `bioreactor-goop-nauvis.args` | Single-cell protein closes at Biochemistry 1 on the Nauvis boundary; 10 goop cost 218 MJ of machine energy against 80 MJ of fuel value |
-| `bioreactor-goop-fulgora.args` | Hydrocarbon protein closes at Biochemistry 1 on the Fulgora boundary; 10 goop cost 116 MJ against 80 MJ |
-| `bioreactor-digestate.args` | Digestate dissolves into sludge at Biochemistry 1 on the Nauvis boundary |
+| `bioreactor-goop-nauvis.args` | Single-cell protein closes at Nutrient Technology on the Nauvis boundary; 10 goop cost 252 MJ of machine energy against 80 MJ of fuel value |
+| `bioreactor-goop-fulgora.args` | Hydrocarbon protein closes at its research on the Fulgora boundary; 10 goop cost 141 MJ against 80 MJ |
+| `bioreactor-digestate.args` | Digestate dissolves into sludge at Nutrient Technology on the Nauvis boundary |
 
 The energy bound counts every machine in the marginal manifest at its ordinary power, without modules.
 

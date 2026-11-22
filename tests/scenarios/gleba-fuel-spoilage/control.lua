@@ -1,6 +1,6 @@
 -- given: Gleba access and Nutrient Technology, declared goop and cultures near the end of their spoil
 -- time, and declared crushed rock. No electricity on Gleba.
--- place: nutrient labs, a nutrient flotation cell, a nutrient chemical plant,
+-- place: nutrient labs, a flotation cell and a chemical plant in bioreactor mode,
 -- a nutrient inserter and chests on cleared Gleba ground.
 -- act: let fuel and cultures spoil, then empty one lab with the nutrient inserter and
 -- run sludge digestion and digestate recycling.
@@ -57,8 +57,8 @@ local function prepare()
 
   storage.cultures = create("iron-chest", {50, 70})
   storage.cultures.insert{name = WILD, count = 4, spoil_percent = NEAR_SPOILED}
-  storage.cell = create("nullius-flotation-cell-1-nutrient", {60, 70})
-  storage.chemical = create("nullius-chemical-plant-1-nutrient", {70, 70})
+  storage.cell = create("nullius-flotation-cell-1-bioreactor", {60, 70})
+  storage.chemical = create("nullius-chemical-plant-1-bioreactor", {70, 70})
   for _, machine in ipairs({storage.cell, storage.chemical}) do fuel(machine).insert{name = GOOP, count = 2} end
 end
 

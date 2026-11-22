@@ -13,11 +13,16 @@ local probe = {
   }},
 }
 -- Researched on Nauvis before transfer, as Pneumatic Technology and Primitive
--- Filtration are. Geology 2 supplies the crushed-mineral assays it builds on.
+-- Filtration are. Geology 2 supplies the crushed-mineral assays it builds on;
+-- Nitrogen Chemistry 1 supplies the ammonia for single-cell protein off Gleba.
 local nutrient = {
   type = "technology", name = "nullius-nutrient-technology", order = "nullius-dga",
   icon = icon_dir .. "nutrients.png", icon_size = 64,
-  prerequisites = {probe.name, "nullius-geology-2"}, effects = {},
+  prerequisites = {probe.name, "nullius-geology-2", "nullius-nitrogen-chemistry-1"},
+  effects = {
+    {type = "nothing", effect_description = {"technology-description.nullius-bioreactor-1"}},
+    {type = "unlock-recipe", recipe = "nullius-single-cell-protein"},
+  },
   unit = {count = 20, time = 15, ingredients = {
     {"nullius-geology-pack", 1}, {"nullius-climatology-pack", 1},
     {"nullius-mechanical-pack", 1}, {"nullius-electrical-pack", 1},
@@ -129,6 +134,19 @@ recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,
   {{"wild-culture", 2}, {"domesticated-culture", 2}, {"glass", 1}}, {{"microbiology-pack", 1}})
 unlock(cultivation, "nullius-biology-lab")
+
+-- Off Gleba, spent and spoiled goop dissolves into sludge.
+data:extend({{
+  type = "recipe", name = "nullius-digestate-dissolution",
+  localised_name = {"recipe-name.nullius-digestate-dissolution"},
+  icon = icon_dir .. "burnt-spoilage.png", icon_size = 64,
+  categories = {"nullius-water-treatment"}, subgroup = "biology-material", order = "nullius-gz-digestate",
+  enabled = false, energy_required = 2,
+  ingredients = {{type = "item", name = "nullius-digestate", amount = 5}, {type = "fluid", name = "nullius-water", amount = 50}},
+  results = {{type = "fluid", name = "nullius-sludge", amount = 50}}, main_product = "nullius-sludge",
+  allow_productivity = false, allow_decomposition = false,
+}})
+unlock(nutrient, "nullius-digestate-dissolution")
 
 -- Gleba air is nitrogen and hydrogen sulfide, without the carbon dioxide of
 -- ordinary air, so it is its own fluid and ordinary air recipes never take it.

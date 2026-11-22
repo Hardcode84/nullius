@@ -82,6 +82,26 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         args.surface_property = [("pressure", 0)]
         self.assertEqual(analyze(data, args)["unresolved"], [])
 
+    def test_executor_override_selects_the_item_that_places_it(self):
+        def machine(name, item):
+            return {"name": name, "crafting_categories": ["culture"], "crafting_speed": 1,
+                    "minable": {"result": item}}
+        data = {
+            "item": {"a-plant": {"name": "a-plant", "place_result": "a-plant"},
+                     "z-cell": {"name": "z-cell", "place_result": "z-cell"}},
+            "recipe": {"grow": {"name": "grow", "enabled": True, "category": "culture",
+                                "ingredients": [], "results": [{"type": "item", "name": "pack", "amount": 1}]}},
+            "assembling-machine": {"a-plant": {"name": "a-plant", "crafting_categories": []},
+                                   "z-cell": {"name": "z-cell", "crafting_categories": []},
+                                   "a-plant-mode": machine("a-plant-mode", "a-plant"),
+                                   "z-cell-mode": machine("z-cell-mode", "z-cell")},
+        }
+        args = SimpleNamespace(targets=["pack"], technology=[], surface_property=[], available=[],
+                               available_machine=["a-plant", "z-cell"], raw=[], executor=[("culture", "z-cell-mode")])
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual([step["executor"]["name"] for step in report["selected_recipes"]], ["z-cell-mode"])
+
     def test_omitted_enabled_uses_factorio_default(self):
         data = {"recipe": {"vent": {"ingredients": [], "results": []},
                            "locked": {"enabled": False, "ingredients": [], "results": []}},

@@ -41,6 +41,13 @@ local function collect(inventory)
   end
 end
 
+-- A machine's Gleba mode: chemical plants, hydro plants and flotation cells use bioreactor mode.
+local function gleba_mode(name)
+  local nutrient, bioreactor = name .. "-nutrient", name .. "-bioreactor"
+  assert((prototypes.entity[nutrient] ~= nil) ~= (prototypes.entity[bioreactor] ~= nil), "no single Gleba mode for " .. name)
+  return prototypes.entity[nutrient] and nutrient or bioreactor
+end
+
 local function place(item, inventory, pos)
   local surface, force = storage.body.surface, storage.body.force
   local name = item_name(item)
@@ -49,7 +56,7 @@ local function place(item, inventory, pos)
   local entity = assert(surface.create_entity{name = name, force = force, position = position})
   position = entity.position
   check(remote.call("nullius-test-transitions", "execute", entity), "mode switch failed " .. name)
-  return assert(surface.find_entity(name .. "-nutrient", position), "missing nutrient " .. name)
+  return assert(surface.find_entity(gleba_mode(name), position), "missing Gleba mode of " .. name)
 end
 
 -- Start count crafts of recipe in an idle machine with ingredients from the stock.

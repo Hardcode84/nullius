@@ -1,6 +1,6 @@
 @tests/progression/fulgora-launch-boundary.args
 --technology
-nullius-biochemistry-1
+nullius-hydrocarbon-protein
 --require-no-additional-technologies
 --manifest
 --marginal

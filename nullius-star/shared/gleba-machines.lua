@@ -1,4 +1,5 @@
 -- Ordinary items place the electric machine. Ctrl+R selects its nutrient mode.
+-- Chemical plants, hydro plants and flotation cells use their bioreactor mode instead.
 local machines = {}
 
 local function add(entity_type, name, category, fixed_recipe)
@@ -17,8 +18,6 @@ add_tiers("mining-drill", "nullius-large-miner-", 2)
 add_tiers("mining-drill", "nullius-extractor-", 2)
 
 add_tiers("assembling-machine", "nullius-crusher-", 3, "gleba-crushing")
-add_tiers("assembling-machine", "nullius-flotation-cell-", 3, "gleba-culture")
-add_tiers("assembling-machine", "nullius-chemical-plant-", 3, "gleba-chemosynthesis")
 add_tiers("assembling-machine", "nullius-small-furnace-", 3, "gleba-roasting")
 add_tiers("assembling-machine", "nullius-medium-furnace-", 3, "gleba-roasting")
 add_tiers("assembling-machine", "nullius-large-furnace-", 2, "gleba-roasting")
@@ -26,7 +25,6 @@ add_tiers("assembling-machine", "nullius-foundry-", 3)
 add_tiers("assembling-machine", "nullius-small-assembler-", 3)
 add_tiers("assembling-machine", "nullius-medium-assembler-", 3)
 add_tiers("assembling-machine", "nullius-large-assembler-", 2)
-add_tiers("assembling-machine", "nullius-hydro-plant-", 3)
 add_tiers("assembling-machine", "nullius-distillery-", 3)
 -- Nutrient filters draw Gleba air instead of ordinary air.
 add_tiers("assembling-machine", "nullius-air-filter-", 3, nil, "nullius-gleba-air")

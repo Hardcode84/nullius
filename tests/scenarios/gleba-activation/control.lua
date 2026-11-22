@@ -222,8 +222,9 @@ script.on_nth_tick(1, function(event)
     check(#effects == 1 and effects[1].type == "unlock-space-location" and effects[1].space_location == planet.name,
       "probe research unlocks more than Gleba")
     local nutrient = force.technologies["nullius-nutrient-technology"]
-    check(table_size(nutrient.prerequisites) == 2 and nutrient.prerequisites["nullius-probe-gleba"]
-      and nutrient.prerequisites["nullius-geology-2"], "unexpected nutrient research gate")
+    check(table_size(nutrient.prerequisites) == 3 and nutrient.prerequisites["nullius-probe-gleba"]
+      and nutrient.prerequisites["nullius-geology-2"] and nutrient.prerequisites["nullius-nitrogen-chemistry-1"],
+      "unexpected nutrient research gate")
     check(nutrient.research_unit_count == 20 and nutrient.research_unit_energy == 15 * 60,
       "unexpected nutrient research cost")
     check_early_packs(nutrient, "nutrient research")

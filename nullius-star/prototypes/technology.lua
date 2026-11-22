@@ -12863,22 +12863,6 @@ data:extend({
     icons = data.raw.fluid["nullius-nucleotides"].icons,
     effects = {
       {
-        type = "nothing",
-        effect_description = {"technology-description.nullius-bioreactor-1"}
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-single-cell-protein"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-hydrocarbon-protein"
-      },
-      {
-        type = "unlock-recipe",
-        recipe = "nullius-digestate-dissolution"
-      },
-      {
         type = "unlock-recipe",
         recipe = "nullius-biology-lab"
       },

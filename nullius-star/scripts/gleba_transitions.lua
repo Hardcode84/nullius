@@ -1,5 +1,4 @@
 local assemblers = require("scripts.overcharged_assemblers")
-local bioreactors = require("scripts.bioreactors")
 local burner_fuel = require("scripts.burner_fuel")
 local transitions = require("scripts.transitions")
 
@@ -53,10 +52,6 @@ for _, spec in ipairs(require("shared.gleba-machines")) do
     replace_fn = replace,
     condition = unlocked,
   })
-  -- On Gleba the cycle is ordinary, nutrient, bioreactor.
-  if bioreactors.has(ordinary) then
-    bioreactors.register_from(nutrient, ordinary, burner_fuel.release)
-  end
   transitions.register(nutrient, ordinary, {on_leave = burner_fuel.release, replace_fn = replace})
 end
 

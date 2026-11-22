@@ -54,11 +54,18 @@ end
 
 local GOOP = "nullius-nutrient-goop"
 
+-- A machine's Gleba mode: chemical plants, hydro plants and flotation cells use bioreactor mode.
+local function gleba_mode(name)
+  local nutrient, bioreactor = name .. "-nutrient", name .. "-bioreactor"
+  assert((prototypes.entity[nutrient] ~= nil) ~= (prototypes.entity[bioreactor] ~= nil), "no single Gleba mode for " .. name)
+  return prototypes.entity[nutrient] and nutrient or bioreactor
+end
+
 local function nutrient(surface, name, position, force)
   local entity = assert(surface.create_entity{name = name, position = position, force = force})
   position = entity.position
-  check(remote.call("nullius-test-transitions", "execute", entity), "failed to enter nutrient mode: " .. name)
-  local machine = assert(surface.find_entity(name .. "-nutrient", position), "missing nutrient " .. name)
+  check(remote.call("nullius-test-transitions", "execute", entity), "failed to enter Gleba mode: " .. name)
+  local machine = assert(surface.find_entity(gleba_mode(name), position), "missing Gleba mode of " .. name)
   machine.get_fuel_inventory().insert{name = GOOP, count = 5}
   return machine
 end
@@ -220,17 +227,17 @@ script.on_nth_tick(1, function(event)
       local pos = entity.position
       local half = math.floor(entity.max_health / 2)
       entity.health = half
-      check(remote.call("nullius-test-transitions", "execute", entity), "failed to enter nutrient mode: " .. case.name)
-      local nutrient = gleba.find_entity(case.name .. "-nutrient", pos)
+      check(remote.call("nullius-test-transitions", "execute", entity), "failed to enter Gleba mode: " .. case.name)
+      local nutrient = gleba.find_entity(gleba_mode(case.name), pos)
       check(nutrient ~= nil, "missing nutrient entity after switch: " .. case.name)
       if nutrient then
-        check(math.abs(nutrient.health - half) < 1, "health changed entering nutrient mode: " .. case.name)
+        check(math.abs(nutrient.health - half) < 1, "health changed entering Gleba mode: " .. case.name)
         nutrient.get_fuel_inventory().insert{name = "nullius-nutrient-goop", count = 2}
-        check(remote.call("nullius-test-transitions", "execute", nutrient), "failed to leave nutrient mode: " .. case.name)
+        check(remote.call("nullius-test-transitions", "execute", nutrient), "failed to leave Gleba mode: " .. case.name)
         local back = gleba.find_entity(case.name, pos)
         check(back ~= nil, "missing ordinary entity after return: " .. case.name)
         if back then
-          check(math.abs(back.health - half) < 1, "health changed leaving nutrient mode: " .. case.name)
+          check(math.abs(back.health - half) < 1, "health changed leaving Gleba mode: " .. case.name)
           if back.prototype.electric_energy_source_prototype then
             check(back.energy == 0, "returning to ordinary mode created electric energy: " .. case.name)
           end
@@ -242,11 +249,11 @@ script.on_nth_tick(1, function(event)
           if drop.stack.name == "nullius-nutrient-goop" then goop = goop + drop.stack.count end
           drop.destroy()
         end
-        check(goop == 2, "leaving nutrient mode did not release fuel for " .. case.name .. " (got " .. goop .. ")")
+        check(goop == 2, "leaving Gleba mode did not release fuel for " .. case.name .. " (got " .. goop .. ")")
       end
     end
 
-    -- Upgrade chains stay in nutrient mode.
+    -- Upgrade chains stay in their Gleba mode.
     local chains = {
       {"inserter-nutrient", "bob-turbo-inserter-nutrient"},
       {"bob-turbo-inserter-nutrient", "bulk-inserter-nutrient"},
@@ -254,7 +261,7 @@ script.on_nth_tick(1, function(event)
       {"nullius-small-assembler-1-nutrient", "nullius-small-assembler-2-nutrient"},
       {"nullius-small-assembler-2-nutrient", "nullius-small-assembler-3-nutrient"},
       {"nullius-crusher-1-nutrient", "nullius-crusher-2-nutrient"},
-      {"nullius-chemical-plant-1-nutrient", "nullius-chemical-plant-2-nutrient"},
+      {"nullius-chemical-plant-1-bioreactor", "nullius-chemical-plant-2-bioreactor"},
       {"nullius-small-furnace-1-nutrient", "nullius-small-furnace-2-nutrient"},
       {"nullius-foundry-1-nutrient", "nullius-foundry-2-nutrient"},
       {"nullius-lab-1-nutrient", "nullius-lab-2-nutrient"},

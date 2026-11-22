@@ -27,7 +27,7 @@ metals: bioleached from rock; iron cheap, aluminum dear, no copper
 local_progression: local science through Orbital Construction and a return cargo flight
 planet_pack: biochemistry pack; no new science pack
 research_branch: the whole biology tree, parallel to the main tree
-pre_cargo_global_reward: bioreactor chemical and hydro plants
+pre_cargo_global_reward: bioreactor chemical plants, hydro plants and flotation cells
 exports: wild culture, genomes and progenitors, uranium, sulfur compounds, iron
 imports: carbon-rich materials, copper, aluminum
 ```
@@ -41,14 +41,15 @@ imports: carbon-rich materials, copper, aluminum
 | Biology tree | A separate branch rooted at Gleba access, parallel to the main tree; see [Biology branch](#biology-branch) |
 | Where biology runs | Biology recipes have no surface condition. Life starts only from Gleba wild culture, so other planets run biology once cargo delivers it; see [Seeds](#seeds) |
 | Electricity | None on Gleba. Machines burn nutrient goop, as Vulcanus machines burn volcanic gas |
-| Global machine reward | Bioreactor chemical plants and hydro plants, the families [Fulgora](PLANET_FULGORA.md#overcharged-assemblers) reserves for other planets |
+| Global machine reward | Bioreactor chemical plants, hydro plants and flotation cells, families [Fulgora](PLANET_FULGORA.md#overcharged-assemblers) reserves for other planets |
 | Metals | Bioleaching of local rock; no ore deposits |
 | Production decline | Comes from carbon and rock mass balance, not a loss factor; see [Carbon](#carbon) |
 | Random breeding | Probabilistic recipes never carry a closure; see [Randomness rule](#randomness-rule) |
 | Radio array | Gleba joins; see [Radio astronomy](#radio-astronomy) |
-| First research | Probe research only opens the destination. Nutrient Technology, researched on Nauvis after the probe and Geology 2, unlocks the landing recipes and nutrient mode, as Pneumatic Technology and Primitive Filtration do |
+| First research | Probe research only opens the destination. Nutrient Technology, researched on Nauvis after the probe, Geology 2 and Nitrogen Chemistry 1, unlocks the landing recipes, nutrient mode and bioreactor tier 1, as Pneumatic Technology and Primitive Filtration do |
 | Boxed recipes | None at landing. Boxed Gleba recipes arrive with later bulk-production research |
 | Escaped organisms | Not part of the planet slice |
+| Bioreactors | Tier 1 arrives with Nutrient Technology, as the other planets' first improved tier arrives with their access research. For chemical plants, hydro plants and flotation cells the bioreactor is also the Gleba mode, so every machine has two modes on Gleba. Tier 1 burns no more goop than a nutrient machine, so the bootstrap runs in bioreactors; higher tiers trade steep goop use for productivity |
 
 ## Environmental constraints
 
@@ -141,7 +142,7 @@ The wreck lies between a small ferric rock outcrop and a microbial mat. Farther 
 | Fluid | Source | Constraint |
 |---|---|---|
 | Water | Sulfiding ferric oxide; biomass dewatering | Low and tied to rock throughput |
-| Hydrogen | H2S splitting in nutrient chemical plants | Abundant; sulfur coproduct |
+| Hydrogen | H2S splitting in chemical plant bioreactors | Abundant; sulfur coproduct |
 | Oxygen | Gypsum decomposition | Chemistry and contained-culture input only; cannot be vented |
 
 ### Metals
@@ -191,23 +192,23 @@ The recycling carbon loss is a design value in the recipe.
 
 | Family | Mode | Surface | Bonus | Fuel |
 |---|---|---|---|---|
-| The Vulcanus pneumatic list: assemblers, boxers, barrel pumps, filters, hydro plants, distilleries, chemical plants, compressors, flotation cells, labs, extractors, pumps, inserters, miners | Nutrient | Gleba | None | Goop |
+| The Vulcanus pneumatic list except the bioreactor families: assemblers, boxers, barrel pumps, filters, distilleries, compressors, labs, extractors, pumps, inserters, miners | Nutrient | Gleba | None | Goop |
 | Nanofabricators | Nutrient | Gleba | None | Goop; needed by genome and progenitor recipes |
 | Crushers, furnaces and foundries | Nutrient | Gleba | None | Goop |
 | Radio dishes and correlators | Nutrient | Gleba | None | Goop |
 | Biology labs | Nutrient | Gleba | None | Goop |
-| Chemical plants and hydro plants, each tier | Bioreactor, tiers 1-3 | Any surface | Built-in productivity from the shared constants | Goop, increasing steeply per tier like overcharged power |
+| Chemical plants, hydro plants and flotation cells, each tier | Bioreactor, tiers 1-3; also their Gleba mode | Any surface | Built-in productivity from the shared constants | Goop: tier 1 at ordinary power, then increasing steeply per tier like overcharged power |
 | Rocket silo | Nutrient | Gleba | None | Goop, matching total electric draw as the pneumatic silo |
 | Electrolyzers and electrical infrastructure | Electric only | Not usable on Gleba | | |
 
 | Rule | Value |
 |---|---|
 | Items | Mode-neutral, as Vulcanus and Fulgora |
-| Switching | Ctrl+R. On Gleba the cycle is ordinary, nutrient, bioreactor; bioreactor is skipped until its research and the ordinary recipe are unlocked. Elsewhere the cycle is ordinary, bioreactor |
+| Switching | Ctrl+R toggles ordinary and the machine's alternate mode: nutrient or bioreactor on Gleba, bioreactor elsewhere, pneumatic and then bioreactor on Vulcanus. Bioreactor mode needs its research and the ordinary recipe |
 | Transitions | The common transition system: compatible recipes, contents, modules, and connections survive; stored energy and health never increase; leaving a nutrient mode releases remaining fuel |
 | Upgrades | Upgrade planners keep the mode and use ordinary machine items |
 | Logistics | Unlock the [clockwork logistics](PLANET_VULCANUS.md#primitive-logistics) equipment on Gleba at Robotics 1 and Wild Strain Cultivation. Build and wind it locally. Normal logistic robots are forbidden on Gleba. |
-| Flotation cells | Nutrient mode on Gleba |
+| Flotation cells | Bioreactor mode, including on Gleba |
 | Exclusive pairs | No machine belongs to two improved families: assemblers stay Fulgora, crushers, furnaces, and foundries stay Vulcanus |
 
 ## Biology branch
@@ -224,9 +225,9 @@ Each research unit consumes one of each listed pack.
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
 | Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
-| Nutrient Technology | Biological Probe Signal Recovery and Geology 2 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor and a field-assembled Small Assembler 1. |
-| Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the nutrient flotation cell. |
-| Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. Unlock bioreactor tier 1 and its local fuel routes on Nauvis and Fulgora. |
+| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor and a field-assembled Small Assembler 1. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. |
+| Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the flotation cell bioreactor. |
+| Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. |
 
 Nutrient Technology unlocks a slow recipe in the flotation cell that consumes wild
 culture, leach residue and ferric concentrate for biochemistry packs. Both
@@ -373,15 +374,15 @@ research costs on the other planets.
 | Pack | Research boundary | Local production |
 |---|---|---|
 | Geology | Probe | Sort crushed rock and leach residue in a nutrient crusher. |
-| Climatology | Probe | Sample the atmosphere in a nutrient hydro plant. Use local H₂S and nitrogen in place of air and seawater. |
+| Climatology | Probe | Sample the atmosphere in a hydro plant bioreactor. Use local H₂S and nitrogen in place of air and seawater. |
 | Mechanical | Probe | Assemble reduced-iron gears and rods in a nutrient assembler. |
 | Electrical | Probe | Assemble a test cell from iron plate, graphite, glass and local acid. The cell is a pack ingredient. The recipe works before local aluminum, plastics or electrical power. |
-| Chemical | Experimental Chemistry | A nutrient chemical plant assays sulfuric acid, recovered water, gypsum and glass. The normal four-pack research cost can be paid in the wreck lab. |
+| Chemical | Experimental Chemistry | A chemical plant bioreactor assays sulfuric acid, recovered water, gypsum and glass. The normal four-pack research cost can be paid in the wreck lab. |
 | Physics | Physics | Run a machine experiment in a large nutrient assembler. Use locally built Lab 2s, Nanofabricator 1s, Medium Tank 2s, heat pipes and boxed transport equipment. Match the normal batch of 25 boxed physics packs. Unbox them in a nutrient boxer. Set the material bill against the ordinary 900 s machine experiment. |
 | Astronomy | Astronomy and Gleba Radio Astronomy | Record on Gleba and run the single-recording recipe in a nutrient correlator. Both use locally made recording media. This supplies astronomy packs even before the first shipment of other planets' recordings. |
 
 Make glass from silica and graphite from fixed carbon at the probe. The
-nutrient hydro plant collects atmospheric gas. The nutrient chemical plant
+hydro plant bioreactor collects atmospheric gas. The chemical plant bioreactor
 handles gas reactions and iron reduction. The starter furnace takes the dry
 solid for final smelting. Nutrient Technology unlocks a local handcraft for Small Assembler 1
 from iron plates, gears, leach residue and an inserter. The first machine can use a wreck
@@ -403,7 +404,7 @@ biology for fuel and materials while Nauvis keeps its ordinary industrial route.
 | Research or action | Player result |
 |---|---|
 | Experimental Chemistry → Physics | Supply the first four packs, then add chemical science. Meet the ordinary industrial checkpoints. For the Lab 2 checkpoint place ten locally built Lab 2s. Count nutrient variants as the same building. |
-| Physics → Rocket Science 1 and Composites 2 | Supply all six ordinary packs in one lab. At Rocket Science 1, unlock a fuel assay in the nutrient chemical plant. One batch consumes five locally made rocket-fuel items and produces chemical packs. Verify the native consumption counter before unlocking the silo. Supply carbon composite from the standard process or from Bio-composites. |
+| Physics → Rocket Science 1 and Composites 2 | Supply all six ordinary packs in one lab. At Rocket Science 1, unlock a fuel assay in the chemical plant bioreactor. One batch consumes five locally made rocket-fuel items and produces chemical packs. Verify the native consumption counter before unlocking the silo. Supply carbon composite from the standard process or from Bio-composites. |
 | Fuel checkpoint and Composites 2 → Rocket Science 2 | Make the default stage, nutrient silo, rocket and cargo landing pad on Gleba. Build clockwork logistics for silo loading. |
 | Rocket Science 2 → Orbital Construction | Build the starter pack, foundation, cargo bay, thruster and flight equipment on Gleba. Have clockwork robots fill a platform request through the nutrient silo. Load local propellant for both legs. Fly to Nauvis, deliver a Gleba product, then return to Gleba. |
 
@@ -429,8 +430,9 @@ and modes that other planets can use with their own inputs.
 
 | Reward | Effect |
 |---|---|
-| Biochemistry 1 | Bioreactor tier 1 and goop routes on Nauvis and Fulgora |
-| Bioreactor Engineering 2 and 3 | Bioreactor tiers 2 and 3; biochemistry and local generic packs, priced as Overcharged Assembly 2 and 3; each tier also requires its ordinary construction recipe |
+| Nutrient Technology | Bioreactor tier 1, digestate disposal and the Nauvis goop route |
+| Hydrocarbon Protein | The Fulgora goop route, after Primitive Filtration |
+| Bioreactor Engineering 2 and 3 | Bioreactor tiers 2 and 3; biochemistry and local generic packs, priced and gated as Overcharged Assembly 2 and 3; each tier also requires its ordinary construction recipe |
 | Tailings bioleaching | Once cargo delivers culture, bacteria recover metals from gravel, mineral dust, and sludge on any planet |
 
 Bioreactor research is optional and never gates the ordinary Nauvis path.
@@ -461,14 +463,13 @@ and correlates astronomy packs once it joins the array.
 | Fulgora to Gleba | Organics | Carbon for late biology packs: Fulgora is carbon-rich and metal-poor, Gleba the reverse |
 | Fulgora to Gleba | Copper | Sole primary source |
 | Nauvis or Vulcanus to Gleba | Aluminum | Replaces carbon-expensive local reduction |
-| Nauvis and Fulgora, local | Goop | Fuel for bioreactor chemical and hydro plants |
+| Nauvis and Fulgora, local | Goop | Fuel for bioreactors |
 
 ## Unresolved design decisions
 
 | Decision | Options |
 |---|---|
 | Biology pack spoilage | Whether biology packs spoil |
-| Flotation cell bioreactors | Whether flotation cells join the bioreactor family |
 | Vanilla overlap | Spoiling machine fuel is a vanilla Gleba mechanic; goop keeps its own chemistry, carbon loop, names, and values |
 | Contamination | Whether screening's contaminated culture can spread to neighbouring cultures, which would make containment walls a production layout rule |
 | Escaped organisms | Complex contained lines could hatch early through `spoil_to_trigger_result` and roam as an uncontrolled force. Needs a hostile force on a mod with frozen evolution; outside the planet slice |

@@ -1,18 +1,21 @@
--- given: Biochemistry 1 researched after a locked check, then Bioreactor Engineering 2; Nutrient
---   and Pneumatic Technology for the planet cycles; declared goop, methane and oxygen.
--- place: chemical and hydro plants on landfill on Nauvis, Gleba and Vulcanus.
--- act: switch modes, run methanol synthesis in a tier 1 bioreactor, leave the mode, and place
---   locked bioreactor ghosts.
+-- given: Nutrient Technology researched after a locked check, then Bioreactor Engineering 2;
+--   Pneumatic Technology for the Vulcanus cycle; declared goop, methane, oxygen, crushed
+--   ferric rock and wild culture.
+-- place: chemical plants, hydro plants and flotation cells on landfill on Nauvis, Gleba and
+--   Vulcanus.
+-- act: switch modes, run methanol synthesis in a tier 1 bioreactor and rock leaching in a
+--   Gleba flotation bioreactor, leave the mode, and place locked bioreactor ghosts.
 -- run: 900 ticks.
 -- expect: bioreactors unlock by tier research and construction recipe, add their tier
---   productivity, burn goop into digestate, release fuel on leaving, and join the Gleba and
---   Vulcanus mode cycles.
+--   productivity, burn goop at their tier power, release fuel on leaving, run Gleba culture as
+--   the Gleba mode of their family, and join the Vulcanus mode cycle.
 local research = require("__nullius-star__/scripts/research")
 local shared = require("__nullius-star__/shared/bioreactors")
 local productivity = require("__nullius-star__/thermal-machine-config").productivity
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "bioreactor-modes"
 local GOOP, DIGESTATE = "nullius-nutrient-goop", "nullius-digestate"
+local LEACHING = "nullius-gleba-rock-leaching"
 -- Batches of crafts that fill the input fluid boxes, fed after the previous batch is used.
 local BATCH, FEEDS = 4, {[300] = true, [600] = true}
 local CRAFTS = BATCH * 3
@@ -97,11 +100,11 @@ script.on_nth_tick(1, function(event)
   local force = game.forces.player
   if event.tick == 1 then
     local nauvis = pad(game.surfaces.nauvis)
-    -- Before Biochemistry 1 no bioreactor mode exists.
+    -- Before Nutrient Technology no bioreactor mode exists.
     local locked = place(nauvis, "nullius-chemical-plant-1", {-20, -20})
-    check(not remote.call("nullius-test-transitions", "execute", locked), "bioreactor before Biochemistry 1")
+    check(not remote.call("nullius-test-transitions", "execute", locked), "bioreactor before Nutrient Technology")
     locked.destroy()
-    for _, name in ipairs({"nullius-biochemistry-1", "nullius-nutrient-technology", "nullius-pneumatic-technology"}) do
+    for _, name in ipairs({"nullius-nutrient-technology", "nullius-pneumatic-technology"}) do
       research.complete_with_prerequisites(force.technologies[name])
     end
   elseif event.tick == 2 then
@@ -139,15 +142,24 @@ script.on_nth_tick(1, function(event)
     local ghost = nauvis.find_entity("entity-ghost", {10, 10})
     check(ghost ~= nil and ghost.ghost_name == "nullius-hydro-plant-3", "locked bioreactor ghost kept its mode")
 
-    -- Gleba cycles ordinary, nutrient, bioreactor; Vulcanus ordinary, pneumatic, bioreactor.
+    -- On Gleba the bioreactor is the only goop mode of these families.
     local gleba = planet("nullius-gleba")
-    local hydro = place(gleba, "nullius-hydro-plant-1", {0, 0})
-    local nutrient = switch(hydro, "nullius-hydro-plant-1-nutrient")
-    nutrient.get_fuel_inventory().insert{name = GOOP, count = 3}
-    local position = nutrient.position
-    local reactor = switch(nutrient, "nullius-hydro-plant-1-bioreactor")
-    check(spilled(gleba, position, GOOP) == 3, "leaving nutrient mode kept its goop")
-    switch(reactor, "nullius-hydro-plant-1")
+    for _, spec in ipairs(shared.specs) do
+      check(prototypes.entity[spec.base .. "-nutrient"] == nil, spec.base .. " also has a nutrient mode")
+    end
+    local hydro = switch(place(gleba, "nullius-hydro-plant-1", {0, 0}), "nullius-hydro-plant-1-bioreactor")
+    hydro.get_fuel_inventory().insert{name = GOOP, count = 3}
+    local position = hydro.position
+    switch(hydro, "nullius-hydro-plant-1")
+    check(spilled(gleba, position, GOOP) == 3, "leaving bioreactor mode on Gleba kept its goop")
+    local cell = switch(place(gleba, "nullius-flotation-cell-1", {-10, 10}), "nullius-flotation-cell-1-bioreactor")
+    cell.set_recipe(LEACHING)
+    check(cell.get_recipe() and cell.get_recipe().name == LEACHING, "flotation bioreactor refused Gleba culture")
+    cell.get_fuel_inventory().insert{name = GOOP, count = 5}
+    check(cell.insert{name = "nullius-crushed-gleba-rock", count = 2} == 2, "flotation bioreactor refused rock")
+    check(cell.insert{name = "nullius-wild-culture", count = 1} == 1, "flotation bioreactor refused wild culture")
+    storage.cell = cell
+    -- Vulcanus cycles ordinary, pneumatic, bioreactor.
     local vulcanus = planet("nullius-vulcanus")
     local chemical = place(vulcanus, "nullius-chemical-plant-1", {0, 0})
     local pneumatic = switch(chemical, "nullius-chemical-plant-1-pneumatic")
@@ -155,13 +167,20 @@ script.on_nth_tick(1, function(event)
   elseif FEEDS[event.tick] then
     feed(storage.reactor)
   elseif event.tick == 900 then
+    local leached = storage.cell.get_output_inventory()
+    check(leached.get_item_count("nullius-leach-residue") == 2 and leached.get_item_count("nullius-ferric-concentrate") == 2,
+      "flotation bioreactor did not leach the rock")
     local reactor = storage.reactor
     -- Each full productivity bar adds one craft of two methanol.
     local expected = 2 * (CRAFTS + math.floor(CRAFTS * productivity[1] + 1e-9))
     check(math.abs(reactor.get_fluid_count("nullius-methanol") - expected) < 1e-6,
       "bioreactor made " .. reactor.get_fluid_count("nullius-methanol") .. " methanol, expected " .. expected)
+    -- The crafts burned their tier multiple of the ordinary power from one goop.
     local spent = reactor.get_burnt_result_inventory().get_item_count(DIGESTATE)
-    check(spent > 0, "bioreactor left no digestate")
+    local burned = prototypes.item[GOOP].fuel_value * (spent + 1) - reactor.burner.remaining_burning_fuel
+    local expected_burn = reactor.prototype.energy_usage * 60 * CRAFTS
+    check(math.abs(burned - expected_burn) < expected_burn * 0.02,
+      "bioreactor burned " .. burned .. " J, expected " .. expected_burn)
     local fuel = reactor.get_fuel_inventory().get_item_count(GOOP)
     local burning = reactor.burner.currently_burning and 1 or 0
     check(fuel + burning + spent == 10, "goop neither burned into digestate nor stayed in the fuel slot")
