@@ -20,6 +20,7 @@ from analyze_factorio_prereqs import (
     allowed_on_surface,
     analyze,
     build_production_manifest,
+    energy_bound,
     describe_consumers,
     describe_placeable_entities,
     describe_products,
@@ -1208,6 +1209,53 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["unresolved"], [])
         self.assertEqual(report["selected_recipes"][0]["producer"], "route-b")
         self.assertEqual(report["raw_sources"], {"ore-b": ["simple-entity:rock-b"]})
+
+    def test_energy_bound_compares_machine_energy_with_target_fuel_value(self) -> None:
+        def data_for(energy_usage: str | None) -> dict:
+            machine = {"name": "machine", "crafting_categories": ["assembly"], "crafting_speed": 2}
+            if energy_usage is not None:
+                machine["energy_usage"] = energy_usage
+            return {
+                "item": {
+                    "ore": {"name": "ore"},
+                    "machine": {"name": "machine", "place_result": "machine"},
+                    "fuel": {"name": "fuel", "fuel_value": "8MJ"},
+                },
+                "recipe": {
+                    "make-fuel": {
+                        "name": "make-fuel",
+                        "enabled": True,
+                        "category": "assembly",
+                        "energy_required": 10,
+                        "ingredients": [{"name": "ore", "amount": 1}],
+                        "results": [{"name": "fuel", "amount": 2}],
+                    },
+                },
+                "assembling-machine": {"machine": machine},
+                "resource": {"ore": {"minable": {"result": "ore"}}},
+                "character": {"character": {"crafting_categories": ["crafting"]}},
+            }
+
+        args = SimpleNamespace(
+            targets=["fuel"], technology=[], surface_property=[], available=[],
+            available_machine=["machine"], recipe=[], raw=["ore"],
+        )
+
+        def bound(energy_usage: str | None) -> dict:
+            data = data_for(energy_usage)
+            manifest = build_production_manifest(
+                data, analyze(data, args), {"fuel": 4}, None, marginal=True
+            )
+            return energy_bound(data, manifest, {"fuel": 4})
+
+        # Two cycles of 5 s each make four fuel worth 32 MJ.
+        cheap = bound("1MW")
+        self.assertEqual(cheap["machine_energy_joules"], 10e6)
+        self.assertEqual(cheap["target_fuel_value_joules"], 32e6)
+        self.assertFalse(cheap["holds"])
+        self.assertTrue(bound("4MW")["holds"])
+        with self.assertRaisesRegex(TestFailure, "needs executor energy for: make-fuel"):
+            bound(None)
 
     def test_marginal_manifest_omits_machines_and_execution_order(self) -> None:
         data = {

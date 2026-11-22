@@ -105,6 +105,7 @@ valves["nullius-togglable-small-pump-2-pneumatic"] = { name = "nullius-togglable
 -- Pneumatic machine variants (gas-powered alternates for Vulcanus).
 require("prototypes.pneumatic")
 require("prototypes.planet.gleba-cultivation")
+require("prototypes.planet.bioreactor-research")
 require("prototypes.planet.fulgora-atmosphere")
 
 -- Prevent Recycler from generating recycling recipes for Nullius items.

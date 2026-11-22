@@ -3,6 +3,7 @@ local reinjection = require("scripts.fulgora_reinjection")
 local supercapacitors = require("scripts.supercapacitors")
 local overcharged_assemblers = require("scripts.overcharged_assemblers")
 local gleba_transitions = require("scripts.gleba_transitions")
+local bioreactors = require("scripts.bioreactors")
 
 function entity_added(entity, handbuilt, tags)
   meter.built(entity,tags)
@@ -10,6 +11,7 @@ function entity_added(entity, handbuilt, tags)
   if overcharged_assemblers.built(entity) ~= entity then return end
   if supercapacitors.built(entity) ~= entity then return end
   if gleba_transitions.built(entity) ~= entity then return end
+  if bioreactors.built(entity) ~= entity then return end
   fulgora_collectors.add(entity)
   grounding_coils.built(entity)
   astronomy.built(entity)
@@ -130,7 +132,8 @@ function entity_cloned(event)
   antiproton.built(event.destination)
   local destination = reinjection.built(event.destination)
   if not destination then return end
-  local entity = gleba_transitions.built(supercapacitors.built(overcharged_assemblers.built(destination)))
+  local entity = bioreactors.built(gleba_transitions.built(supercapacitors.built(
+    overcharged_assemblers.built(destination))))
   fulgora_collectors.cloned(entity)
   local solar_level = entity and entity.valid and
     string.match(entity.name, "^nullius%-solar%-collector%-(%d)$")

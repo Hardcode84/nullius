@@ -1,11 +1,11 @@
--- given: all five mode families and an empty upgrade planner.
+-- given: all six mode families and an empty upgrade planner.
 -- place: each source variant alone on landfill on a surface that permits its mode, without
 --   build-event side effects.
 -- act: apply the native default planner.
 -- expect: every link selects the next tier in the same mode; terminal tiers stop.
 local CASE = "variant-upgrades"
 local RESULT = "factorio-tests/" .. CASE .. ".json"
-local SUFFIXES = {"-pneumatic", "-thermal", "-overcharged", "-supercapacitor", "-nutrient"}
+local SUFFIXES = {"-pneumatic", "-thermal", "-overcharged", "-supercapacitor", "-nutrient", "-bioreactor"}
 -- Pneumatic and nutrient modes are placeable only on their planets.
 local PLANETS = {["-pneumatic"] = "nullius-vulcanus", ["-nutrient"] = "nullius-gleba"}
 

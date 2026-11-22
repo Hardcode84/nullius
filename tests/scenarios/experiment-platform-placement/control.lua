@@ -45,7 +45,8 @@ script.on_nth_tick(30, function()
     end
   end
   -- Candidate vacuum rule: environment intakes, fluid-powered machines,
-  -- drills and pumps that need ground or water, and named atmosphere users.
+  -- drills and pumps that need ground or water, Gleba-only modes, and named
+  -- atmosphere users.
   local INTAKE_CATEGORIES = {["air-filtration"] = true, ["water-pumping"] = true, ["seawater-pumping"] = true}
   local GROUND_TYPES = {["mining-drill"] = true, ["offshore-pump"] = true}
   local NAMED = {"nullius-wind-", "nullius-stirling-engine-", "nullius-landing-"}
@@ -57,8 +58,12 @@ script.on_nth_tick(30, function()
         if INTAKE_CATEGORIES[category] then reason = "intake " .. category end
       end
       if not reason and entity.fluid_energy_source_prototype then reason = "fluid energy" end
-      local burner = entity.burner_prototype
-      if not reason and burner and burner.fuel_categories["nullius-nutrient"] then reason = "nutrient energy" end
+      -- Nutrient modes need Gleba's hydrogen sulfide; goop burners without it work in vacuum.
+      for _, condition in pairs(entity.surface_conditions or {}) do
+        if not reason and condition.property == "nullius-hydrogen-sulfide" and condition.min >= 1 then
+          reason = "Gleba only"
+        end
+      end
       if not reason and GROUND_TYPES[entity.type] then reason = entity.type end
       if not reason then
         for _, prefix in ipairs(NAMED) do

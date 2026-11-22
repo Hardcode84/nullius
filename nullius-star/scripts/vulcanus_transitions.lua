@@ -5,6 +5,7 @@ local transitions = require("scripts.transitions")
 local pneumatic_families = require("shared.pneumatic-machine-families")
 local thermal_nanofabricators = require("thermal-nanofabricator-specs")
 local overcharged_assemblers = require("scripts.overcharged_assemblers")
+local bioreactors = require("scripts.bioreactors")
 
 -- Condition: entity is on Vulcanus and pneumatic tech is researched.
 local function is_vulcanus_pneumatic(entity, force)
@@ -50,6 +51,9 @@ local function register_pneumatic_pair(electric, pneumatic, gate, replace_fn)
       on_leave = on_leave_pneumatic,
       replace_fn = overcharged_assemblers.replace,
     })
+  end
+  if bioreactors.has(electric) then
+    bioreactors.register_from(pneumatic, electric, on_leave_pneumatic)
   end
   transitions.register(pneumatic, electric, {
     gate = gate,

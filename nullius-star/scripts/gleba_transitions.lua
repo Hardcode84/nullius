@@ -1,22 +1,10 @@
 local assemblers = require("scripts.overcharged_assemblers")
+local bioreactors = require("scripts.bioreactors")
+local burner_fuel = require("scripts.burner_fuel")
 local transitions = require("scripts.transitions")
 
 local gleba_transitions = {}
 local by_variant = {}
-
-local function release_fuel(entity)
-  if entity.type == "entity-ghost" then return end
-  for _, inventory in ipairs({entity.get_fuel_inventory(), entity.get_burnt_result_inventory()}) do
-    for i = 1, #inventory do
-      local stack = inventory[i]
-      if stack.valid_for_read then
-        entity.surface.spill_item_stack{position = entity.position, stack = stack, force = entity.force,
-          enable_looted = true, use_start_position_on_failure = true}
-        stack.clear()
-      end
-    end
-  end
-end
 
 local function is_pump(entity)
   local entity_type = entity.type == "entity-ghost" and entity.ghost_type or entity.type
@@ -52,7 +40,7 @@ function gleba_transitions.built(entity)
   local name = entity.type == "entity-ghost" and entity.ghost_name or entity.name
   local base = by_variant[name]
   if base and not unlocked(entity, entity.force) then
-    release_fuel(entity)
+    burner_fuel.release(entity)
     return replace(entity, base, entity.force)
   end
   return entity
@@ -65,7 +53,11 @@ for _, spec in ipairs(require("shared.gleba-machines")) do
     replace_fn = replace,
     condition = unlocked,
   })
-  transitions.register(nutrient, ordinary, {on_leave = release_fuel, replace_fn = replace})
+  -- On Gleba the cycle is ordinary, nutrient, bioreactor.
+  if bioreactors.has(ordinary) then
+    bioreactors.register_from(nutrient, ordinary, burner_fuel.release)
+  end
+  transitions.register(nutrient, ordinary, {on_leave = burner_fuel.release, replace_fn = replace})
 end
 
 return gleba_transitions

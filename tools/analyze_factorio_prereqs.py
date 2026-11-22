@@ -1689,6 +1689,17 @@ def build_production_manifest(
     for name, amount in deferred_surplus.items():
         stock[name] += amount
 
+    # Spoilage needs no machine. Every other step spends its executor's energy.
+    machine_energy_joules = 0.0
+    unpriced_energy_steps: list[str] = []
+    for step in quantified_steps:
+        if "spoil_ticks" in step:
+            continue
+        if step["energy_per_cycle_joules"] is None:
+            unpriced_energy_steps.append(step["producer"])
+        else:
+            machine_energy_joules += step["energy_per_cycle_joules"] * step["cycles"]
+
     bootstrap_raw_inputs = {} if marginal else add_raw_bootstrap_for_execution(
         quantified_steps,
         raw_inputs,
@@ -1707,11 +1718,37 @@ def build_production_manifest(
         "bootstrap_raw_inputs": bootstrap_raw_inputs,
         "available_inputs": dict(sorted(available_inputs.items())),
         "fuel_consumption": dict(sorted(fuel_consumption.items())),
+        "machine_energy_joules": machine_energy_joules,
+        "unpriced_energy_steps": sorted(set(unpriced_energy_steps)),
         "surplus": {
             name: amount
             for name, amount in sorted(stock.items())
             if amount > 1e-9
         },
+    }
+
+
+def energy_bound(
+    data: Prototype, manifest: Prototype, target_quantities: dict[str, float]
+) -> Prototype:
+    """Compare the machine energy of a manifest with the fuel value it yields."""
+    if manifest["unpriced_energy_steps"]:
+        raise TestFailure(
+            "energy bound needs executor energy for: "
+            + ", ".join(manifest["unpriced_energy_steps"])
+        )
+    target_fuel_value = 0.0
+    for name, quantity in sorted(target_quantities.items()):
+        fuel_value = parse_energy(
+            data.get("item", {}).get(name, {}).get("fuel_value"), "J"
+        )
+        if not fuel_value:
+            raise TestFailure(f"energy bound target has no fuel value: {name}")
+        target_fuel_value += fuel_value * quantity
+    return {
+        "machine_energy_joules": manifest["machine_energy_joules"],
+        "target_fuel_value_joules": target_fuel_value,
+        "holds": manifest["machine_energy_joules"] > target_fuel_value,
     }
 
 
@@ -1824,6 +1861,16 @@ def print_human(report: Prototype, compact: bool = False) -> None:
                 for name, amount in manifest[boundary].items()
             ) or "none"
             print(f"  {boundary}: {values}")
+        print(f"  machine_energy_joules: {manifest['machine_energy_joules']:g}")
+        unpriced = ", ".join(manifest["unpriced_energy_steps"]) or "none"
+        print(f"  unpriced_energy_steps: {unpriced}")
+    bound = report.get("energy_bound")
+    if bound is not None:
+        print(
+            "Energy bound: machine energy "
+            f"{bound['machine_energy_joules']:g} J against target fuel value "
+            f"{bound['target_fuel_value_joules']:g} J"
+        )
 
 
 def print_dependency_paths(report: Prototype) -> None:
@@ -1952,6 +1999,12 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         "--require-no-electricity",
         action="store_true",
         help="fail if any selected production step requires an electric executor",
+    )
+    parser.add_argument(
+        "--require-energy-above-fuel-value",
+        action="store_true",
+        help="in --manifest mode, fail unless the machines spend more energy than "
+        "the fuel value of the targets",
     )
     parser.add_argument("--forbid-product", action="append", default=[], metavar="ITEM_OR_FLUID",
                         help="fail if a selected recipe or executor requires this product")
@@ -2226,6 +2279,12 @@ def main() -> int:
                 dict(initial_stock),
                 args.marginal,
             )
+        if args.require_energy_above_fuel_value:
+            if not args.manifest:
+                raise TestFailure("--require-energy-above-fuel-value requires --manifest")
+            report["energy_bound"] = energy_bound(
+                data, report["production_manifest"], dict(target_quantities)
+            )
         if args.json_output:
             print(json.dumps(report, indent=2, sort_keys=True))
         else:
@@ -2245,6 +2304,8 @@ def main() -> int:
             or report["forbidden_dependencies"]
             or failed_technology_contract
             or failed_electricity_contract
+            or (args.require_energy_above_fuel_value
+                and not report["energy_bound"]["holds"])
             else 0
         )
     except (TestFailure, OSError, json.JSONDecodeError) as error:

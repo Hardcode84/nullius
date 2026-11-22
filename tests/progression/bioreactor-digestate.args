@@ -1,0 +1,9 @@
+@tests/progression/nauvis-boundary.args
+--technology
+nullius-biochemistry-1
+--require-no-additional-technologies
+--available
+nullius-digestate
+--recipe
+nullius-sludge=nullius-digestate-dissolution
+nullius-sludge

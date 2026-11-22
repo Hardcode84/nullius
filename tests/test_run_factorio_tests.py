@@ -121,7 +121,7 @@ class FactorioTestRunnerTests(unittest.TestCase):
         for invalid in (0, -1, True, 1.5):
             with self.subTest(invalid=invalid), self.assertRaises(TestFailure):
                 timeout_for(SimpleNamespace(timeout_seconds=invalid), {})
-        metadata = metadata_for("fulgora-switched-grounding")
+        metadata = metadata_for("fulgora-starter-current")
         self.assertEqual(timeout_for(default, metadata), 180)
 
     def test_distributable_mod_excludes_repository_only_content(self) -> None:

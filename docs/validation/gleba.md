@@ -77,6 +77,26 @@ Factorio 2.1.24 applies recipe surface conditions only when a recipe is chosen:
 
 The nutrient filter's fixed recipe therefore selects Gleba air, and the scenario gives distilleries their recipe through blueprint ghosts.
 
+## Bioreactors
+
+`bioreactor-modes`, Factorio 2.1.24 (52 assertions, tick 900):
+
+| Check | Result |
+|---|---|
+| Unlock | No bioreactor mode before Biochemistry 1. Chemical plant 2 stays ordinary before Bioreactor Engineering 2 and while its construction recipe is disabled. A blueprinted hydro plant 3 bioreactor ghost reverts to the ordinary machine |
+| Prototypes | Each bioreactor burns goop at its tier multiple of the ordinary machine's power |
+| Production | 12 methanol crafts in a tier 1 bioreactor yield 28 methanol, two bonus crafts from tier 1 productivity, and leave digestate in the burnt-result slot |
+| Leaving | Switching back preserves health and spills the remaining goop and digestate |
+| Cycles | Gleba hydro plant 1: ordinary, nutrient, bioreactor, ordinary, spilling the nutrient fuel. Vulcanus chemical plant 1: ordinary, pneumatic, bioreactor, ordinary |
+
+| Contract | Result |
+|---|---|
+| `bioreactor-goop-nauvis.args` | Single-cell protein closes at Biochemistry 1 on the Nauvis boundary; 10 goop cost 218 MJ of machine energy against 80 MJ of fuel value |
+| `bioreactor-goop-fulgora.args` | Hydrocarbon protein closes at Biochemistry 1 on the Fulgora boundary; 10 goop cost 116 MJ against 80 MJ |
+| `bioreactor-digestate.args` | Digestate dissolves into sludge at Biochemistry 1 on the Nauvis boundary |
+
+The energy bound counts every machine in the marginal manifest at its ordinary power, without modules.
+
 ## Acceptance contracts
 
 | Contract | Check |

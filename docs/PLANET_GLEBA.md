@@ -166,7 +166,7 @@ No electrowinning or electrolysis: electrolyzers stay electric only.
 | Sulfur dioxide | No void on Gleba; reduce back to sulfur with H2S |
 | Sulfur | From H2S splitting and phototrophs; feeds acid liquor |
 | Gypsum, iron sulfide | Solid waste; decomposition or disposal recipes |
-| Digestate | Recycled into goop on Gleba. Each recycling batch consumes more digestate than its goop later leaves, so enough recyclers always clear it. Fertilizer or sludge elsewhere |
+| Digestate | Recycled into goop on Gleba. Each recycling batch consumes more digestate than its goop later leaves, so enough recyclers always clear it. Dissolved into sludge elsewhere |
 | Contaminated culture | Probabilistic product of screening; sterilized at a heat or acid cost |
 | Dead culture | Spoils into culture sludge; a flotation cell digests the sludge into digestate |
 

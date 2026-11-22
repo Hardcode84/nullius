@@ -1,15 +1,7 @@
 -- Cold data path: copy the resolved ordinary machines, including mod changes.
 local tint = {r = 0.65, g = 0.8, b = 1}
 local productivity = require("thermal-machine-config").productivity
-local function tint_graphics(value)
-  if type(value) ~= "table" or value.draw_as_shadow then return end
-  if value.filename or value.filenames or value.stripes then
-    value.tint = table.deepcopy(tint)
-  end
-  for _, child in pairs(value) do
-    if type(child) == "table" then tint_graphics(child) end
-  end
-end
+local tint_graphics = require("prototypes.tint-graphics")
 
 for _, spec in ipairs(require("shared.overcharged-assemblers")) do
   local base = assert(data.raw["assembling-machine"][spec.base])
@@ -40,7 +32,6 @@ for _, spec in ipairs(require("shared.overcharged-assemblers")) do
   variant.effect_receiver = variant.effect_receiver or {}
   variant.effect_receiver.base_effect = variant.effect_receiver.base_effect or {}
   variant.effect_receiver.base_effect.productivity = productivity[spec.tier]
-  tint_graphics(variant.graphics_set)
-  for _, icon in ipairs(variant.icons) do icon.tint = table.deepcopy(tint) end
+  tint_graphics(variant, tint)
   data:extend({variant})
 end

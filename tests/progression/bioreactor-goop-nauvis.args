@@ -1,0 +1,10 @@
+@tests/progression/nauvis-boundary.args
+--technology
+nullius-biochemistry-1
+--require-no-additional-technologies
+--manifest
+--marginal
+--require-energy-above-fuel-value
+--recipe
+nullius-nutrient-goop=nullius-single-cell-protein
+nullius-nutrient-goop=10
