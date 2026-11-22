@@ -20,7 +20,8 @@ local function survey_minerals(surface, area)
   for name in pairs(surface.map_gen_settings.autoplace_settings.tile.settings) do
     if prototypes.tile[name].fluid then water[#water + 1] = name end
   end
-  local counts = {mud = 0, calcite = 0, near_water = 0, medium = 0,
+  local outcrop_chunks = {}
+  local counts = {slab = 0, mound = 0, relief = 0, shelf = 0, lowland = 0, midland = 0, mud = 0, calcite = 0, near_water = 0, medium = 0,
     highland = 0, cliff = 0, small = 0, near_medium = 0, shore = 0, marked_shore = 0}
   for _, decoration in pairs(surface.find_decoratives_filtered{area = area}) do
     local name = decoration.decorative.name
@@ -34,6 +35,21 @@ local function survey_minerals(surface, area)
       if surface.count_tiles_filtered{position = pos, radius = 8, name = water, limit = 1} > 0 then
         counts.near_water = counts.near_water + 1
       end
+    elseif name == "nullius-gleba-weathered-slab" or name == "nullius-gleba-mineral-mound" then
+      outcrop_chunks[math.floor(pos.x / 32) .. "," .. math.floor(pos.y / 32)] = true
+      if name == "nullius-gleba-weathered-slab" then
+        assert(not tile.prototype.fluid, "slab in water")
+        counts.slab = counts.slab + 1
+        if tile.name:match("^midland") then counts.midland = counts.midland + 1 end
+        if tile.name:match("^lowland") then counts.lowland = counts.lowland + 1 end
+      else
+        assert(tile.name:match("^lowland") or tile.name:match("^wetland"), "mound outside wetland margins")
+        counts.mound = counts.mound + 1
+        if tile.prototype.fluid then counts.shelf = counts.shelf + 1 end
+      end
+    elseif name == "nullius-gleba-pumice-relief-decal" then
+      assert(not tile.prototype.fluid, "bedrock in water")
+      counts.relief = counts.relief + 1
     elseif name == "nullius-gleba-medium-rock" then
       assert(not tile.prototype.fluid, "medium rock in water")
       counts.medium = counts.medium + 1
@@ -64,7 +80,12 @@ local function survey_minerals(surface, area)
       end
     end
   end
+  counts.outcrop_chunks = table_size(outcrop_chunks)
+  local chunks = (area[2][1] - area[1][1]) * (area[2][2] - area[1][2]) / 1024
   local report = helpers.table_to_json(counts)
+  check(counts.outcrop_chunks > chunks * 0.6, "outcrops too scarce at walking zoom " .. report)
+  check(counts.lowland > 0 and counts.midland > 0 and counts.shelf > 0 and counts.relief > 0,
+    "missing lowland, midland or shelf scenery " .. report)
   log("Gleba mineral survey " .. report)
   check(counts.mud > 0 and counts.calcite > 0, "missing mud or calcite " .. report)
   check(counts.near_water > 0.75 * counts.calcite, "calcite too far inland " .. report)
@@ -94,6 +115,19 @@ local function survey(surface)
       "unexpected entity on Gleba: " .. entity.name)
   end
   local minerals = survey_minerals(surface, area)
+  local built_on_slab = false
+  for _, slab in pairs(surface.find_decoratives_filtered{area = area, name = "nullius-gleba-weathered-slab"}) do
+    local pos = slab.position
+    if surface.can_place_entity{name = "character", position = pos} and
+        surface.can_place_entity{name = "iron-chest", position = pos} then
+      local chest = surface.create_entity{name = "iron-chest", position = pos, force = "player"}
+      assert(chest)
+      chest.destroy()
+      built_on_slab = true
+      break
+    end
+  end
+  check(built_on_slab, "no walkable weathered slab accepts a building")
 
   local tiles = map.autoplace_settings.tile.settings
   check(table_size(tiles) == 41, "expected the 41 native Gleba tiles")

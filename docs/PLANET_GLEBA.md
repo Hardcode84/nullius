@@ -4,7 +4,7 @@
 
 | Fact | Authority |
 |---|---|
-| Status | Probe access, native terrain and music are available. Calcite marks some dry banks. Small and medium rocks form groups below cliffs and on high ground. The probe wreck is empty. The surface has no vegetation, enemies or airborne spores. The biology and industry sections describe the planned progression. |
+| Status | Probe access, native terrain and music are available. Calcite marks some dry banks. Weathered slabs and loose stones cover parts of the landing flats and highlands. Rounded mineral mounds occur along wetland edges. Players can cross and build over the rock scenery on dry land. The probe wreck is empty. The surface has no vegetation, enemies or airborne spores. The biology and industry sections describe the planned progression. |
 | Planet mechanics and constraints | This document; supersedes [Space Age brainstorm 3.3](SPACE_AGE_BRAINSTORM.md#33-gleba-microbiologybreeding) where they differ |
 | Shared progression, cargo, nuclear, and endgame | [Space Age brainstorm](SPACE_AGE_BRAINSTORM.md) |
 | Probe access research | [Nauvis design](PLANET_NAUVIS.md) |
