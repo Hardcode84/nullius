@@ -2,6 +2,7 @@
 nullius-wild-strain-cultivation
 --surface-property
 nullius-hydrogen-sulfide=1
+--require-no-electricity
 --raw
 nullius-gleba-rock
 --raw
@@ -33,7 +34,9 @@ nullius-nutrient-goop=nullius-gleba-chemosynthesis
 --recipe
 nullius-ferric-concentrate=nullius-gleba-rock-leaching
 --recipe
-nullius-glass=nullius-gleba-glass
+nullius-silica=nullius-gleba-silica
+--recipe
+nullius-glass=nullius-glass
 --recipe
 nullius-iron-ingot=nullius-gleba-iron-reduction
 --recipe

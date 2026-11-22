@@ -1,12 +1,12 @@
 -- given: Gleba access and Nutrient Technology, declared goop and cultures near the end of their spoil
--- time, declared crushed rock, and declared electricity for one inserter.
+-- time, and declared crushed rock. No electricity on Gleba.
 -- place: nutrient labs, a nutrient flotation cell, a nutrient chemical plant,
--- an inserter and chests on cleared Gleba ground.
--- act: let fuel and cultures spoil, then empty one lab with the inserter and
+-- a nutrient inserter and chests on cleared Gleba ground.
+-- act: let fuel and cultures spoil, then empty one lab with the nutrient inserter and
 -- run sludge digestion and digestate recycling.
 -- run: 1900 ticks.
 -- expect: spoiled goop moves to free burnt-result space and otherwise blocks
--- the fuel slot until removed; dead culture returns to goop through digestate.
+-- the fuel slot until removed by a goop-fired inserter; dead culture returns to goop through digestate.
 local research = require("__nullius-star__/scripts/research")
 local CASE = "gleba-fuel-spoilage"
 local GOOP, DIGESTATE, WILD = "nullius-nutrient-goop", "nullius-digestate", "nullius-wild-culture"
@@ -62,13 +62,15 @@ local function prepare()
   for _, machine in ipairs({storage.cell, storage.chemical}) do fuel(machine).insert{name = GOOP, count = 2} end
 end
 
--- An ordinary inserter, powered by a declared interface, empties the blocked lab.
+-- A nutrient inserter empties the blocked lab without electricity.
 local function drain()
-  local power = create("electric-energy-interface", {75, 55})
-  power.power_production, power.electric_buffer_size, power.energy = 1e7, 1e9, 1e9
-  create("small-electric-pole", {72, 53})
-  storage.inserter = assert(storage.surface.create_entity{name = "inserter", position = {70, 52},
+  local electric = assert(storage.surface.create_entity{name = "inserter", position = {70.5, 52.5},
     direction = defines.direction.north, force = "player"})
+  local pos = electric.position
+  check(remote.call("nullius-test-transitions", "execute", electric), "inserter mode switch failed")
+  storage.inserter = assert(storage.surface.find_entity("inserter-nutrient", pos),
+    "missing nutrient inserter")
+  fuel(storage.inserter).insert{name = GOOP, count = 1}
   storage.drain = create("iron-chest", {70, 53})
   local box, pickup = storage.blocked.bounding_box, storage.inserter.pickup_position
   check(pickup.x > box.left_top.x and pickup.x < box.right_bottom.x and pickup.y > box.left_top.y
@@ -112,7 +114,7 @@ script.on_nth_tick(1, function(event)
     check(storage.chemical.insert{name = "nullius-crushed-gleba-rock", count = 1} == 1, "chemical plant refused rock")
     check(storage.chemical.insert{name = WILD, count = 1} == 1, "chemical plant refused wild culture")
   elseif event.tick == 1900 then
-    -- expect: the inserter cleared the fuel slot first, then started on spent fuel.
+    -- expect: the nutrient inserter cleared the fuel slot first, then started on spent fuel.
     local drained = count(storage.drain.get_inventory(defines.inventory.chest), DIGESTATE)
     check(count(fuel(storage.blocked), DIGESTATE) == 0, "inserter left digestate in the fuel slot")
     local held = storage.inserter.held_stack.valid_for_read and storage.inserter.held_stack.count or 0

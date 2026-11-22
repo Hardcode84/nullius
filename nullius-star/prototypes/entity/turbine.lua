@@ -148,6 +148,8 @@ local function finish_furnace(furnace, generator, overlay,
     icon_size = 64, tint = tint
   }}
   generator.icons = furnace.icons
+  furnace.surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}}
+  generator.surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}}
   set_furnace_idle(furnace, overlay, tint)
   set_generator_animation(generator, overlay, tint)
   data:extend({ furnace, generator })

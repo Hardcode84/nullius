@@ -2,7 +2,7 @@
 
 ## Cultivation from the probe wreck
 
-The `gleba-cultivation` scenario uses one hand isolation, the wreck equipment and the two landing patches. The android keeps mining mat samples by hand; a nutrient miner supplies ferric rock. Each machine runs when its inputs are ready, and machines supply all later fuel and materials. On Factorio 2.1.24 the first biochemistry pack reached Lab 1 at tick 5,085. Wild Strain Cultivation finished at tick 18,990. The new biology lab accepted a local microbiology pack at tick 22,200. The run fixed goop from rock in 16 batches, recycled digestate in 3 batches and ended with less than one recycling batch of digestate. The scenario deadline is 25,000.
+The `gleba-cultivation` scenario uses one hand isolation, the wreck equipment and the two landing patches. The android keeps mining mat samples by hand; a nutrient miner and nutrient inserter feed ferric rock into the nutrient crusher. Each machine runs when its inputs are ready, and machines supply all later fuel and materials. Leach residue roasts into `nullius-silica`, which casts standard `nullius-glass` in the nutrient foundry. The android handcrafts `Small Assembler 1` from a wreck inserter and local materials, switches it to nutrient mode, and reproduces a silica-insulated motor and four replacement inserters. On Factorio 2.1.24 the first biochemistry pack reached Lab 1 at tick 6,075. Wild Strain Cultivation finished at tick 19,980. The new biology lab accepted a local microbiology pack at tick 27,315. The run fixed goop from rock in 17 batches, recycled digestate in 5 batches and ended with less than one recycling batch of digestate. The scenario deadline is 30,000.
 
 ## Biology tree before the Gleba redesign
 
@@ -47,8 +47,23 @@ The prerequisite analyzer currently credits every listed result to a closure, in
 |---|---|
 | Goop spoils in the fuel slot of an idle nutrient lab | The digestate moves to the burnt-result slot; the fuel slot accepts fresh goop |
 | Goop spoils while the burnt-result slot is full | The digestate stays in the fuel slot, which then refuses goop |
-| An inserter picks up from the blocked lab | It removes the fuel-slot digestate first, then continues with the burnt-result slot; the fuel slot accepts goop again |
+| A nutrient inserter picks up from the blocked lab without electricity | It removes the fuel-slot digestate first, then continues with the burnt-result slot; the fuel slot accepts goop again |
 | Wild culture spoils | It becomes culture sludge; sludge digestion and digestate recycling return it to goop |
+
+## Surface conditions and nutrient modes
+
+`gleba-surface-and-modes`, Factorio 2.1.24 (112 assertions, tick 3):
+
+| Check | Result |
+|---|---|
+| Forbidden Gleba entities | Solar panels, wind turbines, grid batteries, supercapacitors, Stirling engines, steam turbines, seawater intakes, water wells, and normal logistic robots fail `nullius-hydrogen-sulfide <= 0` and placement on `nullius-gleba` |
+| Forbidden Gleba voids | `nullius-void-oxygen`, `nullius-void-compressed-oxygen`, and `nullius-void-sulfur-dioxide` fail on `nullius-gleba` and pass on `nauvis` |
+| Mat culture | `nullius-isolate-wild-culture` and `nullius-wild-culture-propagation` pass on `nullius-gleba` and fail on `nauvis`; ordinary biology recipes keep no surface conditions |
+| Locked blueprint downgrade | Placing a `-nutrient` ghost on Gleba before `Nutrient Technology` reverts to the ordinary entity |
+| Mode transitions | `Ctrl+R` switches inserters, assemblers, hydro plants, pumps, boxers, labs, and biology labs into and out of `-nutrient` mode while preserving health, never creating electric energy, and spilling fuel on leave |
+| Upgrade chains | `variant_upgrades.apply("-nutrient")` keeps `next_upgrade` in nutrient mode across inserters, assemblers, crushers, chemical plants, furnaces, foundries, labs, and pumps |
+
+`tests/progression/gleba-construction.args` closes local zero-electricity production of `nullius-motor-1`, `inserter`, `transport-belt`, `wooden-chest`, `pipe`, `nullius-small-assembler-1`, `nullius-small-miner-1`, `nullius-small-furnace-1`, `nullius-foundry-1`, `nullius-crusher-1`, `nullius-pump-1`, and `nullius-biology-lab` at `Wild Strain Cultivation` with `--require-no-additional-technologies` and `--require-no-electricity`.
 
 ## Acceptance contracts
 

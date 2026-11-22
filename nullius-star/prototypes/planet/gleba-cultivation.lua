@@ -1,5 +1,7 @@
 local icon_dir = "__space-age__/graphics/icons/"
 local planet = data.raw.planet["nullius-gleba"]
+local gleba_only = {{property = "nullius-hydrogen-sulfide", min = 1}}
+
 local probe = {
   type = "technology", name = "nullius-probe-gleba", order = "nullius-dg",
   icon = planet.icon, icon_size = 64,
@@ -28,27 +30,15 @@ local cultivation = {
   unit = {count = 8, time = 20, ingredients = {{"nullius-biochemistry-pack", 1}}},
 }
 
-data:extend({probe, nutrient, cultivation, {type = "fuel-category", name = "nullius-nutrient"},
-  {type = "recipe-category", name = "gleba-hand-sampling"}})
-
-for _, spec in ipairs(require("shared.gleba-machines")) do
-  local base = data.raw[spec.type][spec.name]
-  local machine = table.deepcopy(base)
-  machine.name = base.name .. "-nutrient"
-  machine.localised_name = {"entity-name.nullius-nutrient-mode", base.localised_name or {"entity-name." .. base.name}}
-  machine.placeable_by = {item = base.minable.result, count = 1}
-  machine.next_upgrade = nil
-  machine.surface_conditions = {{property = "nullius-hydrogen-sulfide", min = 1}}
-  machine.energy_source = {
-    type = "burner", fuel_categories = {"nullius-nutrient"}, effectivity = 1,
-    fuel_inventory_size = 1, burnt_inventory_size = 1,
-  }
-  if spec.category then
-    data:extend({{type = "recipe-category", name = spec.category}})
-    table.insert(machine.crafting_categories, spec.category)
-  end
-  data:extend({machine})
-end
+data:extend({
+  probe, nutrient, cultivation,
+  {type = "fuel-category", name = "nullius-nutrient"},
+  {type = "recipe-category", name = "gleba-hand-sampling"},
+  {type = "recipe-category", name = "gleba-crushing"},
+  {type = "recipe-category", name = "gleba-culture"},
+  {type = "recipe-category", name = "gleba-chemosynthesis"},
+  {type = "recipe-category", name = "gleba-roasting"},
+})
 
 local function item(name, image, spoil, lifetime)
   local prototype = {
@@ -72,10 +62,15 @@ item("domesticated-culture", "copper-bacteria", "nullius-culture-sludge", 20 * m
 local goop = item("nutrient-goop", "nutrients", "nullius-digestate", 15 * minute)
 goop.fuel_categories, goop.fuel_value, goop.burnt_result = {"nullius-nutrient"}, "8MJ", "nullius-digestate"
 
+local raw_items = {stone = true, inserter = true}
+local function item_id(name)
+  return raw_items[name] and name or ("nullius-" .. name)
+end
+
 local function stacks(list)
   local result = {}
   for _, pair in ipairs(list) do
-    result[#result + 1] = {type = "item", name = "nullius-" .. pair[1], amount = pair[2]}
+    result[#result + 1] = {type = "item", name = item_id(pair[1]), amount = pair[2]}
   end
   return result
 end
@@ -84,22 +79,25 @@ local function unlock(tech, recipe)
   table.insert(tech.effects, {type = "unlock-recipe", recipe = recipe})
 end
 
-local function recipe(tech, name, category, time, ingredients, products)
+local function recipe(tech, name, category, time, ingredients, products, conditions)
   local id = "nullius-" .. name
   data:extend({{
     type = "recipe", name = id, categories = {category}, enabled = false, energy_required = time,
-    ingredients = stacks(ingredients), results = stacks(products), main_product = "nullius-" .. products[1][1],
+    ingredients = stacks(ingredients), results = stacks(products), main_product = item_id(products[1][1]),
     localised_name = {"recipe-name." .. id}, allow_productivity = false, allow_decomposition = false,
+    surface_conditions = conditions and table.deepcopy(conditions) or nil,
   }})
   unlock(tech, id)
 end
 
 recipe(nutrient, "isolate-wild-culture", "gleba-hand-sampling", 12,
-  {{"mat-sample", 3}}, {{"wild-culture", 2}, {"nutrient-goop", 4}})
+  {{"mat-sample", 3}}, {{"wild-culture", 2}, {"nutrient-goop", 4}}, gleba_only)
 recipe(nutrient, "gleba-rock-crushing", "gleba-crushing", 2,
   {{"gleba-rock", 1}}, {{"crushed-gleba-rock", 4}})
+recipe(nutrient, "gleba-stone", "gleba-crushing", 2,
+  {{"gleba-rock", 2}}, {{"stone", 4}})
 recipe(nutrient, "wild-culture-propagation", "gleba-culture", 6,
-  {{"wild-culture", 1}, {"mat-sample", 2}}, {{"wild-culture", 4}})
+  {{"wild-culture", 1}, {"mat-sample", 2}}, {{"wild-culture", 4}}, gleba_only)
 recipe(nutrient, "gleba-rock-leaching", "gleba-culture", 4,
   {{"crushed-gleba-rock", 2}, {"wild-culture", 1}}, {{"leach-residue", 2}, {"ferric-concentrate", 2}})
 -- Fixation takes all its carbon from rock. Recycling returns spent goop with a
@@ -116,8 +114,13 @@ recipe(nutrient, "gleba-biochemistry", "gleba-culture", 30,
   {{"wild-culture", 3}, {"leach-residue", 3}, {"ferric-concentrate", 2}}, {{"biochemistry-pack", 1}})
 recipe(nutrient, "gleba-iron-reduction", "gleba-roasting", 4,
   {{"ferric-concentrate", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 3}})
-recipe(nutrient, "gleba-glass", "gleba-roasting", 4,
-  {{"leach-residue", 2}}, {{"glass", 2}})
+recipe(nutrient, "gleba-silica", "gleba-roasting", 4,
+  {{"leach-residue", 2}}, {{"silica", 3}})
+recipe(nutrient, "gleba-motor-1", "medium-crafting", 8,
+  {{"iron-wire", 2}, {"iron-plate", 1}, {"silica", 2}, {"iron-rod", 1}}, {{"motor-1", 1}}, gleba_only)
+recipe(nutrient, "gleba-small-assembler-1", "small-crafting", 6,
+  {{"iron-plate", 8}, {"iron-gear", 4}, {"leach-residue", 2}, {"inserter", 1}},
+  {{"small-assembler-1", 1}}, gleba_only)
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
   {{"wild-culture", 2}}, {{"domesticated-culture", 1}})
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,

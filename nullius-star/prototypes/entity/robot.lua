@@ -200,7 +200,7 @@ data:extend({
   {
     type = "logistic-robot",
     name = "nullius-logistic-bot-1",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
 	  localised_description = {"equipment-description.nullius-buffer",
 	    {"entity-description.logistic-robot"},
 		  {"entity-description.nullius-megajoule", tostring(1.2)}},
@@ -238,7 +238,7 @@ data:extend({
   {
     type = "logistic-robot",
     name = "nullius-logistic-bot-2",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
 	  localised_description = {"equipment-description.nullius-buffer",
 	    {"entity-description.logistic-robot"},
 		  {"entity-description.nullius-megajoule", tostring(2.5)}},
@@ -276,7 +276,7 @@ data:extend({
   {
     type = "logistic-robot",
     name = "nullius-logistic-bot-3",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
 	  localised_description = {"equipment-description.nullius-buffer",
 	    {"entity-description.logistic-robot"},
 		  {"entity-description.nullius-megajoule", tostring(6)}},
@@ -314,7 +314,7 @@ data:extend({
   {
     type = "logistic-robot",
     name = "nullius-logistic-bot-4",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
 	  localised_description = {"equipment-description.nullius-buffer",
 	    {"entity-description.logistic-robot"},
 		  {"entity-description.nullius-megajoule", tostring(12)}},

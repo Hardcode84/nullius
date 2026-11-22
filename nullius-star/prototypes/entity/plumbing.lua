@@ -15,6 +15,7 @@ local op = table.deepcopy(data.raw["offshore-pump"]["offshore-pump"])
 local si1 = {
   type = "assembling-machine",
   name = "nullius-seawater-intake-1",
+  surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
   icons = data.raw.item["nullius-seawater-intake-1"].icons,
   minable = {mining_time = 0.5, result = "nullius-seawater-intake-1"},
   flags = {"placeable-neutral", "player-creation"},
@@ -169,6 +170,7 @@ data:extend({
   {
     type = "offshore-pump",
     name = "nullius-legacy-seawater-intake-1",
+    surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
 	  localised_name = {"entity-name.nullius-legacy",
 	    {"entity-name.nullius-seawater-intake-1"}},
     localised_description = {"entity-description.nullius-seawater-intake-1"},
@@ -509,6 +511,7 @@ data:extend({
   {
     type = "offshore-pump",
     name = "nullius-legacy-seawater-intake-2",
+    surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
 	  localised_name = {"entity-name.nullius-legacy",
 	    {"entity-name.nullius-seawater-intake-2"}},
     localised_description = {"entity-description.nullius-seawater-intake-2"},
@@ -556,7 +559,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-well-1",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
     icons = data.raw.item["nullius-well-1"].icons,
     flags = {"placeable-neutral", "player-creation"},
     crafting_categories = {"water-pumping"},
@@ -813,7 +816,7 @@ data:extend({
   {
     type = "assembling-machine",
     name = "nullius-well-2",
-    surface_conditions = {{property="nullius-ambient-temperature", max=50}},
+    surface_conditions = {{property="nullius-ambient-temperature", max=50}, {property="nullius-hydrogen-sulfide", max=0}},
     icons = data.raw.item["nullius-well-2"].icons,
     flags = {"placeable-neutral", "player-creation"},
     crafting_categories = {"water-pumping"},

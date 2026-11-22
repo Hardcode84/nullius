@@ -482,6 +482,7 @@ local prototypes = {
     subgroup = "nullius-gas-void",
     hide_from_player_crafting = true,
 	hide_from_stats = true,
+    surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-oxygen", amount=200}},
     results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
@@ -495,6 +496,7 @@ local prototypes = {
     subgroup = "nullius-gas-void",
     hide_from_player_crafting = true,
 	hide_from_stats = true,
+    surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-compressed-oxygen", amount=100}},
     results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
@@ -560,6 +562,7 @@ local prototypes = {
     subgroup = "nullius-gas-void",
     hide_from_player_crafting = true,
 	hide_from_stats = true,
+    surface_conditions = {{property = "nullius-hydrogen-sulfide", max = 0}},
     energy_required = 2,
     ingredients = {{type="fluid", name="nullius-sulfur-dioxide", amount=200}},
     results = {{type="item", name="nullius-gas-void", amount=1, [probability]=0}}
