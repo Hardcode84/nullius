@@ -4279,7 +4279,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-soda-ash-2"
       },
-      {type = "unlock-recipe", recipe = "nullius-black-ash"},
       {type = "unlock-recipe", recipe = "nullius-hydrochloric-stripping"},
       {type = "unlock-recipe", recipe = "nullius-deacon-process"},
       {
@@ -8169,7 +8168,6 @@ data:extend({
         type = "unlock-recipe",
         recipe = "nullius-boxed-soda-ash"
       },
-      {type = "unlock-recipe", recipe = "nullius-boxed-black-ash"},
       {
         type = "unlock-recipe",
         recipe = "nullius-boxed-gypsum-1"

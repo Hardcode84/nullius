@@ -166,14 +166,12 @@ unlocks it on every planet.
 
 | Product | Route | Research |
 |---|---|---|
-| Salt | Washing the soluble salts out of leach residue leaves sand | Sodium Processing |
-| Hydrogen chloride | Salt and acid liquor give sodium sulfate and hydrochloric acid; stripping drives off the gas | Sulfur Processing 2 |
+| Salt and soda ash | Washing salt and natron out of leach residue leaves sand | Sodium Processing |
+| Hydrogen chloride | Salt and acid liquor give hydrochloric acid; stripping drives off the gas. The sodium sulfate is a byproduct for glass, textiles and pulping | Sulfur Processing 2 |
 | Chlorine | Deacon process with gypsum oxygen | Sulfur Processing 2 |
-| Soda ash | Black ash: digestate graphite reduces sodium sulfate; the sulfur leaves as sulfur dioxide | Sulfur Processing 2 |
 | Sodium hydroxide | Causticization of soda ash with gypsum lime; the limestone burns back to lime in a nutrient medium furnace | Alkali Processing, Limestone Processing 1 |
 
-Salt supplies chlorine and sodium hydroxide in a fixed proportion, as electrolysis
-does elsewhere.
+The wash yields chlorine and sodium hydroxide feedstock in a fixed proportion.
 
 ## Byproducts
 

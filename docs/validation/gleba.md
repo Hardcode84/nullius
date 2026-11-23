@@ -79,7 +79,7 @@ The nutrient filter's fixed recipe therefore selects Gleba air, and the scenario
 
 ## Gleba chemistry
 
-`gleba-chemistry`, Factorio 2.1.24 (105 assertions, tick 2100): on Gleba without electricity, one batch each of sulfidation, acid liquor, neutralization, gypsum decomposition, sulfur dioxide reduction and digestate pyrolysis in chemical plant and flotation cell bioreactors, iron sulfide reduction in a nutrient furnace, and steel from local oxygen in a nutrient foundry each finish with their exact outputs. So do leach residue washing and causticization in hydro plant bioreactors, salt cake and the Deacon process in chemical plant bioreactors, hydrochloric stripping and black ash in a nutrient distillery, and lime burning in a nutrient medium furnace.
+`gleba-chemistry`, Factorio 2.1.24 (96 assertions, tick 2100): on Gleba without electricity, one batch each of sulfidation, acid liquor, neutralization, gypsum decomposition, sulfur dioxide reduction and digestate pyrolysis in chemical plant and flotation cell bioreactors, iron sulfide reduction in a nutrient furnace, and steel from local oxygen in a nutrient foundry each finish with their exact outputs. So do leach residue washing and causticization in hydro plant bioreactors, salt cake and the Deacon process in chemical plant bioreactors, hydrochloric stripping in a nutrient distillery, and lime burning in a nutrient medium furnace.
 
 | Contract | Result |
 |---|---|
@@ -87,8 +87,7 @@ The nutrient filter's fixed recipe therefore selects Gleba air, and the scenario
 | `gleba-chemistry-sinks.args` | Sulfur dioxide reduction and iron sulfide reduction close at Nutrient Technology on the Gleba boundary without electricity |
 | `gleba-chlor-alkali.args` | Chlorine and sodium hydroxide, and lime burning from the causticization limestone, close on the Gleba boundary at Nutrient Technology, Sodium Processing, Sulfur Processing 2, Alkali Processing and Limestone Processing 1 without electricity |
 | `gleba-leach-residue-washing.args` | Leach residue washing closes at Sodium Processing on the Gleba boundary without electricity |
-| `leblanc-chlorine-closure.args` | Black ash, hydrochloric stripping and the Deacon process close at Sulfur Processing 2 on the Nauvis boundary |
-| `boxed-black-ash-closure.args` | Boxed black ash closes at Mass Production 5 on the Nauvis boundary |
+| `chlorine-recovery-closure.args` | Hydrochloric stripping and the Deacon process close at Sulfur Processing 2 on the Nauvis boundary |
 
 ## Bioreactors
 

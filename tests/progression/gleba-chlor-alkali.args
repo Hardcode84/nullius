@@ -27,15 +27,13 @@ dry-smelting=nullius-small-furnace-1-nutrient
 --recipe
 nullius-salt=nullius-leach-residue-washing
 --recipe
-nullius-sodium-sulfate=nullius-sodium-sulfate
---recipe
 nullius-acid-hydrochloric=nullius-sodium-sulfate
 --recipe
 nullius-hydrogen-chloride=nullius-hydrochloric-stripping
 --recipe
 nullius-chlorine=nullius-deacon-process
 --recipe
-nullius-soda-ash=nullius-black-ash
+nullius-soda-ash=nullius-leach-residue-washing
 --recipe
 nullius-sodium-hydroxide=nullius-causticization
 --craft

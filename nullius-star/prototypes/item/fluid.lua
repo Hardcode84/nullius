@@ -1874,55 +1874,6 @@ extend_fluid_prototypes({
     },
     main_product = "nullius-box-soda-ash"
   },
-  -- Black ash: carbon reduces the sulfate to sulfide, carbonation turns it into
-  -- soda ash, and the sulfide burns off as sulfur dioxide. It needs neither
-  -- limestone nor hydrochloric acid, so it keeps the chlorine for chlorine.
-  {
-    type = "recipe",
-    name = "nullius-black-ash",
-    localised_name = {"recipe-name.nullius-black-ash"},
-    enabled = false,
-    categories = {"distillation"},
-    order = "nullius-fd",
-    crafting_machine_tint = {
-      primary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color },
-    energy_required = 6,
-    ingredients = {
-      {type="item", name="nullius-sodium-sulfate", amount=2},
-      {type="item", name="nullius-graphite", amount=3},
-      {type="fluid", name="nullius-water", amount=20},
-      {type="fluid", name="nullius-oxygen", amount=30}
-    },
-    results = {
-      {type="item", name="nullius-soda-ash", amount=2},
-      {type="fluid", name="nullius-carbon-dioxide", amount=40},
-      {type="fluid", name="nullius-sulfur-dioxide", amount=20}
-    },
-    main_product = "nullius-soda-ash"
-  },
-  {
-    type = "recipe",
-    name = "nullius-boxed-black-ash",
-    enabled = false,
-    categories = {"distillation"},
-    subgroup = "boxed-sodium",
-    order = "nullius-fd",
-    crafting_machine_tint = {
-      primary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color },
-    energy_required = 30,
-    ingredients = {
-      {type="item", name="nullius-box-sodium-sulfate", amount=2},
-      {type="item", name="nullius-box-graphite", amount=3},
-      {type="fluid", name="nullius-water", amount=100},
-      {type="fluid", name="nullius-oxygen", amount=150}
-    },
-    results = {
-      {type="item", name="nullius-box-soda-ash", amount=2},
-      {type="fluid", name="nullius-carbon-dioxide", amount=200},
-      {type="fluid", name="nullius-sulfur-dioxide", amount=100}
-    },
-    main_product = "nullius-box-soda-ash"
-  },
   -- Causticization makes sodium hydroxide without electrolysis; its poor
   -- yield is the constraint.
   {
@@ -1948,7 +1899,7 @@ extend_fluid_prototypes({
     allow_productivity = false,
     no_productivity = true
   },
-  -- Soluble salts wash out of leach residue, leaving silica sand.
+  -- Salt and natron wash out of leach residue, leaving silica sand.
   {
     type = "recipe",
     name = "nullius-leach-residue-washing",
@@ -1963,7 +1914,8 @@ extend_fluid_prototypes({
     },
     results = {
       {type="item", name="nullius-salt", amount=1},
-      {type="item", name="nullius-sand", amount=3}
+      {type="item", name="nullius-soda-ash", amount=1},
+      {type="item", name="nullius-sand", amount=2}
     },
     main_product = "nullius-salt"
   },
