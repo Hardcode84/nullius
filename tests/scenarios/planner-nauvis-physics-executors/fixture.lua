@@ -10567,7 +10567,7 @@ return {
         },
       },
       productivity = 0,
-      recipe = "nullius-volcanic-saline",
+      recipe = "nullius-gravel-leaching",
       seconds_per_cycle = 4.0,
     },
     {

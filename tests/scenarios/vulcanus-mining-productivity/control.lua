@@ -118,7 +118,7 @@ script.on_nth_tick(1, function()
     end
   end
 
-  local unrelated = force.recipes["nullius-volcanic-saline"]
+  local unrelated = force.recipes["nullius-gravel-leaching"]
   check(unrelated ~= nil, "missing unrelated recipe fixture")
   local unrelated_before = unrelated and unrelated.productivity_bonus or 0
 

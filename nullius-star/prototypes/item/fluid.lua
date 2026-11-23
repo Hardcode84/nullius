@@ -1899,6 +1899,33 @@ extend_fluid_prototypes({
     allow_productivity = false,
     no_productivity = true
   },
+  -- Hydrochloric acid leaches sodium out of silicate gravel. The recipe is
+  -- globally usable: its poor yield is the constraint.
+  {
+    type = "recipe",
+    name = "nullius-gravel-leaching",
+    localised_name = {"recipe-name.nullius-gravel-leaching"},
+    enabled = false,
+    categories = {"basic-chemistry"},
+    subgroup = "nullius-water-treatment",
+    order = "nullius-vs",
+    show_amount_in_title = false,
+    always_show_products = true,
+    energy_required = 8,
+    ingredients = {
+      {type="item", name="nullius-gravel", amount=10},
+      {type="fluid", name="nullius-hydrogen-chloride", amount=50},
+      {type="fluid", name="nullius-water", amount=100}
+    },
+    results = {
+      {type="fluid", name="nullius-saline", amount=70},
+      {type="item", name="nullius-silica", amount=4},
+      {type="item", name="nullius-mineral-dust", amount=5}
+    },
+    main_product = "nullius-saline",
+    allow_productivity = false,
+    no_productivity = true
+  },
   -- Salt and natron wash out of leach residue, leaving silica sand.
   {
     type = "recipe",

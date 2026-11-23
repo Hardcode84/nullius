@@ -149,7 +149,7 @@ nullius-epoxy=nullius-high-temperature-resin
 --recipe
 nullius-oxygen=nullius-so2-catalytic-decomposition
 --recipe
-nullius-saline=nullius-volcanic-saline
+nullius-saline=nullius-gravel-leaching
 --recipe
 nullius-sodium=nullius-carbothermic-sodium
 --recipe

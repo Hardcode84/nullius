@@ -256,7 +256,7 @@ return {
           type = "item",
         },
       },
-      producer = "nullius-volcanic-saline",
+      producer = "nullius-gravel-leaching",
       product = "nullius-saline",
       ticks_per_cycle = 480,
       total_ticks_single_executor = 8640,

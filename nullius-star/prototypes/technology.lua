@@ -2980,7 +2980,7 @@ data:extend({
     icon = "__base__/graphics/technology/oil-processing.png",
     icon_size = 256,
     effects = {
-      {type = "unlock-recipe", recipe = "nullius-volcanic-saline"},
+      {type = "unlock-recipe", recipe = "nullius-gravel-leaching"},
       {type = "unlock-recipe", recipe = "nullius-causticization"},
     },
     unit = {

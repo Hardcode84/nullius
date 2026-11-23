@@ -41,7 +41,7 @@ nullius-distillery-1
 --available-machine
 nullius-hydro-plant-1
 --recipe
-nullius-saline=nullius-volcanic-saline
+nullius-saline=nullius-gravel-leaching
 --recipe
 nullius-brine=nullius-water
 --recipe

@@ -679,39 +679,6 @@ extend_vulcanus_prototypes({
   },
 })
 
--- Inefficient alkali recovery from sodium-bearing volcanic silicates.  The
--- recipe is globally usable: its poor yield is the constraint, while Vulcanus
--- supplies renewable gravel, hydrogen chloride, and pneumatic power.
-extend_vulcanus_prototypes({
-  {
-    type = "recipe",
-    name = "nullius-volcanic-saline",
-    localised_name = {"recipe-name.nullius-volcanic-saline"},
-    icon = data.raw.fluid["nullius-saline"].icon,
-    icon_size = data.raw.fluid["nullius-saline"].icon_size,
-    enabled = false,
-    categories = {"basic-chemistry"},
-    subgroup = "nullius-water-treatment",
-    order = "nullius-vs",
-    show_amount_in_title = false,
-    always_show_products = true,
-    energy_required = 8,
-    ingredients = {
-      {type = "item", name = "nullius-gravel", amount = 10},
-      {type = "fluid", name = "nullius-hydrogen-chloride", amount = 50},
-      {type = "fluid", name = "nullius-water", amount = 100},
-    },
-    results = {
-      {type = "fluid", name = "nullius-saline", amount = 70},
-      {type = "item", name = "nullius-silica", amount = 4},
-      {type = "item", name = "nullius-mineral-dust", amount = 5},
-    },
-    main_product = "nullius-saline",
-    allow_productivity = false,
-    no_productivity = true,
-  },
-})
-
 -- Vulcanus-local crafting and science recipes.
 extend_vulcanus_prototypes({
   vulcanus_plastic_recipe("nullius-barrel-1", "nullius-vulcanus-barrel", {

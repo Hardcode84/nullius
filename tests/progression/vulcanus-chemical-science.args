@@ -63,7 +63,7 @@ nullius-crushed-limestone=nullius-lava-calcite-separation
 --recipe
 nullius-lime=nullius-lime
 --recipe
-nullius-saline=nullius-volcanic-saline
+nullius-saline=nullius-gravel-leaching
 --recipe
 nullius-water=nullius-vulcanus-deacon
 --recipe
