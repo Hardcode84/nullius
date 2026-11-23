@@ -110,6 +110,9 @@ recipe(nutrient, "gleba-rock-crushing", "gleba-crushing", 2,
   {{"gleba-rock", 1}}, {{"crushed-gleba-rock", 4}})
 recipe(nutrient, "gleba-stone", "gleba-crushing", 2,
   {{"gleba-rock", 2}}, {{"stone", 4}})
+-- Leach residue is mostly silica sand.
+recipe(nutrient, "gleba-sand", "gleba-crushing", 2,
+  {{"leach-residue", 2}}, {{"sand", 2}})
 recipe(nutrient, "wild-culture-propagation", "gleba-culture", 6,
   {{"wild-culture", 1}, {"mat-sample", 2}}, {{"wild-culture", 4}}, gleba_only)
 recipe(nutrient, "gleba-rock-leaching", "gleba-culture", 4,
@@ -213,8 +216,9 @@ data:extend({
   void,
 })
 
--- Ordinary machines with local substitutes, as Vulcanus makes them: silica for plastic,
--- bioplastic for rubber, aluminum and logic, and pumps for seawater intakes.
+-- Local substitutes, as Vulcanus makes them: silica for plastic, bioplastic for rubber
+-- and aluminum, and crude silicon logic. Intermediates that later recipes need again get
+-- their own Gleba recipe, so the machines that use them keep their ordinary recipes.
 local recipe_util = require("prototypes.recipe-util")
 local gleba_substitutes = require("prototypes.planet.silica-substitutions")("-gleba", gleba_only, {})
 local function substitute(source, name, substitutions)
@@ -223,14 +227,14 @@ local function substitute(source, name, substitutions)
   })
 end
 local function stack(name, amount) return {type = "item", name = "nullius-" .. name, amount = amount} end
-substitute("nullius-hydro-plant-1", "nullius-hydro-plant-1-gleba",
-  {["nullius-seawater-intake-1"] = {stack("pump-1", 2)}})
+substitute("nullius-logic-circuit", "nullius-logic-circuit-gleba", {
+  ["nullius-plastic"] = {stack("bioplastic", 3)},
+  ["nullius-aluminum-wire"] = {stack("iron-wire", 4)},
+  ["nullius-polycrystalline-silicon"] = {stack("silicon-ingot", 2)},
+})
 substitute("nullius-small-chest-2", "nullius-iron-chest-gleba",
   {["nullius-rubber"] = {stack("bioplastic", 1)}})
-substitute("nullius-lab-1", "nullius-lab-1-gleba", {
-  ["nullius-aluminum-sheet"] = {stack("bioplastic", 4)},
-  ["decider-combinator"] = {stack("iron-wire", 6), stack("bioplastic", 2)},
-})
+substitute("nullius-lab-1", "nullius-lab-1-gleba", {["nullius-aluminum-sheet"] = {stack("bioplastic", 4)}})
 for _, substituted in ipairs(gleba_substitutes) do
   substituted.enabled = false
   data:extend({substituted})

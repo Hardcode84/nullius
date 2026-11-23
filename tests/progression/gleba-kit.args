@@ -9,6 +9,10 @@ small-crafting=nullius-small-assembler-1-nutrient
 medium-crafting=nullius-small-assembler-1-nutrient
 --executor
 basic-chemistry=nullius-chemical-plant-1-bioreactor
+--executor
+tiny-assembly=nullius-small-assembler-1-nutrient
+--executor
+dry-smelting=nullius-small-furnace-1-nutrient
 --machine-category
 small-crafting
 --machine-category
@@ -44,7 +48,19 @@ nullius-motor-1=nullius-motor-1-gleba
 --recipe
 nullius-filter-1=nullius-filter-1-gleba
 --recipe
-nullius-hydro-plant-1=nullius-hydro-plant-1-gleba
+nullius-hydro-plant-1=nullius-hydro-plant-1
+--recipe
+nullius-seawater-intake-1=nullius-seawater-intake-1
+--recipe
+nullius-outfall-1=nullius-outfall-1
+--recipe
+pipe-to-ground=pipe-to-ground
+--recipe
+nullius-sand=nullius-gleba-sand
+--recipe
+decider-combinator=nullius-logic-circuit-gleba
+--recipe
+nullius-silicon-ingot=nullius-silicon-ingot
 --recipe
 iron-chest=nullius-iron-chest-gleba
 --recipe
@@ -91,3 +107,5 @@ nullius-hydro-plant-1
 nullius-distillery-1
 nullius-pump-1
 nullius-motor-1
+nullius-seawater-intake-1
+decider-combinator

@@ -1,27 +1,31 @@
--- given: Nutrient Technology; declared goop, carbon dioxide, wild culture, graphite and
---   locally made iron, glass, silica, stone brick and steel parts on the probe android;
---   gleba-kit.args proves every declared part closes locally.
--- place: chemical plant bioreactors for silica filters and flotation cell bioreactors for
---   bioplastic on cleared Gleba ground; no electricity.
--- act: make the filters and bioplastic, hand-craft the starter kit machines from them, then
---   place each machine and switch it to its Gleba mode.
+-- given: Nutrient Technology; declared goop, carbon dioxide, wild culture, leach residue,
+--   graphite and locally made iron, glass, silica, silicon, stone brick and steel parts on
+--   the probe android; gleba-kit.args proves every declared part closes locally.
+-- place: chemical plant bioreactors for silica filters, flotation cell bioreactors for
+--   bioplastic, nutrient crushers for sand and a nutrient assembler for decider combinators
+--   on cleared Gleba ground; no electricity.
+-- act: make the Gleba parts, hand-craft the starter kit machines from them, then place each
+--   machine and switch it to its Gleba mode.
 -- run: until the staged hand crafts finish.
 -- expect: Lab 1, chemical plant 1, distillery 1, hydro plant 1, flotation cell 1 and an iron
---   chest come from Gleba substitutes and ordinary recipes, and every machine runs on goop.
+--   chest come from Gleba parts and ordinary recipes, and every machine runs on goop.
 local research = require("__nullius-star__/scripts/research")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "gleba-kit"
 local GOOP = "nullius-nutrient-goop"
-local FILTERS, BIOPLASTIC_BATCHES = 5, 4
+-- Filters: chemical plant 1, two distilleries and two seawater intakes. Bioplastic: Lab 1,
+-- the iron chest and two batches of decider combinators.
+local FILTERS, BIOPLASTIC_BATCHES, SAND_BATCHES, COMBINATOR_BATCHES = 7, 6, 2, 2
 
 -- Hand-craft stages, each queued when the previous one finishes, as a player crafts the
 -- parts of a machine before the machine.
 local STAGES = {
-  {["nullius-small-furnace-1"] = 2, ["nullius-chimney-1"] = 2, ["nullius-motor-1-gleba"] = 2, ["small-lamp"] = 2},
+  {["nullius-small-furnace-1"] = 2, ["nullius-chimney-1"] = 2, ["nullius-motor-1-gleba"] = 2,
+    ["small-lamp"] = 2, ["pipe-to-ground"] = 2},
   {["nullius-iron-chest-gleba"] = 1, ["nullius-lab-1-gleba"] = 1, ["nullius-chemical-plant-1"] = 1,
-    ["nullius-pump-1"] = 2},
-  {["nullius-distillery-1"] = 2},
-  {["nullius-hydro-plant-1-gleba"] = 1},
+    ["nullius-pump-1"] = 2, ["nullius-outfall-1"] = 2},
+  {["nullius-distillery-1"] = 2, ["nullius-seawater-intake-1"] = 2},
+  {["nullius-hydro-plant-1"] = 1},
   {["nullius-flotation-cell-1"] = 1},
 }
 -- The kit machines, each placed afterwards in its Gleba mode.
@@ -40,6 +44,7 @@ local STOCK = {
   ["nullius-iron-sheet"] = 60, ["nullius-iron-wire"] = 30, ["pipe"] = 40,
   ["nullius-one-way-valve"] = 8, ["storage-tank"] = 3, ["nullius-steel-sheet"] = 8,
   ["nullius-steel-rod"] = 4, ["nullius-glass"] = 40, ["nullius-silica"] = 40, ["nullius-graphite"] = 10,
+  ["nullius-silicon-ingot"] = 2 * COMBINATOR_BATCHES,
   ["stone-brick"] = 20, ["inserter"] = 10, ["transport-belt"] = 10, ["nullius-crusher-1"] = 1,
 }
 
@@ -79,8 +84,8 @@ local function gleba_machine(name, mode, x, y)
   return assert(surface.find_entity(name .. mode, position), "missing " .. name .. mode)
 end
 
-local function batch(name, x, y, recipe, items, fluids)
-  local machine = gleba_machine(name, "-bioreactor", x, y)
+local function batch(name, x, y, recipe, items, fluids, mode)
+  local machine = gleba_machine(name, mode or "-bioreactor", x, y)
   machine.set_recipe(recipe)
   check(machine.get_recipe() and machine.get_recipe().name == recipe, name .. " refused " .. recipe)
   machine.get_fuel_inventory().insert{name = GOOP, count = 5}
@@ -111,6 +116,25 @@ local function prepare()
     storage.producers[#storage.producers + 1] = batch("nullius-flotation-cell-1", i * 8, 22, "nullius-gleba-bioplastic",
       {["nullius-wild-culture"] = 1, [GOOP] = 2}, {["nullius-carbon-dioxide"] = 20})
   end
+  for i = 1, SAND_BATCHES do
+    storage.producers[#storage.producers + 1] = batch("nullius-crusher-1", i * 8, 34, "nullius-gleba-sand",
+      {["nullius-leach-residue"] = 2}, {}, "-nutrient")
+  end
+end
+
+-- Decider combinators take the cultured bioplastic, so they start once it is collected.
+local function start_combinators()
+  local assembler = gleba_machine("nullius-small-assembler-1", "-nutrient", 100, 34)
+  assembler.set_recipe("nullius-logic-circuit-gleba")
+  check(assembler.get_recipe() and assembler.get_recipe().name == "nullius-logic-circuit-gleba",
+    "nutrient assembler refused Gleba decider combinators")
+  assembler.get_fuel_inventory().insert{name = GOOP, count = 5}
+  for _, ingredient in ipairs(assembler.get_recipe().ingredients) do
+    local count = ingredient.amount * COMBINATOR_BATCHES
+    check(storage.body.remove_item{name = ingredient.name, count = count} == count, "android lacks " .. ingredient.name)
+    check(assembler.insert{name = ingredient.name, count = count} == count, "assembler refused " .. ingredient.name)
+  end
+  storage.combinators = assembler
 end
 
 -- Collects the machine products and starts the hand crafts once they are all made.
@@ -123,11 +147,19 @@ local function craft()
   end
   check(storage.body.get_item_count("nullius-filter-1") == FILTERS, "silica filters missing")
   check(storage.body.get_item_count("nullius-bioplastic") == 2 * BIOPLASTIC_BATCHES, "bioplastic missing")
+  check(storage.body.get_item_count("nullius-sand") == 2 * SAND_BATCHES, "sand missing")
+  start_combinators()
   storage.stage = 0
 end
 
 local function next_stage()
   storage.stage = storage.stage + 1
+  -- Lab 1 in the second stage takes the decider combinators.
+  if storage.stage == 2 then
+    local made = storage.combinators.get_output_inventory().get_item_count("decider-combinator")
+    check(storage.combinators.products_finished == COMBINATOR_BATCHES, "Gleba decider combinators unfinished")
+    check(made > 0 and storage.body.insert{name = "decider-combinator", count = made} == made, "no decider combinators")
+  end
   for recipe, count in pairs(STAGES[storage.stage]) do
     check(storage.body.begin_crafting{recipe = recipe, count = count} == count, "could not hand-craft " .. recipe)
   end
