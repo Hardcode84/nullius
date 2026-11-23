@@ -2,7 +2,7 @@ require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
   case = "vulcanus-chemical-alkali-20",
   contract = require("manifest"),
   initial_technologies = {
-    "nullius-volcanic-alkali-processing",
+    "nullius-alkali-processing",
     "nullius-pneumatic-technology",
   },
   deadline = 13000,

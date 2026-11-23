@@ -1,0 +1,12 @@
+@tests/progression/gleba-landing-boundary.args
+@tests/progression/gleba-chemistry-routes.args
+--technology
+nullius-nutrient-technology
+--technology
+nullius-sodium-processing
+--available-machine
+nullius-hydro-plant-1
+--executor
+nullius-water-treatment=nullius-hydro-plant-1-bioreactor
+--craft
+nullius-leach-residue-washing

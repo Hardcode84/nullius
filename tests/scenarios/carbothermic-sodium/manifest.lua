@@ -176,6 +176,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {},
   initial_stock = {
     ["nullius-graphite"] = 6.0,

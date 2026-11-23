@@ -117,7 +117,11 @@
     "nauvis-cement-closure.args",
     "nauvis-bulk-canister-closure.args",
     "nauvis-bulk-barrel-closure.args",
-    "nauvis-bulk-canister-emptying-closure.args"
+    "nauvis-bulk-canister-emptying-closure.args",
+    "leblanc-chlorine-closure.args",
+    "boxed-black-ash-closure.args",
+    "gleba-leach-residue-washing.args",
+    "gleba-chlor-alkali.args"
   ],
   "bootstrap": [
     {

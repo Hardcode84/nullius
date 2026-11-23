@@ -3,7 +3,7 @@ nullius-pneumatic-technology
 --technology
 nullius-experimental-chemistry
 --technology
-nullius-volcanic-alkali-processing
+nullius-alkali-processing
 --technology
 nullius-energy-storage-2
 --require-no-additional-technologies
@@ -57,7 +57,7 @@ nullius-compressed-volcanic-gas=nullius-lava-gas-extraction
 --recipe
 nullius-lubricant=nullius-lubricant-vulcanus
 --recipe
-nullius-sodium-hydroxide=nullius-volcanic-causticization
+nullius-sodium-hydroxide=nullius-causticization
 --recipe
 nullius-crushed-limestone=nullius-lava-calcite-separation
 --recipe

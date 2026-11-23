@@ -1,0 +1,14 @@
+{
+  "technology": [
+    [
+      "nullius-volcanic-alkali-processing",
+      "nullius-alkali-processing"
+    ]
+  ],
+  "recipe": [
+    [
+      "nullius-volcanic-causticization",
+      "nullius-causticization"
+    ]
+  ]
+}

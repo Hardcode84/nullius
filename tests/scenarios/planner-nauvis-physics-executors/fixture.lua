@@ -309,7 +309,7 @@ return {
     "nullius-traffic-control",
     "nullius-venting-1",
     "nullius-venting-2",
-    "nullius-volcanic-alkali-processing",
+    "nullius-alkali-processing",
     "nullius-volcanism-1",
     "nullius-waste-management",
     "nullius-waste-reclamation",

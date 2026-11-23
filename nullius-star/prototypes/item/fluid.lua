@@ -1874,6 +1874,140 @@ extend_fluid_prototypes({
     },
     main_product = "nullius-box-soda-ash"
   },
+  -- Black ash: carbon reduces the sulfate to sulfide, carbonation turns it into
+  -- soda ash, and the sulfide burns off as sulfur dioxide. It needs neither
+  -- limestone nor hydrochloric acid, so it keeps the chlorine for chlorine.
+  {
+    type = "recipe",
+    name = "nullius-black-ash",
+    localised_name = {"recipe-name.nullius-black-ash"},
+    enabled = false,
+    categories = {"distillation"},
+    order = "nullius-fd",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color },
+    energy_required = 6,
+    ingredients = {
+      {type="item", name="nullius-sodium-sulfate", amount=2},
+      {type="item", name="nullius-graphite", amount=3},
+      {type="fluid", name="nullius-water", amount=20},
+      {type="fluid", name="nullius-oxygen", amount=30}
+    },
+    results = {
+      {type="item", name="nullius-soda-ash", amount=2},
+      {type="fluid", name="nullius-carbon-dioxide", amount=40},
+      {type="fluid", name="nullius-sulfur-dioxide", amount=20}
+    },
+    main_product = "nullius-soda-ash"
+  },
+  {
+    type = "recipe",
+    name = "nullius-boxed-black-ash",
+    enabled = false,
+    categories = {"distillation"},
+    subgroup = "boxed-sodium",
+    order = "nullius-fd",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-sulfur-dioxide"].flow_color },
+    energy_required = 30,
+    ingredients = {
+      {type="item", name="nullius-box-sodium-sulfate", amount=2},
+      {type="item", name="nullius-box-graphite", amount=3},
+      {type="fluid", name="nullius-water", amount=100},
+      {type="fluid", name="nullius-oxygen", amount=150}
+    },
+    results = {
+      {type="item", name="nullius-box-soda-ash", amount=2},
+      {type="fluid", name="nullius-carbon-dioxide", amount=200},
+      {type="fluid", name="nullius-sulfur-dioxide", amount=100}
+    },
+    main_product = "nullius-box-soda-ash"
+  },
+  -- Causticization makes sodium hydroxide without electrolysis; its poor
+  -- yield is the constraint.
+  {
+    type = "recipe",
+    name = "nullius-causticization",
+    localised_name = {"recipe-name.nullius-causticization"},
+    enabled = false,
+    categories = {"nullius-water-treatment"},
+    subgroup = "sodium-product",
+    order = "nullius-vc",
+    always_show_products = true,
+    energy_required = 30,
+    ingredients = {
+      {type="item", name="nullius-soda-ash", amount=1},
+      {type="item", name="nullius-lime", amount=1},
+      {type="fluid", name="nullius-water", amount=100}
+    },
+    results = {
+      {type="item", name="nullius-sodium-hydroxide", amount=2},
+      {type="item", name="nullius-crushed-limestone", amount=1}
+    },
+    main_product = "nullius-sodium-hydroxide",
+    allow_productivity = false,
+    no_productivity = true
+  },
+  -- Soluble salts wash out of leach residue, leaving silica sand.
+  {
+    type = "recipe",
+    name = "nullius-leach-residue-washing",
+    localised_name = {"recipe-name.nullius-leach-residue-washing"},
+    enabled = false,
+    categories = {"nullius-water-treatment"},
+    order = "nullius-gb",
+    energy_required = 4,
+    ingredients = {
+      {type="item", name="nullius-leach-residue", amount=4},
+      {type="fluid", name="nullius-water", amount=40}
+    },
+    results = {
+      {type="item", name="nullius-salt", amount=1},
+      {type="item", name="nullius-sand", amount=3}
+    },
+    main_product = "nullius-salt"
+  },
+  -- Boiling hydrochloric acid drives off hydrogen chloride gas.
+  {
+    type = "recipe",
+    name = "nullius-hydrochloric-stripping",
+    localised_name = {"recipe-name.nullius-hydrochloric-stripping"},
+    enabled = false,
+    categories = {"distillation"},
+    order = "nullius-hc",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-hydrogen-chloride"].flow_color },
+    energy_required = 2,
+    ingredients = {
+      {type="fluid", name="nullius-acid-hydrochloric", amount=40}
+    },
+    results = {
+      {type="fluid", name="nullius-hydrogen-chloride", amount=30},
+      {type="fluid", name="nullius-water", amount=35}
+    },
+    main_product = "nullius-hydrogen-chloride"
+  },
+  -- Deacon process: hydrogen chloride and oxygen give chlorine and water.
+  {
+    type = "recipe",
+    name = "nullius-deacon-process",
+    localised_name = {"recipe-name.nullius-deacon-process"},
+    enabled = false,
+    categories = {"basic-chemistry"},
+    order = "nullius-cd",
+    crafting_machine_tint = {
+      primary = data.raw.fluid["nullius-chlorine"].flow_color },
+    energy_required = 4,
+    ingredients = {
+      {type="fluid", name="nullius-hydrogen-chloride", amount=60},
+      {type="fluid", name="nullius-oxygen", amount=15}
+    },
+    results = {
+      {type="fluid", name="nullius-chlorine", amount=30},
+      {type="fluid", name="nullius-water", amount=30}
+    },
+    main_product = "nullius-chlorine"
+  },
 
   {
     type = "recipe",

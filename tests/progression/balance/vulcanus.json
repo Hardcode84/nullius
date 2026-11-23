@@ -75,7 +75,7 @@
         "nullius-physics",
         "nullius-pneumatic-technology",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "targets": [
         [
@@ -91,7 +91,7 @@
         "nullius-physics",
         "nullius-pneumatic-technology",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "targets": [
         [
@@ -108,7 +108,7 @@
         "nullius-physics",
         "nullius-pneumatic-technology",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "targets": [
         [
@@ -165,7 +165,7 @@
         "nullius-physics",
         "nullius-pneumatic-technology",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "targets": [
         [
@@ -218,7 +218,7 @@
       "nullius-physics",
       "nullius-pneumatic-technology",
       "nullius-volcanic-titanium-metallurgy",
-      "nullius-volcanic-alkali-processing"
+      "nullius-alkali-processing"
     ]
   }
 }

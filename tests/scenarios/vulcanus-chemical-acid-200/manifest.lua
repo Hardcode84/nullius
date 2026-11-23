@@ -156,6 +156,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 1320.0,
   },
@@ -209,8 +210,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -261,8 +262,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -438,8 +439,8 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {

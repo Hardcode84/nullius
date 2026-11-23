@@ -1795,7 +1795,7 @@
                   {
                     "count": 17,
                     "cycles_per_minute": 32.40913892563198,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   }
                 ]
               },
@@ -2359,7 +2359,7 @@
                   {
                     "count": 33,
                     "cycles_per_minute": 64.81827785126396,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   }
                 ]
               },
@@ -2923,7 +2923,7 @@
                   {
                     "count": 65,
                     "cycles_per_minute": 129.63655570252791,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   }
                 ]
               },
@@ -3621,7 +3621,7 @@
                   {
                     "count": 8,
                     "cycles_per_minute": 30.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,
@@ -4458,7 +4458,7 @@
                   {
                     "count": 15,
                     "cycles_per_minute": 60.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,
@@ -5295,7 +5295,7 @@
                   {
                     "count": 30,
                     "cycles_per_minute": 120.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,
@@ -6294,7 +6294,7 @@
                   {
                     "count": 8,
                     "cycles_per_minute": 30.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,
@@ -8081,7 +8081,7 @@
                   {
                     "count": 15,
                     "cycles_per_minute": 60.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,
@@ -9868,7 +9868,7 @@
                   {
                     "count": 30,
                     "cycles_per_minute": 120.0,
-                    "name": "nullius-volcanic-causticization"
+                    "name": "nullius-causticization"
                   },
                   {
                     "count": 1,

@@ -77,7 +77,7 @@ nullius-saline=nullius-volcanic-saline
 --recipe
 nullius-sodium=nullius-carbothermic-sodium
 --recipe
-nullius-sodium-hydroxide=nullius-volcanic-causticization
+nullius-sodium-hydroxide=nullius-causticization
 --recipe
 nullius-titanium-ingot=nullius-titanium-ingot-vulcanus
 --recipe

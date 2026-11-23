@@ -93,14 +93,14 @@
       "technologies": [
         "nullius-pneumatic-technology",
         "nullius-experimental-chemistry",
-        "nullius-volcanic-alkali-processing",
+        "nullius-alkali-processing",
         "nullius-energy-storage-2",
         "nullius-efficient-metallurgic-science"
       ],
       "research_roots": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ]
     },
     {
@@ -131,7 +131,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "allow_all_pre_physics": true
     },
@@ -142,7 +142,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "extra_machines": [
         "nullius-air-filter-2-pneumatic",

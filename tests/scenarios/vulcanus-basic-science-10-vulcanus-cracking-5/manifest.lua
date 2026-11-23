@@ -280,6 +280,7 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
         },
         crafting_speed = 1.0,

@@ -1,15 +1,23 @@
--- given: Nutrient Technology; declared goop, ferric concentrate, crushed ferric rock, wild
---   culture, digestate, gypsum, iron sulfide, iron ingots and the fluids each recipe takes.
--- place: chemical plant and flotation cell bioreactors, a nutrient furnace and a nutrient
---   foundry on cleared Gleba ground; no electricity.
--- act: run one batch of each Gleba chemistry recipe and of ordinary steel.
--- run: 1200 ticks.
+-- given: Nutrient Technology and the ordinary sodium, sulfur, alkali and limestone research;
+--   declared goop, ferric concentrate, crushed ferric rock, wild culture, digestate, gypsum,
+--   iron sulfide, iron ingots, leach residue, salt, sodium sulfate, soda ash, graphite, lime,
+--   crushed limestone and the fluids each recipe takes.
+-- place: chemical plant, flotation cell and hydro plant bioreactors, nutrient furnaces, a
+--   nutrient distillery and a nutrient foundry on cleared Gleba ground; no electricity.
+-- act: run one batch of each Gleba chemistry recipe, of ordinary steel, and of each step of
+--   the salt, chlorine and sodium hydroxide chain.
+-- run: 2100 ticks.
 -- expect: water, acid liquor, carbon dioxide, gypsum, oxygen, sulfur dioxide, lime, graphite,
---   iron sulfide, iron and steel from rock, culture and goop alone.
+--   iron sulfide, iron and steel from rock, culture and goop alone; salt, hydrogen chloride,
+--   chlorine, soda ash, sodium hydroxide and burnt lime in Gleba modes.
 local research = require("__nullius-star__/scripts/research")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "gleba-chemistry"
 local GOOP = "nullius-nutrient-goop"
+local TECHNOLOGIES = {"nullius-nutrient-technology", "nullius-sodium-processing", "nullius-sulfur-processing-2",
+  "nullius-alkali-processing", "nullius-limestone-processing-1"}
+-- Causticization, the longest batch, takes 30 seconds at crafting speed 1.
+local CHECK_TICK = 2100
 
 -- Each case: machine, Gleba mode, recipe, item and fluid inputs, expected item and fluid outputs.
 local CASES = {
@@ -37,6 +45,31 @@ local CASES = {
   {machine = "nullius-foundry-1", mode = "-nutrient", recipe = "nullius-steel-ingot",
     items = {["nullius-iron-ingot"] = 6}, fluids = {["nullius-oxygen"] = 60},
     out_items = {}, out_fluids = {}, steel = true},
+  -- Salt, hydrogen chloride and chlorine.
+  {machine = "nullius-hydro-plant-1", mode = "-bioreactor", recipe = "nullius-leach-residue-washing",
+    items = {["nullius-leach-residue"] = 4}, fluids = {["nullius-water"] = 40},
+    out_items = {["nullius-salt"] = 1, ["nullius-sand"] = 3}, out_fluids = {}},
+  {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-sodium-sulfate",
+    items = {["nullius-salt"] = 2}, fluids = {["nullius-acid-sulfuric"] = 15},
+    out_items = {["nullius-sodium-sulfate"] = 1}, out_fluids = {["nullius-acid-hydrochloric"] = 10}},
+  {machine = "nullius-distillery-1", mode = "-nutrient", recipe = "nullius-hydrochloric-stripping",
+    items = {}, fluids = {["nullius-acid-hydrochloric"] = 40},
+    out_items = {}, out_fluids = {["nullius-hydrogen-chloride"] = 30, ["nullius-water"] = 35}},
+  {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-deacon-process",
+    items = {}, fluids = {["nullius-hydrogen-chloride"] = 60, ["nullius-oxygen"] = 15},
+    out_items = {}, out_fluids = {["nullius-chlorine"] = 30, ["nullius-water"] = 30}},
+  -- Soda ash, sodium hydroxide and lime recovery.
+  {machine = "nullius-distillery-1", mode = "-nutrient", recipe = "nullius-black-ash",
+    items = {["nullius-sodium-sulfate"] = 2, ["nullius-graphite"] = 3},
+    fluids = {["nullius-water"] = 20, ["nullius-oxygen"] = 30},
+    out_items = {["nullius-soda-ash"] = 2},
+    out_fluids = {["nullius-carbon-dioxide"] = 40, ["nullius-sulfur-dioxide"] = 20}},
+  {machine = "nullius-hydro-plant-1", mode = "-bioreactor", recipe = "nullius-causticization",
+    items = {["nullius-soda-ash"] = 1, ["nullius-lime"] = 1}, fluids = {["nullius-water"] = 100},
+    out_items = {["nullius-sodium-hydroxide"] = 2, ["nullius-crushed-limestone"] = 1}, out_fluids = {}},
+  {machine = "nullius-medium-furnace-1", mode = "-nutrient", recipe = "nullius-lime",
+    items = {["nullius-crushed-limestone"] = 3}, fluids = {},
+    out_items = {["nullius-lime"] = 2}, out_fluids = {["nullius-carbon-dioxide"] = 40}},
 }
 
 local function check(ok, message)
@@ -55,13 +88,13 @@ local function finish(tick)
 end
 
 local function prepare(surface)
-  surface.request_to_generate_chunks({40, 40}, 2)
+  surface.request_to_generate_chunks({85, 15}, 3)
   surface.force_generate_chunk_requests()
-  for _, e in pairs(surface.find_entities_filtered{area = {{0, 0}, {100, 30}}}) do
+  for _, e in pairs(surface.find_entities_filtered{area = {{0, 0}, {170, 30}}}) do
     if e.type ~= "character" then e.destroy() end
   end
   local tiles = {}
-  for x = 0, 100 do for y = 0, 30 do tiles[#tiles + 1] = {name = "highland-dark-rock", position = {x, y}} end end
+  for x = 0, 170 do for y = 0, 30 do tiles[#tiles + 1] = {name = "highland-dark-rock", position = {x, y}} end end
   surface.set_tiles(tiles)
 end
 
@@ -99,13 +132,15 @@ script.on_init(function() storage.assertions, storage.failures = 0, {} end)
 script.on_nth_tick(1, function(event)
   if event.tick == 0 then return end
   if event.tick == 1 then
-    research.complete_with_prerequisites(game.forces.player.technologies["nullius-nutrient-technology"])
+    for _, name in ipairs(TECHNOLOGIES) do
+      research.complete_with_prerequisites(game.forces.player.technologies[name])
+    end
   elseif event.tick == 2 then
     storage.surface = game.planets["nullius-gleba"].surface
     prepare(storage.surface)
     storage.machines = {}
     for index, case in ipairs(CASES) do storage.machines[index] = start(case, index * 10) end
-  elseif event.tick == 1200 then
+  elseif event.tick == CHECK_TICK then
     for index, case in ipairs(CASES) do
       local machine = storage.machines[index]
       check(machine.products_finished == 1, case.recipe .. " finished " .. machine.products_finished .. " batches")

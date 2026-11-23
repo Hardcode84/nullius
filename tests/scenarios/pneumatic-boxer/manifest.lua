@@ -272,6 +272,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 4.9375,
   },

@@ -2,12 +2,16 @@
 -- Source: tests/progression/vulcanus-caustic-bootstrap.args
 return {
   assumed_technologies = {
+    "bob-long-inserters-1",
     "nullius-actuation-1",
+    "nullius-actuation-2",
     "nullius-air-filtration-1",
     "nullius-air-separation-1",
+    "nullius-alkali-processing",
     "nullius-aluminum-production",
     "nullius-aluminum-working-1",
     "nullius-automation",
+    "nullius-automation-2",
     "nullius-barreling-1",
     "nullius-boiling-1",
     "nullius-carbon-sequestration-1",
@@ -23,6 +27,8 @@ return {
     "nullius-checkpoint-iron-ingot",
     "nullius-checkpoint-iron-ingot-2",
     "nullius-checkpoint-lab",
+    "nullius-checkpoint-limestone",
+    "nullius-checkpoint-logistics",
     "nullius-checkpoint-lubricant",
     "nullius-checkpoint-mass-production",
     "nullius-checkpoint-mineral-dust",
@@ -71,8 +77,11 @@ return {
     "nullius-iron-working-2",
     "nullius-land-fill-1",
     "nullius-land-fill-2",
+    "nullius-limestone-processing-1",
     "nullius-logistics-1",
+    "nullius-logistics-2",
     "nullius-lubrication",
+    "nullius-maintenance",
     "nullius-masonry-1",
     "nullius-masonry-2",
     "nullius-masonry-3",
@@ -85,6 +94,7 @@ return {
     "nullius-metalworking-1",
     "nullius-mineral-processing-1",
     "nullius-mining-1",
+    "nullius-mining-2",
     "nullius-mining-tools",
     "nullius-nitrogen-chemistry-1",
     "nullius-organic-chemistry-1",
@@ -107,13 +117,14 @@ return {
     "nullius-storage-2",
     "nullius-toolmaking-1",
     "nullius-toolmaking-2",
+    "nullius-toolmaking-3",
     "nullius-venting-1",
-    "nullius-volcanic-alkali-processing",
     "nullius-waste-management",
     "nullius-water-filtration-1",
     "nullius-water-filtration-2",
     "nullius-wind-power-1",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 681.2,
   },
@@ -136,8 +147,8 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -188,8 +199,8 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -256,7 +267,6 @@ return {
         alternatives = {
           "nullius-distillery-1",
           "nullius-distillery-1-pneumatic",
-          "nullius-mirror-distillery-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -307,8 +317,8 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -369,8 +379,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -421,7 +431,7 @@ return {
           type = "item",
         },
       },
-      producer = "nullius-volcanic-causticization",
+      producer = "nullius-causticization",
       product = "nullius-sodium-hydroxide",
       ticks_per_cycle = 1800,
       total_ticks_single_executor = 1800,

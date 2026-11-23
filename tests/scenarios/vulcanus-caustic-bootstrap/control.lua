@@ -1,7 +1,7 @@
 require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
   case = "vulcanus-caustic-bootstrap",
   contract = require("manifest"),
-  initial_technology = "nullius-volcanic-alkali-processing",
+  initial_technology = "nullius-alkali-processing",
   deadline = 5000,
   parallelism = 2,
   heat_fixture = false,

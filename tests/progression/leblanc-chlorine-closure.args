@@ -1,0 +1,9 @@
+@tests/progression/nauvis-raw-boundary.args
+--technology
+nullius-sulfur-processing-2
+--craft
+nullius-black-ash
+--craft
+nullius-hydrochloric-stripping
+--craft
+nullius-deacon-process

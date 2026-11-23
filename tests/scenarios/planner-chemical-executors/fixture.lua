@@ -316,7 +316,7 @@ return {
     "nullius-traffic-control",
     "nullius-venting-1",
     "nullius-venting-2",
-    "nullius-volcanic-alkali-processing",
+    "nullius-alkali-processing",
     "nullius-volcanic-titanium-metallurgy",
     "nullius-volcanism-1",
     "nullius-vulcanus-refractory-engineering",
@@ -4005,7 +4005,7 @@ return {
         },
       },
       productivity = 0,
-      recipe = "nullius-volcanic-causticization",
+      recipe = "nullius-causticization",
       seconds_per_cycle = 15.0,
     },
     {

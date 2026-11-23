@@ -174,6 +174,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 1440.0,
   },
@@ -194,6 +195,7 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
         },
         crafting_speed = 1.0,

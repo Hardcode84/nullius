@@ -158,6 +158,23 @@ The wreck lies between a small ferric rock outcrop and a microbial mat. Farther 
 
 No electrowinning or electrolysis: electrolyzers stay electric only.
 
+### Salt, chlorine and alkali
+
+Gleba makes chlorine and sodium hydroxide from rock salts without electrolysis.
+Only culture steps are Gleba-only. The chemistry is common and ordinary research
+unlocks it on every planet.
+
+| Product | Route | Research |
+|---|---|---|
+| Salt | Washing the soluble salts out of leach residue leaves sand | Sodium Processing |
+| Hydrogen chloride | Salt and acid liquor give sodium sulfate and hydrochloric acid; stripping drives off the gas | Sulfur Processing 2 |
+| Chlorine | Deacon process with gypsum oxygen | Sulfur Processing 2 |
+| Soda ash | Black ash: digestate graphite reduces sodium sulfate; the sulfur leaves as sulfur dioxide | Sulfur Processing 2 |
+| Sodium hydroxide | Causticization of soda ash with gypsum lime; the limestone burns back to lime in a nutrient medium furnace | Alkali Processing, Limestone Processing 1 |
+
+Salt supplies chlorine and sodium hydroxide in a fixed proportion, as electrolysis
+does elsewhere.
+
 ## Byproducts
 
 | Byproduct | Handling |
@@ -414,8 +431,9 @@ biology for fuel and materials while Nauvis keeps its ordinary industrial route.
 | Rocket Science 2 → Orbital Construction | Build the starter pack, foundation, cargo bay, thruster and flight equipment on Gleba. Have clockwork robots fill a platform request through the nutrient silo. Load local propellant for both legs. Fly to Nauvis, deliver a Gleba product, then return to Gleba. |
 
 At the launch-fuel boundary use the ordinary fuel recipe with local metals,
-recovered mineral salts and fixed-carbon feedstocks. Give the salt and sodium
-routes a source in the leach residue. Check the loose and boxed products. On
+recovered mineral salts and fixed-carbon feedstocks. Salt and sodium come from
+leach residue; see [Salt, chlorine and alkali](#salt-chlorine-and-alkali). Check
+the loose and boxed products. On
 the platform use the normal solar-powered equipment and the existing canister
 conditioning recipe. The zero-electricity requirement applies on the surface.
 

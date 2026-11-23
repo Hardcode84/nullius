@@ -248,6 +248,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 926.4,
   },
@@ -269,8 +270,8 @@ return {
       executor = {
         alternatives = {
           "nullius-flotation-cell-1",
+          "nullius-flotation-cell-1-bioreactor",
           "nullius-flotation-cell-1-pneumatic",
-          "nullius-mirror-flotation-cell-1",
         },
         crafting_speed = 1.0,
         energy_source = {

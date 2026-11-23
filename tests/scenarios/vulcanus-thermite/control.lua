@@ -4,7 +4,7 @@ require("__nullius-star__/scenarios/vulcanus-manifest-runner"){
   initial_technologies = {
     "nullius-explosives-1",
     "nullius-experimental-chemistry",
-    "nullius-volcanic-alkali-processing",
+    "nullius-alkali-processing",
     "nullius-pneumatic-technology",
   },
   deadline = 28900,

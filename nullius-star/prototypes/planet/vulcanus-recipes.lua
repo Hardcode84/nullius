@@ -679,9 +679,9 @@ extend_vulcanus_prototypes({
   },
 })
 
--- Inefficient alkali recovery from sodium-bearing volcanic silicates.  These
--- recipes are globally usable: their poor yields are the constraint, while
--- Vulcanus supplies renewable gravel, hydrogen chloride, and pneumatic power.
+-- Inefficient alkali recovery from sodium-bearing volcanic silicates.  The
+-- recipe is globally usable: its poor yield is the constraint, while Vulcanus
+-- supplies renewable gravel, hydrogen chloride, and pneumatic power.
 extend_vulcanus_prototypes({
   {
     type = "recipe",
@@ -707,31 +707,6 @@ extend_vulcanus_prototypes({
       {type = "item", name = "nullius-mineral-dust", amount = 5},
     },
     main_product = "nullius-saline",
-    allow_productivity = false,
-    no_productivity = true,
-  },
-  {
-    type = "recipe",
-    name = "nullius-volcanic-causticization",
-    localised_name = {"recipe-name.nullius-volcanic-causticization"},
-    icon = data.raw.item["nullius-sodium-hydroxide"].icon,
-    icon_size = data.raw.item["nullius-sodium-hydroxide"].icon_size,
-    enabled = false,
-    categories = {"nullius-water-treatment"},
-    subgroup = "sodium-product",
-    order = "nullius-vc",
-    always_show_products = true,
-    energy_required = 30,
-    ingredients = {
-      {type = "item", name = "nullius-soda-ash", amount = 1},
-      {type = "item", name = "nullius-lime", amount = 1},
-      {type = "fluid", name = "nullius-water", amount = 100},
-    },
-    results = {
-      {type = "item", name = "nullius-sodium-hydroxide", amount = 2},
-      {type = "item", name = "nullius-crushed-limestone", amount = 1},
-    },
-    main_product = "nullius-sodium-hydroxide",
     allow_productivity = false,
     no_productivity = true,
   },

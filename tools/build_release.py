@@ -515,7 +515,8 @@ def run_validation(args: argparse.Namespace, archive: Path) -> dict[str, object]
                     "0.0.4": (args.upgrade_factorio_2_1 and historical_engine(args.upgrade_factorio_2_1,
                                                                                engine_cache()), dependencies),
                     "0.0.5": (None, None),
-                    "0.0.6": (None, None)}
+                    "0.0.6": (None, None),
+                    "0.0.7": (None, None)}
         for version, (engine, mods) in upgrades.items():
             jobs[f"{version} upgrade"] = functools.partial(
                 check_upgrade, archive, factorio, dependencies, timeout, version, engine, mods)

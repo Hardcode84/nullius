@@ -1,5 +1,5 @@
 --technology
-nullius-volcanic-alkali-processing
+nullius-alkali-processing
 --surface-property
 nullius-ambient-temperature=200
 --require-no-additional-technologies
@@ -45,7 +45,7 @@ nullius-ammonia=nullius-ammonia
 --recipe
 nullius-soda-ash=nullius-soda-ash
 --recipe
-nullius-sodium-hydroxide=nullius-volcanic-causticization
+nullius-sodium-hydroxide=nullius-causticization
 --executor
 basic-chemistry=nullius-chemical-plant-1-pneumatic
 --executor

@@ -65,7 +65,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "allow_all_pre_physics": true,
       "research_roots": [],
@@ -103,7 +103,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "allow_all_pre_physics": true,
       "research_roots": [],
@@ -142,7 +142,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "allow_all_pre_physics": true,
       "research_roots": [],

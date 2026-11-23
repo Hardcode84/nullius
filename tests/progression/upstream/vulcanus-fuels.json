@@ -50,7 +50,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "extra_machines": [
         "nullius-air-filter-2-pneumatic",
@@ -86,7 +86,7 @@
       "technologies": [
         "nullius-physics",
         "nullius-volcanic-titanium-metallurgy",
-        "nullius-volcanic-alkali-processing"
+        "nullius-alkali-processing"
       ],
       "extra_machines": [
         "nullius-air-filter-2-pneumatic",

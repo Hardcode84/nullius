@@ -71,7 +71,7 @@ nullius-reconnaissance-1
 --technology
 nullius-single-layer-materials
 --technology
-nullius-volcanic-alkali-processing
+nullius-alkali-processing
 --technology
 nullius-water-filtration-4
 --surface-property
@@ -153,7 +153,7 @@ nullius-saline=nullius-volcanic-saline
 --recipe
 nullius-sodium=nullius-carbothermic-sodium
 --recipe
-nullius-sodium-hydroxide=nullius-volcanic-causticization
+nullius-sodium-hydroxide=nullius-causticization
 --recipe
 nullius-titanium-ingot=nullius-titanium-ingot-vulcanus
 --recipe

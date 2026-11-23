@@ -9,6 +9,7 @@ return {
     "nullius-air-filtration-1",
     "nullius-air-filtration-2",
     "nullius-air-separation-1",
+    "nullius-alkali-processing",
     "nullius-aluminum-production",
     "nullius-aluminum-working-1",
     "nullius-automation",
@@ -168,7 +169,6 @@ return {
     "nullius-toolmaking-3",
     "nullius-traffic-control",
     "nullius-venting-1",
-    "nullius-volcanic-alkali-processing",
     "nullius-volcanism-1",
     "nullius-waste-management",
     "nullius-water-filtration-1",
@@ -178,6 +178,7 @@ return {
     "nullius-wind-power-1",
     "nullius-wind-power-2",
   },
+  executor_stock = {},
   fuel_consumption = {
     ["nullius-compressed-volcanic-gas"] = 4956.55,
   },
@@ -233,8 +234,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -375,6 +376,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -426,8 +428,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -483,8 +485,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -541,7 +543,6 @@ return {
         alternatives = {
           "nullius-distillery-1",
           "nullius-distillery-1-pneumatic",
-          "nullius-mirror-distillery-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -597,8 +598,8 @@ return {
       executor = {
         alternatives = {
           "nullius-hydro-plant-1",
+          "nullius-hydro-plant-1-bioreactor",
           "nullius-hydro-plant-1-pneumatic",
-          "nullius-mirror-hydro-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -659,6 +660,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1055,8 +1057,8 @@ return {
       executor = {
         alternatives = {
           "nullius-chemical-plant-1",
+          "nullius-chemical-plant-1-bioreactor",
           "nullius-chemical-plant-1-pneumatic",
-          "nullius-mirror-chemical-plant-1",
         },
         crafting_speed = 1.0,
         energy_source = {
@@ -1275,6 +1277,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1607,6 +1610,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1668,6 +1672,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1765,6 +1770,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1928,6 +1934,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -1984,6 +1991,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -2035,6 +2043,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -2198,6 +2207,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,
@@ -2249,6 +2259,7 @@ return {
       executor = {
         alternatives = {
           "nullius-small-assembler-1",
+          "nullius-small-assembler-1-overcharged",
           "nullius-small-assembler-1-pneumatic",
         },
         crafting_speed = 0.5,

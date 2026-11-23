@@ -64,8 +64,8 @@
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
-      "technology": "nullius-volcanic-alkali-processing",
-      "recipe": "nullius-volcanic-causticization"
+      "technology": "nullius-alkali-processing",
+      "recipe": "nullius-causticization"
     },
     {
       "boundary": "tests/progression/vulcanus-basic-science.args",
