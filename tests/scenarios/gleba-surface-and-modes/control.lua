@@ -92,7 +92,7 @@ local function character(surface, position, force, items)
   return body
 end
 
--- Exactly one wild culture isolation and one silica-insulated motor.
+-- Exactly one wild culture isolation and one silica motor.
 local HAND_INPUTS = {
   {name = "nullius-mat-sample", count = 3}, {name = "nullius-iron-wire", count = 2},
   {name = "nullius-iron-plate", count = 1}, {name = "nullius-silica", count = 2},
@@ -137,7 +137,7 @@ function start_attempts(force)
   -- Gleba hand crafts complete on Gleba and fail on Nauvis.
   a.gleba_hands = character(gleba, {150, 95}, force, HAND_INPUTS)
   a.nauvis_hands = character(nauvis, {80, 90}, force, HAND_INPUTS)
-  for _, recipe in ipairs({"nullius-isolate-wild-culture", "nullius-gleba-motor-1"}) do
+  for _, recipe in ipairs({"nullius-isolate-wild-culture", "nullius-motor-1-gleba"}) do
     check(hand_craft(a.gleba_hands, recipe) == 1, "Gleba character could not hand-craft " .. recipe)
     hand_craft(a.nauvis_hands, recipe)
   end

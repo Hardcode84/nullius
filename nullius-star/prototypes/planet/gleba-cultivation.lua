@@ -63,6 +63,7 @@ item("ferric-concentrate", "tungsten-ore-3")
 item("culture-sludge", "spoilage-2")
 item("digestate", "burnt-spoilage")
 item("iron-sulfide", "tungsten-ore-2")
+item("bioplastic", "bioflux")
 item("wild-culture", "iron-bacteria", "nullius-culture-sludge", 10 * minute)
 item("domesticated-culture", "copper-bacteria", "nullius-culture-sludge", 20 * minute)
 local goop = item("nutrient-goop", "nutrients", "nullius-digestate", 15 * minute)
@@ -149,11 +150,12 @@ recipe(nutrient, "gleba-gypsum-decomposition", "gleba-chemosynthesis", 6,
 -- Gleba cannot vent sulfur dioxide; hydrogen sulfide reduces it onto iron.
 recipe(nutrient, "gleba-sulfur-dioxide-reduction", "gleba-chemosynthesis", 6,
   {{"sulfur-dioxide", 10}, {"ferric-concentrate", 1}}, {{"water", 10}, {"iron-sulfide", 1}}, gleba_only)
+-- Bacteria store fixed carbon as a polymer that stands in for plastic and rubber.
+recipe(nutrient, "gleba-bioplastic", "gleba-culture", 10,
+  {{"wild-culture", 1}, {"nutrient-goop", 2}, {"carbon-dioxide", 20}}, {{"bioplastic", 2}})
 -- Graphite from fixed carbon leaves the goop carbon loop.
 recipe(nutrient, "gleba-digestate-pyrolysis", "gleba-chemosynthesis", 4,
   {{"digestate", 5}}, {{"graphite", 1}, {"carbon-dioxide", 10}})
-recipe(nutrient, "gleba-motor-1", "medium-crafting", 8,
-  {{"iron-wire", 2}, {"iron-plate", 1}, {"silica", 2}, {"iron-rod", 1}}, {{"motor-1", 1}}, gleba_only)
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
   {{"wild-culture", 2}}, {{"domesticated-culture", 1}})
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,
@@ -210,3 +212,27 @@ data:extend({
   },
   void,
 })
+
+-- Ordinary machines with local substitutes, as Vulcanus makes them: silica for plastic,
+-- bioplastic for rubber, aluminum and logic, and pumps for seawater intakes.
+local recipe_util = require("prototypes.recipe-util")
+local gleba_substitutes = require("prototypes.planet.silica-substitutions")("-gleba", gleba_only, {})
+local function substitute(source, name, substitutions)
+  gleba_substitutes[#gleba_substitutes + 1] = recipe_util.substitute_recipe(source, name, substitutions, {
+    localised_name = {"recipe-name." .. name}, surface_conditions = table.deepcopy(gleba_only),
+  })
+end
+local function stack(name, amount) return {type = "item", name = "nullius-" .. name, amount = amount} end
+substitute("nullius-hydro-plant-1", "nullius-hydro-plant-1-gleba",
+  {["nullius-seawater-intake-1"] = {stack("pump-1", 2)}})
+substitute("nullius-small-chest-2", "nullius-iron-chest-gleba",
+  {["nullius-rubber"] = {stack("bioplastic", 1)}})
+substitute("nullius-lab-1", "nullius-lab-1-gleba", {
+  ["nullius-aluminum-sheet"] = {stack("bioplastic", 4)},
+  ["decider-combinator"] = {stack("iron-wire", 6), stack("bioplastic", 2)},
+})
+for _, substituted in ipairs(gleba_substitutes) do
+  substituted.enabled = false
+  data:extend({substituted})
+  unlock(nutrient, substituted.name)
+end

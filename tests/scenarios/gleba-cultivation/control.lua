@@ -196,10 +196,10 @@ end
 local function run_assembler()
   if not storage.machines.assembler then return end
   if not idle("assembler") then return end
-  if done("gleba-motor-1") == 0 and have("iron-wire") >= 2 and have("iron-plate") >= 1
+  if done("motor-1-gleba") == 0 and have("iron-wire") >= 2 and have("iron-plate") >= 1
       and have("silica") >= 2 and have("iron-rod") >= 1 then
-    start("assembler", "gleba-motor-1", 1)
-  elseif done("gleba-motor-1") > 0 and done("inserter") == 0 and have("motor-1") >= 1
+    start("assembler", "motor-1-gleba", 1)
+  elseif done("motor-1-gleba") > 0 and done("inserter") == 0 and have("motor-1") >= 1
       and have("iron-gear") >= 2 and have("iron-rod") >= 3 then
     start("assembler", "inserter", 1)
   end
@@ -307,7 +307,7 @@ local function finish(event)
   -- The miner and nutrient inserter are the only rock supply into the crusher.
   check(done("gleba-rock-crushing") > 0, "nutrient miner/inserter/crusher produced no crushed rock")
   check(done("gleba-silica") > 0 and done("glass") >= GLASS, "silica -> glass casting did not complete")
-  check(done("gleba-motor-1") > 0 and done("inserter") > 0 and have("inserter") >= 4,
+  check(done("motor-1-gleba") > 0 and done("inserter") > 0 and have("inserter") >= 4,
     "local assembler did not reproduce motor and inserters")
   check(done("gleba-chemosynthesis") > 0, "no goop fixed from rock")
   check(done("gleba-digestate-recycling") > 0, "spent goop was not recycled")

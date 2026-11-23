@@ -32,6 +32,10 @@ local function vulcanus_substitute_recipe(source_name, name, substitutions,
     source_name, name, substitutions, overrides)
 end
 
+-- Motors and filters share their silica substitution with Gleba.
+extend_vulcanus_prototypes(require("prototypes.planet.silica-substitutions")(
+  "-vulcanus", vulcanus_only, {enabled = true}))
+
 local function vulcanus_plastic_recipe(source_name, name, replacement,
     overrides)
   return vulcanus_substitute_recipe(source_name, name, {
@@ -1129,23 +1133,6 @@ extend_vulcanus_prototypes({
       localised_name = {"recipe-name.nullius-insulated-wire-vulcanus"},
       enabled = true,
       order = "nullius-vb",
-    }),
-  vulcanus_plastic_recipe("nullius-motor-1",
-    "nullius-motor-1-vulcanus", {
-      {type = "item", name = "nullius-silica", amount = 2},
-    }, {
-      localised_name = {"recipe-name.nullius-motor-vulcanus"},
-      enabled = true,
-      order = "nullius-vb",
-    }),
-  vulcanus_plastic_recipe("nullius-filter-1",
-    "nullius-filter-1-vulcanus", {
-      {type = "item", name = "nullius-silica", amount = 2},
-    }, {
-      localised_name = {"recipe-name.nullius-filter-vulcanus"},
-      enabled = true,
-      order = "nullius-vc",
-      energy_required = 8,
     }),
   vulcanus_substitute_recipe("nullius-motor-2",
     "nullius-motor-2-vulcanus", {

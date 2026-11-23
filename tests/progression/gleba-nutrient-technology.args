@@ -8,7 +8,7 @@ stone=nullius-gleba-stone
 --recipe
 nullius-iron-wire=nullius-iron-wire
 --recipe
-nullius-motor-1=nullius-gleba-motor-1
+nullius-motor-1=nullius-motor-1-gleba
 --recipe
 inserter=inserter
 --recipe
