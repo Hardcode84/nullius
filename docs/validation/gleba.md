@@ -77,6 +77,15 @@ Factorio 2.1.24 applies recipe surface conditions only when a recipe is chosen:
 
 The nutrient filter's fixed recipe therefore selects Gleba air, and the scenario gives distilleries their recipe through blueprint ghosts.
 
+## Gleba chemistry
+
+`gleba-chemistry`, Factorio 2.1.24 (54 assertions, tick 1200): on Gleba without electricity, one batch each of sulfidation, acid liquor, neutralization, gypsum decomposition, sulfur dioxide reduction and digestate pyrolysis in chemical plant and flotation cell bioreactors, iron sulfide reduction in a nutrient furnace, and steel from local oxygen in a nutrient foundry each finish with their exact outputs.
+
+| Contract | Result |
+|---|---|
+| `gleba-chemistry.args` | Water, iron sulfide, acid liquor, carbon dioxide, gypsum, oxygen, sulfur dioxide, lime, graphite and steel ingot close at Nutrient Technology on the Gleba boundary without electricity |
+| `gleba-chemistry-sinks.args` | Sulfur dioxide reduction and iron sulfide reduction close at Nutrient Technology on the Gleba boundary without electricity |
+
 ## Bioreactors
 
 `bioreactor-modes`, Factorio 2.1.24 (71 assertions, tick 900):

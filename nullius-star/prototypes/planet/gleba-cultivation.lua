@@ -62,6 +62,7 @@ item("leach-residue", "calcite-2")
 item("ferric-concentrate", "tungsten-ore-3")
 item("culture-sludge", "spoilage-2")
 item("digestate", "burnt-spoilage")
+item("iron-sulfide", "tungsten-ore-2")
 item("wild-culture", "iron-bacteria", "nullius-culture-sludge", 10 * minute)
 item("domesticated-culture", "copper-bacteria", "nullius-culture-sludge", 20 * minute)
 local goop = item("nutrient-goop", "nutrients", "nullius-digestate", 15 * minute)
@@ -75,10 +76,13 @@ local function item_id(name)
   return id
 end
 
+-- A short name means a Nullius fluid when one exists, otherwise an item.
 local function stacks(list)
   local result = {}
   for _, pair in ipairs(list) do
-    result[#result + 1] = {type = "item", name = item_id(pair[1]), amount = pair[2]}
+    local fluid = "nullius-" .. pair[1]
+    result[#result + 1] = data.raw.fluid[fluid] and {type = "fluid", name = fluid, amount = pair[2]}
+      or {type = "item", name = item_id(pair[1]), amount = pair[2]}
   end
   return result
 end
@@ -89,9 +93,10 @@ end
 
 local function recipe(tech, name, category, time, ingredients, products, conditions)
   local id = "nullius-" .. name
+  local results = stacks(products)
   data:extend({{
     type = "recipe", name = id, categories = {category}, enabled = false, energy_required = time,
-    ingredients = stacks(ingredients), results = stacks(products), main_product = item_id(products[1][1]),
+    ingredients = stacks(ingredients), results = results, main_product = results[1].name,
     localised_name = {"recipe-name." .. id}, allow_productivity = false, allow_decomposition = false,
     surface_conditions = conditions and table.deepcopy(conditions) or nil,
   }})
@@ -124,6 +129,29 @@ recipe(nutrient, "gleba-iron-reduction", "gleba-roasting", 4,
   {{"ferric-concentrate", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 3}})
 recipe(nutrient, "gleba-silica", "gleba-roasting", 4,
   {{"leach-residue", 2}}, {{"silica", 3}})
+
+-- Gleba chemistry takes its oxygen from the rock's ferric oxide, sulfate and carbonate.
+-- Atmospheric hydrogen sulfide supplies sulfur and hydrogen, so the recipes that draw
+-- on it need Gleba; reduced iron ends as iron sulfide, which smelts back to iron.
+recipe(nutrient, "gleba-sulfidation", "gleba-chemosynthesis", 8,
+  {{"ferric-concentrate", 2}}, {{"water", 30}, {"iron-sulfide", 1}}, gleba_only)
+recipe(nutrient, "gleba-acid-liquor", "gleba-culture", 8,
+  {{"ferric-concentrate", 2}, {"water", 10}, {"wild-culture", 1}},
+  {{"acid-sulfuric", 20}, {"iron-sulfide", 1}}, gleba_only)
+recipe(nutrient, "gleba-iron-sulfide-reduction", "gleba-roasting", 4,
+  {{"iron-sulfide", 2}, {"nutrient-goop", 1}}, {{"iron-ingot", 3}})
+-- Acid liquor neutralized on the rock's carbonate is Gleba's carbon dioxide.
+recipe(nutrient, "gleba-neutralization", "gleba-chemosynthesis", 6,
+  {{"crushed-gleba-rock", 4}, {"acid-sulfuric", 20}},
+  {{"carbon-dioxide", 20}, {"gypsum", 2}, {"leach-residue", 2}})
+recipe(nutrient, "gleba-gypsum-decomposition", "gleba-chemosynthesis", 6,
+  {{"gypsum", 2}}, {{"oxygen", 10}, {"sulfur-dioxide", 10}, {"lime", 1}})
+-- Gleba cannot vent sulfur dioxide; hydrogen sulfide reduces it onto iron.
+recipe(nutrient, "gleba-sulfur-dioxide-reduction", "gleba-chemosynthesis", 6,
+  {{"sulfur-dioxide", 10}, {"ferric-concentrate", 1}}, {{"water", 10}, {"iron-sulfide", 1}}, gleba_only)
+-- Graphite from fixed carbon leaves the goop carbon loop.
+recipe(nutrient, "gleba-digestate-pyrolysis", "gleba-chemosynthesis", 4,
+  {{"digestate", 5}}, {{"graphite", 1}, {"carbon-dioxide", 10}})
 recipe(nutrient, "gleba-motor-1", "medium-crafting", 8,
   {{"iron-wire", 2}, {"iron-plate", 1}, {"silica", 2}, {"iron-rod", 1}}, {{"motor-1", 1}}, gleba_only)
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,

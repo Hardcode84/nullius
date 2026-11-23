@@ -1,0 +1,17 @@
+@tests/progression/gleba-landing-boundary.args
+--technology
+nullius-nutrient-technology
+--recipe
+nullius-water=nullius-gleba-sulfidation
+--recipe
+nullius-acid-sulfuric=nullius-gleba-acid-liquor
+--recipe
+nullius-sulfur-dioxide=nullius-gleba-gypsum-decomposition
+--recipe
+nullius-gypsum=nullius-gleba-neutralization
+--recipe
+nullius-iron-sulfide=nullius-gleba-sulfur-dioxide-reduction
+--recipe
+nullius-iron-ingot=nullius-gleba-iron-sulfide-reduction
+nullius-iron-sulfide
+nullius-iron-ingot

@@ -165,7 +165,7 @@ No electrowinning or electrolysis: electrolyzers stay electric only.
 | Acid liquor | No void on Gleba; neutralize on carbonate, which yields gypsum and CO2 |
 | Oxygen | No void on Gleba |
 | Sulfur dioxide | No void on Gleba; reduce back to sulfur with H2S |
-| Sulfur | From H2S splitting and phototrophs; feeds acid liquor |
+| Sulfur | Carried as iron sulfide: sulfidation, acid liquor and sulfur dioxide reduction leave it, and the furnace smelts it back to iron. H2S splitting and phototrophs add elemental sulfur later |
 | Gypsum, iron sulfide | Solid waste; decomposition or disposal recipes |
 | Digestate | Recycled into goop on Gleba. Each recycling batch consumes more digestate than its goop later leaves, so enough recyclers always clear it. Dissolved into sludge elsewhere |
 | Contaminated culture | Probabilistic product of screening; sterilized at a heat or acid cost |
@@ -225,7 +225,7 @@ Each research unit consumes one of each listed pack.
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
 | Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
-| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor, and hand-craft Small Assembler 1 by its ordinary recipe. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. |
+| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor, and hand-craft Small Assembler 1 by its ordinary recipe. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. Sulfide ferric concentrate for water, culture acid liquor, neutralize it on carbonate for carbon dioxide and gypsum, decompose gypsum for oxygen and lime, reduce sulfur dioxide and spent iron sulfide, pyrolyse digestate for graphite, and cast steel with local oxygen. |
 | Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the flotation cell bioreactor. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. |
 

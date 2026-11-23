@@ -4,6 +4,8 @@
     "gleba-nutrient-technology.args",
     "gleba-cultivation.args",
     "gleba-construction.args",
+    "gleba-chemistry.args",
+    "gleba-chemistry-sinks.args",
     "bioreactor-goop-nauvis.args",
     "bioreactor-goop-fulgora.args",
     "bioreactor-digestate.args",
