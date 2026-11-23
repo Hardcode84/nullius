@@ -92,10 +92,11 @@ local function character(surface, position, force, items)
   return body
 end
 
+-- Exactly one wild culture isolation and one silica-insulated motor.
 local HAND_INPUTS = {
-  {name = "nullius-mat-sample", count = 3}, {name = "nullius-iron-plate", count = 8},
-  {name = "nullius-iron-gear", count = 4}, {name = "nullius-leach-residue", count = 2},
-  {name = "inserter", count = 1},
+  {name = "nullius-mat-sample", count = 3}, {name = "nullius-iron-wire", count = 2},
+  {name = "nullius-iron-plate", count = 1}, {name = "nullius-silica", count = 2},
+  {name = "nullius-iron-rod", count = 1},
 }
 
 function start_attempts(force)
@@ -136,7 +137,7 @@ function start_attempts(force)
   -- Gleba hand crafts complete on Gleba and fail on Nauvis.
   a.gleba_hands = character(gleba, {150, 95}, force, HAND_INPUTS)
   a.nauvis_hands = character(nauvis, {80, 90}, force, HAND_INPUTS)
-  for _, recipe in ipairs({"nullius-isolate-wild-culture", "nullius-gleba-small-assembler-1"}) do
+  for _, recipe in ipairs({"nullius-isolate-wild-culture", "nullius-gleba-motor-1"}) do
     check(hand_craft(a.gleba_hands, recipe) == 1, "Gleba character could not hand-craft " .. recipe)
     hand_craft(a.nauvis_hands, recipe)
   end
@@ -149,7 +150,7 @@ function check_attempts()
   check(a.gleba_filter.get_fluid_count("nullius-gleba-air") > 0, "Gleba filter made no Gleba air")
   check(a.gleba_filter.get_fluid_count("nullius-air") == 0, "Gleba filter made ordinary air")
   check(a.separator.get_fluid_count("nullius-nitrogen") > 0, "Gleba air separation made no nitrogen")
-  for _, product in ipairs({"nullius-wild-culture", "nullius-small-assembler-1"}) do
+  for _, product in ipairs({"nullius-wild-culture", "nullius-motor-1"}) do
     check(a.gleba_hands.get_item_count(product) > 0, "Gleba hand craft made no " .. product)
     check(a.nauvis_hands.get_item_count(product) == 0, "Nauvis hand craft made " .. product)
   end

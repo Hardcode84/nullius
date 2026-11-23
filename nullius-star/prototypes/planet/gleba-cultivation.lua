@@ -126,9 +126,6 @@ recipe(nutrient, "gleba-silica", "gleba-roasting", 4,
   {{"leach-residue", 2}}, {{"silica", 3}})
 recipe(nutrient, "gleba-motor-1", "medium-crafting", 8,
   {{"iron-wire", 2}, {"iron-plate", 1}, {"silica", 2}, {"iron-rod", 1}}, {{"motor-1", 1}}, gleba_only)
-recipe(nutrient, "gleba-small-assembler-1", "small-crafting", 6,
-  {{"iron-plate", 8}, {"iron-gear", 4}, {"leach-residue", 2}, {"inserter", 1}},
-  {{"small-assembler-1", 1}}, gleba_only)
 recipe(cultivation, "domesticate-wild-culture", "gleba-culture", 8,
   {{"wild-culture", 2}}, {{"domesticated-culture", 1}})
 recipe(cultivation, "gleba-microbiology", "gleba-culture", 30,

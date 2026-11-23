@@ -4,5 +4,5 @@ return {
   {"nullius-chemical-plant-1", 1}, {"nullius-small-furnace-1", 1},
   {"nullius-foundry-1", 1}, {"inserter", 12},
   {"transport-belt", 40}, {"iron-chest", 4},
-  {"pipe", 12}, {"stone-wall", 12},
+  {"pipe", 12},
 }

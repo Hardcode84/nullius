@@ -217,18 +217,19 @@ end
 
 local function make_parts()
   if storage.body.crafting_queue_size ~= 0 then return end
-  if not storage.assembler_started and have("iron-plate") >= 16 and have("iron-rod") >= 8 and have("leach-residue") >= 2 then
-    -- Handcraft gears, wire, and pipes, then the first small assembler using one wreck inserter.
+  if not storage.assembler_started and have("iron-plate") >= 16 and have("iron-rod") >= 8 then
+    -- Handcraft gears, wire and pipes, then the ordinary small assembler with a wreck inserter and belt.
     check(storage.body.begin_crafting{recipe = "nullius-iron-gear", count = 4} == 4, "local gear handcraft failed")
     check(storage.body.begin_crafting{recipe = "nullius-iron-wire", count = 1} == 1, "local wire handcraft failed")
     check(storage.body.begin_crafting{recipe = "pipe", count = 1} == 1, "local pipe handcraft failed")
     take(storage.supplies, stock(), "inserter", 1)
+    take(storage.supplies, stock(), "transport-belt", 1)
     storage.assembler_started = true
     return
   end
   if storage.assembler_started and not storage.assembler_crafted and have("iron-gear") >= 4
-      and have("iron-plate") >= 8 and have("leach-residue") >= 2 and have("inserter") >= 1 then
-    check(storage.body.begin_crafting{recipe = "nullius-gleba-small-assembler-1", count = 1} == 1,
+      and have("iron-plate") >= 8 and have("inserter") >= 1 and have("transport-belt") >= 1 then
+    check(storage.body.begin_crafting{recipe = "nullius-small-assembler-1", count = 1} == 1,
       "local small assembler handcraft failed")
     storage.assembler_crafted = true
     return

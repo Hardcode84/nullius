@@ -225,7 +225,7 @@ Each research unit consumes one of each listed pack.
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
 | Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
-| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor and a field-assembled Small Assembler 1. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. |
+| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Assemble a silica-insulated motor, and hand-craft Small Assembler 1 by its ordinary recipe. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. |
 | Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the flotation cell bioreactor. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. |
 
@@ -384,9 +384,10 @@ research costs on the other planets.
 Make glass from silica and graphite from fixed carbon at the probe. The
 hydro plant bioreactor collects atmospheric gas. The chemical plant bioreactor
 handles gas reactions and iron reduction. The starter furnace takes the dry
-solid for final smelting. Nutrient Technology unlocks a local handcraft for Small Assembler 1
-from iron plates, gears, leach residue and an inserter. The first machine can use a wreck
-inserter. Make replacement inserters from local materials.
+solid for final smelting. Small Assembler 1 is hand-crafted by its ordinary recipe from local
+iron parts and a wreck inserter and belt. Make replacement inserters from local materials.
+Gleba recipes substitute local materials for unavailable ones, as Vulcanus does: silica for
+plastic in motors, and a local bioplastic or biomembrane in Lab 1. The wreck carries no walls.
 
 Keep the normal Lab 2 building for its placement checkpoint. At Nanotechnology 1
 the local Nanofabricator 1 construction recipe uses a chemical plant, a

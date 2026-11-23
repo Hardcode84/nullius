@@ -12,7 +12,13 @@ nullius-motor-1=nullius-gleba-motor-1
 --recipe
 inserter=inserter
 --recipe
-nullius-small-assembler-1=nullius-gleba-small-assembler-1
+nullius-small-assembler-1=nullius-small-assembler-1
+--recipe
+wooden-chest=wooden-chest
+--recipe
+transport-belt=transport-belt
+--recipe
+nullius-iron-sheet=nullius-iron-sheet
 --recipe
 nullius-digestate=nullius-gleba-sludge-digestion
 nullius-crushed-gleba-rock
