@@ -47,11 +47,13 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
             "raw_sources": {"ore": ["resource:ore"]},
             "unresolved": ["nitrogen"], "invalid_raw": ["imported-item"],
             "electric_required_paths": [{}],
+            "cyclic_producers": {"nitrogen": [{"producer": "unbarrel", "input": "nitrogen-barrel"}]},
         }
         output = StringIO()
         with redirect_stdout(output):
             print_human(report, compact=True)
-        for expected in ("unlock-machine", "nitrogen", "imported-item",
+        for expected in ("unlock-machine", "nitrogen closes a loop: unbarrel needs nitrogen-barrel",
+                         "imported-item",
                          "resource:ore", "Selected production steps: 1",
                          "Crafting categories: 1", "1 paths"):
             self.assertIn(expected, output.getvalue())
@@ -922,6 +924,55 @@ class AnalyzePrerequisitesTest(unittest.TestCase):
         self.assertEqual(report["blocked_recipes"], [
             {"product": "a", "recipe": "make-a", "blocked_ingredients": ["b"], "missing_executor": False},
             {"product": "b", "recipe": "make-b", "blocked_ingredients": ["a"], "missing_executor": False}])
+
+    def test_selected_route_never_feeds_on_its_own_product(self) -> None:
+        def recipe(ingredient, result):
+            return {"enabled": True, "ingredients": [{"name": ingredient, "amount": 1}],
+                    "results": [{"name": result, "amount": 1}]}
+        data = {"character": {"character": {"crafting_categories": ["crafting"]}},
+                "resource": {"rock": {"minable": {"result": "ore"}}},
+                "recipe": {"dehydrate": recipe("sludge", "dust"), "dispose": recipe("dust", "sludge"),
+                           "crush": recipe("ore", "dust")}}
+        args = SimpleNamespace(targets=["dust"], technology=[], surface_property=[], available=[],
+                               raw=["ore"], recipe=[("dust", "dehydrate")])
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], ["dust"])
+        self.assertEqual(report["cyclic_producers"], {
+            "dust": [{"producer": "dehydrate", "input": "sludge"}],
+            "sludge": [{"producer": "dispose", "input": "dust"}]})
+        args = SimpleNamespace(targets=[], technology=[], surface_property=[], available=[],
+                               raw=["ore"], craft=["dehydrate"])
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual({step["product"]: step["producer"] for step in report["selected_recipes"]},
+                         {"<recipe:dehydrate>": "dehydrate", "sludge": "dispose", "dust": "crush"})
+
+    def test_marginal_route_does_not_build_its_machines(self) -> None:
+        # The first filter needs carbon dioxide burned from ore; carbon dioxide
+        # separated from air needs a standing filter, which needs its research.
+        data = {"character": {"character": {"crafting_categories": ["crafting"]}},
+                "technology": {"filtration": {"effects": [{"type": "unlock-recipe", "recipe": "filter"}]}},
+                "resource": {"rock": {"minable": {"result": "ore"}}},
+                "item": {"filter": {"place_result": "filter"}},
+                "assembling-machine": {"filter": {"crafting_categories": ["filtration"],
+                                                  "minable": {"result": "filter"}}},
+                "recipe": {
+                    "collect": {"enabled": True, "category": "filtration", "ingredients": [],
+                                "results": [{"name": "air", "amount": 1}]},
+                    "separate": {"enabled": True, "ingredients": [{"name": "air", "amount": 1}],
+                                 "results": [{"name": "co2", "amount": 1}]},
+                    "burn": {"enabled": True, "ingredients": [{"name": "ore", "amount": 1}],
+                             "results": [{"name": "co2", "amount": 1}]},
+                    "filter": {"enabled": False, "ingredients": [{"name": "co2", "amount": 1}],
+                               "results": [{"name": "filter", "amount": 1}]}}}
+        args = SimpleNamespace(targets=["co2"], technology=[], surface_property=[], available=[],
+                               raw=["ore"], recipe=[("co2", "separate")])
+        self.assertEqual(analyze(data, args)["unresolved"], ["co2"])
+        args.marginal = True
+        report = analyze(data, args)
+        self.assertEqual(report["unresolved"], [])
+        self.assertEqual(sorted(step["product"] for step in report["selected_recipes"]), ["air", "co2"])
+        self.assertEqual(report["required_technologies"], ["filtration"])
 
     def test_recipe_requires_an_executor(self) -> None:
         data = {

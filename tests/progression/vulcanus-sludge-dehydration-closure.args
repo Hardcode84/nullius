@@ -1,6 +1,5 @@
 @tests/progression/vulcanus-raw-boundary.args
 --technology
 nullius-pneumatic-technology
---recipe
-nullius-mineral-dust=nullius-iron-assisted-sludge-dehydration
-nullius-mineral-dust
+--craft
+nullius-iron-assisted-sludge-dehydration

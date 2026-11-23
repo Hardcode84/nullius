@@ -861,6 +861,17 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                 f"selected recipe {recipe_name} is not available for {product} "
                 "at the declared boundary"
             )
+    # A recipe target is crafted once; it does not produce its products for
+    # the route, so a recipe that feeds its own inputs needs another source.
+    craft_targets = {f"<recipe:{name}>": name for name in getattr(args, "craft", [])}
+    for recipe_name in craft_targets.values():
+        if recipe_name not in recipes:
+            raise TestFailure(f"crafted recipe does not exist: {recipe_name}")
+        if recipe_name not in eligible_recipes:
+            raise TestFailure(
+                f"crafted recipe {recipe_name} is not available at the declared boundary"
+            )
+    targets = list(args.targets) + list(craft_targets)
 
     for technology_name, technology in technologies.items():
         # A hidden technology is never shown for research; a disabled one may
@@ -941,8 +952,6 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
     machine_only_categories = set(getattr(args, "machine_category", []))
     raw = set(getattr(args, "raw", []))
     invalid_raw = sorted(raw - set(extraction_sources))
-    pending = deque(args.targets)
-    visited: set[str] = set()
     selected_recipes: dict[str, str] = {}
     alternatives: dict[str, list[str]] = {}
     raw_sources: dict[str, list[str]] = {}
@@ -1023,13 +1032,13 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         technologies_needed, depth = state
         return len(technologies_needed), depth, sorted(technologies_needed)
 
-    def provider_for_category(
+    def category_providers(
         category: str,
         states: dict[str, tuple[frozenset[str], int]],
-    ) -> tuple[str, tuple[frozenset[str], int]] | None:
+    ) -> list[tuple[str, tuple[frozenset[str], int]]]:
         characters = sorted(set(character_categories.get(category, [])))
         if characters and category not in machine_only_categories:
-            return f"<character:{characters[0]}>", (frozenset(), 0)
+            return [(f"<character:{characters[0]}>", (frozenset(), 0))]
         candidates: list[tuple[str, tuple[frozenset[str], int]]] = []
         # An exact executor also selects the item that places it.
         override = executor_overrides.get(category)
@@ -1043,19 +1052,24 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                 )
             elif item_name in states:
                 candidates.append((item_name, states[item_name]))
-        if not candidates:
-            return None
-        return min(candidates, key=lambda candidate: state_key(candidate[1]))
+        return sorted(candidates, key=lambda candidate: state_key(candidate[1]))
 
-    def best_provider(category_choices, states):
-        candidates = []
+    # Every executor that can run one of the categories, best first; the sort
+    # is stable, so ties keep category and then item order.
+    def provider_options(category_choices, states):
+        options = []
         for category in category_choices:
             if category in forbidden_categories or category in IGNORED_RECIPE_CATEGORIES:
                 continue
-            provider = provider_for_category(category, states)
-            if provider is not None:
-                candidates.append((*provider, category))
-        return min(candidates, key=lambda candidate: state_key(candidate[1])) if candidates else None
+            options.extend(
+                (*provider, category)
+                for provider in category_providers(category, states)
+            )
+        return sorted(options, key=lambda option: state_key(option[1]))
+
+    def best_provider(category_choices, states):
+        options = provider_options(category_choices, states)
+        return options[0] if options else None
 
     changed = True
     while changed:
@@ -1156,16 +1170,36 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             recipe_name,
         )
 
-    while pending:
-        product = pending.popleft()
-        if product in visited or product in available:
-            continue
-        visited.add(product)
+    # A marginal route prices a material flow through machines that already
+    # stand, as the marginal manifest does: an executor must be reachable at
+    # the boundary, but its machine is not built as part of the route.
+    builds_machines = not getattr(args, "marginal", False)
 
-        if product in raw:
-            raw_sources[product] = sorted(set(extraction_sources[product]))
-            continue
+    def recipe_options(names: list[str]) -> list[tuple]:
+        options = []
+        for name in names:
+            recipe = recipes[name]
+            ingredients = [
+                ingredient["name"] for ingredient in recipe.get("ingredients") or []
+            ]
+            for provider in provider_options(recipe_categories(recipe), production_state):
+                machine = [] if provider[0].startswith("<") or not builds_machines else [provider[0]]
+                options.append((name, ingredients + machine, provider))
+        return options
 
+    # The selected route is acyclic. A producer is accepted only when none of
+    # its inputs, its executor's item included, is still being resolved;
+    # otherwise the next producer in score order is tried. A loop such as
+    # filling a barrel with the fluid it later returns has no source.
+    def producer_options(product: str) -> tuple[list[str], list[tuple]]:
+        if product in craft_targets:
+            name = craft_targets[product]
+            if missing_technologies(name) is None or not all(
+                ingredient["name"] in production_state
+                for ingredient in recipes[name].get("ingredients") or []
+            ):
+                return [name], []
+            return [name], recipe_options([name])
         candidates = sorted(
             set(producers.get(product, [])),
             key=lambda recipe_name: recipe_score(recipe_name, product),
@@ -1185,55 +1219,134 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             and product_state
             == (production_state[source][0], production_state[source][1] + 1)
         )
+        labels = [f"<spoil:{name}>" for name in product_spoil_sources] + candidates
+        spoil = [
+            (f"<spoil:{name}>", [name], None) for name in product_spoil_sources
+        ]
+        if product not in production_state:
+            return labels, []
+        if requested_recipe is not None:
+            if missing_technologies(requested_recipe) is None:
+                return labels, spoil
+            names = [requested_recipe]
+        else:
+            names = [
+                name
+                for name in candidates
+                if missing_technologies(name) is not None
+                and all(
+                    ingredient["name"] in production_state
+                    for ingredient in recipes[name].get("ingredients") or []
+                )
+            ]
+        options = recipe_options(names)
+        if requested_recipe is not None:
+            return labels, options
         recipe_establishes_product = bool(
             candidates and recipe_score(candidates[0], product)[1] == 0
         )
-        if (
-            product_spoil_sources
-            and not recipe_establishes_product
-            and requested_recipe is None
-        ):
-            source = product_spoil_sources[0]
-            selected_recipes[product] = f"<spoil:{source}>"
-            alternatives[product] = [
-                f"<spoil:{name}>" for name in product_spoil_sources
-            ] + candidates
-            pending.append(source)
-            continue
-        if (
-            not candidates
-            or product not in production_state
-            or missing_technologies(candidates[0]) is None
-        ):
-            if product_spoil_sources:
-                source = product_spoil_sources[0]
-                selected_recipes[product] = f"<spoil:{source}>"
-                alternatives[product] = [
-                    f"<spoil:{name}>" for name in product_spoil_sources
-                ]
-                pending.append(source)
-            else:
-                unresolved.append(product)
-            continue
+        if spoil and not recipe_establishes_product:
+            return labels, spoil + options
+        return labels, options + spoil
 
-        recipe_name = candidates[0]
-        recipe = recipes[recipe_name]
-        provider = best_provider(recipe_categories(recipe), production_state)
-        if provider is None:
+    settled: set[str] = set(available)
+    resolving: set[str] = set()
+    selected_providers: dict[str, tuple] = {}
+    cyclic_rejections: dict[str, list[dict[str, str]]] = {}
+    # A product fails again while every product its last failure waited on is
+    # still being resolved and nothing has settled since, so the search never
+    # repeats that failure. A newly settled product can open a producer.
+    failures: dict[str, tuple[frozenset[str], int]] = {}
+
+    # Returns None on success, or the products still being resolved that
+    # every producer waited on. An unreachable product is settled as
+    # unresolved and reported.
+    def resolve(product: str) -> frozenset[str] | None:
+        if product in settled:
+            return None
+        if product in resolving:
+            return frozenset({product})
+        if product in failures:
+            waited, settled_count = failures[product]
+            if settled_count == len(settled) and waited <= resolving:
+                return waited
+        if product in raw:
+            raw_sources[product] = sorted(set(extraction_sources[product]))
+            settled.add(product)
+            return None
+        labels, options = producer_options(product)
+        if not options:
             unresolved.append(product)
-            continue
-        selected_recipes[product] = recipe_name
-        alternatives[product] = candidates
-        categories.add(provider[2])
-        for ingredient in recipe.get("ingredients") or []:
-            pending.append(ingredient["name"])
-        provider_name = provider[0]
-        if not provider_name.startswith("<"):
-            pending.append(provider_name)
+            settled.add(product)
+            return None
+        resolving.add(product)
+        rejected = []
+        waited: set[str] = set()
+        for producer, inputs, provider in options:
+            blocking = None
+            for name in inputs:
+                cause = resolve(name)
+                if cause is not None:
+                    blocking = name
+                    waited.update(cause)
+                    break
+            if blocking is None:
+                resolving.discard(product)
+                settled.add(product)
+                selected_recipes[product] = producer
+                alternatives[product] = labels
+                if provider is not None:
+                    selected_providers[product] = provider
+                return None
+            entry = {"producer": producer, "input": blocking}
+            if entry not in rejected:
+                rejected.append(entry)
+        resolving.discard(product)
+        cyclic_rejections[product] = rejected
+        failures[product] = (frozenset(waited - {product}), len(settled))
+        return failures[product][0]
 
-        technology_requirements = missing_technologies(recipe_name)
-        if technology_requirements:
-            required_technologies.update(technology_requirements)
+    for target in targets:
+        if resolve(target) is not None:
+            unresolved.append(target)
+
+    # Abandoned producers may have settled inputs no selected step uses.
+    used: set[str] = set()
+    pending = deque(targets)
+    while pending:
+        product = pending.popleft()
+        if product in used:
+            continue
+        used.add(product)
+        producer = selected_recipes.get(product)
+        if producer is None:
+            continue
+        if producer.startswith("<spoil:"):
+            pending.append(producer.removeprefix("<spoil:").removesuffix(">"))
+            continue
+        pending.extend(
+            ingredient["name"] for ingredient in recipes[producer].get("ingredients") or []
+        )
+        provider_name, provider_state, category = selected_providers[product]
+        categories.add(category)
+        if not builds_machines:
+            # The standing machine still needs its research at the boundary.
+            required_technologies.update(provider_state[0])
+        elif not provider_name.startswith("<"):
+            pending.append(provider_name)
+        required_technologies.update(missing_technologies(producer))
+    selected_recipes = {
+        product: producer for product, producer in selected_recipes.items() if product in used
+    }
+    raw_sources = {product: sources for product, sources in raw_sources.items() if product in used}
+    unresolved = [product for product in unresolved if product in used]
+    # A failed target reports every product whose producers all closed loops.
+    cyclic = {
+        product: rejected
+        for product, rejected in sorted(cyclic_rejections.items())
+        if product not in selected_recipes
+    } if any(target in cyclic_rejections and target not in selected_recipes
+             for target in targets) else {}
 
     selected = []
     for product, recipe_name in sorted(selected_recipes.items()):
@@ -1257,8 +1370,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             )
             continue
         recipe = recipes[recipe_name]
-        provider = best_provider(recipe_categories(recipe), production_state)
-        provider_name, _, selected_category = provider
+        provider_name, _, selected_category = selected_providers[product]
         selected.append(
             {
                 "product": product,
@@ -1272,7 +1384,8 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
                 "ingredients": recipe.get("ingredients") or [],
                 "results": recipe_results(recipe),
                 "energy_required": float(recipe.get("energy_required", 0.5)),
-                "rank": production_state[product][1],
+                # A recipe target is no product; manifests reject recipe targets.
+                "rank": production_state[product][1] if product not in craft_targets else None,
                 "unlock_technologies": sorted(unlockers.get(recipe_name, [])),
                 "alternatives": alternatives[product],
             }
@@ -1299,7 +1412,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
             pending_blocked.extend(missing)
 
     report = {
-        "targets": args.targets,
+        "targets": targets,
         "assumed_technologies": sorted(assumed_technologies),
         "available": sorted(available),
         "available_machines": sorted(available_machines),
@@ -1322,8 +1435,9 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         "invalid_raw": invalid_raw,
         "unresolved": sorted(set(unresolved)),
         "blocked_recipes": blocked_recipes,
+        "cyclic_producers": cyclic,
     }
-    used_products = set(args.targets)
+    used_products = set(targets)
     for step in selected:
         used_products.add(step["product"])
         if step.get("provider"):
@@ -1331,7 +1445,7 @@ def analyze(data: Prototype, args: argparse.Namespace) -> Prototype:
         used_products.update(ingredient["name"] for ingredient in step["ingredients"])
     report["forbidden_dependencies"] = sorted(forbidden_products & used_products)
     report["electric_required_paths"] = find_electric_required_paths(
-        args.targets, selected
+        targets, selected
     )
     return report
 
@@ -1795,6 +1909,9 @@ def print_human(report: Prototype, compact: bool = False) -> None:
         print(f"  {product}")
     if not report["unresolved"]:
         print("  none")
+    for product, rejected in report["cyclic_producers"].items():
+        loops = ", ".join(f"{entry['producer']} needs {entry['input']}" for entry in rejected)
+        print(f"  {product} closes a loop: {loops}")
 
     print("\nInvalid declared raw products:")
     for product in report["invalid_raw"]:
@@ -1952,6 +2069,16 @@ def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         default=[],
         metavar="PRODUCT=RECIPE",
         help="select an exact producer when a product has multiple routes",
+    )
+    parser.add_argument(
+        "--craft",
+        action="append",
+        default=[],
+        metavar="RECIPE",
+        help=(
+            "require one batch of a recipe to be craftable at the boundary "
+            "without selecting it as the producer of its products"
+        ),
     )
     parser.add_argument(
         "--machine-category",
@@ -2247,10 +2374,12 @@ def main() -> int:
                         )
                     )
             return 0
-        if not args.targets:
+        if not args.targets and not args.craft:
             raise TestFailure(
                 "provide at least one prerequisite target or prototype inspection"
             )
+        if args.craft and (args.manifest or args.find_dependency):
+            raise TestFailure("--craft cannot be combined with --manifest or --find-dependency")
         target_quantities: dict[str, float] = defaultdict(float)
         target_names: list[str] = []
         for target_name, target_count in args.targets:

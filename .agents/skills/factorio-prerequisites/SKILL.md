@@ -54,6 +54,11 @@ Declare the starting contract explicitly:
   or starting equipment.
 - `--recipe PRODUCT=RECIPE` selects the intended route when several recipes
   produce the same product.
+- `--craft RECIPE` requires one batch of that recipe to be craftable at the
+  boundary: its research, surface, ingredients, and executor. The recipe does
+  not become the producer of its products, so use it for an unlock contract
+  whose recipe feeds its own inputs, such as a waste treatment that returns the
+  material it disposes of.
 - `--find-dependency ITEM` reports recursive ingredient paths from every target
   to that item at the declared technology and surface boundary. Repeat it for a
   material family. Implicit routes follow only a recipe's primary product; use
@@ -86,6 +91,10 @@ ranged results. Put a repeatable contract in an argument file and invoke it as
 `tests/progression/release.json`; `python tools/run_progression_contracts.py`
 runs all of them against one fresh dump of the checkout.
 
+Add `--marginal` to price a steady material flow through machines that already
+stand. The route still requires each executor and its research at the boundary,
+but it neither builds nor counts the machines.
+
 Declare finite bootstrap material with `--stock ITEM=COUNT`. Unlike
 `--available`, stock is consumed and the checker expands production after it is
 exhausted. A self-powered fuel recipe must name the first-cycle prime this way;
@@ -98,7 +107,9 @@ reconciled rather than silently masking production data.
 
 Use `--json` when another script or test consumes the report. A successful
 query proves an acyclic material route and an executor for every selected
-recipe. In manifest mode it also proves the reported arithmetic for that exact
+recipe. A producer that needs a product still being resolved, its executor's
+machine included, gives way to the next; when every producer closes a loop, the
+product is unresolved and the report names each loop. In manifest mode it also proves the reported arithmetic for that exact
 route and executor selection. Unknown raw declarations and unresolved products
 fail with a nonzero exit status. Do not replace those failures with guessed
 recipes or injected items.

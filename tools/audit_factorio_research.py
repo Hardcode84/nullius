@@ -47,14 +47,11 @@ def recipe_cases(data, config):
     """Check selected recipes at their declared planet and research boundaries."""
     results = []
     for case in config.get('recipe_cases', []):
-        recipe = data['recipe'][case['recipe']]
-        product = recipe.get('main_product') or prereqs.recipe_results(recipe)[0]['name']
         args = prereqs.parse_arguments(['@' + case['boundary'], '--technology', case['technology'],
-                                       '--recipe', product + '=' + case['recipe']])
-        args.targets = [product]
+                                       '--craft', case['recipe']])
+        args.targets = []
         report = prereqs.analyze(data, args)
-        results.append(dict(**case, target=product,
-                            **{key: report[key] for key in ('required_technologies', 'unresolved', 'invalid_raw')}))
+        results.append(dict(**case, **{key: report[key] for key in ('required_technologies', 'unresolved', 'invalid_raw')}))
     return results
 
 
