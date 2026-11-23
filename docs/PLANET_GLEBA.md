@@ -240,7 +240,7 @@ Each research unit consumes one of each listed pack.
 | Research | Requires | Research units | What the player can do |
 |---|---|---|---|
 | Biological Probe Signal Recovery | [Nauvis probe access](PLANET_NAUVIS.md#23-per-planet-reactivation) | On Nauvis | Activate the probe and unlock the Gleba destination. No recipes. |
-| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Rebuild every starter machine locally: silica motors and filters, culture bioplastic, sand screened from leach residue, Gleba decider combinators, Gleba versions of the iron chest and Lab 1, and the other machines by their ordinary recipes. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. Sulfide ferric concentrate for water, culture acid liquor, neutralize it on carbonate for carbon dioxide and gypsum, decompose gypsum for oxygen and lime, reduce sulfur dioxide and spent iron sulfide, pyrolyse digestate for graphite, and cast steel with local oxygen. |
+| Nutrient Technology | Biological Probe Signal Recovery, Geology 2 and Nitrogen Chemistry 1 | On Nauvis, 20 × 15 s with the four early packs | Harvest mats and handcraft the first wild culture and goop. Run nutrient machines, produce more goop, and make the first biochemistry packs, iron, silica, stone and glass. Rebuild every starter machine locally: silica motors and filters, culture plastic, sand screened from leach residue, Gleba decider combinators, Gleba versions of the iron chest and Lab 1, and the other machines by their ordinary recipes. Run chemical plants, hydro plants and flotation cells in bioreactor mode, on any planet. Sulfide ferric concentrate for water, culture acid liquor, neutralize it on carbonate for carbon dioxide and gypsum, decompose gypsum for oxygen and lime, reduce sulfur dioxide and spent iron sulfide, pyrolyse digestate for graphite, and cast steel with local oxygen. |
 | Wild Strain Cultivation | Nutrient Technology | In the wreck Lab 1, 8 × 20 s with biochemistry | Grow a deterministic domesticated culture. Build the biology lab. Make the first microbiology packs from wild and domesticated cultures in the flotation cell bioreactor. |
 | Biochemistry 1 | Wild Strain Cultivation | In the new biology lab, 12 × 30 s with biochemistry and microbiology | Recover sugar, amino acids, fatty acids and nucleotides from local culture. Make biochemistry packs by a higher-yield culture recipe. |
 
@@ -402,11 +402,12 @@ handles gas reactions and iron reduction. The starter furnace takes the dry
 solid for final smelting. Small Assembler 1 is hand-crafted by its ordinary recipe from local
 iron parts and a wreck inserter and belt. Make replacement inserters from local materials.
 Gleba recipes substitute local materials for unavailable ones, as Vulcanus does, and share the
-substitutions both planets need: silica for plastic in motors and filters. An intermediate that
-later recipes need again gets its own Gleba recipe, so the machines that use it keep their
-ordinary recipes: sand comes from leach residue, and decider combinators from bioplastic, iron
-wire and silicon. Culture bioplastic also stands in for rubber in the iron chest and for
-aluminum in Lab 1. The wreck carries no walls.
+substitutions both planets need: silica for plastic in the first motors and filters. Bacteria
+make ordinary plastic from fixed carbon. An intermediate that later recipes need again gets its
+own Gleba recipe, so the machines that use it keep their ordinary recipes: sand comes from leach
+residue, and decider combinators from iron wire and silicon ingot in place of aluminum wire and
+polysilicon. Plastic also stands in for rubber in the iron chest and for aluminum in Lab 1. The
+wreck carries no walls.
 
 Keep the normal Lab 2 building for its placement checkpoint. At Nanotechnology 1
 the local Nanofabricator 1 construction recipe uses a chemical plant, a

@@ -2,7 +2,7 @@
 --   graphite and locally made iron, glass, silica, silicon, stone brick and steel parts on
 --   the probe android; gleba-kit.args proves every declared part closes locally.
 -- place: chemical plant bioreactors for silica filters, flotation cell bioreactors for
---   bioplastic, nutrient crushers for sand and a nutrient assembler for decider combinators
+--   culture plastic, nutrient crushers for sand and a nutrient assembler for decider combinators
 --   on cleared Gleba ground; no electricity.
 -- act: make the Gleba parts, hand-craft the starter kit machines from them, then place each
 --   machine and switch it to its Gleba mode.
@@ -13,7 +13,7 @@ local research = require("__nullius-star__/scripts/research")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "gleba-kit"
 local GOOP = "nullius-nutrient-goop"
--- Filters: chemical plant 1, two distilleries and two seawater intakes. Bioplastic: Lab 1,
+-- Filters: chemical plant 1, two distilleries and two seawater intakes. Culture plastic: Lab 1,
 -- the iron chest and two batches of decider combinators.
 local FILTERS, BIOPLASTIC_BATCHES, SAND_BATCHES, COMBINATOR_BATCHES = 7, 6, 2, 2
 
@@ -38,7 +38,7 @@ local KIT = {
   {item = "nullius-flotation-cell-1", mode = "-bioreactor"},
 }
 
--- Local materials the android carries; filters and bioplastic come from the machines.
+-- Local materials the android carries; filters and plastic come from the machines.
 local STOCK = {
   ["nullius-iron-plate"] = 100, ["nullius-iron-rod"] = 60, ["nullius-iron-gear"] = 40,
   ["nullius-iron-sheet"] = 60, ["nullius-iron-wire"] = 30, ["pipe"] = 40,
@@ -122,7 +122,7 @@ local function prepare()
   end
 end
 
--- Decider combinators take the cultured bioplastic, so they start once it is collected.
+-- Decider combinators take the culture plastic, so they start once it is collected.
 local function start_combinators()
   local assembler = gleba_machine("nullius-small-assembler-1", "-nutrient", 100, 34)
   assembler.set_recipe("nullius-logic-circuit-gleba")
@@ -146,7 +146,7 @@ local function craft()
     end
   end
   check(storage.body.get_item_count("nullius-filter-1") == FILTERS, "silica filters missing")
-  check(storage.body.get_item_count("nullius-bioplastic") == 2 * BIOPLASTIC_BATCHES, "bioplastic missing")
+  check(storage.body.get_item_count("nullius-plastic") == 2 * BIOPLASTIC_BATCHES, "culture plastic missing")
   check(storage.body.get_item_count("nullius-sand") == 2 * SAND_BATCHES, "sand missing")
   start_combinators()
   storage.stage = 0

@@ -19,7 +19,7 @@ small-crafting
 --machine-category
 medium-crafting
 --recipe
-nullius-bioplastic=nullius-gleba-bioplastic
+nullius-plastic=nullius-gleba-bioplastic
 --recipe
 stone=nullius-gleba-stone
 --recipe
