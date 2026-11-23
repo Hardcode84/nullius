@@ -152,11 +152,14 @@ recipe(nutrient, "gleba-gypsum-decomposition", "gleba-chemosynthesis", 6,
 -- Gleba cannot vent sulfur dioxide; hydrogen sulfide reduces it onto iron.
 recipe(nutrient, "gleba-sulfur-dioxide-reduction", "gleba-chemosynthesis", 6,
   {{"sulfur-dioxide", 10}, {"ferric-concentrate", 1}}, {{"water", 10}, {"iron-sulfide", 1}}, gleba_only)
--- Bacteria store fixed carbon as a polyester that serves as ordinary plastic. Like every
--- polymer, it cannot be made in a hot environment.
+-- Bacteria store fixed carbon as a polyester that serves as ordinary plastic, and in
+-- small amounts as polyisoprene rubber. Like every polymer, neither can be made in a hot
+-- environment.
+local cool_only = {{property = "nullius-ambient-temperature", max = 50}}
 recipe(nutrient, "gleba-bioplastic", "gleba-culture", 10,
-  {{"wild-culture", 1}, {"nutrient-goop", 2}, {"carbon-dioxide", 20}}, {{"plastic", 2}},
-  {{property = "nullius-ambient-temperature", max = 50}})
+  {{"wild-culture", 1}, {"nutrient-goop", 2}, {"carbon-dioxide", 20}}, {{"plastic", 2}}, cool_only)
+recipe(nutrient, "gleba-rubber", "gleba-culture", 20,
+  {{"wild-culture", 1}, {"nutrient-goop", 4}, {"carbon-dioxide", 30}}, {{"rubber", 1}}, cool_only)
 -- Graphite from fixed carbon leaves the goop carbon loop.
 recipe(nutrient, "gleba-digestate-pyrolysis", "gleba-chemosynthesis", 4,
   {{"digestate", 5}}, {{"graphite", 1}, {"carbon-dioxide", 10}})
@@ -218,7 +221,7 @@ data:extend({
 })
 
 -- Local substitutes, as Vulcanus makes them: silica for plastic in the first motors and
--- filters, plastic for rubber and aluminum, and crude silicon logic. Intermediates that later recipes need again get
+-- filters, plastic for aluminum, and crude silicon logic. Intermediates that later recipes need again get
 -- their own Gleba recipe, so the machines that use them keep their ordinary recipes.
 local recipe_util = require("prototypes.recipe-util")
 local gleba_substitutes = require("prototypes.planet.silica-substitutions")("-gleba", gleba_only, {})
@@ -232,8 +235,6 @@ substitute("nullius-logic-circuit", "nullius-logic-circuit-gleba", {
   ["nullius-aluminum-wire"] = {stack("iron-wire", 4)},
   ["nullius-polycrystalline-silicon"] = {stack("silicon-ingot", 2)},
 })
-substitute("nullius-small-chest-2", "nullius-iron-chest-gleba",
-  {["nullius-rubber"] = {stack("plastic", 1)}})
 substitute("nullius-lab-1", "nullius-lab-1-gleba", {["nullius-aluminum-sheet"] = {stack("plastic", 4)}})
 for _, substituted in ipairs(gleba_substitutes) do
   substituted.enabled = false

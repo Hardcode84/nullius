@@ -2,8 +2,8 @@
 --   graphite and locally made iron, glass, silica, silicon, stone brick and steel parts on
 --   the probe android; gleba-kit.args proves every declared part closes locally.
 -- place: chemical plant bioreactors for silica filters, flotation cell bioreactors for
---   culture plastic, nutrient crushers for sand and a nutrient assembler for decider combinators
---   on cleared Gleba ground; no electricity.
+--   culture plastic and rubber, nutrient crushers for sand and a nutrient assembler for decider
+--   combinators on cleared Gleba ground; no electricity.
 -- act: make the Gleba parts, hand-craft the starter kit machines from them, then place each
 --   machine and switch it to its Gleba mode.
 -- run: until the staged hand crafts finish.
@@ -13,16 +13,18 @@ local research = require("__nullius-star__/scripts/research")
 local fluid_api = require("__nullius-star__/scenarios/fluid-api")
 local CASE = "gleba-kit"
 local GOOP = "nullius-nutrient-goop"
--- Filters: chemical plant 1, two distilleries and two seawater intakes. Culture plastic: Lab 1,
--- the iron chest and two batches of decider combinators.
-local FILTERS, BIOPLASTIC_BATCHES, SAND_BATCHES, COMBINATOR_BATCHES = 7, 6, 2, 2
+-- Filters: chemical plant 1, two distilleries and two seawater intakes. Culture plastic: Lab 1
+-- and two batches of decider combinators. Culture rubber: the iron chest.
+local FILTERS, BIOPLASTIC_BATCHES, SAND_BATCHES, COMBINATOR_BATCHES = 7, 5, 2, 2
+-- The culture rubber batch, the longest, takes 20 seconds at crafting speed 1.
+local COLLECT_TICK = 1300
 
 -- Hand-craft stages, each queued when the previous one finishes, as a player crafts the
 -- parts of a machine before the machine.
 local STAGES = {
   {["nullius-small-furnace-1"] = 2, ["nullius-chimney-1"] = 2, ["nullius-motor-1-gleba"] = 2,
     ["small-lamp"] = 2, ["pipe-to-ground"] = 2},
-  {["nullius-iron-chest-gleba"] = 1, ["nullius-lab-1-gleba"] = 1, ["nullius-chemical-plant-1"] = 1,
+  {["iron-chest"] = 1, ["nullius-lab-1-gleba"] = 1, ["nullius-chemical-plant-1"] = 1,
     ["nullius-pump-1"] = 2, ["nullius-outfall-1"] = 2},
   {["nullius-distillery-1"] = 2, ["nullius-seawater-intake-1"] = 2},
   {["nullius-hydro-plant-1"] = 1},
@@ -116,6 +118,8 @@ local function prepare()
     storage.producers[#storage.producers + 1] = batch("nullius-flotation-cell-1", i * 8, 22, "nullius-gleba-bioplastic",
       {["nullius-wild-culture"] = 1, [GOOP] = 2}, {["nullius-carbon-dioxide"] = 20})
   end
+  storage.producers[#storage.producers + 1] = batch("nullius-flotation-cell-1", (BIOPLASTIC_BATCHES + 1) * 8, 22,
+    "nullius-gleba-rubber", {["nullius-wild-culture"] = 1, [GOOP] = 4}, {["nullius-carbon-dioxide"] = 30})
   for i = 1, SAND_BATCHES do
     storage.producers[#storage.producers + 1] = batch("nullius-crusher-1", i * 8, 34, "nullius-gleba-sand",
       {["nullius-leach-residue"] = 2}, {}, "-nutrient")
@@ -147,6 +151,7 @@ local function craft()
   end
   check(storage.body.get_item_count("nullius-filter-1") == FILTERS, "silica filters missing")
   check(storage.body.get_item_count("nullius-plastic") == 2 * BIOPLASTIC_BATCHES, "culture plastic missing")
+  check(storage.body.get_item_count("nullius-rubber") == 1, "culture rubber missing")
   check(storage.body.get_item_count("nullius-sand") == 2 * SAND_BATCHES, "sand missing")
   start_combinators()
   storage.stage = 0
@@ -185,14 +190,14 @@ script.on_nth_tick(1, function(event)
     research.complete_with_prerequisites(game.forces.player.technologies["nullius-nutrient-technology"])
   elseif event.tick == 2 then
     prepare()
-  elseif event.tick == 700 then
+  elseif event.tick == COLLECT_TICK then
     craft()
   end
 end)
 
 -- Checks once a second whether the hand crafts have finished.
 script.on_nth_tick(60, function(event)
-  if event.tick == 0 or event.tick <= 700 or not storage.stage then return end
+  if event.tick == 0 or event.tick <= COLLECT_TICK or not storage.stage then return end
   if storage.body.crafting_queue_size > 0 then return end
   if storage.stage < #STAGES then next_stage() else place_kit(event.tick) end
 end)

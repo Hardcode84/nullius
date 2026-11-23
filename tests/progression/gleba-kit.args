@@ -47,7 +47,9 @@ decider-combinator=nullius-logic-circuit-gleba
 --recipe
 nullius-silicon-ingot=nullius-silicon-ingot
 --recipe
-iron-chest=nullius-iron-chest-gleba
+iron-chest=iron-chest
+--recipe
+nullius-rubber=nullius-gleba-rubber
 --recipe
 nullius-lab-1=nullius-lab-1-gleba
 --recipe
