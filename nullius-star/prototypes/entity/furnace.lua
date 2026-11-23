@@ -6,6 +6,17 @@ local BASEENTITY = "__base__/graphics/entity/"
 
 local sounds = require("__base__/prototypes/entity/sounds")
 
+-- A single-connection fluid box with the standard pipe covers. Vent and bulk smelting
+-- furnaces put a second gas output on the east side, away from the first.
+local function fluid_box(flow, position, direction)
+  return {
+    production_type = flow,
+    pipe_covers = pipecoverspictures(),
+    volume = 500,
+    pipe_connections = {{flow_direction = flow, position = position, direction = defines.direction[direction]}}
+  }
+end
+
 local function scale_wire_position(wire_pos, scale)
   for _, wire_type in pairs(wire_pos) do
     if wire_type.x then
@@ -330,12 +341,8 @@ data:extend({
     selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
     crafting_categories = {"dry-smelting", "vent-smelting"},
     fluid_boxes = {
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {0, -1}, direction = defines.direction.north }}
-      },
+      fluid_box("output", {0, -1}, "north"),
+      fluid_box("output", {1, 0}, "east"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     --result_inventory_size = 1,
@@ -480,18 +487,9 @@ data:extend({
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
     selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {0, 1}, direction = defines.direction.south }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {0, -1}, direction = defines.direction.north }}
-      },
+      fluid_box("input", {0, 1}, "south"),
+      fluid_box("output", {0, -1}, "north"),
+      fluid_box("output", {1, 0}, "east"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     crafting_categories = {"dry-smelting", "vent-smelting", "wet-smelting"},
@@ -564,18 +562,9 @@ data:extend({
     selection_box = {{-2.0, -2.0}, {2.0, 2.0}},
     use_mirroring = true,
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {0.5, 1.4}, direction = defines.direction.south }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {-0.5, -1.4}, direction = defines.direction.north }}
-      },
+      fluid_box("input", {0.5, 1.4}, "south"),
+      fluid_box("output", {-0.5, -1.4}, "north"),
+      fluid_box("output", {1.4, -0.5}, "east"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     crafting_categories = {"bulk-smelting"},
@@ -911,18 +900,8 @@ data:extend({
     module_slots = 1,
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {-1, 1}, direction = defines.direction.west }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {1, -1}, direction = defines.direction.east }}
-      },
+      fluid_box("input", {-1, 1}, "west"),
+      fluid_box("output", {1, -1}, "east"),
     },
 	  impact_category = data.raw["furnace"]["stone-furnace"].impact_category,
     working_sound = data.raw["furnace"]["stone-furnace"].working_sound,
@@ -969,18 +948,8 @@ data:extend({
     module_slots = 2,
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {-1, 1}, direction = defines.direction.west }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {1, -1}, direction = defines.direction.east }}
-      },
+      fluid_box("input", {-1, 1}, "west"),
+      fluid_box("output", {1, -1}, "east"),
     },
 	  impact_category = data.raw["assembling-machine"]["nullius-foundry-1"].impact_category,
     working_sound = data.raw["assembling-machine"]["nullius-foundry-1"].working_sound,
@@ -1024,18 +993,8 @@ data:extend({
     module_slots = 3,
     allowed_effects = {"speed", "productivity", "consumption", "pollution"},
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {-1, 1}, direction = defines.direction.west }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {1, -1}, direction = defines.direction.east }}
-      },
+      fluid_box("input", {-1, 1}, "west"),
+      fluid_box("output", {1, -1}, "east"),
     },
 	  impact_category = data.raw["assembling-machine"]["nullius-foundry-1"].impact_category,
     working_sound = data.raw["assembling-machine"]["nullius-foundry-1"].working_sound,
@@ -1075,18 +1034,8 @@ data:extend({
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {0, 1}, direction = defines.direction.south }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {0, -1}, direction = defines.direction.north }}
-      },
+      fluid_box("input", {0, 1}, "south"),
+      fluid_box("output", {0, -1}, "north"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     graphics_set = {
@@ -1164,18 +1113,8 @@ data:extend({
     circuit_connector = circuit_connector_definitions["nullius-crusher"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {0, 1}, direction = defines.direction.south }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {0, -1}, direction = defines.direction.north }}
-      },
+      fluid_box("input", {0, 1}, "south"),
+      fluid_box("output", {0, -1}, "north"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     graphics_set = {
@@ -1245,18 +1184,8 @@ data:extend({
     circuit_connector = circuit_connector_definitions["nullius-crusher"],
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     fluid_boxes = {
-      {
-        production_type = "input",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="input", position = {0, 1}, direction = defines.direction.south }}
-      },
-      {
-        production_type = "output",
-        pipe_covers = pipecoverspictures(),
-        volume = 500,
-        pipe_connections = {{ flow_direction ="output", position = {0, -1}, direction = defines.direction.north }}
-      },
+      fluid_box("input", {0, 1}, "south"),
+      fluid_box("output", {0, -1}, "north"),
     },
     fluid_boxes_off_when_no_fluid_recipe = true,
     graphics_set = {

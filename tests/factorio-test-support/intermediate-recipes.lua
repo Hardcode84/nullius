@@ -1,14 +1,14 @@
 -- Two separate finite fluid feeds; outputs stay in the machine.
 local cases=require("__nullius-star__/scenarios/intermediate-recipes/fixture")
 data:extend({{type="recipe-category",name="factorio-test-intermediate-rejected"}})
-local variants={["factorio-test-intermediate-rejected"]={category="factorio-test-intermediate-rejected",inputs=0,outputs=0}}
+local variants={["factorio-test-intermediate-rejected"]={categories={"factorio-test-intermediate-rejected"},inputs=0,outputs=0}}
 for _,case in ipairs(cases) do
   local inputs,outputs=0,0
   for _,part in ipairs(case.ingredients) do if part.type=="fluid" then inputs=inputs+1 end end
   for _,part in ipairs(case.products) do if part.type=="fluid" then outputs=outputs+1 end end
   for _,part in ipairs(case.ingredients) do inputs=math.max(inputs,part.port or 0) end
   for _,part in ipairs(case.products) do outputs=math.max(outputs,part.port or 0) end
-  variants[case.name]={category=case.category,inputs=inputs,outputs=outputs}
+  variants[case.name]={categories=case.categories,inputs=inputs,outputs=outputs}
 
 end
 for name,variant in pairs(variants) do
@@ -21,7 +21,7 @@ for name,variant in pairs(variants) do
   machine.selection_box={{-3.5,-3.5},{3.5,3.5}}
   machine.energy_source={type="void"}
   machine.crafting_speed=60
-  machine.crafting_categories={variant.category}
+  machine.crafting_categories=table.deepcopy(variant.categories)
   machine.module_slots=0
   machine.allowed_effects={}
   machine.effect_receiver={uses_module_effects=false,uses_beacon_effects=false,uses_surface_effects=false}

@@ -147,8 +147,8 @@ recipe(nutrient, "gleba-iron-sulfide-reduction", "gleba-roasting", 4,
 recipe(nutrient, "gleba-neutralization", "gleba-chemosynthesis", 6,
   {{"crushed-gleba-rock", 4}, {"acid-sulfuric", 20}},
   {{"carbon-dioxide", 20}, {"gypsum", 2}, {"leach-residue", 2}})
-recipe(nutrient, "gleba-gypsum-decomposition", "gleba-chemosynthesis", 6,
-  {{"gypsum", 2}}, {{"oxygen", 10}, {"sulfur-dioxide", 10}, {"lime", 1}})
+-- Gypsum decomposition, the oxygen source, is common chemistry unlocked here too.
+unlock(nutrient, "nullius-gypsum-decomposition")
 -- Gleba cannot vent sulfur dioxide; hydrogen sulfide reduces it onto iron.
 recipe(nutrient, "gleba-sulfur-dioxide-reduction", "gleba-chemosynthesis", 6,
   {{"sulfur-dioxide", 10}, {"ferric-concentrate", 1}}, {{"water", 10}, {"iron-sulfide", 1}}, gleba_only)

@@ -1581,16 +1581,19 @@ extend_intermediate_prototypes({
     },
     enabled = false,
     icon_size = 32,
-    categories = {"vent-smelting"},
+    -- Bioreactor chemical plants run it on Gleba, where gypsum is the oxygen source.
+    categories = {"vent-smelting", "gleba-chemosynthesis"},
     order = "nullius-bc",
     energy_required = 3,
     ingredients = {{type="item", name="nullius-gypsum", amount = 2}},
     results = {
       {type="item", name="nullius-lime", amount=1},
-      {type="fluid", name="nullius-sulfur-dioxide", amount=10}
+      {type="fluid", name="nullius-sulfur-dioxide", amount=10},
+      {type="fluid", name="nullius-oxygen", amount=10}
     },
     main_product = "nullius-lime",
     auto_boxed = {
+      category = "bulk-smelting",
       remove_fields = {"icon_size"},
       subgroup = "boxed-calcium",
       order = "nullius-dc",
@@ -1604,7 +1607,8 @@ extend_intermediate_prototypes({
       ingredients = {{type="item", name="nullius-box-gypsum", amount = 2}},
       results = {
         {type="item", name="nullius-box-lime", amount=1},
-        {type="fluid", name="nullius-sulfur-dioxide", amount=60}
+        {type="fluid", name="nullius-sulfur-dioxide", amount=60},
+        {type="fluid", name="nullius-oxygen", amount=60}
       },
     }
   },

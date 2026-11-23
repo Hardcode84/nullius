@@ -43,7 +43,8 @@ script.on_nth_tick(1,function()
     end
     local recipe=assert(prototypes.recipe[name],"missing "..name)
     local categories=modern and recipe.categories or {recipe.category}
-    check(#categories==1 and categories[1]==case.category,case.name.." category")
+    check(#categories==#case.categories,case.name.." category count")
+    for index,category in ipairs(case.categories) do check(categories[index]==category,case.name.." category "..category) end
     check(recipe.energy==case.seconds,case.name.." duration")
     parts(recipe.ingredients,case.ingredients,case.name.." ingredients")
     parts(recipe.products,case.products,case.name.." products")

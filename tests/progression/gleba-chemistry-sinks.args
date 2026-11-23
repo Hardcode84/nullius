@@ -6,7 +6,7 @@ nullius-water=nullius-gleba-sulfidation
 --recipe
 nullius-acid-sulfuric=nullius-gleba-acid-liquor
 --recipe
-nullius-sulfur-dioxide=nullius-gleba-gypsum-decomposition
+nullius-sulfur-dioxide=nullius-gypsum-decomposition
 --recipe
 nullius-gypsum=nullius-gleba-neutralization
 --recipe

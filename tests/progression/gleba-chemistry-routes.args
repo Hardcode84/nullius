@@ -9,11 +9,11 @@ nullius-carbon-dioxide=nullius-gleba-neutralization
 --recipe
 nullius-gypsum=nullius-gleba-neutralization
 --recipe
-nullius-oxygen=nullius-gleba-gypsum-decomposition
+nullius-oxygen=nullius-gypsum-decomposition
 --recipe
-nullius-sulfur-dioxide=nullius-gleba-gypsum-decomposition
+nullius-sulfur-dioxide=nullius-gypsum-decomposition
 --recipe
-nullius-lime=nullius-gleba-gypsum-decomposition
+nullius-lime=nullius-gypsum-decomposition
 --recipe
 nullius-graphite=nullius-gleba-digestate-pyrolysis
 --recipe

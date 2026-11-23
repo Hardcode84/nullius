@@ -1,5 +1,6 @@
 -- Alkali Processing, causticization and gravel leaching were renamed from their
--- volcanic names after this release.
+-- volcanic names after this release. Medium furnaces gained an oxygen output for
+-- gypsum decomposition.
 local function assert_alkali(force)
   assert(force.technologies["nullius-alkali-processing"].researched, "lost Volcanic Alkali Processing research")
   for _, name in ipairs({"nullius-causticization", "nullius-gravel-leaching"}) do
@@ -17,6 +18,7 @@ remote.add_interface("release-upgrade", {
   seed = function()
     local force = game.forces.player
     force.technologies["nullius-volcanic-alkali-processing"].researched = true
+    force.technologies["nullius-limestone-processing-2"].researched = true
     local surface = game.surfaces.nauvis
     surface.request_to_generate_chunks({64, 64}, 1)
     surface.force_generate_chunk_requests()
@@ -28,8 +30,10 @@ remote.add_interface("release-upgrade", {
     plant.set_recipe("nullius-volcanic-causticization")
     local leacher = assert(surface.create_entity{name = "nullius-chemical-plant-1", position = {60, 68}, force = "player"})
     leacher.set_recipe("nullius-volcanic-saline")
+    local furnace = assert(surface.create_entity{name = "nullius-medium-furnace-1", position = {68, 60}, force = "player"})
+    furnace.set_recipe("nullius-gypsum-decomposition")
     storage.alkali_machines = {{entity = plant, recipe = "nullius-causticization"},
-      {entity = leacher, recipe = "nullius-gravel-leaching"}}
+      {entity = leacher, recipe = "nullius-gravel-leaching"}, {entity = furnace, recipe = "nullius-gypsum-decomposition"}}
     game.create_force("alkali-control")
   end,
   verify = function()

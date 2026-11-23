@@ -30,7 +30,7 @@ local CASES = {
   {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-gleba-neutralization",
     items = {["nullius-crushed-gleba-rock"] = 4}, fluids = {["nullius-acid-sulfuric"] = 20},
     out_items = {["nullius-gypsum"] = 2, ["nullius-leach-residue"] = 2}, out_fluids = {["nullius-carbon-dioxide"] = 20}},
-  {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-gleba-gypsum-decomposition",
+  {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-gypsum-decomposition",
     items = {["nullius-gypsum"] = 2}, fluids = {},
     out_items = {["nullius-lime"] = 1}, out_fluids = {["nullius-oxygen"] = 10, ["nullius-sulfur-dioxide"] = 10}},
   {machine = "nullius-chemical-plant-1", mode = "-bioreactor", recipe = "nullius-gleba-sulfur-dioxide-reduction",
